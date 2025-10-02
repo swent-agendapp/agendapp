@@ -5,7 +5,7 @@ Agendapp is a time-management and workforce organization app designed to simplif
 
 # sketch with Figma
 
-[Link to Figma sketch (view mode)]https://www.figma.com/design/fQynSC0tap9GvBBKead1V7/MainActivity?node-id=0-1&t=JWbtI56oaDiehVl6-1
+[Link to Figma sketch (view mode)](https://www.figma.com/design/fQynSC0tap9GvBBKead1V7/MainActivity?node-id=0-1&t=JWbtI56oaDiehVl6-1)
 
 ## special note
 This app idea comes from a real request made by the director of a sport school (École de Cirque de Lausanne-Renens) with whom we had meetings to discuss the project

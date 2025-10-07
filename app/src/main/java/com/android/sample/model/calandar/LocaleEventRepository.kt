@@ -22,6 +22,9 @@ class LocaleEventRepository : EventRepository {
     }
 
     override suspend fun deleteEvent(itemId: String) {
+        if (events.none { it.id == itemId }) {
+            throw IllegalArgumentException("Item with id $itemId does not exist.")
+        }
         events.removeAll { it.id == itemId }
     }
 

@@ -27,6 +27,7 @@ interface EventRepository {
      * Deletes an event item from the repository.
      *
      * @param itemId The event item to be deleted.
+     * @throws IllegalArgumentException if the itemId does not exist.
      */
     suspend fun deleteEvent(itemId: String)
     /**

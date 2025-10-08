@@ -12,9 +12,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import com.android.sample.ui.calendar.mockData.MockEvent
+import com.android.sample.ui.calendar.mockData.MockCalendarViewModel
 import com.android.sample.ui.calendar.utils.LocalDateRange
 import java.time.LocalDate
 
@@ -33,12 +34,12 @@ fun CalendarScreen() {
 
   val initialStartOfWeek = today.with(java.time.DayOfWeek.MONDAY)
   val initialEndOfWeek = today.with(java.time.DayOfWeek.FRIDAY)
-  val currentDateRange by remember {
+  var currentDateRange by remember {
     mutableStateOf(LocalDateRange(initialStartOfWeek, initialEndOfWeek))
   }
 
-  // for now : create mock events
-  val mockEvents = MockEvent.getMockEvents()
+  // get mock events
+  val mockEvents = MockCalendarViewModel.getMockEvents()
 
   Scaffold(
       topBar = {

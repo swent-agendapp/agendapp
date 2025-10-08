@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import com.android.sample.ui.calendar.components.DayHeaderRow
 import com.android.sample.ui.calendar.components.EventsPane
 import com.android.sample.ui.calendar.components.GridCanvas
+import com.android.sample.ui.calendar.components.NowIndicatorLine
 import com.android.sample.ui.calendar.components.TimeAxisColumn
 import com.android.sample.ui.calendar.mockData.MockEvent
 import com.android.sample.ui.calendar.style.GridContentStyle
@@ -85,9 +86,6 @@ fun CalendarGridContent(
               rowHeightDp = metrics.rowHeightDp,
               totalHours = metrics.totalHours,
               days = metrics.days,
-              now = now,
-              gridStartTime = metrics.gridStartTime,
-              effectiveEndTime = metrics.effectiveEndTime,
               style = style)
 
           // Render all the events blocks
@@ -99,6 +97,17 @@ fun CalendarGridContent(
               gridStartTime = metrics.gridStartTime,
               effectiveEndTime = metrics.effectiveEndTime,
           )
+
+          // Render the "now" indicator line
+          NowIndicatorLine(
+              modifier = Modifier.fillMaxSize(),
+              columnCount = metrics.columnCount,
+              rowHeightDp = metrics.rowHeightDp,
+              days = metrics.days,
+              now = now,
+              gridStartTime = metrics.gridStartTime,
+              effectiveEndTime = metrics.effectiveEndTime,
+              style = style)
         }
       }
     }

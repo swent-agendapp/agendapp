@@ -8,12 +8,20 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.android.sample.ui.calendar.components.EventsPane
 import com.android.sample.ui.calendar.components.GridCanvas
+import com.android.sample.ui.calendar.components.TimeAxisColumn
 import com.android.sample.ui.calendar.mockData.MockEvent
 import com.android.sample.ui.calendar.utils.LocalDateRange
 import com.android.sample.ui.calendar.utils.rememberWeekViewMetrics
+import kotlinx.coroutines.delay
+import java.time.LocalTime
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
@@ -26,7 +34,15 @@ fun CalendarGridContent(
     val metrics = rememberWeekViewMetrics(dateRange, events)
 
     // Later : handle scroll using val scrollState = rememberScrollState()
-    // Later : handle "now" pointer using var now by remember { mutableStateOf(LocalTime.now()) }
+
+    var now by remember { mutableStateOf(LocalTime.now()) }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            now = LocalTime.now()
+            delay(1000)
+        }
+    }
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val availableWidth = maxWidth - metrics.leftOffsetDp
@@ -42,7 +58,16 @@ fun CalendarGridContent(
 //            )
 
             Row {
-                // todo : TimeAxisColumn
+                TimeAxisColumn(
+                    timeLabels = metrics.timeLabels,
+                    now = now,
+                    gridStartTime = metrics.gridStartTime,
+                    gridEndTime = metrics.effectiveEndTime,
+                    rowHeightDp = metrics.rowHeightDp,
+                    gridHeightDp = metrics.gridHeightDp,
+                    leftOffsetDp = metrics.leftOffsetDp,
+                    // Later : scrollState = scrollState,
+                )
 
                 // for now :            Grid Area (Canvas + Events)
                 // Later :   Scrollable Grid Area (Canvas + Events)
@@ -53,7 +78,14 @@ fun CalendarGridContent(
                     ) {
                     // Render the grid background
                     GridCanvas(
-                        modifier = Modifier.matchParentSize()
+                        modifier = Modifier.fillMaxSize(),
+                        columnCount = metrics.columnCount,
+                        rowHeightDp = metrics.rowHeightDp,
+                        totalHours = metrics.totalHours,
+                        days = metrics.days,
+                        now = now,
+                        gridStartTime = metrics.gridStartTime,
+                        effectiveEndTime = metrics.effectiveEndTime,
                     )
 
                     // Render all the events blocks

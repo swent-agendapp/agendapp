@@ -29,13 +29,13 @@ data class WeekGridStyle(
 @Composable
 fun GridCanvas(
     modifier: Modifier = Modifier,
-    columnCount: Int = 5,
-    rowHeightDp: Dp = 60.dp,
-    totalHours: Float = 12f,
-    days: List<LocalDate> =  defaultWeekDays(),
-    now: LocalTime = LocalTime.now(),
-    gridStartTime: LocalTime = LocalTime.of(8,0),
-    effectiveEndTime: LocalTime = LocalTime.of(22,0),
+    columnCount: Int,
+    rowHeightDp: Dp,
+    totalHours: Float,
+    days: List<LocalDate>,
+    now: LocalTime,
+    gridStartTime: LocalTime,
+    effectiveEndTime: LocalTime,
     style: WeekGridStyle = WeekGridStyle(),
 ) {
     Canvas(modifier = modifier){

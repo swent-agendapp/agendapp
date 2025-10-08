@@ -63,15 +63,12 @@ fun EventBlock(
           modifier =
               modifier
                   .offset(
-                      x = columnWidthDp,
-                      y =
-                          topOffset) // Later when overlap : x = columnWidth *
-                                     // eventLayout.offsetFraction
+                      x = columnWidthDp, y = topOffset) // Later when overlap : x = columnWidth *
+                  // eventLayout.offsetFraction
                   .size(
                       width = columnWidthDp,
-                      height =
-                          eventHeight) // Later when overlap : width = columnWidth *
-                                       // eventLayout.widthFraction
+                      height = eventHeight) // Later when overlap : width = columnWidth *
+                  // eventLayout.widthFraction
                   .clip(RoundedCornerShape(cornerRadius))
                   .background(backgroundColor)
                   .padding(start = 4.dp, top = 4.dp, end = 4.dp),

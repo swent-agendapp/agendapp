@@ -6,20 +6,36 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.times
 import com.android.sample.ui.calendar.mockData.MockEvent
+import java.time.LocalDate
+import java.time.LocalTime
 
 @Composable
-fun EventsPane(event: MockEvent) {
-    Box(
-        modifier = Modifier
-            .offset(x = 80.dp, y = 80.dp) // Later : x = dayIndex * columnWidth
-            .size(120.dp, 60.dp) // Later : (columnWidth, gridHeightDp)
-    ) {
-        // for now :
-        EventBlock(
-            event = event
-        )
-        // Later : EventsWithOverlapHandling
+fun EventsPane(
+    days: List<LocalDate>,
+    events: List<MockEvent>,
+    columnWidthDp: Dp,
+    gridHeightDp: Dp,
+    gridStartTime: LocalTime,
+    effectiveEndTime: LocalTime,
+) {
+    days.forEachIndexed { dayIndex, date ->
+        val eventsForDay = events.filter { it.date == date }
+        if (eventsForDay.isNotEmpty()) {
+            Box(
+                modifier = Modifier
+                    .offset(x = dayIndex * columnWidthDp)
+                    .size(columnWidthDp, gridHeightDp)
+            ) {
+                // for now : (later : EventBlockWithOverlapHandling)
+                EventBlock(
+                    events = eventsForDay,
+                    startTime = gridStartTime,
+                    endTime = effectiveEndTime,
+                    columnWidthDp = columnWidthDp
+                )
+            }
+        }
     }
 }

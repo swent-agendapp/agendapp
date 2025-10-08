@@ -1,6 +1,5 @@
 package com.android.sample.ui.calendar
 
-import android.graphics.Color
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -15,10 +14,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.android.sample.ui.calendar.mockData.MockEvent
-import com.android.sample.ui.calendar.utils.TimeSpan
-import java.time.Duration
+import com.android.sample.ui.calendar.utils.LocalDateRange
 import java.time.LocalDate
-import java.time.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,17 +25,10 @@ fun CalendarScreen() {
 
     val initialStartOfWeek = today.with(java.time.DayOfWeek.MONDAY)
     val initialEndOfWeek = today.with(java.time.DayOfWeek.FRIDAY)
+    val currentDateRange by remember { mutableStateOf(LocalDateRange(initialStartOfWeek, initialEndOfWeek)) }
 
-    val mockEvent1 = MockEvent(
-        date = LocalDate.of(2025, 10, 7),
-        title = "Cours de cirque 1",
-        timeSpan = TimeSpan.of(
-            start = LocalTime.of(9, 30),
-            duration = Duration.ofHours(2)
-        ),
-        assigneeText = "Emilien",
-        backgroundColor = Color.GREEN
-        )
+    // for now : create mock events
+    val mockEvents = MockEvent.getMockEvents()
 
     Scaffold(
         topBar = {
@@ -57,8 +47,9 @@ fun CalendarScreen() {
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize(),
+            dateRange = currentDateRange,
             // for now :
-            event = mockEvent1
+            events = mockEvents
             // Later : give the ViewModel
             // Later : add here onEventClick, onEventLongPress, onSwipeLeft, onSwipeRight
         )

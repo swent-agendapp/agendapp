@@ -20,22 +20,19 @@ fun EventsPane(
     gridStartTime: LocalTime,
     effectiveEndTime: LocalTime,
 ) {
-    days.forEachIndexed { dayIndex, date ->
-        val eventsForDay = events.filter { it.date == date }
-        if (eventsForDay.isNotEmpty()) {
-            Box(
-                modifier = Modifier
-                    .offset(x = dayIndex * columnWidthDp)
-                    .size(columnWidthDp, gridHeightDp)
-            ) {
-                // for now : (later : EventBlockWithOverlapHandling)
-                EventBlock(
-                    events = eventsForDay,
-                    startTime = gridStartTime,
-                    endTime = effectiveEndTime,
-                    columnWidthDp = columnWidthDp
-                )
-            }
-        }
+  days.forEachIndexed { dayIndex, date ->
+    val eventsForDay = events.filter { it.date == date }
+    if (eventsForDay.isNotEmpty()) {
+      Box(
+          modifier =
+              Modifier.offset(x = dayIndex * columnWidthDp).size(columnWidthDp, gridHeightDp)) {
+            // for now : (later : EventBlockWithOverlapHandling)
+            EventBlock(
+                events = eventsForDay,
+                startTime = gridStartTime,
+                endTime = effectiveEndTime,
+                columnWidthDp = columnWidthDp)
+          }
     }
+  }
 }

@@ -27,17 +27,24 @@ fun defaultGridContentColors(
     currentDayBackground: Color = MaterialTheme.colorScheme.primary,
     currentDayText: Color = Color(0xFF000000),
 ): GridContentColors =
-    remember(todayHighlight, nowIndicator, dayHeaderText, timeLabelTextColor, gridLineColor, currentDayBackground, currentDayText) {
-        GridContentColors(
-            todayHighlight = todayHighlight,
-            nowIndicator = nowIndicator,
-            dayHeaderText = dayHeaderText,
-            timeLabelTextColor = timeLabelTextColor,
-            gridLineColor = gridLineColor,
-            currentDayBackground = currentDayBackground.copy(alpha = 0.2f),
-            currentDayText = currentDayText,
-        )
-    }
+    remember(
+        todayHighlight,
+        nowIndicator,
+        dayHeaderText,
+        timeLabelTextColor,
+        gridLineColor,
+        currentDayBackground,
+        currentDayText) {
+          GridContentColors(
+              todayHighlight = todayHighlight,
+              nowIndicator = nowIndicator,
+              dayHeaderText = dayHeaderText,
+              timeLabelTextColor = timeLabelTextColor,
+              gridLineColor = gridLineColor,
+              currentDayBackground = currentDayBackground.copy(alpha = 0.2f),
+              currentDayText = currentDayText,
+          )
+        }
 
 // This is the main configuration object we pass around.
 // It can be expanded later to include typography, dimensions, etc.
@@ -49,9 +56,11 @@ data class GridContentStyle( // agendap -> WeekTimeAxisStyle
 )
 
 @Composable
-fun defaultGridContentStyle(colors: GridContentColors = defaultGridContentColors()): GridContentStyle =
+fun defaultGridContentStyle(
+    colors: GridContentColors = defaultGridContentColors()
+): GridContentStyle =
     remember(colors) {
-        GridContentStyle(
-            colors = colors,
-        )
+      GridContentStyle(
+          colors = colors,
+      )
     }

@@ -18,6 +18,8 @@ import com.android.sample.ui.calendar.components.EventsPane
 import com.android.sample.ui.calendar.components.GridCanvas
 import com.android.sample.ui.calendar.components.TimeAxisColumn
 import com.android.sample.ui.calendar.mockData.MockEvent
+import com.android.sample.ui.calendar.style.GridContentStyle
+import com.android.sample.ui.calendar.style.defaultGridContentStyle
 import com.android.sample.ui.calendar.utils.LocalDateRange
 import com.android.sample.ui.calendar.utils.rememberWeekViewMetrics
 import kotlinx.coroutines.delay
@@ -28,7 +30,8 @@ import java.time.LocalTime
 fun CalendarGridContent(
     modifier: Modifier = Modifier,
     dateRange: LocalDateRange,
-    events: List<MockEvent>
+    events: List<MockEvent>,
+    style: GridContentStyle = defaultGridContentStyle()
     // Later : receive onEventClick and onEventLongPress
 ) {
     val metrics = rememberWeekViewMetrics(dateRange, events)
@@ -60,12 +63,10 @@ fun CalendarGridContent(
             Row {
                 TimeAxisColumn(
                     timeLabels = metrics.timeLabels,
-                    now = now,
-                    gridStartTime = metrics.gridStartTime,
-                    gridEndTime = metrics.effectiveEndTime,
                     rowHeightDp = metrics.rowHeightDp,
                     gridHeightDp = metrics.gridHeightDp,
                     leftOffsetDp = metrics.leftOffsetDp,
+                    style = style
                     // Later : scrollState = scrollState,
                 )
 
@@ -86,6 +87,7 @@ fun CalendarGridContent(
                         now = now,
                         gridStartTime = metrics.gridStartTime,
                         effectiveEndTime = metrics.effectiveEndTime,
+                        style = style
                     )
 
                     // Render all the events blocks
@@ -95,7 +97,7 @@ fun CalendarGridContent(
                         columnWidthDp = dynamicColumnWidthDp,
                         gridHeightDp = metrics.gridHeightDp,
                         gridStartTime = metrics.gridStartTime,
-                        effectiveEndTime = metrics.effectiveEndTime
+                        effectiveEndTime = metrics.effectiveEndTime,
                     )
                 }
             }

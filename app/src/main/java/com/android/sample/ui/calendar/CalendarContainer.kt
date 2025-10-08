@@ -21,12 +21,12 @@ fun CalendarContainer(
     // Later : handle here variables for animation of swiping (transparent box)
 
     Box(
+        modifier = modifier
         // Later : add modifier to handle swiping
     ) {
         CalendarGridContent(
             modifier = Modifier
-                .fillMaxSize()
-                .background(Color.LightGray), // to remove when the grid will be implemented
+                .fillMaxSize(),
             dateRange = dateRange,
             // for now :
             events = events

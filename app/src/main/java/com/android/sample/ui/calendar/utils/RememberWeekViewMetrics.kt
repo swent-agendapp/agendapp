@@ -17,7 +17,7 @@ internal fun rememberWeekViewMetrics(
         val days = dateRange.toList()
         val columnCount = days.size
         val leftOffsetDp = 48.dp
-        val topOffsetDp = 36.dp
+        val topOffsetDp = 42.dp
 
         // Later : adapt to the admin's choice
         val startTime = LocalTime.of(8, 0)

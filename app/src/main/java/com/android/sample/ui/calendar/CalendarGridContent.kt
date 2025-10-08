@@ -14,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.android.sample.ui.calendar.components.DayHeaderRow
 import com.android.sample.ui.calendar.components.EventsPane
 import com.android.sample.ui.calendar.components.GridCanvas
 import com.android.sample.ui.calendar.components.TimeAxisColumn
@@ -47,20 +48,19 @@ fun CalendarGridContent(
         }
     }
 
-    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+    BoxWithConstraints(modifier = modifier.fillMaxSize()) {
         val availableWidth = maxWidth - metrics.leftOffsetDp
         val dynamicColumnWidthDp = if (metrics.columnCount > 0) (availableWidth / metrics.columnCount) else availableWidth
 
         Column(modifier = Modifier.fillMaxSize()) {
-            // todo : DayHeaderRow
-//            DayHeaderRow(
-//                days = metrics.days,
-//                leftOffsetDp = metrics.leftOffsetDp,
-//                topOffsetDp = metrics.topOffsetDp,
-//                columnWidth = dynamicColumnWidthDp
-//            )
+            DayHeaderRow(
+                days = metrics.days,
+                leftOffsetDp = metrics.leftOffsetDp,
+                topOffsetDp = metrics.topOffsetDp,
+                columnWidth = dynamicColumnWidthDp
+            )
 
-            Row {
+            Row(modifier = Modifier.weight(1f)) {
                 TimeAxisColumn(
                     timeLabels = metrics.timeLabels,
                     rowHeightDp = metrics.rowHeightDp,

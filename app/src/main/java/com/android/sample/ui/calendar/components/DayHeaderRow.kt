@@ -1,17 +1,11 @@
 package com.android.sample.ui.calendar.components
 
-import android.text.format.DateUtils.isToday
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,6 +17,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.android.sample.ui.calendar.style.GridContentStyle
+import com.android.sample.ui.calendar.style.defaultGridContentStyle
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -36,39 +32,39 @@ fun DayHeaderRow(
     days: List<LocalDate>,
     leftOffsetDp: Dp,
     topOffsetDp: Dp,
-    columnWidth: Dp
-    ){
-    Row(
-        modifier= Modifier.fillMaxWidth().height(topOffsetDp)
-    ){
-        Box(modifier = Modifier.width(leftOffsetDp).fillMaxHeight())
+    columnWidth: Dp,
+    style: GridContentStyle = defaultGridContentStyle()
+) {
+    Row {
+        Box(modifier = Modifier.size(leftOffsetDp, topOffsetDp))
         days.forEach { date ->
             val isToday = date == LocalDate.now()
             val bg = if (isToday) {
-                Color(0x112196F3)
+                style.colors.currentDayBackground
             } else {
                 Color.Transparent
             }
 
             val color = if (isToday) {
-                MaterialTheme.colorScheme.primary
+                style.colors.currentDayText
             } else {
-                MaterialTheme.colorScheme.onSurface
+                style.colors.dayHeaderText
             }
 
             val weight = if (isToday) FontWeight.Bold else FontWeight.Medium
 
             val dayName = date.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
-            val shortDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
-                .format(date)
-                .replace(Regex("[^0-9]*[0-9]+$"), "")
+//            val shortDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
+//                .format(date)
+//                .replace(Regex("[^0-9]*[0-9]+$"), "")
+
+            val shortDate = date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)).replace(Regex("[^0-9]*[0-9]+$"), "")
 
             Column(
                 modifier = Modifier
-                    .width(columnWidth)
-                    .fillMaxHeight()
-                    .background(bg)
-                    .padding(vertical = 2.dp),
+                    .size(columnWidth, topOffsetDp)
+                    .background(bg),
+                    // .padding(vertical = 2.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
@@ -79,6 +75,7 @@ fun DayHeaderRow(
                     fontSize = 13.sp,
                     fontWeight = weight,
                     textAlign = TextAlign.Center,
+                    lineHeight = 22.sp,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
@@ -88,6 +85,7 @@ fun DayHeaderRow(
                     fontSize = 13.sp,
                     fontWeight = weight,
                     textAlign = TextAlign.Center,
+                    lineHeight = 8.sp,
                     modifier = Modifier.fillMaxWidth()
                 )
             }

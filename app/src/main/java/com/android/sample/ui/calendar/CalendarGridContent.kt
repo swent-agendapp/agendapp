@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -37,7 +39,7 @@ fun CalendarGridContent(
 ) {
     val metrics = rememberWeekViewMetrics(dateRange, events)
 
-    // Later : handle scroll using val scrollState = rememberScrollState()
+    val scrollState = rememberScrollState()
 
     var now by remember { mutableStateOf(LocalTime.now()) }
 
@@ -66,6 +68,7 @@ fun CalendarGridContent(
                     rowHeightDp = metrics.rowHeightDp,
                     gridHeightDp = metrics.gridHeightDp,
                     leftOffsetDp = metrics.leftOffsetDp,
+                    scrollState = scrollState,
                     style = style
                     // Later : scrollState = scrollState,
                 )
@@ -74,6 +77,7 @@ fun CalendarGridContent(
                 // Later :   Scrollable Grid Area (Canvas + Events)
                 Box(
                     modifier = Modifier
+                        .verticalScroll(scrollState)
                         .weight(1f)
                         .height(metrics.gridHeightDp),
                     ) {

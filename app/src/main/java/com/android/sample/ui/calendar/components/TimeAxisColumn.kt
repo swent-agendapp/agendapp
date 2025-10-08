@@ -1,11 +1,13 @@
 package com.android.sample.ui.calendar.components
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -24,8 +26,8 @@ internal fun TimeAxisColumn(
     rowHeightDp: Dp,
     gridHeightDp: Dp,
     leftOffsetDp: Dp,
-    style: GridContentStyle = defaultGridContentStyle()
-    // Later : scrollState: ScrollState,
+    style: GridContentStyle = defaultGridContentStyle(),
+    scrollState: ScrollState
 ) {
     Box(
         modifier =
@@ -36,7 +38,7 @@ internal fun TimeAxisColumn(
     ) {
         // Regular time labels (hours)
         Column(
-            // Later : modifier = Modifier.verticalScroll(scrollState)
+            modifier = Modifier.verticalScroll(scrollState)
         ) {
             timeLabels.forEach { timeLabel ->
                 Box(modifier = Modifier.size(leftOffsetDp, rowHeightDp)) {

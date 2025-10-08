@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.ktfmt)
     alias(libs.plugins.sonar)
     id("jacoco")
+
 }
 
 android {
@@ -163,6 +164,12 @@ dependencies {
 
     // JUnit assertions
     testImplementation("junit:junit:4.13.2")
+
+    // Firebase
+    implementation(libs.firebase.database.ktx)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.auth)
 }
 
 tasks.withType<Test> {

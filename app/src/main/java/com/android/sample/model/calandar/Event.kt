@@ -35,7 +35,10 @@ fun createEvent(
     endDate: Instant,
     storageStatus: Set<StorageStatus>,
     personalNotes: String? = null,
-    owners: Set<String> = FirebaseAuth.getInstance().currentUser?.uid,
+    // Old line :
+    //owners: Set<String> = FirebaseAuth.getInstance().currentUser?.uid,
+    // Temporary line, just for testing purposes
+    owners: Set<String> = emptySet(),
     participants: Set<String> = emptySet()
 ): Event {
     return Event(

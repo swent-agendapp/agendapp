@@ -58,6 +58,6 @@ interface EventRepository {
      * @return A list of event items pending synchronization for the given database.
      *         Returns an empty list if all events are already synced to that database.
      */
-    suspend fun getAllUnsyncedEvents(db: EventStatus): List<Event>
+    suspend fun getAllUnsyncedEvents(db: StorageStatus): List<Event>
 
 }

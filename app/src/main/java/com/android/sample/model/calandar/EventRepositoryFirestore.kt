@@ -34,7 +34,7 @@ class EventRepositoryFirestore : EventRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getAllUnsyncedEvents(db: EventStatus): List<Event> {
+    override suspend fun getAllUnsyncedEvents(db: StorageStatus): List<Event> {
         TODO("Not yet implemented")
     }
 }

@@ -22,7 +22,7 @@ class LocaleRepositoryTest {
             description = "Team sync",
             startDate = Instant.parse("2025-01-10T10:00:00Z"),
             endDate = Instant.parse("2025-01-10T11:00:00Z"),
-            status = EventStatus.LOCAL,
+            storageStatus = setOf(StorageStatus.LOCAL),
             personalNotes = "Bring laptop"
         )
         event2 = createEvent(
@@ -30,7 +30,7 @@ class LocaleRepositoryTest {
             description = "Tech event",
             startDate = Instant.parse("2025-02-01T09:00:00Z"),
             endDate = Instant.parse("2025-02-03T18:00:00Z"),
-            status = EventStatus.FIRESTORE
+            storageStatus = setOf(StorageStatus.LOCAL)
         )
     }
 
@@ -107,7 +107,7 @@ class LocaleRepositoryTest {
     fun getAllUnsyncedEvents_shouldReturnEventsNotSyncedToGivenDb() = runBlocking {
         repository.insertEvent(event1)
         repository.insertEvent(event2)
-        val unsyncedToFirestore = repository.getAllUnsyncedEvents(EventStatus.FIRESTORE)
+        val unsyncedToFirestore = repository.getAllUnsyncedEvents(StorageStatus.FIRESTORE)
         assertTrue(unsyncedToFirestore.any { it.id == event1.id })
         assertFalse(unsyncedToFirestore.any { it.id == event2.id })
     }

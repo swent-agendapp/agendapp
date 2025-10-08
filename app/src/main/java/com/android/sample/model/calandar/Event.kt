@@ -1,6 +1,8 @@
 package com.android.sample.model.calandar
 
+import com.google.firebase.auth.FirebaseAuth
 import java.time.Instant
+
 
 data class Event(
     val id: String,
@@ -8,11 +10,20 @@ data class Event(
     val description: String,
     val startDate: Instant,   // Format: "dd-MM-yyyy"
     val endDate: Instant,     // Format: "dd-MM-yyyy"
-    val status: Set<EventStatus> = emptySet(),
-    val personalNotes: String? = null
+    val storageStatus: Set<StorageStatus>,
+    val personalNotes: String?,
+    val owners : Set<String>,
+    val participants: Set<String>,
+    val version: Long,
+    val recurrenceStatus: RecurrenceStatus
 )
-
-enum class EventStatus {
+enum class RecurrenceStatus{
+    OneTime,
+    Weekly,
+    Monthly,
+    Yearly
+}
+enum class StorageStatus {
     LOCAL,
     FIRESTORE,
 }
@@ -22,8 +33,10 @@ fun createEvent(
     description: String,
     startDate: Instant,
     endDate: Instant,
-    status: EventStatus,
-    personalNotes: String? = null
+    storageStatus: Set<StorageStatus>,
+    personalNotes: String? = null,
+    owners: Set<String> = FirebaseAuth.getInstance().currentUser?.uid,
+    participants: Set<String> = emptySet()
 ): Event {
     return Event(
         id = java.util.UUID.randomUUID().toString(),
@@ -31,7 +44,11 @@ fun createEvent(
         description = description,
         startDate = startDate,
         endDate = endDate,
-        status =setOf(status),
-        personalNotes = personalNotes
+        storageStatus = storageStatus,
+        personalNotes = personalNotes,
+        owners = owners,
+        participants = participants,
+        version = 0L,
+        recurrenceStatus = RecurrenceStatus.OneTime
     )
 }

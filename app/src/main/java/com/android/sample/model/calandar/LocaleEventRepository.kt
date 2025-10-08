@@ -37,7 +37,7 @@ class LocaleEventRepository : EventRepository {
         return events.filter { it.startDate >= startDate && it.endDate <= endDate }
     }
 
-    override suspend fun getAllUnsyncedEvents(db: EventStatus): List<Event> {
-        return events.filter { db !in it.status }
+    override suspend fun getAllUnsyncedEvents(db: StorageStatus): List<Event> {
+        return events.filter { db !in it.storageStatus }
     }
 }

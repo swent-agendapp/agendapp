@@ -9,10 +9,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.style.GridContentStyle
 import com.android.sample.ui.calendar.style.defaultGridContentStyle
 import java.time.LocalTime
@@ -27,26 +29,24 @@ internal fun TimeAxisColumn(
     style: GridContentStyle = defaultGridContentStyle()
     // Later : scrollState: ScrollState,
 ) {
-    Box(
-        modifier =
-            Modifier
-                .width(leftOffsetDp)
-                .height(gridHeightDp),
-        // Total height of the scrollable grid
-    ) {
-        // Regular time labels (hours)
-        Column(
-            // Later : modifier = Modifier.verticalScroll(scrollState)
+  Box(
+      modifier = Modifier.width(leftOffsetDp).height(gridHeightDp),
+      // Total height of the scrollable grid
+  ) {
+    // Regular time labels (hours)
+    Column(
+        modifier = Modifier.testTag(CalendarScreenTestTags.TIME_AXIS_COLUMN)
+        // Later : modifier = Modifier.verticalScroll(scrollState)
         ) {
-            timeLabels.forEach { timeLabel ->
-                Box(modifier = Modifier.size(leftOffsetDp, rowHeightDp)) {
-                    Text(
-                        modifier = Modifier.padding(horizontal = 4.dp),
-                        text = timeLabel.format(DateTimeFormatter.ofPattern("HH:mm")),
-                        style = TextStyle(fontSize = 12.sp, color = style.colors.timeLabelTextColor),
-                    )
-                }
+          timeLabels.forEach { timeLabel ->
+            Box(modifier = Modifier.size(leftOffsetDp, rowHeightDp)) {
+              Text(
+                  modifier = Modifier.padding(horizontal = 4.dp),
+                  text = timeLabel.format(DateTimeFormatter.ofPattern("HH:mm")),
+                  style = TextStyle(fontSize = 12.sp, color = style.colors.timeLabelTextColor),
+              )
             }
+          }
         }
-    }
+  }
 }

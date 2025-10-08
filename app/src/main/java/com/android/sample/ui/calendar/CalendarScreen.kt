@@ -13,45 +13,55 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import com.android.sample.ui.calendar.mockData.MockEvent
 import com.android.sample.ui.calendar.utils.LocalDateRange
 import java.time.LocalDate
 
+object CalendarScreenTestTags {
+  const val TOP_BAR_TITLE = "CalendarTopBarTitle"
+  const val DAY_ROW = "CalendarDayRow"
+  const val EVENT_GRID = "CalendarGrid"
+  const val TIME_AXIS_COLUMN = "TimeAxisColumn"
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalendarScreen() {
-    // initialize the week from monday to friday
-    val today = LocalDate.now()
+  // initialize the week from monday to friday
+  val today = LocalDate.now()
 
-    val initialStartOfWeek = today.with(java.time.DayOfWeek.MONDAY)
-    val initialEndOfWeek = today.with(java.time.DayOfWeek.FRIDAY)
-    val currentDateRange by remember { mutableStateOf(LocalDateRange(initialStartOfWeek, initialEndOfWeek)) }
+  val initialStartOfWeek = today.with(java.time.DayOfWeek.MONDAY)
+  val initialEndOfWeek = today.with(java.time.DayOfWeek.FRIDAY)
+  val currentDateRange by remember {
+    mutableStateOf(LocalDateRange(initialStartOfWeek, initialEndOfWeek))
+  }
 
-    // for now : create mock events
-    val mockEvents = MockEvent.getMockEvents()
+  // for now : create mock events
+  val mockEvents = MockEvent.getMockEvents()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Calendar") },
-                colors =
-                    TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    ),
-            )
-        },
-    ) { paddingValues ->
-        // Later : if we add button etc, it could be good to place this CalendarContainer in a Box
-        CalendarContainer(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize(),
-            dateRange = currentDateRange,
-            // for now :
-            events = mockEvents
-            // Later : give the ViewModel
-            // Later : add here onEventClick, onEventLongPress, onSwipeLeft, onSwipeRight
+  Scaffold(
+      topBar = {
+        TopAppBar(
+            title = {
+              Text("Calendar", modifier = Modifier.testTag(CalendarScreenTestTags.TOP_BAR_TITLE))
+            },
+            colors =
+                TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                ),
         )
-    }
+      },
+  ) { paddingValues ->
+    // Later : if we add button etc, it could be good to place this CalendarContainer in a Box
+    CalendarContainer(
+        modifier = Modifier.padding(paddingValues).fillMaxSize(),
+        dateRange = currentDateRange,
+        // for now :
+        events = mockEvents
+        // Later : give the ViewModel
+        // Later : add here onEventClick, onEventLongPress, onSwipeLeft, onSwipeRight
+        )
+  }
 }

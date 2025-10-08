@@ -1,4 +1,4 @@
-package com.android.sample.model.calandar
+package com.android.sample.model.calendar
 
 import java.time.Instant
 

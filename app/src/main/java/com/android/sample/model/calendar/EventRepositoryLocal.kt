@@ -1,8 +1,8 @@
-package com.android.sample.model.calandar
+package com.android.sample.model.calendar
 
 import java.time.Instant
 
-class LocaleEventRepository : EventRepository {
+class EventRepositoryLocal : EventRepository {
     private val events: MutableList<Event> = mutableListOf()
 
 

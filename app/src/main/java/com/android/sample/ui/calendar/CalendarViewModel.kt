@@ -2,9 +2,9 @@ package com.android.sample.ui.calendar
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.android.sample.model.calandar.Event
-import com.android.sample.model.calandar.EventRepository
-import com.android.sample.model.calandar.EventRepositoryProvider
+import com.android.sample.model.calendar.Event
+import com.android.sample.model.calendar.EventRepository
+import com.android.sample.model.calendar.EventRepositoryProvider
 import java.time.Instant
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

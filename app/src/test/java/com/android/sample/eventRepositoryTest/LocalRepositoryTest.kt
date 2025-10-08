@@ -1,4 +1,4 @@
-package com.android.sample.model.calandar
+package com.android.sample.model.calendar
 
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
@@ -8,15 +8,15 @@ import java.time.Instant
 import org.junit.Assert.assertThrows
 
 
-class LocaleRepositoryTest {
+class LocalRepositoryTest {
 
-    private lateinit var repository: LocaleEventRepository
+    private lateinit var repository: EventRepositoryLocal
     private lateinit var event1: Event
     private lateinit var event2: Event
 
     @Before
     fun setUp() {
-        repository = LocaleEventRepository()
+        repository = EventRepositoryLocal()
         event1 = createEvent(
             title = "Meeting",
             description = "Team sync",

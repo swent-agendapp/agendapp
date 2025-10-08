@@ -1,6 +1,5 @@
-package com.android.sample.model.calandar
+package com.android.sample.model.calendar
 
-import com.google.firebase.auth.FirebaseAuth
 import java.time.Instant
 
 

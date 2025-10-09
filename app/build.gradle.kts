@@ -160,10 +160,8 @@ dependencies {
 
     // ----------       test     ------------
     // Coroutine testing utilities (needed for runBlocking)
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    testImplementation(libs.kotlinx.coroutines.test)
 
-    // JUnit assertions
-    testImplementation("junit:junit:4.13.2")
 
     // Firebase
     implementation(libs.firebase.database.ktx)

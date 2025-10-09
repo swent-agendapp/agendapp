@@ -1,4 +1,5 @@
 [versions]
+coroutinesTest = "1.7.3"
 agp = "8.4.2"
 kotlin = "1.9.0"
 coreKtx = "1.12.0"
@@ -25,6 +26,9 @@ firebaseFirestore = "25.1.0"
 firebaseUiAuth = "8.0.0"
 
 [libraries]
+
+kotlinx_coroutines_test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesTest" }
+
 # Firebase Libraries
 firebase-auth = { module = "com.google.firebase:firebase-auth", version.ref = "firebaseAuth" }
 firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx", version.ref = "firebaseAuthKtx" }

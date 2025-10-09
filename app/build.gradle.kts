@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.ktfmt)
     alias(libs.plugins.sonar)
+    alias(libs.plugins.gms)
     id("jacoco")
 
 }
@@ -168,6 +169,9 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.auth)
+
+    // Networking with OkHttp
+    implementation(libs.okhttp)
 }
 
 tasks.withType<Test> {

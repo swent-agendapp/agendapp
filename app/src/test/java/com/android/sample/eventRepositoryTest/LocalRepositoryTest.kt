@@ -30,7 +30,7 @@ class LocalRepositoryTest {
             description = "Tech event",
             startDate = Instant.parse("2025-02-01T09:00:00Z"),
             endDate = Instant.parse("2025-02-03T18:00:00Z"),
-            storageStatus = setOf(StorageStatus.LOCAL))
+            storageStatus = setOf(StorageStatus.FIRESTORE))
   }
 
   @Test
@@ -102,6 +102,7 @@ class LocalRepositoryTest {
     repository.insertEvent(event1)
     repository.insertEvent(event2)
     val unsyncedToFirestore = repository.getAllUnsyncedEvents(StorageStatus.FIRESTORE)
+    print(unsyncedToFirestore)
     assertTrue(unsyncedToFirestore.any { it.id == event1.id })
     assertFalse(unsyncedToFirestore.any { it.id == event2.id })
   }

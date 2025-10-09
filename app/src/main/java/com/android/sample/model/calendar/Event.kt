@@ -10,7 +10,8 @@ import java.time.Instant
  * @property description Description of the event.
  * @property startDate Start date and time of the event.
  * @property endDate End date and time of the event.
- * @property storageStatus Set of storage locations where the event is saved (e.g., local, Firestore).
+ * @property storageStatus Set of storage locations where the event is saved (e.g., local,
+ *   Firestore).
  * @property personalNotes Optional personal notes for the event.
  * @property owners Set of user IDs who own the event.
  * @property participants Set of user IDs participating in the event.
@@ -31,9 +32,7 @@ data class Event(
     val recurrenceStatus: RecurrenceStatus
 )
 
-/**
- * Enum representing the recurrence pattern of an event.
- */
+/** Enum representing the recurrence pattern of an event. */
 enum class RecurrenceStatus {
   OneTime,
   Weekly,
@@ -41,9 +40,7 @@ enum class RecurrenceStatus {
   Yearly
 }
 
-/**
- * Enum representing the storage location of an event.
- */
+/** Enum representing the storage location of an event. */
 enum class StorageStatus {
   LOCAL,
   FIRESTORE,

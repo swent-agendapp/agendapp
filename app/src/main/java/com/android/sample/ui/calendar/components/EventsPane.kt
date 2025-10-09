@@ -16,19 +16,17 @@ import java.time.LocalTime
 
 @Composable
 fun EventsPane(
-    days: List<LocalDate> = run{
-        val today = LocalDate.now()
-        val startOfWeek = today.with(DayOfWeek.MONDAY)
-        val endOfWeek = today.with(DayOfWeek.FRIDAY)
-        generateSequence(startOfWeek) { it.plusDays(1) }
-            .takeWhile { it <= endOfWeek }
-            .toList()
+    days: List<LocalDate> = run {
+      val today = LocalDate.now()
+      val startOfWeek = today.with(DayOfWeek.MONDAY)
+      val endOfWeek = today.with(DayOfWeek.FRIDAY)
+      generateSequence(startOfWeek) { it.plusDays(1) }.takeWhile { it <= endOfWeek }.toList()
     },
-    events: List<MockEvent>  = getMockEvents(),
+    events: List<MockEvent> = getMockEvents(),
     columnWidthDp: Dp = defaultGridContentStyle().dimensions.defaultColumnWidthDp,
     gridHeightDp: Dp = defaultGridContentStyle().dimensions.rowHeightDp,
-    gridStartTime: LocalTime = LocalTime.of(8,0),
-    effectiveEndTime: LocalTime = LocalTime.of(23,0),
+    gridStartTime: LocalTime = LocalTime.of(8, 0),
+    effectiveEndTime: LocalTime = LocalTime.of(23, 0),
 ) {
   days.forEachIndexed { dayIndex, date ->
     val eventsForDay = events.filter { it.date == date }

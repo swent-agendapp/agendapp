@@ -8,12 +8,10 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import com.android.sample.ui.calendar.CalendarScreenTestTags
-import com.android.sample.ui.calendar.style.GridContentDimensions
 import com.android.sample.ui.calendar.style.GridContentStyle
 import com.android.sample.ui.calendar.style.defaultGridContentStyle
 import java.time.DayOfWeek
 import java.time.LocalDate
-import kotlin.math.ceil
 
 @Composable
 fun GridCanvas(
@@ -21,13 +19,11 @@ fun GridCanvas(
     columnCount: Int = 5,
     rowHeightDp: Dp = defaultGridContentStyle().dimensions.rowHeightDp,
     totalHours: Int = 15,
-    days: List<LocalDate> = run{
-        val today = LocalDate.now()
-        val startOfWeek = today.with(DayOfWeek.MONDAY)
-        val endOfWeek = today.with(DayOfWeek.FRIDAY)
-        generateSequence(startOfWeek) { it.plusDays(1) }
-            .takeWhile { it <= endOfWeek }
-            .toList()
+    days: List<LocalDate> = run {
+      val today = LocalDate.now()
+      val startOfWeek = today.with(DayOfWeek.MONDAY)
+      val endOfWeek = today.with(DayOfWeek.FRIDAY)
+      generateSequence(startOfWeek) { it.plusDays(1) }.takeWhile { it <= endOfWeek }.toList()
     },
     style: GridContentStyle = defaultGridContentStyle(),
 ) {

@@ -17,17 +17,15 @@ fun NowIndicatorLine(
     modifier: Modifier = Modifier,
     columnCount: Int = 5,
     rowHeightDp: Dp = defaultGridContentStyle().dimensions.rowHeightDp,
-    days: List<LocalDate> =  run{
-        val today = LocalDate.now()
-        val startOfWeek = today.with(DayOfWeek.MONDAY)
-        val endOfWeek = today.with(DayOfWeek.FRIDAY)
-        generateSequence(startOfWeek) { it.plusDays(1) }
-            .takeWhile { it <= endOfWeek }
-            .toList()
+    days: List<LocalDate> = run {
+      val today = LocalDate.now()
+      val startOfWeek = today.with(DayOfWeek.MONDAY)
+      val endOfWeek = today.with(DayOfWeek.FRIDAY)
+      generateSequence(startOfWeek) { it.plusDays(1) }.takeWhile { it <= endOfWeek }.toList()
     },
     now: LocalTime = LocalTime.now(),
-    gridStartTime: LocalTime = LocalTime.of(8,0),
-    effectiveEndTime: LocalTime = LocalTime.of(23,0),
+    gridStartTime: LocalTime = LocalTime.of(8, 0),
+    effectiveEndTime: LocalTime = LocalTime.of(23, 0),
     style: GridContentStyle = defaultGridContentStyle(),
 ) {
   Canvas(modifier = modifier) {

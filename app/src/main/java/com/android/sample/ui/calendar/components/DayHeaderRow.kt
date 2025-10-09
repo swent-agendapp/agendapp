@@ -16,32 +16,27 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.style.GridContentStyle
 import com.android.sample.ui.calendar.style.defaultGridContentDimensions
 import com.android.sample.ui.calendar.style.defaultGridContentStyle
-import com.android.sample.ui.calendar.utils.rememberWeekViewMetrics
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import java.time.format.TextStyle
 import java.util.Locale
 
 @Composable
 fun DayHeaderRow(
     columnWidth: Dp = defaultGridContentDimensions().defaultColumnWidthDp,
-    days: List<LocalDate> = run{
-        val today = LocalDate.now()
-        val startOfWeek = today.with(java.time.DayOfWeek.MONDAY)
-        val endOfWeek = today.with(java.time.DayOfWeek.FRIDAY)
-        generateSequence(startOfWeek) { it.plusDays(1) }
-            .takeWhile { !it.isAfter(endOfWeek) }
-            .toList()
+    days: List<LocalDate> = run {
+      val today = LocalDate.now()
+      val startOfWeek = today.with(java.time.DayOfWeek.MONDAY)
+      val endOfWeek = today.with(java.time.DayOfWeek.FRIDAY)
+      generateSequence(startOfWeek) { it.plusDays(1) }.takeWhile { !it.isAfter(endOfWeek) }.toList()
     },
     leftOffsetDp: Dp = defaultGridContentStyle().dimensions.leftOffsetDp,
-    topOffsetDp: Dp  = defaultGridContentStyle().dimensions.topOffsetDp,
+    topOffsetDp: Dp = defaultGridContentStyle().dimensions.topOffsetDp,
     style: GridContentStyle = defaultGridContentStyle(),
 ) {
   Row(modifier = Modifier.testTag(CalendarScreenTestTags.DAY_ROW)) {
@@ -66,9 +61,7 @@ fun DayHeaderRow(
 
       val dayName = date.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
 
-      val shortDate =
-          date
-              .format(DateTimeFormatter.ofPattern("dd.MM"))
+      val shortDate = date.format(DateTimeFormatter.ofPattern("dd.MM"))
 
       Column(
           modifier = Modifier.size(columnWidth, topOffsetDp).background(bg),

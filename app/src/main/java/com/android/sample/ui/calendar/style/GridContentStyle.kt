@@ -74,15 +74,12 @@ fun defaultGridContentDimensions(
     rowHeightDp: Dp = 60.dp,
 ): GridContentDimensions =
     remember(leftOffsetDp, topOffsetDp, defaultColumnWidthDp, rowHeightDp) {
-        GridContentDimensions(
-            leftOffsetDp = leftOffsetDp,
-            topOffsetDp = topOffsetDp,
-            defaultColumnWidthDp = defaultColumnWidthDp,
-            rowHeightDp = rowHeightDp
-        )
+      GridContentDimensions(
+          leftOffsetDp = leftOffsetDp,
+          topOffsetDp = topOffsetDp,
+          defaultColumnWidthDp = defaultColumnWidthDp,
+          rowHeightDp = rowHeightDp)
     }
-
-
 
 @Composable
 fun defaultGridContentStyle(

@@ -4,8 +4,8 @@ import java.time.Duration
 import java.time.LocalTime
 
 data class TimeSpan(
-  val start: LocalTime  = LocalTime.of(8,0),
-  val endExclusive: LocalTime = LocalTime.of(9,0),
+    val start: LocalTime = LocalTime.of(8, 0),
+    val endExclusive: LocalTime = LocalTime.of(9, 0),
 ) {
   init {
     require(start.isBefore(endExclusive)) {

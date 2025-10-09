@@ -27,7 +27,7 @@ import java.time.format.DateTimeFormatter
 internal fun TimeAxisColumn(
     timeLabels: List<LocalTime>,
     rowHeightDp: Dp = defaultGridContentStyle().dimensions.rowHeightDp,
-    gridHeightDp: Dp  = rowHeightDp*(32-8),
+    gridHeightDp: Dp = rowHeightDp * (32 - 8),
     leftOffsetDp: Dp = defaultGridContentStyle().dimensions.leftOffsetDp,
     style: GridContentStyle = defaultGridContentStyle(),
     scrollState: ScrollState = rememberScrollState()

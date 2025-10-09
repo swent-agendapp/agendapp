@@ -26,8 +26,9 @@ import com.android.sample.ui.calendar.mockData.MockEvent
 import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.style.defaultGridContentDimensions
 import com.android.sample.ui.calendar.utils.EventPositionUtil
-import com.android.sample.ui.calendar.utils.toLocalString
 import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @Composable
 fun EventBlock(
@@ -106,8 +107,9 @@ fun EventBlock(
           }
 
           // Time information
+          val formatter = DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
           val timeText =
-              "${event.timeSpan.start.toLocalString()} - ${event.timeSpan.endExclusive.toLocalString()}"
+              "${event.timeSpan.start.format(formatter)} - ${event.timeSpan.endExclusive.format(formatter)}"
 
           Text(
               text = timeText,

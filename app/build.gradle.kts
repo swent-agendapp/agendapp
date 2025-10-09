@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.ktfmt)
     alias(libs.plugins.sonar)
     id("jacoco")
+
 }
 
 android {
@@ -156,6 +157,17 @@ dependencies {
 
     // ----------       Robolectric     ------------
     testImplementation(libs.robolectric)
+
+    // ----------       test     ------------
+    // Coroutine testing utilities (needed for runBlocking)
+    testImplementation(libs.kotlinx.coroutines.test)
+
+
+    // Firebase
+    implementation(libs.firebase.database.ktx)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.auth)
 }
 
 tasks.withType<Test> {

@@ -61,21 +61,38 @@ class CalendarViewModel(
   }
 
   /**
+   * Helper function to load events using a provided suspend lambda.
+   *
+   * This function launches a coroutine in the ViewModel scope, sets the loading state to true,
+   * executes the provided suspend block to fetch events, and updates the UI state accordingly. If
+   * an exception occurs, it sets an error message in the UI state. The loading state is set back to
+   * false when the operation completes, regardless of success or failure.
+   *
+   * @param loadEventsBlock Suspend lambda that fetches a list of events.
+   * @param errorMessage Error message to display if the operation fails.
+   */
+  private fun loadEventsHelper(loadEventsBlock: suspend () -> List<Event>, errorMessage: String) {
+    viewModelScope.launch {
+      setLoading(true)
+      try {
+        val events = loadEventsBlock()
+        setEvents(events)
+      } catch (e: Exception) {
+        setErrorMsg("$errorMessage: ${e.message}")
+      } finally {
+        setLoading(false)
+      }
+    }
+  }
+
+  /**
    * Loads all events from the repository and updates the UI state. Handles errors by updating the
    * errorMsg property.
    */
   fun loadAllEvents() {
-    viewModelScope.launch {
-      setLoading(true)
-      try {
-        val events = eventRepository.getAllEvents()
-        setEvents(events = events)
-        setLoading(false)
-      } catch (e: Exception) {
-        setErrorMsg("Failed to load all events: ${e.message}")
-        setLoading(false)
-      }
-    }
+    loadEventsHelper(
+        loadEventsBlock = { eventRepository.getAllEvents() },
+        errorMessage = "Failed to load all events")
   }
 
   /**
@@ -86,16 +103,8 @@ class CalendarViewModel(
    * @param end The end date (inclusive).
    */
   fun loadEventsBetween(start: Instant, end: Instant) {
-    viewModelScope.launch {
-      setLoading(true)
-      try {
-        val events = eventRepository.getEventsBetweenDates(startDate = start, endDate = end)
-        setEvents(events = events)
-        setLoading(false)
-      } catch (e: Exception) {
-        setErrorMsg("Failed to load events between $start and $end: ${e.message}")
-        setLoading(false)
-      }
-    }
+    loadEventsHelper(
+        loadEventsBlock = { eventRepository.getEventsBetweenDates(start, end) },
+        errorMessage = "Failed to load events between $start and $end")
   }
 }

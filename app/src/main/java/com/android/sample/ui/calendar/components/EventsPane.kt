@@ -9,6 +9,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.times
 import com.android.sample.ui.calendar.mockData.MockCalendarViewModel.Companion.getMockEvents
 import com.android.sample.ui.calendar.mockData.MockEvent
+import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.style.defaultGridContentStyle
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -25,8 +26,8 @@ fun EventsPane(
     events: List<MockEvent> = getMockEvents(),
     columnWidthDp: Dp = defaultGridContentStyle().dimensions.defaultColumnWidthDp,
     gridHeightDp: Dp = defaultGridContentStyle().dimensions.rowHeightDp,
-    gridStartTime: LocalTime = LocalTime.of(8, 0),
-    effectiveEndTime: LocalTime = LocalTime.of(23, 0),
+    gridStartTime: LocalTime = CalendarDefaults.DefaultStartTime,
+    effectiveEndTime: LocalTime = CalendarDefaults.DefaultEndTime,
 ) {
   days.forEachIndexed { dayIndex, date ->
     val eventsForDay = events.filter { it.date == date }

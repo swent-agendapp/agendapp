@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.sample.ui.calendar.mockData.MockCalendarViewModel.Companion.getMockEvents
 import com.android.sample.ui.calendar.mockData.MockEvent
+import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.style.defaultGridContentDimensions
 import com.android.sample.ui.calendar.utils.EventPositionUtil
 import com.android.sample.ui.calendar.utils.toLocalString
@@ -32,8 +33,8 @@ import java.time.LocalTime
 fun EventBlock(
     modifier: Modifier = Modifier,
     events: List<MockEvent> = getMockEvents(),
-    startTime: LocalTime = LocalTime.of(8, 0),
-    endTime: LocalTime = LocalTime.of(23, 0),
+    startTime: LocalTime = CalendarDefaults.DefaultStartTime,
+    endTime: LocalTime = CalendarDefaults.DefaultEndTime,
     columnWidthDp: Dp = defaultGridContentDimensions().defaultColumnWidthDp
 ) {
   // Later : place this "filter" logic in "EventOverlapHandling", which will call this EventBlock

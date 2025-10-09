@@ -74,11 +74,8 @@ fun CalendarGridContent(
             gridHeightDp = metrics.gridHeightDp,
             leftOffsetDp = metrics.leftOffsetDp,
             scrollState = scrollState,
-            style = style
-            // Later : scrollState = scrollState,
-            )
+            style = style)
 
-        // for now :            Grid Area (Canvas + Events)
         // Later :   Scrollable Grid Area (Canvas + Events)
         Box(
             modifier = Modifier.verticalScroll(scrollState).weight(1f).height(metrics.gridHeightDp),

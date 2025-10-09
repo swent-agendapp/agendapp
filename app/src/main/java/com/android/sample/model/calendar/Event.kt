@@ -6,8 +6,8 @@ data class Event(
     val id: String,
     val title: String,
     val description: String,
-    val startDate: Instant, // Format: "dd-MM-yyyy"
-    val endDate: Instant, // Format: "dd-MM-yyyy"
+    val startDate: Instant,
+    val endDate: Instant,
     val storageStatus: Set<StorageStatus>,
     val personalNotes: String?,
     val owners: Set<String>,

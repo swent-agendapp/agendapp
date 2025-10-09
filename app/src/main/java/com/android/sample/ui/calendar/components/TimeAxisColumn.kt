@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,11 +26,11 @@ import java.time.format.DateTimeFormatter
 @Composable
 internal fun TimeAxisColumn(
     timeLabels: List<LocalTime>,
-    rowHeightDp: Dp,
-    gridHeightDp: Dp,
-    leftOffsetDp: Dp,
+    rowHeightDp: Dp = defaultGridContentStyle().dimensions.rowHeightDp,
+    gridHeightDp: Dp  = rowHeightDp*(32-8),
+    leftOffsetDp: Dp = defaultGridContentStyle().dimensions.leftOffsetDp,
     style: GridContentStyle = defaultGridContentStyle(),
-    scrollState: ScrollState
+    scrollState: ScrollState = rememberScrollState()
 ) {
   Box(
       modifier = Modifier.width(leftOffsetDp).height(gridHeightDp),

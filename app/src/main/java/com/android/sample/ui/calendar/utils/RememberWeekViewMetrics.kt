@@ -27,7 +27,7 @@ internal fun rememberWeekViewMetrics(
     val gridStartTime = startTime.truncatedTo(ChronoUnit.HOURS)
     val visibleTimeSpan = TimeSpan(gridStartTime, endTime)
 
-    val totalHours = visibleTimeSpan.duration.toMinutes() / 60f
+    val totalHours= visibleTimeSpan.duration.toHours().toInt()
     val gridHeightDp = rowHeightDp * totalHours
     val timeLabels = visibleTimeSpan.hourlyTimes().toList()
 

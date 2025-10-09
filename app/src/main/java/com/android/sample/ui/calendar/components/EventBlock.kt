@@ -21,7 +21,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.android.sample.ui.calendar.mockData.MockCalendarViewModel.Companion.getMockEvents
 import com.android.sample.ui.calendar.mockData.MockEvent
+import com.android.sample.ui.calendar.style.defaultGridContentDimensions
 import com.android.sample.ui.calendar.utils.EventPositionUtil
 import com.android.sample.ui.calendar.utils.toLocalString
 import java.time.LocalTime
@@ -29,10 +31,10 @@ import java.time.LocalTime
 @Composable
 fun EventBlock(
     modifier: Modifier = Modifier,
-    events: List<MockEvent>,
-    startTime: LocalTime,
-    endTime: LocalTime,
-    columnWidthDp: Dp
+    events: List<MockEvent> = getMockEvents(),
+    startTime: LocalTime = LocalTime.of(8,0),
+    endTime: LocalTime = LocalTime.of(23,0),
+    columnWidthDp: Dp = defaultGridContentDimensions().defaultColumnWidthDp
 ) {
   // Later : place this "filter" logic in "EventOverlapHandling", which will call this EventBlock
   // Filter events for the current day and time range

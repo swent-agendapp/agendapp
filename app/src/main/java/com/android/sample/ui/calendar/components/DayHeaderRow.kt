@@ -16,10 +16,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.style.GridContentStyle
+import com.android.sample.ui.calendar.style.defaultGridContentDimensions
 import com.android.sample.ui.calendar.style.defaultGridContentStyle
+import com.android.sample.ui.calendar.utils.rememberWeekViewMetrics
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -28,11 +31,18 @@ import java.util.Locale
 
 @Composable
 fun DayHeaderRow(
-    days: List<LocalDate>,
-    leftOffsetDp: Dp,
-    topOffsetDp: Dp,
-    columnWidth: Dp,
-    style: GridContentStyle = defaultGridContentStyle()
+    columnWidth: Dp = defaultGridContentDimensions().defaultColumnWidthDp,
+    days: List<LocalDate> = run{
+        val today = LocalDate.now()
+        val startOfWeek = today.with(java.time.DayOfWeek.MONDAY)
+        val endOfWeek = today.with(java.time.DayOfWeek.FRIDAY)
+        generateSequence(startOfWeek) { it.plusDays(1) }
+            .takeWhile { !it.isAfter(endOfWeek) }
+            .toList()
+    },
+    leftOffsetDp: Dp = defaultGridContentStyle().dimensions.leftOffsetDp,
+    topOffsetDp: Dp  = defaultGridContentStyle().dimensions.topOffsetDp,
+    style: GridContentStyle = defaultGridContentStyle(),
 ) {
   Row(modifier = Modifier.testTag(CalendarScreenTestTags.DAY_ROW)) {
     Box(modifier = Modifier.size(leftOffsetDp, topOffsetDp))
@@ -55,14 +65,10 @@ fun DayHeaderRow(
       val weight = if (isToday) FontWeight.Bold else FontWeight.Medium
 
       val dayName = date.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
-      //            val shortDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
-      //                .format(date)
-      //                .replace(Regex("[^0-9]*[0-9]+$"), "")
 
       val shortDate =
           date
-              .format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
-              .replace(Regex("[^0-9]*[0-9]+$"), "")
+              .format(DateTimeFormatter.ofPattern("dd.MM"))
 
       Column(
           modifier = Modifier.size(columnWidth, topOffsetDp).background(bg),

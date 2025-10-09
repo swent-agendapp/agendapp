@@ -7,6 +7,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.Dp
 import com.android.sample.ui.calendar.style.GridContentStyle
 import com.android.sample.ui.calendar.style.defaultGridContentStyle
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
@@ -14,12 +15,19 @@ import java.time.temporal.ChronoUnit
 @Composable
 fun NowIndicatorLine(
     modifier: Modifier = Modifier,
-    columnCount: Int,
-    rowHeightDp: Dp,
-    days: List<LocalDate>,
-    now: LocalTime,
-    gridStartTime: LocalTime,
-    effectiveEndTime: LocalTime,
+    columnCount: Int = 5,
+    rowHeightDp: Dp = defaultGridContentStyle().dimensions.rowHeightDp,
+    days: List<LocalDate> =  run{
+        val today = LocalDate.now()
+        val startOfWeek = today.with(DayOfWeek.MONDAY)
+        val endOfWeek = today.with(DayOfWeek.FRIDAY)
+        generateSequence(startOfWeek) { it.plusDays(1) }
+            .takeWhile { it <= endOfWeek }
+            .toList()
+    },
+    now: LocalTime = LocalTime.now(),
+    gridStartTime: LocalTime = LocalTime.of(8,0),
+    effectiveEndTime: LocalTime = LocalTime.of(23,0),
     style: GridContentStyle = defaultGridContentStyle(),
 ) {
   Canvas(modifier = modifier) {

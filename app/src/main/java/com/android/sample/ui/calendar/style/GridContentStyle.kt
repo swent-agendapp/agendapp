@@ -5,6 +5,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 
 @Immutable
 data class GridContentColors(
@@ -51,16 +53,45 @@ fun defaultGridContentColors(
 @Immutable
 data class GridContentStyle( // agendap -> WeekTimeAxisStyle
     val colors: GridContentColors,
+    val dimensions: GridContentDimensions
     // Later : val typography: WeekViewTypography,
-    // Later : val dimensions: WeekViewDimensions
+
+)
+
+@Immutable
+data class GridContentDimensions(
+    val leftOffsetDp: Dp,
+    val topOffsetDp: Dp,
+    val defaultColumnWidthDp: Dp,
+    val rowHeightDp: Dp,
 )
 
 @Composable
+fun defaultGridContentDimensions(
+    leftOffsetDp: Dp = 48.dp,
+    topOffsetDp: Dp = 42.dp,
+    defaultColumnWidthDp: Dp = 64.dp,
+    rowHeightDp: Dp = 60.dp,
+): GridContentDimensions =
+    remember(leftOffsetDp, topOffsetDp, defaultColumnWidthDp, rowHeightDp) {
+        GridContentDimensions(
+            leftOffsetDp = leftOffsetDp,
+            topOffsetDp = topOffsetDp,
+            defaultColumnWidthDp = defaultColumnWidthDp,
+            rowHeightDp = rowHeightDp
+        )
+    }
+
+
+
+@Composable
 fun defaultGridContentStyle(
-    colors: GridContentColors = defaultGridContentColors()
+    colors: GridContentColors = defaultGridContentColors(),
+    dimensions: GridContentDimensions = defaultGridContentDimensions()
 ): GridContentStyle =
     remember(colors) {
       GridContentStyle(
           colors = colors,
+          dimensions = dimensions,
       )
     }

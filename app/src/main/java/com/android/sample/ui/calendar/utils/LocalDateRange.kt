@@ -11,15 +11,14 @@ data class LocalDateRange(
 
   override fun iterator(): Iterator<LocalDate> =
       object : Iterator<LocalDate> {
-        private var current = start
+          private var  nextDate: LocalDate? = start
 
-        override fun hasNext() = current <= endInclusive
+        override fun hasNext() = nextDate != null
 
         override fun next(): LocalDate {
-          if (!hasNext()) throw NoSuchElementException()
-          val result = current
-          current = current.plusDays(1)
-          return result
+          val current = nextDate ?: throw NoSuchElementException()
+          nextDate = if(current < endInclusive) current.plusDays(1 )  else null
+          return current
         }
       }
 }

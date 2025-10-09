@@ -15,7 +15,7 @@ internal data class WeekViewMetrics(
     val effectiveEndTime: LocalTime,
     val gridStartTime: LocalTime,
     val rowHeightDp: Dp,
-    val totalHours: Float,
+    val totalHours: Int,
     val gridHeightDp: Dp,
     val timeLabels: List<LocalTime>,
     val visibleTimeSpan: TimeSpan,

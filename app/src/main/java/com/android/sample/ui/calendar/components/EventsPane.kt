@@ -7,18 +7,28 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.times
+import com.android.sample.ui.calendar.mockData.MockCalendarViewModel.Companion.getMockEvents
 import com.android.sample.ui.calendar.mockData.MockEvent
+import com.android.sample.ui.calendar.style.defaultGridContentStyle
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
 
 @Composable
 fun EventsPane(
-    days: List<LocalDate>,
-    events: List<MockEvent>,
-    columnWidthDp: Dp,
-    gridHeightDp: Dp,
-    gridStartTime: LocalTime,
-    effectiveEndTime: LocalTime,
+    days: List<LocalDate> = run{
+        val today = LocalDate.now()
+        val startOfWeek = today.with(DayOfWeek.MONDAY)
+        val endOfWeek = today.with(DayOfWeek.FRIDAY)
+        generateSequence(startOfWeek) { it.plusDays(1) }
+            .takeWhile { it <= endOfWeek }
+            .toList()
+    },
+    events: List<MockEvent>  = getMockEvents(),
+    columnWidthDp: Dp = defaultGridContentStyle().dimensions.defaultColumnWidthDp,
+    gridHeightDp: Dp = defaultGridContentStyle().dimensions.rowHeightDp,
+    gridStartTime: LocalTime = LocalTime.of(8,0),
+    effectiveEndTime: LocalTime = LocalTime.of(23,0),
 ) {
   days.forEachIndexed { dayIndex, date ->
     val eventsForDay = events.filter { it.date == date }

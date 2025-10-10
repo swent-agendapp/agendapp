@@ -14,6 +14,7 @@ import kotlinx.coroutines.test.runTest
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okio.IOException
+import org.junit.After
 import org.junit.Before
 
 /**
@@ -64,10 +65,24 @@ open class FirebaseEmulatedTest {
         )
         clearTestCollection()
       }
-      assert(getEventsCount() == 0) {
+      assert(value = getEventsCount() == 0) {
         "Test collection is not empty at the beginning of the test, clearing failed."
       }
     }
+  }
+
+  /**
+   * Cleans up the test environment after each test.
+   * - Clears the test collection
+   * - Signs out any authenticated user
+   * - Clears emulated Firestore and Auth data
+   */
+  @After
+  open fun tearDown() {
+    runTest { clearTestCollection() }
+    emulatedAuth.signOut()
+    Firestore.clear()
+    Auth.clear()
   }
 
   /**
@@ -84,7 +99,7 @@ open class FirebaseEmulatedTest {
         throw Exception("Firebase Emulators are not running.")
       }
     } catch (e: IOException) {
-      throw Exception("Firebase Emulators are not running.")
+      throw Exception("Firebase Emulators are not running. (${e.message})")
     }
   }
 
@@ -97,7 +112,7 @@ open class FirebaseEmulatedTest {
       emulatedFirestore.useEmulator(HOST, Firestore.PORT)
       emulatedAuth.useEmulator(HOST, Auth.PORT)
     } catch (e: IllegalStateException) {
-      Log.i("FirebaseEmulatedTest", "Firebase Emulators are already in use.")
+      Log.i("FirebaseEmulatedTest", "Firebase Emulators are already in use.", e)
     } finally {
       val currentHost = Firebase.firestore.firestoreSettings.host
       if (!currentHost.contains(HOST)) {
@@ -143,7 +158,7 @@ open class FirebaseEmulatedTest {
       val endpoint = "http://${HOST}:$PORT/emulator/v1/projects/$projectId/accounts"
 
       val client = OkHttpClient()
-      val request = Request.Builder().url(endpoint).delete().build()
+      val request = Request.Builder().url(url = endpoint).delete().build()
       val response = client.newCall(request).execute()
 
       if (!response.isSuccessful) {

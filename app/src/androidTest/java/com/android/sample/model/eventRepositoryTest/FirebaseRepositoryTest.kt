@@ -1,4 +1,4 @@
-package com.android.sample.model.eventRepository
+package com.android.sample.model.eventRepositoryTest
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.calendar.Event
@@ -13,7 +13,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@RunWith(AndroidJUnit4::class)
+@RunWith(value = AndroidJUnit4::class)
 class FirebaseRepositoryTest : FirebaseEmulatedTest() {
 
   private lateinit var repository: EventRepository
@@ -97,5 +97,28 @@ class FirebaseRepositoryTest : FirebaseEmulatedTest() {
     val unsyncedToFirestore = repository.getAllUnsyncedEvents(StorageStatus.FIRESTORE)
     Assert.assertTrue(unsyncedToFirestore.any { it.id == event1.id })
     Assert.assertFalse(unsyncedToFirestore.any { it.id == event2.id })
+  }
+
+  @Test
+  fun documentToEvent_customStorageStatus_shouldParse() = runBlocking {
+    val customEvent =
+        createEvent(
+            title = "MultiStorage Event",
+            description = "Testing storage status parsing",
+            startDate = Instant.parse("2025-01-01T10:00:00Z"),
+            endDate = Instant.parse("2025-01-01T11:00:00Z"),
+            storageStatus = setOf(StorageStatus.LOCAL, StorageStatus.FIRESTORE),
+            personalNotes = "None",
+            owners = setOf("Alice", "Bob"),
+            participants = setOf("Charlie"))
+
+    repository.insertEvent(customEvent)
+
+    val retrieved = repository.getEventById(customEvent.id)
+
+    Assert.assertNotNull(retrieved)
+    Assert.assertTrue(
+        retrieved!!.storageStatus.containsAll(listOf(StorageStatus.LOCAL, StorageStatus.FIRESTORE)))
+    Assert.assertEquals(2, retrieved.storageStatus.size)
   }
 }

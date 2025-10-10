@@ -1,6 +1,5 @@
 package com.android.sample.model.calendar
 
-import android.util.Log
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -44,7 +43,7 @@ class EventRepositoryFirebase(private val db: FirebaseFirestore) : EventReposito
             .get()
             .await()
 
-    return snapshot.mapNotNull { documentToEvent(it) }
+    return snapshot.mapNotNull { documentToEvent(document = it) }
   }
 
   override suspend fun getAllUnsyncedEvents(db: StorageStatus): List<Event> {
@@ -59,49 +58,43 @@ class EventRepositoryFirebase(private val db: FirebaseFirestore) : EventReposito
    * @return The Event object, or null if conversion fails.
    */
   private fun documentToEvent(document: DocumentSnapshot): Event? {
-    return try {
-      val id = document.id
-      val title = document.getString("title") ?: return null
-      val description = document.getString("description") ?: ""
-      val startDate = document.getTimestamp("startDate")?.toDate()?.toInstant() ?: return null
-      val endDate = document.getTimestamp("endDate")?.toDate()?.toInstant() ?: return null
-      val personalNotes = document.getString("personalNotes")
 
-      val owners =
-          (document.get("owners") as? List<*>)?.filterIsInstance<String>()?.toSet() ?: emptySet()
-      val participants =
-          (document.get("participants") as? List<*>)?.filterIsInstance<String>()?.toSet()
-              ?: emptySet()
+    val id = document.id
+    val title = document.getString("title") ?: return null
+    val description = document.getString("description") ?: ""
+    val startDate = document.getTimestamp("startDate")?.toDate()?.toInstant() ?: return null
+    val endDate = document.getTimestamp("endDate")?.toDate()?.toInstant() ?: return null
+    val personalNotes = document.getString("personalNotes")
 
-      val storageStatusList =
-          (document.get("storageStatus") as? List<*>)
-              ?.mapNotNull { runCatching { StorageStatus.valueOf(it.toString()) }.getOrNull() }
-              ?.toSet() ?: setOf(StorageStatus.FIRESTORE)
+    val owners = (document["owners"] as? List<*>)?.filterIsInstance<String>()?.toSet() ?: emptySet()
+    val participants =
+        (document["participants"] as? List<*>)?.filterIsInstance<String>()?.toSet() ?: emptySet()
 
-      val recurrenceStatus =
-          runCatching {
-                RecurrenceStatus.valueOf(document.getString("recurrenceStatus") ?: "OneTime")
-              }
-              .getOrDefault(RecurrenceStatus.OneTime)
+    val storageStatusList =
+        (document["storageStatus"] as? List<*>)
+            ?.mapNotNull { runCatching { StorageStatus.valueOf(it.toString()) }.getOrNull() }
+            ?.toSet() ?: setOf(StorageStatus.FIRESTORE)
 
-      val version = document.getLong("version") ?: 0L
+    val recurrenceStatus =
+        runCatching {
+              RecurrenceStatus.valueOf(value = document.getString("recurrenceStatus") ?: "OneTime")
+            }
+            .getOrDefault(defaultValue = RecurrenceStatus.OneTime)
 
-      Event(
-          id = id,
-          title = title,
-          description = description,
-          startDate = startDate,
-          endDate = endDate,
-          storageStatus = storageStatusList,
-          personalNotes = personalNotes,
-          owners = owners,
-          participants = participants,
-          version = version,
-          recurrenceStatus = recurrenceStatus)
-    } catch (e: Exception) {
-      Log.e("EventRepositoryFirebase", "Error converting document to Event", e)
-      null
-    }
+    val version = document.getLong("version") ?: 0L
+
+    return Event(
+        id = id,
+        title = title,
+        description = description,
+        startDate = startDate,
+        endDate = endDate,
+        storageStatus = storageStatusList,
+        personalNotes = personalNotes,
+        owners = owners,
+        participants = participants,
+        version = version,
+        recurrenceStatus = recurrenceStatus)
   }
 
   /**

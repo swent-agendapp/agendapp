@@ -90,6 +90,20 @@ class FirebaseRepositoryTest : FirebaseEmulatedTest() {
   }
 
   @Test
+  fun getEventsBetweenDates_shouldThrowIllegalArgumentExceptionForInvalidRange() = runBlocking {
+    repository.insertEvent(event1)
+    repository.insertEvent(event2)
+
+    try {
+      repository.getEventsBetweenDates(
+          Instant.parse("2025-02-01T00:00:00Z"), Instant.parse("2025-01-01T23:59:59Z"))
+      Assert.fail("Expected IllegalArgumentException for invalid date range")
+    } catch (e: IllegalArgumentException) {
+      // Expected exception
+    }
+  }
+
+  @Test
   fun getAllUnsyncedEvents_shouldReturnEventsNotSyncedToGivenDb() = runBlocking {
     repository.insertEvent(event1)
     repository.insertEvent(event2)
@@ -120,5 +134,27 @@ class FirebaseRepositoryTest : FirebaseEmulatedTest() {
     Assert.assertTrue(
         retrieved!!.storageStatus.containsAll(listOf(StorageStatus.LOCAL, StorageStatus.FIRESTORE)))
     Assert.assertEquals(2, retrieved.storageStatus.size)
+  }
+
+  @Test
+  fun documentToEvent_shouldHandleNullOptionalFields() = runBlocking {
+    val eventWithMissingOptional =
+        createEvent(
+            title = "No description",
+            description = "",
+            startDate = Instant.parse("2025-03-01T10:00:00Z"),
+            endDate = Instant.parse("2025-03-01T11:00:00Z"),
+            storageStatus = emptySet(),
+            personalNotes = null,
+            owners = emptySet(),
+            participants = emptySet())
+
+    repository.insertEvent(eventWithMissingOptional)
+
+    val retrieved = repository.getEventById(eventWithMissingOptional.id)
+    Assert.assertNotNull(retrieved)
+    Assert.assertEquals("", retrieved!!.description)
+    Assert.assertEquals(emptySet<String>(), retrieved.owners)
+    Assert.assertEquals(emptySet<String>(), retrieved.participants)
   }
 }

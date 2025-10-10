@@ -69,9 +69,48 @@ jobs:
           disable-animations: false
           script: echo "Generated AVD snapshot for caching."
 
+      # Load google-services.json and local.properties from the secrets
+      - name: Decode secrets
+        env:
+          GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
+
+        run: |
+          if [ -n "$GOOGLE_SERVICES" ]; then
+            echo "$GOOGLE_SERVICES" | base64 --decode > ./app/google-services.json
+          else
+            echo "::warning::GOOGLE_SERVICES secret is not set. google-services.json will not be created. Should be present after B2"
+          fi
+
       - name: Grant execute permission for gradlew
         run: |
           chmod +x ./gradlew
+
+      # Install NodeJS
+      - name: Setup NodeJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Install Firebase CLI
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Firestore Check
+        run: |
+          if [ ! -e "firebase.json" ]; then # Check if firebase.json exists
+            echo "(Warning): 'firebase.json' file is missing. Run 'firebase emulators:init'."
+            exit 0
+          fi
+          jq -e '.emulators' firebase.json >/dev/null || { # Check if emulators are configured
+            echo "'firebase.json' is missing 'emulators'. Run 'firebase emulators:init'."
+            exit 1
+          }
+          for e in auth firestore; do # Check if auth and firestore emulators are configured
+            jq -e ".emulators.$e" firebase.json >/dev/null || {
+              echo "'firebase.json' is missing 'emulators.$e'. Run 'firebase emulators:init'."
+              exit 1
+            }
+          done
 
       # Check formatting
       - name: KTFmt Check
@@ -89,6 +128,17 @@ jobs:
         run: |
           # To run the CI with debug information, add --info
           ./gradlew check --parallel --build-cache
+
+      # Start Firebase emulators for instrumentation tests
+      - name: Start Firebase emulators
+        run: |
+          if [ -e "firebase.json" ] && jq -e '.emulators' firebase.json >/dev/null; then
+            echo "Starting Firebase emulators for instrumentation tests..."
+            firebase emulators:start --only auth,firestore --project demo-project &
+            echo "Firebase emulators started"
+          else
+            echo "Firebase emulators not configured, skipping emulator startup..."
+          fi
 
       # Run connected tests on the emulator
       - name: run tests

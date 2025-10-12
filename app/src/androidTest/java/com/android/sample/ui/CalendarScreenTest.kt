@@ -28,13 +28,12 @@ class CalendarScreenTest {
 
     composeTestRule.onNodeWithTag(CalendarScreenTestTags.TOP_BAR_TITLE).assertTextEquals("Calendar")
   }
+
   @Test
-  fun agendappCorrectlySet(){
+  fun agendappCorrectlySet() {
     composeTestRule.setContent { Agendapp() }
 
     composeTestRule.onNodeWithTag(CalendarScreenTestTags.TOP_BAR_TITLE).assertIsDisplayed()
     composeTestRule.onNodeWithTag(CalendarScreenTestTags.TOP_BAR_TITLE).assertTextEquals("Calendar")
   }
-
-
 }

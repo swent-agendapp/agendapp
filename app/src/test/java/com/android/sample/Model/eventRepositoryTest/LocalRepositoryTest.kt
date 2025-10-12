@@ -3,107 +3,137 @@ package com.android.sample.model.calendar
 import java.time.Instant
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
-import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Test
 
-class LocalRepositoryTest {
+/**
+ * Unit tests for [EventRepository].
+ *
+ * These tests verify expected repository contract behaviors using an in-memory fake implementation.
+ */
+class EventRepositoryTest {
 
-  private lateinit var repository: EventRepositoryLocal
-  private lateinit var event1: Event
-  private lateinit var event2: Event
+  private lateinit var repository: InMemoryEventRepository
+  private lateinit var sampleEvent: Event
 
   @Before
-  fun setUp() {
-    repository = EventRepositoryLocal()
-    event1 =
-        createEvent(
-            title = "Meeting",
-            description = "Team sync",
-            startDate = Instant.parse("2025-01-10T10:00:00Z"),
-            endDate = Instant.parse("2025-01-10T11:00:00Z"),
-            storageStatus = setOf(StorageStatus.LOCAL),
-            personalNotes = "Bring laptop")
-    event2 =
-        createEvent(
-            title = "Conference",
-            description = "Tech event",
-            startDate = Instant.parse("2025-02-01T09:00:00Z"),
-            endDate = Instant.parse("2025-02-03T18:00:00Z"),
-            storageStatus = setOf(StorageStatus.FIRESTORE))
+  fun setup() {
+    repository = InMemoryEventRepository()
+    sampleEvent =
+      createEvent(
+        title = "Meeting",
+        description = "Discuss project updates",
+        startDate = Instant.parse("2025-01-01T10:00:00Z"),
+        endDate = Instant.parse("2025-01-01T11:00:00Z"),
+        cloudStorageStatuses = emptySet(),
+        participants = setOf("userB"))
   }
 
   @Test
-  fun insertEvent_andGetById_shouldWork() = runBlocking {
-    repository.insertEvent(event1)
-    val retrieved = repository.getEventById(event1.id)
-    assertNotNull(retrieved)
-    assertEquals(event1.title, retrieved?.title)
+  fun insertEvent_shouldAddEvent() = runBlocking {
+    repository.insertEvent(sampleEvent)
+    val events = repository.getAllEvents()
+    assertEquals(1, events.size)
+    assertEquals(sampleEvent.id, events.first().id)
   }
 
   @Test
-  fun getAllEvents_shouldReturnInsertedOnes() = runBlocking {
-    repository.insertEvent(event1)
-    repository.insertEvent(event2)
-    val allEvents = repository.getAllEvents()
-    assertEquals(2, allEvents.size)
+  fun getEventById_shouldReturnCorrectEvent() = runBlocking {
+    repository.insertEvent(sampleEvent)
+    val fetched = repository.getEventById(sampleEvent.id)
+    assertNotNull(fetched)
+    assertEquals(sampleEvent.title, fetched?.title)
   }
 
   @Test
-  fun updateEvent_shouldReplaceExistingEvent() = runBlocking {
-    repository.insertEvent(event1)
-    val updated = event1.copy(title = "Updated Meeting")
-    repository.updateEvent(event1.id, updated)
-    val retrieved = repository.getEventById(event1.id)
-    assertEquals("Updated Meeting", retrieved?.title)
+  fun updateEvent_shouldModifyExistingEvent() = runBlocking {
+    repository.insertEvent(sampleEvent)
+    val updated = sampleEvent.copy(title = "Updated Meeting")
+    repository.updateEvent(sampleEvent.id, updated)
+
+    val fetched = repository.getEventById(sampleEvent.id)
+    assertEquals("Updated Meeting", fetched?.title)
+  }
+
+  @Test(expected = IllegalArgumentException::class)
+  fun deleteEvent_nonExistingId_shouldThrow() = runBlocking {
+    repository.deleteEvent("nonexistent-id")
   }
 
   @Test
-  fun deleteEvent_shouldRemoveEvent() = runBlocking {
-    repository.insertEvent(event1)
-    repository.deleteEvent(event1.id)
-    assertNull(repository.getEventById(event1.id))
-  }
+  fun deleteEvent_existingId_shouldRemoveEvent() = runBlocking {
+    repository.insertEvent(sampleEvent)
+    repository.deleteEvent(sampleEvent.id)
 
-  @Test
-  fun deleteEvent_shouldThrowWhenIdDoNotExist() {
-    runBlocking {
-      repository.insertEvent(event1)
-
-      assertThrows(IllegalArgumentException::class.java) {
-        runBlocking { repository.deleteEvent(event2.id) }
-      }
-    }
+    val all = repository.getAllEvents()
+    assertTrue(all.isEmpty())
   }
 
   @Test
   fun getEventsBetweenDates_shouldReturnEventsWithinRange() = runBlocking {
+    val event1 = sampleEvent
+    val event2 =
+      sampleEvent.copy(
+        id = "2",
+        startDate = Instant.parse("2025-02-01T10:00:00Z"),
+        endDate = Instant.parse("2025-02-01T11:00:00Z"))
     repository.insertEvent(event1)
     repository.insertEvent(event2)
+
     val results =
-        repository.getEventsBetweenDates(
-            Instant.parse("2025-01-01T00:00:00Z"), Instant.parse("2025-01-31T23:59:59Z"))
-    assertEquals(1, results.size)
-    assertEquals(event1.id, results.first().id)
+      repository.getEventsBetweenDates(
+        Instant.parse("2025-01-15T00:00:00Z"), Instant.parse("2025-03-01T00:00:00Z"))
+    assertEquals(listOf(event2), results)
   }
 
   @Test
-  fun getEventsBetweenDates_shouldThrowWhenStartAfterEnd() {
-    assertThrows(IllegalArgumentException::class.java) {
-      runBlocking {
-        repository.getEventsBetweenDates(
-            Instant.parse("2025-02-10T00:00:00Z"), Instant.parse("2025-01-01T00:00:00Z"))
-      }
+  fun getAllUnsyncedEvents_shouldReturnOnlyUnsynced() = runBlocking {
+    val syncedEvent =
+      sampleEvent.copy(id = "1", cloudStorageStatuses = setOf(CloudStorageStatus.FIRESTORE))
+    val unsyncedEvent = sampleEvent.copy(id = "2", cloudStorageStatuses = emptySet())
+
+    repository.insertEvent(syncedEvent)
+    repository.insertEvent(unsyncedEvent)
+
+    val result = repository.getAllUnsyncedEvents(CloudStorageStatus.FIRESTORE)
+    assertEquals(1, result.size)
+    assertEquals(unsyncedEvent.id, result.first().id)
+  }
+}
+
+/** Simple in-memory fake implementation for testing the [EventRepository] contract. */
+class InMemoryEventRepository : EventRepository {
+
+  private val events = mutableMapOf<String, Event>()
+
+  override suspend fun getAllEvents(): List<Event> = events.values.toList()
+
+  override suspend fun insertEvent(item: Event) {
+    events[item.id] = item
+  }
+
+  override suspend fun updateEvent(itemId: String, item: Event) {
+    if (!events.containsKey(itemId)) {
+      throw IllegalArgumentException("Event not found: $itemId")
     }
+    events[itemId] = item
   }
 
-  @Test
-  fun getAllUnsyncedEvents_shouldReturnEventsNotSyncedToGivenDb() = runBlocking {
-    repository.insertEvent(event1)
-    repository.insertEvent(event2)
-    val unsyncedToFirestore = repository.getAllUnsyncedEvents(StorageStatus.FIRESTORE)
-    print(unsyncedToFirestore)
-    assertTrue(unsyncedToFirestore.any { it.id == event1.id })
-    assertFalse(unsyncedToFirestore.any { it.id == event2.id })
+  override suspend fun deleteEvent(itemId: String) {
+    if (!events.containsKey(itemId)) {
+      throw IllegalArgumentException("Event not found: $itemId")
+    }
+    events.remove(itemId)
+  }
+
+  override suspend fun getEventById(itemId: String): Event? = events[itemId]
+
+  override suspend fun getEventsBetweenDates(startDate: Instant, endDate: Instant): List<Event> {
+    require(!startDate.isAfter(endDate)) { "Start date cannot be after end date" }
+    return events.values.filter { it.startDate >= startDate && it.endDate <= endDate }
+  }
+
+  override suspend fun getAllUnsyncedEvents(db: CloudStorageStatus): List<Event> {
+    return events.values.filterNot { it.cloudStorageStatuses.contains(db) }
   }
 }

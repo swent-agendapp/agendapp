@@ -8,6 +8,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 
 @Composable
 fun CalendarGridContent(
@@ -25,13 +26,13 @@ fun CalendarGridContent(
 
   // todo : change the box into a BoxWithConstraints to handle componnents placement for eventsPane
   // and dayHeaderRow
-  Box(modifier = modifier.fillMaxSize()) {
+  Box(modifier = modifier.fillMaxSize().testTag(CalendarScreenTestTags.ROOT)) {
     // todo : create variable to handle component placement correctly
 
     Column(modifier = Modifier.fillMaxSize()) {
       // todo : render a DayHeaderRow
 
-      Row(modifier = Modifier.weight(1f)) {
+      Row(modifier = Modifier.weight(1f).testTag(CalendarScreenTestTags.SCROLL_AREA)) {
         // todo : render a TimeAxisColumn
 
         // Scrollable Grid Area (Canvas + Events)

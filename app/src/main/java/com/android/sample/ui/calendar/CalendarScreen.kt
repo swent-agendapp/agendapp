@@ -14,6 +14,9 @@ import androidx.compose.ui.platform.testTag
 
 object CalendarScreenTestTags {
   const val TOP_BAR_TITLE = "CalendarTopBarTitle"
+  const val SCREEN_ROOT = "CalendarScreenRoot"
+  const val SCROLL_AREA = "CalendarGridScrollArea"
+  const val ROOT = "CalendarGridRoot"
   // todo : add tests tags (DAY_ROW, EVENT_GRID, TIME_AXIS_COLUMN)
 }
 
@@ -40,7 +43,10 @@ fun CalendarScreen() {
   ) { paddingValues ->
     // Later : place CalendarContainer in a Column to add button above/under
     CalendarContainer(
-        modifier = Modifier.padding(paddingValues).fillMaxSize(),
+        modifier =
+            Modifier.padding(paddingValues)
+                .fillMaxSize()
+                .testTag((CalendarScreenTestTags.SCREEN_ROOT)),
         // todo : give a dateRange
         // todo : give the events
         // Later : give the ViewModel

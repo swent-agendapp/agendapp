@@ -1,6 +1,5 @@
 package com.android.sample.ui.calendar
 
-
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,33 +17,34 @@ fun CalendarGridContent(
     // todo : receive style (or take default one)
     // Later : receive onEventClick and onEventLongPress
 ) {
-    // todo : use a "metrics" helper to handle placement easily
+  // todo : use a "metrics" helper to handle placement easily
 
-    val scrollState = rememberScrollState()
+  val scrollState = rememberScrollState()
 
-    // todo : create a “now“ variable to show the current time
+  // todo : create a “now“ variable to show the current time
 
-    // todo : change the box into a BoxWithConstraints to handle componnents placement for eventsPane and dayHeaderRow
-    Box(modifier = modifier.fillMaxSize()) {
-        // todo : create variable to handle component placement correctly
+  // todo : change the box into a BoxWithConstraints to handle componnents placement for eventsPane
+  // and dayHeaderRow
+  Box(modifier = modifier.fillMaxSize()) {
+    // todo : create variable to handle component placement correctly
 
-        Column(modifier = Modifier.fillMaxSize()) {
-            // todo : render a DayHeaderRow
+    Column(modifier = Modifier.fillMaxSize()) {
+      // todo : render a DayHeaderRow
 
-            Row(modifier = Modifier.weight(1f)) {
-                // todo : render a TimeAxisColumn
+      Row(modifier = Modifier.weight(1f)) {
+        // todo : render a TimeAxisColumn
 
-                // Scrollable Grid Area (Canvas + Events)
-                Box(
-                    modifier = Modifier.verticalScroll(scrollState).weight(1f) // todo : adapt the height
-                ) {
-                    // todo : render a GridCanvas as a background
+        // Scrollable Grid Area (Canvas + Events)
+        Box(
+            modifier = Modifier.verticalScroll(scrollState).weight(1f) // todo : adapt the height
+            ) {
+              // todo : render a GridCanvas as a background
 
-                    // todo : render an EventsPane
+              // todo : render an EventsPane
 
-                    // todo : render a NowIndicatorLine
-                }
+              // todo : render a NowIndicatorLine
             }
-        }
+      }
     }
+  }
 }

@@ -11,20 +11,20 @@ import org.junit.Test
 
 class CalendarScreenTest {
 
-    @get:Rule val composeTestRule = createComposeRule()
+  @get:Rule val composeTestRule = createComposeRule()
 
-    @Test
-    fun testTagsAreCorrectlySet() {
-        composeTestRule.setContent { CalendarScreen() }
+  @Test
+  fun testTagsAreCorrectlySet() {
+    composeTestRule.setContent { CalendarScreen() }
 
-        composeTestRule.onNodeWithTag(CalendarScreenTestTags.TOP_BAR_TITLE).assertIsDisplayed()
-        // todo : check the testTag of EVENT_GRID, TIME_AXIS_COLUMN and DAY_ROW
-    }
+    composeTestRule.onNodeWithTag(CalendarScreenTestTags.TOP_BAR_TITLE).assertIsDisplayed()
+    // todo : check the testTag of EVENT_GRID, TIME_AXIS_COLUMN and DAY_ROW
+  }
 
-    @Test
-    fun topTitleIsCorrectlySet() {
-        composeTestRule.setContent { CalendarScreen() }
+  @Test
+  fun topTitleIsCorrectlySet() {
+    composeTestRule.setContent { CalendarScreen() }
 
-        composeTestRule.onNodeWithTag(CalendarScreenTestTags.TOP_BAR_TITLE).assertTextEquals("Calendar")
-    }
+    composeTestRule.onNodeWithTag(CalendarScreenTestTags.TOP_BAR_TITLE).assertTextEquals("Calendar")
+  }
 }

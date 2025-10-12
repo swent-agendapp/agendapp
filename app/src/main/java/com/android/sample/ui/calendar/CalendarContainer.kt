@@ -13,13 +13,13 @@ fun CalendarContainer(
     // Later : receive here the ViewModel (or the uiState to add/get/delete)
     // Later : receive here onEventClick, onEventLongPress, onSwipeLeft, onSwipeRight
 ) {
-    // Later : create here a variable transformableState for zoom changes
-    // Later : handle here variables for animation of swiping (transparent box)
+  // Later : create here a variable transformableState for zoom changes
+  // Later : handle here variables for animation of swiping (transparent box)
 
-    Box(
-        modifier = modifier
-        // Later : add modifier to handle swiping
-    ) {
+  Box(
+      modifier = modifier
+      // Later : add modifier to handle swiping
+      ) {
         CalendarGridContent(
             modifier = Modifier.fillMaxSize(),
             // todo : give the date range
@@ -29,5 +29,5 @@ fun CalendarContainer(
         )
 
         // Later : manage visual swiping effects here
-    }
+      }
 }

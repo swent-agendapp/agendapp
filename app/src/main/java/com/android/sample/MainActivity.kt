@@ -32,5 +32,5 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Agendapp() {
-    CalendarScreen()
+  CalendarScreen()
 }

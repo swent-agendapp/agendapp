@@ -9,18 +9,27 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import com.android.sample.ui.calendar.components.GridCanvas
+import com.android.sample.ui.calendar.utils.LocalDateRange
+import com.android.sample.ui.calendar.utils.rememberWeekViewMetrics
+import com.android.sample.ui.calendar.utils.workWeekDays
 
 @Composable
 fun CalendarGridContent(
     modifier: Modifier = Modifier,
+    // todo: receive a style
     // todo : receive a date range
     // todo : receive events (or take an empty list)
-    // todo : receive style (or take default one)
     // Later : receive onEventClick and onEventLongPress
 ) {
+
   // todo : use a "metrics" helper to handle placement easily
 
   val scrollState = rememberScrollState()
+
+  val days = workWeekDays()
+  val range = LocalDateRange(days.first(), days.last())
+  val metrics = rememberWeekViewMetrics(dateRange = range)
 
   // todo : create a “now“ variable to show the current time
 
@@ -39,7 +48,12 @@ fun CalendarGridContent(
         Box(
             modifier = Modifier.verticalScroll(scrollState).weight(1f) // todo : adapt the height
             ) {
-              // todo : render a GridCanvas as a background
+              GridCanvas(
+                  modifier = Modifier.fillMaxSize(),
+                  columnCount = metrics.columnCount,
+                  rowHeightDp = metrics.rowHeightDp,
+                  totalHours = metrics.totalHours,
+                  days = metrics.days)
 
               // todo : render an EventsPane
 

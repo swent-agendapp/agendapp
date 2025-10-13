@@ -17,6 +17,7 @@ object CalendarScreenTestTags {
   const val SCREEN_ROOT = "CalendarScreenRoot"
   const val SCROLL_AREA = "CalendarGridScrollArea"
   const val ROOT = "CalendarGridRoot"
+  const val EVENT_GRID = "CalendarEventGrid"
   // todo : add tests tags (DAY_ROW, EVENT_GRID, TIME_AXIS_COLUMN)
 }
 

@@ -98,8 +98,8 @@ class FirebaseRepositoryTest : FirebaseEmulatedTest() {
       repository.getEventsBetweenDates(
           Instant.parse("2025-02-01T00:00:00Z"), Instant.parse("2025-01-01T23:59:59Z"))
       Assert.fail("Expected IllegalArgumentException for invalid date range")
-    } catch (e: IllegalArgumentException) {
-      // Expected exception
+    } catch (_: IllegalArgumentException) {
+      // Success: IllegalArgumentException exception thrown as expected
     }
   }
 

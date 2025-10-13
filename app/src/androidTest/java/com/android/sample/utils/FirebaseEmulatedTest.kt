@@ -87,7 +87,7 @@ open class FirebaseEmulatedTest {
 
   /**
    * Checks if the Firebase emulators are running by sending a request to the emulator endpoint.
-   * Throws an exception if not running.
+   * Throws an IllegalStateException if not running.
    */
   private fun checkIfEmulatorsAreRunning() {
     val client = OkHttpClient()
@@ -96,16 +96,16 @@ open class FirebaseEmulatedTest {
     try {
       val response = client.newCall(request).execute()
       if (!response.isSuccessful) {
-        throw Exception("Firebase Emulators are not running.")
+        throw IllegalStateException("Firebase Emulators are not running.")
       }
     } catch (e: IOException) {
-      throw Exception("Firebase Emulators are not running. (${e.message})")
+      throw IllegalStateException("Firebase Emulators are not running. (${e.message})")
     }
   }
 
   /**
-   * Configures Firestore and Auth to use the local emulator instances. Throws an exception if
-   * unable to connect.
+   * Configures Firestore and Auth to use the local emulator instances. Throws an
+   * IllegalStateException if unable to connect.
    */
   private fun useEmulators() {
     try {
@@ -116,7 +116,7 @@ open class FirebaseEmulatedTest {
     } finally {
       val currentHost = Firebase.firestore.firestoreSettings.host
       if (!currentHost.contains(HOST)) {
-        throw Exception("Failed to connect to Firebase Emulators.")
+        throw IllegalStateException("Failed to connect to Firebase Emulators.")
       }
     }
   }
@@ -143,7 +143,7 @@ open class FirebaseEmulatedTest {
       val response = client.newCall(request).execute()
       Log.e("Firestore", "Cleared")
       if (!response.isSuccessful) {
-        throw Exception("Failed to clear Firestore.")
+        throw IOException("Failed to clear Firestore.")
       }
     }
   }
@@ -162,7 +162,7 @@ open class FirebaseEmulatedTest {
       val response = client.newCall(request).execute()
 
       if (!response.isSuccessful) {
-        throw Exception("Failed to clear Auth.")
+        throw IOException("Failed to clear Auth.")
       }
     }
   }

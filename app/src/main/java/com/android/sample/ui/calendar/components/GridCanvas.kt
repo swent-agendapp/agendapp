@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.Dp
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.style.CalendarDefaults.DefaultDaysInWeek
 import com.android.sample.ui.calendar.style.CalendarDefaults.DefaultTotalHour
+import com.android.sample.ui.calendar.style.CalendarDefaults.strokeWidthDefault
 import com.android.sample.ui.calendar.style.GridContentStyle
 import com.android.sample.ui.calendar.style.defaultGridContentStyle
 import com.android.sample.ui.calendar.utils.LocalDateRange
@@ -48,7 +49,7 @@ fun GridCanvas(
               color = style.colors.gridLineColor,
               start = Offset(x, 0f),
               end = Offset(x, size.height),
-              strokeWidth = 2f)
+              strokeWidth = strokeWidthDefault)
         }
 
         // Horizontal lines (hours) - full width
@@ -59,7 +60,7 @@ fun GridCanvas(
               color = style.colors.gridLineColor,
               start = Offset(0f, y),
               end = Offset(size.width, y),
-              strokeWidth = 2f)
+              strokeWidth = strokeWidthDefault)
         }
 
         // Today highlight

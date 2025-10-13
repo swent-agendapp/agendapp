@@ -8,4 +8,6 @@ data object CalendarDefaults {
   val DefaultEndTime: LocalTime = LocalTime.of(23, 0)
   const val DefaultDaysInWeek: Int = 5
   val DefaultTotalHour = Duration.between(DefaultStartTime, DefaultEndTime).toHours().toInt()
+
+  val strokeWidthDefault = 2f
 }

@@ -16,7 +16,13 @@ data class WeekViewMetrics(
     val rowHeightDp: Dp,
     val totalHours: Int,
     val gridHeightDp: Dp,
-    // TODO: leftOffsetDp, topOffsetDp, effectiveStart/End, timeLabels, visibleTimeSpan
+    val leftOffsetDp: Dp,
+    val timeLabels: List<LocalTime>,
+    val visibleTimeSpan: TimeSpan,
+    val gridStartTime: LocalTime,
+    val effectiveEndTime: LocalTime,
+
+    // TODO: topOffsetDp, effective start, timeLabels, visibleTimeSpan
 )
 
 @Composable
@@ -30,9 +36,14 @@ internal fun rememberWeekViewMetrics(
     val startTime = LocalTime.of(8, 0)
     val endTime = LocalTime.of(23, 0)
     val rowHeightDp = 60.dp
+    val leftOffsetDp = 48.dp
 
     val totalHours = ChronoUnit.HOURS.between(startTime, endTime).toInt()
     val gridHeightDp = rowHeightDp * totalHours
+
+    val gridStartTime = startTime.truncatedTo(ChronoUnit.HOURS)
+    val visibleTimeSpan = TimeSpan(gridStartTime, endTime)
+    val timeLabels = visibleTimeSpan.hourlyTimes().toList()
 
     WeekViewMetrics(
         days = days,
@@ -40,6 +51,11 @@ internal fun rememberWeekViewMetrics(
         rowHeightDp = rowHeightDp,
         totalHours = totalHours,
         gridHeightDp = gridHeightDp,
+        leftOffsetDp = leftOffsetDp,
+        timeLabels = timeLabels,
+        visibleTimeSpan = visibleTimeSpan,
+        gridStartTime = gridStartTime,
+        effectiveEndTime = endTime,
     )
   }
 }

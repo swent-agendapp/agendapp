@@ -1,6 +1,7 @@
 package com.android.sample.ui.calendar.components
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -24,7 +25,7 @@ fun GridCanvas(
     days: List<LocalDate> = workWeekDays(),
     style: GridContentStyle = defaultGridContentStyle(),
 ) {
-  Canvas(modifier = modifier.testTag(CalendarScreenTestTags.EVENT_GRID)) {
+  Canvas(modifier = modifier.fillMaxWidth().testTag(CalendarScreenTestTags.EVENT_GRID)) {
     val columnWidthPx = if (columnCount > 0) size.width / columnCount else size.width
     val rowHeightPx = rowHeightDp.toPx()
 

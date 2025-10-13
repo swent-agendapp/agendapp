@@ -49,7 +49,7 @@ fun CalendarGridContent(
             modifier = Modifier.verticalScroll(scrollState).weight(1f) // todo : adapt the height
             ) {
               GridCanvas(
-                  modifier = Modifier.fillMaxSize().height(metrics.gridHeightDp),
+                  modifier = Modifier.fillMaxSize(),
                   columnCount = metrics.columnCount,
                   rowHeightDp = metrics.rowHeightDp,
                   totalHours = metrics.totalHours,

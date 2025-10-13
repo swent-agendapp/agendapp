@@ -1,30 +1,49 @@
 package com.android.sample.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-
-// TODO: Waiting for others to finish the UI design.
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import androidx.navigation.NavType
 import com.android.sample.ui.screens.HomeScreen
 import com.android.sample.ui.screens.EditEventScreen
 
-
-// Navigation graph for the app.
-// TODO: Can be updated according to UI design.
-object Routes {
-    const val HOME = "home"
-    const val EDIT_EVENT = "edit_event"
+sealed class Screen(val route: String) {
+    data object Home : Screen("home")
+    data object EditEvent : Screen("edit_event/{eventId}") {
+        fun createRoute(eventId: String) = "edit_event/$eventId"
+    }
 }
 
 @Composable
-fun AppNavigation(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = Routes.HOME) {
-        composable(Routes.HOME) {
-            HomeScreen(onNavigateToEdit = { navController.navigate(Routes.EDIT_EVENT) })
+fun AppNavigation(navController: NavHostController, modifier: Modifier = Modifier) {
+    NavHost(
+        navController = navController,
+        startDestination = Screen.Home.route,
+        modifier = modifier
+    ) {
+        composable(Screen.Home.route) {
+            HomeScreen(onNavigateToEdit = {
+                navController.navigate(Screen.EditEvent.createRoute("E001"))
+            })
         }
-        composable(Routes.EDIT_EVENT) {
-            EditEventScreen(onNavigateBack = { navController.popBackStack() })
+        composable(
+            route = Screen.EditEvent.route,
+            arguments = listOf(navArgument("eventId") { type = NavType.StringType })
+        ) {
+            val eventId = it.arguments?.getString("eventId")
+            EditEventScreen(eventId = eventId, onNavigateBack = { navController.popBackStack() })
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun AppNavigationPreview() {
+    val navController = rememberNavController()
+    AppNavigation(navController)
 }

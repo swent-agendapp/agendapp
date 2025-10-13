@@ -17,7 +17,7 @@ data class LocalDateRange(
 
         override fun next(): LocalDate {
           val current = nextDate ?: throw kotlin.NoSuchElementException()
-          nextDate = if (current < endInclusive) current.plusDays(1) else null
+          nextDate = if (current < endInclusive) nextDate!!.plusDays(1) else null
           return current
         }
       }

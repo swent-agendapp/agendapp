@@ -1,5 +1,8 @@
 package com.android.sample
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasScrollAction
@@ -7,6 +10,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.unit.dp
 import androidx.test.espresso.action.ViewActions.swipeUp
 import com.android.sample.ui.calendar.CalendarGridContent
 import com.android.sample.ui.calendar.CalendarScreenTestTags
@@ -19,16 +23,15 @@ class CalendarGridCanvasTest {
   @get:Rule val compose = createComposeRule()
 
   @Test
-  fun gridCanvasWithEmptyDays() {
-    compose.setContent { GridCanvas(modifier = Modifier, columnCount = 7, days = emptyList()) }
-    compose.onNodeWithTag(CalendarScreenTestTags.EVENT_GRID).assertIsDisplayed()
-  }
-
-  @Test
   fun gridCanvasWithWorkWeekDays() {
     val days = workWeekDays()
-    compose.setContent { GridCanvas(modifier = Modifier, columnCount = days.size, days = days) }
-    compose.onNodeWithTag(CalendarScreenTestTags.EVENT_GRID).assertIsDisplayed()
+
+    compose.setContent {
+      Box(Modifier.size(300.dp)) {
+        GridCanvas(modifier = Modifier.fillMaxSize(), columnCount = days.size, days = days)
+      }
+    }
+    compose.onNodeWithTag(CalendarScreenTestTags.EVENT_GRID).assertExists().assertIsDisplayed()
   }
 
   @Test

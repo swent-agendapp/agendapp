@@ -4,6 +4,7 @@ package com.github.se.bootcamp.ui.authentication
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -38,9 +40,14 @@ import androidx.credentials.CredentialManager
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 
+private val appColor = Color(0xFFf46b5d)
+
+
 object SignInScreenTestTags {
     const val APP_LOGO = "appLogo"
     const val LOGIN_TITLE = "loginTitle"
+    const val LOGIN_MESSAGE = "loginMessage"
+    const val LOGIN_WELCOME = "loginWelcome"
     const val LOGIN_BUTTON = "loginButton"
 }
 
@@ -86,17 +93,33 @@ fun SignInScreen(
                     contentDescription = "App Logo",
                     modifier = Modifier.size(250.dp).testTag(SignInScreenTestTags.APP_LOGO))
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    modifier = Modifier.testTag(SignInScreenTestTags.LOGIN_TITLE),
+                    text = "Agendapp",
+                    style =
+                        MaterialTheme.typography.headlineLarge.copy(fontSize = 57.sp, lineHeight = 50.sp, color = appColor),
+                    fontWeight = FontWeight.Bold,
+                    // center the text
+                    textAlign = TextAlign.Center)
+                Text(
+                    modifier = Modifier.testTag(SignInScreenTestTags.LOGIN_MESSAGE),
+                    text = "Plan, track and manage",
+                    style =
+                        MaterialTheme.typography.headlineLarge.copy(fontSize = 20.sp, lineHeight = 24.sp, color = appColor),
+                    fontWeight = FontWeight.Bold,
+                    // center the text
+                    textAlign = TextAlign.Center)
+
+                Spacer(modifier = Modifier.height(48.dp))
 
                 // Welcome Text
                 Text(
-                    modifier = Modifier.testTag(SignInScreenTestTags.LOGIN_TITLE),
+                    modifier = Modifier.testTag(SignInScreenTestTags.LOGIN_WELCOME),
                     text = "Welcome",
                     style =
                         MaterialTheme.typography.headlineLarge.copy(fontSize = 57.sp, lineHeight = 64.sp),
                     fontWeight = FontWeight.Bold,
                     // center the text
-
                     textAlign = TextAlign.Center)
 
                 Spacer(modifier = Modifier.height(48.dp))
@@ -115,30 +138,23 @@ fun SignInScreen(
 fun GoogleSignInButton(onSignInClick: () -> Unit) {
     Button(
         onClick = onSignInClick,
-        colors = ButtonDefaults.buttonColors(containerColor = Color.White), // Button color
+        colors = ButtonDefaults.buttonColors(containerColor = appColor), // Button color
         shape = RoundedCornerShape(50), // Circular edges for the button
-        border = BorderStroke(1.dp, Color.LightGray),
+        border = BorderStroke(1.dp, Color.Transparent),
         modifier =
             Modifier.padding(8.dp)
-                .height(48.dp) // Adjust height as needed
+                .height(48.dp)
+                .width(250.dp)
                 .testTag(SignInScreenTestTags.LOGIN_BUTTON)) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxWidth()) {
-            // Load the Google logo from resources
-            Image(
-                painter =
-                    painterResource(id = R.drawable.google_logo), // Ensure this drawable exists
-                contentDescription = "Google Logo",
-                modifier =
-                    Modifier.size(30.dp) // Size of the Google logo
-                        .padding(end = 8.dp))
 
             // Text for the button
             Text(
                 text = "Sign in with Google",
-                color = Color.Gray, // Text color
+                color = Color.White, // Text color
                 fontSize = 16.sp, // Font size
                 fontWeight = FontWeight.Medium)
         }

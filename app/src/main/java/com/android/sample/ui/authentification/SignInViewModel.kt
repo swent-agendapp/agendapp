@@ -7,6 +7,7 @@ import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.sample.R
 import com.github.se.bootcamp.model.authentication.AuthRepository
 import com.github.se.bootcamp.model.authentication.AuthRepositoryFirebase
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
@@ -50,7 +51,7 @@ class SignInViewModel(private val repository: AuthRepository = AuthRepositoryFir
     private fun getSignInOptions(context: Context) =
         GetSignInWithGoogleOption.Builder(
             serverClientId =
-                context.getString(com.github.se.bootcamp.R.string.default_web_client_id))
+                context.getString(R.string.default_web_client_id))
             .build()
 
     private fun signInRequest(signInOptions: GetSignInWithGoogleOption) =

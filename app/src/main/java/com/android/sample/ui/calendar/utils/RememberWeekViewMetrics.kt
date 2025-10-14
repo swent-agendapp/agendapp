@@ -5,6 +5,8 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.android.sample.ui.calendar.data.LocalDateRange
+import com.android.sample.ui.calendar.data.TimeSpan
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
@@ -22,7 +24,7 @@ data class WeekViewMetrics(
     val gridStartTime: LocalTime,
     val effectiveEndTime: LocalTime,
 
-    // TODO: topOffsetDp, effective start, timeLabels, visibleTimeSpan
+    // TODO: topOffsetDp, effective start
 )
 
 @Composable

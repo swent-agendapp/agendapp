@@ -1,8 +1,8 @@
-package com.android.sample.ui.calendar.utils
+package com.android.sample.ui.calendar.data
 
 import java.time.LocalDate
 
-/** A range of [LocalDate] values. */
+/** A range of [java.time.LocalDate] values. */
 data class LocalDateRange(
     override val start: LocalDate,
     override val endInclusive: LocalDate,

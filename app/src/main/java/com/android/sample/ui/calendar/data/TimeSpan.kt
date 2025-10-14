@@ -1,4 +1,4 @@
-package com.android.sample.ui.calendar.utils
+package com.android.sample.ui.calendar.data
 
 import java.time.Duration
 import java.time.LocalTime

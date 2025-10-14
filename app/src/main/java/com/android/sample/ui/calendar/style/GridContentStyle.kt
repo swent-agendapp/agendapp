@@ -35,21 +35,25 @@ fun defaultGridContentColors(
 
 @Immutable
 data class GridContentDimensions(
-    val rowHeightDp: Dp,
     val leftOffsetDp: Dp,
-    // TODO: topOffsetDp, defaultColumnWidthDp
+    val topOffsetDp: Dp,
+    val defaultColumnWidthDp: Dp,
+    val rowHeightDp: Dp,
 )
 
 @Composable
 fun defaultGridContentDimensions(
-    rowHeightDp: Dp = 60.dp,
     leftOffsetDp: Dp = 48.dp,
+    topOffsetDp: Dp = 42.dp,
+    defaultColumnWidthDp: Dp = 64.dp,
+    rowHeightDp: Dp = 60.dp,
 ): GridContentDimensions =
     remember(rowHeightDp) {
       GridContentDimensions(
-          rowHeightDp = rowHeightDp,
           leftOffsetDp = leftOffsetDp,
-      )
+          topOffsetDp = topOffsetDp,
+          defaultColumnWidthDp = defaultColumnWidthDp,
+          rowHeightDp = rowHeightDp)
     }
 
 @Immutable

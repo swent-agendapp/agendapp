@@ -8,12 +8,12 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import com.android.sample.ui.calendar.CalendarScreenTestTags
+import com.android.sample.ui.calendar.data.LocalDateRange
+import com.android.sample.ui.calendar.data.workWeekDays
 import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.style.GridContentStyle
 import com.android.sample.ui.calendar.style.defaultGridContentStyle
-import com.android.sample.ui.calendar.utils.LocalDateRange
 import com.android.sample.ui.calendar.utils.rememberWeekViewMetrics
-import com.android.sample.ui.calendar.utils.workWeekDays
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit

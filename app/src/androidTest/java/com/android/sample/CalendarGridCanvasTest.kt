@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.android.sample.ui.calendar.CalendarGridContent
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.components.GridCanvas
-import com.android.sample.ui.calendar.utils.workWeekDays
+import com.android.sample.ui.calendar.data.workWeekDays
 import org.junit.Rule
 import org.junit.Test
 

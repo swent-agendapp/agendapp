@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
         Surface(
             modifier = Modifier.fillMaxSize().semantics { testTag = C.Tag.main_screen_container },
             color = MaterialTheme.colorScheme.background) {
-              AppNavigation(navigationActions)
+              Agendapp(navigationActions)
             }
       }
     }
@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun AppNavigation(navigationActions: NavigationActions) {
+fun Agendapp(navigationActions: NavigationActions) {
   val navController = navigationActions.navController
   NavHost(navController = navController, startDestination = "home") {
     composable("home") {

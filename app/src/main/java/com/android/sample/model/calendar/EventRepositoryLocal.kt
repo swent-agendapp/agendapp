@@ -39,7 +39,7 @@ class EventRepositoryLocal : EventRepository {
   override suspend fun deleteEvent(itemId: String) {
     val index = events.indexOfFirst { it.id == itemId }
     require(index != -1) { "Item with id $itemId does not exist." }
-    require(!events[index].hasBeenDeleted)
+    require(!events[index].hasBeenDeleted) { "Item with id $itemId has already been deleted." }
 
     val oldEvent = events[index]
     val newEvent =

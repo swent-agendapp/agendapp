@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.ktfmt)
     alias(libs.plugins.sonar)
-    alias(libs.plugins.gms)
     id("jacoco")
 
 }
@@ -170,9 +169,6 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.auth)
-
-    // Networking with OkHttp
-    implementation(libs.okhttp)
 }
 
 tasks.withType<Test> {
@@ -211,10 +207,4 @@ tasks.register("jacocoTestReport", JacocoReport::class) {
         include("outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
         include("outputs/code_coverage/debugAndroidTest/connected/*/coverage.ec")
     })
-}
-
-configurations.forEach { configuration ->
-    // Exclude protobuf-lite from all configurations
-    // This fixes a fatal exception for tests interacting with Cloud Firestore
-    configuration.exclude("com.google.protobuf", "protobuf-lite")
 }

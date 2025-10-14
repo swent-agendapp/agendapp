@@ -8,33 +8,27 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import com.android.sample.ui.calendar.CalendarScreenTestTags
+import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.style.GridContentStyle
 import com.android.sample.ui.calendar.style.defaultGridContentStyle
 import com.android.sample.ui.calendar.utils.LocalDateRange
 import com.android.sample.ui.calendar.utils.rememberWeekViewMetrics
-import java.time.DayOfWeek
+import com.android.sample.ui.calendar.utils.workWeekDays
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 import kotlin.ranges.rangeTo
 import kotlin.ranges.until
-import kotlin.sequences.takeWhile
-import kotlin.sequences.toList
 
 @Composable
 fun NowIndicatorLine(
     modifier: Modifier = Modifier,
-    columnCount: Int = 5,
+    columnCount: Int = CalendarDefaults.DefaultDaysInWeek,
     rowHeightDp: Dp = defaultGridContentStyle().dimensions.rowHeightDp,
-    days: List<LocalDate> = run {
-      val today = LocalDate.now()
-      val startOfWeek = today.with(DayOfWeek.MONDAY)
-      val endOfWeek = today.with(DayOfWeek.FRIDAY)
-      generateSequence(startOfWeek) { it.plusDays(1) }.takeWhile { it <= endOfWeek }.toList()
-    },
+    days: List<LocalDate> = workWeekDays(),
     now: LocalTime = LocalTime.now(),
-    gridStartTime: LocalTime = LocalTime.of(8, 0),
-    effectiveEndTime: LocalTime = LocalTime.of(23, 0),
+    gridStartTime: LocalTime = CalendarDefaults.DefaultStartTime,
+    effectiveEndTime: LocalTime = CalendarDefaults.DefaultEndTime,
     style: GridContentStyle = defaultGridContentStyle(),
 ) {
   val range = LocalDateRange(days.first(), days.last())

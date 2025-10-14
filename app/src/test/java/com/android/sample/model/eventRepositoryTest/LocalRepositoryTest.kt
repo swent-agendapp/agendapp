@@ -13,20 +13,20 @@ import org.junit.Test
  */
 class EventRepositoryTest {
 
-  private lateinit var repository: InMemoryEventRepository
+  private lateinit var repository: EventRepositoryLocal
   private lateinit var sampleEvent: Event
 
   @Before
   fun setup() {
-    repository = InMemoryEventRepository()
+    repository = EventRepositoryLocal()
     sampleEvent =
-      createEvent(
-        title = "Meeting",
-        description = "Discuss project updates",
-        startDate = Instant.parse("2025-01-01T10:00:00Z"),
-        endDate = Instant.parse("2025-01-01T11:00:00Z"),
-        cloudStorageStatuses = emptySet(),
-        participants = setOf("userB"))
+        createEvent(
+            title = "Meeting",
+            description = "Discuss project updates",
+            startDate = Instant.parse("2024-01-01T10:00:00Z"),
+            endDate = Instant.parse("2024-01-01T11:00:00Z"),
+            cloudStorageStatuses = emptySet(),
+            participants = setOf("userB"))
   }
 
   @Test
@@ -73,67 +73,17 @@ class EventRepositoryTest {
   fun getEventsBetweenDates_shouldReturnEventsWithinRange() = runBlocking {
     val event1 = sampleEvent
     val event2 =
-      sampleEvent.copy(
-        id = "2",
-        startDate = Instant.parse("2025-02-01T10:00:00Z"),
-        endDate = Instant.parse("2025-02-01T11:00:00Z"))
+        sampleEvent.copy(
+            id = "2",
+            startDate = Instant.parse("2025-02-01T10:00:00Z"),
+            endDate = Instant.parse("2025-02-01T11:00:00Z"),
+            locallyStoredBy = emptyList())
     repository.insertEvent(event1)
     repository.insertEvent(event2)
 
     val results =
-      repository.getEventsBetweenDates(
-        Instant.parse("2025-01-15T00:00:00Z"), Instant.parse("2025-03-01T00:00:00Z"))
-    assertEquals(listOf(event2), results)
-  }
-
-  @Test
-  fun getAllUnsyncedEvents_shouldReturnOnlyUnsynced() = runBlocking {
-    val syncedEvent =
-      sampleEvent.copy(id = "1", cloudStorageStatuses = setOf(CloudStorageStatus.FIRESTORE))
-    val unsyncedEvent = sampleEvent.copy(id = "2", cloudStorageStatuses = emptySet())
-
-    repository.insertEvent(syncedEvent)
-    repository.insertEvent(unsyncedEvent)
-
-    val result = repository.getAllUnsyncedEvents(CloudStorageStatus.FIRESTORE)
-    assertEquals(1, result.size)
-    assertEquals(unsyncedEvent.id, result.first().id)
-  }
-}
-
-/** Simple in-memory fake implementation for testing the [EventRepository] contract. */
-class InMemoryEventRepository : EventRepository {
-
-  private val events = mutableMapOf<String, Event>()
-
-  override suspend fun getAllEvents(): List<Event> = events.values.toList()
-
-  override suspend fun insertEvent(item: Event) {
-    events[item.id] = item
-  }
-
-  override suspend fun updateEvent(itemId: String, item: Event) {
-    if (!events.containsKey(itemId)) {
-      throw IllegalArgumentException("Event not found: $itemId")
-    }
-    events[itemId] = item
-  }
-
-  override suspend fun deleteEvent(itemId: String) {
-    if (!events.containsKey(itemId)) {
-      throw IllegalArgumentException("Event not found: $itemId")
-    }
-    events.remove(itemId)
-  }
-
-  override suspend fun getEventById(itemId: String): Event? = events[itemId]
-
-  override suspend fun getEventsBetweenDates(startDate: Instant, endDate: Instant): List<Event> {
-    require(!startDate.isAfter(endDate)) { "Start date cannot be after end date" }
-    return events.values.filter { it.startDate >= startDate && it.endDate <= endDate }
-  }
-
-  override suspend fun getAllUnsyncedEvents(db: CloudStorageStatus): List<Event> {
-    return events.values.filterNot { it.cloudStorageStatuses.contains(db) }
+        repository.getEventsBetweenDates(
+            Instant.parse("2025-01-15T00:00:00Z"), Instant.parse("2025-03-01T00:00:00Z"))
+    assertTrue(event2.id == results[0].id)
   }
 }

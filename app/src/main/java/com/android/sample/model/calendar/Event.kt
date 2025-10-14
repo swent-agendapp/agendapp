@@ -56,7 +56,6 @@ enum class CloudStorageStatus {
  * @param endDate End date and time of the event.
  * @param cloudStorageStatuses Set of storage locations for the event.
  * @param personalNotes Optional personal notes.
- * @param owners Set of user IDs who own the event.
  * @param participants Set of user IDs participating in the event.
  * @return A new Event instance.
  */

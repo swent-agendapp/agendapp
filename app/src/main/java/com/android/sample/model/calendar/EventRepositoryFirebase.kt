@@ -46,11 +46,6 @@ class EventRepositoryFirebase(private val db: FirebaseFirestore) : EventReposito
     return snapshot.mapNotNull { documentToEvent(document = it) }
   }
 
-  override suspend fun getAllUnsyncedEvents(db: StorageStatus): List<Event> {
-    val snapshot = this.db.collection(EVENTS_COLLECTION_PATH).get().await()
-    return snapshot.documents.mapNotNull { documentToEvent(it) }.filter { db !in it.storageStatus }
-  }
-
   /**
    * Converts a Firestore document to an Event object.
    *
@@ -72,8 +67,8 @@ class EventRepositoryFirebase(private val db: FirebaseFirestore) : EventReposito
 
     val storageStatusList =
         (document["storageStatus"] as? List<*>)
-            ?.mapNotNull { runCatching { StorageStatus.valueOf(it.toString()) }.getOrNull() }
-            ?.toSet() ?: setOf(StorageStatus.FIRESTORE)
+            ?.mapNotNull { runCatching { CloudStorageStatus.valueOf(it.toString()) }.getOrNull() }
+            ?.toSet() ?: setOf(CloudStorageStatus.FIRESTORE)
 
     val recurrenceStatus =
         runCatching {
@@ -89,9 +84,8 @@ class EventRepositoryFirebase(private val db: FirebaseFirestore) : EventReposito
         description = description,
         startDate = startDate,
         endDate = endDate,
-        storageStatus = storageStatusList,
+        cloudStorageStatuses = storageStatusList,
         personalNotes = personalNotes,
-        owners = owners,
         participants = participants,
         version = version,
         recurrenceStatus = recurrenceStatus)
@@ -109,9 +103,8 @@ class EventRepositoryFirebase(private val db: FirebaseFirestore) : EventReposito
         "description" to event.description,
         "startDate" to Timestamp(Date.from(event.startDate)),
         "endDate" to Timestamp(Date.from(event.endDate)),
-        "storageStatus" to event.storageStatus.map { it.name },
+        "storageStatus" to event.cloudStorageStatuses.map { it.name },
         "personalNotes" to event.personalNotes,
-        "owners" to event.owners.toList(),
         "participants" to event.participants.toList(),
         "version" to event.version,
         "recurrenceStatus" to event.recurrenceStatus.name)

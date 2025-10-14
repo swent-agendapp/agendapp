@@ -40,20 +40,20 @@ class CalendarViewModelTest {
 
     // Create two sample events for testing.
     event1 =
-      createEvent(
-        title = "Meeting",
-        description = "Team sync",
-        startDate = Instant.parse("2025-01-10T10:00:00Z"),
-        endDate = Instant.parse("2025-01-10T11:00:00Z"),
-        personalNotes = "Bring laptop")
+        createEvent(
+            title = "Meeting",
+            description = "Team sync",
+            startDate = Instant.parse("2025-01-10T10:00:00Z"),
+            endDate = Instant.parse("2025-01-10T11:00:00Z"),
+            personalNotes = "Bring laptop")
 
     event2 =
-      createEvent(
-        title = "Conference",
-        description = "Tech event",
-        startDate = Instant.parse("2025-02-01T09:00:00Z"),
-        endDate = Instant.parse("2025-02-03T18:00:00Z"),
-      )
+        createEvent(
+            title = "Conference",
+            description = "Tech event",
+            startDate = Instant.parse("2025-02-01T09:00:00Z"),
+            endDate = Instant.parse("2025-02-03T18:00:00Z"),
+        )
 
     // Insert the sample events into the repository before each test.
     runTest {
@@ -114,7 +114,7 @@ class CalendarViewModelTest {
   @Test
   fun clearErrorMsgShouldResetErrorMsg() = runTest {
     viewModel.loadEventsBetween(
-      start = Instant.parse("2025-03-01T00:00:00Z"), end = Instant.parse("2025-02-01T00:00:00Z"))
+        start = Instant.parse("2025-03-01T00:00:00Z"), end = Instant.parse("2025-02-01T00:00:00Z"))
     testDispatcher.scheduler.advanceUntilIdle()
 
     viewModel.clearErrorMsg()

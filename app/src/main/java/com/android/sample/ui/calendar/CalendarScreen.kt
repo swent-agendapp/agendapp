@@ -25,8 +25,9 @@ object CalendarScreenTestTags {
   const val EVENT_GRID = "CalendarEventGrid"
   const val TIME_AXIS_COLUMN = "TimeAxisColumn"
   const val NOW_INDICATOR = "NowIndicator"
+  const val EVENT_BLOCK = "CalendarEventBlock"
 
-  // todo : add tests tags (DAY_ROW, EVENT_GRID)
+  // todo : add tests tags (DAY_ROW)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

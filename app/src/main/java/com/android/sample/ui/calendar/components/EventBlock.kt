@@ -16,11 +16,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.mockData.MockEvent
 import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.style.defaultGridContentDimensions
@@ -48,7 +50,7 @@ fun EventBlock(
   if (visibleEvents.isEmpty()) return
 
   visibleEvents.forEach { event ->
-    Box(modifier = modifier) {
+    Box(modifier = modifier.testTag("${CalendarScreenTestTags.EVENT_BLOCK}_${event.title}")) {
       val density = LocalDensity.current
 
       val (topOffset, eventHeight) =

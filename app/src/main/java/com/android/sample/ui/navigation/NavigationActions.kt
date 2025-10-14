@@ -4,11 +4,11 @@ import androidx.navigation.NavHostController
 
 class NavigationActions(val navController: NavHostController) {
 
-    fun navigateToEdit(eventId: String) {
-        navController.navigate("edit_event/$eventId")
-    }
+  fun navigateToEdit(eventId: String) {
+    navController.navigate("edit_event/$eventId")
+  }
 
-    fun navigateBack() {
-        navController.popBackStack()
-    }
+  fun navigateBack() {
+    navController.popBackStack()
+  }
 }

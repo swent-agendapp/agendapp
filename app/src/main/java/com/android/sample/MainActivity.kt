@@ -22,37 +22,35 @@ import com.android.sample.ui.screens.HomeScreen
 import com.android.sample.ui.theme.SampleAppTheme
 
 class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            SampleAppTheme {
-                val navController = rememberNavController()
-                val navigationActions = NavigationActions(navController)
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContent {
+      SampleAppTheme {
+        val navController = rememberNavController()
+        val navigationActions = NavigationActions(navController)
 
-                Surface(
-                    modifier = Modifier.fillMaxSize().semantics { testTag = C.Tag.main_screen_container },
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    AppNavigation(navigationActions)
-                }
+        Surface(
+            modifier = Modifier.fillMaxSize().semantics { testTag = C.Tag.main_screen_container },
+            color = MaterialTheme.colorScheme.background) {
+              AppNavigation(navigationActions)
             }
-        }
+      }
     }
+  }
 }
 
 @Composable
 fun AppNavigation(navigationActions: NavigationActions) {
-    val navController = navigationActions.navController
-    NavHost(navController = navController, startDestination = "home") {
-        composable("home") {
-            HomeScreen(onNavigateToEdit = { navigationActions.navigateToEdit("E001") })
-        }
-        composable(
-            route = "edit_event/{eventId}",
-            arguments = listOf(navArgument("eventId") { type = NavType.StringType })
-        ) {
-            val eventId = it.arguments?.getString("eventId") ?: ""
-            EditEventScreen(eventId = eventId, onNavigateBack = { navigationActions.navigateBack() })
-        }
+  val navController = navigationActions.navController
+  NavHost(navController = navController, startDestination = "home") {
+    composable("home") {
+      HomeScreen(onNavigateToEdit = { navigationActions.navigateToEdit("E001") })
     }
+    composable(
+        route = "edit_event/{eventId}",
+        arguments = listOf(navArgument("eventId") { type = NavType.StringType })) {
+          val eventId = it.arguments?.getString("eventId") ?: ""
+          EditEventScreen(eventId = eventId, onNavigateBack = { navigationActions.navigateBack() })
+        }
+  }
 }

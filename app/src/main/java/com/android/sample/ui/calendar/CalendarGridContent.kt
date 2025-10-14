@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,6 +23,7 @@ import com.android.sample.ui.calendar.utils.LocalDateRange
 import com.android.sample.ui.calendar.utils.rememberWeekViewMetrics
 import com.android.sample.ui.calendar.utils.workWeekDays
 import java.time.LocalTime
+import kotlinx.coroutines.delay
 
 @Composable
 fun CalendarGridContent(
@@ -36,6 +38,12 @@ fun CalendarGridContent(
 
   val scrollState = rememberScrollState()
   var now by remember { mutableStateOf(LocalTime.now()) }
+  LaunchedEffect(Unit) {
+    while (true) {
+      now = LocalTime.now()
+      delay(1000)
+    }
+  }
 
   val days = workWeekDays()
   val range = LocalDateRange(days.first(), days.last())

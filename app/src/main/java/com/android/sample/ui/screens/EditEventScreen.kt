@@ -14,9 +14,9 @@ fun EditEventScreen(eventId: String, onNavigateBack: () -> Unit, modifier: Modif
     Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
       Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = "Edit Event Screen", style = MaterialTheme.typography.titleLarge)
-          Spacer(modifier = Modifier.height(8.dp))
-          Text(text = "Editing event ID: $eventId", style = MaterialTheme.typography.bodyMedium)
-          Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(text = "Editing event ID: $eventId", style = MaterialTheme.typography.bodyMedium)
+        Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = onNavigateBack) { Text("Back") }
       }
     }

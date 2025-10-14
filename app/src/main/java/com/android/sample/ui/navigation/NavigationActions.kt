@@ -31,7 +31,7 @@ fun AppNavigation(navController: NavHostController, modifier: Modifier = Modifie
         composable(
             route = Screen.EditEvent.route,
             arguments = listOf(navArgument("eventId") { type = NavType.StringType })) {
-              val eventId = it.arguments?.getString("eventId")
+              val eventId = it.arguments!!.getString("eventId")!!
               EditEventScreen(eventId = eventId, onNavigateBack = { navController.popBackStack() })
             }
       }

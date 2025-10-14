@@ -12,37 +12,51 @@ import androidx.compose.ui.unit.dp
 data class GridContentColors(
     val todayHighlight: Color,
     val gridLineColor: Color,
-    // TODO: nowIndicator, dayHeaderText, timeLabelTextColor, currentDayBackground, currentDayText
+    val nowIndicator: Color,
+    val timeLabelTextColor: Color,
+    // TODO:  dayHeaderText, currentDayBackground, currentDayText
 )
 
 @Composable
 fun defaultGridContentColors(
     todayHighlight: Color = MaterialTheme.colorScheme.primary.copy(alpha = 0.08f),
     gridLineColor: Color = Color.LightGray,
+    nowIndicator: Color = MaterialTheme.colorScheme.error,
+    timeLabelTextColor: Color = Color.Gray
 ): GridContentColors =
-    remember(todayHighlight, gridLineColor) {
+    remember(todayHighlight, gridLineColor, nowIndicator, timeLabelTextColor) {
       GridContentColors(
           todayHighlight = todayHighlight,
           gridLineColor = gridLineColor,
+          nowIndicator = nowIndicator,
+          timeLabelTextColor = timeLabelTextColor,
       )
     }
 
 @Immutable
 data class GridContentDimensions(
     val rowHeightDp: Dp,
-    // TODO: leftOffsetDp, topOffsetDp, defaultColumnWidthDp
+    val leftOffsetDp: Dp,
+    // TODO: topOffsetDp, defaultColumnWidthDp
 )
 
 @Composable
 fun defaultGridContentDimensions(
     rowHeightDp: Dp = 60.dp,
+    leftOffsetDp: Dp = 48.dp,
 ): GridContentDimensions =
-    remember(rowHeightDp) { GridContentDimensions(rowHeightDp = rowHeightDp) }
+    remember(rowHeightDp) {
+      GridContentDimensions(
+          rowHeightDp = rowHeightDp,
+          leftOffsetDp = leftOffsetDp,
+      )
+    }
 
 @Immutable
 data class GridContentStyle(
     val colors: GridContentColors,
     val dimensions: GridContentDimensions,
+
     // TODO: typography
 )
 

@@ -18,7 +18,10 @@ object CalendarScreenTestTags {
   const val SCROLL_AREA = "CalendarGridScrollArea"
   const val ROOT = "CalendarGridRoot"
   const val EVENT_GRID = "CalendarEventGrid"
-  // todo : add tests tags (DAY_ROW, EVENT_GRID, TIME_AXIS_COLUMN)
+  const val TIME_AXIS_COLUMN = "TimeAxisColumn"
+  const val NOW_INDICATOR = "NowIndicator"
+
+  // todo : add tests tags (DAY_ROW, EVENT_GRID)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

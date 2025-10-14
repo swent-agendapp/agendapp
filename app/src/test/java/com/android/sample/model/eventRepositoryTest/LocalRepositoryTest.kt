@@ -84,6 +84,6 @@ class EventRepositoryTest {
     val results =
         repository.getEventsBetweenDates(
             Instant.parse("2025-01-15T00:00:00Z"), Instant.parse("2025-03-01T00:00:00Z"))
-    assertTrue(event2.id == results[0].id)
+    assertEquals(event2.id, results[0].id)
   }
 }

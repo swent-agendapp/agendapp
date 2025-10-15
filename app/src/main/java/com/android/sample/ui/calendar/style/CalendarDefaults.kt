@@ -4,9 +4,7 @@ import com.android.sample.ui.calendar.data.LocalDateRange
 import java.time.Duration
 import java.time.LocalTime
 
-/**
- * Central defaults for the calendar UI: start/end times, default work-week range, and sizing.
- */
+/** Central defaults for the calendar UI: start/end times, default work-week range, and sizing. */
 data object CalendarDefaults {
   /** Default inclusive start time of the visible grid. */
   val DefaultStartTime: LocalTime = LocalTime.of(8, 0)

@@ -20,10 +20,9 @@ import com.android.sample.ui.calendar.style.defaultGridContentStyle
 import com.android.sample.ui.calendar.utils.rememberWeekViewMetrics
 import java.time.LocalDate
 
-
 /**
- * Paints the background grid for the week view: vertical day separators, horizontal hour lines,
- * and a soft highlight for today's column. No events are drawn here.
+ * Paints the background grid for the week view: vertical day separators, horizontal hour lines, and
+ * a soft highlight for today's column. No events are drawn here.
  *
  * @param modifier [Modifier] applied to the canvas container.
  * @param columnCount Number of day columns to draw.

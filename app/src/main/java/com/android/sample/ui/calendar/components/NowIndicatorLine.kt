@@ -20,7 +20,6 @@ import java.time.temporal.ChronoUnit
 import kotlin.ranges.rangeTo
 import kotlin.ranges.until
 
-
 /**
  * Draws a horizontal line (and a leading dot) at the current time within today's column, if the
  * current time is inside the visible window. Recomputes its Y position as time advances.

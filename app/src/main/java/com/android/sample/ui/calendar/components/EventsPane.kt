@@ -16,7 +16,6 @@ import com.android.sample.ui.calendar.style.defaultGridContentStyle
 import java.time.LocalDate
 import java.time.LocalTime
 
-
 /**
  * Renders all event blocks for the provided list of days. Each day occupies a column; events are
  * filtered by day and positioned vertically according to their time span.

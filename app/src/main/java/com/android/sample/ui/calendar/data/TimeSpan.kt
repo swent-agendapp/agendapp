@@ -23,9 +23,9 @@ data class TimeSpan(
   val duration: Duration by lazy { Duration.between(start, endExclusive) }
 
   /**
-   * Produces hour-aligned labels that cover this span, including the hour containing [start]
-   * and the hour containing [endExclusive].
-   * Example: TimeSpan from 08:30 to 12:15 would return [08:00, 09:00, 10:00, 11:00, 12:00]
+   * Produces hour-aligned labels that cover this span, including the hour containing [start] and
+   * the hour containing [endExclusive]. Example: TimeSpan from 08:30 to 12:15 would return
+   * [08:00, 09:00, 10:00, 11:00, 12:00]
    *
    * @return A sequence of hour ticks (00 minutes) in ascending order.
    */

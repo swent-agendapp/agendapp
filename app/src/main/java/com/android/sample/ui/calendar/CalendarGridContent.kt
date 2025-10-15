@@ -28,10 +28,9 @@ import com.android.sample.ui.calendar.utils.rememberWeekViewMetrics
 import java.time.LocalTime
 import kotlinx.coroutines.delay
 
-
 /**
- * Core layout of the week-view grid area: time axis, scrollable grid canvas, events overlay,
- * and a live "now" indicator. Also manages a 1s ticker to keep the current time line in sync.
+ * Core layout of the week-view grid area: time axis, scrollable grid canvas, events overlay, and a
+ * live "now" indicator. Also manages a 1s ticker to keep the current time line in sync.
  *
  * @param modifier [Modifier] applied to the whole grid content.
  * @param style Visual style (colors, spacing, dimensions) for the grid and labels.

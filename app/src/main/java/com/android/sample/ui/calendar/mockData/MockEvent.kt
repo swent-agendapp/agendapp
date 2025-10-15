@@ -1,10 +1,10 @@
 package com.android.sample.ui.calendar.mockData
 
 import com.android.sample.ui.calendar.data.TimeSpan
+import java.time.DayOfWeek
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalTime
-import java.time.DayOfWeek
 
 /**
  * Demo representation of a calendar event used for previews and sample data.
@@ -23,9 +23,7 @@ data class MockEvent(
     val backgroundColor: Int
 )
 
-/**
- * Helper to get a date in a week offset from current week, for a specific day of week.
- */
+/** Helper to get a date in a week offset from current week, for a specific day of week. */
 private fun weekDate(weekOffset: Long, dayOfWeek: DayOfWeek): LocalDate {
   val startOfThisWeek = LocalDate.now().with(DayOfWeek.MONDAY)
   return startOfThisWeek.plusWeeks(weekOffset).with(dayOfWeek)

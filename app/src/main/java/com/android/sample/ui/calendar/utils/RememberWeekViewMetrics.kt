@@ -42,8 +42,8 @@ data class WeekViewMetrics(
 )
 
 /**
- * Computes and memoizes [WeekViewMetrics] derived from a [LocalDateRange].
- * Values are recomputed only when [dateRange] changes.
+ * Computes and memoizes [WeekViewMetrics] derived from a [LocalDateRange]. Values are recomputed
+ * only when [dateRange] changes.
  *
  * @param dateRange Visible inclusive date range to generate columns for.
  * @return A stable [WeekViewMetrics] instance describing grid geometry and labels.

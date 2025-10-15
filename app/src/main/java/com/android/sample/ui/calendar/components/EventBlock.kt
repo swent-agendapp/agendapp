@@ -31,7 +31,6 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-
 /**
  * Draws visual blocks for a list of events within a single day column. Events are clipped to the
  * visible time window and positioned using their start/end times. Overlap handling is planned and

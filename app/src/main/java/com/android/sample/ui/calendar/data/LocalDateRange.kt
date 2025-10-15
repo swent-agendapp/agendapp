@@ -21,11 +21,11 @@ data class LocalDateRange(
 
   override fun contains(value: LocalDate): Boolean = value >= start && value <= endInclusive
 
-    /**
-     * Iterates day by day from [start] to [endInclusive].
-     *
-     * @return An iterator yielding each date in ascending order.
-     */
+  /**
+   * Iterates day by day from [start] to [endInclusive].
+   *
+   * @return An iterator yielding each date in ascending order.
+   */
   override fun iterator(): Iterator<LocalDate> =
       object : Iterator<LocalDate> {
         private var nextDate: LocalDate? = start

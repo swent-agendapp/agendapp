@@ -1,9 +1,9 @@
 package com.android.sample.model.eventRepositoryTest
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.sample.model.calendar.CloudStorageStatus
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
-import com.android.sample.model.calendar.StorageStatus
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.utils.FirebaseEmulatedTest
 import java.time.Instant
@@ -32,7 +32,7 @@ class FirebaseRepositoryTest : FirebaseEmulatedTest() {
             description = "Team sync",
             startDate = Instant.parse("2025-01-10T10:00:00Z"),
             endDate = Instant.parse("2025-01-10T11:00:00Z"),
-            storageStatus = setOf(StorageStatus.LOCAL),
+            cloudStorageStatuses = setOf(CloudStorageStatus.FIRESTORE),
             personalNotes = "Bring laptop")
 
     event2 =
@@ -41,7 +41,7 @@ class FirebaseRepositoryTest : FirebaseEmulatedTest() {
             description = "Tech event",
             startDate = Instant.parse("2025-02-01T09:00:00Z"),
             endDate = Instant.parse("2025-02-03T18:00:00Z"),
-            storageStatus = setOf(StorageStatus.FIRESTORE))
+            cloudStorageStatuses = setOf(CloudStorageStatus.FIRESTORE))
   }
 
   @Test
@@ -104,16 +104,6 @@ class FirebaseRepositoryTest : FirebaseEmulatedTest() {
   }
 
   @Test
-  fun getAllUnsyncedEvents_shouldReturnEventsNotSyncedToGivenDb() = runBlocking {
-    repository.insertEvent(event1)
-    repository.insertEvent(event2)
-
-    val unsyncedToFirestore = repository.getAllUnsyncedEvents(StorageStatus.FIRESTORE)
-    Assert.assertTrue(unsyncedToFirestore.any { it.id == event1.id })
-    Assert.assertFalse(unsyncedToFirestore.any { it.id == event2.id })
-  }
-
-  @Test
   fun documentToEvent_customStorageStatus_shouldParse() = runBlocking {
     val customEvent =
         createEvent(
@@ -121,9 +111,8 @@ class FirebaseRepositoryTest : FirebaseEmulatedTest() {
             description = "Testing storage status parsing",
             startDate = Instant.parse("2025-01-01T10:00:00Z"),
             endDate = Instant.parse("2025-01-01T11:00:00Z"),
-            storageStatus = setOf(StorageStatus.LOCAL, StorageStatus.FIRESTORE),
+            cloudStorageStatuses = setOf(CloudStorageStatus.FIRESTORE),
             personalNotes = "None",
-            owners = setOf("Alice", "Bob"),
             participants = setOf("Charlie"))
 
     repository.insertEvent(customEvent)
@@ -132,8 +121,8 @@ class FirebaseRepositoryTest : FirebaseEmulatedTest() {
 
     Assert.assertNotNull(retrieved)
     Assert.assertTrue(
-        retrieved!!.storageStatus.containsAll(listOf(StorageStatus.LOCAL, StorageStatus.FIRESTORE)))
-    Assert.assertEquals(2, retrieved.storageStatus.size)
+        retrieved!!.cloudStorageStatuses.containsAll(listOf(CloudStorageStatus.FIRESTORE)))
+    Assert.assertEquals(1, retrieved.cloudStorageStatuses.size)
   }
 
   @Test
@@ -144,9 +133,8 @@ class FirebaseRepositoryTest : FirebaseEmulatedTest() {
             description = "",
             startDate = Instant.parse("2025-03-01T10:00:00Z"),
             endDate = Instant.parse("2025-03-01T11:00:00Z"),
-            storageStatus = emptySet(),
+            cloudStorageStatuses = emptySet(),
             personalNotes = null,
-            owners = emptySet(),
             participants = emptySet())
 
     repository.insertEvent(eventWithMissingOptional)
@@ -154,7 +142,6 @@ class FirebaseRepositoryTest : FirebaseEmulatedTest() {
     val retrieved = repository.getEventById(eventWithMissingOptional.id)
     Assert.assertNotNull(retrieved)
     Assert.assertEquals("", retrieved!!.description)
-    Assert.assertEquals(emptySet<String>(), retrieved.owners)
     Assert.assertEquals(emptySet<String>(), retrieved.participants)
   }
 }

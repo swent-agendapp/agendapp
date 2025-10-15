@@ -24,8 +24,8 @@ import com.android.sample.ui.settings.SettingsScreen
 import com.android.sample.ui.theme.SampleAppTheme
 
 /**
- * Main entry point of the application. Sets up the theme and calls [Agendapp] to initialize
- * navigation.
+ * Main entry point of the application. Sets up the theme and calls [Agendapp_Navigation] to
+ * initialize navigation.
  */
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,12 +42,17 @@ class MainActivity : ComponentActivity() {
   }
 }
 
+@Composable
+fun Agendapp() {
+  CalendarScreen()
+}
+
 /**
  * Root composable containing the navigation graph for the application. This function defines all
  * available routes and how composables are connected.
  */
 @Composable
-fun Agendapp(modifier: Modifier = Modifier) {
+fun Agendapp_Navigation(modifier: Modifier = Modifier) {
   val navController = rememberNavController()
   val navigationActions = NavigationActions(navController)
 

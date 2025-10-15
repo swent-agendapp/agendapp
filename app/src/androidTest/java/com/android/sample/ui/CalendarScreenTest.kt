@@ -1,7 +1,20 @@
 package com.android.sample.ui
 
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertTextEquals
+import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithTag
+import com.android.sample.Agendapp
+import com.android.sample.ui.calendar.CalendarContainer
+import com.android.sample.ui.calendar.CalendarGridContent
+import com.android.sample.ui.calendar.CalendarScreen
+import com.android.sample.ui.calendar.CalendarScreenTestTags
+import org.junit.Rule
+import org.junit.Test
+
 class CalendarScreenTest {
-  /*
+
   @get:Rule val composeTestRule = createComposeRule()
 
   @Test
@@ -45,5 +58,5 @@ class CalendarScreenTest {
   fun calendarContainerComposes() {
     composeTestRule.setContent { CalendarContainer() }
     composeTestRule.onNodeWithTag(CalendarScreenTestTags.ROOT).assertIsDisplayed()
-  }*/
+  }
 }

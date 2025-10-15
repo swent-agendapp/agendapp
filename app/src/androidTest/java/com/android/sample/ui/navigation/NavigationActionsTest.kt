@@ -7,15 +7,15 @@ import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
-import com.android.sample.Agendapp
+import com.android.sample.Agendapp_Navigation
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * Integration test for [Agendapp] navigation. This test checks the navigation flow between Home,
- * EditEvent, Calendar, and Settings screens.
+ * Integration test for [Agendapp_Navigation] navigation. This test checks the navigation flow
+ * between Home, EditEvent, Calendar, and Settings screens.
  */
 @RunWith(AndroidJUnit4::class)
 @MediumTest
@@ -32,7 +32,7 @@ class AgendappNavigationTest {
           TestNavHostController(androidx.compose.ui.platform.LocalContext.current).apply {
             navigatorProvider.addNavigator(ComposeNavigator())
           }
-      Agendapp()
+      Agendapp_Navigation()
     }
   }
 

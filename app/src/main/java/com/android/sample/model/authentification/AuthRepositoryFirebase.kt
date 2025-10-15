@@ -1,9 +1,9 @@
-
 package com.github.se.bootcamp.model.authentication
 
 import androidx.credentials.Credential
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
+import com.android.sample.model.authentification.User
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
 import com.google.firebase.Firebase
@@ -29,41 +29,48 @@ class AuthRepositoryFirebase(
     private val helper: GoogleSignInHelper = DefaultGoogleSignInHelper()
 ) : AuthRepository {
 
-    fun getGoogleSignInOption(serverClientId: String) =
-        GetSignInWithGoogleOption.Builder(serverClientId = serverClientId).build()
+  fun getGoogleSignInOption(serverClientId: String) =
+      GetSignInWithGoogleOption.Builder(serverClientId = serverClientId).build()
 
-    override suspend fun signInWithGoogle(credential: Credential): Result<FirebaseUser> {
-        return try {
-            if (credential is CustomCredential && credential.type == TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
-                val idToken = helper.extractIdTokenCredential(credential.data).idToken
-                val firebaseCred = helper.toFirebaseCredential(idToken)
+  /** Maps a [FirebaseUser] to our domain [User] model. */
+  private fun FirebaseUser.toDomainUser() = User(id = uid, displayName = displayName, email = email)
 
-                // Sign in with Firebase
-                val user =
-                    auth.signInWithCredential(firebaseCred).await().user
-                        ?: return Result.failure(
-                            IllegalStateException("Login failed : Could not retrieve user information"))
+  override suspend fun signInWithGoogle(credential: Credential): Result<User> {
+    return try {
+      if (credential is CustomCredential && credential.type == TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+        val idToken = helper.extractIdTokenCredential(credential.data).idToken
+        val firebaseCred = helper.toFirebaseCredential(idToken)
 
-                return Result.success(user)
-            } else {
-                return Result.failure(
-                    IllegalStateException("Login failed: Credential is not of type Google ID"))
-            }
-        } catch (e: Exception) {
-            Result.failure(
-                IllegalStateException("Login failed: ${e.localizedMessage ?: "Unexpected error."}"))
-        }
+        // Sign in with Firebase
+        val firebaseUser =
+            auth.signInWithCredential(firebaseCred).await().user
+                ?: return Result.failure(
+                    IllegalStateException("Login failed : Could not retrieve user information"))
+
+        return Result.success(firebaseUser.toDomainUser())
+      } else {
+        return Result.failure(
+            IllegalStateException("Login failed: Credential is not of type Google ID"))
+      }
+    } catch (e: Exception) {
+      Result.failure(
+          IllegalStateException("Login failed: ${e.localizedMessage ?: "Unexpected error."}"))
     }
+  }
 
-    override fun signOut(): Result<Unit> {
-        return try {
-            // Firebase sign out
-            auth.signOut()
+  override fun signOut(): Result<Unit> {
+    return try {
+      // Firebase sign out
+      auth.signOut()
 
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(
-                IllegalStateException("Logout failed: ${e.localizedMessage ?: "Unexpected error."}"))
-        }
+      Result.success(Unit)
+    } catch (e: Exception) {
+      Result.failure(
+          IllegalStateException("Logout failed: ${e.localizedMessage ?: "Unexpected error."}"))
     }
+  }
+
+  override fun getCurrentUser(): User? {
+    return auth.currentUser?.toDomainUser()
+  }
 }

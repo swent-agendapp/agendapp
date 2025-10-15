@@ -16,6 +16,7 @@ import okhttp3.Request
 import okio.IOException
 import org.junit.After
 import org.junit.Before
+import kotlin.text.get
 
 /**
  * Base test class for tests that require Firebase emulators. Handles setup, teardown, and
@@ -26,17 +27,34 @@ open class FirebaseEmulatedTest {
   protected val emulatedFirestore = Firebase.firestore
   protected val emulatedAuth = Firebase.auth
 
+
   fun createInitializedRepository(): EventRepository {
-    return EventRepositoryFirebase(db = emulatedFirestore)
+    return EventRepositoryFirebase(db = FirebaseEmulator.firestore)
   }
 
   suspend fun getEventsCount(): Int {
-    return emulatedFirestore.collection(EVENTS_COLLECTION_PATH).get().await().size()
+    return FirebaseEmulator.firestore
+      .collection(EVENTS_COLLECTION_PATH)
+      .get()
+      .await()
+      .size()
   }
 
   private suspend fun clearTestCollection() {
-    val events = emulatedFirestore.collection(EVENTS_COLLECTION_PATH).get().await()
-    events?.forEach { it.reference.delete() }
+    val user = FirebaseEmulator.auth.currentUser ?: return
+    val events =
+      FirebaseEmulator.firestore
+        .collection(EVENTS_COLLECTION_PATH)
+        .get()
+        .await()
+
+    val batch = FirebaseEmulator.firestore.batch()
+    events.documents.forEach { batch.delete(it.reference) }
+    batch.commit().await()
+
+    assert(getEventsCount() == 0) {
+      "Test collection is not empty after clearing, count: ${getEventsCount()}"
+    }
   }
 
   /**
@@ -48,14 +66,6 @@ open class FirebaseEmulatedTest {
    */
   @Before
   open fun setUp() {
-    /** Verify that the emulators are running */
-    checkIfEmulatorsAreRunning()
-
-    /** Connect Firebase to the emulators */
-    useEmulators()
-
-    EventRepositoryProvider.repository = createInitializedRepository()
-
     runTest {
       val eventsCount = getEventsCount()
       if (eventsCount > 0) {
@@ -80,90 +90,6 @@ open class FirebaseEmulatedTest {
   @After
   open fun tearDown() {
     runTest { clearTestCollection() }
-    emulatedAuth.signOut()
-    Firestore.clear()
-    Auth.clear()
-  }
-
-  /**
-   * Checks if the Firebase emulators are running by sending a request to the emulator endpoint.
-   * Throws an IllegalStateException if not running.
-   */
-  private fun checkIfEmulatorsAreRunning() {
-    val client = OkHttpClient()
-    val request = Request.Builder().url(EMULATORS).build()
-
-    try {
-      val response = client.newCall(request).execute()
-      if (!response.isSuccessful) {
-        throw IllegalStateException("Firebase Emulators are not running.")
-      }
-    } catch (e: IOException) {
-      throw IllegalStateException("Firebase Emulators are not running. (${e.message})")
-    }
-  }
-
-  /**
-   * Configures Firestore and Auth to use the local emulator instances. Throws an
-   * IllegalStateException if unable to connect.
-   */
-  private fun useEmulators() {
-    try {
-      emulatedFirestore.useEmulator(HOST, Firestore.PORT)
-      emulatedAuth.useEmulator(HOST, Auth.PORT)
-    } catch (e: IllegalStateException) {
-      Log.i("FirebaseEmulatedTest", "Firebase Emulators are already in use.", e)
-    } finally {
-      val currentHost = Firebase.firestore.firestoreSettings.host
-      if (!currentHost.contains(HOST)) {
-        throw IllegalStateException("Failed to connect to Firebase Emulators.")
-      }
-    }
-  }
-
-  companion object {
-    const val HOST = "10.0.2.2"
-    const val EMULATORS = "http://10.0.2.2:4400/emulators"
-    const val FIRESTORE_PORT = 8080
-    const val AUTH_PORT = 9099
-  }
-
-  /** Helper object for Firestore emulator operations. */
-  object Firestore {
-    const val PORT = 8080
-
-    /** Clears all documents from the emulated Firestore database. */
-    fun clear() {
-      val projectId = FirebaseApp.getInstance().options.projectId
-      val endpoint =
-          "http://${HOST}:$PORT/emulator/v1/projects/$projectId/databases/(default)/documents"
-
-      val client = OkHttpClient()
-      val request = Request.Builder().url(endpoint).delete().build()
-      val response = client.newCall(request).execute()
-      Log.e("Firestore", "Cleared")
-      if (!response.isSuccessful) {
-        throw IOException("Failed to clear Firestore.")
-      }
-    }
-  }
-
-  /** Helper object for Auth emulator operations. */
-  object Auth {
-    const val PORT = 9099
-
-    /** Clears all user accounts from the emulated Auth database. */
-    fun clear() {
-      val projectId = FirebaseApp.getInstance().options.projectId
-      val endpoint = "http://${HOST}:$PORT/emulator/v1/projects/$projectId/accounts"
-
-      val client = OkHttpClient()
-      val request = Request.Builder().url(url = endpoint).delete().build()
-      val response = client.newCall(request).execute()
-
-      if (!response.isSuccessful) {
-        throw IOException("Failed to clear Auth.")
-      }
-    }
+    FirebaseEmulator.clearFirestoreEmulator()
   }
 }

@@ -19,6 +19,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -65,11 +66,16 @@ fun SignInScreen(
   val snackbarHostState = remember { SnackbarHostState() }
 
   LaunchedEffect(uiState.user) {
-    uiState.user?.let { snackbarHostState.showSnackbar("Login successful!") }
+    uiState.user?.let {
+      snackbarHostState.showSnackbar("Login successful!", duration = SnackbarDuration.Indefinite)
+    }
   }
 
   LaunchedEffect(uiState.errorMsg) {
-    uiState.errorMsg?.let { snackbarHostState.showSnackbar(uiState.errorMsg.toString()) }
+    uiState.errorMsg?.let {
+      snackbarHostState.showSnackbar(
+          uiState.errorMsg.toString(), duration = SnackbarDuration.Indefinite)
+    }
   }
 
   // The main container for the screen

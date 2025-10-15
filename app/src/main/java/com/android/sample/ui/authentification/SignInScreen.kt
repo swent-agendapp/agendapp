@@ -65,15 +65,11 @@ fun SignInScreen(
   val snackbarHostState = remember { SnackbarHostState() }
 
   LaunchedEffect(uiState.user) {
-    uiState.user?.let {
-        snackbarHostState.showSnackbar("Login successful!")
-    }
+    uiState.user?.let { snackbarHostState.showSnackbar("Login successful!") }
   }
 
   LaunchedEffect(uiState.errorMsg) {
-    uiState.errorMsg?.let {
-        snackbarHostState.showSnackbar(uiState.errorMsg.toString())
-    }
+    uiState.errorMsg?.let { snackbarHostState.showSnackbar(uiState.errorMsg.toString()) }
   }
 
   // The main container for the screen

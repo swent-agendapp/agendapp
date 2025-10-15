@@ -20,7 +20,7 @@ import org.junit.Rule
 import org.junit.Test
 
 class AuthentificationTest : FirebaseEmulatedTest() {
-    val UI_WAIT_TIMEOUT = 5_000L
+  val UI_WAIT_TIMEOUT = 5_000L
 
   @get:Rule val composeTestRule = createComposeRule()
 

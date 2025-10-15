@@ -5,10 +5,8 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.times
-import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.data.workWeekDays
 import com.android.sample.ui.calendar.mockData.MockEvent
 import com.android.sample.ui.calendar.style.CalendarDefaults
@@ -42,9 +40,7 @@ fun EventsPane(
     if (eventsForDay.isNotEmpty()) {
       Box(
           modifier =
-              Modifier.offset(x = dayIndex * columnWidthDp)
-                  .size(columnWidthDp, gridHeightDp)
-                  .testTag(CalendarScreenTestTags.EVENT_GRID)) {
+              Modifier.offset(x = dayIndex * columnWidthDp).size(columnWidthDp, gridHeightDp)) {
             // for now (later : EventBlockWithOverlapHandling)
             EventBlock(
                 events = eventsForDay,

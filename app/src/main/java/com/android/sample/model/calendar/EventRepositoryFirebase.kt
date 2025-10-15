@@ -1,5 +1,6 @@
 package com.android.sample.model.calendar
 
+import com.android.sample.utils.EventColor
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -78,6 +79,8 @@ class EventRepositoryFirebase(private val db: FirebaseFirestore) : EventReposito
 
     val version = document.getLong("version") ?: 0L
 
+    val colorLong = document.getLong("eventColor") ?: EventColor.Blue.value
+
     return Event(
         id = id,
         title = title,
@@ -88,7 +91,8 @@ class EventRepositoryFirebase(private val db: FirebaseFirestore) : EventReposito
         personalNotes = personalNotes,
         participants = participants,
         version = version,
-        recurrenceStatus = recurrenceStatus)
+        recurrenceStatus = recurrenceStatus,
+        color = EventColor(colorLong))
   }
 
   /**
@@ -107,6 +111,7 @@ class EventRepositoryFirebase(private val db: FirebaseFirestore) : EventReposito
         "personalNotes" to event.personalNotes,
         "participants" to event.participants.toList(),
         "version" to event.version,
-        "recurrenceStatus" to event.recurrenceStatus.name)
+        "recurrenceStatus" to event.recurrenceStatus.name,
+        "eventColor" to event.color.value)
   }
 }

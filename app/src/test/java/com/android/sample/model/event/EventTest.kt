@@ -73,4 +73,17 @@ class EventTest {
     assertEquals(event.endDate, copy.endDate)
     assertEquals(event.color, copy.color)
   }
+
+  @Test
+  fun invalidDates_shouldReturnIllegalArgument() {
+    val start = Instant.now()
+    val end = start.minusSeconds(3600)
+
+    val exception =
+        assertThrows(IllegalArgumentException::class.java) {
+          createEvent(title = "Invalid Event", startDate = start, endDate = end)
+        }
+
+    assertEquals("End date cannot be before start date", exception.message)
+  }
 }

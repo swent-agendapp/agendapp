@@ -7,11 +7,11 @@ import org.junit.Before
 import org.junit.Test
 
 /**
- * Unit tests for [EventRepository].
+ * Unit tests for [EventRepositoryLocal].
  *
  * These tests verify expected repository contract behaviors using an in-memory fake implementation.
  */
-class EventRepositoryTest {
+class LocalRepositoryTest {
 
   private lateinit var repository: EventRepositoryLocal
   private lateinit var sampleEvent: Event

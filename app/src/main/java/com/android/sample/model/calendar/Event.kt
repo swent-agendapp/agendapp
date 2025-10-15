@@ -39,21 +39,21 @@ data class Event(
     val hasBeenDeleted: Boolean = false,
     val color: EventColor
 ) {
-    // Returns the start date as a LocalDate in the system's default time zone
-    val startLocalDate: LocalDate
-        get() = startDate.atZone(ZoneId.systemDefault()).toLocalDate()
+  // Returns the start date as a LocalDate in the system's default time zone
+  val startLocalDate: LocalDate
+    get() = startDate.atZone(ZoneId.systemDefault()).toLocalDate()
 
-    // Returns the end date as a LocalDate in the system's default time zone
-    val endLocalDate: LocalDate
-        get() = endDate.atZone(ZoneId.systemDefault()).toLocalDate()
+  // Returns the end date as a LocalDate in the system's default time zone
+  val endLocalDate: LocalDate
+    get() = endDate.atZone(ZoneId.systemDefault()).toLocalDate()
 
-    // Returns the start time as a LocalTime in the system's default time zone
-    val startLocalTime: LocalTime
-        get() = startDate.atZone(ZoneId.systemDefault()).toLocalTime()
+  // Returns the start time as a LocalTime in the system's default time zone
+  val startLocalTime: LocalTime
+    get() = startDate.atZone(ZoneId.systemDefault()).toLocalTime()
 
-    // Returns the end time as a LocalTime in the system's default time zone
-    val endLocalTime: LocalTime
-        get() = endDate.atZone(ZoneId.systemDefault()).toLocalTime()
+  // Returns the end time as a LocalTime in the system's default time zone
+  val endLocalTime: LocalTime
+    get() = endDate.atZone(ZoneId.systemDefault()).toLocalTime()
 }
 
 /** Enum representing the recurrence pattern of an event. */

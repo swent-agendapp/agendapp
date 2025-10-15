@@ -8,12 +8,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.unit.dp
-import com.android.sample.resources.C
 
+object SettingsScreenTestTags {
+  const val ROOT = "settings_screen"
+  const val BACK_BUTTON = "back_button"
+}
 /** Placeholder settings screen. */
 @Composable
 fun SettingsScreen(onNavigateBack: () -> Unit) {
-  Surface(modifier = Modifier.fillMaxSize().semantics { testTag = C.Tag.settings_screen }) {
+  Surface(modifier = Modifier.fillMaxSize().semantics { testTag = SettingsScreenTestTags.ROOT }) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,

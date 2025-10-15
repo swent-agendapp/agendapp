@@ -8,12 +8,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.unit.dp
-import com.android.sample.resources.C
+
+object EditEventTestTags {
+  const val ROOT = "edit_event_screen"
+  const val BACK_BUTTON = "back_button"
+}
 
 /** Edit event page. */
 @Composable
 fun EditEventScreen(eventId: String, onNavigateBack: () -> Unit) {
-  Surface(modifier = Modifier.fillMaxSize().semantics { testTag = C.Tag.edit_event_screen }) {
+  Surface(modifier = Modifier.fillMaxSize().semantics { testTag = EditEventTestTags.ROOT }) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,

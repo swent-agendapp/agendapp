@@ -8,7 +8,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.unit.dp
-import com.android.sample.resources.C
+
+object HomeTestTags {
+  const val ROOT = "home_screen"
+  const val ADD_EVENT_BUTTON = "add_event_button"
+  const val SETTINGS_BUTTON = "settings_button"
+}
 
 /** Home screen with navigation buttons for other screens. */
 @Composable
@@ -17,7 +22,7 @@ fun HomeScreen(
     onNavigateToCalendar: () -> Unit,
     onNavigateToSettings: () -> Unit
 ) {
-  Surface(modifier = Modifier.fillMaxSize().semantics { testTag = C.Tag.home_screen }) {
+  Surface(modifier = Modifier.fillMaxSize().semantics { testTag = HomeTestTags.ROOT }) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,

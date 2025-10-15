@@ -3,6 +3,7 @@ package com.android.sample
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -33,7 +34,7 @@ class MainActivity : ComponentActivity() {
     setContent {
       SampleAppTheme {
         Surface(
-            modifier = Modifier.semantics { testTag = C.Tag.main_screen_container },
+            modifier = Modifier.fillMaxSize().semantics { testTag = C.Tag.main_screen_container },
             color = MaterialTheme.colorScheme.background) {
               Agendapp()
             }

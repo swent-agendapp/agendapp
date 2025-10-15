@@ -7,6 +7,12 @@ data class LocalDateRange(
     override val start: LocalDate,
     override val endInclusive: LocalDate,
 ) : ClosedRange<LocalDate>, Iterable<LocalDate> {
+  init {
+    require(!endInclusive.isBefore(start)) {
+      "start ($start) must not be after endInclusive ($endInclusive)"
+    }
+  }
+
   override fun contains(value: LocalDate): Boolean = value >= start && value <= endInclusive
 
   override fun iterator(): Iterator<LocalDate> =

@@ -1,8 +1,7 @@
-package com.github.se.bootcamp.ui.authentication
+package com.android.sample.ui.authentification
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,12 +18,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -41,7 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.credentials.CredentialManager
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
-import com.github.se.bootcamp.ui.authentication.SignInScreenTestTags.END_SNACK_BAR
+import com.android.sample.ui.authentification.SignInScreenTestTags.END_SNACK_BAR
 
 private val appColor = Color(0xFFf46b5d)
 
@@ -56,30 +53,12 @@ object SignInScreenTestTags {
 
 @Composable
 fun SignInScreen(
-    authViewModel: SignInViewModel = viewModel(),
     credentialManager: CredentialManager = CredentialManager.create(LocalContext.current),
     onSignedIn: () -> Unit = {},
 ) {
 
   val context = LocalContext.current
-  val uiState by authViewModel.uiState.collectAsState()
   val snackbarHostState = remember { SnackbarHostState() }
-
-  // ToDo Uncomment later when Model is implemented
-  // LaunchedEffect(uiState.user) {
-  //  uiState.user?.let {
-  //    snackbarHostState.showSnackbar("Login successful!", duration = SnackbarDuration.Indefinite)
-  //    onSignedIn()
-  //  }
-  //}
-
-  // ToDo Uncomment later when Model is implemented
-  //LaunchedEffect(uiState.errorMsg) {
-  //  uiState.errorMsg?.let {
-  //    snackbarHostState.showSnackbar(
-  //        uiState.errorMsg.toString(), duration = SnackbarDuration.Indefinite)
-  //  }
-  //}
 
   // The main container for the screen
   // A surface container using the 'background' color from the theme
@@ -132,13 +111,7 @@ fun SignInScreen(
               textAlign = TextAlign.Center)
 
           Spacer(modifier = Modifier.height(48.dp))
-
-          // Authenticate With Google Button
-          if (uiState.isLoading) {
-            CircularProgressIndicator(modifier = Modifier.size(48.dp))
-          } else {
-            GoogleSignInButton(onSignInClick = { authViewModel.signIn(context, credentialManager) })
-          }
+          GoogleSignInButton(onSignInClick = { })
         }
       })
 }

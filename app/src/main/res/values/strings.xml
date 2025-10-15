@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">SampleApp</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="default_web_client_id">423898020035-fu7m7lmtsuu6cn7d3s4ev4mrf0ep68l3.apps.googleusercontent.com</string>
 </resources>

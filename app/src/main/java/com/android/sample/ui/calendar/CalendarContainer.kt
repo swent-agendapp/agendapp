@@ -8,6 +8,16 @@ import com.android.sample.ui.calendar.data.LocalDateRange
 import com.android.sample.ui.calendar.mockData.MockEvent
 import com.android.sample.ui.calendar.style.CalendarDefaults
 
+
+/**
+ * High-level container for the calendar screen. It hosts the grid background, the events layer,
+ * and (later) swipe/zoom behaviors. Use this as the entry point to render a week view.
+ *
+ * @param modifier [Modifier] applied to the root container.
+ * @param dateRange Visible date range (inclusive) to render.
+ * @param events List of events to display in the grid.
+ * @return Unit. This is a composable that renders UI side-effects only.
+ */
 @Composable
 fun CalendarContainer(
     modifier: Modifier = Modifier,

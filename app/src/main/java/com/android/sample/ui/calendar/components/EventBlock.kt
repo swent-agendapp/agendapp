@@ -31,6 +31,19 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
+
+/**
+ * Draws visual blocks for a list of events within a single day column. Events are clipped to the
+ * visible time window and positioned using their start/end times. Overlap handling is planned and
+ * not yet implemented here.
+ *
+ * @param modifier [Modifier] applied to each event container.
+ * @param events Events for a single day (or already filtered set) to render.
+ * @param startTime Inclusive start time of the visible grid.
+ * @param endTime Exclusive end time of the visible grid.
+ * @param columnWidthDp The width of the day column hosting these events.
+ * @return Unit. This is a composable that renders UI side-effects only.
+ */
 @Composable
 fun EventBlock(
     modifier: Modifier = Modifier,

@@ -16,6 +16,19 @@ import com.android.sample.ui.calendar.style.defaultGridContentStyle
 import java.time.LocalDate
 import java.time.LocalTime
 
+
+/**
+ * Renders all event blocks for the provided list of days. Each day occupies a column; events are
+ * filtered by day and positioned vertically according to their time span.
+ *
+ * @param days Ordered list of days (columns) to display.
+ * @param events All events across the given days. They will be filtered per day.
+ * @param columnWidthDp The width of each day column, in [Dp].
+ * @param gridHeightDp Total scrollable grid height, in [Dp].
+ * @param gridStartTime Inclusive start time of the visible grid.
+ * @param effectiveEndTime Exclusive end time of the visible grid used for layout.
+ * @return Unit. This is a composable that renders UI side-effects only.
+ */
 @Composable
 fun EventsPane(
     days: List<LocalDate> = workWeekDays(),

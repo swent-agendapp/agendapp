@@ -28,6 +28,17 @@ import com.android.sample.ui.calendar.utils.rememberWeekViewMetrics
 import java.time.LocalTime
 import kotlinx.coroutines.delay
 
+
+/**
+ * Core layout of the week-view grid area: time axis, scrollable grid canvas, events overlay,
+ * and a live "now" indicator. Also manages a 1s ticker to keep the current time line in sync.
+ *
+ * @param modifier [Modifier] applied to the whole grid content.
+ * @param style Visual style (colors, spacing, dimensions) for the grid and labels.
+ * @param dateRange Visible date range used to compute layout metrics (column count, labels, etc.).
+ * @param events List of events to render within the visible range.
+ * @return Unit. This is a composable that renders UI side-effects only.
+ */
 @Composable
 fun CalendarGridContent(
     modifier: Modifier = Modifier,
@@ -55,7 +66,7 @@ fun CalendarGridContent(
         if (metrics.columnCount > 0) (availableWidth / metrics.columnCount) else availableWidth
 
     Column(modifier = Modifier.fillMaxSize()) {
-      // todo : render a DayHeaderRow
+      // later : render a DayHeaderRow
 
       Row(modifier = Modifier.weight(1f).testTag(CalendarScreenTestTags.SCROLL_AREA)) {
         TimeAxisColumn(
@@ -68,7 +79,7 @@ fun CalendarGridContent(
 
         // Scrollable Grid Area (Canvas + Events)
         Box(
-            modifier = Modifier.verticalScroll(scrollState).weight(1f) // todo : adapt the height
+            modifier = Modifier.verticalScroll(scrollState).weight(1f) // later : adapt the height
             ) {
               // Render the grid background
               GridCanvas(

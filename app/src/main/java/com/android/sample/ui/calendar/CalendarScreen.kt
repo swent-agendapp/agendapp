@@ -27,7 +27,7 @@ object CalendarScreenTestTags {
   const val NOW_INDICATOR = "NowIndicator"
   const val EVENT_BLOCK = "CalendarEventBlock"
 
-  // todo : add tests tags (DAY_ROW)
+  // later : add tests tags (DAY_ROW)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

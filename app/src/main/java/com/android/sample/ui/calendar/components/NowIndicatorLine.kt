@@ -20,6 +20,21 @@ import java.time.temporal.ChronoUnit
 import kotlin.ranges.rangeTo
 import kotlin.ranges.until
 
+
+/**
+ * Draws a horizontal line (and a leading dot) at the current time within today's column, if the
+ * current time is inside the visible window. Recomputes its Y position as time advances.
+ *
+ * @param modifier [Modifier] applied to the canvas container.
+ * @param columnCount Number of day columns in the grid.
+ * @param rowHeightDp Height per hour row, in [Dp].
+ * @param days Ordered list of days corresponding to the columns.
+ * @param now Current local time used to position the indicator.
+ * @param gridStartTime Inclusive start time of the visible grid.
+ * @param effectiveEndTime Exclusive end time of the visible grid used for layout.
+ * @param style Visual style (color, stroke) for the indicator.
+ * @return Unit. This is a composable that renders UI side-effects only.
+ */
 @Composable
 fun NowIndicatorLine(
     modifier: Modifier = Modifier,

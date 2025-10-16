@@ -1,7 +1,7 @@
 package com.android.sample.model.authentification
 
 /**
- * Data class representing a calendar event.
+ * Data class representing a User.
  *
  * @property id Unique identifier for the User.
  * @property displayName Name to display for User Profile.

@@ -1,4 +1,26 @@
 <resources>
     <string name="app_name">SampleApp</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_second">SecondActivity</string>
+    <string name="next">Next</string>
+    <string name="addEventTitle">New event</string>
+    <string name="enterTitleAndDescription">Please write the title and description of your event</string>
+    <string name="enterTimeAndRecurrence">Please select the event type and time</string>
+    <string name="eventTitle">Title</string>
+    <string name="eventTitlePlaceholder">Enter a title</string>
+    <string name="title_empty_error">Title cannot be empty</string>
+    <string name="description_empty_error">Description cannot be empty</string>
+    <string name="eventDescriptionPlaceholder">Describe the event</string>
+    <string name="eventDescription">Description</string>
+    <string name="goBack">Go Back</string>
+    <string name="selectAttendants">Select the person attending this event.</string>
+    <string name="startTime">Start time</string>
+    <string name="endTime">End time</string>
+    <string name="datePickerLabel">Date</string>
+    <string name="recurrenceEndPickerLabel">Recurrence end</string>
+    <string name="recurrenceMenuLabel">Recurrence</string>
+    <string name="finish">Finish</string>
+    <string name="create">Create</string>
+    <string name="confirmationMessage">Congratulation !\nYour event has been succefully created and added to your calendar</string>
+    <string name="cancel">Cancel</string>
 </resources>

@@ -3,7 +3,6 @@ package com.android.sample.utils
 import android.content.Context
 import android.util.Base64
 import androidx.core.os.bundleOf
-import androidx.credentials.Credential
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
@@ -15,7 +14,6 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
 import org.json.JSONObject
-import java.util.UUID
 
 object FakeJwtGenerator {
   private fun base64UrlEncode(input: ByteArray): String {
@@ -42,12 +40,18 @@ object FakeJwtGenerator {
   }
 }
 
-class FakeCredentialManager private constructor(private val context: Context, credentialType: String = TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) :
-    CredentialManager by CredentialManager.create(context) {
+class FakeCredentialManager
+private constructor(
+    private val context: Context,
+    credentialType: String = TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
+) : CredentialManager by CredentialManager.create(context) {
   companion object {
     // Creates a mock CredentialManager that always returns a CustomCredential
     // containing the given fakeUserIdToken when getCredential() is called.
-    fun create(fakeUserIdToken: String, credentialType: String = TYPE_GOOGLE_ID_TOKEN_CREDENTIAL): CredentialManager {
+    fun create(
+        fakeUserIdToken: String,
+        credentialType: String = TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
+    ): CredentialManager {
       mockkObject(GoogleIdTokenCredential)
       val googleIdTokenCredential = mockk<GoogleIdTokenCredential>()
       every { googleIdTokenCredential.idToken } returns fakeUserIdToken
@@ -56,9 +60,7 @@ class FakeCredentialManager private constructor(private val context: Context, cr
       val mockGetCredentialResponse = mockk<GetCredentialResponse>()
 
       val fakeCustomCredential =
-          CustomCredential(
-              type = credentialType,
-              data = bundleOf("id_token" to fakeUserIdToken))
+          CustomCredential(type = credentialType, data = bundleOf("id_token" to fakeUserIdToken))
 
       every { mockGetCredentialResponse.credential } returns fakeCustomCredential
       coEvery {

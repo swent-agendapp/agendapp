@@ -45,12 +45,12 @@ import com.android.sample.ui.theme.Salmon
 import com.github.se.bootcamp.ui.authentication.SignInScreenTestTags.END_SNACK_BAR
 
 object SignInScreenTestTags {
-    const val APP_LOGO = "appLogo"
-    const val LOGIN_TITLE = "loginTitle"
-    const val LOGIN_MESSAGE = "loginMessage"
-    const val LOGIN_WELCOME = "loginWelcome"
-    const val LOGIN_BUTTON = "loginButton"
-    const val END_SNACK_BAR = "snackBar"
+  const val APP_LOGO = "appLogo"
+  const val LOGIN_TITLE = "loginTitle"
+  const val LOGIN_MESSAGE = "loginMessage"
+  const val LOGIN_WELCOME = "loginWelcome"
+  const val LOGIN_BUTTON = "loginButton"
+  const val END_SNACK_BAR = "snackBar"
 }
 
 @Composable
@@ -60,108 +60,108 @@ fun SignInScreen(
     onSignedIn: () -> Unit = {},
 ) {
 
-    val context = LocalContext.current
-    val uiState by authViewModel.uiState.collectAsState()
-    val snackbarHostState = remember { SnackbarHostState() }
+  val context = LocalContext.current
+  val uiState by authViewModel.uiState.collectAsState()
+  val snackbarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(uiState.user) {
-        uiState.user?.let {
-            snackbarHostState.showSnackbar("Login successful!", duration = SnackbarDuration.Long)
-            onSignedIn()
-        }
+  LaunchedEffect(uiState.user) {
+    uiState.user?.let {
+      snackbarHostState.showSnackbar("Login successful!", duration = SnackbarDuration.Long)
+      onSignedIn()
     }
+  }
 
-    LaunchedEffect(uiState.errorMsg) {
-        uiState.errorMsg?.let {
-            snackbarHostState.showSnackbar(uiState.errorMsg.toString(), duration = SnackbarDuration.Long)
-        }
+  LaunchedEffect(uiState.errorMsg) {
+    uiState.errorMsg?.let {
+      snackbarHostState.showSnackbar(uiState.errorMsg.toString(), duration = SnackbarDuration.Long)
     }
+  }
 
-    // The main container for the screen
-    // A surface container using the 'background' color from the theme
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        snackbarHost = {
-            SnackbarHost(snackbarHostState, modifier = Modifier.testTag(END_SNACK_BAR))
-        },
-        content = { padding ->
-            Column(
-                modifier = Modifier.fillMaxSize().padding(padding),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-            ) {
-                // App Logo Image
-                Image(
-                    painter = painterResource(id = R.drawable.app_logo), // Ensure this drawable exists
-                    contentDescription = "App Logo",
-                    modifier = Modifier.size(250.dp).testTag(SignInScreenTestTags.APP_LOGO))
+  // The main container for the screen
+  // A surface container using the 'background' color from the theme
+  Scaffold(
+      modifier = Modifier.fillMaxSize(),
+      snackbarHost = {
+        SnackbarHost(snackbarHostState, modifier = Modifier.testTag(END_SNACK_BAR))
+      },
+      content = { padding ->
+        Column(
+            modifier = Modifier.fillMaxSize().padding(padding),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+          // App Logo Image
+          Image(
+              painter = painterResource(id = R.drawable.app_logo), // Ensure this drawable exists
+              contentDescription = "App Logo",
+              modifier = Modifier.size(250.dp).testTag(SignInScreenTestTags.APP_LOGO))
 
-                Text(
-                    modifier = Modifier.testTag(SignInScreenTestTags.LOGIN_TITLE),
-                    text = "Agendapp",
-                    style =
-                        MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 57.sp, lineHeight = 50.sp, color = Salmon),
-                    fontWeight = FontWeight.Bold,
-                    // center the text
-                    textAlign = TextAlign.Center)
-                Text(
-                    modifier = Modifier.testTag(SignInScreenTestTags.LOGIN_MESSAGE),
-                    text = "Plan, track and manage",
-                    style =
-                        MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 20.sp, lineHeight = 24.sp, color = Salmon),
-                    fontWeight = FontWeight.Bold,
-                    // center the text
-                    textAlign = TextAlign.Center)
+          Text(
+              modifier = Modifier.testTag(SignInScreenTestTags.LOGIN_TITLE),
+              text = "Agendapp",
+              style =
+                  MaterialTheme.typography.headlineLarge.copy(
+                      fontSize = 57.sp, lineHeight = 50.sp, color = Salmon),
+              fontWeight = FontWeight.Bold,
+              // center the text
+              textAlign = TextAlign.Center)
+          Text(
+              modifier = Modifier.testTag(SignInScreenTestTags.LOGIN_MESSAGE),
+              text = "Plan, track and manage",
+              style =
+                  MaterialTheme.typography.headlineLarge.copy(
+                      fontSize = 20.sp, lineHeight = 24.sp, color = Salmon),
+              fontWeight = FontWeight.Bold,
+              // center the text
+              textAlign = TextAlign.Center)
 
-                Spacer(modifier = Modifier.height(48.dp))
+          Spacer(modifier = Modifier.height(48.dp))
 
-                // Welcome Text
-                Text(
-                    modifier = Modifier.testTag(SignInScreenTestTags.LOGIN_WELCOME),
-                    text = "Welcome",
-                    style =
-                        MaterialTheme.typography.headlineLarge.copy(fontSize = 57.sp, lineHeight = 64.sp),
-                    fontWeight = FontWeight.Bold,
-                    // center the text
-                    textAlign = TextAlign.Center)
+          // Welcome Text
+          Text(
+              modifier = Modifier.testTag(SignInScreenTestTags.LOGIN_WELCOME),
+              text = "Welcome",
+              style =
+                  MaterialTheme.typography.headlineLarge.copy(fontSize = 57.sp, lineHeight = 64.sp),
+              fontWeight = FontWeight.Bold,
+              // center the text
+              textAlign = TextAlign.Center)
 
-                Spacer(modifier = Modifier.height(48.dp))
+          Spacer(modifier = Modifier.height(48.dp))
 
-                // Authenticate With Google Button
-                if (uiState.isLoading) {
-                    CircularProgressIndicator(modifier = Modifier.size(48.dp))
-                } else {
-                    GoogleSignInButton(onSignInClick = { authViewModel.signIn(context, credentialManager) })
-                }
-            }
-        })
+          // Authenticate With Google Button
+          if (uiState.isLoading) {
+            CircularProgressIndicator(modifier = Modifier.size(48.dp))
+          } else {
+            GoogleSignInButton(onSignInClick = { authViewModel.signIn(context, credentialManager) })
+          }
+        }
+      })
 }
 
 @Composable
 fun GoogleSignInButton(onSignInClick: () -> Unit) {
-    Button(
-        onClick = onSignInClick,
-        colors = ButtonDefaults.buttonColors(containerColor = Salmon), // Button color
-        shape = RoundedCornerShape(50), // Circular edges for the button
-        border = BorderStroke(1.dp, Color.Transparent),
-        modifier =
-            Modifier.padding(8.dp)
-                .height(48.dp)
-                .width(250.dp)
-                .testTag(SignInScreenTestTags.LOGIN_BUTTON)) {
+  Button(
+      onClick = onSignInClick,
+      colors = ButtonDefaults.buttonColors(containerColor = Salmon), // Button color
+      shape = RoundedCornerShape(50), // Circular edges for the button
+      border = BorderStroke(1.dp, Color.Transparent),
+      modifier =
+          Modifier.padding(8.dp)
+              .height(48.dp)
+              .width(250.dp)
+              .testTag(SignInScreenTestTags.LOGIN_BUTTON)) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxWidth()) {
 
-            // Text for the button
-            Text(
-                text = "Sign in with Google",
-                color = Color.White, // Text color
-                fontSize = 16.sp, // Font size
-                fontWeight = FontWeight.Medium)
-        }
-    }
+              // Text for the button
+              Text(
+                  text = "Sign in with Google",
+                  color = Color.White, // Text color
+                  fontSize = 16.sp, // Font size
+                  fontWeight = FontWeight.Medium)
+            }
+      }
 }

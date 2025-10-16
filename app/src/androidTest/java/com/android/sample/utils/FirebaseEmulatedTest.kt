@@ -4,7 +4,6 @@ import android.util.Log
 import com.android.sample.model.calendar.EVENTS_COLLECTION_PATH
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryFirebase
-import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
 import kotlin.text.get

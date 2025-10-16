@@ -73,5 +73,9 @@ open class FirebaseEmulatedTest {
   open fun tearDown() {
     runTest { clearTestCollection() }
     FirebaseEmulator.clearFirestoreEmulator()
+    if (FirebaseEmulator.isRunning) {
+      FirebaseEmulator.auth.signOut()
+      FirebaseEmulator.clearAuthEmulator()
+    }
   }
 }

@@ -14,9 +14,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -43,6 +47,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.theme.Salmon
 import com.github.se.bootcamp.ui.authentication.SignInScreenTestTags.END_SNACK_BAR
+import com.github.se.bootcamp.ui.authentication.SignInScreenTestTags.LOGOUT_BUTTON
 
 object SignInScreenTestTags {
   const val APP_LOGO = "appLogo"
@@ -50,6 +55,7 @@ object SignInScreenTestTags {
   const val LOGIN_MESSAGE = "loginMessage"
   const val LOGIN_WELCOME = "loginWelcome"
   const val LOGIN_BUTTON = "loginButton"
+  const val LOGOUT_BUTTON = "logoutButton"
   const val END_SNACK_BAR = "snackBar"
 }
 
@@ -83,6 +89,15 @@ fun SignInScreen(
       modifier = Modifier.fillMaxSize(),
       snackbarHost = {
         SnackbarHost(snackbarHostState, modifier = Modifier.testTag(END_SNACK_BAR))
+      },
+      floatingActionButton = {
+        if (!uiState.signedOut) {
+          IconButton(
+              onClick = { authViewModel.signOut(credentialManager = credentialManager) },
+              modifier = Modifier.testTag(LOGOUT_BUTTON)) {
+                Icon(imageVector = Icons.Filled.Clear, contentDescription = "SignOut button")
+              }
+        }
       },
       content = { padding ->
         Column(
@@ -132,7 +147,7 @@ fun SignInScreen(
           // Authenticate With Google Button
           if (uiState.isLoading) {
             CircularProgressIndicator(modifier = Modifier.size(48.dp))
-          } else {
+          } else if (uiState.signedOut) {
             GoogleSignInButton(onSignInClick = { authViewModel.signIn(context, credentialManager) })
           }
         }

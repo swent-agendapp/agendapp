@@ -3,6 +3,7 @@ package com.android.sample.utils
 import android.content.Context
 import android.util.Base64
 import androidx.core.os.bundleOf
+import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
@@ -66,6 +67,10 @@ private constructor(
       coEvery {
         fakeCredentialManager.getCredential(any<Context>(), any<GetCredentialRequest>())
       } returns mockGetCredentialResponse
+
+      coEvery {
+        fakeCredentialManager.clearCredentialState(any<ClearCredentialStateRequest>())
+      } returns Unit
 
       return fakeCredentialManager
     }

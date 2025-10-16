@@ -2,6 +2,7 @@ package com.github.se.bootcamp.ui.authentication
 
 import android.content.Context
 import android.credentials.GetCredentialException
+import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.GetCredentialCancellationException
@@ -29,7 +30,7 @@ data class AuthUIState(
     val isLoading: Boolean = false,
     val user: User? = null,
     val errorMsg: String? = null,
-    val signedOut: Boolean = false
+    val signedOut: Boolean = true
 )
 
 /**
@@ -125,6 +126,30 @@ class SignInViewModel(private val repository: AuthRepository = AuthRepositoryFir
               user = null)
         }
       }
+    }
+  }
+
+  /** Initiates sign-out and updates the UI state on success or failure. */
+  fun signOut(credentialManager: CredentialManager): Unit {
+    viewModelScope.launch {
+      repository
+          .signOut()
+          .fold(
+              onSuccess = {
+                _uiState.update {
+                  it.copy(isLoading = false, errorMsg = null, signedOut = true, user = null)
+                }
+              },
+              onFailure = { throwable ->
+                _uiState.update {
+                  it.copy(
+                      isLoading = false,
+                      errorMsg = throwable.localizedMessage,
+                      signedOut = false,
+                      user = it.user)
+                }
+              })
+      credentialManager.clearCredentialState(ClearCredentialStateRequest())
     }
   }
 }

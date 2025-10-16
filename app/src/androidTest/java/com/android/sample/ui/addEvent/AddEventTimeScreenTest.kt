@@ -23,21 +23,51 @@ class AddEventTimeScreenTest {
 
   @Test
   fun displayAllComponents() {
-    composeTestRule.onNodeWithTag(AddEventTestTags.START_DATE_FIELD).performScrollTo().assertIsDisplayed()
-    composeTestRule.onNodeWithTag(AddEventTestTags.START_TIME_BUTTON).performScrollTo().assertIsDisplayed()
-    composeTestRule.onNodeWithTag(AddEventTestTags.END_TIME_BUTTON).performScrollTo().assertIsDisplayed()
-    composeTestRule.onNodeWithTag(AddEventTestTags.RECURRENCE_STATUS_DROPDOWN).performScrollTo().assertIsDisplayed()
-    composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).performScrollTo().assertIsDisplayed()
-    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).performScrollTo().assertIsDisplayed()
-    composeTestRule.onNodeWithTag(AddEventTestTags.BACK_BUTTON).performScrollTo().assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.START_DATE_FIELD)
+        .performScrollTo()
+        .assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.START_TIME_BUTTON)
+        .performScrollTo()
+        .assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.END_TIME_BUTTON)
+        .performScrollTo()
+        .assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.RECURRENCE_STATUS_DROPDOWN)
+        .performScrollTo()
+        .assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD)
+        .performScrollTo()
+        .assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.NEXT_BUTTON)
+        .performScrollTo()
+        .assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.BACK_BUTTON)
+        .performScrollTo()
+        .assertIsDisplayed()
   }
 
   @Test
   fun nextButtonEnabledWhenFieldsAreValid() {
-    composeTestRule.onNodeWithTag(AddEventTestTags.START_TIME_BUTTON).performScrollTo().performClick()
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.START_TIME_BUTTON)
+        .performScrollTo()
+        .performClick()
     composeTestRule.onNodeWithTag(AddEventTestTags.END_TIME_BUTTON).performScrollTo().performClick()
-    composeTestRule.onNodeWithTag(AddEventTestTags.START_DATE_FIELD).performScrollTo().performClick()
-    composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).performScrollTo().performClick()
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.START_DATE_FIELD)
+        .performScrollTo()
+        .performClick()
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD)
+        .performScrollTo()
+        .performClick()
 
     composeTestRule.waitForIdle()
 

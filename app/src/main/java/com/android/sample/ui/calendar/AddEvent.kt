@@ -57,11 +57,13 @@ import java.time.Instant
 import java.util.Calendar
 
 object AddEventTestTags {
+    // Tags for the different composables in the Add Event flow
+  const val INSTRUCTION_TEXT = "instruction_text"
   const val TITLE_TEXT_FIELD = "title_text_field"
   const val DESCRIPTION_TEXT_FIELD = "description_text_field"
   const val START_DATE_FIELD = "start_date_field"
   const val END_RECURRENCE_FIELD = "end_date_field"
-  const val START_TIME_FIELD = "start_time_button"
+  const val START_TIME_BUTTON = "start_time_button"
   const val END_TIME_BUTTON = "end_time_button"
   const val PERSONAL_NOTE_TEXT_FIELD = "personal_note_text_field"
   const val RECURRENCE_STATUS_DROPDOWN = "recurrence_status_dropdown"
@@ -99,6 +101,7 @@ fun AddEventTitleAndDescriptionScreen(
                         stringResource(R.string.enterTitleAndDescription),
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.headlineMedium,
+                        modifier = Modifier.testTag(AddEventTestTags.INSTRUCTION_TEXT)
                     )
                   }
               Column(modifier = Modifier.weight(1f)) {
@@ -177,6 +180,7 @@ fun AddEventTimeAndRecurrenceScreen(
                         stringResource(R.string.enterTimeAndRecurrence),
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.headlineMedium,
+                        modifier = Modifier.testTag(AddEventTestTags.INSTRUCTION_TEXT)
                     )
                   }
 
@@ -233,7 +237,7 @@ fun AddEventTimeAndRecurrenceScreen(
                           textAlign = TextAlign.Center)
                       OutlinedButton(
                           onClick = { showStartTimePicker = true },
-                          modifier = Modifier.weight(1f)) {
+                          modifier = Modifier.weight(1f).testTag(AddEventTestTags.START_TIME_BUTTON)) {
                             Text(
                                 text = DateTimeUtils.formatInstantToTime(Instant.now())
                                 //
@@ -258,7 +262,7 @@ fun AddEventTimeAndRecurrenceScreen(
                           modifier = Modifier.weight(1f),
                           textAlign = TextAlign.Center)
                       OutlinedButton(
-                          onClick = { showEndTimePicker = true }, modifier = Modifier.weight(1f)) {
+                          onClick = { showEndTimePicker = true }, modifier = Modifier.weight(1f).testTag(AddEventTestTags.END_TIME_BUTTON)) {
                             Text(
                                 text = DateTimeUtils.formatInstantToTime(Instant.now())
 
@@ -359,6 +363,7 @@ fun AddEventAttendantScreen(
                         stringResource(R.string.selectAttendants),
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.headlineMedium,
+                        modifier = Modifier.testTag(AddEventTestTags.INSTRUCTION_TEXT)
                     )
                   }
               Card(
@@ -442,6 +447,7 @@ fun AddEventConfirmationScreen(
                         stringResource(R.string.confirmationMessage),
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.headlineMedium,
+                        modifier = Modifier.testTag(AddEventTestTags.INSTRUCTION_TEXT)
                     )
                   }
             }

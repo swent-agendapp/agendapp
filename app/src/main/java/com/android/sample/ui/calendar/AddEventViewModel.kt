@@ -26,7 +26,7 @@ data class AddCalendarEventUIState(
     val startDate: LocalDate = LocalDate.now(),
     val startHour: Int = LocalTime.now().hour,
     val startMinute: Int = LocalTime.now().minute,
-    val endHour: Int = LocalTime.now().hour + 1,
+    val endHour: Int = (LocalTime.now().hour + 1) % 24,
     val endMinute: Int = LocalTime.now().minute,
     val recurrenceEndTime: Instant = Instant.now(),
     val recurrenceMode: RecurrenceStatus = RecurrenceStatus.OneTime,

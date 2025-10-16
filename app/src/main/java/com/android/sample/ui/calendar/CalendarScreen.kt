@@ -26,8 +26,7 @@ object CalendarScreenTestTags {
   const val TIME_AXIS_COLUMN = "TimeAxisColumn"
   const val NOW_INDICATOR = "NowIndicator"
   const val EVENT_BLOCK = "CalendarEventBlock"
-
-  // later : add tests tags (DAY_ROW)
+  const val DAY_ROW = "CalendarDayRow"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

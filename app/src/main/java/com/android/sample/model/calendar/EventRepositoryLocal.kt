@@ -6,23 +6,48 @@ class EventRepositoryLocal : EventRepository {
   private val events: MutableList<Event> = mutableListOf()
 
   override suspend fun getAllEvents(): List<Event> {
-    return events
+    return events.filter { !it.hasBeenDeleted }
   }
 
   override suspend fun insertEvent(item: Event) {
-    events.add(item)
+    require(events.indexOfFirst { it.id == item.id } == -1) {
+      "Item with id ${item.id} already exists."
+    }
+    val currentUserId = "LOCAL_USER" // todo get current user id from auth when implemented
+    val updatedItem =
+        item.copy(
+            locallyStoredBy = item.locallyStoredBy + currentUserId,
+            version = System.currentTimeMillis())
+    events.add(updatedItem)
   }
 
   override suspend fun updateEvent(itemId: String, item: Event) {
+    require(!item.hasBeenDeleted) { "Cannot update a deleted event." }
     val index = events.indexOfFirst { it.id == itemId }
-    if (index != -1) {
-      events[index] = item
-    }
+    require(index != -1) { "Item with id $itemId does not exist." }
+    require(!events[index].hasBeenDeleted) { "Cannot update a deleted event." }
+
+    val currentUserId = "LOCAL_USER" // todo get current user id from auth when implemented
+    val newEvent =
+        item.copy(
+            locallyStoredBy = listOf(currentUserId),
+            version = System.currentTimeMillis(),
+            cloudStorageStatuses = emptySet())
+    events[index] = newEvent
   }
 
   override suspend fun deleteEvent(itemId: String) {
-    require(events.any { it.id == itemId }) { "Item with id $itemId does not exist." }
-    events.removeAll { it.id == itemId }
+    val index = events.indexOfFirst { it.id == itemId }
+    require(index != -1) { "Item with id $itemId does not exist." }
+    require(!events[index].hasBeenDeleted) { "Item with id $itemId has already been deleted." }
+
+    val oldEvent = events[index]
+    val newEvent =
+        oldEvent.copy(
+            version = System.currentTimeMillis(),
+            hasBeenDeleted = true,
+            cloudStorageStatuses = emptySet())
+    events[index] = newEvent
   }
 
   override suspend fun getEventById(itemId: String): Event? {
@@ -32,9 +57,5 @@ class EventRepositoryLocal : EventRepository {
   override suspend fun getEventsBetweenDates(startDate: Instant, endDate: Instant): List<Event> {
     require(startDate <= endDate) { "start date must be before or equal to end date" }
     return events.filter { it.startDate >= startDate && it.endDate <= endDate }
-  }
-
-  override suspend fun getAllUnsyncedEvents(db: StorageStatus): List<Event> {
-    return events.filter { db !in it.storageStatus }
   }
 }

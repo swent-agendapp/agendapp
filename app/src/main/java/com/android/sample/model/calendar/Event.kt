@@ -10,13 +10,14 @@ import java.time.Instant
  * @property description Description of the event.
  * @property startDate Start date and time of the event.
  * @property endDate End date and time of the event.
- * @property storageStatus Set of storage locations where the event is saved (e.g., local,
+ * @property cloudStorageStatuses Set of storage locations where the event is saved (e.g., local,
  *   Firestore).
  * @property personalNotes Optional personal notes for the event.
- * @property owners Set of user IDs who own the event.
  * @property participants Set of user IDs participating in the event.
- * @property version Version number for concurrency control.
+ * @property version timestamp of last modification, used for conflict resolution.
+ * @property hasBeenDeleted Flag indicating if the event has been deleted.
  * @property recurrenceStatus Recurrence pattern of the event (e.g., one-time, weekly).
+ * @property locallyStoredBy List of user IDs who have the event stored locally.
  */
 data class Event(
     val id: String,
@@ -24,12 +25,13 @@ data class Event(
     val description: String,
     val startDate: Instant,
     val endDate: Instant,
-    val storageStatus: Set<StorageStatus>,
+    val cloudStorageStatuses: Set<CloudStorageStatus>,
+    val locallyStoredBy: List<String> = emptyList(),
     val personalNotes: String?,
-    val owners: Set<String>,
     val participants: Set<String>,
     val version: Long,
-    val recurrenceStatus: RecurrenceStatus
+    val recurrenceStatus: RecurrenceStatus,
+    val hasBeenDeleted: Boolean = false,
 )
 
 /** Enum representing the recurrence pattern of an event. */
@@ -40,9 +42,8 @@ enum class RecurrenceStatus {
   Yearly
 }
 
-/** Enum representing the storage location of an event. */
-enum class StorageStatus {
-  LOCAL,
+/** Enum representing the cloud storage location of an event. */
+enum class CloudStorageStatus {
   FIRESTORE,
 }
 
@@ -53,9 +54,8 @@ enum class StorageStatus {
  * @param description Description of the event.
  * @param startDate Start date and time of the event.
  * @param endDate End date and time of the event.
- * @param storageStatus Set of storage locations for the event.
+ * @param cloudStorageStatuses Set of storage locations for the event.
  * @param personalNotes Optional personal notes.
- * @param owners Set of user IDs who own the event.
  * @param participants Set of user IDs participating in the event.
  * @return A new Event instance.
  */
@@ -64,9 +64,8 @@ fun createEvent(
     description: String,
     startDate: Instant,
     endDate: Instant,
-    storageStatus: Set<StorageStatus>,
+    cloudStorageStatuses: Set<CloudStorageStatus> = emptySet(),
     personalNotes: String? = null,
-    owners: Set<String> = emptySet(),
     participants: Set<String> = emptySet()
 ): Event {
   return Event(
@@ -75,10 +74,9 @@ fun createEvent(
       description = description,
       startDate = startDate,
       endDate = endDate,
-      storageStatus = storageStatus,
+      cloudStorageStatuses = cloudStorageStatuses,
       personalNotes = personalNotes,
-      owners = owners,
       participants = participants,
-      version = 0L,
+      version = System.currentTimeMillis(),
       recurrenceStatus = RecurrenceStatus.OneTime)
 }

@@ -45,7 +45,6 @@ class CalendarViewModelTest {
             description = "Team sync",
             startDate = Instant.parse("2025-01-10T10:00:00Z"),
             endDate = Instant.parse("2025-01-10T11:00:00Z"),
-            storageStatus = setOf(StorageStatus.LOCAL),
             personalNotes = "Bring laptop")
 
     event2 =
@@ -54,7 +53,7 @@ class CalendarViewModelTest {
             description = "Tech event",
             startDate = Instant.parse("2025-02-01T09:00:00Z"),
             endDate = Instant.parse("2025-02-03T18:00:00Z"),
-            storageStatus = setOf(StorageStatus.FIRESTORE))
+        )
 
     // Insert the sample events into the repository before each test.
     runTest {

@@ -20,8 +20,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-
-// TODO: Optimize AddCalendarEventUIState by rethinking about the handling of the date and time fields
+// TODO: Optimize AddCalendarEventUIState by rethinking about the handling of the date and time
+// fields
 data class AddCalendarEventUIState(
     val title: String = "",
     val description: String = "",

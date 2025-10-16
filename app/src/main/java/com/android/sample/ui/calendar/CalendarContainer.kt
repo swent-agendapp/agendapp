@@ -2,8 +2,17 @@ package com.android.sample.ui.calendar
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import com.android.sample.ui.calendar.data.LocalDateRange
 import com.android.sample.ui.calendar.mockData.MockEvent
 import com.android.sample.ui.calendar.style.CalendarDefaults
@@ -37,6 +46,12 @@ fun CalendarContainer(
             // Later : give dateRange (like Monday-Friday) and events list from ViewModel
             // Later : give onEventClick and onEventLongPress
             )
+        IconButton(
+            onClick = {},
+            modifier =
+                Modifier.align(Alignment.TopStart).padding(top = 5.dp, start = 8.dp).size(35.dp)) {
+              Icon(imageVector = Icons.Default.Add, contentDescription = "Add", tint = Color.Gray)
+            }
 
         // Later : manage visual swiping effects here
       }

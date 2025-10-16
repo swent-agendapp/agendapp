@@ -23,4 +23,5 @@
     <string name="create">Create</string>
     <string name="confirmationMessage">Congratulation !\nYour event has been succefully created and added to your calendar</string>
     <string name="cancel">Cancel</string>
+    <string name="default_web_client_id">423898020035-fu7m7lmtsuu6cn7d3s4ev4mrf0ep68l3.apps.googleusercontent.com</string>
 </resources>

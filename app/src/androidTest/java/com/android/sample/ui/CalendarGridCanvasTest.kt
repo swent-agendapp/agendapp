@@ -1,4 +1,4 @@
-package com.android.sample
+package com.android.sample.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,8 +27,9 @@ class CalendarGridCanvasTest {
     val days = workWeekDays()
 
     compose.setContent {
-      Box(Modifier.size(300.dp)) {
-        GridCanvas(modifier = Modifier.fillMaxSize(), columnCount = days.size, days = days)
+      Box(Modifier.Companion.size(300.dp)) {
+        GridCanvas(
+            modifier = Modifier.Companion.fillMaxSize(), columnCount = days.size, days = days)
       }
     }
     compose.onNodeWithTag(CalendarScreenTestTags.EVENT_GRID).assertExists().assertIsDisplayed()

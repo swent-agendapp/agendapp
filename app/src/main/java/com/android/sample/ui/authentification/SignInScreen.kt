@@ -1,4 +1,4 @@
-package com.android.sample.ui.authentification
+package com.github.se.bootcamp.ui.authentication
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -13,14 +13,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -34,10 +42,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.credentials.CredentialManager
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
-import com.android.sample.ui.authentification.SignInScreenTestTags.END_SNACK_BAR
-
-private val appColor = Color(0xFFf46b5d)
+import com.android.sample.ui.theme.Salmon
+import com.github.se.bootcamp.ui.authentication.SignInScreenTestTags.END_SNACK_BAR
+import com.github.se.bootcamp.ui.authentication.SignInScreenTestTags.LOGOUT_BUTTON
 
 object SignInScreenTestTags {
   const val APP_LOGO = "appLogo"
@@ -45,17 +54,34 @@ object SignInScreenTestTags {
   const val LOGIN_MESSAGE = "loginMessage"
   const val LOGIN_WELCOME = "loginWelcome"
   const val LOGIN_BUTTON = "loginButton"
+  const val LOGOUT_BUTTON = "logoutButton"
   const val END_SNACK_BAR = "snackBar"
 }
 
 @Composable
 fun SignInScreen(
+    authViewModel: SignInViewModel = viewModel(),
     credentialManager: CredentialManager = CredentialManager.create(LocalContext.current),
     onSignedIn: () -> Unit = {},
 ) {
 
   val context = LocalContext.current
+  val uiState by authViewModel.uiState.collectAsState()
   val snackbarHostState = remember { SnackbarHostState() }
+
+  LaunchedEffect(uiState.user) {
+    uiState.user?.let {
+      snackbarHostState.showSnackbar("Login successful!", duration = SnackbarDuration.Long)
+      onSignedIn()
+    }
+  }
+
+  LaunchedEffect(uiState.errorMsg) {
+    uiState.errorMsg?.let {
+      snackbarHostState.showSnackbar(uiState.errorMsg.toString(), duration = SnackbarDuration.Long)
+      authViewModel.clearErrorMsg()
+    }
+  }
 
   // The main container for the screen
   // A surface container using the 'background' color from the theme
@@ -63,6 +89,15 @@ fun SignInScreen(
       modifier = Modifier.fillMaxSize(),
       snackbarHost = {
         SnackbarHost(snackbarHostState, modifier = Modifier.testTag(END_SNACK_BAR))
+      },
+      floatingActionButton = {
+        if (!uiState.signedOut) {
+          IconButton(
+              onClick = { authViewModel.signOut(credentialManager = credentialManager) },
+              modifier = Modifier.testTag(LOGOUT_BUTTON)) {
+                Icon(imageVector = Icons.Filled.Clear, contentDescription = "SignOut button")
+              }
+        }
       },
       content = { padding ->
         Column(
@@ -81,7 +116,7 @@ fun SignInScreen(
               text = "Agendapp",
               style =
                   MaterialTheme.typography.headlineLarge.copy(
-                      fontSize = 57.sp, lineHeight = 50.sp, color = appColor),
+                      fontSize = 57.sp, lineHeight = 50.sp, color = Salmon),
               fontWeight = FontWeight.Bold,
               // center the text
               textAlign = TextAlign.Center)
@@ -90,7 +125,7 @@ fun SignInScreen(
               text = "Plan, track and manage",
               style =
                   MaterialTheme.typography.headlineLarge.copy(
-                      fontSize = 20.sp, lineHeight = 24.sp, color = appColor),
+                      fontSize = 20.sp, lineHeight = 24.sp, color = Salmon),
               fontWeight = FontWeight.Bold,
               // center the text
               textAlign = TextAlign.Center)
@@ -108,7 +143,13 @@ fun SignInScreen(
               textAlign = TextAlign.Center)
 
           Spacer(modifier = Modifier.height(48.dp))
-          GoogleSignInButton(onSignInClick = {})
+
+          // Authenticate With Google Button
+          if (uiState.isLoading) {
+            CircularProgressIndicator(modifier = Modifier.size(48.dp))
+          } else if (uiState.signedOut) {
+            GoogleSignInButton(onSignInClick = { authViewModel.signIn(context, credentialManager) })
+          }
         }
       })
 }
@@ -117,7 +158,7 @@ fun SignInScreen(
 fun GoogleSignInButton(onSignInClick: () -> Unit) {
   Button(
       onClick = onSignInClick,
-      colors = ButtonDefaults.buttonColors(containerColor = appColor), // Button color
+      colors = ButtonDefaults.buttonColors(containerColor = Salmon), // Button color
       shape = RoundedCornerShape(50), // Circular edges for the button
       border = BorderStroke(1.dp, Color.Transparent),
       modifier =

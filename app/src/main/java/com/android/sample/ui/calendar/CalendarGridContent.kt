@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import com.android.sample.ui.calendar.components.DayHeaderRow
 import com.android.sample.ui.calendar.components.EventsPane
 import com.android.sample.ui.calendar.components.GridCanvas
 import com.android.sample.ui.calendar.components.NowIndicatorLine
@@ -65,7 +66,11 @@ fun CalendarGridContent(
         if (metrics.columnCount > 0) (availableWidth / metrics.columnCount) else availableWidth
 
     Column(modifier = Modifier.fillMaxSize()) {
-      // later : render a DayHeaderRow
+      DayHeaderRow(
+          days = metrics.days,
+          leftOffsetDp = metrics.leftOffsetDp,
+          topOffsetDp = metrics.topOffsetDp,
+          columnWidth = dynamicColumnWidthDp)
 
       Row(modifier = Modifier.weight(1f).testTag(CalendarScreenTestTags.SCROLL_AREA)) {
         TimeAxisColumn(

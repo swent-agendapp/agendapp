@@ -49,6 +49,7 @@ internal fun TimeAxisColumn(
       modifier = Modifier.width(leftOffsetDp).height(gridHeightDp),
       // Total height of the scrollable grid
   ) {
+
     // Regular time labels (hours)
     Column(
         modifier =

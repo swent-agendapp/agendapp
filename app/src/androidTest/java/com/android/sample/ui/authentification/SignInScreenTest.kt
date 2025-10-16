@@ -1,14 +1,24 @@
 package com.android.sample.ui.authentification
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import com.android.sample.utils.FirebaseEmulator
+import com.github.se.bootcamp.ui.authentication.SignInScreen
+import com.github.se.bootcamp.ui.authentication.SignInScreenTestTags
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 class SignInScreenTest {
   @get:Rule val composeTestRule = createComposeRule()
+
+  @Before
+  fun setUp() {
+    FirebaseEmulator.auth.signOut()
+  }
 
   @Test
   fun topTitleIsCorrectlySet() {
@@ -28,5 +38,6 @@ class SignInScreenTest {
         .assertIsDisplayed()
         .assertTextEquals("Welcome")
     composeTestRule.onNodeWithTag(SignInScreenTestTags.LOGIN_BUTTON).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(SignInScreenTestTags.LOGOUT_BUTTON).assertIsNotDisplayed()
   }
 }

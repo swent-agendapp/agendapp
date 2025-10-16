@@ -274,7 +274,7 @@ fun AddEventTimeAndRecurrenceScreen(
                     }
 
                 if (true) { // (newEventUIState.recurrenceMode != RecurrenceStatus.OneTime)
-                            // TODO update with the viewModel
+                  // TODO update with the viewModel
                   Spacer(modifier = Modifier.height(16.dp))
 
                   DatePickerFieldToModal(
@@ -385,9 +385,9 @@ fun AddEventAttendantScreen(
                                     }
                                     .padding(vertical = 8.dp)) {
                               Checkbox(
-                                  checked =
-                                      true,
-                                  // TODO replace with newEventUIState.participants.contains(participant)
+                                  checked = true,
+                                  // TODO replace with
+                                  // newEventUIState.participants.contains(participant)
                                   onCheckedChange = { checked ->
                                     //                                    if (checked) {
                                     //

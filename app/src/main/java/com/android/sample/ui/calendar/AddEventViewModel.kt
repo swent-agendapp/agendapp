@@ -90,7 +90,7 @@ class AddEventViewModel(
   fun allFieldsValid() =
       !(titleIsBlank() ||
           descriptionIsBlank()) // || startTimeIsAfterEndTime()) TODO uncomment when DateTimeUtils
-                                // is created
+  // is created
 
   fun setRecurrenceMode(mode: RecurrenceStatus) {
     _uiState.value = _uiState.value.copy(recurrenceMode = mode)

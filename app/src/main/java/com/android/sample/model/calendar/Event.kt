@@ -1,6 +1,10 @@
 package com.android.sample.model.calendar
 
+import com.android.sample.utils.EventColor
 import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZoneId
 
 /**
  * Data class representing a calendar event.
@@ -17,6 +21,7 @@ import java.time.Instant
  * @property version timestamp of last modification, used for conflict resolution.
  * @property hasBeenDeleted Flag indicating if the event has been deleted.
  * @property recurrenceStatus Recurrence pattern of the event (e.g., one-time, weekly).
+ * @property color Color used to display the event in the UI.
  * @property locallyStoredBy List of user IDs who have the event stored locally.
  */
 data class Event(
@@ -32,7 +37,24 @@ data class Event(
     val version: Long,
     val recurrenceStatus: RecurrenceStatus,
     val hasBeenDeleted: Boolean = false,
-)
+    val color: EventColor
+) {
+  // Returns the start date as a LocalDate in the system's default time zone
+  val startLocalDate: LocalDate
+    get() = startDate.atZone(ZoneId.systemDefault()).toLocalDate()
+
+  // Returns the end date as a LocalDate in the system's default time zone
+  val endLocalDate: LocalDate
+    get() = endDate.atZone(ZoneId.systemDefault()).toLocalDate()
+
+  // Returns the start time as a LocalTime in the system's default time zone
+  val startLocalTime: LocalTime
+    get() = startDate.atZone(ZoneId.systemDefault()).toLocalTime()
+
+  // Returns the end time as a LocalTime in the system's default time zone
+  val endLocalTime: LocalTime
+    get() = endDate.atZone(ZoneId.systemDefault()).toLocalTime()
+}
 
 /** Enum representing the recurrence pattern of an event. */
 enum class RecurrenceStatus {
@@ -57,19 +79,23 @@ enum class CloudStorageStatus {
  * @param cloudStorageStatuses Set of storage locations for the event.
  * @param personalNotes Optional personal notes.
  * @param participants Set of user IDs participating in the event.
+ * @param color Color used to display the event in the UI.
  * @return A new Event instance.
  */
 fun createEvent(
-    title: String,
-    description: String,
-    startDate: Instant,
-    endDate: Instant,
+    title: String = "Untitled",
+    description: String = "",
+    startDate: Instant = Instant.now(),
+    endDate: Instant = Instant.now(),
     cloudStorageStatuses: Set<CloudStorageStatus> = emptySet(),
     personalNotes: String? = null,
-    participants: Set<String> = emptySet()
+    participants: Set<String> = emptySet(),
+    color: EventColor = EventColor.Blue
 ): Event {
+  // Ensure the end date is not before the start date
+  require(!endDate.isBefore(startDate)) { "End date cannot be before start date" }
   return Event(
-      id = java.util.UUID.randomUUID().toString(),
+      id = java.util.UUID.randomUUID().toString(), // Generate a unique ID for the event
       title = title,
       description = description,
       startDate = startDate,
@@ -78,5 +104,6 @@ fun createEvent(
       personalNotes = personalNotes,
       participants = participants,
       version = System.currentTimeMillis(),
-      recurrenceStatus = RecurrenceStatus.OneTime)
+      recurrenceStatus = RecurrenceStatus.OneTime,
+      color = color)
 }

@@ -183,38 +183,10 @@ fun AddEventTimeAndRecurrenceScreen(
                   }
 
               Column(modifier = Modifier.weight(1f)) {
-                if (!recurrenceOptions.isEmpty()) {
-                  ExposedDropdownMenuBox(
-                      expanded = expanded, onExpandedChange = { expanded = !expanded }) {
-                        OutlinedTextField(
-                            value =
-                                RecurrenceStatus.OneTime
-                                    .formatString(), // TODO update with the viewModel
-                            onValueChange = {},
-                            readOnly = true,
-                            label = { Text(stringResource(R.string.recurrenceMenuLabel)) },
-                            trailingIcon = {
-                              ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-                            },
-                            modifier =
-                                Modifier.menuAnchor(type = MenuAnchorType.PrimaryNotEditable, true)
-                                    .fillMaxWidth()
-                                    .testTag(AddEventTestTags.RECURRENCE_STATUS_DROPDOWN),
-                            shape = RoundedCornerShape(12.dp),
-                            colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors())
-                        ExposedDropdownMenu(
-                            expanded = expanded, onDismissRequest = { expanded = false }) {
-                              recurrenceOptions.forEach { option ->
-                                DropdownMenuItem(
-                                    text = { Text(option.name) },
-                                    onClick = {
-                                      // TODO update the viewModel
-                                      expanded = false
-                                    })
-                              }
-                            }
-                      }
-                }
+                DatePickerFieldToModal(
+                    label = stringResource(R.string.recurrenceEndPickerLabel),
+                    modifier = Modifier.testTag(AddEventTestTags.END_RECURRENCE_FIELD),
+                    onDateSelected = { date -> }) // TODO update with the viewModel
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -278,14 +250,41 @@ fun AddEventTimeAndRecurrenceScreen(
                           }
                     }
 
-                if (true) { // (newEventUIState.recurrenceMode != RecurrenceStatus.OneTime)
-                  // TODO update with the viewModel
-                  Spacer(modifier = Modifier.height(16.dp))
+                // (newEventUIState.recurrenceMode != RecurrenceStatus.OneTime)
+                // TODO update with the viewModel
+                Spacer(modifier = Modifier.height(16.dp))
 
-                  DatePickerFieldToModal(
-                      label = stringResource(R.string.recurrenceEndPickerLabel),
-                      modifier = Modifier.testTag(AddEventTestTags.END_RECURRENCE_FIELD),
-                      onDateSelected = { date -> }) // TODO update with the viewModel
+                if (!recurrenceOptions.isEmpty()) {
+                  ExposedDropdownMenuBox(
+                      expanded = expanded, onExpandedChange = { expanded = !expanded }) {
+                        OutlinedTextField(
+                            value =
+                                RecurrenceStatus.OneTime
+                                    .formatString(), // TODO update with the viewModel
+                            onValueChange = {},
+                            readOnly = true,
+                            label = { Text(stringResource(R.string.recurrenceMenuLabel)) },
+                            trailingIcon = {
+                              ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                            },
+                            modifier =
+                                Modifier.menuAnchor(type = MenuAnchorType.PrimaryNotEditable, true)
+                                    .fillMaxWidth()
+                                    .testTag(AddEventTestTags.RECURRENCE_STATUS_DROPDOWN),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors())
+                        ExposedDropdownMenu(
+                            expanded = expanded, onDismissRequest = { expanded = false }) {
+                              recurrenceOptions.forEach { option ->
+                                DropdownMenuItem(
+                                    text = { Text(option.name) },
+                                    onClick = {
+                                      // TODO update the viewModel
+                                      expanded = false
+                                    })
+                              }
+                            }
+                      }
                 }
               }
 

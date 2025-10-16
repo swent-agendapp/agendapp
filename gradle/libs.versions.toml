@@ -27,6 +27,9 @@ firebaseFirestore = "25.1.0"
 # Networking
 okhttp = "4.12.0"
 
+#material3
+material3 = "1.4.0"
+
 [libraries]
 
 kotlinx_coroutines_test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesTest" }
@@ -62,6 +65,7 @@ kaspresso-compose = { group = "com.kaspersky.android-components", name = "kaspre
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

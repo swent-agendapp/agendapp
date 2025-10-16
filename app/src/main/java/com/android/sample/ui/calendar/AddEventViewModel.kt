@@ -1,5 +1,7 @@
 package com.android.sample.ui.calendar
 
+// import com.android.sample.ui.calendar.utils.DateTimeUtils TODO uncomment when DateTimeUtils is
+// created
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,17 +10,15 @@ import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.calendar.createEvent
-// import com.android.sample.ui.calendar.utils.DateTimeUtils TODO uncomment when DateTimeUtils is created
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
-import java.util.UUID
+import java.time.ZoneId
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
-import java.time.ZoneId
 
 data class AddCalendarEventUIState(
     val title: String = "",
@@ -41,17 +41,25 @@ class AddEventViewModel(
 
   fun addEvent() {
     val currentState = _uiState.value
-    val newEvent = createEvent(
-        title = currentState.title,
-        description = currentState.description,
-        startDate = LocalDateTime.of(_uiState.value.startDate, LocalTime.of(_uiState.value.startHour, _uiState.value.startMinute)).atZone(
-            ZoneId.systemDefault()).toInstant(),
-        endDate = LocalDateTime.of(_uiState.value.startDate, LocalTime.of(_uiState.value.endHour, _uiState.value.endMinute)).atZone(
-            ZoneId.systemDefault()).toInstant(),
-        cloudStorageStatuses = emptySet(), // hardcoded for now
-        personalNotes = "", // hardcoded for now
-        participants = currentState.participants
-    )
+    val newEvent =
+        createEvent(
+            title = currentState.title,
+            description = currentState.description,
+            startDate =
+                LocalDateTime.of(
+                        _uiState.value.startDate,
+                        LocalTime.of(_uiState.value.startHour, _uiState.value.startMinute))
+                    .atZone(ZoneId.systemDefault())
+                    .toInstant(),
+            endDate =
+                LocalDateTime.of(
+                        _uiState.value.startDate,
+                        LocalTime.of(_uiState.value.endHour, _uiState.value.endMinute))
+                    .atZone(ZoneId.systemDefault())
+                    .toInstant(),
+            cloudStorageStatuses = emptySet(), // hardcoded for now
+            personalNotes = "", // hardcoded for now
+            participants = currentState.participants)
     addEventToRepository(newEvent)
   }
 
@@ -69,18 +77,20 @@ class AddEventViewModel(
 
   fun descriptionIsBlank() = _uiState.value.description.isBlank()
 
+  // TODO uncomment when DateTimeUtils is created
+  //  fun startTimeIsAfterEndTime() =
+  //      DateTimeUtils.localDateTimeToInstant(
+  //              _uiState.value.startDate,
+  //              LocalTime.of(_uiState.value.startHour, _uiState.value.startMinute))
+  //          .isAfter(
+  //              DateTimeUtils.localDateTimeToInstant(
+  //                  _uiState.value.startDate,
+  //                  LocalTime.of(_uiState.value.endHour, _uiState.value.endMinute)))
 
-    //TODO uncomment when DateTimeUtils is created
-//  fun startTimeIsAfterEndTime() =
-//      DateTimeUtils.localDateTimeToInstant(
-//              _uiState.value.startDate,
-//              LocalTime.of(_uiState.value.startHour, _uiState.value.startMinute))
-//          .isAfter(
-//              DateTimeUtils.localDateTimeToInstant(
-//                  _uiState.value.startDate,
-//                  LocalTime.of(_uiState.value.endHour, _uiState.value.endMinute)))
-
-  fun allFieldsValid() = !(titleIsBlank() || descriptionIsBlank()) // || startTimeIsAfterEndTime()) TODO uncomment when DateTimeUtils is created
+  fun allFieldsValid() =
+      !(titleIsBlank() ||
+          descriptionIsBlank()) // || startTimeIsAfterEndTime()) TODO uncomment when DateTimeUtils
+                                // is created
 
   fun setRecurrenceMode(mode: RecurrenceStatus) {
     _uiState.value = _uiState.value.copy(recurrenceMode = mode)

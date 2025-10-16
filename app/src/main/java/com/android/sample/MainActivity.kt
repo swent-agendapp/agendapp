@@ -15,7 +15,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.android.sample.resources.C
 import com.android.sample.ui.calendar.CalendarScreen
 import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
@@ -24,6 +23,9 @@ import com.android.sample.ui.screens.HomeScreen
 import com.android.sample.ui.settings.SettingsScreen
 import com.android.sample.ui.theme.SampleAppTheme
 
+object MainActivityTestTags {
+  const val MAIN_SCREEN_CONTAINER = "main_screen_container"
+}
 /**
  * Main entry point of the application. Sets up the theme and calls [Agendapp_Navigation] to
  * initialize navigation.
@@ -34,7 +36,10 @@ class MainActivity : ComponentActivity() {
     setContent {
       SampleAppTheme {
         Surface(
-            modifier = Modifier.fillMaxSize().semantics { testTag = C.Tag.main_screen_container },
+            modifier =
+                Modifier.fillMaxSize().semantics {
+                  testTag = MainActivityTestTags.MAIN_SCREEN_CONTAINER
+                },
             color = MaterialTheme.colorScheme.background) {
               Agendapp()
             }
@@ -60,7 +65,7 @@ fun Agendapp_Navigation(modifier: Modifier = Modifier) {
   NavHost(
       navController = navController,
       startDestination = Screen.Home.route,
-      modifier = modifier.semantics { testTag = C.Tag.main_screen_container }) {
+      modifier = modifier.semantics { testTag = MainActivityTestTags.MAIN_SCREEN_CONTAINER }) {
         // 🏠 Home screen
         composable(Screen.Home.route) {
           HomeScreen(

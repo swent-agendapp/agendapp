@@ -4,7 +4,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import com.android.sample.MainActivity
-import com.android.sample.resources.C
+import com.android.sample.MainActivityTestTags
 import org.junit.Rule
 import org.junit.Test
 
@@ -14,6 +14,6 @@ class MainActivityTest {
 
   @Test
   fun mainActivity_displaysRootContainer() {
-    composeTestRule.onNodeWithTag(C.Tag.main_screen_container).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(MainActivityTestTags.MAIN_SCREEN_CONTAINER).assertIsDisplayed()
   }
 }

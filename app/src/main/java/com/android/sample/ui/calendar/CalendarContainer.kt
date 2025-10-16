@@ -30,7 +30,6 @@ fun CalendarContainer(
     // Later : receive here onEventClick, onEventLongPress
 ) {
   // Later : create here a variable transformableState for zoom changes
-  // Later : handle here variables for animation of swiping (transparent box)
 
   Box(modifier = modifier) {
     CalendarGridContent(
@@ -54,6 +53,5 @@ fun CalendarContainer(
         // Later : give dateRange (like Monday-Friday) and events list from ViewModel
         // Later : give onEventClick and onEventLongPress
         )
-    // Later : manage visual swiping visual effects here
   }
 }

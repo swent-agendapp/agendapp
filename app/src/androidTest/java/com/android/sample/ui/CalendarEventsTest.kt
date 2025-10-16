@@ -30,7 +30,7 @@ class CalendarEventsTest {
         listOf(
             MockEvent(
                 title = "Test Event",
-                date = LocalDate.of(2025, 10, 14),
+                date = LocalDate.now().with(DayOfWeek.WEDNESDAY),
                 timeSpan =
                     TimeSpan.Companion.of(
                         start = LocalTime.of(9, 0), duration = Duration.ofHours(1)),

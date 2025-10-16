@@ -39,7 +39,13 @@ jobs:
 
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
-
+        
+      - name: Restore google-services.json
+        run: |
+          mkdir -p app
+          echo "${{ secrets.GOOGLE_SERVICES }}" | base64 --decode > app/google-services.json
+          test -s app/google-services.json && echo "google-services.json restored"
+          
       - name: Build APK
         run: |
           VARIANT=${{ github.event.inputs['build-type'] || 'Release' }}

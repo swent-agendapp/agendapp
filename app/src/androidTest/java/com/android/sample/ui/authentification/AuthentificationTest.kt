@@ -1,7 +1,11 @@
 package com.android.sample.ui.authentification
 
 import android.content.Context
+import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertTextContains
+import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
@@ -20,7 +24,7 @@ import org.junit.Rule
 import org.junit.Test
 
 class AuthentificationTest : FirebaseEmulatedTest() {
-  val UI_WAIT_TIMEOUT = 5_000L
+  val UI_AUTH_WAIT_TIMEOUT = 5_000L
 
   @get:Rule val composeTestRule = createComposeRule()
 
@@ -60,22 +64,52 @@ class AuthentificationTest : FirebaseEmulatedTest() {
   @Test
   fun canSignInWithGoogle() {
     val fakeGoogleIdToken =
-        FakeJwtGenerator.createFakeGoogleIdToken("12345", email = "test@example.com")
+        FakeJwtGenerator.createFakeGoogleIdToken("login_test","12345", email = "test@example.com")
 
     val fakeCredentialManager = FakeCredentialManager.create(fakeGoogleIdToken)
 
     composeTestRule.setContent { SignInScreen(credentialManager = fakeCredentialManager) }
-    composeTestRule
-        .onNodeWithTag(SignInScreenTestTags.LOGIN_BUTTON)
-        .assertIsDisplayed()
-        .performClick()
 
-    composeTestRule.waitUntil(UI_WAIT_TIMEOUT) {
+    composeTestRule
+      .onNodeWithTag(SignInScreenTestTags.LOGIN_BUTTON)
+      .assertIsDisplayed()
+      .performClick()
+
+    composeTestRule.waitUntil(UI_AUTH_WAIT_TIMEOUT) {
       composeTestRule
-          .onAllNodesWithTag(SignInScreenTestTags.END_SNACK_BAR)
-          .fetchSemanticsNodes()
-          .isNotEmpty()
+        .onNodeWithTag(SignInScreenTestTags.END_SNACK_BAR)
+        .isDisplayed()
     }
-    composeTestRule.onNodeWithTag(SignInScreenTestTags.END_SNACK_BAR).assertIsDisplayed()
+
+    composeTestRule
+      .onNodeWithTag(SignInScreenTestTags.END_SNACK_BAR)
+      .assertIsDisplayed()
+
+  }
+
+  @Test
+  fun signInWithGoogleFailDueToCredential() {
+    val fakeGoogleIdToken =
+      FakeJwtGenerator.createFakeGoogleIdToken("login_test","12345", email = "test@example.com")
+
+    val fakeCredentialManager = FakeCredentialManager.create(fakeGoogleIdToken, "Not valid")
+
+    composeTestRule.setContent { SignInScreen(credentialManager = fakeCredentialManager) }
+
+    composeTestRule
+      .onNodeWithTag(SignInScreenTestTags.LOGIN_BUTTON)
+      .assertIsDisplayed()
+      .performClick()
+
+    composeTestRule.waitUntil(UI_AUTH_WAIT_TIMEOUT) {
+      composeTestRule
+        .onNodeWithTag(SignInScreenTestTags.END_SNACK_BAR)
+        .isDisplayed()
+    }
+
+    composeTestRule
+      .onNodeWithTag(SignInScreenTestTags.END_SNACK_BAR)
+      .assertIsDisplayed()
+
   }
 }

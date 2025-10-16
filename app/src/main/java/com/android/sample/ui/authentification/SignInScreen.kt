@@ -41,9 +41,8 @@ import androidx.compose.ui.unit.sp
 import androidx.credentials.CredentialManager
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
+import com.android.sample.ui.theme.Salmon
 import com.github.se.bootcamp.ui.authentication.SignInScreenTestTags.END_SNACK_BAR
-
-private val appColor = Color(0xFFf46b5d)
 
 object SignInScreenTestTags {
     const val APP_LOGO = "appLogo"
@@ -67,15 +66,14 @@ fun SignInScreen(
 
     LaunchedEffect(uiState.user) {
         uiState.user?.let {
-            snackbarHostState.showSnackbar("Login successful!", duration = SnackbarDuration.Indefinite)
+            snackbarHostState.showSnackbar("Login successful!", duration = SnackbarDuration.Long)
             onSignedIn()
         }
     }
 
     LaunchedEffect(uiState.errorMsg) {
         uiState.errorMsg?.let {
-            snackbarHostState.showSnackbar(
-                uiState.errorMsg.toString(), duration = SnackbarDuration.Indefinite)
+            snackbarHostState.showSnackbar(uiState.errorMsg.toString(), duration = SnackbarDuration.Long)
         }
     }
 
@@ -103,7 +101,7 @@ fun SignInScreen(
                     text = "Agendapp",
                     style =
                         MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 57.sp, lineHeight = 50.sp, color = appColor),
+                            fontSize = 57.sp, lineHeight = 50.sp, color = Salmon),
                     fontWeight = FontWeight.Bold,
                     // center the text
                     textAlign = TextAlign.Center)
@@ -112,7 +110,7 @@ fun SignInScreen(
                     text = "Plan, track and manage",
                     style =
                         MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 20.sp, lineHeight = 24.sp, color = appColor),
+                            fontSize = 20.sp, lineHeight = 24.sp, color = Salmon),
                     fontWeight = FontWeight.Bold,
                     // center the text
                     textAlign = TextAlign.Center)
@@ -145,7 +143,7 @@ fun SignInScreen(
 fun GoogleSignInButton(onSignInClick: () -> Unit) {
     Button(
         onClick = onSignInClick,
-        colors = ButtonDefaults.buttonColors(containerColor = appColor), // Button color
+        colors = ButtonDefaults.buttonColors(containerColor = Salmon), // Button color
         shape = RoundedCornerShape(50), // Circular edges for the button
         border = BorderStroke(1.dp, Color.Transparent),
         modifier =

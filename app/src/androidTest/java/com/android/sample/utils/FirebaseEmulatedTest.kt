@@ -19,9 +19,6 @@ import org.junit.Before
  */
 open class FirebaseEmulatedTest {
 
-  protected val emulatedFirestore = Firebase.firestore
-  protected val emulatedAuth = Firebase.auth
-
   fun createInitializedRepository(): EventRepository {
     return EventRepositoryFirebase(db = FirebaseEmulator.firestore)
   }

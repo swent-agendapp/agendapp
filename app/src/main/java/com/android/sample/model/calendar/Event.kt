@@ -82,3 +82,11 @@ fun createEvent(
       version = 0L,
       recurrenceStatus = RecurrenceStatus.OneTime)
 }
+
+fun RecurrenceStatus.formatString(): String =
+    when (this) {
+      RecurrenceStatus.OneTime -> "One Time"
+      RecurrenceStatus.Weekly -> "Weekly"
+      RecurrenceStatus.Monthly -> "Monthly"
+      RecurrenceStatus.Yearly -> "Yearly"
+    }

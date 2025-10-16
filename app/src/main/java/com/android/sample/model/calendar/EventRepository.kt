@@ -50,13 +50,4 @@ interface EventRepository {
    *   needed.
    */
   suspend fun getEventsBetweenDates(startDate: Instant, endDate: Instant): List<Event>
-
-  /**
-   * Retrieves all event items that have **not yet been synchronized** with the specified database.
-   *
-   * @param db The target database or storage system to check synchronization against.
-   * @return A list of event items pending synchronization for the given database. Returns an empty
-   *   list if all events are already synced to that database.
-   */
-  suspend fun getAllUnsyncedEvents(db: StorageStatus): List<Event>
 }

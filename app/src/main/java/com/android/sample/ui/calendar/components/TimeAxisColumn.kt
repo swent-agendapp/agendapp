@@ -24,6 +24,18 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import kotlin.collections.forEach
 
+/**
+ * Left-side time axis listing hour labels aligned with the grid rows. Scroll is shared with the
+ * grid area to keep labels in sync.
+ *
+ * @param timeLabels Ordered hour tick labels to display (e.g., 08:00, 09:00, ...).
+ * @param rowHeightDp Height per hour row, in [Dp].
+ * @param gridHeightDp Total height of the scrollable grid area, in [Dp].
+ * @param leftOffsetDp Width reserved for the time axis column, in [Dp].
+ * @param style Visual style for text and spacing.
+ * @param scrollState Shared scroll state to sync with the grid content.
+ * @return Unit. This is a composable that renders UI side-effects only.
+ */
 @Composable
 internal fun TimeAxisColumn(
     timeLabels: List<LocalTime>,

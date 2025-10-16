@@ -154,6 +154,7 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     androidTestImplementation(libs.androidx.navigation.testing)
     androidTestImplementation(libs.google.truth)
+    testImplementation(libs.google.truth)
 
 
     // ------------- Jetpack Compose ------------------

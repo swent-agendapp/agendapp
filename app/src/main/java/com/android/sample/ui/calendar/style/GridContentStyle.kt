@@ -15,7 +15,9 @@ data class GridContentColors(
     val gridLineColor: Color,
     val nowIndicator: Color,
     val timeLabelTextColor: Color,
-    // later :  dayHeaderText, currentDayBackground, currentDayText
+    val currentDayBackground: Color,
+    val dayHeaderText: Color,
+    val currentDayText: Color,
 )
 
 /**
@@ -32,16 +34,29 @@ fun defaultGridContentColors(
     todayHighlight: Color = MaterialTheme.colorScheme.primary.copy(alpha = 0.08f),
     gridLineColor: Color = Color.LightGray,
     nowIndicator: Color = MaterialTheme.colorScheme.error,
-    timeLabelTextColor: Color = Color.Gray
+    timeLabelTextColor: Color = Color.Gray,
+    currentDayBackground: Color = MaterialTheme.colorScheme.primary,
+    currentDayText: Color = Color(0xFF000000),
+    dayHeaderText: Color = Color.Gray,
 ): GridContentColors =
-    remember(todayHighlight, gridLineColor, nowIndicator, timeLabelTextColor) {
-      GridContentColors(
-          todayHighlight = todayHighlight,
-          gridLineColor = gridLineColor,
-          nowIndicator = nowIndicator,
-          timeLabelTextColor = timeLabelTextColor,
-      )
-    }
+    remember(
+        todayHighlight,
+        gridLineColor,
+        nowIndicator,
+        timeLabelTextColor,
+        currentDayBackground,
+        currentDayText,
+        dayHeaderText) {
+          GridContentColors(
+              todayHighlight = todayHighlight,
+              gridLineColor = gridLineColor,
+              nowIndicator = nowIndicator,
+              timeLabelTextColor = timeLabelTextColor,
+              currentDayBackground = currentDayBackground.copy(alpha = 0.2f),
+              currentDayText = currentDayText,
+              dayHeaderText = dayHeaderText,
+          )
+        }
 
 /** Spacing and sizing values for the grid layout. */
 @Immutable

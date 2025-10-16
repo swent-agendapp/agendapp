@@ -22,7 +22,9 @@ class CalendarScreenTest {
     composeTestRule.setContent { CalendarScreen() }
 
     composeTestRule.onNodeWithTag(CalendarScreenTestTags.TOP_BAR_TITLE).assertIsDisplayed()
-    // todo : check the testTag of EVENT_GRID, TIME_AXIS_COLUMN and DAY_ROW
+    composeTestRule.onNodeWithTag(CalendarScreenTestTags.EVENT_GRID).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(CalendarScreenTestTags.TIME_AXIS_COLUMN).assertIsDisplayed()
+    // later : check the testTag of DAY_ROW
   }
 
   @Test

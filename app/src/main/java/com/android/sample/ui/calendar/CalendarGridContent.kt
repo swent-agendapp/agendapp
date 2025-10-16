@@ -1,6 +1,7 @@
 package com.android.sample.ui.calendar
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,29 +15,41 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import com.android.sample.ui.calendar.components.EventsPane
 import com.android.sample.ui.calendar.components.GridCanvas
 import com.android.sample.ui.calendar.components.NowIndicatorLine
 import com.android.sample.ui.calendar.components.TimeAxisColumn
+import com.android.sample.ui.calendar.data.LocalDateRange
+import com.android.sample.ui.calendar.mockData.MockEvent
+import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.style.GridContentStyle
 import com.android.sample.ui.calendar.style.defaultGridContentStyle
-import com.android.sample.ui.calendar.utils.LocalDateRange
 import com.android.sample.ui.calendar.utils.rememberWeekViewMetrics
-import com.android.sample.ui.calendar.utils.workWeekDays
 import java.time.LocalTime
 import kotlinx.coroutines.delay
 
+/**
+ * Core layout of the week-view grid area: time axis, scrollable grid canvas, events overlay, and a
+ * live "now" indicator. Also manages a 1s ticker to keep the current time line in sync.
+ *
+ * @param modifier [Modifier] applied to the whole grid content.
+ * @param style Visual style (colors, spacing, dimensions) for the grid and labels.
+ * @param dateRange Visible date range used to compute layout metrics (column count, labels, etc.).
+ * @param events List of events to render within the visible range.
+ * @return Unit. This is a composable that renders UI side-effects only.
+ */
 @Composable
 fun CalendarGridContent(
     modifier: Modifier = Modifier,
-    style: GridContentStyle = defaultGridContentStyle()
-    // todo : receive a date range
-    // todo : receive events (or take an empty list)
+    style: GridContentStyle = defaultGridContentStyle(),
+    dateRange: LocalDateRange = CalendarDefaults.DefaultDateRange,
+    events: List<MockEvent> = listOf()
     // Later : receive onEventClick and onEventLongPress
 ) {
-
-  // todo : use a "metrics" helper to handle placement easily
+  val metrics = rememberWeekViewMetrics(dateRange)
 
   val scrollState = rememberScrollState()
+
   var now by remember { mutableStateOf(LocalTime.now()) }
   LaunchedEffect(Unit) {
     while (true) {
@@ -45,19 +58,14 @@ fun CalendarGridContent(
     }
   }
 
-  val days = workWeekDays()
-  val range = LocalDateRange(days.first(), days.last())
-  val metrics = rememberWeekViewMetrics(dateRange = range)
-
-  // todo : create a “now“ variable to show the current time
-
-  // todo : change the box into a BoxWithConstraints to handle componnents placement for eventsPane
   // and dayHeaderRow
-  Box(modifier = modifier.fillMaxSize().testTag(CalendarScreenTestTags.ROOT)) {
-    // todo : create variable to handle component placement correctly
+  BoxWithConstraints(modifier = modifier.fillMaxSize().testTag(CalendarScreenTestTags.ROOT)) {
+    val availableWidth = this.maxWidth - metrics.leftOffsetDp
+    val dynamicColumnWidthDp =
+        if (metrics.columnCount > 0) (availableWidth / metrics.columnCount) else availableWidth
 
     Column(modifier = Modifier.fillMaxSize()) {
-      // todo : render a DayHeaderRow
+      // later : render a DayHeaderRow
 
       Row(modifier = Modifier.weight(1f).testTag(CalendarScreenTestTags.SCROLL_AREA)) {
         TimeAxisColumn(
@@ -70,8 +78,9 @@ fun CalendarGridContent(
 
         // Scrollable Grid Area (Canvas + Events)
         Box(
-            modifier = Modifier.verticalScroll(scrollState).weight(1f) // todo : adapt the height
+            modifier = Modifier.verticalScroll(scrollState).weight(1f) // later : adapt the height
             ) {
+              // Render the grid background
               GridCanvas(
                   modifier = Modifier.fillMaxSize(),
                   columnCount = metrics.columnCount,
@@ -79,8 +88,17 @@ fun CalendarGridContent(
                   totalHours = metrics.totalHours,
                   days = metrics.days)
 
-              // todo : render an EventsPane
+              // Render all the events blocks
+              EventsPane(
+                  days = metrics.days,
+                  events = events,
+                  columnWidthDp = dynamicColumnWidthDp,
+                  gridHeightDp = metrics.gridHeightDp,
+                  gridStartTime = metrics.gridStartTime,
+                  effectiveEndTime = metrics.effectiveEndTime,
+              )
 
+              // Render the "now" indicator line
               NowIndicatorLine(
                   modifier = Modifier.fillMaxSize(),
                   columnCount = metrics.columnCount,

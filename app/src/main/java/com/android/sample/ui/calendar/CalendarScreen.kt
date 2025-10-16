@@ -9,8 +9,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import com.android.sample.ui.calendar.mockData.getMockEvents
+import com.android.sample.ui.calendar.style.CalendarDefaults.DefaultDateRange
 
 object CalendarScreenTestTags {
   const val TOP_BAR_TITLE = "CalendarTopBarTitle"
@@ -20,16 +25,19 @@ object CalendarScreenTestTags {
   const val EVENT_GRID = "CalendarEventGrid"
   const val TIME_AXIS_COLUMN = "TimeAxisColumn"
   const val NOW_INDICATOR = "NowIndicator"
+  const val EVENT_BLOCK = "CalendarEventBlock"
 
-  // todo : add tests tags (DAY_ROW, EVENT_GRID)
+  // later : add tests tags (DAY_ROW)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalendarScreen() {
-  // todo : create an initial date range (showing the current week)
+  // initialize the week from monday to friday
+  val currentDateRange by remember { mutableStateOf(DefaultDateRange) }
 
-  // todo : get mock events
+  // generate mock events
+  val mockEvents = getMockEvents()
 
   Scaffold(
       topBar = {
@@ -51,10 +59,10 @@ fun CalendarScreen() {
             Modifier.padding(paddingValues)
                 .fillMaxSize()
                 .testTag((CalendarScreenTestTags.SCREEN_ROOT)),
-        // todo : give a dateRange
-        // todo : give the events
+        dateRange = currentDateRange,
+        events = mockEvents
         // Later : give the ViewModel
         // Later : add here onEventClick, onEventLongPress, onSwipeLeft, onSwipeRight
-    )
+        )
   }
 }

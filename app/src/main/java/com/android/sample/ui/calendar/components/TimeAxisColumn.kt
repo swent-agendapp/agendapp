@@ -9,9 +9,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
@@ -45,10 +50,13 @@ internal fun TimeAxisColumn(
     style: GridContentStyle = defaultGridContentStyle(),
     scrollState: ScrollState = rememberScrollState()
 ) {
-  Box(
+  Column(
       modifier = Modifier.width(leftOffsetDp).height(gridHeightDp),
       // Total height of the scrollable grid
   ) {
+    IconButton(onClick = {}, modifier = Modifier.size(32.dp)) {
+      Icon(imageVector = Icons.Default.Add, contentDescription = "Add", tint = Color.Gray)
+    }
     // Regular time labels (hours)
     Column(
         modifier =

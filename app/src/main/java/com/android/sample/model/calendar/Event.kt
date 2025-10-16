@@ -83,7 +83,7 @@ enum class CloudStorageStatus {
  * @return A new Event instance.
  */
 fun createEvent(
-    title: String = "",
+    title: String = "Untitled",
     description: String = "",
     startDate: Instant = Instant.now(),
     endDate: Instant = Instant.now(),

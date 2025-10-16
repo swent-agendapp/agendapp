@@ -5,6 +5,7 @@ import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import com.android.sample.ui.calendar.AddEventTestTags
 import com.android.sample.ui.calendar.AddEventTimeAndRecurrenceScreen
 import org.junit.Before
@@ -22,24 +23,24 @@ class AddEventTimeScreenTest {
 
   @Test
   fun displayAllComponents() {
-    composeTestRule.onNodeWithTag(AddEventTestTags.START_DATE_FIELD).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(AddEventTestTags.START_TIME_BUTTON).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(AddEventTestTags.END_TIME_BUTTON).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(AddEventTestTags.RECURRENCE_STATUS_DROPDOWN).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(AddEventTestTags.BACK_BUTTON).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(AddEventTestTags.START_DATE_FIELD).performScrollTo().assertIsDisplayed()
+    composeTestRule.onNodeWithTag(AddEventTestTags.START_TIME_BUTTON).performScrollTo().assertIsDisplayed()
+    composeTestRule.onNodeWithTag(AddEventTestTags.END_TIME_BUTTON).performScrollTo().assertIsDisplayed()
+    composeTestRule.onNodeWithTag(AddEventTestTags.RECURRENCE_STATUS_DROPDOWN).performScrollTo().assertIsDisplayed()
+    composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).performScrollTo().assertIsDisplayed()
+    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).performScrollTo().assertIsDisplayed()
+    composeTestRule.onNodeWithTag(AddEventTestTags.BACK_BUTTON).performScrollTo().assertIsDisplayed()
   }
 
   @Test
   fun nextButtonEnabledWhenFieldsAreValid() {
-    composeTestRule.onNodeWithTag(AddEventTestTags.START_TIME_BUTTON).performClick()
-    composeTestRule.onNodeWithTag(AddEventTestTags.END_TIME_BUTTON).performClick()
-    composeTestRule.onNodeWithTag(AddEventTestTags.START_DATE_FIELD).performClick()
-    composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).performClick()
+    composeTestRule.onNodeWithTag(AddEventTestTags.START_TIME_BUTTON).performScrollTo().performClick()
+    composeTestRule.onNodeWithTag(AddEventTestTags.END_TIME_BUTTON).performScrollTo().performClick()
+    composeTestRule.onNodeWithTag(AddEventTestTags.START_DATE_FIELD).performScrollTo().performClick()
+    composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).performScrollTo().performClick()
 
     composeTestRule.waitForIdle()
 
-    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertIsEnabled()
+    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).performScrollTo().assertIsEnabled()
   }
 }

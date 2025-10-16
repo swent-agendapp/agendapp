@@ -1,7 +1,6 @@
 package com.github.se.bootcamp.ui.authentication
 
 import android.content.Context
-import android.credentials.GetCredentialException
 import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest

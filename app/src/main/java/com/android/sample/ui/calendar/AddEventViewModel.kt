@@ -1,0 +1,137 @@
+package com.android.sample.ui.calendar
+
+import android.util.Log
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.android.sample.model.calendar.Event
+import com.android.sample.model.calendar.EventRepository
+import com.android.sample.model.calendar.EventRepositoryProvider
+import com.android.sample.model.calendar.RecurrenceStatus
+import com.android.sample.ui.calendar.utils.DateTimeUtils
+import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalTime
+import java.util.UUID
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+
+data class AddCalendarEventUIState(
+    val title: String = "",
+    val startDate: LocalDate = LocalDate.now(),
+    val startHour: Int = LocalTime.now().hour,
+    val startMinute: Int = LocalTime.now().minute,
+    val endHour: Int = LocalTime.now().hour + 1,
+    val endMinute: Int = LocalTime.now().minute,
+    val recurrenceEndTime: Instant = Instant.now(),
+    val recurrenceMode: RecurrenceStatus = RecurrenceStatus.OneTime,
+    val description: String = "",
+    val participants: Set<String> = emptySet(),
+)
+
+class AddEventViewModel(
+    private val repository: EventRepository = EventRepositoryProvider.repository
+) : ViewModel() {
+  private val _uiState = MutableStateFlow(AddCalendarEventUIState())
+  val uiState: StateFlow<AddCalendarEventUIState> = _uiState.asStateFlow()
+
+  fun addEvent() {
+    val currentState = _uiState.value
+    val newEvent =
+        Event(
+            id = UUID.randomUUID().toString(),
+            title = currentState.title,
+            startDate =
+                DateTimeUtils.localDateTimeToInstant(
+                    _uiState.value.startDate,
+                    LocalTime.of(_uiState.value.startHour, _uiState.value.startMinute)),
+            endDate =
+                DateTimeUtils.localDateTimeToInstant(
+                    _uiState.value.startDate,
+                    LocalTime.of(_uiState.value.endHour, _uiState.value.endMinute)),
+            // TODO: handle recurrence end time properly : recurrenceEndDate =
+            // currentState.recurrenceEndTime,
+            recurrenceStatus = currentState.recurrenceMode,
+            description = currentState.description,
+            participants = currentState.participants,
+            storageStatus = emptySet(), // hardcoded for now
+            personalNotes = "", // hardcoded for now
+            owners = emptySet(), // hardcoded for now
+            version = 0, // hardcoded for now
+        )
+    addEventToRepository(newEvent)
+  }
+
+  fun addEventToRepository(event: Event) {
+    viewModelScope.launch {
+      try {
+        repository.insertEvent(event)
+      } catch (e: Exception) {
+        Log.e("AddEventViewModel", "Error adding event: ${e.message}")
+      }
+    }
+  }
+
+  fun titleIsBlank() = _uiState.value.title.isBlank()
+
+  fun descriptionIsBlank() = _uiState.value.description.isBlank()
+
+  fun startTimeIsAfterEndTime() =
+      DateTimeUtils.localDateTimeToInstant(
+              _uiState.value.startDate,
+              LocalTime.of(_uiState.value.startHour, _uiState.value.startMinute))
+          .isAfter(
+              DateTimeUtils.localDateTimeToInstant(
+                  _uiState.value.startDate,
+                  LocalTime.of(_uiState.value.endHour, _uiState.value.endMinute)))
+
+  fun allFieldsValid() = !(titleIsBlank() || descriptionIsBlank() || startTimeIsAfterEndTime())
+
+  fun setRecurrenceMode(mode: RecurrenceStatus) {
+    _uiState.value = _uiState.value.copy(recurrenceMode = mode)
+  }
+
+  fun setTitle(title: String) {
+    _uiState.value = _uiState.value.copy(title = title)
+  }
+
+  fun setDescription(description: String) {
+    _uiState.value = _uiState.value.copy(description = description)
+  }
+
+  fun setDate(date: LocalDate) {
+    _uiState.value = _uiState.value.copy(startDate = date)
+  }
+
+  fun setStartHour(hour: Int) {
+    _uiState.value = _uiState.value.copy(startHour = hour)
+  }
+
+  fun setStartMinute(minute: Int) {
+    _uiState.value = _uiState.value.copy(startMinute = minute)
+  }
+
+  fun setEndHour(hour: Int) {
+    _uiState.value = _uiState.value.copy(endHour = hour)
+  }
+
+  fun setEndMinute(minute: Int) {
+    _uiState.value = _uiState.value.copy(endMinute = minute)
+  }
+
+  fun setRecurrenceEndTime(recurrenceEndTime: Instant) {
+    _uiState.value = _uiState.value.copy(recurrenceEndTime = recurrenceEndTime)
+  }
+
+  fun addParticipant(participant: String) {
+    val updatedParticipants = _uiState.value.participants.toMutableSet().apply { add(participant) }
+    _uiState.value = _uiState.value.copy(participants = updatedParticipants)
+  }
+
+  fun removeParticipant(participant: String) {
+    val updatedParticipants =
+        _uiState.value.participants.toMutableSet().apply { remove(participant) }
+    _uiState.value = _uiState.value.copy(participants = updatedParticipants)
+  }
+}

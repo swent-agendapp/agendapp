@@ -1,0 +1,65 @@
+name: Build APK (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Branch or tag to build (e.g., refs/heads/M1 or refs/tags/v1.2.3)"
+        required: false
+        default: "refs/heads/M1"
+      build-type:
+        description: "Variant to build"
+        type: choice
+        required: false
+        default: Release
+        options: [Debug, Release]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout selected ref
+        uses: actions/checkout@v4
+        with:
+          # lets you build a different branch/tag from the button form
+          ref: ${{ github.event.inputs.ref || 'refs/tags/M1' }}
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x ./gradlew
+        
+      - name: Restore google-services.json
+        run: |
+          mkdir -p app
+          echo "${{ secrets.GOOGLE_SERVICES }}" | base64 --decode > app/google-services.json
+          test -s app/google-services.json && echo "google-services.json restored"
+          
+      - name: Build APK
+        run: |
+          VARIANT=${{ github.event.inputs['build-type'] || 'Release' }}
+          ./gradlew assemble${VARIANT}
+
+      - name: Collect APKs
+        run: |
+          mkdir -p apk
+          # grabs all produced APKs (multi-module safe)
+          find . -path "*/build/outputs/apk/*/*.apk" -exec cp {} apk/ \;
+          ls -al apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk-${{ github.event.inputs['build-type'] || 'Release' }}-${{ github.run_id }}
+          path: apk

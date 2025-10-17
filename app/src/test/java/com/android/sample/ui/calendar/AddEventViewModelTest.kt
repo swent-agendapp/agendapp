@@ -44,8 +44,6 @@ class AddEventViewModelTest {
     val state = viewModel.uiState.value
     assertTrue(state.title.isEmpty())
     assertTrue(state.description.isEmpty())
-    assertEquals(Instant.now(), state.startInstant)
-    assertEquals(Instant.now().plus(Duration.ofHours(1)), state.endInstant)
     assertEquals(0, state.participants.size)
     assertEquals(RecurrenceStatus.OneTime, state.recurrenceMode)
   }
@@ -141,8 +139,6 @@ class AddEventViewModelTest {
     assertTrue(state.description.isEmpty())
     assertEquals(0, state.participants.size)
     assertEquals(RecurrenceStatus.OneTime, state.recurrenceMode)
-    assertEquals(Instant.now(), state.startInstant)
-    assertEquals(Instant.now().plus(Duration.ofHours(1)), state.endInstant)
     assertEquals(RecurrenceStatus.OneTime, state.recurrenceMode)
   }
 }

@@ -1,7 +1,5 @@
 package com.android.sample.ui.calendar
 
-// import com.android.sample.ui.calendar.utils.DateTimeUtils TODO uncomment when DateTimeUtils is
-// created
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -79,20 +77,16 @@ class AddEventViewModel(
 
   fun descriptionIsBlank() = _uiState.value.description.isBlank()
 
-  // TODO uncomment when DateTimeUtils is created
-  //  fun startTimeIsAfterEndTime() =
-  //      DateTimeUtils.localDateTimeToInstant(
-  //              _uiState.value.startDate,
-  //              LocalTime.of(_uiState.value.startHour, _uiState.value.startMinute))
-  //          .isAfter(
-  //              DateTimeUtils.localDateTimeToInstant(
-  //                  _uiState.value.startDate,
-  //                  LocalTime.of(_uiState.value.endHour, _uiState.value.endMinute)))
+  fun startTimeIsAfterEndTime() =
+      DateTimeUtils.localDateTimeToInstant(
+              _uiState.value.startDate,
+              LocalTime.of(_uiState.value.startHour, _uiState.value.startMinute))
+          .isAfter(
+              DateTimeUtils.localDateTimeToInstant(
+                  _uiState.value.startDate,
+                  LocalTime.of(_uiState.value.endHour, _uiState.value.endMinute)))
 
-  fun allFieldsValid() =
-      !(titleIsBlank() ||
-          descriptionIsBlank()) // || startTimeIsAfterEndTime()) TODO uncomment when DateTimeUtils
-  // is created
+  fun allFieldsValid() = !(titleIsBlank() || descriptionIsBlank() || startTimeIsAfterEndTime())
 
   fun setRecurrenceMode(mode: RecurrenceStatus) {
     _uiState.value = _uiState.value.copy(recurrenceMode = mode)

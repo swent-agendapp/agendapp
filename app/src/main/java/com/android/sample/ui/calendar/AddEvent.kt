@@ -33,8 +33,9 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -46,6 +47,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.calendar.formatString
@@ -53,8 +55,9 @@ import com.android.sample.ui.calendar.components.DatePickerFieldToModal
 import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.calendar.components.ValidatingTextField
 import com.android.sample.ui.calendar.utils.DateTimeUtils
-import java.time.Instant
-import java.util.Calendar
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZoneId
 
 object AddEventTestTags {
   // Tags for the different composables in the Add Event flow
@@ -78,12 +81,12 @@ object AddEventTestTags {
 
 @Composable
 fun AddEventTitleAndDescriptionScreen(
-    // addEventViewModel: AddEventViewModel = viewModel(), TODO uncomment when viewModel is ready
+    addEventViewModel: AddEventViewModel = viewModel(),
     onNext: () -> Unit = {},
     onCancel: () -> Unit = {},
 ) {
-  // val newEventUIState by addEventViewModel.uiState.collectAsState()
-  // TODO uncomment when viewModel is ready
+  val newEventUIState by addEventViewModel.uiState.collectAsState()
+
   var titleTouched by remember { mutableStateOf(false) }
   var descriptionTouched by remember { mutableStateOf(false) }
 
@@ -108,19 +111,20 @@ fun AddEventTitleAndDescriptionScreen(
                     label = stringResource(R.string.eventTitle),
                     placeholder = stringResource(R.string.eventTitlePlaceholder),
                     testTag = AddEventTestTags.TITLE_TEXT_FIELD,
-                    isError = false, // TODO update with the viewModel
+                    isError = addEventViewModel.titleIsBlank() && titleTouched,
                     errorMessage = stringResource(R.string.title_empty_error),
-                    value = "title", // TODO update with the viewModel
-                    onValueChange = {}, // TODO update with the viewModel
+                    value = newEventUIState.title,
+                    onValueChange = { addEventViewModel.setTitle(it) },
                     onFocusChange = { focusState -> if (focusState.isFocused) titleTouched = true })
+
                 ValidatingTextField(
                     label = stringResource(R.string.eventDescription),
                     placeholder = stringResource(R.string.eventDescriptionPlaceholder),
                     testTag = AddEventTestTags.DESCRIPTION_TEXT_FIELD,
-                    isError = false, // TODO update with the viewModel
+                    isError = addEventViewModel.descriptionIsBlank() && descriptionTouched,
                     errorMessage = stringResource(R.string.description_empty_error),
-                    value = "description", // TODO update with the viewModel
-                    onValueChange = {}, // TODO update with the viewModel
+                    value = newEventUIState.description,
+                    onValueChange = { addEventViewModel.setDescription(it) },
                     onFocusChange = { focusState ->
                       if (focusState.isFocused) descriptionTouched = true
                     },
@@ -135,7 +139,8 @@ fun AddEventTitleAndDescriptionScreen(
             onBack = onCancel,
             backButtonText = stringResource(R.string.cancel),
             nextButtonText = stringResource(R.string.next),
-            canGoNext = true, // TODO update with the viewModel
+            canGoNext =
+                newEventUIState.title.isNotBlank() && newEventUIState.description.isNotBlank(),
             backButtonTestTag = AddEventTestTags.CANCEL_BUTTON,
             nextButtonTestTag = AddEventTestTags.NEXT_BUTTON)
       })
@@ -144,26 +149,19 @@ fun AddEventTitleAndDescriptionScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEventTimeAndRecurrenceScreen(
-    // addEventViewModel: AddEventViewModel = viewModel(), TODO uncomment when viewModel is ready
+    addEventViewModel: AddEventViewModel = viewModel(),
     onNext: () -> Unit = {},
     onBack: () -> Unit = {},
 ) {
-  // val newEventUIState by addEventViewModel.uiState.collectAsState()
-  // TODO uncomment when viewModel is ready
+  val newEventUIState by addEventViewModel.uiState.collectAsState()
   val context = LocalContext.current
 
   var expanded by remember { mutableStateOf(false) }
   val recurrenceOptions = RecurrenceStatus.entries.toList()
-
-  val now = Calendar.getInstance()
+  val selectedRecurrence = newEventUIState.recurrenceMode
 
   var showStartTimePicker by remember { mutableStateOf(false) }
-  var startTimePickerHour by remember { mutableIntStateOf(now.get(Calendar.HOUR_OF_DAY)) }
-  var startTimePickerMinute by remember { mutableIntStateOf(now.get(Calendar.MINUTE)) }
-
   var showEndTimePicker by remember { mutableStateOf(false) }
-  var endTimePickerHour by remember { mutableIntStateOf(now.get(Calendar.HOUR_OF_DAY) + 1) }
-  var endTimePickerMinute by remember { mutableIntStateOf(now.get(Calendar.MINUTE)) }
 
   Scaffold(
       topBar = { TopTitleBar(title = stringResource(R.string.addEventTitle)) },
@@ -187,9 +185,7 @@ fun AddEventTimeAndRecurrenceScreen(
                   ExposedDropdownMenuBox(
                       expanded = expanded, onExpandedChange = { expanded = !expanded }) {
                         OutlinedTextField(
-                            value =
-                                RecurrenceStatus.OneTime
-                                    .formatString(), // TODO update with the viewModel
+                            value = selectedRecurrence.formatString(),
                             onValueChange = {},
                             readOnly = true,
                             label = { Text(stringResource(R.string.recurrenceMenuLabel)) },
@@ -208,7 +204,7 @@ fun AddEventTimeAndRecurrenceScreen(
                                 DropdownMenuItem(
                                     text = { Text(option.name) },
                                     onClick = {
-                                      // TODO update the viewModel
+                                      addEventViewModel.setRecurrenceMode(option)
                                       expanded = false
                                     })
                               }
@@ -216,12 +212,12 @@ fun AddEventTimeAndRecurrenceScreen(
                       }
                 }
 
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 DatePickerFieldToModal(
                     label = stringResource(R.string.datePickerLabel),
                     modifier = Modifier.testTag(AddEventTestTags.START_DATE_FIELD),
-                    onDateSelected = { date -> }) // TODO update the viewModel
+                    onDateSelected = { date -> addEventViewModel.setDate(date) })
 
                 Spacer(modifier = Modifier.height(10.dp))
 
@@ -238,17 +234,12 @@ fun AddEventTimeAndRecurrenceScreen(
                           modifier =
                               Modifier.weight(1f).testTag(AddEventTestTags.START_TIME_BUTTON)) {
                             Text(
-                                text = DateTimeUtils.formatInstantToTime(Instant.now())
-                                //
-                                // DateTimeUtils.formatLocalDateTimeToTime(
-                                //                                        newEventUIState.startDate,
-                                //                                        LocalTime.of(
-                                //
-                                // newEventUIState.startHour,
-                                //
-                                // newEventUIState.startMinute)))
-                                // TODO uncomment when viewModel is ready
-                                )
+                                text =
+                                    DateTimeUtils.formatLocalDateTimeToTime(
+                                        newEventUIState.startDate,
+                                        LocalTime.of(
+                                            newEventUIState.startHour,
+                                            newEventUIState.startMinute)))
                           }
                     }
 
@@ -265,27 +256,26 @@ fun AddEventTimeAndRecurrenceScreen(
                           modifier =
                               Modifier.weight(1f).testTag(AddEventTestTags.END_TIME_BUTTON)) {
                             Text(
-                                text = DateTimeUtils.formatInstantToTime(Instant.now())
-
-                                //
-                                // DateTimeUtils.formatLocalDateTimeToTime(
-                                //                                        newEventUIState.startDate,
-                                //                                        LocalTime.of(
-                                //
-                                // newEventUIState.endHour, newEventUIState.endMinute))
-                                // TODO uncomment when viewModel is ready
-                                )
+                                text =
+                                    DateTimeUtils.formatLocalDateTimeToTime(
+                                        newEventUIState.startDate,
+                                        LocalTime.of(
+                                            newEventUIState.endHour, newEventUIState.endMinute)))
                           }
                     }
 
-                if (true) { // (newEventUIState.recurrenceMode != RecurrenceStatus.OneTime)
-                  // TODO update with the viewModel
-                  Spacer(modifier = Modifier.height(10.dp))
+                if (selectedRecurrence != RecurrenceStatus.OneTime) {
+                  Spacer(modifier = Modifier.height(16.dp))
 
                   DatePickerFieldToModal(
                       label = stringResource(R.string.recurrenceEndPickerLabel),
                       modifier = Modifier.testTag(AddEventTestTags.END_RECURRENCE_FIELD),
-                      onDateSelected = { date -> }) // TODO update with the viewModel
+                      onDateSelected = { date ->
+                        addEventViewModel.setRecurrenceEndTime(
+                            LocalDateTime.of(date, LocalTime.now())
+                                .atZone(ZoneId.systemDefault())
+                                .toInstant())
+                      })
                 }
               }
 
@@ -293,12 +283,11 @@ fun AddEventTimeAndRecurrenceScreen(
                 TimePickerDialog(
                         context,
                         { _, hour: Int, minute: Int ->
-                          //                          addEventViewModel.setStartHour(hour)
-                          //                          addEventViewModel.setStartMinute(minute) //
-                          // TODO uncomment when viewModel is ready
+                          addEventViewModel.setStartHour(hour)
+                          addEventViewModel.setStartMinute(minute)
                         },
-                        0, // TODO replace with newEventUIState.startHour
-                        0, // TODO replace with newEventUIState.startMinute
+                        newEventUIState.startHour,
+                        newEventUIState.startMinute,
                         false)
                     .show()
                 showStartTimePicker = false
@@ -308,12 +297,11 @@ fun AddEventTimeAndRecurrenceScreen(
                 TimePickerDialog(
                         context,
                         { _, hour: Int, minute: Int ->
-                          //                          addEventViewModel.setEndHour(hour)
-                          //                          addEventViewModel.setEndMinute(minute)
-                          // TODO uncomment when viewModel is ready
+                          addEventViewModel.setEndHour(hour)
+                          addEventViewModel.setEndMinute(minute)
                         },
-                        0, // TODO replace with newEventUIState.endHour
-                        0, // TODO replace with newEventUIState.endMinute
+                        newEventUIState.endHour,
+                        newEventUIState.endMinute,
                         false)
                     .show()
                 showEndTimePicker = false
@@ -334,12 +322,13 @@ fun AddEventTimeAndRecurrenceScreen(
 
 @Composable
 fun AddEventAttendantScreen(
-    // addEventViewModel: AddEventViewModel = viewModel(), TODO uncomment when viewModel is ready
+    addEventViewModel: AddEventViewModel = viewModel(),
     onCreate: () -> Unit = {},
     onBack: () -> Unit = {},
 ) {
-  // val newEventUIState by addEventViewModel.uiState.collectAsState() TODO uncomment when viewModel
-  // is ready
+  val newEventUIState by addEventViewModel.uiState.collectAsState()
+  val allFieldsValid by
+      remember(newEventUIState) { derivedStateOf { addEventViewModel.allFieldsValid() } }
 
   val allParticipants =
       listOf(
@@ -348,7 +337,7 @@ fun AddEventAttendantScreen(
           "Charlie",
           "David",
           "Eve",
-          "Frank") // Placeholder for all possible participants TODO replace with real data
+          "Frank") // Placeholder for all possible participants
 
   Scaffold(
       topBar = { TopTitleBar(title = stringResource(R.string.addEventTitle)) },
@@ -378,30 +367,21 @@ fun AddEventAttendantScreen(
                             modifier =
                                 Modifier.fillMaxWidth()
                                     .clickable {
-                                      //                                      if
-                                      // (newEventUIState.participants.contains(participant)) {
-                                      //
-                                      // addEventViewModel.removeParticipant(participant)
-                                      //                                      } else {
-                                      //
-                                      // addEventViewModel.addParticipant(participant)
-                                      //                                      }
-                                      // TODO uncomment when viewModel is ready
+                                      if (newEventUIState.participants.contains(participant)) {
+                                        addEventViewModel.removeParticipant(participant)
+                                      } else {
+                                        addEventViewModel.addParticipant(participant)
+                                      }
                                     }
                                     .padding(vertical = 8.dp)) {
                               Checkbox(
-                                  checked = true,
-                                  // TODO replace with
-                                  // newEventUIState.participants.contains(participant)
+                                  checked = newEventUIState.participants.contains(participant),
                                   onCheckedChange = { checked ->
-                                    //                                    if (checked) {
-                                    //
-                                    // addEventViewModel.addParticipant(participant)
-                                    //                                    } else {
-                                    //
-                                    // addEventViewModel.removeParticipant(participant)
-                                    //                                    }
-                                    // TODO uncomment when viewModel is ready
+                                    if (checked) {
+                                      addEventViewModel.addParticipant(participant)
+                                    } else {
+                                      addEventViewModel.removeParticipant(participant)
+                                    }
                                   })
                               Spacer(modifier = Modifier.width(8.dp))
                               Text(text = participant)
@@ -416,13 +396,13 @@ fun AddEventAttendantScreen(
       bottomBar = {
         BottomNavigationButtons(
             onNext = {
-              //              addEventViewModel.addEvent() // TODO uncomment when viewModel is ready
+              addEventViewModel.addEvent()
               onCreate()
             },
             onBack = onBack,
             backButtonText = stringResource(R.string.goBack),
             nextButtonText = stringResource(R.string.create),
-            canGoNext = true, // TODO update with the viewModel later
+            canGoNext = allFieldsValid,
             backButtonTestTag = AddEventTestTags.BACK_BUTTON,
             nextButtonTestTag = AddEventTestTags.CREATE_BUTTON)
       })
@@ -430,7 +410,6 @@ fun AddEventAttendantScreen(
 
 @Composable
 fun AddEventConfirmationScreen(
-    // addEventViewModel: AddEventViewModel = viewModel(), TODO uncomment when viewModel is ready
     onFinish: () -> Unit = {},
 ) {
   Scaffold(

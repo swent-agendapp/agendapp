@@ -8,26 +8,18 @@ import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.calendar.createEvent
+import java.time.Duration
 import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.ZoneId
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-// TODO: Optimize AddCalendarEventUIState by rethinking about the handling of the date and time
-// fields
 data class AddCalendarEventUIState(
     val title: String = "",
     val description: String = "",
-    val startDate: LocalDate = LocalDate.now(),
-    val startHour: Int = LocalTime.now().hour,
-    val startMinute: Int = LocalTime.now().minute,
-    val endHour: Int = (LocalTime.now().hour + 1) % 24,
-    val endMinute: Int = LocalTime.now().minute,
+    val startInstant: Instant = Instant.now(),
+    val endInstant: Instant = Instant.now().plus(Duration.ofHours(1)),
     val recurrenceEndTime: Instant = Instant.now(),
     val recurrenceMode: RecurrenceStatus = RecurrenceStatus.OneTime,
     val participants: Set<String> = emptySet(),
@@ -45,18 +37,8 @@ class AddEventViewModel(
         createEvent(
             title = currentState.title,
             description = currentState.description,
-            startDate =
-                LocalDateTime.of(
-                        _uiState.value.startDate,
-                        LocalTime.of(_uiState.value.startHour, _uiState.value.startMinute))
-                    .atZone(ZoneId.systemDefault())
-                    .toInstant(),
-            endDate =
-                LocalDateTime.of(
-                        _uiState.value.startDate,
-                        LocalTime.of(_uiState.value.endHour, _uiState.value.endMinute))
-                    .atZone(ZoneId.systemDefault())
-                    .toInstant(),
+            startDate = currentState.startInstant,
+            endDate = currentState.endInstant,
             cloudStorageStatuses = emptySet(), // hardcoded for now
             personalNotes = "", // hardcoded for now
             participants = currentState.participants)
@@ -77,14 +59,7 @@ class AddEventViewModel(
 
   fun descriptionIsBlank() = _uiState.value.description.isBlank()
 
-  fun startTimeIsAfterEndTime() =
-      DateTimeUtils.localDateTimeToInstant(
-              _uiState.value.startDate,
-              LocalTime.of(_uiState.value.startHour, _uiState.value.startMinute))
-          .isAfter(
-              DateTimeUtils.localDateTimeToInstant(
-                  _uiState.value.startDate,
-                  LocalTime.of(_uiState.value.endHour, _uiState.value.endMinute)))
+  fun startTimeIsAfterEndTime() = _uiState.value.startInstant.isAfter(_uiState.value.endInstant)
 
   fun allFieldsValid() = !(titleIsBlank() || descriptionIsBlank() || startTimeIsAfterEndTime())
 
@@ -100,24 +75,12 @@ class AddEventViewModel(
     _uiState.value = _uiState.value.copy(description = description)
   }
 
-  fun setDate(date: LocalDate) {
-    _uiState.value = _uiState.value.copy(startDate = date)
+  fun setStartInstant(instant: Instant) {
+    _uiState.value = _uiState.value.copy(startInstant = instant)
   }
 
-  fun setStartHour(hour: Int) {
-    _uiState.value = _uiState.value.copy(startHour = hour)
-  }
-
-  fun setStartMinute(minute: Int) {
-    _uiState.value = _uiState.value.copy(startMinute = minute)
-  }
-
-  fun setEndHour(hour: Int) {
-    _uiState.value = _uiState.value.copy(endHour = hour)
-  }
-
-  fun setEndMinute(minute: Int) {
-    _uiState.value = _uiState.value.copy(endMinute = minute)
+  fun setEndInstant(instant: Instant) {
+    _uiState.value = _uiState.value.copy(endInstant = instant)
   }
 
   fun setRecurrenceEndTime(recurrenceEndTime: Instant) {
@@ -133,5 +96,9 @@ class AddEventViewModel(
     val updatedParticipants =
         _uiState.value.participants.toMutableSet().apply { remove(participant) }
     _uiState.value = _uiState.value.copy(participants = updatedParticipants)
+  }
+
+  fun resetUiState() {
+    _uiState.value = AddCalendarEventUIState()
   }
 }

@@ -55,17 +55,15 @@ import com.android.sample.ui.calendar.components.DatePickerFieldToModal
 import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.calendar.components.ValidatingTextField
 import com.android.sample.ui.calendar.utils.DateTimeUtils
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.ZoneId
 
 object AddEventTestTags {
-  // Tags for the different composables in the Add Event flow
+  // Tags for the different composable in the Add Event flow
   const val INSTRUCTION_TEXT = "instruction_text"
   const val TITLE_TEXT_FIELD = "title_text_field"
   const val DESCRIPTION_TEXT_FIELD = "description_text_field"
   const val START_DATE_FIELD = "start_date_field"
-  const val END_RECURRENCE_FIELD = "end_date_field"
+  const val END_DATE_FIELD = "end_date_field"
+  const val END_RECURRENCE_FIELD = "end_recurrence_field"
   const val START_TIME_BUTTON = "start_time_button"
   const val END_TIME_BUTTON = "end_time_button"
   const val PERSONAL_NOTE_TEXT_FIELD = "personal_note_text_field"
@@ -86,6 +84,12 @@ fun AddEventTitleAndDescriptionScreen(
     onCancel: () -> Unit = {},
 ) {
   val newEventUIState by addEventViewModel.uiState.collectAsState()
+  val titleAndDescValid by
+      remember(newEventUIState) {
+        derivedStateOf {
+          !(addEventViewModel.titleIsBlank() || addEventViewModel.descriptionIsBlank())
+        }
+      }
 
   var titleTouched by remember { mutableStateOf(false) }
   var descriptionTouched by remember { mutableStateOf(false) }
@@ -139,8 +143,7 @@ fun AddEventTitleAndDescriptionScreen(
             onBack = onCancel,
             backButtonText = stringResource(R.string.cancel),
             nextButtonText = stringResource(R.string.next),
-            canGoNext =
-                newEventUIState.title.isNotBlank() && newEventUIState.description.isNotBlank(),
+            canGoNext = titleAndDescValid,
             backButtonTestTag = AddEventTestTags.CANCEL_BUTTON,
             nextButtonTestTag = AddEventTestTags.NEXT_BUTTON)
       })
@@ -155,6 +158,9 @@ fun AddEventTimeAndRecurrenceScreen(
 ) {
   val newEventUIState by addEventViewModel.uiState.collectAsState()
   val context = LocalContext.current
+
+  val timeIsCoherent by
+      remember(newEventUIState) { derivedStateOf { !addEventViewModel.startTimeIsAfterEndTime() } }
 
   var expanded by remember { mutableStateOf(false) }
   val recurrenceOptions = RecurrenceStatus.entries.toList()
@@ -215,9 +221,22 @@ fun AddEventTimeAndRecurrenceScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 DatePickerFieldToModal(
-                    label = stringResource(R.string.datePickerLabel),
+                    label = stringResource(R.string.startDatePickerLabel),
                     modifier = Modifier.testTag(AddEventTestTags.START_DATE_FIELD),
-                    onDateSelected = { date -> addEventViewModel.setDate(date) })
+                    onDateSelected = { date ->
+                      addEventViewModel.setStartInstant(
+                          DateTimeUtils.instantWithDate(newEventUIState.startInstant, date = date))
+                    },
+                    initialInstant = newEventUIState.startInstant)
+
+                DatePickerFieldToModal(
+                    label = stringResource(R.string.endDatePickerLabel),
+                    modifier = Modifier.testTag(AddEventTestTags.END_DATE_FIELD),
+                    onDateSelected = { date ->
+                      addEventViewModel.setEndInstant(
+                          DateTimeUtils.instantWithDate(newEventUIState.endInstant, date = date))
+                    },
+                    initialInstant = newEventUIState.endInstant)
 
                 Spacer(modifier = Modifier.height(10.dp))
 
@@ -235,11 +254,7 @@ fun AddEventTimeAndRecurrenceScreen(
                               Modifier.weight(1f).testTag(AddEventTestTags.START_TIME_BUTTON)) {
                             Text(
                                 text =
-                                    DateTimeUtils.formatLocalDateTimeToTime(
-                                        newEventUIState.startDate,
-                                        LocalTime.of(
-                                            newEventUIState.startHour,
-                                            newEventUIState.startMinute)))
+                                    DateTimeUtils.formatInstantToTime(newEventUIState.startInstant))
                           }
                     }
 
@@ -257,10 +272,7 @@ fun AddEventTimeAndRecurrenceScreen(
                               Modifier.weight(1f).testTag(AddEventTestTags.END_TIME_BUTTON)) {
                             Text(
                                 text =
-                                    DateTimeUtils.formatLocalDateTimeToTime(
-                                        newEventUIState.startDate,
-                                        LocalTime.of(
-                                            newEventUIState.endHour, newEventUIState.endMinute)))
+                                    DateTimeUtils.formatInstantToTime(newEventUIState.endInstant))
                           }
                     }
 
@@ -272,9 +284,8 @@ fun AddEventTimeAndRecurrenceScreen(
                       modifier = Modifier.testTag(AddEventTestTags.END_RECURRENCE_FIELD),
                       onDateSelected = { date ->
                         addEventViewModel.setRecurrenceEndTime(
-                            LocalDateTime.of(date, LocalTime.now())
-                                .atZone(ZoneId.systemDefault())
-                                .toInstant())
+                            DateTimeUtils.instantWithDate(
+                                newEventUIState.startInstant, date = date))
                       })
                 }
               }
@@ -283,11 +294,15 @@ fun AddEventTimeAndRecurrenceScreen(
                 TimePickerDialog(
                         context,
                         { _, hour: Int, minute: Int ->
-                          addEventViewModel.setStartHour(hour)
-                          addEventViewModel.setStartMinute(minute)
+                          val newInstant =
+                              DateTimeUtils.instantWithTime(
+                                  instant = newEventUIState.startInstant,
+                                  hour = hour,
+                                  minute = minute)
+                          addEventViewModel.setStartInstant(newInstant)
                         },
-                        newEventUIState.startHour,
-                        newEventUIState.startMinute,
+                        DateTimeUtils.getInstantHour(newEventUIState.startInstant),
+                        DateTimeUtils.getInstantMinute(newEventUIState.startInstant),
                         false)
                     .show()
                 showStartTimePicker = false
@@ -297,11 +312,15 @@ fun AddEventTimeAndRecurrenceScreen(
                 TimePickerDialog(
                         context,
                         { _, hour: Int, minute: Int ->
-                          addEventViewModel.setEndHour(hour)
-                          addEventViewModel.setEndMinute(minute)
+                          val newInstant =
+                              DateTimeUtils.instantWithTime(
+                                  instant = newEventUIState.endInstant,
+                                  hour = hour,
+                                  minute = minute)
+                          addEventViewModel.setEndInstant(newInstant)
                         },
-                        newEventUIState.endHour,
-                        newEventUIState.endMinute,
+                        DateTimeUtils.getInstantHour(newEventUIState.endInstant),
+                        DateTimeUtils.getInstantMinute(newEventUIState.endInstant),
                         false)
                     .show()
                 showEndTimePicker = false
@@ -314,7 +333,7 @@ fun AddEventTimeAndRecurrenceScreen(
             onBack = onBack,
             backButtonText = stringResource(R.string.goBack),
             nextButtonText = stringResource(R.string.next),
-            canGoNext = true,
+            canGoNext = timeIsCoherent,
             backButtonTestTag = AddEventTestTags.BACK_BUTTON,
             nextButtonTestTag = AddEventTestTags.NEXT_BUTTON)
       })

@@ -35,4 +35,34 @@ object DateTimeUtils {
   fun formatLocalDateTimeToTime(localDate: LocalDate, localTime: LocalTime): String {
     return formatInstantToTime(localDateTimeToInstant(localDate, localTime))
   }
+
+  fun instantWithTime(
+      instant: Instant,
+      hour: Int,
+      minute: Int,
+      zone: ZoneId = ZoneId.systemDefault()
+  ): Instant {
+    return instant.atZone(zone).withHour(hour).withMinute(minute).toInstant()
+  }
+
+  fun instantWithDate(
+      instant: Instant,
+      date: LocalDate,
+      zone: ZoneId = ZoneId.systemDefault()
+  ): Instant {
+    return instant
+        .atZone(zone)
+        .withYear(date.year)
+        .withMonth(date.monthValue)
+        .withDayOfMonth(date.dayOfMonth)
+        .toInstant()
+  }
+
+  fun getInstantHour(instant: Instant, zone: ZoneId = ZoneId.systemDefault()): Int {
+    return instant.atZone(zone).hour
+  }
+
+  fun getInstantMinute(instant: Instant, zone: ZoneId = ZoneId.systemDefault()): Int {
+    return instant.atZone(zone).minute
+  }
 }

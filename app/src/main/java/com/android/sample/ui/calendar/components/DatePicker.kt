@@ -35,9 +35,10 @@ import java.util.Locale
 fun DatePickerFieldToModal(
     modifier: Modifier = Modifier,
     label: String = "label",
+    initialInstant: Instant? = null,
     onDateSelected: (LocalDate) -> Unit
 ) {
-  var selectedDate by remember { mutableStateOf<Long?>(null) }
+  var selectedDate by remember { mutableStateOf(initialInstant?.toEpochMilli()) }
   var showModal by remember { mutableStateOf(false) }
 
   OutlinedTextField(
@@ -56,7 +57,8 @@ fun DatePickerFieldToModal(
               }
             }
           },
-      shape = RoundedCornerShape(12.dp))
+      shape = RoundedCornerShape(12.dp),
+      readOnly = true)
 
   if (showModal) {
     DatePickerModal(

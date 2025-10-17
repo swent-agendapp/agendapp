@@ -5,6 +5,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.unit.dp
@@ -18,9 +19,9 @@ object HomeTestTags {
 /** Home screen with navigation buttons for other screens. */
 @Composable
 fun HomeScreen(
-    onNavigateToEdit: (String) -> Unit,
-    onNavigateToCalendar: () -> Unit,
-    onNavigateToSettings: () -> Unit
+    onNavigateToEdit: (String) -> Unit = {},
+    onNavigateToCalendar: () -> Unit = {},
+    onNavigateToSettings: () -> Unit = {}
 ) {
   Surface(modifier = Modifier.fillMaxSize().semantics { testTag = HomeTestTags.ROOT }) {
     Column(
@@ -29,9 +30,17 @@ fun HomeScreen(
         horizontalAlignment = Alignment.CenterHorizontally) {
           Button(onClick = { onNavigateToEdit("E001") }) { Text("Go to Edit Event") }
           Spacer(modifier = Modifier.height(12.dp))
-          Button(onClick = onNavigateToCalendar) { Text("Go to Calendar") }
+          Button(
+              modifier = Modifier.testTag(HomeTestTags.ADD_EVENT_BUTTON),
+              onClick = onNavigateToCalendar) {
+                Text("Go to Calendar")
+              }
           Spacer(modifier = Modifier.height(12.dp))
-          Button(onClick = onNavigateToSettings) { Text("Go to Settings") }
+          Button(
+              modifier = Modifier.testTag(HomeTestTags.SETTINGS_BUTTON),
+              onClick = onNavigateToSettings) {
+                Text("Go to Settings")
+              }
         }
   }
 }

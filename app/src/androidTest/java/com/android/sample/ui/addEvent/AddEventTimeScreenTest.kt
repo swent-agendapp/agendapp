@@ -30,6 +30,11 @@ class AddEventTimeScreenTest {
   }
 
   @Test
+  fun displayEndDateField() {
+    composeTestRule.onNodeWithTag(AddEventTestTags.END_DATE_FIELD).assertIsDisplayed()
+  }
+
+  @Test
   fun displayStartTimeButton() {
     composeTestRule.onNodeWithTag(AddEventTestTags.START_TIME_BUTTON).assertIsDisplayed()
   }

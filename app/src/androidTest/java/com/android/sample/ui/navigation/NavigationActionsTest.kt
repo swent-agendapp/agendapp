@@ -31,8 +31,14 @@ class AgendappNavigationTest {
     // Go to Calendar
     composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertExists().performClick()
     // Validate screen content
-    composeTestRule.onNodeWithTag(AddEventTestTags.TITLE_TEXT_FIELD).assertExists().performTextInput("Test Event")
-    composeTestRule.onNodeWithTag(AddEventTestTags.DESCRIPTION_TEXT_FIELD).assertExists().performTextInput("Test Description")
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.TITLE_TEXT_FIELD)
+        .assertExists()
+        .performTextInput("Test Event")
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.DESCRIPTION_TEXT_FIELD)
+        .assertExists()
+        .performTextInput("Test Description")
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
     composeTestRule.onNodeWithTag(AddEventTestTags.CREATE_BUTTON).assertExists().performClick()

@@ -29,7 +29,7 @@ object MainActivityTestTags {
   const val MAIN_SCREEN_CONTAINER = "main_screen_container"
 }
 /**
- * Main entry point of the application. Sets up the theme and calls [Agendapp_Navigation] to
+ * Main entry point of the application. Sets up the theme and calls [AgendappNavigation] to
  * initialize navigation.
  */
 class MainActivity : ComponentActivity() {
@@ -43,7 +43,7 @@ class MainActivity : ComponentActivity() {
                   testTag = MainActivityTestTags.MAIN_SCREEN_CONTAINER
                 },
             color = MaterialTheme.colorScheme.background) {
-              Agendapp_Navigation()
+              AgendappNavigation()
             }
       }
     }
@@ -60,7 +60,7 @@ fun Agendapp() {
  * available routes and how composables are connected.
  */
 @Composable
-fun Agendapp_Navigation(modifier: Modifier = Modifier) {
+fun AgendappNavigation(modifier: Modifier = Modifier) {
   val navController = rememberNavController()
   val navigationActions = NavigationActions(navController)
 

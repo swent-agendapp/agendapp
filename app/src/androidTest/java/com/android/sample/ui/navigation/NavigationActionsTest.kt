@@ -6,7 +6,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
-import com.android.sample.Agendapp_Navigation
+import com.android.sample.AgendappNavigation
 import com.android.sample.ui.calendar.AddEventTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
 import org.junit.Rule
@@ -14,7 +14,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * Integration test for [Agendapp_Navigation] navigation. This test checks the navigation flow
+ * Integration test for [AgendappNavigation] navigation. This test checks the navigation flow
  * between Home, EditEvent, Calendar, and Settings screens.
  */
 @RunWith(AndroidJUnit4::class)
@@ -25,7 +25,7 @@ class AgendappNavigationTest {
 
   @Test
   fun navigate_to_all_add_forms() {
-    composeTestRule.setContent { Agendapp_Navigation() }
+    composeTestRule.setContent { AgendappNavigation() }
 
     // Go to Calendar
     composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertExists().performClick()

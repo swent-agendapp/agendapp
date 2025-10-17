@@ -277,7 +277,7 @@ fun AddEventTimeAndRecurrenceScreen(
                     }
 
                 if (selectedRecurrence != RecurrenceStatus.OneTime) {
-                  Spacer(modifier = Modifier.height(16.dp))
+                  Spacer(modifier = Modifier.height(8.dp))
 
                   DatePickerFieldToModal(
                       label = stringResource(R.string.recurrenceEndPickerLabel),

@@ -177,7 +177,7 @@ fun AddEventTimeAndRecurrenceScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround) {
               Box(
-                  modifier = Modifier.weight(0.4f).fillMaxWidth(),
+                  modifier = Modifier.weight(0.2f).fillMaxWidth(),
                   contentAlignment = Alignment.Center) {
                     Text(
                         stringResource(R.string.enterTimeAndRecurrence),
@@ -218,7 +218,7 @@ fun AddEventTimeAndRecurrenceScreen(
                       }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 DatePickerFieldToModal(
                     label = stringResource(R.string.startDatePickerLabel),

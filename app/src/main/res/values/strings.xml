@@ -16,7 +16,8 @@
     <string name="selectAttendants">Select the person attending this event.</string>
     <string name="startTime">Start time</string>
     <string name="endTime">End time</string>
-    <string name="datePickerLabel">Date</string>
+    <string name="startDatePickerLabel">Start date</string>
+    <string name="endDatePickerLabel">End date</string>
     <string name="recurrenceEndPickerLabel">Recurrence end</string>
     <string name="recurrenceMenuLabel">Recurrence</string>
     <string name="finish">Finish</string>

@@ -173,7 +173,7 @@ fun AddEventTimeAndRecurrenceScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround) {
               Box(
-                  modifier = Modifier.weight(0.7f).fillMaxWidth(),
+                  modifier = Modifier.weight(0.4f).fillMaxWidth(),
                   contentAlignment = Alignment.Center) {
                     Text(
                         stringResource(R.string.enterTimeAndRecurrence),
@@ -216,14 +216,14 @@ fun AddEventTimeAndRecurrenceScreen(
                       }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
                 DatePickerFieldToModal(
                     label = stringResource(R.string.datePickerLabel),
                     modifier = Modifier.testTag(AddEventTestTags.START_DATE_FIELD),
                     onDateSelected = { date -> }) // TODO update the viewModel
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -280,7 +280,7 @@ fun AddEventTimeAndRecurrenceScreen(
 
                 if (true) { // (newEventUIState.recurrenceMode != RecurrenceStatus.OneTime)
                   // TODO update with the viewModel
-                  Spacer(modifier = Modifier.height(16.dp))
+                  Spacer(modifier = Modifier.height(10.dp))
 
                   DatePickerFieldToModal(
                       label = stringResource(R.string.recurrenceEndPickerLabel),

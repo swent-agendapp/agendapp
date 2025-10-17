@@ -2,6 +2,8 @@ package com.android.sample.ui.addEvent
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
+import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performTextInput
@@ -27,8 +29,6 @@ class AddEventTitleScreenTest {
     composeTestRule.onNodeWithTag(AddEventTestTags.CANCEL_BUTTON).assertIsDisplayed()
   }
 
-  /*
-
   @Test
   fun canEnterTitle() {
     val text = "My Event"
@@ -52,7 +52,6 @@ class AddEventTitleScreenTest {
     val invalidTitle = " "
     composeTestRule.onNodeWithTag(AddEventTestTags.TITLE_TEXT_FIELD).performTextInput(invalidTitle)
     composeTestRule.waitForIdle()
-    composeTestRule.onNodeWithTag(AddEventTestTags.DESCRIPTION_TEXT_FIELD).performClick()
 
     composeTestRule
         .onNodeWithTag(AddEventTestTags.ERROR_MESSAGE, useUnmergedTree = true)
@@ -66,7 +65,6 @@ class AddEventTitleScreenTest {
         .onNodeWithTag(AddEventTestTags.DESCRIPTION_TEXT_FIELD)
         .performTextInput(invalidDescription)
     composeTestRule.waitForIdle()
-    composeTestRule.onNodeWithTag(AddEventTestTags.TITLE_TEXT_FIELD).performClick()
 
     composeTestRule
         .onNodeWithTag(AddEventTestTags.ERROR_MESSAGE, useUnmergedTree = true)
@@ -77,8 +75,6 @@ class AddEventTitleScreenTest {
   fun nextButtonDisabledWhenFieldsEmpty() {
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertIsNotEnabled()
   }
-
-   */
 
   @Test
   fun nextButtonEnabledWhenTitleAndDescriptionValid() {

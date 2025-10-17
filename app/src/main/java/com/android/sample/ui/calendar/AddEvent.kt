@@ -15,7 +15,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -169,7 +171,11 @@ fun AddEventTimeAndRecurrenceScreen(
       topBar = { TopTitleBar(title = stringResource(R.string.addEventTitle)) },
       content = { paddingValues ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(horizontal = 40.dp).padding(paddingValues),
+            modifier =
+                Modifier.fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 40.dp)
+                    .padding(paddingValues),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround) {
               Box(
@@ -215,7 +221,6 @@ fun AddEventTimeAndRecurrenceScreen(
                             }
                       }
                 }
-
                 Spacer(modifier = Modifier.height(16.dp))
 
                 DatePickerFieldToModal(
@@ -278,15 +283,14 @@ fun AddEventTimeAndRecurrenceScreen(
                           }
                     }
 
-                if (true) { // (newEventUIState.recurrenceMode != RecurrenceStatus.OneTime)
-                  // TODO update with the viewModel
-                  Spacer(modifier = Modifier.height(16.dp))
+                // (newEventUIState.recurrenceMode != RecurrenceStatus.OneTime)
+                // TODO update with the viewModel
+                Spacer(modifier = Modifier.height(16.dp))
 
-                  DatePickerFieldToModal(
-                      label = stringResource(R.string.recurrenceEndPickerLabel),
-                      modifier = Modifier.testTag(AddEventTestTags.END_RECURRENCE_FIELD),
-                      onDateSelected = { date -> }) // TODO update with the viewModel
-                }
+                DatePickerFieldToModal(
+                    label = stringResource(R.string.recurrenceEndPickerLabel),
+                    modifier = Modifier.testTag(AddEventTestTags.END_RECURRENCE_FIELD),
+                    onDateSelected = { date -> }) // TODO update with the viewModel
               }
 
               if (showStartTimePicker) {

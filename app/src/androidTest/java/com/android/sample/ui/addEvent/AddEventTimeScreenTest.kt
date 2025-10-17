@@ -5,6 +5,7 @@ import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import com.android.sample.ui.calendar.AddEventTestTags
 import com.android.sample.ui.calendar.AddEventTimeAndRecurrenceScreen
 import org.junit.Before
@@ -42,7 +43,10 @@ class AddEventTimeScreenTest {
 
   @Test
   fun displayEndRecurrenceField() {
-    composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD)
+        .performScrollTo()
+        .assertIsDisplayed()
   }
 
   @Test

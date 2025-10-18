@@ -66,26 +66,14 @@ fun CalendarContainer(
         // Later : give dateRange (like Monday-Friday) and events list from ViewModel
         // Later : give onEventClick and onEventLongPress
         )
-  }
-  Box(
-      modifier = modifier
-      // Later : add modifier to handle swiping
-      ) {
-        CalendarGridContent(
-            modifier = Modifier.fillMaxSize(), dateRange = dateRange, events = events
-            // Later : give dateRange (like Monday-Friday) and events list from ViewModel
-            // Later : give onEventClick and onEventLongPress
-            )
-        IconButton(
-            onClick = { onCreateEvent() },
-            modifier =
-                Modifier.align(Alignment.TopStart)
-                    .padding(top = 5.dp, start = 8.dp)
-                    .size(35.dp)
-                    .testTag(ADD_EVENT_BUTTON)) {
-              Icon(imageVector = Icons.Default.Add, contentDescription = "Add", tint = Color.Gray)
-            }
-
-        // Later : manage visual swiping effects here
+      IconButton(
+          onClick = { onCreateEvent() },
+          modifier =
+              Modifier.align(Alignment.TopStart)
+                  .padding(top = 5.dp, start = 8.dp)
+                  .size(35.dp)
+                  .testTag(ADD_EVENT_BUTTON)) {
+          Icon(imageVector = Icons.Default.Add, contentDescription = "Add", tint = Color.Gray)
       }
+  }
 }

@@ -13,8 +13,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
 import com.android.sample.ui.calendar.data.LocalDateRange
 import com.android.sample.ui.calendar.mockData.MockEvent
 import com.android.sample.ui.calendar.style.CalendarDefaults
@@ -34,11 +36,13 @@ fun CalendarContainer(
     dateRange: LocalDateRange = CalendarDefaults.DefaultDateRange,
     events: List<MockEvent> = listOf(),
     onSwipeLeft: (() -> Unit)? = null,
-    onSwipeRight: (() -> Unit)? = null
+    onSwipeRight: (() -> Unit)? = null,
+    onCreateEvent: () -> Unit = {}
     // Later : receive here the ViewModel (or the uiState to add/get/delete)
-    // Later : receive here onEventClick, onEventLongPress
+    // Later : receive here onEventClick, onEventLongPress, onSwipeLeft, onSwipeRight
 ) {
   // Later : create here a variable transformableState for zoom changes
+  // Later : handle here variables for animation of swiping (transparent box)
 
   Box(modifier = modifier) {
     CalendarGridContent(
@@ -73,9 +77,12 @@ fun CalendarContainer(
             // Later : give onEventClick and onEventLongPress
             )
         IconButton(
-            onClick = {},
+            onClick = { onCreateEvent() },
             modifier =
-                Modifier.align(Alignment.TopStart).padding(top = 5.dp, start = 8.dp).size(35.dp)) {
+                Modifier.align(Alignment.TopStart)
+                    .padding(top = 5.dp, start = 8.dp)
+                    .size(35.dp)
+                    .testTag(ADD_EVENT_BUTTON)) {
               Icon(imageVector = Icons.Default.Add, contentDescription = "Add", tint = Color.Gray)
             }
 

@@ -29,11 +29,12 @@ object CalendarScreenTestTags {
   const val NOW_INDICATOR = "NowIndicator"
   const val EVENT_BLOCK = "CalendarEventBlock"
   const val DAY_ROW = "CalendarDayRow"
+  const val ADD_EVENT_BUTTON = "AddEventButton"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CalendarScreen() {
+fun CalendarScreen(onCreateEvent: () -> Unit = {}) {
   // initialize the week from monday to friday
   var currentDateRange by remember { mutableStateOf(DefaultDateRange) }
 
@@ -71,9 +72,10 @@ fun CalendarScreen() {
           val nextStart = currentDateRange.start.minusWeeks(1)
           val nextEnd = currentDateRange.endInclusive.minusWeeks(1)
           currentDateRange = LocalDateRange(nextStart, nextEnd)
-        }
+        },
+        onCreateEvent = onCreateEvent
         // Later : give the ViewModel
-        // Later : add here onEventClick, onEventLongPress
+        // Later : add here onEventClick, onEventLongPress, onSwipeLeft, onSwipeRight
         )
   }
 }

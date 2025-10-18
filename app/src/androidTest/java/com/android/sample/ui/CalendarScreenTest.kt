@@ -1,10 +1,13 @@
 package com.android.sample.ui
 
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performTouchInput
 import com.android.sample.Agendapp
 import com.android.sample.ui.calendar.CalendarContainer
 import com.android.sample.ui.calendar.CalendarGridContent
@@ -24,7 +27,7 @@ class CalendarScreenTest {
     composeTestRule.onNodeWithTag(CalendarScreenTestTags.TOP_BAR_TITLE).assertIsDisplayed()
     composeTestRule.onNodeWithTag(CalendarScreenTestTags.EVENT_GRID).assertIsDisplayed()
     composeTestRule.onNodeWithTag(CalendarScreenTestTags.TIME_AXIS_COLUMN).assertIsDisplayed()
-    // later : check the testTag of DAY_ROW
+    composeTestRule.onNodeWithTag(CalendarScreenTestTags.DAY_ROW).assertIsDisplayed()
   }
 
   @Test
@@ -60,5 +63,283 @@ class CalendarScreenTest {
   fun calendarContainerComposes() {
     composeTestRule.setContent { CalendarContainer() }
     composeTestRule.onNodeWithTag(CalendarScreenTestTags.ROOT).assertIsDisplayed()
+  }
+
+  @Test
+  fun calendarGridContent_whenSwipeLeft_showsNextWeekWithEvents() {
+    // for now : CalendarScreen receive mockEvents
+    // the test will check if these events appears on the right week
+    composeTestRule.setContent { CalendarScreen() }
+
+    // current week, should be displayed
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
+        .assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
+        .assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
+        .assertIsDisplayed()
+
+    // next week, should not be displayed
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event")
+        .assertIsNotDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Later Event")
+        .assertIsNotDisplayed()
+
+    // PERFORM LEFT SWIPE to load the next week
+    composeTestRule
+        .onNodeWithTag(CalendarScreenTestTags.EVENT_GRID)
+        .assertIsDisplayed()
+        .performTouchInput {
+          down(center)
+          // move left of twice the threshold (2 * 64 = 128) to trigger onSwipeLeft
+          moveBy(Offset(-128f, 0f))
+          up()
+        }
+
+    // next week, should be displayed
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event")
+        .assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Later Event")
+        .assertIsDisplayed()
+
+    // next week, should not be displayed
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
+        .assertIsNotDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
+        .assertIsNotDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
+        .assertIsNotDisplayed()
+  }
+
+  @Test
+  fun calendarGridContent_whenSwipeRight_showsPreviousWeekWithEvents() {
+    // for now : CalendarScreen receive mockEvents
+    // the test will check if these events appears on the right week
+    composeTestRule.setContent { CalendarScreen() }
+
+    // current week, should be displayed
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
+        .assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
+        .assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
+        .assertIsDisplayed()
+
+    // previous week, should not be displayed
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Previous Event")
+        .assertIsNotDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Earlier Event")
+        .assertIsNotDisplayed()
+
+    // PERFORM RIGHT SWIPE to load the previous week
+    composeTestRule
+        .onNodeWithTag(CalendarScreenTestTags.EVENT_GRID)
+        .assertIsDisplayed()
+        .performTouchInput {
+          down(center)
+          // move right of twice the threshold (2 * 64 = 128) to trigger onSwipeRight
+          moveBy(Offset(128f, 0f))
+          up()
+        }
+
+    // previous week, should be displayed
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Previous Event")
+        .assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Earlier Event")
+        .assertIsDisplayed()
+
+    // previous week, should not be displayed
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
+        .assertIsNotDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
+        .assertIsNotDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
+        .assertIsNotDisplayed()
+  }
+
+  @Test
+  fun calendarGridContent_whenSwipeRightThenLeft_showsCurrentWeekWithEvents() {
+    // for now : CalendarScreen receive mockEvents
+    // the test will check if these events appears on the right week
+    composeTestRule.setContent { CalendarScreen() }
+
+    // current week, should be displayed
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
+        .assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
+        .assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
+        .assertIsDisplayed()
+
+    // previous week, should not be displayed
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Previous Event")
+        .assertIsNotDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Earlier EVent")
+        .assertIsNotDisplayed()
+
+    // next week, should not be displayed
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event")
+        .assertIsNotDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Later Event")
+        .assertIsNotDisplayed()
+
+    // PERFORM RIGHT SWIPE to load the previous week
+    composeTestRule
+        .onNodeWithTag(CalendarScreenTestTags.EVENT_GRID)
+        .assertIsDisplayed()
+        .performTouchInput {
+          down(center)
+          // move right of twice the threshold (2 * 64 = 128) to trigger onSwipeRight
+          moveBy(Offset(128f, 0f))
+          up()
+        }
+
+    // PERFORM LEFT SWIPE to load the next week
+    composeTestRule
+        .onNodeWithTag(CalendarScreenTestTags.EVENT_GRID)
+        .assertIsDisplayed()
+        .performTouchInput {
+          down(center)
+          // move left of twice the threshold (2 * 64 = 128) to trigger onSwipeLeft
+          moveBy(Offset(-128f, 0f))
+          up()
+        }
+
+    // current week, should be displayed
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
+        .assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
+        .assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
+        .assertIsDisplayed()
+
+    // previous week, should not be displayed
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Previous Event")
+        .assertIsNotDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Earlier Event")
+        .assertIsNotDisplayed()
+
+    // next week, should not be displayed
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event")
+        .assertIsNotDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Later Event")
+        .assertIsNotDisplayed()
+  }
+
+  @Test
+  fun calendarGridContent_whenSwipeLeftThenRight_showsCurrentWeekWithEvents() {
+    // for now : CalendarScreen receive mockEvents
+    // the test will check if these events appears on the right week
+    composeTestRule.setContent { CalendarScreen() }
+
+    // current week, should be displayed
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
+        .assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
+        .assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
+        .assertIsDisplayed()
+
+    // previous week, should not be displayed
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Previous Event")
+        .assertIsNotDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Earlier Event")
+        .assertIsNotDisplayed()
+
+    // next week, should not be displayed
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event")
+        .assertIsNotDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Later Event")
+        .assertIsNotDisplayed()
+
+    // PERFORM LEFT SWIPE to load the next week
+    composeTestRule
+        .onNodeWithTag(CalendarScreenTestTags.EVENT_GRID)
+        .assertIsDisplayed()
+        .performTouchInput {
+          down(center)
+          // move left of twice the threshold (2 * 64 = 128) to trigger onSwipeLeft
+          moveBy(Offset(-128f, 0f))
+          up()
+        }
+
+    // PERFORM RIGHT SWIPE to load the previous week
+    composeTestRule
+        .onNodeWithTag(CalendarScreenTestTags.EVENT_GRID)
+        .assertIsDisplayed()
+        .performTouchInput {
+          down(center)
+          // move right of twice the threshold (2 * 64 = 128) to trigger onSwipeRight
+          moveBy(Offset(128f, 0f))
+          up()
+        }
+
+    // current week, should be displayed
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
+        .assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
+        .assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
+        .assertIsDisplayed()
+
+    // previous week, should not be displayed
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Previous Event")
+        .assertIsNotDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Earlier Event")
+        .assertIsNotDisplayed()
+
+    // next week, should not be displayed
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event")
+        .assertIsNotDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Later Event")
+        .assertIsNotDisplayed()
   }
 }

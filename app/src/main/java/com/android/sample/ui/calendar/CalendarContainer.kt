@@ -50,7 +50,7 @@ fun CalendarContainer(
             Modifier.fillMaxSize().pointerInput(onSwipeLeft, onSwipeRight) {
               var totalDx = 0f
               detectDragGestures(
-                  onDrag = { change, dragAmount -> totalDx += dragAmount.x },
+                  onDrag = { _, dragAmount -> totalDx += dragAmount.x },
                   onDragEnd = {
                     val threshold = 64f
                     when {

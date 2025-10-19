@@ -26,6 +26,7 @@ import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.style.GridContentStyle
 import com.android.sample.ui.calendar.style.defaultGridContentStyle
 import com.android.sample.ui.calendar.utils.rememberWeekViewMetrics
+import java.time.LocalDate
 import java.time.LocalTime
 import kotlinx.coroutines.delay
 
@@ -34,7 +35,10 @@ import kotlinx.coroutines.delay
  * live "now" indicator. Also manages a 1s ticker to keep the current time line in sync.
  *
  * @param modifier [Modifier] applied to the whole grid content.
- * @param dateRange Visible date range used to compute layout metrics (column count, labels, etc.).
+ * @param gridDateRange Visible date range used to compute layout metrics (column count, labels,
+ *   etc.).
+ * @param headerDateRange Header visible date range used for day headers.
+ * @param headerSingleDay If showing a single day, this is that day to highlight.
  * @param events List of events to render within the visible range.
  * @param style Visual style (colors, spacing, dimensions) for the grid and labels.
  * @return Unit. This is a composable that renders UI side-effects only.
@@ -42,12 +46,14 @@ import kotlinx.coroutines.delay
 @Composable
 fun CalendarGridContent(
     modifier: Modifier = Modifier,
-    dateRange: LocalDateRange = CalendarDefaults.DefaultDateRange,
+    gridDateRange: LocalDateRange = CalendarDefaults.DefaultDateRange,
+    headerDateRange: LocalDateRange = CalendarDefaults.DefaultDateRange,
+    headerSingleDay: LocalDate? = null,
     events: List<MockEvent> = listOf(),
     style: GridContentStyle = defaultGridContentStyle()
     // Later : receive onEventClick and onEventLongPress
 ) {
-  val metrics = rememberWeekViewMetrics(dateRange)
+  val metrics = rememberWeekViewMetrics(gridDateRange)
 
   val scrollState = rememberScrollState()
 
@@ -59,18 +65,25 @@ fun CalendarGridContent(
     }
   }
 
-  // and dayHeaderRow
   BoxWithConstraints(modifier = modifier.fillMaxSize().testTag(CalendarScreenTestTags.ROOT)) {
     val availableWidth = this.maxWidth - metrics.leftOffsetDp
     val dynamicColumnWidthDp =
         if (metrics.columnCount > 0) (availableWidth / metrics.columnCount) else availableWidth
 
     Column(modifier = Modifier.fillMaxSize()) {
+      // compute header column width from headerDateRange (may be different from gridDateRange)
+      val headerDays: List<LocalDate> =
+          generateSequence(headerDateRange.start) { it.plusDays(1) }
+              .takeWhile { !it.isAfter(headerDateRange.endInclusive) }
+              .toList()
+      val headerColumnWidthDp =
+          if (headerDays.isNotEmpty()) (availableWidth / headerDays.size) else availableWidth
       DayHeaderRow(
-          days = metrics.days,
+          dateRange = headerDateRange,
+          singleDay = headerSingleDay,
           leftOffsetDp = metrics.leftOffsetDp,
           topOffsetDp = metrics.topOffsetDp,
-          columnWidth = dynamicColumnWidthDp)
+          columnWidth = headerColumnWidthDp)
 
       Row(modifier = Modifier.weight(1f).testTag(CalendarScreenTestTags.SCROLL_AREA)) {
         TimeAxisColumn(

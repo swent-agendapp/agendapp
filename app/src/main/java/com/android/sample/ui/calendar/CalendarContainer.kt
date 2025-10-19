@@ -20,6 +20,7 @@ import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
 import com.android.sample.ui.calendar.data.LocalDateRange
 import com.android.sample.ui.calendar.mockData.MockEvent
 import com.android.sample.ui.calendar.style.CalendarDefaults
+import java.time.LocalDate
 
 /**
  * High-level container for the calendar screen. It hosts the grid background, the events layer, and
@@ -27,6 +28,8 @@ import com.android.sample.ui.calendar.style.CalendarDefaults
  *
  * @param modifier [Modifier] applied to the root container.
  * @param dateRange Visible date range (inclusive) to render.
+ * @param headerDateRange Visible header date range (inclusive) to render.
+ * @param headerSingleDay Optional single day to highlight in header.
  * @param events List of events to display in the grid.
  * @return Unit. This is a composable that renders UI side-effects only.
  */
@@ -34,6 +37,8 @@ import com.android.sample.ui.calendar.style.CalendarDefaults
 fun CalendarContainer(
     modifier: Modifier = Modifier,
     dateRange: LocalDateRange = CalendarDefaults.DefaultDateRange,
+    headerDateRange: LocalDateRange = CalendarDefaults.DefaultDateRange,
+    headerSingleDay: LocalDate? = null,
     events: List<MockEvent> = listOf(),
     onSwipeLeft: (() -> Unit)? = null,
     onSwipeRight: (() -> Unit)? = null,
@@ -61,7 +66,9 @@ fun CalendarContainer(
                   },
                   onDragCancel = { totalDx = 0f })
             },
-        dateRange = dateRange,
+        gridDateRange = dateRange,
+        headerDateRange = headerDateRange,
+        headerSingleDay = headerSingleDay,
         events = events
         // Later : give dateRange (like Monday-Friday) and events list from ViewModel
         // Later : give onEventClick and onEventLongPress

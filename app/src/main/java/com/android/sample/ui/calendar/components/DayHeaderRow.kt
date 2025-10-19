@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,48 +19,74 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import com.android.sample.ui.calendar.CalendarScreenTestTags
+import com.android.sample.ui.calendar.data.LocalDateRange
+import com.android.sample.ui.calendar.style.CalendarDefaults.DefaultDateRange
 import com.android.sample.ui.calendar.style.GridContentStyle
 import com.android.sample.ui.calendar.style.defaultGridContentDimensions
 import com.android.sample.ui.calendar.style.defaultGridContentStyle
-import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
 
+/**
+ * # DayHeaderRow
+ * This file defines the header row of the calendar grid displaying the days of the week and their
+ * corresponding dates.
+ *
+ * Each column represents one day in the current date range. The header adapts its visual style
+ * depending on the current day and whether a single-day view is active.
+ */
+
+/**
+ * Displays the header row containing abbreviated weekday names and dates.
+ * - When a single day is selected, that column is highlighted using the primary container color.
+ * - The current day is visually emphasized with a different text and background color.
+ * - All other days are displayed with neutral styling.
+ *
+ * @param columnWidth The width of each day column.
+ * @param dateRange The inclusive date range of the days to display in the header.
+ * @param singleDay Optional selected day for single-day view highlighting.
+ * @param leftOffsetDp Left offset width to align the day headers with the grid.
+ * @param topOffsetDp Top offset height used to align with the grid’s content.
+ * @param style The visual styling configuration for the grid content.
+ */
 @Composable
 fun DayHeaderRow(
     columnWidth: Dp = defaultGridContentDimensions().defaultColumnWidthDp,
-    days: List<LocalDate> = run {
-      val today = LocalDate.now()
-      val startOfWeek = today.with(DayOfWeek.MONDAY)
-      val endOfWeek = today.with(DayOfWeek.FRIDAY)
-      generateSequence(startOfWeek) { it.plusDays(1) }.takeWhile { !it.isAfter(endOfWeek) }.toList()
-    },
+    dateRange: LocalDateRange = DefaultDateRange,
+    singleDay: LocalDate? = null,
     leftOffsetDp: Dp = defaultGridContentStyle().dimensions.leftOffsetDp,
     topOffsetDp: Dp = defaultGridContentStyle().dimensions.topOffsetDp,
     style: GridContentStyle = defaultGridContentStyle(),
 ) {
-  Row(modifier = Modifier.testTag(CalendarScreenTestTags.DAY_ROW)) {
+  val days: List<LocalDate> =
+      generateSequence(dateRange.start) { it.plusDays(1) }
+          .takeWhile { !it.isAfter(dateRange.endInclusive) }
+          .toList()
+
+  Row(modifier = Modifier.fillMaxWidth().testTag(CalendarScreenTestTags.DAY_ROW)) {
     Box(modifier = Modifier.size(leftOffsetDp, topOffsetDp))
 
     days.forEach { date ->
       val isToday = date == LocalDate.now()
-      val bg =
-          if (isToday) {
-            style.colors.currentDayBackground
-          } else {
-            Color.Transparent
-          }
+      val isShownSingleDay = singleDay?.let { it == date } ?: false
 
-      val color =
-          if (isToday) {
-            style.colors.currentDayText
-          } else {
-            style.colors.dayHeaderText
+      val (bg, color, weight) =
+          when {
+            isShownSingleDay -> {
+              val bgc = MaterialTheme.colorScheme.primaryContainer
+              val tc = MaterialTheme.colorScheme.onPrimaryContainer
+              Triple(bgc, tc, FontWeight.Bold)
+            }
+            isToday -> {
+              Triple(
+                  style.colors.currentDayBackground,
+                  style.colors.currentDayText,
+                  FontWeight.ExtraBold)
+            }
+            else -> Triple(Color.Transparent, style.colors.dayHeaderText, FontWeight.Medium)
           }
-
-      val weight = if (isToday) FontWeight.Bold else FontWeight.Medium
 
       val dayName = date.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
 

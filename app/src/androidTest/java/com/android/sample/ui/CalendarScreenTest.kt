@@ -6,6 +6,8 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onLast
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performTouchInput
 import com.android.sample.Agendapp
@@ -129,26 +131,32 @@ class CalendarScreenTest {
 
     // current week, should be displayed
     composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
+        .onAllNodesWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
+        .onLast()
         .assertIsDisplayed()
     composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
+        .onAllNodesWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
+        .onLast()
         .assertIsDisplayed()
     composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
+        .onAllNodesWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
+        .onLast()
         .assertIsDisplayed()
 
     // previous week, should not be displayed
     composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Previous Event")
+        .onAllNodesWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Previous Event")
+        .onLast()
         .assertIsNotDisplayed()
     composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Earlier Event")
+        .onAllNodesWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Earlier Event")
+        .onLast()
         .assertIsNotDisplayed()
 
     // PERFORM RIGHT SWIPE to load the previous week
     composeTestRule
-        .onNodeWithTag(CalendarScreenTestTags.EVENT_GRID)
+        .onAllNodesWithTag(CalendarScreenTestTags.EVENT_GRID)
+        .onLast()
         .assertIsDisplayed()
         .performTouchInput {
           down(center)
@@ -159,21 +167,26 @@ class CalendarScreenTest {
 
     // previous week, should be displayed
     composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Previous Event")
+        .onAllNodesWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Previous Event")
+        .onLast()
         .assertIsDisplayed()
     composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Earlier Event")
+        .onAllNodesWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Earlier Event")
+        .onLast()
         .assertIsDisplayed()
 
     // previous week, should not be displayed
     composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
+        .onAllNodesWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
+        .onLast()
         .assertIsNotDisplayed()
     composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
+        .onAllNodesWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
+        .onLast()
         .assertIsNotDisplayed()
     composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
+        .onAllNodesWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
+        .onLast()
         .assertIsNotDisplayed()
   }
 

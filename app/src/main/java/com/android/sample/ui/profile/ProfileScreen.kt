@@ -16,22 +16,24 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 object ProfileScreenTestTags {
   const val ROOT = "profile_screen"
   const val BACK_BUTTON = "back_button"
-  const val DISPLAY_NAME_TEXT = "display_name_text"
-  const val EMAIL_TEXT = "email_text"
-  const val USER_ID_TEXT = "user_id_text"
-  const val SHOW_ADMIN_CONTACT_BUTTON = "show_admin_contact_button"
-  const val ADMIN_CONTACT_INFO = "admin_contact_info"
+  const val DISPLAY_NAME_FIELD = "display_name_field"
+  const val EMAIL_FIELD = "email_field"
+  const val PHONE_FIELD = "phone_field"
+  const val SAVE_BUTTON = "save_button"
+  const val ADMIN_CONTACT_BUTTON = "admin_contact_button"
 }
 
 /**
- * Profile screen displaying user information and admin contact button.
+ * Profile screen allowing user to view and edit their contact information.
  *
  * @param onNavigateBack Callback to navigate back to previous screen
+ * @param onNavigateToAdminContact Callback to navigate to admin contact screen
  * @param profileViewModel ViewModel managing user state
  */
 @Composable
 fun ProfileScreen(
     onNavigateBack: () -> Unit,
+    onNavigateToAdminContact: () -> Unit = {},
     profileViewModel: ProfileViewModel = viewModel(factory = ProfileViewModel.Factory)
 ) {
   val uiState by profileViewModel.uiState.collectAsState()
@@ -55,72 +57,51 @@ fun ProfileScreen(
 
           Spacer(modifier = Modifier.height(24.dp))
 
-          uiState.user?.let { user ->
-            // Display Name
-            Card(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
-              Column(modifier = Modifier.padding(16.dp)) {
-                Text("Display Name", style = MaterialTheme.typography.labelMedium)
-                Text(
-                    user.displayName ?: "Not set",
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.testTag(ProfileScreenTestTags.DISPLAY_NAME_TEXT))
-              }
-            }
+          // Display Name Field
+          OutlinedTextField(
+              value = uiState.displayName,
+              onValueChange = { profileViewModel.updateDisplayName(it) },
+              label = { Text("Display Name") },
+              modifier = Modifier.fillMaxWidth().testTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD),
+              singleLine = true)
 
-            // Email
-            Card(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
-              Column(modifier = Modifier.padding(16.dp)) {
-                Text("Email", style = MaterialTheme.typography.labelMedium)
-                Text(
-                    user.email ?: "Not set",
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.testTag(ProfileScreenTestTags.EMAIL_TEXT))
-              }
-            }
+          Spacer(modifier = Modifier.height(16.dp))
 
-            // User ID
-            Card(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
-              Column(modifier = Modifier.padding(16.dp)) {
-                Text("User ID", style = MaterialTheme.typography.labelMedium)
-                Text(
-                    user.id,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.testTag(ProfileScreenTestTags.USER_ID_TEXT))
-              }
-            }
-          }
-              ?: run {
-                Text("No user information available", style = MaterialTheme.typography.bodyLarge)
-              }
+          // Email Field
+          OutlinedTextField(
+              value = uiState.email,
+              onValueChange = { profileViewModel.updateEmail(it) },
+              label = { Text("Email") },
+              modifier = Modifier.fillMaxWidth().testTag(ProfileScreenTestTags.EMAIL_FIELD),
+              singleLine = true)
+
+          Spacer(modifier = Modifier.height(16.dp))
+
+          // Phone Number Field
+          OutlinedTextField(
+              value = uiState.phoneNumber,
+              onValueChange = { profileViewModel.updatePhoneNumber(it) },
+              label = { Text("Phone Number") },
+              modifier = Modifier.fillMaxWidth().testTag(ProfileScreenTestTags.PHONE_FIELD),
+              singleLine = true)
 
           Spacer(modifier = Modifier.height(24.dp))
 
-          // Show Admin Contact Button
+          // Save Button
           Button(
-              modifier =
-                  Modifier.testTag(ProfileScreenTestTags.SHOW_ADMIN_CONTACT_BUTTON)
-                      .fillMaxWidth(),
-              onClick = { profileViewModel.toggleAdminContact() }) {
-                Text(if (uiState.showAdminContact) "Hide Admin Contact" else "Show Admin Contact")
+              modifier = Modifier.testTag(ProfileScreenTestTags.SAVE_BUTTON).fillMaxWidth(),
+              onClick = { profileViewModel.saveProfile() }) {
+                Text("Save Profile")
               }
 
           Spacer(modifier = Modifier.height(16.dp))
 
-          // Admin Contact Information
-          if (uiState.showAdminContact) {
-            Card(
-                modifier =
-                    Modifier.testTag(ProfileScreenTestTags.ADMIN_CONTACT_INFO)
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp)) {
-                  Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Admin Contact", style = MaterialTheme.typography.labelMedium)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text("Email: admin@agendapp.com", style = MaterialTheme.typography.bodyMedium)
-                    Text("Phone: +1 (555) 123-4567", style = MaterialTheme.typography.bodyMedium)
-                  }
-                }
-          }
+          // Admin Contact Button
+          OutlinedButton(
+              modifier = Modifier.testTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON).fillMaxWidth(),
+              onClick = onNavigateToAdminContact) {
+                Text("View Admin Contact")
+              }
         }
   }
 }

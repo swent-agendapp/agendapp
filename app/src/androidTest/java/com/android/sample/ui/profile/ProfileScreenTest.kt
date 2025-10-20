@@ -16,37 +16,58 @@ class ProfileScreenTest {
   @Test
   fun profileScreen_displaysUserInformation() {
     val mockRepository = mockk<AuthRepository>()
+    val testUser =
+        User(
+            id = "test123",
+            displayName = "Test User",
+            email = "test@example.com",
+            phoneNumber = "123-456-7890")
+    every { mockRepository.getCurrentUser() } returns testUser
+
+    val viewModel = ProfileViewModel(mockRepository)
+
+    composeTestRule.setContent {
+      ProfileScreen(onNavigateBack = {}, onNavigateToAdminContact = {}, profileViewModel = viewModel)
+    }
+
+    composeTestRule
+        .onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD)
+        .assertIsDisplayed()
+        .assertTextContains("Test User")
+    composeTestRule
+        .onNodeWithTag(ProfileScreenTestTags.EMAIL_FIELD)
+        .assertIsDisplayed()
+        .assertTextContains("test@example.com")
+    composeTestRule
+        .onNodeWithTag(ProfileScreenTestTags.PHONE_FIELD)
+        .assertIsDisplayed()
+        .assertTextContains("123-456-7890")
+  }
+
+  @Test
+  fun profileScreen_allowsEditingFields() {
+    val mockRepository = mockk<AuthRepository>()
     val testUser = User(id = "test123", displayName = "Test User", email = "test@example.com")
     every { mockRepository.getCurrentUser() } returns testUser
 
     val viewModel = ProfileViewModel(mockRepository)
 
-    composeTestRule.setContent { ProfileScreen(onNavigateBack = {}, profileViewModel = viewModel) }
+    composeTestRule.setContent {
+      ProfileScreen(onNavigateBack = {}, onNavigateToAdminContact = {}, profileViewModel = viewModel)
+    }
 
+    // Type in display name field
     composeTestRule
-        .onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_TEXT)
-        .assertIsDisplayed()
-        .assertTextContains("Test User")
+        .onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD)
+        .performTextClearance()
     composeTestRule
-        .onNodeWithTag(ProfileScreenTestTags.EMAIL_TEXT)
-        .assertIsDisplayed()
-        .assertTextContains("test@example.com")
+        .onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD)
+        .performTextInput("New Name")
+
+    // Verify the field contains the new text
     composeTestRule
-        .onNodeWithTag(ProfileScreenTestTags.USER_ID_TEXT)
-        .assertIsDisplayed()
-        .assertTextContains("test123")
-  }
-
-  @Test
-  fun profileScreen_displaysNoUserInfoWhenUserIsNull() {
-    val mockRepository = mockk<AuthRepository>()
-    every { mockRepository.getCurrentUser() } returns null
-
-    val viewModel = ProfileViewModel(mockRepository)
-
-    composeTestRule.setContent { ProfileScreen(onNavigateBack = {}, profileViewModel = viewModel) }
-
-    composeTestRule.onNodeWithText("No user information available").assertIsDisplayed()
+        .onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD)
+        .assertTextContains("New Name")
   }
 
   @Test
@@ -58,7 +79,10 @@ class ProfileScreenTest {
     var backClicked = false
 
     composeTestRule.setContent {
-      ProfileScreen(onNavigateBack = { backClicked = true }, profileViewModel = viewModel)
+      ProfileScreen(
+          onNavigateBack = { backClicked = true },
+          onNavigateToAdminContact = {},
+          profileViewModel = viewModel)
     }
 
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.BACK_BUTTON).performClick()
@@ -67,29 +91,37 @@ class ProfileScreenTest {
   }
 
   @Test
-  fun profileScreen_showAdminContactButtonTogglesContact() {
+  fun profileScreen_adminContactButtonWorks() {
+    val mockRepository = mockk<AuthRepository>()
+    every { mockRepository.getCurrentUser() } returns null
+
+    val viewModel = ProfileViewModel(mockRepository)
+    var adminContactClicked = false
+
+    composeTestRule.setContent {
+      ProfileScreen(
+          onNavigateBack = {},
+          onNavigateToAdminContact = { adminContactClicked = true },
+          profileViewModel = viewModel)
+    }
+
+    composeTestRule.onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON).performClick()
+
+    assert(adminContactClicked)
+  }
+
+  @Test
+  fun profileScreen_saveButtonIsDisplayed() {
     val mockRepository = mockk<AuthRepository>()
     every { mockRepository.getCurrentUser() } returns null
 
     val viewModel = ProfileViewModel(mockRepository)
 
-    composeTestRule.setContent { ProfileScreen(onNavigateBack = {}, profileViewModel = viewModel) }
+    composeTestRule.setContent {
+      ProfileScreen(onNavigateBack = {}, onNavigateToAdminContact = {}, profileViewModel = viewModel)
+    }
 
-    // Initially admin contact should not be visible
-    composeTestRule.onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_INFO).assertDoesNotExist()
-
-    // Click the button to show admin contact
-    composeTestRule.onNodeWithTag(ProfileScreenTestTags.SHOW_ADMIN_CONTACT_BUTTON).performClick()
-
-    // Admin contact should now be visible
-    composeTestRule.onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_INFO).assertIsDisplayed()
-    composeTestRule.onNodeWithText("admin@agendapp.com").assertIsDisplayed()
-
-    // Click the button again to hide admin contact
-    composeTestRule.onNodeWithTag(ProfileScreenTestTags.SHOW_ADMIN_CONTACT_BUTTON).performClick()
-
-    // Admin contact should be hidden again
-    composeTestRule.onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_INFO).assertDoesNotExist()
+    composeTestRule.onNodeWithTag(ProfileScreenTestTags.SAVE_BUTTON).assertIsDisplayed()
   }
 
   @Test
@@ -99,7 +131,9 @@ class ProfileScreenTest {
 
     val viewModel = ProfileViewModel(mockRepository)
 
-    composeTestRule.setContent { ProfileScreen(onNavigateBack = {}, profileViewModel = viewModel) }
+    composeTestRule.setContent {
+      ProfileScreen(onNavigateBack = {}, onNavigateToAdminContact = {}, profileViewModel = viewModel)
+    }
 
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.ROOT).assertIsDisplayed()
   }

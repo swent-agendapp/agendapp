@@ -101,17 +101,15 @@ fun AgendappNavigation(modifier: Modifier = Modifier) {
         }
         navigation(startDestination = Screen.Settings.route, route = "Settings") {
           composable(Screen.Settings.route) {
-            SettingsScreen(onNavigateBack = { navigationActions.navigateBack() })
+            SettingsScreen(
+                onNavigateBack = { navigationActions.navigateBack() },
+                onNavigateToProfile = { navigationActions.navigateTo(Screen.Profile) })
           }
-        }
-        navigation(startDestination = Screen.Profile.route, route = "Profile") {
           composable(Screen.Profile.route) {
             ProfileScreen(
                 onNavigateBack = { navigationActions.navigateBack() },
                 onNavigateToAdminContact = { navigationActions.navigateTo(Screen.AdminContact) })
           }
-        }
-        navigation(startDestination = Screen.AdminContact.route, route = "AdminContact") {
           composable(Screen.AdminContact.route) {
             AdminContactScreen(onNavigateBack = { navigationActions.navigateBack() })
           }
@@ -121,8 +119,7 @@ fun AgendappNavigation(modifier: Modifier = Modifier) {
             HomeScreen(
                 onNavigateToEdit = { eventId -> navigationActions.navigateToEditEvent(eventId) },
                 onNavigateToCalendar = { navigationActions.navigateTo(Screen.Calendar) },
-                onNavigateToSettings = { navigationActions.navigateTo(Screen.Settings) },
-                onNavigateToProfile = { navigationActions.navigateTo(Screen.Profile) })
+                onNavigateToSettings = { navigationActions.navigateTo(Screen.Settings) })
           }
         }
         navigation(startDestination = Screen.Calendar.route, route = "Calendar") {

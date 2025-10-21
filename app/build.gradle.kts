@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -12,6 +15,15 @@ android {
     namespace = "com.android.sample"
     compileSdk = 34
 
+    val localProperties = Properties()
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localProperties.load(FileInputStream(localPropertiesFile))
+    }
+
+    val mapsApiKey: String = localProperties.getProperty("MAPS_API_KEY") ?: ""
+
+
     defaultConfig {
         applicationId = "com.android.sample"
         minSdk = 29
@@ -23,6 +35,7 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
     }
 
     buildTypes {
@@ -156,7 +169,6 @@ dependencies {
     androidTestImplementation(libs.google.truth)
     testImplementation(libs.google.truth)
 
-
     // ------------- Jetpack Compose ------------------
     val composeBom = platform(libs.compose.bom)
     implementation(composeBom)
@@ -201,6 +213,11 @@ dependencies {
 
     // Networking with OkHttp
     implementation(libs.okhttp)
+
+    // Map
+    implementation(libs.play.services.maps)
+    implementation(libs.maps.compose)
+    implementation(libs.maps.compose.utils)
 }
 
 tasks.withType<Test> {

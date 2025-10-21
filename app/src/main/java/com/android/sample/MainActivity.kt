@@ -21,6 +21,7 @@ import com.android.sample.ui.calendar.AddEventTimeAndRecurrenceScreen
 import com.android.sample.ui.calendar.AddEventTitleAndDescriptionScreen
 import com.android.sample.ui.calendar.AddEventViewModel
 import com.android.sample.ui.calendar.CalendarScreen
+import com.android.sample.ui.map.MapScreen
 import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
 import com.android.sample.ui.screens.HomeScreen
@@ -67,53 +68,53 @@ fun AgendappNavigation(modifier: Modifier = Modifier) {
   val navigationActions = NavigationActions(navController)
   val addEventViewModel: AddEventViewModel = viewModel()
 
-  NavHost(
-      navController = navController,
-      startDestination = Screen.Calendar.route,
-      modifier = modifier) {
-        navigation(startDestination = Screen.AddEventTitle.route, route = "Add Event") {
-          composable(Screen.AddEventTitle.route) {
-            AddEventTitleAndDescriptionScreen(
-                addEventViewModel = addEventViewModel,
-                onNext = { navigationActions.navigateTo(Screen.AddEventTime) },
-                onCancel = {
-                  navigationActions.navigateBack()
-                  addEventViewModel.resetUiState()
-                })
-          }
-          composable(Screen.AddEventTime.route) {
-            AddEventTimeAndRecurrenceScreen(
-                addEventViewModel = addEventViewModel,
-                onNext = { navigationActions.navigateTo(Screen.AddEventMember) },
-                onBack = { navigationActions.navigateBack() })
-          }
-          composable(Screen.AddEventMember.route) {
-            AddEventAttendantScreen(
-                addEventViewModel = addEventViewModel,
-                onCreate = { navigationActions.navigateTo(Screen.AddEventEnd) },
-                onBack = { navigationActions.navigateBack() })
-          }
-          composable(Screen.AddEventEnd.route) {
-            AddEventConfirmationScreen(onFinish = { navigationActions.navigateTo(Screen.Calendar) })
-          }
-        }
-        navigation(startDestination = Screen.Settings.route, route = "Settings") {
-          composable(Screen.Settings.route) {
-            SettingsScreen(onNavigateBack = { navigationActions.navigateBack() })
-          }
-        }
-        navigation(startDestination = Screen.Home.route, route = "Home") {
-          composable(Screen.Home.route) {
-            HomeScreen(
-                onNavigateToEdit = { eventId -> navigationActions.navigateToEditEvent(eventId) },
-                onNavigateToCalendar = { navigationActions.navigateTo(Screen.Calendar) },
-                onNavigateToSettings = { navigationActions.navigateTo(Screen.Settings) })
-          }
-        }
-        navigation(startDestination = Screen.Calendar.route, route = "Calendar") {
-          composable(Screen.Calendar.route) {
-            CalendarScreen(onCreateEvent = { navigationActions.navigateTo(Screen.AddEventTitle) })
-          }
-        }
+  NavHost(navController = navController, startDestination = Screen.Map.route, modifier = modifier) {
+    navigation(startDestination = Screen.AddEventTitle.route, route = "Add Event") {
+      composable(Screen.AddEventTitle.route) {
+        AddEventTitleAndDescriptionScreen(
+            addEventViewModel = addEventViewModel,
+            onNext = { navigationActions.navigateTo(Screen.AddEventTime) },
+            onCancel = {
+              navigationActions.navigateBack()
+              addEventViewModel.resetUiState()
+            })
       }
+      composable(Screen.AddEventTime.route) {
+        AddEventTimeAndRecurrenceScreen(
+            addEventViewModel = addEventViewModel,
+            onNext = { navigationActions.navigateTo(Screen.AddEventMember) },
+            onBack = { navigationActions.navigateBack() })
+      }
+      composable(Screen.AddEventMember.route) {
+        AddEventAttendantScreen(
+            addEventViewModel = addEventViewModel,
+            onCreate = { navigationActions.navigateTo(Screen.AddEventEnd) },
+            onBack = { navigationActions.navigateBack() })
+      }
+      composable(Screen.AddEventEnd.route) {
+        AddEventConfirmationScreen(onFinish = { navigationActions.navigateTo(Screen.Calendar) })
+      }
+    }
+    navigation(startDestination = Screen.Settings.route, route = "Settings") {
+      composable(Screen.Settings.route) {
+        SettingsScreen(onNavigateBack = { navigationActions.navigateBack() })
+      }
+    }
+    navigation(startDestination = Screen.Home.route, route = "Home") {
+      composable(Screen.Home.route) {
+        HomeScreen(
+            onNavigateToEdit = { eventId -> navigationActions.navigateToEditEvent(eventId) },
+            onNavigateToCalendar = { navigationActions.navigateTo(Screen.Calendar) },
+            onNavigateToSettings = { navigationActions.navigateTo(Screen.Settings) })
+      }
+    }
+    navigation(startDestination = Screen.Calendar.route, route = "Calendar") {
+      composable(Screen.Calendar.route) {
+        CalendarScreen(onCreateEvent = { navigationActions.navigateTo(Screen.AddEventTitle) })
+      }
+    }
+    navigation(startDestination = Screen.Map.route, route = "Map") {
+      composable(Screen.Map.route) { MapScreen() }
+    }
+  }
 }

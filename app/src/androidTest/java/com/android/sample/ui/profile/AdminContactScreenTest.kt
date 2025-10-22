@@ -17,11 +17,11 @@ class AdminContactScreenTest {
     composeTestRule
         .onNodeWithTag(AdminContactScreenTestTags.ADMIN_EMAIL_TEXT)
         .assertIsDisplayed()
-        .assertTextContains("admin@agendapp.com")
+        .assertTextContains(AdminInformation.EMAIL)
     composeTestRule
         .onNodeWithTag(AdminContactScreenTestTags.ADMIN_PHONE_TEXT)
         .assertIsDisplayed()
-        .assertTextContains("+1 (555) 123-4567")
+        .assertTextContains(AdminInformation.PHONE)
   }
 
   @Test

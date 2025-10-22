@@ -23,6 +23,7 @@ import com.android.sample.ui.calendar.AddEventViewModel
 import com.android.sample.ui.calendar.CalendarScreen
 import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
+import com.android.sample.ui.profile.ProfileScreen
 import com.android.sample.ui.screens.HomeScreen
 import com.android.sample.ui.settings.SettingsScreen
 import com.android.sample.ui.theme.SampleAppTheme
@@ -102,12 +103,18 @@ fun AgendappNavigation(modifier: Modifier = Modifier) {
             SettingsScreen(onNavigateBack = { navigationActions.navigateBack() })
           }
         }
+        navigation(startDestination = Screen.Profile.route, route = "Profile") {
+          composable(Screen.Profile.route) {
+            ProfileScreen(onNavigateBack = { navigationActions.navigateBack() })
+          }
+        }
         navigation(startDestination = Screen.Home.route, route = "Home") {
           composable(Screen.Home.route) {
             HomeScreen(
                 onNavigateToEdit = { eventId -> navigationActions.navigateToEditEvent(eventId) },
                 onNavigateToCalendar = { navigationActions.navigateTo(Screen.Calendar) },
-                onNavigateToSettings = { navigationActions.navigateTo(Screen.Settings) })
+                onNavigateToSettings = { navigationActions.navigateTo(Screen.Settings) },
+                onNavigateToProfile = { navigationActions.navigateTo(Screen.Profile) })
           }
         }
         navigation(startDestination = Screen.Calendar.route, route = "Calendar") {

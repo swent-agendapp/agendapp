@@ -14,13 +14,14 @@ object AdminContactScreenTestTags {
   const val ROOT = "admin_contact_screen"
   const val BACK_BUTTON = "back_button"
 
-    const val ADMIN_CONTACT = "Admin Contact"
+  const val ADMIN_CONTACT = "Admin Contact"
   const val ADMIN_EMAIL_TEXT = "admin_email_text"
   const val ADMIN_PHONE_TEXT = "admin_phone_text"
 }
+
 object AdminInformation {
-    const val EMAIL = "admin@agendapp.com"
-    const val PHONE = "+1 (555) 123-4567"
+  const val EMAIL = "admin@agendapp.com"
+  const val PHONE = "+1 (555) 123-4567"
 }
 
 /**
@@ -33,7 +34,10 @@ fun AdminContactScreen(onNavigateBack: () -> Unit = {}) {
   Surface(
       modifier = Modifier.fillMaxSize().semantics { testTag = AdminContactScreenTestTags.ROOT }) {
         Column(
-            modifier = Modifier.fillMaxSize().padding(16.dp).testTag(AdminContactScreenTestTags.ADMIN_CONTACT),
+            modifier =
+                Modifier.fillMaxSize()
+                    .padding(16.dp)
+                    .testTag(AdminContactScreenTestTags.ADMIN_CONTACT),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally) {
               // Back Button

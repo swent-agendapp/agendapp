@@ -5,7 +5,6 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.android.sample.ui.settings.SettingsScreen
-import com.android.sample.ui.settings.SettingsScreenTestTags
 import org.junit.Rule
 import org.junit.Test
 

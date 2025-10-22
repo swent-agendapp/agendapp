@@ -98,7 +98,8 @@ fun ProfileScreen(
 
           // Admin Contact Button
           OutlinedButton(
-              modifier = Modifier.testTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON).fillMaxWidth(),
+              modifier =
+                  Modifier.testTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON).fillMaxWidth(),
               onClick = onNavigateToAdminContact) {
                 Text("View Admin Contact")
               }

@@ -27,7 +27,8 @@ class ProfileScreenTest {
     val viewModel = ProfileViewModel(mockRepository)
 
     composeTestRule.setContent {
-      ProfileScreen(onNavigateBack = {}, onNavigateToAdminContact = {}, profileViewModel = viewModel)
+      ProfileScreen(
+          onNavigateBack = {}, onNavigateToAdminContact = {}, profileViewModel = viewModel)
     }
 
     composeTestRule
@@ -53,13 +54,12 @@ class ProfileScreenTest {
     val viewModel = ProfileViewModel(mockRepository)
 
     composeTestRule.setContent {
-      ProfileScreen(onNavigateBack = {}, onNavigateToAdminContact = {}, profileViewModel = viewModel)
+      ProfileScreen(
+          onNavigateBack = {}, onNavigateToAdminContact = {}, profileViewModel = viewModel)
     }
 
     // Type in display name field
-    composeTestRule
-        .onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD)
-        .performTextClearance()
+    composeTestRule.onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD).performTextClearance()
     composeTestRule
         .onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD)
         .performTextInput("New Name")
@@ -113,7 +113,8 @@ class ProfileScreenTest {
     val viewModel = ProfileViewModel(mockRepository)
 
     composeTestRule.setContent {
-      ProfileScreen(onNavigateBack = {}, onNavigateToAdminContact = {}, profileViewModel = viewModel)
+      ProfileScreen(
+          onNavigateBack = {}, onNavigateToAdminContact = {}, profileViewModel = viewModel)
     }
 
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.SAVE_BUTTON).assertIsDisplayed()
@@ -127,7 +128,8 @@ class ProfileScreenTest {
     val viewModel = ProfileViewModel(mockRepository)
 
     composeTestRule.setContent {
-      ProfileScreen(onNavigateBack = {}, onNavigateToAdminContact = {}, profileViewModel = viewModel)
+      ProfileScreen(
+          onNavigateBack = {}, onNavigateToAdminContact = {}, profileViewModel = viewModel)
     }
 
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.ROOT).assertIsDisplayed()

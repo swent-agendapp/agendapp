@@ -70,9 +70,7 @@ fun AgendappNavigation(modifier: Modifier = Modifier) {
   val addEventViewModel: AddEventViewModel = viewModel()
 
   NavHost(
-      navController = navController,
-      startDestination = Screen.Calendar.route,
-      modifier = modifier) {
+      navController = navController, startDestination = Screen.Home.route, modifier = modifier) {
         navigation(startDestination = Screen.AddEventTitle.route, route = "Add Event") {
           composable(Screen.AddEventTitle.route) {
             AddEventTitleAndDescriptionScreen(

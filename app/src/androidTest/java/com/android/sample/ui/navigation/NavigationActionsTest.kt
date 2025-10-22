@@ -10,6 +10,7 @@ import androidx.test.filters.MediumTest
 import com.android.sample.AgendappNavigation
 import com.android.sample.ui.calendar.AddEventTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
+import com.android.sample.ui.screens.HomeTestTags
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -29,6 +30,7 @@ class AgendappNavigationTest {
     composeTestRule.setContent { AgendappNavigation() }
 
     // Go to Calendar
+    composeTestRule.onNodeWithTag(HomeTestTags.ADD_EVENT_BUTTON).assertExists().performClick()
     composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertExists().performClick()
     // Validate screen content
     composeTestRule

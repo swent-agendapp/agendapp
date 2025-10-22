@@ -23,6 +23,7 @@ import com.android.sample.ui.calendar.AddEventViewModel
 import com.android.sample.ui.calendar.CalendarScreen
 import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
+import com.android.sample.ui.profile.AdminContactScreen
 import com.android.sample.ui.profile.ProfileScreen
 import com.android.sample.ui.screens.HomeScreen
 import com.android.sample.ui.settings.SettingsScreen
@@ -105,7 +106,14 @@ fun AgendappNavigation(modifier: Modifier = Modifier) {
         }
         navigation(startDestination = Screen.Profile.route, route = "Profile") {
           composable(Screen.Profile.route) {
-            ProfileScreen(onNavigateBack = { navigationActions.navigateBack() })
+            ProfileScreen(
+                onNavigateBack = { navigationActions.navigateBack() },
+                onNavigateToAdminContact = { navigationActions.navigateTo(Screen.AdminContact) })
+          }
+        }
+        navigation(startDestination = Screen.AdminContact.route, route = "AdminContact") {
+          composable(Screen.AdminContact.route) {
+            AdminContactScreen(onNavigateBack = { navigationActions.navigateBack() })
           }
         }
         navigation(startDestination = Screen.Home.route, route = "Home") {

@@ -14,10 +14,15 @@ import kotlinx.coroutines.flow.update
 /**
  * Represents the UI state for the profile screen.
  *
- * @property user The currently signed-in user, or null if not signed in.
- * @property showAdminContact Whether to show admin contact information.
+ * @property displayName User's display name.
+ * @property email User's email address.
+ * @property phoneNumber User's phone number.
  */
-data class ProfileUIState(val user: User? = null, val showAdminContact: Boolean = false)
+data class ProfileUIState(
+    val displayName: String = "",
+    val email: String = "",
+    val phoneNumber: String = ""
+)
 
 /**
  * ViewModel for the Profile screen.
@@ -37,12 +42,35 @@ class ProfileViewModel(private val repository: AuthRepository = AuthRepositoryFi
   /** Loads the current user from the repository. */
   private fun loadCurrentUser() {
     val currentUser = repository.getCurrentUser()
-    _uiState.update { it.copy(user = currentUser) }
+    currentUser?.let { user ->
+      _uiState.update {
+        it.copy(
+            displayName = user.displayName ?: "",
+            email = user.email ?: "",
+            phoneNumber = user.phoneNumber ?: "")
+      }
+    }
   }
 
-  /** Toggles the visibility of admin contact information. */
-  fun toggleAdminContact() {
-    _uiState.update { it.copy(showAdminContact = !it.showAdminContact) }
+  /** Updates the display name in the UI state. */
+  fun updateDisplayName(displayName: String) {
+    _uiState.update { it.copy(displayName = displayName) }
+  }
+
+  /** Updates the email in the UI state. */
+  fun updateEmail(email: String) {
+    _uiState.update { it.copy(email = email) }
+  }
+
+  /** Updates the phone number in the UI state. */
+  fun updatePhoneNumber(phoneNumber: String) {
+    _uiState.update { it.copy(phoneNumber = phoneNumber) }
+  }
+
+  /** Saves the profile (placeholder - would update backend in real implementation). */
+  fun saveProfile() {
+    // TODO: Implement profile saving to backend
+    // This would typically call repository.updateUser(...)
   }
 
   companion object {

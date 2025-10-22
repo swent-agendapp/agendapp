@@ -13,6 +13,8 @@ sealed class Screen(val route: String) {
 
   data object Profile : Screen("profile")
 
+  data object AdminContact : Screen("admin_contact")
+
   data object AddEventTitle : Screen("add_event/title")
 
   data object AddEventTime : Screen("add_event/time")

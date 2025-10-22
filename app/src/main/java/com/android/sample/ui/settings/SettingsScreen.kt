@@ -18,7 +18,7 @@ object SettingsScreenTestTags {
 }
 /** Settings screen with navigation to profile. */
 @Composable
-fun SettingsScreen(onNavigateBack: () -> Unit, onNavigateToProfile: () -> Unit = {}) {
+fun SettingsScreen(onNavigateBack: () -> Unit = {}, onNavigateToProfile: () -> Unit = {}) {
   Surface(modifier = Modifier.fillMaxSize().semantics { testTag = SettingsScreenTestTags.ROOT }) {
     Column(
         modifier = Modifier.fillMaxSize(),

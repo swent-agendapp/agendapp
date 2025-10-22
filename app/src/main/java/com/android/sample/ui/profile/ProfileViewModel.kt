@@ -72,10 +72,4 @@ class ProfileViewModel(private val repository: AuthRepository = AuthRepositoryFi
     // TODO: Implement profile saving to backend
     // This would typically call repository.updateUser(...)
   }
-
-  companion object {
-    val Factory: ViewModelProvider.Factory = viewModelFactory {
-      initializer { ProfileViewModel() }
-    }
-  }
 }

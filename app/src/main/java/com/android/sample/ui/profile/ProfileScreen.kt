@@ -32,9 +32,9 @@ object ProfileScreenTestTags {
  */
 @Composable
 fun ProfileScreen(
-    onNavigateBack: () -> Unit,
+    onNavigateBack: () -> Unit = {},
     onNavigateToAdminContact: () -> Unit = {},
-    profileViewModel: ProfileViewModel = viewModel(factory = ProfileViewModel.Factory)
+    profileViewModel: ProfileViewModel = viewModel()
 ) {
   val uiState by profileViewModel.uiState.collectAsState()
 

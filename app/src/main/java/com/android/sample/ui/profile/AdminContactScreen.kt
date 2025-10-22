@@ -18,6 +18,10 @@ object AdminContactScreenTestTags {
   const val ADMIN_EMAIL_TEXT = "admin_email_text"
   const val ADMIN_PHONE_TEXT = "admin_phone_text"
 }
+object AdminInformation {
+    const val EMAIL = "admin@agendapp.com"
+    const val PHONE = "+1 (555) 123-4567"
+}
 
 /**
  * Admin contact screen displaying administrator contact information.
@@ -25,7 +29,7 @@ object AdminContactScreenTestTags {
  * @param onNavigateBack Callback to navigate back to previous screen
  */
 @Composable
-fun AdminContactScreen(onNavigateBack: () -> Unit) {
+fun AdminContactScreen(onNavigateBack: () -> Unit = {}) {
   Surface(
       modifier = Modifier.fillMaxSize().semantics { testTag = AdminContactScreenTestTags.ROOT }) {
         Column(
@@ -53,7 +57,7 @@ fun AdminContactScreen(onNavigateBack: () -> Unit) {
                 Column(modifier = Modifier.padding(16.dp)) {
                   Text("Email", style = MaterialTheme.typography.labelMedium)
                   Text(
-                      "admin@agendapp.com",
+                      AdminInformation.EMAIL,
                       style = MaterialTheme.typography.bodyLarge,
                       modifier = Modifier.testTag(AdminContactScreenTestTags.ADMIN_EMAIL_TEXT))
                 }
@@ -64,7 +68,7 @@ fun AdminContactScreen(onNavigateBack: () -> Unit) {
                 Column(modifier = Modifier.padding(16.dp)) {
                   Text("Phone", style = MaterialTheme.typography.labelMedium)
                   Text(
-                      "+1 (555) 123-4567",
+                      AdminInformation.PHONE,
                       style = MaterialTheme.typography.bodyLarge,
                       modifier = Modifier.testTag(AdminContactScreenTestTags.ADMIN_PHONE_TEXT))
                 }

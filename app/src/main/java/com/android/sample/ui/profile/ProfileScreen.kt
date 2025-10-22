@@ -1,6 +1,7 @@
 package com.android.sample.ui.profile
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -10,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
@@ -73,7 +75,9 @@ fun ProfileScreen(
               onValueChange = { profileViewModel.updateEmail(it) },
               label = { Text("Email") },
               modifier = Modifier.fillMaxWidth().testTag(ProfileScreenTestTags.EMAIL_FIELD),
-              singleLine = true)
+              singleLine = true,
+              keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+          )
 
           Spacer(modifier = Modifier.height(16.dp))
 
@@ -83,7 +87,8 @@ fun ProfileScreen(
               onValueChange = { profileViewModel.updatePhoneNumber(it) },
               label = { Text("Phone Number") },
               modifier = Modifier.fillMaxWidth().testTag(ProfileScreenTestTags.PHONE_FIELD),
-              singleLine = true)
+              singleLine = true,
+              keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone))
 
           Spacer(modifier = Modifier.height(24.dp))
 

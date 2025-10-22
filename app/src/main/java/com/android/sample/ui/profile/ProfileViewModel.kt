@@ -1,11 +1,13 @@
 package com.android.sample.ui.profile
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.se.bootcamp.model.authentication.AuthRepository
 import com.github.se.bootcamp.model.authentication.AuthRepositoryFirebase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 /**
  * Represents the UI state for the profile screen.
@@ -32,11 +34,11 @@ class ProfileViewModel(private val repository: AuthRepository) :
   val uiState: StateFlow<ProfileUIState> = _uiState
 
   init {
-    loadCurrentUser()
+    viewModelScope.launch { loadCurrentUser() }
   }
 
   /** Loads the current user from the repository. */
-  private fun loadCurrentUser() {
+  private suspend fun loadCurrentUser() {
     val currentUser = repository.getCurrentUser()
     currentUser?.let { user ->
       _uiState.update {

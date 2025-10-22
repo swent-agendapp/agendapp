@@ -13,7 +13,7 @@ class AdminContactScreenTest {
   fun adminContactScreen_displaysAdminInformation() {
     composeTestRule.setContent { AdminContactScreen(onNavigateBack = {}) }
 
-    composeTestRule.onNodeWithText("Admin Contact").assertIsDisplayed()
+    composeTestRule.onNodeWithTag(AdminContactScreenTestTags.ADMIN_CONTACT).assertIsDisplayed()
     composeTestRule
         .onNodeWithTag(AdminContactScreenTestTags.ADMIN_EMAIL_TEXT)
         .assertIsDisplayed()

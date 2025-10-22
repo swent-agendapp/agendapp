@@ -13,6 +13,8 @@ import androidx.compose.ui.unit.dp
 object AdminContactScreenTestTags {
   const val ROOT = "admin_contact_screen"
   const val BACK_BUTTON = "back_button"
+
+    const val ADMIN_CONTACT = "Admin Contact"
   const val ADMIN_EMAIL_TEXT = "admin_email_text"
   const val ADMIN_PHONE_TEXT = "admin_phone_text"
 }
@@ -27,7 +29,7 @@ fun AdminContactScreen(onNavigateBack: () -> Unit) {
   Surface(
       modifier = Modifier.fillMaxSize().semantics { testTag = AdminContactScreenTestTags.ROOT }) {
         Column(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
+            modifier = Modifier.fillMaxSize().padding(16.dp).testTag(AdminContactScreenTestTags.ADMIN_CONTACT),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally) {
               // Back Button

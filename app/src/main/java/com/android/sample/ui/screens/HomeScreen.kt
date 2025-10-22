@@ -14,7 +14,6 @@ object HomeTestTags {
   const val ROOT = "home_screen"
   const val ADD_EVENT_BUTTON = "add_event_button"
   const val SETTINGS_BUTTON = "settings_button"
-  const val PROFILE_BUTTON = "profile_button"
 }
 
 /** Home screen with navigation buttons for other screens. */
@@ -22,8 +21,7 @@ object HomeTestTags {
 fun HomeScreen(
     onNavigateToEdit: (String) -> Unit = {},
     onNavigateToCalendar: () -> Unit = {},
-    onNavigateToSettings: () -> Unit = {},
-    onNavigateToProfile: () -> Unit = {}
+    onNavigateToSettings: () -> Unit = {}
 ) {
   Surface(modifier = Modifier.fillMaxSize().semantics { testTag = HomeTestTags.ROOT }) {
     Column(
@@ -42,12 +40,6 @@ fun HomeScreen(
               modifier = Modifier.testTag(HomeTestTags.SETTINGS_BUTTON),
               onClick = onNavigateToSettings) {
                 Text("Go to Settings")
-              }
-          Spacer(modifier = Modifier.height(12.dp))
-          Button(
-              modifier = Modifier.testTag(HomeTestTags.PROFILE_BUTTON),
-              onClick = onNavigateToProfile) {
-                Text("Go to Profile")
               }
         }
   }

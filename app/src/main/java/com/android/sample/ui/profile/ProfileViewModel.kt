@@ -3,7 +3,6 @@ package com.android.sample.ui.profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.se.bootcamp.model.authentication.AuthRepository
-import com.github.se.bootcamp.model.authentication.AuthRepositoryFirebase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -27,8 +26,7 @@ data class ProfileUIState(
  *
  * @property repository The repository used to retrieve user information.
  */
-class ProfileViewModel(private val repository: AuthRepository) :
-    ViewModel() {
+class ProfileViewModel(private val repository: AuthRepository) : ViewModel() {
 
   private val _uiState = MutableStateFlow(ProfileUIState())
   val uiState: StateFlow<ProfileUIState> = _uiState

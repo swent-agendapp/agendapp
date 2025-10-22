@@ -25,7 +25,7 @@ data class ProfileUIState(
  *
  * @property repository The repository used to retrieve user information.
  */
-class ProfileViewModel(private val repository: AuthRepository = AuthRepositoryFirebase()) :
+class ProfileViewModel(private val repository: AuthRepository) :
     ViewModel() {
 
   private val _uiState = MutableStateFlow(ProfileUIState())

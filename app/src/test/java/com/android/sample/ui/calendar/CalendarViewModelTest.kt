@@ -29,6 +29,35 @@ class CalendarViewModelTest {
   private lateinit var event1: Event
   private lateinit var event2: Event
 
+  private class ThrowingRepository : EventRepository {
+    override suspend fun getAllEvents(): List<Event> {
+      throw IllegalStateException("boom")
+    }
+
+    override suspend fun insertEvent(item: Event) {
+      error("Not needed")
+    }
+
+    override suspend fun updateEvent(itemId: String, item: Event) {
+      error("Not needed")
+    }
+
+    override suspend fun deleteEvent(itemId: String) {
+      error("Not needed")
+    }
+
+    override suspend fun getEventById(itemId: String): Event? {
+      error("Not needed")
+    }
+
+    override suspend fun getEventsBetweenDates(
+        startDate: Instant,
+        endDate: Instant,
+    ): List<Event> {
+      throw IllegalStateException("boom between")
+    }
+  }
+
   @Before
   fun setUp() {
     // Set the main dispatcher to the test dispatcher before each test.
@@ -119,5 +148,18 @@ class CalendarViewModelTest {
 
     viewModel.clearErrorMsg()
     assertNull(viewModel.uiState.value.errorMsg)
+  }
+
+  @Test
+  fun loadAllEvents_whenRepositoryThrows_setsErrorAndClearsLoading() = runTest {
+    val failingViewModel = CalendarViewModel(eventRepository = ThrowingRepository())
+
+    failingViewModel.loadAllEvents()
+    testDispatcher.scheduler.advanceUntilIdle()
+
+    val state = failingViewModel.uiState.value
+    assertTrue(state.errorMsg!!.contains("Failed to load all events"))
+    assertFalse(state.isLoading)
+    assertTrue(state.events.isEmpty())
   }
 }

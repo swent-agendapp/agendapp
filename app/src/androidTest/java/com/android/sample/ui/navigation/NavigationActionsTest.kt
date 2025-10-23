@@ -53,10 +53,11 @@ class AgendappNavigationTest {
   }
 
   @Test
-  fun navigate_to_profile_and_admin_profile() {
+  fun navigate_to_profile_and_admin_profile_and_back() {
     composeTestRule.setContent { AgendappNavigation() }
     // Go to Profile
     composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).assertExists().performClick()
+    composeTestRule.onNodeWithTag(SettingsScreenTestTags.ROOT).assertExists()
     composeTestRule
         .onNodeWithTag(SettingsScreenTestTags.PROFILE_BUTTON)
         .assertExists()
@@ -71,5 +72,13 @@ class AgendappNavigationTest {
     composeTestRule
         .onNodeWithTag(AdminContactScreenTestTags.ADMIN_SCREEN_PROFILE)
         .assertIsDisplayed()
+    // Back to Profile
+    composeTestRule
+        .onNodeWithTag(AdminContactScreenTestTags.BACK_BUTTON)
+        .assertExists()
+        .performClick()
+    composeTestRule.onNodeWithTag(ProfileScreenTestTags.PROFILE_SCREEN).assertIsDisplayed()
+    // back to Settings
+    composeTestRule.onNodeWithTag(ProfileScreenTestTags.BACK_BUTTON).assertExists().performClick()
   }
 }

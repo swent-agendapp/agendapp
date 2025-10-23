@@ -36,10 +36,19 @@ class AdminContactScreenTest {
 
   @Test
   fun adminContactScreen_rootIsDisplayed() {
-    composeTestRule.setContent { AdminContactScreen(onNavigateBack = {}) }
+    composeTestRule.setContent { AdminContactScreen() }
 
     composeTestRule
         .onNodeWithTag(AdminContactScreenTestTags.ADMIN_SCREEN_PROFILE)
         .assertIsDisplayed()
+  }
+
+  @Test
+  fun all_components_Displayed() {
+    composeTestRule.setContent { AdminContactScreen() }
+    composeTestRule.onNodeWithTag(AdminContactScreenTestTags.BACK_BUTTON).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(AdminContactScreenTestTags.ADMIN_CONTACT).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(AdminContactScreenTestTags.ADMIN_EMAIL_TEXT).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(AdminContactScreenTestTags.ADMIN_PHONE_TEXT).assertIsDisplayed()
   }
 }

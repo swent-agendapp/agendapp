@@ -13,11 +13,11 @@ class LocalTimeExtTest {
     try {
       Locale.setDefault(Locale.US)
       val formatted = LocalTime.of(14, 5).toLocalString()
-
-      // Some JDKs render the localized short style using a narrow no-break space before the
-      // meridiem indicator (e.g., "PM"). Explicitly include that character so the expectation
-      // matches the formatter output regardless of whitespace variant.
-      assertEquals("2:05\u202fPM", formatted)
+      // Some JDKs render the localized short style using a narrow no-break space or a regular
+      // space before the meridiem indicator (e.g., "PM"). Normalize the whitespace so the
+      // expectation matches regardless of the formatter output variant.
+      val normalized = formatted.replace('\u202f', ' ').replace('\u00a0', ' ')
+      assertEquals("2:05 PM", normalized)
     } finally {
       Locale.setDefault(previous)
     }

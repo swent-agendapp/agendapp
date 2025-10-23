@@ -23,6 +23,8 @@ import com.android.sample.ui.calendar.AddEventViewModel
 import com.android.sample.ui.calendar.CalendarScreen
 import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
+import com.android.sample.ui.profile.AdminContactScreen
+import com.android.sample.ui.profile.ProfileScreen
 import com.android.sample.ui.screens.HomeScreen
 import com.android.sample.ui.settings.SettingsScreen
 import com.android.sample.ui.theme.SampleAppTheme
@@ -68,9 +70,7 @@ fun AgendappNavigation(modifier: Modifier = Modifier) {
   val addEventViewModel: AddEventViewModel = viewModel()
 
   NavHost(
-      navController = navController,
-      startDestination = Screen.Calendar.route,
-      modifier = modifier) {
+      navController = navController, startDestination = Screen.Home.route, modifier = modifier) {
         navigation(startDestination = Screen.AddEventTitle.route, route = "Add Event") {
           composable(Screen.AddEventTitle.route) {
             AddEventTitleAndDescriptionScreen(
@@ -99,7 +99,17 @@ fun AgendappNavigation(modifier: Modifier = Modifier) {
         }
         navigation(startDestination = Screen.Settings.route, route = "Settings") {
           composable(Screen.Settings.route) {
-            SettingsScreen(onNavigateBack = { navigationActions.navigateBack() })
+            SettingsScreen(
+                onNavigateBack = { navigationActions.navigateBack() },
+                onNavigateToProfile = { navigationActions.navigateTo(Screen.Profile) })
+          }
+          composable(Screen.Profile.route) {
+            ProfileScreen(
+                onNavigateBack = { navigationActions.navigateBack() },
+                onNavigateToAdminContact = { navigationActions.navigateTo(Screen.AdminContact) })
+          }
+          composable(Screen.AdminContact.route) {
+            AdminContactScreen(onNavigateBack = { navigationActions.navigateBack() })
           }
         }
         navigation(startDestination = Screen.Home.route, route = "Home") {

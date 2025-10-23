@@ -4,6 +4,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performScrollTo
 import com.android.sample.ui.calendar.CalendarGridContent
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.data.TimeSpan
@@ -26,20 +27,29 @@ class CalendarEventsTest {
 
   @Test
   fun calendarGridContent_showsEventBlocks_whenEventsProvided() {
+    val today = LocalDate.now()
+    val dayOfWeek = today.dayOfWeek.value // Monday = 1 ... Sunday = 7
+    val desiredDayOfWeek = DayOfWeek.TUESDAY.value // pick any fixed day
+
+    // Compute this week's Tuesday (or whatever day you want)
+    val eventDate = today.plusDays((desiredDayOfWeek - dayOfWeek).toLong())
+
     val events =
         listOf(
             MockEvent(
                 title = "Test Event",
-                date = LocalDate.of(2025, 10, 14),
-                timeSpan =
-                    TimeSpan.Companion.of(
-                        start = LocalTime.of(9, 0), duration = Duration.ofHours(1)),
+                date = eventDate,
+                timeSpan = TimeSpan.of(start = LocalTime.of(9, 0), duration = Duration.ofHours(1)),
                 assigneeName = "Emilien",
                 backgroundColor = 0xFFFFB74D.toInt()))
 
     compose.setContent { CalendarGridContent(events = events) }
 
-    compose.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Test Event").assertIsDisplayed()
+    compose
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Test Event")
+        .assertExists()
+        .performScrollTo()
+        .assertIsDisplayed()
   }
 
   @Test

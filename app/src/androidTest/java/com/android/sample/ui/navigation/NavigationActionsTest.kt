@@ -10,6 +10,10 @@ import androidx.test.filters.MediumTest
 import com.android.sample.AgendappNavigation
 import com.android.sample.ui.calendar.AddEventTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
+import com.android.sample.ui.profile.AdminContactScreenTestTags
+import com.android.sample.ui.profile.ProfileScreenTestTags
+import com.android.sample.ui.screens.HomeTestTags
+import com.android.sample.ui.settings.SettingsScreenTestTags
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -29,6 +33,7 @@ class AgendappNavigationTest {
     composeTestRule.setContent { AgendappNavigation() }
 
     // Go to Calendar
+    composeTestRule.onNodeWithTag(HomeTestTags.ADD_EVENT_BUTTON).assertExists().performClick()
     composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertExists().performClick()
     // Validate screen content
     composeTestRule
@@ -45,5 +50,35 @@ class AgendappNavigationTest {
     composeTestRule.onNodeWithTag(AddEventTestTags.FINISH_BUTTON).assertExists().performClick()
 
     composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertIsDisplayed()
+  }
+
+  @Test
+  fun navigate_to_profile_and_admin_profile_and_back() {
+    composeTestRule.setContent { AgendappNavigation() }
+    // Go to Profile
+    composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).assertExists().performClick()
+    composeTestRule.onNodeWithTag(SettingsScreenTestTags.ROOT).assertExists()
+    composeTestRule
+        .onNodeWithTag(SettingsScreenTestTags.PROFILE_BUTTON)
+        .assertExists()
+        .performClick()
+    composeTestRule.onNodeWithTag(ProfileScreenTestTags.PROFILE_SCREEN).assertIsDisplayed()
+    // Go to Admin Contact
+    composeTestRule
+        .onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON)
+        .assertExists()
+        .performClick()
+    composeTestRule.waitForIdle()
+    composeTestRule
+        .onNodeWithTag(AdminContactScreenTestTags.ADMIN_SCREEN_PROFILE)
+        .assertIsDisplayed()
+    // Back to Profile
+    composeTestRule
+        .onNodeWithTag(AdminContactScreenTestTags.BACK_BUTTON)
+        .assertExists()
+        .performClick()
+    composeTestRule.onNodeWithTag(ProfileScreenTestTags.PROFILE_SCREEN).assertIsDisplayed()
+    // back to Settings
+    composeTestRule.onNodeWithTag(ProfileScreenTestTags.BACK_BUTTON).assertExists().performClick()
   }
 }

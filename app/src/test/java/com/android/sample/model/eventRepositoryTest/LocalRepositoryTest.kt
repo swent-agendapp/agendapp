@@ -56,6 +56,28 @@ class LocalRepositoryTest {
   }
 
   @Test(expected = IllegalArgumentException::class)
+  fun updateEvent_deletedEvent_shouldThrow() = runBlocking {
+    repository.insertEvent(sampleEvent)
+    val deleted = sampleEvent.copy(hasBeenDeleted = true)
+
+    repository.updateEvent(sampleEvent.id, deleted)
+  }
+
+  @Test(expected = IllegalArgumentException::class)
+  fun insertEvent_withDuplicateId_shouldThrow() = runBlocking {
+    repository.insertEvent(sampleEvent)
+    repository.insertEvent(sampleEvent)
+  }
+
+  @Test(expected = IllegalArgumentException::class)
+  fun deleteEvent_twice_shouldThrowOnSecondCall() = runBlocking {
+    repository.insertEvent(sampleEvent)
+    repository.deleteEvent(sampleEvent.id)
+
+    repository.deleteEvent(sampleEvent.id)
+  }
+
+  @Test(expected = IllegalArgumentException::class)
   fun deleteEvent_nonExistingId_shouldThrow() = runBlocking {
     repository.deleteEvent("nonexistent-id")
   }
@@ -85,5 +107,13 @@ class LocalRepositoryTest {
         repository.getEventsBetweenDates(
             Instant.parse("2025-01-15T00:00:00Z"), Instant.parse("2025-03-01T00:00:00Z"))
     assertEquals(event2.id, results[0].id)
+  }
+
+  @Test(expected = IllegalArgumentException::class)
+  fun getEventsBetweenDates_invalidRange_shouldThrow() {
+    runBlocking {
+      repository.getEventsBetweenDates(
+          Instant.parse("2025-04-01T00:00:00Z"), Instant.parse("2025-03-01T00:00:00Z"))
+    }
   }
 }

@@ -32,7 +32,10 @@ object AdminInformation {
 @Composable
 fun AdminContactScreen(onNavigateBack: () -> Unit = {}) {
   Surface(
-      modifier = Modifier.fillMaxSize().semantics { testTag = AdminContactScreenTestTags.ADMIN_SCREEN_PROFILE }) {
+      modifier =
+          Modifier.fillMaxSize().semantics {
+            testTag = AdminContactScreenTestTags.ADMIN_SCREEN_PROFILE
+          }) {
         Column(
             modifier =
                 Modifier.fillMaxSize()

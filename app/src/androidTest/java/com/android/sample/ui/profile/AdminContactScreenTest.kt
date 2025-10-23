@@ -38,6 +38,8 @@ class AdminContactScreenTest {
   fun adminContactScreen_rootIsDisplayed() {
     composeTestRule.setContent { AdminContactScreen(onNavigateBack = {}) }
 
-    composeTestRule.onNodeWithTag(AdminContactScreenTestTags.ADMIN_SCREEN_PROFILE).assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag(AdminContactScreenTestTags.ADMIN_SCREEN_PROFILE)
+        .assertIsDisplayed()
   }
 }

@@ -26,44 +26,50 @@ import org.junit.runner.RunWith
 @MediumTest
 class AgendappNavigationTest {
 
-    @get:Rule
-    val composeTestRule = createComposeRule()
+  @get:Rule val composeTestRule = createComposeRule()
 
-    @Test
-    fun navigate_to_all_add_forms() {
-        composeTestRule.setContent { AgendappNavigation() }
+  @Test
+  fun navigate_to_all_add_forms() {
+    composeTestRule.setContent { AgendappNavigation() }
 
-        // Go to Calendar
-        composeTestRule.onNodeWithTag(HomeTestTags.ADD_EVENT_BUTTON).assertExists().performClick()
-        composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertExists().performClick()
-        // Validate screen content
-        composeTestRule
-            .onNodeWithTag(AddEventTestTags.TITLE_TEXT_FIELD)
-            .assertExists()
-            .performTextInput("Test Event")
-        composeTestRule
-            .onNodeWithTag(AddEventTestTags.DESCRIPTION_TEXT_FIELD)
-            .assertExists()
-            .performTextInput("Test Description")
-        composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
-        composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
-        composeTestRule.onNodeWithTag(AddEventTestTags.CREATE_BUTTON).assertExists().performClick()
-        composeTestRule.onNodeWithTag(AddEventTestTags.FINISH_BUTTON).assertExists().performClick()
+    // Go to Calendar
+    composeTestRule.onNodeWithTag(HomeTestTags.ADD_EVENT_BUTTON).assertExists().performClick()
+    composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertExists().performClick()
+    // Validate screen content
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.TITLE_TEXT_FIELD)
+        .assertExists()
+        .performTextInput("Test Event")
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.DESCRIPTION_TEXT_FIELD)
+        .assertExists()
+        .performTextInput("Test Description")
+    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
+    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
+    composeTestRule.onNodeWithTag(AddEventTestTags.CREATE_BUTTON).assertExists().performClick()
+    composeTestRule.onNodeWithTag(AddEventTestTags.FINISH_BUTTON).assertExists().performClick()
 
-        composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertIsDisplayed()
-    }
+    composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertIsDisplayed()
+  }
 
-
-    @Test
-    fun navigate_to_profile_and_admin_profile() {
-        composeTestRule.setContent { AgendappNavigation() }
-        // Go to Profile
-        composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).assertExists().performClick()
-        composeTestRule.onNodeWithTag(SettingsScreenTestTags.PROFILE_BUTTON).assertExists().performClick()
-        composeTestRule.onNodeWithTag(ProfileScreenTestTags.PROFILE_SCREEN).assertIsDisplayed()
-        // Go to Admin Contact
-        composeTestRule.onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON).assertExists().performClick()
-        composeTestRule.waitForIdle()
-        composeTestRule.onNodeWithTag(AdminContactScreenTestTags.ADMIN_SCREEN_PROFILE).assertIsDisplayed()
-    }
+  @Test
+  fun navigate_to_profile_and_admin_profile() {
+    composeTestRule.setContent { AgendappNavigation() }
+    // Go to Profile
+    composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).assertExists().performClick()
+    composeTestRule
+        .onNodeWithTag(SettingsScreenTestTags.PROFILE_BUTTON)
+        .assertExists()
+        .performClick()
+    composeTestRule.onNodeWithTag(ProfileScreenTestTags.PROFILE_SCREEN).assertIsDisplayed()
+    // Go to Admin Contact
+    composeTestRule
+        .onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON)
+        .assertExists()
+        .performClick()
+    composeTestRule.waitForIdle()
+    composeTestRule
+        .onNodeWithTag(AdminContactScreenTestTags.ADMIN_SCREEN_PROFILE)
+        .assertIsDisplayed()
+  }
 }

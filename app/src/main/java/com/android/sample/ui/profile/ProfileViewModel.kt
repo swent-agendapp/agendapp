@@ -1,8 +1,12 @@
 package com.android.sample.ui.profile
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.github.se.bootcamp.model.authentication.AuthRepository
+import com.github.se.bootcamp.model.authentication.AuthRepositoryFirebase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update

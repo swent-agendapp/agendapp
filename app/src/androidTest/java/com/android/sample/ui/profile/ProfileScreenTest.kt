@@ -1,6 +1,5 @@
 package com.android.sample.ui.profile
 
-import android.credentials.Credential
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import com.android.sample.model.authentification.User
@@ -134,6 +133,6 @@ class ProfileScreenTest {
           onNavigateBack = {}, onNavigateToAdminContact = {}, profileViewModel = viewModel)
     }
 
-    composeTestRule.onNodeWithTag(ProfileScreenTestTags.ROOT).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(ProfileScreenTestTags.PROFILE_SCREEN).assertIsDisplayed()
   }
 }

@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 object ProfileScreenTestTags {
-  const val ROOT = "profile_screen"
+  const val PROFILE_SCREEN = "profile_screen"
   const val BACK_BUTTON = "back_button"
   const val DISPLAY_NAME_FIELD = "display_name_field"
   const val EMAIL_FIELD = "email_field"
@@ -40,7 +40,7 @@ fun ProfileScreen(
 ) {
   val uiState by profileViewModel.uiState.collectAsState()
 
-  Surface(modifier = Modifier.fillMaxSize().semantics { testTag = ProfileScreenTestTags.ROOT }) {
+  Surface(modifier = Modifier.fillMaxSize().semantics { testTag = ProfileScreenTestTags.PROFILE_SCREEN }) {
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
         verticalArrangement = Arrangement.Top,

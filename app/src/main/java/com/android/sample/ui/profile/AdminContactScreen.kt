@@ -11,7 +11,7 @@ import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.unit.dp
 
 object AdminContactScreenTestTags {
-  const val ROOT = "admin_contact_screen"
+  const val ADMIN_SCREEN_PROFILE = "admin_contact_screen"
   const val BACK_BUTTON = "back_button"
 
   const val ADMIN_CONTACT = "Admin Contact"
@@ -32,7 +32,7 @@ object AdminInformation {
 @Composable
 fun AdminContactScreen(onNavigateBack: () -> Unit = {}) {
   Surface(
-      modifier = Modifier.fillMaxSize().semantics { testTag = AdminContactScreenTestTags.ROOT }) {
+      modifier = Modifier.fillMaxSize().semantics { testTag = AdminContactScreenTestTags.ADMIN_SCREEN_PROFILE }) {
         Column(
             modifier =
                 Modifier.fillMaxSize()

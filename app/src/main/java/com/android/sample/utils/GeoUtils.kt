@@ -24,7 +24,7 @@ object GeoUtils {
    * @return true if the point is inside the area's polygon, false otherwise.
    */
   fun isPointInPolygon(latitude: Double, longitude: Double, area: Area): Boolean {
-    val polygon = area.markers
+    val polygon = area.getSortedMarkers()
 
     var inside = false
 

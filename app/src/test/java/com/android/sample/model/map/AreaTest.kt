@@ -1,5 +1,6 @@
 package com.android.sample.model.map
 
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -10,14 +11,18 @@ class AreaTest {
   private lateinit var area: Area
   private lateinit var insidePoint: Marker
   private lateinit var outsidePoint: Marker
+  private lateinit var m1: Marker
+  private lateinit var m2: Marker
+  private lateinit var m3: Marker
+  private lateinit var m4: Marker
 
   @Before
   fun setup() {
-    // Define markers forming a square area
-    val m1 = Marker(latitude = 48.8566, longitude = 2.3522)
-    val m2 = Marker(latitude = 48.8666, longitude = 2.3522)
-    val m3 = Marker(latitude = 48.8666, longitude = 2.3622)
-    val m4 = Marker(latitude = 48.8566, longitude = 2.3622)
+    // Define markers forming a square area in a counter-clockwise order
+    m1 = Marker(latitude = 48.8566, longitude = 2.3522) // Bottom-left
+    m2 = Marker(latitude = 48.8566, longitude = 2.3622) // Bottom-right
+    m3 = Marker(latitude = 48.8666, longitude = 2.3622) // Top-right
+    m4 = Marker(latitude = 48.8666, longitude = 2.3522) // Top-left
 
     area = Area(label = "Test Area", markers = listOf(m1, m2, m3, m4))
 
@@ -30,5 +35,66 @@ class AreaTest {
   fun `area contains should return true for point inside and false for point outside`() {
     assertTrue(area.contains(insidePoint))
     assertFalse(area.contains(outsidePoint))
+  }
+
+  @Test
+  fun `area should correctly sort markers even when given in random order`() {
+    val sortedMarkers = listOf(m1, m2, m3, m4)
+
+    // Randomized order of the same markers
+    val shuffledMarkers = sortedMarkers.shuffled()
+    val randomOrderArea = Area(label = "Random Order Area", markers = shuffledMarkers)
+
+    // Retrieve the sorted markers from the area
+    val sorted = randomOrderArea.getSortedMarkers()
+
+    // Check that the sorted list contains the same markers
+    assertEquals(sortedMarkers.toSet(), sorted.toSet())
+
+    // Check that the order is consistent (e.g., counter-clockwise around centroid)
+    // We'll compare with the expected order from the known geometry
+    assertEquals(
+        "Markers should be sorted in consistent polygonal order",
+        sortedMarkers.map { it.id },
+        sorted.map { it.id })
+
+    // Check that in area point detection still works
+    assertTrue(area.contains(insidePoint))
+    assertFalse(area.contains(outsidePoint))
+  }
+
+  @Test(expected = IllegalArgumentException::class)
+  fun `area creation should fail with less than 3 distinct markers`() {
+    val duplicate = Marker(latitude = 48.8566, longitude = 2.3522)
+    Area(label = "Invalid", markers = listOf(m1, m2, duplicate))
+  }
+
+  @Test
+  fun `area should ignore duplicate markers and still be valid`() {
+    // Define 4 markers, where m4 is a duplicate of m1
+    val m1 = Marker(latitude = 48.8566, longitude = 2.3522)
+    val m2 = Marker(latitude = 48.8666, longitude = 2.3522)
+    val m3 = Marker(latitude = 48.8666, longitude = 2.3622)
+    val m4 = m1.copy()
+
+    // Should still be valid since there are 3 distinct coordinates
+    val area = Area(label = "Duplicate Marker Area", markers = listOf(m1, m2, m3, m4))
+
+    // Ensure only 3 distinct markers are kept internally
+    val sorted = area.getSortedMarkers()
+    assertEquals(3, sorted.size)
+    assertTrue(sorted.containsAll(listOf(m1, m2, m3)))
+  }
+
+  @Test
+  fun `area should correctly handle clockwise marker order`() {
+    val clockwiseArea = Area(label = "Clockwise Area", markers = listOf(m1, m4, m3, m2))
+    assertTrue(clockwiseArea.contains(insidePoint))
+    assertFalse(clockwiseArea.contains(outsidePoint))
+  }
+
+  @Test(expected = IllegalArgumentException::class)
+  fun `area creation should fail with empty marker list`() {
+    Area(label = "Empty Area", markers = emptyList())
   }
 }

@@ -25,5 +25,5 @@ data class Marker(
       latitude: Double,
       longitude: Double,
       label: String? = null
-  ) : this(id = id, location = Location(latitude, longitude, label), label = label)
+  ) : this(id = id, location = Location(latitude, longitude), label = label)
 }

@@ -79,10 +79,10 @@ class MapRepositoryLocalTest {
     assertEquals(1, allAreas.size)
     val area = allAreas.first()
     assertEquals("ValidArea", area.label)
-    assertEquals(3, area.markers.size)
+    assertEquals(3, area.getSortedMarkers().size)
     // All markers must be distinct
     val distinctLocations =
-        area.markers.map { it.location.latitude to it.location.longitude }.distinct()
+        area.getSortedMarkers().map { it.location.latitude to it.location.longitude }.distinct()
     assertEquals(3, distinctLocations.size)
   }
 

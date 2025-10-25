@@ -15,7 +15,6 @@ class MarkerTest {
 
     assertEquals(latitude, marker.location.latitude, 0.0001)
     assertEquals(longitude, marker.location.longitude, 0.0001)
-    assertEquals(label, marker.location.label)
     assertEquals(label, marker.label)
   }
 

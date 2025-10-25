@@ -47,22 +47,20 @@ fun CalendarContainer(
   Box(modifier = modifier) {
     CalendarGridContent(
         modifier =
-            Modifier
-                .fillMaxSize()
-                .pointerInput(onSwipeLeft, onSwipeRight) {
-                    var totalDx = 0f
-                    detectDragGestures(
-                        onDrag = { _, dragAmount -> totalDx += dragAmount.x },
-                        onDragEnd = {
-                            val threshold = 64f
-                            when {
-                                totalDx > threshold -> onSwipeRight.invoke()
-                                totalDx < -threshold -> onSwipeLeft.invoke()
-                            }
-                            totalDx = 0f
-                        },
-                        onDragCancel = { totalDx = 0f })
-                },
+            Modifier.fillMaxSize().pointerInput(onSwipeLeft, onSwipeRight) {
+              var totalDx = 0f
+              detectDragGestures(
+                  onDrag = { _, dragAmount -> totalDx += dragAmount.x },
+                  onDragEnd = {
+                    val threshold = 64f
+                    when {
+                      totalDx > threshold -> onSwipeRight.invoke()
+                      totalDx < -threshold -> onSwipeLeft.invoke()
+                    }
+                    totalDx = 0f
+                  },
+                  onDragCancel = { totalDx = 0f })
+            },
         dateRange = dateRange,
         events = events
         // Later : give dateRange (like Monday-Friday) and events list from ViewModel
@@ -71,8 +69,7 @@ fun CalendarContainer(
     IconButton(
         onClick = { onCreateEvent() },
         modifier =
-            Modifier
-                .align(Alignment.TopStart)
+            Modifier.align(Alignment.TopStart)
                 .padding(top = 5.dp, start = 8.dp)
                 .size(35.dp)
                 .testTag(ADD_EVENT_BUTTON)) {

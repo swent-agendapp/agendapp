@@ -23,13 +23,13 @@ class CalendarScreenTest {
   // Helper to perform a horizontal swipe on the calendar event grid.
   private fun swipeEventGrid(deltaX: Float) {
     composeTestRule
-      .onNodeWithTag(CalendarScreenTestTags.EVENT_GRID)
-      .assertIsDisplayed()
-      .performTouchInput {
-        down(center)
-        moveBy(Offset(deltaX, 0f))
-        up()
-      }
+        .onNodeWithTag(CalendarScreenTestTags.EVENT_GRID)
+        .assertIsDisplayed()
+        .performTouchInput {
+          down(center)
+          moveBy(Offset(deltaX, 0f))
+          up()
+        }
   }
 
   @Test

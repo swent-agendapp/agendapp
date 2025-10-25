@@ -11,7 +11,7 @@ import kotlin.math.atan2
  *
  * @property id Unique identifier for the area. Defaults to a randomly generated UUID string.
  * @property label Optional human-readable label or name for the area.
- * @property _sortedMarkers List of Marker objects that define the vertices of the area polygon. The
+ * @property markers List of Marker objects that define the vertices of the area polygon. The
  *   constructor guarantees that the markers are sorted in a consistent order around the polygon, so
  *   the user does not need to provide them in a specific order.
  *

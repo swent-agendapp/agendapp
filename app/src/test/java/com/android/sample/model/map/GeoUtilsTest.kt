@@ -10,6 +10,7 @@ class GeoUtilsTest {
 
   private lateinit var squareArea: Area
   private lateinit var triangleArea: Area
+  private lateinit var arrowArea: Area
 
   private lateinit var insideSquare: Marker
   private lateinit var outsideSquare: Marker
@@ -18,6 +19,10 @@ class GeoUtilsTest {
 
   private lateinit var insideTriangle: Marker
   private lateinit var outsideTriangle: Marker
+
+  private lateinit var insideArrow1: Marker
+  private lateinit var insideArrow2: Marker
+  private lateinit var outsideArrow: Marker
 
   @Before
   fun setup() {
@@ -43,6 +48,18 @@ class GeoUtilsTest {
 
     insideTriangle = Marker(latitude = 1.0, longitude = 0.5)
     outsideTriangle = Marker(latitude = 2.0, longitude = 2.0)
+
+    // Arrow area
+    val a1 = Marker(latitude = 46.517, longitude = 6.565)
+    val a2 = Marker(latitude = 46.547, longitude = 6.595)
+    val a3 = Marker(latitude = 46.567, longitude = 6.715)
+    val a4 = Marker(latitude = 46.567, longitude = 6.565)
+
+    arrowArea = Area(label = "Arrow", markers = listOf(a1, a2, a3, a4))
+
+    insideArrow1 = Marker(latitude = 46.557, longitude = 6.595)
+    insideArrow2 = Marker(latitude = 46.535, longitude = 6.572)
+    outsideArrow = Marker(latitude = 46.527, longitude = 6.595)
   }
 
   @Test
@@ -85,5 +102,23 @@ class GeoUtilsTest {
     assertFalse(
         GeoUtils.isPointInPolygon(
             outsideTriangle.location.latitude, outsideTriangle.location.longitude, triangleArea))
+  }
+
+  @Test
+  fun `points inside arrow should be detected correctly`() {
+    assertTrue(
+        GeoUtils.isPointInPolygon(
+            insideArrow1.location.latitude, insideArrow1.location.longitude, arrowArea))
+
+    assertTrue(
+        GeoUtils.isPointInPolygon(
+            insideArrow2.location.latitude, insideArrow2.location.longitude, arrowArea))
+  }
+
+  @Test
+  fun `points outside arrow should be detected correctly`() {
+    assertFalse(
+        GeoUtils.isPointInPolygon(
+            outsideArrow.location.latitude, outsideArrow.location.longitude, arrowArea))
   }
 }

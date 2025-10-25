@@ -19,16 +19,16 @@ class AreaTest {
   @Before
   fun setup() {
     // Define markers forming a square area in a counter-clockwise order
-    m1 = Marker(latitude = 48.8566, longitude = 2.3522) // Bottom-left
-    m2 = Marker(latitude = 48.8566, longitude = 2.3622) // Bottom-right
-    m3 = Marker(latitude = 48.8666, longitude = 2.3622) // Top-right
-    m4 = Marker(latitude = 48.8666, longitude = 2.3522) // Top-left
+    m1 = Marker(latitude = 48.8566, longitude = 2.3522, label = "Bottom-left")
+    m2 = Marker(latitude = 48.8566, longitude = 2.3622, label = "Bottom-right")
+    m3 = Marker(latitude = 48.8666, longitude = 2.3622, label = "Top-right")
+    m4 = Marker(latitude = 48.8666, longitude = 2.3522, label = "Top-left")
 
     area = Area(label = "Test Area", markers = listOf(m1, m2, m3, m4))
 
     // Points to test
-    insidePoint = Marker(latitude = 48.861, longitude = 2.357)
-    outsidePoint = Marker(latitude = 48.870, longitude = 2.350)
+    insidePoint = Marker(latitude = 48.861, longitude = 2.357, label = "Inside Point")
+    outsidePoint = Marker(latitude = 48.870, longitude = 2.350, label = "Outside Point")
   }
 
   @Test
@@ -51,12 +51,10 @@ class AreaTest {
     // Check that the sorted list contains the same markers
     assertEquals(sortedMarkers.toSet(), sorted.toSet())
 
-    // Check that the order is consistent (e.g., counter-clockwise around centroid)
-    // We'll compare with the expected order from the known geometry
-    assertEquals(
-        "Markers should be sorted in consistent polygonal order",
-        sortedMarkers.map { it.id },
-        sorted.map { it.id })
+    // Check that the order is the same up to a circular rotation
+    val expectedIds = sortedMarkers.map { it.id }
+    val actualIds = sorted.map { it.id }
+    assertTrue((expectedIds + expectedIds).windowed(expectedIds.size).any { it == actualIds })
 
     // Check that in area point detection still works
     assertTrue(area.contains(insidePoint))

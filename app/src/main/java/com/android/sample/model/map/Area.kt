@@ -2,7 +2,6 @@ package com.android.sample.model.map
 
 import com.android.sample.utils.GeoUtils
 import java.util.UUID
-import kotlin.math.atan2
 
 /**
  * Represents a polygonal area defined by a list of map markers.
@@ -37,15 +36,7 @@ data class Area(
       "An Area must have at least 3 distinct markers with unique coordinates"
     }
 
-    // Compute centroid
-    val centroidLat = distinctMarkers.map { it.location.latitude }.average()
-    val centroidLon = distinctMarkers.map { it.location.longitude }.average()
-
-    // Sort markers around centroid in counter-clockwise order
-    this._sortedMarkers =
-        distinctMarkers.sortedBy { marker ->
-          atan2(marker.location.latitude - centroidLat, marker.location.longitude - centroidLon)
-        }
+    _sortedMarkers = GeoUtils.sortMarkersCounterClockwise(distinctMarkers)
   }
 
   /**

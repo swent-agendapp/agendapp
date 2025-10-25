@@ -1,6 +1,8 @@
 package com.android.sample.utils
 
 import com.android.sample.model.map.Area
+import com.android.sample.model.map.Marker
+import kotlin.math.atan2
 
 /** Utility functions for simple geographic calculations. */
 object GeoUtils {
@@ -55,5 +57,87 @@ object GeoUtils {
     }
 
     return inside
+  }
+
+  /**
+   * Sort a list of markers in counter-clockwise order around their centroid using the ear clipping
+   * algorithm for triangulation.
+   *
+   * @param markers List of Marker objects to sort. Must contain at least 3 points.
+   * @return List of Marker objects sorted in counter-clockwise order.
+   * @throws IllegalArgumentException if less than 3 markers are provided.
+   */
+  fun sortMarkersCounterClockwise(markers: List<Marker>): List<Marker> {
+    require(markers.size >= 3) { "At least 3 points are required." }
+
+    // Computation of the centroid
+    val centerX = markers.map { it.location.longitude }.average()
+    val centerY = markers.map { it.location.latitude }.average()
+
+    // Compute angles and sort points around the centroid by these angles
+    val sortedByAngle =
+        markers
+            .sortedWith(
+                compareBy {
+                  atan2(it.location.latitude - centerY, it.location.longitude - centerX)
+                })
+            .toMutableList()
+
+    // Triangulation using ear clipping
+
+    val remaining = sortedByAngle.toMutableList()
+    val result = mutableListOf<Marker>()
+
+    // While more than 3 points remain, find and clip ears
+    while (remaining.size > 3) {
+      var earFound = false
+
+      // Iterate through the remaining points to find an ear
+      for (i in remaining.indices) {
+        val prev = remaining[(i - 1 + remaining.size) % remaining.size]
+        val curr = remaining[i]
+        val next = remaining[(i + 1) % remaining.size]
+
+        // Check if the angle formed by prev-curr-next is convex
+        if (cross(prev, curr, next) <= 0) continue
+
+        // Check if any other point is inside the triangle formed by prev, curr, next
+        if (remaining.any {
+          it != prev && it != curr && it != next && pointInTriangle(prev, curr, next, it)
+        })
+            continue
+
+        // If we reach here, we found an ear; add curr to result and remove it from remaining
+        result.add(curr)
+        remaining.removeAt(i)
+        earFound = true
+        break
+      }
+
+      // If no ear was found, the polygon may be malformed; break to avoid infinite loop
+      if (!earFound) break
+    }
+
+    // Add the last three remaining points
+    result.addAll(remaining)
+    return result
+  }
+
+  /** Calculate the cross product of vectors AB and AC. */
+  fun cross(a: Marker, b: Marker, c: Marker): Double {
+    val (x1, y1) = a.location.longitude to a.location.latitude
+    val (x2, y2) = b.location.longitude to b.location.latitude
+    val (x3, y3) = c.location.longitude to c.location.latitude
+    return (x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1)
+  }
+
+  /** Check if point P is inside triangle ABC using barycentric coordinates. */
+  fun pointInTriangle(a: Marker, b: Marker, c: Marker, p: Marker): Boolean {
+    val d1 = cross(p, a, b)
+    val d2 = cross(p, b, c)
+    val d3 = cross(p, c, a)
+    val hasNeg = listOf(d1, d2, d3).any { it < 0 }
+    val hasPos = listOf(d1, d2, d3).any { it > 0 }
+    return !(hasNeg && hasPos)
   }
 }

@@ -48,7 +48,6 @@ class CalendarEventsTest {
     compose
         .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Test Event")
         .assertExists()
-        .performScrollTo()
         .assertIsDisplayed()
   }
 

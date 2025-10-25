@@ -13,10 +13,9 @@ import com.android.sample.ui.calendar.CalendarContainer
 import com.android.sample.ui.calendar.CalendarGridContent
 import com.android.sample.ui.calendar.CalendarScreen
 import com.android.sample.ui.calendar.CalendarScreenTestTags
+import com.android.sample.ui.calendar.style.CalendarDefaults.DefaultSwipeThreshold
 import org.junit.Rule
 import org.junit.Test
-
-private const val SWIPE_THRESHOLD = 64f
 
 class CalendarScreenTest {
 
@@ -105,7 +104,7 @@ class CalendarScreenTest {
         .assertIsNotDisplayed()
 
     // swipe left of twice the threshold to trigger onSwipeLeft
-    swipeEventGrid(-2 * SWIPE_THRESHOLD)
+    swipeEventGrid(-2 * DefaultSwipeThreshold)
 
     // next week, should be displayed
     composeTestRule
@@ -153,7 +152,7 @@ class CalendarScreenTest {
         .assertIsNotDisplayed()
 
     // swipe right of twice the threshold to trigger onSwipeRight
-    swipeEventGrid(2 * SWIPE_THRESHOLD)
+    swipeEventGrid(2 * DefaultSwipeThreshold)
 
     // previous week, should be displayed
     composeTestRule
@@ -209,10 +208,10 @@ class CalendarScreenTest {
         .assertIsNotDisplayed()
 
     // swipe right of twice the threshold to trigger onSwipeRight
-    swipeEventGrid(2 * SWIPE_THRESHOLD)
+    swipeEventGrid(2 * DefaultSwipeThreshold)
 
     // swipe left of twice the threshold to trigger onSwipeLeft
-    swipeEventGrid(-2 * SWIPE_THRESHOLD)
+    swipeEventGrid(-2 * DefaultSwipeThreshold)
 
     // current week, should be displayed
     composeTestRule
@@ -276,10 +275,10 @@ class CalendarScreenTest {
         .assertIsNotDisplayed()
 
     // swipe left of twice the threshold to trigger onSwipeLeft
-    swipeEventGrid(-2 * SWIPE_THRESHOLD)
+    swipeEventGrid(-2 * DefaultSwipeThreshold)
 
     // swipe right of twice the threshold to trigger onSwipeRight
-    swipeEventGrid(2 * SWIPE_THRESHOLD)
+    swipeEventGrid(2 * DefaultSwipeThreshold)
 
     // current week, should be displayed
     composeTestRule

@@ -20,6 +20,18 @@ class CalendarScreenTest {
 
   @get:Rule val composeTestRule = createComposeRule()
 
+  // Helper to perform a horizontal swipe on the calendar event grid.
+  private fun swipeEventGrid(deltaX: Float) {
+    composeTestRule
+      .onNodeWithTag(CalendarScreenTestTags.EVENT_GRID)
+      .assertIsDisplayed()
+      .performTouchInput {
+        down(center)
+        moveBy(Offset(deltaX, 0f))
+        up()
+      }
+  }
+
   @Test
   fun testTagsAreCorrectlySet() {
     composeTestRule.setContent { CalendarScreen() }
@@ -90,16 +102,8 @@ class CalendarScreenTest {
         .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Later Event")
         .assertIsNotDisplayed()
 
-    // PERFORM LEFT SWIPE to load the next week
-    composeTestRule
-        .onNodeWithTag(CalendarScreenTestTags.EVENT_GRID)
-        .assertIsDisplayed()
-        .performTouchInput {
-          down(center)
-          // move left of twice the threshold (2 * 64 = 128) to trigger onSwipeLeft
-          moveBy(Offset(-128f, 0f))
-          up()
-        }
+    // swipe left of twice the threshold (2 * 64 = 128) to trigger onSwipeLeft
+    swipeEventGrid(-128f)
 
     // next week, should be displayed
     composeTestRule
@@ -146,16 +150,8 @@ class CalendarScreenTest {
         .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Earlier Event")
         .assertIsNotDisplayed()
 
-    // PERFORM RIGHT SWIPE to load the previous week
-    composeTestRule
-        .onNodeWithTag(CalendarScreenTestTags.EVENT_GRID)
-        .assertIsDisplayed()
-        .performTouchInput {
-          down(center)
-          // move right of twice the threshold (2 * 64 = 128) to trigger onSwipeRight
-          moveBy(Offset(128f, 0f))
-          up()
-        }
+    // swipe right of twice the threshold (2 * 64 = 128) to trigger onSwipeRight
+    swipeEventGrid(128f)
 
     // previous week, should be displayed
     composeTestRule
@@ -199,7 +195,7 @@ class CalendarScreenTest {
         .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Previous Event")
         .assertIsNotDisplayed()
     composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Earlier EVent")
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Earlier Event")
         .assertIsNotDisplayed()
 
     // next week, should not be displayed
@@ -210,27 +206,11 @@ class CalendarScreenTest {
         .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Later Event")
         .assertIsNotDisplayed()
 
-    // PERFORM RIGHT SWIPE to load the previous week
-    composeTestRule
-        .onNodeWithTag(CalendarScreenTestTags.EVENT_GRID)
-        .assertIsDisplayed()
-        .performTouchInput {
-          down(center)
-          // move right of twice the threshold (2 * 64 = 128) to trigger onSwipeRight
-          moveBy(Offset(128f, 0f))
-          up()
-        }
+    // swipe right of twice the threshold (2 * 64 = 128) to trigger onSwipeRight
+    swipeEventGrid(128f)
 
-    // PERFORM LEFT SWIPE to load the next week
-    composeTestRule
-        .onNodeWithTag(CalendarScreenTestTags.EVENT_GRID)
-        .assertIsDisplayed()
-        .performTouchInput {
-          down(center)
-          // move left of twice the threshold (2 * 64 = 128) to trigger onSwipeLeft
-          moveBy(Offset(-128f, 0f))
-          up()
-        }
+    // swipe left of twice the threshold (2 * 64 = 128) to trigger onSwipeLeft
+    swipeEventGrid(-128f)
 
     // current week, should be displayed
     composeTestRule
@@ -293,27 +273,11 @@ class CalendarScreenTest {
         .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Later Event")
         .assertIsNotDisplayed()
 
-    // PERFORM LEFT SWIPE to load the next week
-    composeTestRule
-        .onNodeWithTag(CalendarScreenTestTags.EVENT_GRID)
-        .assertIsDisplayed()
-        .performTouchInput {
-          down(center)
-          // move left of twice the threshold (2 * 64 = 128) to trigger onSwipeLeft
-          moveBy(Offset(-128f, 0f))
-          up()
-        }
+    // swipe left of twice the threshold (2 * 64 = 128) to trigger onSwipeLeft
+    swipeEventGrid(-128f)
 
-    // PERFORM RIGHT SWIPE to load the previous week
-    composeTestRule
-        .onNodeWithTag(CalendarScreenTestTags.EVENT_GRID)
-        .assertIsDisplayed()
-        .performTouchInput {
-          down(center)
-          // move right of twice the threshold (2 * 64 = 128) to trigger onSwipeRight
-          moveBy(Offset(128f, 0f))
-          up()
-        }
+    // swipe right of twice the threshold (2 * 64 = 128) to trigger onSwipeRight
+    swipeEventGrid(128f)
 
     // current week, should be displayed
     composeTestRule

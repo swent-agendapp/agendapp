@@ -34,17 +34,17 @@ import kotlinx.coroutines.delay
  * live "now" indicator. Also manages a 1s ticker to keep the current time line in sync.
  *
  * @param modifier [Modifier] applied to the whole grid content.
- * @param style Visual style (colors, spacing, dimensions) for the grid and labels.
  * @param dateRange Visible date range used to compute layout metrics (column count, labels, etc.).
  * @param events List of events to render within the visible range.
+ * @param style Visual style (colors, spacing, dimensions) for the grid and labels.
  * @return Unit. This is a composable that renders UI side-effects only.
  */
 @Composable
 fun CalendarGridContent(
     modifier: Modifier = Modifier,
-    style: GridContentStyle = defaultGridContentStyle(),
     dateRange: LocalDateRange = CalendarDefaults.DefaultDateRange,
-    events: List<MockEvent> = listOf()
+    events: List<MockEvent> = listOf(),
+    style: GridContentStyle = defaultGridContentStyle()
     // Later : receive onEventClick and onEventLongPress
 ) {
   val metrics = rememberWeekViewMetrics(dateRange)

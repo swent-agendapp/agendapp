@@ -28,4 +28,7 @@ data object CalendarDefaults {
 
   /** Default stroke width (in pixels) for grid lines. */
   val strokeWidthDefault = 2f
+
+  /** Default threshold distance (in pixels) for detecting swipe gestures. */
+  const val DefaultSwipeThreshold = 64f
 }

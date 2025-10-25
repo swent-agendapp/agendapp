@@ -16,6 +16,8 @@ import com.android.sample.ui.calendar.CalendarScreenTestTags
 import org.junit.Rule
 import org.junit.Test
 
+private const val SWIPE_THRESHOLD = 64f
+
 class CalendarScreenTest {
 
   @get:Rule val composeTestRule = createComposeRule()
@@ -102,8 +104,8 @@ class CalendarScreenTest {
         .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Later Event")
         .assertIsNotDisplayed()
 
-    // swipe left of twice the threshold (2 * 64 = 128) to trigger onSwipeLeft
-    swipeEventGrid(-128f)
+    // swipe left of twice the threshold to trigger onSwipeLeft
+    swipeEventGrid(-2 * SWIPE_THRESHOLD)
 
     // next week, should be displayed
     composeTestRule
@@ -150,8 +152,8 @@ class CalendarScreenTest {
         .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Earlier Event")
         .assertIsNotDisplayed()
 
-    // swipe right of twice the threshold (2 * 64 = 128) to trigger onSwipeRight
-    swipeEventGrid(128f)
+    // swipe right of twice the threshold to trigger onSwipeRight
+    swipeEventGrid(2 * SWIPE_THRESHOLD)
 
     // previous week, should be displayed
     composeTestRule
@@ -206,11 +208,11 @@ class CalendarScreenTest {
         .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Later Event")
         .assertIsNotDisplayed()
 
-    // swipe right of twice the threshold (2 * 64 = 128) to trigger onSwipeRight
-    swipeEventGrid(128f)
+    // swipe right of twice the threshold to trigger onSwipeRight
+    swipeEventGrid(2 * SWIPE_THRESHOLD)
 
-    // swipe left of twice the threshold (2 * 64 = 128) to trigger onSwipeLeft
-    swipeEventGrid(-128f)
+    // swipe left of twice the threshold to trigger onSwipeLeft
+    swipeEventGrid(-2 * SWIPE_THRESHOLD)
 
     // current week, should be displayed
     composeTestRule
@@ -273,11 +275,11 @@ class CalendarScreenTest {
         .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Later Event")
         .assertIsNotDisplayed()
 
-    // swipe left of twice the threshold (2 * 64 = 128) to trigger onSwipeLeft
-    swipeEventGrid(-128f)
+    // swipe left of twice the threshold to trigger onSwipeLeft
+    swipeEventGrid(-2 * SWIPE_THRESHOLD)
 
-    // swipe right of twice the threshold (2 * 64 = 128) to trigger onSwipeRight
-    swipeEventGrid(128f)
+    // swipe right of twice the threshold to trigger onSwipeRight
+    swipeEventGrid(2 * SWIPE_THRESHOLD)
 
     // current week, should be displayed
     composeTestRule

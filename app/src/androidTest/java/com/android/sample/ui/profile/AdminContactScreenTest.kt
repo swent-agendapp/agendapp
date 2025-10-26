@@ -7,48 +7,61 @@ import org.junit.Test
 
 class AdminContactScreenTest {
 
-  @get:Rule val composeTestRule = createComposeRule()
+    @get:Rule val composeTestRule = createComposeRule()
 
-  @Test
-  fun adminContactScreen_displaysAdminInformation() {
-    composeTestRule.setContent { AdminContactScreen(onNavigateBack = {}) }
+    @Test
+    fun adminContactScreen_displaysAdminInformation() {
+        composeTestRule.setContent { AdminContactScreen(onNavigateBack = {}) }
 
-    composeTestRule.onNodeWithTag(AdminContactScreenTestTags.ADMIN_CONTACT).assertIsDisplayed()
-    composeTestRule
-        .onNodeWithTag(AdminContactScreenTestTags.ADMIN_EMAIL_TEXT)
-        .assertIsDisplayed()
-        .assertTextContains(AdminInformation.EMAIL)
-    composeTestRule
-        .onNodeWithTag(AdminContactScreenTestTags.ADMIN_PHONE_TEXT)
-        .assertIsDisplayed()
-        .assertTextContains(AdminInformation.PHONE)
-  }
+        composeTestRule.onNodeWithTag(AdminContactScreenTestTags.ADMIN_CONTACT).assertIsDisplayed()
 
-  @Test
-  fun adminContactScreen_backButtonWorks() {
-    var backClicked = false
-    composeTestRule.setContent { AdminContactScreen(onNavigateBack = { backClicked = true }) }
+        composeTestRule
+            .onNodeWithTag(AdminContactScreenTestTags.ADMIN_EMAIL_TEXT)
+            .assertIsDisplayed()
+            .assertTextContains(AdminInformation.EMAIL)
+            .assertHasClickAction() // ensure it's clickable
 
-    composeTestRule.onNodeWithTag(AdminContactScreenTestTags.BACK_BUTTON).performClick()
+        composeTestRule
+            .onNodeWithTag(AdminContactScreenTestTags.ADMIN_PHONE_TEXT)
+            .assertIsDisplayed()
+            .assertTextContains(AdminInformation.PHONE)
+            .assertHasClickAction() // ensure it's clickable
+    }
 
-    assert(backClicked)
-  }
+    @Test
+    fun adminContactScreen_backButtonWorks() {
+        var backClicked = false
+        composeTestRule.setContent { AdminContactScreen(onNavigateBack = { backClicked = true }) }
 
-  @Test
-  fun adminContactScreen_rootIsDisplayed() {
-    composeTestRule.setContent { AdminContactScreen() }
+        composeTestRule.onNodeWithTag(AdminContactScreenTestTags.BACK_BUTTON).performClick()
 
-    composeTestRule
-        .onNodeWithTag(AdminContactScreenTestTags.ADMIN_SCREEN_PROFILE)
-        .assertIsDisplayed()
-  }
+        assert(backClicked)
+    }
 
-  @Test
-  fun all_components_Displayed() {
-    composeTestRule.setContent { AdminContactScreen() }
-    composeTestRule.onNodeWithTag(AdminContactScreenTestTags.BACK_BUTTON).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(AdminContactScreenTestTags.ADMIN_CONTACT).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(AdminContactScreenTestTags.ADMIN_EMAIL_TEXT).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(AdminContactScreenTestTags.ADMIN_PHONE_TEXT).assertIsDisplayed()
-  }
+    @Test
+    fun adminContactScreen_rootIsDisplayed() {
+        composeTestRule.setContent { AdminContactScreen() }
+
+        composeTestRule
+            .onNodeWithTag(AdminContactScreenTestTags.ADMIN_SCREEN_PROFILE)
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun all_components_Displayed_andClickable() {
+        composeTestRule.setContent { AdminContactScreen() }
+
+        composeTestRule.onNodeWithTag(AdminContactScreenTestTags.BACK_BUTTON).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(AdminContactScreenTestTags.ADMIN_CONTACT).assertIsDisplayed()
+
+        composeTestRule
+            .onNodeWithTag(AdminContactScreenTestTags.ADMIN_EMAIL_TEXT)
+            .assertIsDisplayed()
+            .assertHasClickAction()
+
+        composeTestRule
+            .onNodeWithTag(AdminContactScreenTestTags.ADMIN_PHONE_TEXT)
+            .assertIsDisplayed()
+            .assertHasClickAction()
+    }
 }

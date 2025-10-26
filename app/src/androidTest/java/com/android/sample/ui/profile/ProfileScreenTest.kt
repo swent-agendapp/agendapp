@@ -2,6 +2,7 @@ package com.android.sample.ui.profile
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
+import com.android.sample.model.authentification.FakeAuthRepository
 import com.android.sample.model.authentification.User
 import com.github.se.bootcamp.model.authentication.AuthRepository
 import org.junit.Rule
@@ -9,141 +10,187 @@ import org.junit.Test
 
 class ProfileScreenTest {
 
-  // --- Fake repository for testing ---
-  class FakeAuthRepository(private val user: User? = null) : AuthRepository {
+    @get:Rule val composeTestRule = createComposeRule()
 
-    override fun getCurrentUser(): User? = user
+    @Test
+    fun profileScreen_displaysUserInformation_inReadOnlyMode() {
+        val testUser =
+            User(
+                id = "test123",
+                displayName = "Test User",
+                email = "test@example.com",
+                phoneNumber = "123-456-7890")
 
-    override suspend fun signInWithGoogle(
-        credential: androidx.credentials.Credential
-    ): Result<User> {
-      return user?.let { Result.success(it) } ?: Result.failure(Exception("No user"))
+        val fakeRepository = FakeAuthRepository(testUser)
+        val viewModel = ProfileViewModel(fakeRepository)
+
+        composeTestRule.setContent {
+            ProfileScreen(
+                onNavigateBack = {}, onNavigateToAdminContact = {}, profileViewModel = viewModel)
+        }
+
+        // Check that the fields are displayed in read-only mode
+        composeTestRule
+            .onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD)
+            .assertIsDisplayed()
+            .assertTextContains("Test User")
+
+        composeTestRule
+            .onNodeWithTag(ProfileScreenTestTags.EMAIL_FIELD)
+            .assertIsDisplayed()
+            .assertTextContains("test@example.com")
+
+        composeTestRule
+            .onNodeWithTag(ProfileScreenTestTags.PHONE_FIELD)
+            .assertIsDisplayed()
+            .assertTextContains("123-456-7890")
+
+        // Edit button should be visible
+        composeTestRule.onNodeWithTag(ProfileScreenTestTags.EDIT_BUTTON).assertIsDisplayed()
     }
 
-    override fun signOut(): Result<Unit> = Result.success(Unit)
-  }
+    @Test
+    fun profileScreen_entersEditMode_whenEditButtonClicked() {
+        val testUser =
+            User(id = "test123", displayName = "Test User", email = "test@example.com", phoneNumber = "")
+        val fakeRepository = FakeAuthRepository(testUser)
+        val viewModel = ProfileViewModel(fakeRepository)
 
-  @get:Rule val composeTestRule = createComposeRule()
+        composeTestRule.setContent {
+            ProfileScreen(
+                onNavigateBack = {}, onNavigateToAdminContact = {}, profileViewModel = viewModel)
+        }
 
-  @Test
-  fun profileScreen_displaysUserInformation() {
-    val testUser =
-        User(
-            id = "test123",
-            displayName = "Test User",
-            email = "test@example.com",
-            phoneNumber = "123-456-7890")
+        // Initially, the save button should not be visible
+        composeTestRule.onNodeWithTag(ProfileScreenTestTags.SAVE_BUTTON).assertDoesNotExist()
 
-    val fakeRepository = FakeAuthRepository(testUser)
-    val viewModel = ProfileViewModel(fakeRepository)
+        // Click the edit button
+        composeTestRule.onNodeWithTag(ProfileScreenTestTags.EDIT_BUTTON).performClick()
 
-    composeTestRule.setContent {
-      ProfileScreen(
-          onNavigateBack = {}, onNavigateToAdminContact = {}, profileViewModel = viewModel)
+        // Now the save and cancel buttons should appear
+        composeTestRule.onNodeWithTag(ProfileScreenTestTags.SAVE_BUTTON).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(ProfileScreenTestTags.CANCEL_BUTTON).assertIsDisplayed()
     }
 
-    composeTestRule
-        .onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD)
-        .assertIsDisplayed()
-        .assertTextContains("Test User")
+    @Test
+    fun profileScreen_allowsEditingFields_afterEnteringEditMode() {
+        val testUser =
+            User(id = "test123", displayName = "Old Name", email = "old@example.com", phoneNumber = "")
+        val fakeRepository = FakeAuthRepository(testUser)
+        val viewModel = ProfileViewModel(fakeRepository)
 
-    composeTestRule
-        .onNodeWithTag(ProfileScreenTestTags.EMAIL_FIELD)
-        .assertIsDisplayed()
-        .assertTextContains("test@example.com")
+        composeTestRule.setContent {
+            ProfileScreen(
+                onNavigateBack = {}, onNavigateToAdminContact = {}, profileViewModel = viewModel)
+        }
 
-    composeTestRule
-        .onNodeWithTag(ProfileScreenTestTags.PHONE_FIELD)
-        .assertIsDisplayed()
-        .assertTextContains("123-456-7890")
-  }
+        // Enter edit mode
+        composeTestRule.onNodeWithTag(ProfileScreenTestTags.EDIT_BUTTON).performClick()
 
-  @Test
-  fun profileScreen_allowsEditingFields() {
-    val testUser = User(id = "test123", displayName = "Test User", email = "test@example.com")
-    val fakeRepository = FakeAuthRepository(testUser)
-    val viewModel = ProfileViewModel(fakeRepository)
+        // Clear and type new display name
+        composeTestRule.onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD).performTextClearance()
+        composeTestRule
+            .onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD)
+            .performTextInput("New Name")
 
-    composeTestRule.setContent {
-      ProfileScreen(
-          onNavigateBack = {}, onNavigateToAdminContact = {}, profileViewModel = viewModel)
+        // Clear and type new email
+        composeTestRule.onNodeWithTag(ProfileScreenTestTags.EMAIL_FIELD).performTextClearance()
+        composeTestRule
+            .onNodeWithTag(ProfileScreenTestTags.EMAIL_FIELD)
+            .performTextInput("new@example.com")
+
+        // Save
+        composeTestRule.onNodeWithTag(ProfileScreenTestTags.SAVE_BUTTON).performClick()
     }
 
-    // Clear and type new display name
-    composeTestRule.onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD).performTextClearance()
-    composeTestRule
-        .onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD)
-        .performTextInput("New Name")
-  }
+    @Test
+    fun profileScreen_backButtonWorks() {
+        val fakeRepository = FakeAuthRepository(null)
+        val viewModel = ProfileViewModel(fakeRepository)
+        var backClicked = false
 
-  @Test
-  fun profileScreen_backButtonWorks() {
-    val fakeRepository = FakeAuthRepository(null)
-    val viewModel = ProfileViewModel(fakeRepository)
-    var backClicked = false
+        composeTestRule.setContent {
+            ProfileScreen(
+                onNavigateBack = { backClicked = true },
+                onNavigateToAdminContact = {},
+                profileViewModel = viewModel)
+        }
 
-    composeTestRule.setContent {
-      ProfileScreen(
-          onNavigateBack = { backClicked = true },
-          onNavigateToAdminContact = {},
-          profileViewModel = viewModel)
+        composeTestRule.onNodeWithTag(ProfileScreenTestTags.BACK_BUTTON).performClick()
+        assert(backClicked)
     }
 
-    composeTestRule.onNodeWithTag(ProfileScreenTestTags.BACK_BUTTON).performClick()
-    assert(backClicked)
-  }
+    @Test
+    fun profileScreen_adminContactButtonWorks() {
+        val fakeRepository = FakeAuthRepository(null)
+        val viewModel = ProfileViewModel(fakeRepository)
+        var adminContactClicked = false
 
-  @Test
-  fun profileScreen_adminContactButtonWorks() {
-    val fakeRepository = FakeAuthRepository(null)
-    val viewModel = ProfileViewModel(fakeRepository)
-    var adminContactClicked = false
+        composeTestRule.setContent {
+            ProfileScreen(
+                onNavigateBack = {},
+                onNavigateToAdminContact = { adminContactClicked = true },
+                profileViewModel = viewModel)
+        }
 
-    composeTestRule.setContent {
-      ProfileScreen(
-          onNavigateBack = {},
-          onNavigateToAdminContact = { adminContactClicked = true },
-          profileViewModel = viewModel)
+        composeTestRule.onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON).performClick()
+        assert(adminContactClicked)
     }
 
-    composeTestRule.onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON).performClick()
-    assert(adminContactClicked)
-  }
+    @Test
+    fun profileScreen_editAndCancel_restoresOriginalValues() {
+        val testUser =
+            User(
+                id = "test123",
+                displayName = "Original",
+                email = "orig@example.com",
+                phoneNumber = "000-111-2222")
+        val fakeRepository = FakeAuthRepository(testUser)
+        val viewModel = ProfileViewModel(fakeRepository)
 
-  @Test
-  fun profileScreen_saveButtonIsDisplayed() {
-    val fakeRepository = FakeAuthRepository(null)
-    val viewModel = ProfileViewModel(fakeRepository)
+        composeTestRule.setContent {
+            ProfileScreen(
+                onNavigateBack = {}, onNavigateToAdminContact = {}, profileViewModel = viewModel)
+        }
 
-    composeTestRule.setContent {
-      ProfileScreen(
-          onNavigateBack = {}, onNavigateToAdminContact = {}, profileViewModel = viewModel)
+        composeTestRule.onNodeWithTag(ProfileScreenTestTags.EDIT_BUTTON).performClick()
+
+        // Change display name
+        composeTestRule.onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD).performTextClearance()
+        composeTestRule
+            .onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD)
+            .performTextInput("Changed Name")
+
+        // Cancel edits
+        composeTestRule.onNodeWithTag(ProfileScreenTestTags.CANCEL_BUTTON).performClick()
+
+        // Verify original value restored
+        composeTestRule
+            .onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD)
+            .assertTextContains("Original")
     }
 
-    composeTestRule.onNodeWithTag(ProfileScreenTestTags.SAVE_BUTTON).assertIsDisplayed()
-  }
+    @Test
+    fun profileScreen_displayRootIsDisplayed() {
+        val fakeRepository = FakeAuthRepository(null)
+        val viewModel = ProfileViewModel(fakeRepository)
 
-  @Test
-  fun profileScreen_displayRootIsDisplayed() {
-    val fakeRepository = FakeAuthRepository(null)
-    val viewModel = ProfileViewModel(fakeRepository)
+        composeTestRule.setContent {
+            ProfileScreen(
+                onNavigateBack = {}, onNavigateToAdminContact = {}, profileViewModel = viewModel)
+        }
 
-    composeTestRule.setContent {
-      ProfileScreen(
-          onNavigateBack = {}, onNavigateToAdminContact = {}, profileViewModel = viewModel)
+        composeTestRule.onNodeWithTag(ProfileScreenTestTags.PROFILE_SCREEN).assertIsDisplayed()
     }
 
-    composeTestRule.onNodeWithTag(ProfileScreenTestTags.PROFILE_SCREEN).assertIsDisplayed()
-  }
-
-  @Test
-  fun all_components_Displayed() {
-    composeTestRule.setContent { ProfileScreen() }
-    composeTestRule.onNodeWithTag(ProfileScreenTestTags.BACK_BUTTON).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(ProfileScreenTestTags.EMAIL_FIELD).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(ProfileScreenTestTags.PHONE_FIELD).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(ProfileScreenTestTags.SAVE_BUTTON).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON).assertIsDisplayed()
-  }
+    @Test
+    fun all_components_Displayed_inReadOnlyMode() {
+        composeTestRule.setContent { ProfileScreen() }
+        composeTestRule.onNodeWithTag(ProfileScreenTestTags.BACK_BUTTON).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(ProfileScreenTestTags.EMAIL_FIELD).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(ProfileScreenTestTags.PHONE_FIELD).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(ProfileScreenTestTags.EDIT_BUTTON).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON).assertIsDisplayed()
+    }
 }

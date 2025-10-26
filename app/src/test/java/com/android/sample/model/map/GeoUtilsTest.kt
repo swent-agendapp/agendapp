@@ -49,7 +49,25 @@ class GeoUtilsTest {
     insideTriangle = Marker(latitude = 1.0, longitude = 0.5)
     outsideTriangle = Marker(latitude = 2.0, longitude = 2.0)
 
-    // Arrow area
+    /*
+     * Arrow-shaped area :
+     *
+     * .a4---------------------------------.a3
+     * |                                 ⟋
+     * |            .insideArrow1    ⟋
+     * |                         ⟋
+     * |                     ⟋
+     * |                 ⟋
+     * |            .a2
+     * |           /
+     * |         /
+     * |  .insideArrow2
+     * |      /
+     * |    /           .outsideArrow
+     * |  /
+     * .a1
+     *
+     */
     val a1 = Marker(latitude = 46.517, longitude = 6.565)
     val a2 = Marker(latitude = 46.547, longitude = 6.595)
     val a3 = Marker(latitude = 46.567, longitude = 6.715)

@@ -81,7 +81,7 @@ object GeoUtils {
                 compareBy {
                   atan2(it.location.latitude - centerY, it.location.longitude - centerX)
                 })
-            .toMutableList()
+            .toList()
 
     // Triangulation using ear clipping
 

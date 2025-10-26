@@ -28,13 +28,7 @@ object ProfileScreenTestTags {
     const val EDIT_BUTTON = "edit_button"
     const val ADMIN_CONTACT_BUTTON = "admin_contact_button"
 }
-/**
- * Profile screen allowing user to view and edit their contact information.
- *
- * @param onNavigateBack Callback to navigate back to previous screen
- * @param onNavigateToAdminContact Callback to navigate to admin contact screen
- * @param profileViewModel ViewModel managing user state
- */
+
 @Composable
 fun ProfileScreen(
     onNavigateBack: () -> Unit = {},
@@ -43,13 +37,15 @@ fun ProfileScreen(
 ) {
     val uiState by profileViewModel.uiState.collectAsState()
 
-    // local edit mode state
     var isEditMode by remember { mutableStateOf(false) }
 
-    // local temporary editable values (to allow cancel)
     var displayName by remember { mutableStateOf(uiState.displayName) }
     var email by remember { mutableStateOf(uiState.email) }
     var phoneNumber by remember { mutableStateOf(uiState.phoneNumber) }
+
+    // Validation error states
+    var emailError by remember { mutableStateOf<String?>(null) }
+    var phoneError by remember { mutableStateOf<String?>(null) }
 
     Surface(
         modifier =
@@ -89,6 +85,8 @@ fun ProfileScreen(
                                 displayName = uiState.displayName
                                 email = uiState.email
                                 phoneNumber = uiState.phoneNumber
+                                emailError = null
+                                phoneError = null
                                 isEditMode = false
                             },
                             modifier = Modifier.testTag(ProfileScreenTestTags.CANCEL_BUTTON)) {
@@ -96,12 +94,24 @@ fun ProfileScreen(
                         }
                         IconButton(
                             onClick = {
-                                // Save edits → send to ViewModel
-                                profileViewModel.updateDisplayName(displayName)
-                                profileViewModel.updateEmail(email)
-                                profileViewModel.updatePhoneNumber(phoneNumber)
-                                profileViewModel.saveProfile()
-                                isEditMode = false
+                                // Validate before saving
+                                val emailValid = isValidEmail(email)
+                                val phoneValid = isValidPhone(phoneNumber)
+
+                                emailError =
+                                    if (!emailValid) "Please enter a valid email address" else null
+                                phoneError =
+                                    if (!phoneValid)
+                                        "Please enter a valid phone number (min 7 digits)"
+                                    else null
+
+                                if (emailValid && phoneValid) {
+                                    profileViewModel.updateDisplayName(displayName)
+                                    profileViewModel.updateEmail(email)
+                                    profileViewModel.updatePhoneNumber(phoneNumber)
+                                    profileViewModel.saveProfile()
+                                    isEditMode = false
+                                }
                             },
                             modifier = Modifier.testTag(ProfileScreenTestTags.SAVE_BUTTON)) {
                             Icon(Icons.Default.Save, contentDescription = "Save")
@@ -127,8 +137,17 @@ fun ProfileScreen(
             // Email Field
             OutlinedTextField(
                 value = if (isEditMode) email else uiState.email,
-                onValueChange = { if (isEditMode) email = it },
+                onValueChange = {
+                    if (isEditMode) {
+                        email = it
+                        emailError = null
+                    }
+                },
                 label = { Text("Email") },
+                isError = emailError != null,
+                supportingText = {
+                    emailError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+                },
                 modifier = Modifier.fillMaxWidth().testTag(ProfileScreenTestTags.EMAIL_FIELD),
                 singleLine = true,
                 enabled = isEditMode,
@@ -139,8 +158,17 @@ fun ProfileScreen(
             // Phone Field
             OutlinedTextField(
                 value = if (isEditMode) phoneNumber else uiState.phoneNumber,
-                onValueChange = { if (isEditMode) phoneNumber = it },
+                onValueChange = {
+                    if (isEditMode) {
+                        phoneNumber = it
+                        phoneError = null
+                    }
+                },
                 label = { Text("Phone Number") },
+                isError = phoneError != null,
+                supportingText = {
+                    phoneError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+                },
                 modifier = Modifier.fillMaxWidth().testTag(ProfileScreenTestTags.PHONE_FIELD),
                 singleLine = true,
                 enabled = isEditMode,
@@ -158,4 +186,14 @@ fun ProfileScreen(
             }
         }
     }
+}
+
+/** Utility validation functions */
+private fun isValidEmail(email: String): Boolean {
+    return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+}
+
+private fun isValidPhone(phone: String): Boolean {
+    val digits = phone.filter { it.isDigit() }
+    return digits.length >= 7 // basic length check
 }

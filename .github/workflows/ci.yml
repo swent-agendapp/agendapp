@@ -118,9 +118,6 @@ jobs:
         run: |
           ./gradlew ktfmtCheck
 
-      - name: List available AVD profiles
-        run: $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager list device
-
       # This step runs gradle commands to build the application
       - name: Assemble
         run: |
@@ -151,21 +148,20 @@ jobs:
           api-level: 34
           target: google_apis
           arch: x86_64
-          force-avd-creation: false
+          force-avd-creation: true
           profile: pixel_6
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: |
-            # Patch config.ini to match Pixel 8 screen
-            AVD_NAME=$(emulator -list-avds | head -n 1)
+          pre-emulator-launch-script: |
+            echo "Patching config.ini to Pixel 8 resolution..."
             CONFIG="$HOME/.android/avd/$AVD_NAME.avd/config.ini"
-            sed -i 's/hw.lcd.width=.*/hw.lcd.width=1080/' $CONFIG
-            sed -i 's/hw.lcd.height=.*/hw.lcd.height=2400/' $CONFIG
-            sed -i 's/hw.lcd.density=.*/hw.lcd.density=411/' $CONFIG
-            
-            echo "Modified emulator config:"
-            cat $CONFIG
-            
+            sed -i 's/hw.lcd.width=.*/hw.lcd.width=1080/' "$CONFIG"
+            sed -i 's/hw.lcd.height=.*/hw.lcd.height=2400/' "$CONFIG"
+            sed -i 's/hw.lcd.density=.*/hw.lcd.density=411/' "$CONFIG"
+            echo "Patched config.ini:"
+            cat "$CONFIG"
+          script: |
+            echo "Starting connected tests..."
             ./gradlew connectedCheck --parallel --build-cache
 
       # This step generates the coverage report which will be uploaded to sonar

@@ -118,6 +118,9 @@ jobs:
         run: |
           ./gradlew ktfmtCheck
 
+      - name: List available AVD profiles
+        run: $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager list device
+
       # This step runs gradle commands to build the application
       - name: Assemble
         run: |

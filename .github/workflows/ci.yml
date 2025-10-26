@@ -153,13 +153,26 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           pre-emulator-launch-script: |
-            echo "Patching config.ini to Pixel 8 resolution..."
+            echo "Using cached AVD: $AVD_NAME"
             CONFIG="$HOME/.android/avd/$AVD_NAME.avd/config.ini"
-            sed -i 's/hw.lcd.width=.*/hw.lcd.width=1080/' "$CONFIG"
-            sed -i 's/hw.lcd.height=.*/hw.lcd.height=2400/' "$CONFIG"
-            sed -i 's/hw.lcd.density=.*/hw.lcd.density=411/' "$CONFIG"
-            echo "Patched config.ini:"
-            cat "$CONFIG"
+            
+            # Delete old snapshots if needed
+            if [ -d "$HOME/.android/avd/$AVD_NAME.avd/snapshots" ]; then
+              rm -rf "$HOME/.android/avd/$AVD_NAME.avd/snapshots/*"
+              echo "Deleted old snapshots to avoid resolution conflicts."
+            fi
+            
+            # Patch resolution in config.ini
+            if [ -f "$CONFIG" ]; then
+              echo "Patching config.ini for desired resolution..."
+              sed -i 's/hw.lcd.width=.*/hw.lcd.width=1080/' "$CONFIG"
+              sed -i 's/hw.lcd.height=.*/hw.lcd.height=2400/' "$CONFIG"
+              sed -i 's/hw.lcd.density=.*/hw.lcd.density=411/' "$CONFIG"
+              echo "Patched config.ini:"
+              cat "$CONFIG"
+            else
+              echo "::warning:: config.ini not found, skipping patch"
+            fi
           script: |
             echo "Starting connected tests..."
             ./gradlew connectedCheck --parallel --build-cache

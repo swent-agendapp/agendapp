@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.sample.model.authentification.AuthRepositoryProvider
 import com.github.se.bootcamp.model.authentication.AuthRepository
-import com.github.se.bootcamp.model.authentication.AuthRepositoryFirebase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update

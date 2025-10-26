@@ -39,7 +39,7 @@ fun getMockEvents(): List<MockEvent> {
       // WEEK 0 - event 1
       MockEvent(
           date = weekDate(0, DayOfWeek.TUESDAY),
-          title = "First event",
+          title = "First Event",
           timeSpan = TimeSpan.of(start = LocalTime.of(9, 30), duration = Duration.ofHours(2)),
           assigneeName = "Emilien",
           backgroundColor = 0xFFFFB74D.toInt()),
@@ -47,7 +47,7 @@ fun getMockEvents(): List<MockEvent> {
       // WEEK 0 - event 2
       MockEvent(
           date = weekDate(0, DayOfWeek.WEDNESDAY),
-          title = "Nice event",
+          title = "Nice Event",
           timeSpan = TimeSpan.of(start = LocalTime.of(14, 0), duration = Duration.ofHours(4)),
           assigneeName = "Méline",
           backgroundColor = 0xFF81C784.toInt()),

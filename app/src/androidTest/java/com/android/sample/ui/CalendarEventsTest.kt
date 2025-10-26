@@ -41,14 +41,15 @@ class CalendarEventsTest {
                 date = eventDate,
                 timeSpan = TimeSpan.of(start = LocalTime.of(9, 0), duration = Duration.ofHours(1)),
                 assigneeName = "Emilien",
-                backgroundColor = 0xFFFFB74D.toInt()))
+                backgroundColor = 0xFFFFB74D.toInt(),
+            ),
+        )
 
     compose.setContent { CalendarGridContent(events = events) }
 
     compose
         .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Test Event")
         .assertExists()
-        .performScrollTo()
         .assertIsDisplayed()
   }
 
@@ -59,43 +60,38 @@ class CalendarEventsTest {
             MockEvent(
                 title = "Monday Event",
                 date = LocalDate.now().with(DayOfWeek.MONDAY),
-                timeSpan =
-                    TimeSpan.Companion.of(
-                        start = LocalTime.of(9, 0), duration = Duration.ofHours(1)),
+                timeSpan = TimeSpan.of(start = LocalTime.of(9, 0), duration = Duration.ofHours(1)),
                 assigneeName = "Monday guy",
-                backgroundColor = 0xFF64B5F6.toInt()),
+                backgroundColor = 0xFF64B5F6.toInt(),
+            ),
             MockEvent(
                 title = "Tuesday Event",
                 date = LocalDate.now().with(DayOfWeek.TUESDAY),
-                timeSpan =
-                    TimeSpan.Companion.of(
-                        start = LocalTime.of(9, 0), duration = Duration.ofHours(1)),
+                timeSpan = TimeSpan.of(start = LocalTime.of(9, 0), duration = Duration.ofHours(1)),
                 assigneeName = "Tuesday guy",
-                backgroundColor = 0xFF64B5F6.toInt()),
+                backgroundColor = 0xFF64B5F6.toInt(),
+            ),
             MockEvent(
                 title = "Wednesday Event",
                 date = LocalDate.now().with(DayOfWeek.WEDNESDAY),
-                timeSpan =
-                    TimeSpan.Companion.of(
-                        start = LocalTime.of(9, 0), duration = Duration.ofHours(1)),
+                timeSpan = TimeSpan.of(start = LocalTime.of(9, 0), duration = Duration.ofHours(1)),
                 assigneeName = "Wednesday guy",
-                backgroundColor = 0xFF64B5F6.toInt()),
+                backgroundColor = 0xFF64B5F6.toInt(),
+            ),
             MockEvent(
                 title = "Thursday Event",
                 date = LocalDate.now().with(DayOfWeek.THURSDAY),
-                timeSpan =
-                    TimeSpan.Companion.of(
-                        start = LocalTime.of(9, 0), duration = Duration.ofHours(1)),
+                timeSpan = TimeSpan.of(start = LocalTime.of(9, 0), duration = Duration.ofHours(1)),
                 assigneeName = "Thursday guy",
-                backgroundColor = 0xFF64B5F6.toInt()),
+                backgroundColor = 0xFF64B5F6.toInt(),
+            ),
             MockEvent(
                 title = "Friday Event",
                 date = LocalDate.now().with(DayOfWeek.FRIDAY),
-                timeSpan =
-                    TimeSpan.Companion.of(
-                        start = LocalTime.of(9, 0), duration = Duration.ofHours(1)),
+                timeSpan = TimeSpan.of(start = LocalTime.of(9, 0), duration = Duration.ofHours(1)),
                 assigneeName = "Friday guy",
-                backgroundColor = 0xFF64B5F6.toInt()),
+                backgroundColor = 0xFF64B5F6.toInt(),
+            ),
         )
 
     compose.setContent { CalendarGridContent(events = events) }
@@ -118,19 +114,18 @@ class CalendarEventsTest {
             MockEvent(
                 title = "Out-of-range (early) Event",
                 date = LocalDate.of(2000, 1, 1),
-                timeSpan =
-                    TimeSpan.Companion.of(
-                        start = LocalTime.of(9, 0), duration = Duration.ofHours(1)),
+                timeSpan = TimeSpan.of(start = LocalTime.of(9, 0), duration = Duration.ofHours(1)),
                 assigneeName = "Méline",
-                backgroundColor = 0xFF81C784.toInt()),
+                backgroundColor = 0xFF81C784.toInt(),
+            ),
             MockEvent(
                 title = "Out-of-range (late) Event",
                 date = LocalDate.of(2100, 1, 1),
-                timeSpan =
-                    TimeSpan.Companion.of(
-                        start = LocalTime.of(9, 0), duration = Duration.ofHours(1)),
+                timeSpan = TimeSpan.of(start = LocalTime.of(9, 0), duration = Duration.ofHours(1)),
                 assigneeName = "Nathan",
-                backgroundColor = 0xFF64B5F6.toInt()))
+                backgroundColor = 0xFF64B5F6.toInt(),
+            ),
+        )
 
     compose.setContent { CalendarGridContent(events = events) }
 
@@ -146,24 +141,23 @@ class CalendarEventsTest {
   fun calendarGridContent_doesNotShowsEventBlocks_whenEventsRightNextToDateRange() {
     val events =
         listOf(
-            // the day before the start of the week (Monday - 1 = sunday)
+            // the day before the start of the week (Monday - 1 = Sunday)
             MockEvent(
                 title = "Last Sunday Event",
                 date = LocalDate.now().with(DayOfWeek.MONDAY.minus(1)),
-                timeSpan =
-                    TimeSpan.Companion.of(
-                        start = LocalTime.of(9, 0), duration = Duration.ofHours(1)),
+                timeSpan = TimeSpan.of(start = LocalTime.of(9, 0), duration = Duration.ofHours(1)),
                 assigneeName = "Weifeng",
-                backgroundColor = 0xFFFFB74D.toInt()),
+                backgroundColor = 0xFFFFB74D.toInt(),
+            ),
             // the day after the working days (Friday + 1 = Saturday)
             MockEvent(
                 title = "Next Saturday Event",
                 date = LocalDate.now().with(DayOfWeek.FRIDAY.plus(1)),
-                timeSpan =
-                    TimeSpan.Companion.of(
-                        start = LocalTime.of(9, 0), duration = Duration.ofHours(1)),
+                timeSpan = TimeSpan.of(start = LocalTime.of(9, 0), duration = Duration.ofHours(1)),
                 assigneeName = "Haobin",
-                backgroundColor = 0xFFBA68C8.toInt()))
+                backgroundColor = 0xFFBA68C8.toInt(),
+            ),
+        )
 
     compose.setContent { CalendarGridContent(events = events) }
 
@@ -183,20 +177,19 @@ class CalendarEventsTest {
             MockEvent(
                 title = "First semi-overlapping Event",
                 date = LocalDate.now().with(DayOfWeek.MONDAY),
-                timeSpan =
-                    TimeSpan.Companion.of(
-                        start = LocalTime.of(9, 0), duration = Duration.ofHours(2)),
+                timeSpan = TimeSpan.of(start = LocalTime.of(9, 0), duration = Duration.ofHours(2)),
                 assigneeName = "Timaël",
-                backgroundColor = 0xFF81C784.toInt()),
+                backgroundColor = 0xFF81C784.toInt(),
+            ),
             // Event on Monday [10:00 - 12:00]
             MockEvent(
                 title = "Second semi-overlapping Event",
                 date = LocalDate.now().with(DayOfWeek.MONDAY),
-                timeSpan =
-                    TimeSpan.Companion.of(
-                        start = LocalTime.of(10, 0), duration = Duration.ofHours(2)),
+                timeSpan = TimeSpan.of(start = LocalTime.of(10, 0), duration = Duration.ofHours(2)),
                 assigneeName = "Noa",
-                backgroundColor = 0xFFE57373.toInt()))
+                backgroundColor = 0xFFE57373.toInt(),
+            ),
+        )
 
     compose.setContent { CalendarGridContent(events = events) }
 
@@ -216,20 +209,19 @@ class CalendarEventsTest {
             MockEvent(
                 title = "First full-overlapping Event",
                 date = LocalDate.now().with(DayOfWeek.MONDAY),
-                timeSpan =
-                    TimeSpan.Companion.of(
-                        start = LocalTime.of(9, 0), duration = Duration.ofHours(2)),
+                timeSpan = TimeSpan.of(start = LocalTime.of(9, 0), duration = Duration.ofHours(2)),
                 assigneeName = "Timaël",
-                backgroundColor = 0xFF81C784.toInt()),
+                backgroundColor = 0xFF81C784.toInt(),
+            ),
             // Event on Monday [9:00 - 11:00]
             MockEvent(
                 title = "Second full-overlapping Event",
                 date = LocalDate.now().with(DayOfWeek.MONDAY),
-                timeSpan =
-                    TimeSpan.Companion.of(
-                        start = LocalTime.of(9, 0), duration = Duration.ofHours(2)),
+                timeSpan = TimeSpan.of(start = LocalTime.of(9, 0), duration = Duration.ofHours(2)),
                 assigneeName = "Noa",
-                backgroundColor = 0xFFE57373.toInt()))
+                backgroundColor = 0xFFE57373.toInt(),
+            ),
+        )
 
     compose.setContent { CalendarGridContent(events = events) }
 
@@ -243,27 +235,27 @@ class CalendarEventsTest {
 
   @Test
   fun calendarGridContent_doesShowsEventBlock_whenEventOutOfCalendarHour() {
-    // Default configuration : screen render from 8:00 to 23:00 (not before, neither after)
+    // Default configuration : screen renders from 8:00 to 23:00 (not before, neither after)
     val events =
         listOf(
             // Event on Monday [6:00 - 10:00]
             MockEvent(
                 title = "Morning Event",
                 date = LocalDate.now().with(DayOfWeek.MONDAY),
-                timeSpan =
-                    TimeSpan.Companion.of(
-                        start = LocalTime.of(6, 0), duration = Duration.ofHours(4)),
+                timeSpan = TimeSpan.of(start = LocalTime.of(6, 0), duration = Duration.ofHours(4)),
                 assigneeName = "Méline",
-                backgroundColor = 0xFF64B5F6.toInt()),
+                backgroundColor = 0xFF64B5F6.toInt(),
+            ),
             // Event on Friday [20:30 - 23:30]
             MockEvent(
                 title = "Night Event",
                 date = LocalDate.now().with(DayOfWeek.FRIDAY),
                 timeSpan =
-                    TimeSpan.Companion.of(
-                        start = LocalTime.of(20, 30), duration = Duration.ofHours(3)),
+                    TimeSpan.of(start = LocalTime.of(20, 30), duration = Duration.ofHours(3)),
                 assigneeName = "Emilien",
-                backgroundColor = 0xFFBA68C8.toInt()))
+                backgroundColor = 0xFFBA68C8.toInt(),
+            ),
+        )
 
     compose.setContent { CalendarGridContent(events = events) }
 

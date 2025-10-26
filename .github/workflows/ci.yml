@@ -163,11 +163,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: ./gradlew sonar --parallel --build-cache
-
-        # Upload the APK as an artifact for M1 (only on M1 branch)
-      - name: Upload APK for M1
-        if: github.ref == 'refs/heads/M1'
-        uses: actions/upload-artifact@v4
-        with:
-          name: M1-APK
-          path: app/build/outputs/apk/debug/app-debug.apk

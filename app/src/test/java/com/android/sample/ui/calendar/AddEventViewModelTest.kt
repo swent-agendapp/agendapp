@@ -14,8 +14,17 @@ import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
+import com.android.sample.model.organization.Employee
+import com.android.sample.model.organization.EmployeeRepository
+import com.android.sample.model.organization.EmployeeRepositoryProvider
+import com.android.sample.model.organization.Role
+
+
 
 @OptIn(ExperimentalCoroutinesApi::class)
+
+
+
 /**
  * Unit tests for AddEventViewModel.
  *
@@ -31,6 +40,13 @@ class AddEventViewModelTest {
   fun setUp() {
     Dispatchers.setMain(testDispatcher)
     repository = EventRepositoryLocal()
+    // Make AuthorizationService.requireAdmin() pass during tests
+    EmployeeRepositoryProvider.repository = object : EmployeeRepository {
+      override suspend fun getEmployees(): List<Employee> = emptyList()
+      override suspend fun newEmployee(employee: Employee) {}
+      override suspend fun deleteEmployee(userId: String) {}
+      override suspend fun getMyRole(): Role? = Role.ADMIN
+    }
     viewModel = AddEventViewModel(repository)
   }
 

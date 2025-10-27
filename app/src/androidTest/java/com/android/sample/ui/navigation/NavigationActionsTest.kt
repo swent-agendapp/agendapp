@@ -95,50 +95,61 @@ class AgendappNavigationTest {
   @Test
   fun clickingEmail_opensEmailApp() {
     Intents.init()
-    composeTestRule.setContent { AgendappNavigation() }
+    try {
 
-    // Navigate to Profile screen
-    composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).performClick()
-    composeTestRule.onNodeWithTag(SettingsScreenTestTags.PROFILE_BUTTON).performClick()
-    composeTestRule.onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON).performClick()
+      composeTestRule.setContent { AgendappNavigation() }
 
-    // Stub out the external email intent (prevent actual launch)
-    intending(hasAction(Intent.ACTION_SENDTO)).respondWith(Instrumentation.ActivityResult(0, null))
+      // Navigate to Profile screen
+      composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).performClick()
+      composeTestRule.onNodeWithTag(SettingsScreenTestTags.PROFILE_BUTTON).performClick()
+      composeTestRule.onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON).performClick()
+      // ✅ Wait for Compose to finish recomposing & window focus to stabilize
+      composeTestRule.waitForIdle()
+      Thread.sleep(500) // <- tiny extra buffer, helps on emulators
+      // Stub out the external email intent (prevent actual launch)
+      intending(hasAction(Intent.ACTION_SENDTO))
+          .respondWith(Instrumentation.ActivityResult(0, null))
 
-    // Click the email field (assuming it's clickable and launches ACTION_SENDTO)
-    composeTestRule.onNodeWithTag(AdminContactScreenTestTags.ADMIN_EMAIL_TEXT).performClick()
+      // Click the email field (assuming it's clickable and launches ACTION_SENDTO)
+      composeTestRule.onNodeWithTag(AdminContactScreenTestTags.ADMIN_EMAIL_TEXT).performClick()
 
-    // Verify correct intent sent
-    intended(
-        allOf(
-            hasAction(Intent.ACTION_SENDTO),
-            hasData(Uri.parse("mailto:${AdminInformation.EMAIL}"))))
-
-    Intents.release()
+      // Verify correct intent sent
+      intended(
+          allOf(
+              hasAction(Intent.ACTION_SENDTO),
+              hasData(Uri.parse("mailto:${AdminInformation.EMAIL}"))))
+    } finally {
+      Intents.release()
+    }
   }
 
   @Test
   fun clickingPhone_opensDialerApp() {
     Intents.init()
-    composeTestRule.setContent { AgendappNavigation() }
+    try {
 
-    // Navigate to Profile screen
-    composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).performClick()
-    composeTestRule.onNodeWithTag(SettingsScreenTestTags.PROFILE_BUTTON).performClick()
-    composeTestRule.onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON).performClick()
+      composeTestRule.setContent { AgendappNavigation() }
 
-    // Stub out dialer intent
-    intending(hasAction(Intent.ACTION_DIAL)).respondWith(Instrumentation.ActivityResult(0, null))
+      // Navigate to Profile screen
+      composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).performClick()
+      composeTestRule.onNodeWithTag(SettingsScreenTestTags.PROFILE_BUTTON).performClick()
+      composeTestRule.onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON).performClick()
+      // ✅ Wait for Compose to finish recomposing & window focus to stabilize
+      composeTestRule.waitForIdle()
+      Thread.sleep(500) // <- tiny extra buffer, helps on emulators
+      // Stub out dialer intent
+      intending(hasAction(Intent.ACTION_DIAL)).respondWith(Instrumentation.ActivityResult(0, null))
 
-    // Click the phone field (assuming it's clickable and launches ACTION_DIAL)
-    composeTestRule.onNodeWithTag(AdminContactScreenTestTags.ADMIN_PHONE_TEXT).performClick()
+      // Click the phone field (assuming it's clickable and launches ACTION_DIAL)
+      composeTestRule.onNodeWithTag(AdminContactScreenTestTags.ADMIN_PHONE_TEXT).performClick()
 
-    // Verify correct intent sent
-    intended(
-        allOf(
-            hasAction(Intent.ACTION_DIAL),
-            hasData(Uri.parse("tel:${AdminInformation.PHONE.replace(" ", "")}"))))
-
-    Intents.release()
+      // Verify correct intent sent
+      intended(
+          allOf(
+              hasAction(Intent.ACTION_DIAL),
+              hasData(Uri.parse("tel:${AdminInformation.PHONE.replace(" ", "")}"))))
+    } finally {
+      Intents.release()
+    }
   }
 }

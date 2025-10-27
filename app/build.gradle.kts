@@ -201,6 +201,7 @@ dependencies {
 
     // Networking with OkHttp
     implementation(libs.okhttp)
+    testImplementation(kotlin("test"))
 }
 
 tasks.withType<Test> {

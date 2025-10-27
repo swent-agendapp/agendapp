@@ -17,6 +17,19 @@ import com.android.sample.ui.settings.SettingsScreenTestTags
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import android.app.Instrumentation
+import android.content.Intent
+import android.net.Uri
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
+import androidx.test.espresso.intent.matcher.IntentMatchers.toPackage
+import com.android.sample.ui.profile.AdminContactScreen
+import com.android.sample.ui.profile.AdminInformation
+import org.hamcrest.CoreMatchers.allOf
 
 /**
  * Integration test for [AgendappNavigation] navigation. This test checks the navigation flow
@@ -81,4 +94,57 @@ class AgendappNavigationTest {
     // back to Settings
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.BACK_BUTTON).assertExists().performClick()
   }
+    @Test
+    fun clickingEmail_opensEmailApp() {
+        Intents.init()
+        composeTestRule.setContent { AgendappNavigation() }
+
+        // Navigate to Profile screen
+        composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).performClick()
+        composeTestRule.onNodeWithTag(SettingsScreenTestTags.PROFILE_BUTTON).performClick()
+        composeTestRule.onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON).performClick()
+
+
+        // Stub out the external email intent (prevent actual launch)
+        intending(hasAction(Intent.ACTION_SENDTO)).respondWith(Instrumentation.ActivityResult(0, null))
+
+        // Click the email field (assuming it's clickable and launches ACTION_SENDTO)
+        composeTestRule.onNodeWithTag(AdminContactScreenTestTags.ADMIN_EMAIL_TEXT).performClick()
+
+        // Verify correct intent sent
+        intended(
+            allOf(
+                hasAction(Intent.ACTION_SENDTO),
+                hasData(Uri.parse("mailto:${AdminInformation.EMAIL}"))
+            )
+        )
+
+        Intents.release()
+    }
+    @Test
+    fun clickingPhone_opensDialerApp() {
+        Intents.init()
+        composeTestRule.setContent { AgendappNavigation() }
+
+        // Navigate to Profile screen
+        composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).performClick()
+        composeTestRule.onNodeWithTag(SettingsScreenTestTags.PROFILE_BUTTON).performClick()
+        composeTestRule.onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON).performClick()
+
+        // Stub out dialer intent
+        intending(hasAction(Intent.ACTION_DIAL)).respondWith(Instrumentation.ActivityResult(0, null))
+
+        // Click the phone field (assuming it's clickable and launches ACTION_DIAL)
+        composeTestRule.onNodeWithTag(AdminContactScreenTestTags.ADMIN_PHONE_TEXT).performClick()
+
+        // Verify correct intent sent
+        intended(
+            allOf(
+                hasAction(Intent.ACTION_DIAL),
+                hasData(Uri.parse("tel:${AdminInformation.PHONE.replace(" ", "")}"))
+            )
+        )
+
+        Intents.release()
+    }
 }

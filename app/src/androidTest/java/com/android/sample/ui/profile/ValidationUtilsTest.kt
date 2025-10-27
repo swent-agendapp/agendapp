@@ -2,31 +2,32 @@ package com.android.sample.ui.profile
 
 import android.util.Patterns
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.junit.Assert.*
 
 @RunWith(AndroidJUnit4::class)
 class ValidationUtilsTest {
 
-    @Test
-    fun validEmails_shouldPass() {
-        val validEmails = listOf(
+  @Test
+  fun validEmails_shouldPass() {
+    val validEmails =
+        listOf(
             "user@example.com",
             "user.name@domain.co",
             "user_name@domain.io",
             "user+alias@sub.domain.com",
             "firstname.lastname@company.org",
-            "u@a.co"
-        )
-        validEmails.forEach {
-            assertTrue("Expected valid email: $it", Patterns.EMAIL_ADDRESS.matcher(it).matches())
-        }
+            "u@a.co")
+    validEmails.forEach {
+      assertTrue("Expected valid email: $it", Patterns.EMAIL_ADDRESS.matcher(it).matches())
     }
+  }
 
-    @Test
-    fun invalidEmails_shouldFail() {
-        val invalidEmails = listOf(
+  @Test
+  fun invalidEmails_shouldFail() {
+    val invalidEmails =
+        listOf(
             "",
             "plainaddress",
             "@missingusername.com",
@@ -34,15 +35,16 @@ class ValidationUtilsTest {
             "username@domain",
             "username@domain,com",
             "username@domain..com",
-            "username@ domain.com"
-        )
-        invalidEmails.forEach {
-            assertFalse("Expected invalid email: $it", Patterns.EMAIL_ADDRESS.matcher(it).matches())
-        }
+            "username@ domain.com")
+    invalidEmails.forEach {
+      assertFalse("Expected invalid email: $it", Patterns.EMAIL_ADDRESS.matcher(it).matches())
     }
-    @Test
-    fun validPhones_shouldPass() {
-        val validPhones = listOf(
+  }
+
+  @Test
+  fun validPhones_shouldPass() {
+    val validPhones =
+        listOf(
             // 🇫🇷 France
             "+33 6 12 34 56 78",
             "06 12 34 56 78",
@@ -117,15 +119,16 @@ class ValidationUtilsTest {
 
             // 🇮🇪 Ireland
             "+353 86 123 4567",
-            "00353 1 234 5678"
-        )
-        validPhones.forEach {
-            assertTrue("Expected valid phone: $it", Patterns.PHONE.matcher(it).matches())
-        }
+            "00353 1 234 5678")
+    validPhones.forEach {
+      assertTrue("Expected valid phone: $it", Patterns.PHONE.matcher(it).matches())
     }
-    @Test
-    fun invalidPhones_shouldFail() {
-        val invalidPhones = listOf(
+  }
+
+  @Test
+  fun invalidPhones_shouldFail() {
+    val invalidPhones =
+        listOf(
             "", // empty
             "abcde", // letters
             "+1", // too short
@@ -150,10 +153,8 @@ class ValidationUtilsTest {
             "+44 20 7946 095@", // symbol at end
             "+44(20)7946_0958", // underscore
             "+33 06-12-34--56-78" // multiple double dashes
-        )
+            )
 
-        invalidPhones.forEach {
-            assertFalse("Expected invalid phone: $it", isValidPhone(it))
-        }
-    }
+    invalidPhones.forEach { assertFalse("Expected invalid phone: $it", isValidPhone(it)) }
+  }
 }

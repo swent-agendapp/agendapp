@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.sample.R
 import com.android.sample.model.authentification.User
+import com.android.sample.model.organization.EmployeeRepositoryProvider
+import com.android.sample.model.organization.Role
 import com.github.se.bootcamp.model.authentication.AuthRepository
 import com.github.se.bootcamp.model.authentication.AuthRepositoryFirebase
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
@@ -29,7 +31,8 @@ data class AuthUIState(
     val isLoading: Boolean = false,
     val user: User? = null,
     val errorMsg: String? = null,
-    val signedOut: Boolean = true
+    val signedOut: Boolean = true,
+    val role: Role? = null
 )
 
 /**
@@ -47,10 +50,15 @@ class SignInViewModel(private val repository: AuthRepository = AuthRepositoryFir
     checkCurrentUser()
   }
 
+  private suspend fun loadRole(): Role? = EmployeeRepositoryProvider.repository.getMyRole()
+
   /** Checks if there's a persisted user session and restores it. */
   private fun checkCurrentUser() {
     repository.getCurrentUser()?.let { user ->
-      _uiState.update { it.copy(user = user, signedOut = false) }
+      viewModelScope.launch {
+        val role = loadRole()
+        _uiState.update { it.copy(user = user, signedOut = false, role = role) }
+      }
     }
   }
 
@@ -89,8 +97,9 @@ class SignInViewModel(private val repository: AuthRepository = AuthRepositoryFir
 
         // Pass the credential to your repository
         repository.signInWithGoogle(credential).fold({ user ->
+          val role = loadRole()
           _uiState.update {
-            it.copy(isLoading = false, user = user, errorMsg = null, signedOut = false)
+            it.copy(isLoading = false, user = user, errorMsg = null, signedOut = false, role = role)
           }
         }) { failure ->
           _uiState.update {

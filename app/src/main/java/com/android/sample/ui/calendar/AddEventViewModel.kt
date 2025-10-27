@@ -3,6 +3,7 @@ package com.android.sample.ui.calendar
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.sample.model.authorization.AuthorizationService
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
@@ -26,7 +27,8 @@ data class AddCalendarEventUIState(
 )
 
 class AddEventViewModel(
-    private val repository: EventRepository = EventRepositoryProvider.repository
+    private val repository: EventRepository = EventRepositoryProvider.repository,
+    private val authz: AuthorizationService = AuthorizationService()
 ) : ViewModel() {
   private val _uiState = MutableStateFlow(AddCalendarEventUIState())
   val uiState: StateFlow<AddCalendarEventUIState> = _uiState.asStateFlow()
@@ -48,6 +50,7 @@ class AddEventViewModel(
   fun addEventToRepository(event: Event) {
     viewModelScope.launch {
       try {
+        authz.requireAdmin()
         repository.insertEvent(event)
       } catch (e: Exception) {
         Log.e("AddEventViewModel", "Error adding event: ${e.message}")

@@ -1,5 +1,6 @@
 package com.android.sample.model.calendar
 
+import com.android.sample.model.constants.FirestoreConstants.EVENTS_COLLECTION_PATH
 import com.android.sample.utils.EventColor
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
@@ -7,8 +8,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import java.time.Instant
 import java.util.Date
 import kotlinx.coroutines.tasks.await
-
-const val EVENTS_COLLECTION_PATH = "events"
 
 class EventRepositoryFirebase(private val db: FirebaseFirestore) : EventRepository {
 

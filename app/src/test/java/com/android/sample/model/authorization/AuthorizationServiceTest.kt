@@ -1,6 +1,5 @@
 package com.android.sample.model.authorization
 
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.organization.Employee
 import com.android.sample.model.organization.EmployeeRepository
 import com.android.sample.model.organization.EmployeeRepositoryProvider
@@ -9,9 +8,7 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(value = AndroidJUnit4::class)
 private class FakeEmployeeRepository(
     var roleForCurrentUser: Role? = null,
     var employees: MutableList<Employee> = mutableListOf()

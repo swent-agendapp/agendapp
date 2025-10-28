@@ -65,4 +65,12 @@ object DateTimeUtils {
   fun getInstantMinute(instant: Instant, zone: ZoneId = ZoneId.systemDefault()): Int {
     return instant.atZone(zone).minute
   }
+
+  fun nowInstant(): Instant {
+    return Instant.now()
+  }
+
+  fun nowInstantPlusHours(hours: Long): Instant {
+    return Instant.now().plusSeconds(hours * 3600)
+  }
 }

@@ -1,0 +1,397 @@
+package com.android.sample.ui.calendar
+
+import android.app.TimePickerDialog
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.android.sample.model.calendar.RecurrenceStatus
+import com.android.sample.model.calendar.formatString
+import com.android.sample.ui.calendar.components.DatePickerFieldToModal
+import com.android.sample.ui.calendar.components.TopTitleBar
+import com.android.sample.ui.calendar.components.ValidatingTextField
+import com.android.sample.ui.calendar.utils.DateTimeUtils
+
+object EditEventTestTags {
+  const val TITLE_FIELD = "edit_title_field"
+  const val DESCRIPTION_FIELD = "edit_description_field"
+  const val START_DATE_FIELD = "edit_start_date"
+  const val END_DATE_FIELD = "edit_end_date"
+  const val START_TIME_BUTTON = "edit_start_time_button"
+  const val END_TIME_BUTTON = "edit_end_time_button"
+  const val RECURRENCE_DROPDOWN = "edit_recurrence_dropdown"
+  const val PARTICIPANTS_LIST = "edit_participants_list"
+  const val SAVE_BUTTON = "edit_save_button"
+  const val CANCEL_BUTTON = "edit_cancel_button"
+  const val EDIT_PARTICIPANTS_BUTTON = "edit_participants_button"
+  const val BACK_BUTTON = "edit_back_button"
+}
+
+/**
+ * Simple one-page Edit Event screen. This view uses placeholder state until EditEventViewModel is
+ * connected.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EditEventScreen(
+    eventId:
+        String, // To be used to load existing event details, waiting for ViewModel implementation.
+    editEventViewModel: EditEventViewModel = viewModel(),
+    onSave: () -> Unit = {},
+    onCancel: () -> Unit = {},
+    onEditParticipants: () -> Unit = {}
+) {
+  val context = LocalContext.current
+
+  // Placeholder local state (to be replaced by ViewModel), hardcoded for preview.
+  var title by remember { mutableStateOf("Weekly Meeting") }
+  var description by remember { mutableStateOf("Discuss project updates.") }
+  var recurrence by remember { mutableStateOf(RecurrenceStatus.Weekly) }
+  var expanded by remember { mutableStateOf(false) }
+
+  var startInstant by remember { mutableStateOf(DateTimeUtils.nowInstant()) }
+  var endInstant by remember { mutableStateOf(DateTimeUtils.nowInstantPlusHours(1)) }
+
+  var showStartTimePicker by remember { mutableStateOf(false) }
+  var showEndTimePicker by remember { mutableStateOf(false) }
+  var notifications by remember { mutableStateOf(listOf("30 min before")) }
+
+  Scaffold(
+      topBar = { TopTitleBar(title = "Edit Event") },
+      content = { paddingValues ->
+        LazyColumn(
+            modifier = Modifier.fillMaxSize().padding(paddingValues).padding(horizontal = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally) {
+              item {
+                Text(
+                    "Modify event details below:",
+                    style = MaterialTheme.typography.headlineSmall,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(vertical = 16.dp).testTag("edit_instruction_text"))
+              }
+
+              item {
+                ValidatingTextField(
+                    label = "Title",
+                    placeholder = "Enter event title",
+                    testTag = EditEventTestTags.TITLE_FIELD,
+                    value = title,
+                    onValueChange = { title = it },
+                    isError = title.isBlank(),
+                    errorMessage = "Title cannot be empty")
+              }
+
+              item {
+                ValidatingTextField(
+                    label = "Description",
+                    placeholder = "Enter event description",
+                    testTag = EditEventTestTags.DESCRIPTION_FIELD,
+                    value = description,
+                    onValueChange = { description = it },
+                    isError = description.isBlank(),
+                    errorMessage = "Description cannot be empty",
+                    singleLine = false,
+                    minLines = 4)
+              }
+
+              item {
+                Spacer(modifier = Modifier.height(12.dp))
+                DatePickerFieldToModal(
+                    label = "Start Date",
+                    modifier = Modifier.testTag(EditEventTestTags.START_DATE_FIELD),
+                    onDateSelected = { date ->
+                      startInstant = DateTimeUtils.instantWithDate(startInstant, date)
+                    },
+                    initialInstant = startInstant)
+              }
+
+              item {
+                DatePickerFieldToModal(
+                    label = "End Date",
+                    modifier = Modifier.testTag(EditEventTestTags.END_DATE_FIELD),
+                    onDateSelected = { date ->
+                      endInstant = DateTimeUtils.instantWithDate(endInstant, date)
+                    },
+                    initialInstant = endInstant)
+              }
+
+              item {
+                Spacer(modifier = Modifier.height(12.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically) {
+                      Text(text = "Start Time:", style = MaterialTheme.typography.titleMedium)
+                      Button(
+                          onClick = { showStartTimePicker = true },
+                          modifier = Modifier.testTag(EditEventTestTags.START_TIME_BUTTON)) {
+                            Text(DateTimeUtils.formatInstantToTime(startInstant))
+                          }
+                    }
+              }
+
+              item {
+                Spacer(modifier = Modifier.height(12.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically) {
+                      Text(text = "End Time:", style = MaterialTheme.typography.titleMedium)
+                      Button(
+                          onClick = { showEndTimePicker = true },
+                          modifier = Modifier.testTag(EditEventTestTags.END_TIME_BUTTON)) {
+                            Text(DateTimeUtils.formatInstantToTime(endInstant))
+                          }
+                    }
+              }
+
+              item {
+                Spacer(modifier = Modifier.height(12.dp))
+                ExposedDropdownMenuBox(
+                    expanded = expanded, onExpandedChange = { expanded = !expanded }) {
+                      OutlinedTextField(
+                          value = recurrence.formatString(),
+                          onValueChange = {},
+                          readOnly = true,
+                          label = { Text("Recurrence") },
+                          trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                          },
+                          modifier =
+                              Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable, true)
+                                  .fillMaxWidth()
+                                  .testTag(EditEventTestTags.RECURRENCE_DROPDOWN),
+                          shape = RoundedCornerShape(12.dp),
+                          colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors())
+
+                      ExposedDropdownMenu(
+                          expanded = expanded, onDismissRequest = { expanded = false }) {
+                            RecurrenceStatus.entries.forEach { option ->
+                              DropdownMenuItem(
+                                  text = { Text(option.name) },
+                                  onClick = {
+                                    recurrence = option
+                                    expanded = false
+                                  })
+                            }
+                          }
+                    }
+              }
+              item {
+                Spacer(modifier = Modifier.height(12.dp))
+
+                NotificationSection(
+                    notifications = notifications,
+                    onAddNotification = { notifications = notifications + "30 min before" },
+                    onRemoveNotification = { notif -> notifications = notifications - notif })
+              }
+
+              item {
+                Spacer(modifier = Modifier.height(12.dp))
+                Text("Participants:", style = MaterialTheme.typography.titleMedium)
+
+                OutlinedButton(
+                    onClick = onEditParticipants,
+                    modifier =
+                        Modifier.fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                            .testTag(EditEventTestTags.EDIT_PARTICIPANTS_BUTTON)) {
+                      Text("Edit Participants")
+                    }
+              }
+            }
+      },
+      bottomBar = {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(20.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly) {
+              OutlinedButton(
+                  onClick = onCancel,
+                  modifier =
+                      Modifier.size(width = 120.dp, height = 60.dp)
+                          .testTag(EditEventTestTags.CANCEL_BUTTON)) {
+                    Text("Cancel")
+                  }
+              Button(
+                  onClick = onSave,
+                  modifier =
+                      Modifier.size(width = 120.dp, height = 60.dp)
+                          .testTag(EditEventTestTags.SAVE_BUTTON),
+                  enabled = title.isNotBlank() && description.isNotBlank()) {
+                    Text("Save")
+                  }
+            }
+      })
+
+  // Time Pickers
+  if (showStartTimePicker) {
+    TimePickerDialog(
+            context,
+            { _, hour, minute ->
+              startInstant = DateTimeUtils.instantWithTime(startInstant, hour, minute)
+            },
+            DateTimeUtils.getInstantHour(startInstant),
+            DateTimeUtils.getInstantMinute(startInstant),
+            false)
+        .show()
+    showStartTimePicker = false
+  }
+
+  if (showEndTimePicker) {
+    TimePickerDialog(
+            context,
+            { _, hour, minute ->
+              endInstant = DateTimeUtils.instantWithTime(endInstant, hour, minute)
+            },
+            DateTimeUtils.getInstantHour(endInstant),
+            DateTimeUtils.getInstantMinute(endInstant),
+            false)
+        .show()
+    showEndTimePicker = false
+  }
+}
+
+/**
+ * NotificationSection Displays a list of reminders associated with the event, allowing users to add
+ * or remove notifications.
+ */
+@Composable
+fun NotificationSection(
+    notifications: List<String>,
+    onAddNotification: () -> Unit,
+    onRemoveNotification: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+  Column(modifier = modifier.fillMaxWidth().padding(vertical = 16.dp)) {
+    Text(
+        text = "Notify",
+        style = MaterialTheme.typography.titleMedium,
+        modifier = Modifier.padding(bottom = 8.dp))
+
+    // 当前所有提醒
+    notifications.forEach { notification ->
+      OutlinedButton(
+          onClick = { onRemoveNotification(notification) },
+          modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+          shape = RoundedCornerShape(12.dp),
+          border = ButtonDefaults.outlinedButtonBorder) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically) {
+                  Text(notification)
+                  Text("✕", color = MaterialTheme.colorScheme.error)
+                }
+          }
+    }
+
+    // “Add a notification” 按钮
+    OutlinedButton(
+        onClick = onAddNotification,
+        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+        shape = RoundedCornerShape(12.dp)) {
+          Row(
+              verticalAlignment = Alignment.CenterVertically,
+              horizontalArrangement = Arrangement.Center,
+              modifier = Modifier.fillMaxWidth()) {
+                Text("Add a notification")
+                Spacer(modifier = Modifier.width(4.dp))
+                Text("+", color = MaterialTheme.colorScheme.primary)
+              }
+        }
+  }
+}
+
+/**
+ * EditEventAttendantScreen
+ *
+ * Displays the list of available participants. Allows adding/removing attendees for the current
+ * event. Currently uses a hardcoded list for demo purposes.
+ */
+@Composable
+fun EditEventAttendantScreen(
+    editEventViewModel: EditEventViewModel = viewModel(),
+    onSave: () -> Unit = {},
+    onBack: () -> Unit = {},
+) {
+  val uiState by editEventViewModel.uiState.collectAsState()
+  val allParticipants = listOf("Alice", "Bob", "Charlie", "David", "Eve", "Frank")
+
+  Scaffold(
+      topBar = { TopTitleBar(title = "Edit Event Participants") },
+      content = { paddingValues ->
+        Column(
+            modifier = Modifier.fillMaxSize().padding(horizontal = 40.dp).padding(paddingValues),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceAround) {
+              Box(
+                  modifier = Modifier.weight(1f).fillMaxWidth(),
+                  contentAlignment = Alignment.Center) {
+                    Text("Select participants", style = MaterialTheme.typography.headlineMedium)
+                  }
+
+              Card(
+                  modifier = Modifier.weight(1f).fillMaxWidth().padding(vertical = 8.dp),
+                  shape = RoundedCornerShape(12.dp),
+                  elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
+                    LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+                      items(allParticipants) { name ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier =
+                                Modifier.fillMaxWidth()
+                                    .clickable {
+                                      if (uiState.participants.contains(name))
+                                          editEventViewModel.removeParticipant(name)
+                                      else editEventViewModel.addParticipant(name)
+                                    }
+                                    .padding(vertical = 8.dp)
+                                    .testTag("${EditEventTestTags.PARTICIPANTS_LIST}_$name")) {
+                              Checkbox(
+                                  checked = uiState.participants.contains(name),
+                                  onCheckedChange = { checked ->
+                                    if (checked) editEventViewModel.addParticipant(name)
+                                    else editEventViewModel.removeParticipant(name)
+                                  })
+                              Spacer(modifier = Modifier.width(8.dp))
+                              Text(name)
+                            }
+                      }
+                    }
+                  }
+            }
+      },
+      bottomBar = {
+        BottomNavigationButtons(
+            onNext = { onSave() },
+            onBack = onBack,
+            backButtonText = "Cancel",
+            nextButtonText = "Save",
+            canGoNext = true,
+            backButtonTestTag = EditEventTestTags.BACK_BUTTON,
+            nextButtonTestTag = EditEventTestTags.SAVE_BUTTON)
+      })
+}
+
+@Preview(showBackground = true)
+@Composable
+fun EditEventPreview() {
+  EditEventScreen(eventId = "E123")
+}
+
+@Preview(showBackground = true)
+@Composable
+fun EditEventAttendantScreenPreview() {
+  EditEventAttendantScreen(editEventViewModel = EditEventViewModel(), onBack = {}, onSave = {})
+}

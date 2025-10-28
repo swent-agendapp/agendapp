@@ -14,16 +14,23 @@ import com.android.sample.ui.settings.SettingsScreenTestTags.BACK_BUTTON
 object SettingsScreenTestTags {
   const val ROOT = "settings_screen"
   const val BACK_BUTTON = "back_button"
+  const val PROFILE_BUTTON = "profile_button"
 }
-/** Placeholder settings screen. */
+/** Settings screen with navigation to profile. */
 @Composable
-fun SettingsScreen(onNavigateBack: () -> Unit) {
+fun SettingsScreen(onNavigateBack: () -> Unit = {}, onNavigateToProfile: () -> Unit = {}) {
   Surface(modifier = Modifier.fillMaxSize().semantics { testTag = SettingsScreenTestTags.ROOT }) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
           Text("Settings Screen")
+          Spacer(modifier = Modifier.height(16.dp))
+          Button(
+              modifier = Modifier.testTag(SettingsScreenTestTags.PROFILE_BUTTON),
+              onClick = onNavigateToProfile) {
+                Text("Profile")
+              }
           Spacer(modifier = Modifier.height(16.dp))
           Button(modifier = Modifier.testTag(BACK_BUTTON), onClick = onNavigateBack) {
             Text("Back")

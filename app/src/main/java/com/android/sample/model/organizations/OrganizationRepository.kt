@@ -5,8 +5,8 @@ import com.android.sample.model.authentification.User
 /**
  * Repository interface for managing organizations.
  *
- * This interface defines methods for CRUD operations on organizations, with access control
- * enforced based on user roles (admins and members).
+ * This interface defines methods for CRUD operations on organizations, with access control enforced
+ * based on user roles (admins and members).
  */
 interface OrganizationRepository {
 

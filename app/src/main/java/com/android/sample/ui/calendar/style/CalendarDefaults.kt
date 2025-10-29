@@ -16,12 +16,14 @@ data object CalendarDefaults {
   val DefaultDateRange: LocalDateRange = run {
     val today = java.time.LocalDate.now()
     val initialStartOfWeek = today.with(java.time.DayOfWeek.MONDAY)
-    val initialEndOfWeek = today.with(java.time.DayOfWeek.FRIDAY)
+    // later : default view will be 5-days view, except if today is on the weekend
+    // for now :
+    val initialEndOfWeek = today.with(java.time.DayOfWeek.SUNDAY)
     LocalDateRange(initialStartOfWeek, initialEndOfWeek)
   }
 
   /** Default number of days in the work-week grid. */
-  const val DefaultDaysInWeek: Int = 5
+  const val DefaultDaysInWeek: Int = 7 // for now, later the default will be 5, except when today is on the weekend
 
   /** Derived total hours between start and end times. */
   val DefaultTotalHour = Duration.between(DefaultStartTime, DefaultEndTime).toHours().toInt()

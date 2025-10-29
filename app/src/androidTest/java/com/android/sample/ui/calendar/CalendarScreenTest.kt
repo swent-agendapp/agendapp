@@ -589,9 +589,9 @@ class CalendarScreenTest {
     setContentWithLocalRepo()
 
     val monday = LocalDate.now().with(DayOfWeek.MONDAY)
-    val expectedLabelsCurrent = (0 until 5).map { dowLabel(monday.plusDays(it.toLong())) }
+    val expectedLabelsCurrent = (0 until 7).map { dowLabel(monday.plusDays(it.toLong())) }
 
-    // Header labels should be visible for the current week (Mon ... Fri)
+    // Header labels should be visible for the current week (Mon ... Sun)
     expectedLabelsCurrent.forEach { label ->
       composeTestRule.onNodeWithText(label, substring = true).assertIsDisplayed()
     }
@@ -600,7 +600,7 @@ class CalendarScreenTest {
     swipeEventGrid(-2 * DefaultSwipeThreshold)
 
     val nextMonday = monday.plusWeeks(1)
-    val expectedLabelsNext = (0 until 5).map { dowLabel(nextMonday.plusDays(it.toLong())) }
+    val expectedLabelsNext = (0 until 7).map { dowLabel(nextMonday.plusDays(it.toLong())) }
 
     // Header labels should update to the next week
     expectedLabelsNext.forEach { label ->

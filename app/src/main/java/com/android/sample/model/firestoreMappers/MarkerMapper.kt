@@ -10,7 +10,7 @@ object MarkerMapper : FirestoreMapper<Marker> {
     val id = document.getString("id") ?: document.id
     val label = document.getString("label")
 
-    val locationObj = document.get("location") ?: return null
+    val locationObj = document["location"] ?: return null
     val location = LocationMapper.fromAny(locationObj) ?: return null
 
     return Marker(id = id, location = location, label = label)

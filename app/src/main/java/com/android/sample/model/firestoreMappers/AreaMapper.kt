@@ -10,7 +10,7 @@ object AreaMapper : FirestoreMapper<Area> {
     val id = document.getString("id") ?: document.id
     val label = document.getString("label")
 
-    val markersData = document.get("markers") as? List<*> ?: return null
+    val markersData = document["markers"] as? List<*> ?: return null
 
     val markers = markersData.mapNotNull { MarkerMapper.fromAny(it) }
 

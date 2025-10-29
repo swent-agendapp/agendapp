@@ -43,7 +43,8 @@ object CalendarScreenTestTags {
 @Composable
 fun CalendarScreen(
     calendarViewModel: CalendarViewModel = viewModel(),
-    onCreateEvent: () -> Unit = {}) {
+    onCreateEvent: () -> Unit = {}
+) {
   // initialize the week from monday to friday
   var currentDateRange by remember { mutableStateOf(DefaultDateRange) }
 

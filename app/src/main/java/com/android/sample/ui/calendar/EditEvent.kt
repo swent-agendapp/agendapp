@@ -42,12 +42,7 @@ object EditEventTestTags {
 }
 // Spacing data class for consistent spacing values
 // Will be useful
-data class Spacing(
-    val small: Dp = 8.dp,
-    val medium: Dp = 16.dp,
-    val large: Dp = 24.dp
-)
-
+data class Spacing(val small: Dp = 8.dp, val medium: Dp = 16.dp, val large: Dp = 24.dp)
 
 /**
  * Simple one-page Edit Event screen. This view uses placeholder state until EditEventViewModel is
@@ -143,7 +138,8 @@ fun EditEventScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically) {
-                      Text(text = stringResource(R.string.edit_event_start_time_label),
+                      Text(
+                          text = stringResource(R.string.edit_event_start_time_label),
                           style = MaterialTheme.typography.titleMedium)
                       Button(
                           onClick = { showStartTimePicker = true },
@@ -159,7 +155,8 @@ fun EditEventScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically) {
-                      Text(text = stringResource(R.string.edit_event_end_time_label),
+                      Text(
+                          text = stringResource(R.string.edit_event_end_time_label),
                           style = MaterialTheme.typography.titleMedium)
                       Button(
                           onClick = { showEndTimePicker = true },
@@ -212,7 +209,8 @@ fun EditEventScreen(
 
               item {
                 Spacer(modifier = Modifier.height(12.dp))
-                Text(text = stringResource(R.string.edit_event_participants_label),
+                Text(
+                    text = stringResource(R.string.edit_event_participants_label),
                     style = MaterialTheme.typography.titleMedium)
 
                 OutlinedButton(
@@ -305,7 +303,8 @@ fun NotificationSection(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically) {
                   Text(notification)
-                  Text(stringResource(R.string.edit_event_remove_notification_symbol),
+                  Text(
+                      stringResource(R.string.edit_event_remove_notification_symbol),
                       color = MaterialTheme.colorScheme.error)
                 }
           }
@@ -322,16 +321,15 @@ fun NotificationSection(
               modifier = Modifier.fillMaxWidth()) {
                 Text(stringResource(R.string.edit_event_add_notification_button))
                 Spacer(modifier = Modifier.width(4.dp))
-                Text(stringResource(R.string.edit_event_add_notification_symbol),
+                Text(
+                    stringResource(R.string.edit_event_add_notification_symbol),
                     color = MaterialTheme.colorScheme.primary)
               }
         }
   }
 }
 
-/**
- * EditEventAttendantScreen
- */
+/** EditEventAttendantScreen */
 @Composable
 fun EditEventAttendantScreen(
     editEventViewModel: EditEventViewModel = viewModel(),
@@ -342,7 +340,9 @@ fun EditEventAttendantScreen(
   val allParticipants = listOf("Alice", "Bob", "Charlie", "David", "Eve", "Frank")
 
   Scaffold(
-      topBar = { TopTitleBar(title = stringResource(R.string.edit_event_participants_screen_title)) },
+      topBar = {
+        TopTitleBar(title = stringResource(R.string.edit_event_participants_screen_title))
+      },
       content = { paddingValues ->
         Column(
             modifier = Modifier.fillMaxSize().padding(horizontal = 40.dp).padding(paddingValues),
@@ -351,7 +351,8 @@ fun EditEventAttendantScreen(
               Box(
                   modifier = Modifier.weight(1f).fillMaxWidth(),
                   contentAlignment = Alignment.Center) {
-                    Text(stringResource(R.string.edit_event_select_participants_text),
+                    Text(
+                        stringResource(R.string.edit_event_select_participants_text),
                         style = MaterialTheme.typography.headlineMedium)
                   }
 

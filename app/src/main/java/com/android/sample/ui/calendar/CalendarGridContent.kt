@@ -52,16 +52,16 @@ fun CalendarGridContent(
 
   val scrollState = rememberScrollState()
 
-    val density = LocalDensity.current
+  val density = LocalDensity.current
 
-    // Start the viewport around 08:00 on first composition, while allowing full-day scrolling
-    LaunchedEffect(Unit) {
-        if (scrollState.value == 0) {
-            val initialHour = 8
-            val offsetPx = with(density) { (metrics.rowHeightDp * initialHour).roundToPx() }
-            scrollState.scrollTo(offsetPx)
-        }
+  // Start the viewport around 08:00 on first composition, while allowing full-day scrolling
+  LaunchedEffect(Unit) {
+    if (scrollState.value == 0) {
+      val initialHour = 8
+      val offsetPx = with(density) { (metrics.rowHeightDp * initialHour).roundToPx() }
+      scrollState.scrollTo(offsetPx)
     }
+  }
 
   var now by remember { mutableStateOf(LocalTime.now()) }
   LaunchedEffect(Unit) {

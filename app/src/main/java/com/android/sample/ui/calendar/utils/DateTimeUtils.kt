@@ -75,8 +75,8 @@ object DateTimeUtils {
   }
 
   /**
-   * End of the given day as an exclusive bound (for example the start of the next day).
-   * Prefer using this exclusive bound for interval-overlap checks.
+   * End of the given day as an exclusive bound (for example the start of the next day). Prefer
+   * using this exclusive bound for interval-overlap checks.
    */
   fun dayEndInstantExclusive(date: LocalDate, zone: ZoneId = ZoneId.systemDefault()): Instant {
     return date.plusDays(1).atStartOfDay(zone).toInstant()

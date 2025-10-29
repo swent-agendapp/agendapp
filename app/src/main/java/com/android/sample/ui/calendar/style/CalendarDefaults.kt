@@ -23,7 +23,8 @@ data object CalendarDefaults {
   }
 
   /** Default number of days in the work-week grid. */
-  const val DefaultDaysInWeek: Int = 7 // for now, later the default will be 5, except when today is on the weekend
+  const val DefaultDaysInWeek: Int =
+      7 // for now, later the default will be 5, except when today is on the weekend
 
   /** Derived total hours between start and end times. */
   val DefaultTotalHour = Duration.between(DefaultStartTime, DefaultEndTime).toHours().toInt()

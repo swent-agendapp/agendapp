@@ -5,20 +5,20 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.android.sample.model.calendar.Event
 import java.time.Duration
-import java.time.LocalTime
 import java.time.LocalDate
+import java.time.LocalTime
 
 /** Utility functions to compute layout positions and sizes for event blocks. */
 object EventPositionUtil {
   /**
    * Computes the top offset and height (both in [Dp]) for the *visible portion* of a given [event]
-   * in the day column identified by [currentDate], within the visible time window
-   * [startTime, endTime).
+   * in the day column identified by [currentDate], within the visible time window [startTime,
+   * endTime).
    *
    * This method correctly handles events that:
-   *  - start before the visible window and/or end after it (are clipped),
-   *  - span across midnight into the next/previous day,
-   *  - have zero or negative intersections after filtering (safeguarded).
+   * - start before the visible window and/or end after it (are clipped),
+   * - span across midnight into the next/previous day,
+   * - have zero or negative intersections after filtering (safeguarded).
    *
    * The computation is performed entirely in Instants to avoid timezone and day-boundary pitfalls.
    *
@@ -40,7 +40,8 @@ object EventPositionUtil {
     val visibleStartInstant = DateTimeUtils.localDateTimeToInstant(currentDate, startTime)
     val visibleEndInstantExclusive = DateTimeUtils.localDateTimeToInstant(currentDate, endTime)
 
-    // Intersect [event.startDate, event.endDate) with [visibleStartInstant, visibleEndInstantExclusive)
+    // Intersect [event.startDate, event.endDate) with [visibleStartInstant,
+    // visibleEndInstantExclusive)
     val segmentStart = maxOf(event.startDate, visibleStartInstant)
     val segmentEnd = minOf(event.endDate, visibleEndInstantExclusive)
 
@@ -50,14 +51,15 @@ object EventPositionUtil {
     }
 
     // Compute the vertical offset from the top of the visible window in minutes
-    val startMinutes = Duration.between(visibleStartInstant, segmentStart).toMinutes()
-        .coerceAtLeast(0) // for safety
-        .toInt()
+    val startMinutes =
+        Duration.between(visibleStartInstant, segmentStart)
+            .toMinutes()
+            .coerceAtLeast(0) // for safety
+            .toInt()
 
     // Compute the height in minutes for the clipped segment only
-    val durationMinutes = Duration.between(segmentStart, segmentEnd).toMinutes()
-        .coerceAtLeast(0)
-        .toInt()
+    val durationMinutes =
+        Duration.between(segmentStart, segmentEnd).toMinutes().coerceAtLeast(0).toInt()
 
     // Convert minutes to dp
     val topOffset = with(density) { (startMinutes /* Later : * scalingFactor */).dp }

@@ -37,9 +37,11 @@ fun EventsPane(
     effectiveEndTime: LocalTime = CalendarDefaults.DefaultEndTime,
 ) {
   days.forEachIndexed { dayIndex, date ->
-      val dayStart = DateTimeUtils.dayStartInstant(date)
-      val dayEndExclusive = DateTimeUtils.dayEndInstantExclusive(date) // do not accept event of the day before finishing at 00:00
-      val eventsForDay = events.filter { it.endDate > dayStart && it.startDate < dayEndExclusive }
+    val dayStart = DateTimeUtils.dayStartInstant(date)
+    val dayEndExclusive =
+        DateTimeUtils.dayEndInstantExclusive(
+            date) // do not accept event of the day before finishing at 00:00
+    val eventsForDay = events.filter { it.endDate > dayStart && it.startDate < dayEndExclusive }
     if (eventsForDay.isNotEmpty()) {
       Box(
           modifier =

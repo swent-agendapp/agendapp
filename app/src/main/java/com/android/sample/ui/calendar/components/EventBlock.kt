@@ -26,10 +26,10 @@ import com.android.sample.model.calendar.Event
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.style.defaultGridContentDimensions
+import com.android.sample.ui.calendar.utils.DateTimeUtils
 import com.android.sample.ui.calendar.utils.EventPositionUtil
 import java.time.LocalDate
 import java.time.LocalTime
-import com.android.sample.ui.calendar.utils.DateTimeUtils
 
 /**
  * Draws visual blocks for a list of events within a single day column. Events are clipped to the
@@ -47,22 +47,22 @@ import com.android.sample.ui.calendar.utils.DateTimeUtils
 fun EventBlock(
     modifier: Modifier = Modifier,
     events: List<Event> = listOf(),
-    currentDate: LocalDate, // used to compute the visible portion of events that may span multiple days
+    currentDate:
+        LocalDate, // used to compute the visible portion of events that may span multiple days
     startTime: LocalTime = CalendarDefaults.DefaultStartTime,
     endTime: LocalTime = CalendarDefaults.DefaultEndTime,
     columnWidthDp: Dp = defaultGridContentDimensions().defaultColumnWidthDp
 ) {
   // Later : place this "filter" logic in "EventOverlapHandling", which will call this EventBlock
   // Filter events for the current day and time range
-  val visibleEvents =
-      run {
-        val visibleStartInstant = DateTimeUtils.localDateTimeToInstant(currentDate, startTime)
-        val visibleEndInstantExclusive = DateTimeUtils.localDateTimeToInstant(currentDate, endTime)
-        events.filter { event ->
-          // Overlap on instants: [event.start, event.end[ AND [visibleStart, visibleEnd[ non-empty
-          event.endDate > visibleStartInstant && event.startDate < visibleEndInstantExclusive
-        }
-      }
+  val visibleEvents = run {
+    val visibleStartInstant = DateTimeUtils.localDateTimeToInstant(currentDate, startTime)
+    val visibleEndInstantExclusive = DateTimeUtils.localDateTimeToInstant(currentDate, endTime)
+    events.filter { event ->
+      // Overlap on instants: [event.start, event.end[ AND [visibleStart, visibleEnd[ non-empty
+      event.endDate > visibleStartInstant && event.startDate < visibleEndInstantExclusive
+    }
+  }
 
   if (visibleEvents.isEmpty()) return
 
@@ -132,8 +132,8 @@ fun EventBlock(
 
           // Time information
           val timeText =
-            "${DateTimeUtils.formatInstantToTime(event.startDate)} - " +
-               DateTimeUtils.formatInstantToTime(event.endDate)
+              "${DateTimeUtils.formatInstantToTime(event.startDate)} - " +
+                  DateTimeUtils.formatInstantToTime(event.endDate)
 
           Text(
               text = timeText,

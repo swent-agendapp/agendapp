@@ -21,7 +21,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.ui.calendar.data.LocalDateRange
-import com.android.sample.ui.calendar.mockData.getMockEvents
 import com.android.sample.ui.calendar.style.CalendarDefaults.DefaultDateRange
 import com.android.sample.ui.calendar.utils.DateTimeUtils.localDateTimeToInstant
 import java.time.LocalTime
@@ -53,15 +52,13 @@ fun CalendarScreen(
   val events = uiState.events
 
   // Fetch events when the screen is recomposed
-  LaunchedEffect(Unit) {
-      loadEventsForDateRange(calendarViewModel, currentDateRange)
-  }
+  LaunchedEffect(Unit) { loadEventsForDateRange(calendarViewModel, currentDateRange) }
 
   // Show error message if fetching events fails
   LaunchedEffect(uiState.errorMsg) {
     uiState.errorMsg?.let { message ->
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-        calendarViewModel.clearErrorMsg()
+      Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+      calendarViewModel.clearErrorMsg()
     }
   }
 
@@ -112,15 +109,14 @@ fun CalendarScreen(
 /**
  * Loads the calendar events for a given date range using the provided [CalendarViewModel].
  *
- * Converts the [LocalDateRange] into corresponding [Instant] values covering
- * the full duration from start of the first day (midnight) to the end of the last day.
+ * Converts the [LocalDateRange] into corresponding [Instant] values covering the full duration from
+ * start of the first day (midnight) to the end of the last day.
  */
 private fun loadEventsForDateRange(
     calendarViewModel: CalendarViewModel,
     dateRange: LocalDateRange
 ) {
-    calendarViewModel.loadEventsBetween(
-        localDateTimeToInstant(dateRange.start, LocalTime.MIDNIGHT),
-        localDateTimeToInstant(dateRange.endInclusive, LocalTime.MAX)
-    )
+  calendarViewModel.loadEventsBetween(
+      localDateTimeToInstant(dateRange.start, LocalTime.MIDNIGHT),
+      localDateTimeToInstant(dateRange.endInclusive, LocalTime.MAX))
 }

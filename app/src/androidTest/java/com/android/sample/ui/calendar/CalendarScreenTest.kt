@@ -11,8 +11,8 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performTouchInput
-import androidx.compose.ui.test.swipeUp
 import androidx.compose.ui.test.swipeDown
+import androidx.compose.ui.test.swipeUp
 import androidx.lifecycle.HasDefaultViewModelProviderFactory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -42,13 +42,16 @@ class CalendarScreenTest {
 
   /** Converts a (LocalDate, LocalTime) to an Instant in the system zone for concise test setup. */
   private fun at(date: LocalDate, time: LocalTime) =
-      date.atTime(time) // Build a LocalDateTime
+      date
+          .atTime(time) // Build a LocalDateTime
           .atZone(ZoneId.systemDefault()) // Attach the system zone
           .toInstant() // Convert to Instant
   /** Returns the tag of the vertical scrollable area that hosts the hours grid. */
   private fun scrollAreaTag() = CalendarScreenTestTags.SCROLL_AREA
 
-  /** Returns true if the node with [tag] intersects the root viewport (no assertions/exceptions). */
+  /**
+   * Returns true if the node with [tag] intersects the root viewport (no assertions/exceptions).
+   */
   private fun isInViewport(tag: String): Boolean {
     val node = composeTestRule.onNodeWithTag(tag).fetchSemanticsNode()
     val root = composeTestRule.onRoot().fetchSemanticsNode()
@@ -61,9 +64,14 @@ class CalendarScreenTest {
 
   /**
    * Scrolls vertically in a bounded way until the node with [tag] intersects the root viewport,
-   * then performs a single display assertion. This avoids depending on production auto-scroll timing.
+   * then performs a single display assertion. This avoids depending on production auto-scroll
+   * timing.
    */
-  private fun scrollUntilVisible(tag: String, maxSwipesPerDirection: Int = 1) { // For the now, one swipe is enough to see the whole screen, we can increase it when zooming weill make the grid very big
+  private fun scrollUntilVisible(
+      tag: String,
+      maxSwipesPerDirection: Int = 1
+  ) { // For the now, one swipe is enough to see the whole screen, we can increase it when zooming
+      // weill make the grid very big
     // Fast path: already visible
     if (isInViewport(tag)) {
       composeTestRule.onNodeWithTag(tag).assertIsDisplayed()
@@ -93,112 +101,136 @@ class CalendarScreenTest {
   }
 
   /**
-   * Builds a deterministic set of events spanning previous, current, and next weeks.
-   * Used to verify that CalendarScreen filters by date range and reacts to swipe gestures.
+   * Builds a deterministic set of events spanning previous, current, and next weeks. Used to verify
+   * that CalendarScreen filters by date range and reacts to swipe gestures.
    */
   private fun buildTestEvents(): List<Event> {
-      // Pick Monday of this week as the reference anchor
-      val thisWeekMonday = LocalDate.now().with(DayOfWeek.MONDAY)
+    // Pick Monday of this week as the reference anchor
+    val thisWeekMonday = LocalDate.now().with(DayOfWeek.MONDAY)
 
-      // Events that belong to the CURRENT visible week
-      val current = listOf(
-          // Current week
-          createEvent(
-              title = "First Event",
-              startDate = at(thisWeekMonday.plusDays(1), LocalTime.of(9, 30)), // Tue 09:30–11:30
-              endDate = at(thisWeekMonday.plusDays(1), LocalTime.of(9, 30)).plus(Duration.ofHours(2)),
-              cloudStorageStatuses = emptySet(),
-              participants = emptySet(),
-          ),
-          createEvent(
-              title = "Nice Event",
-              startDate = at(thisWeekMonday.plusDays(2), LocalTime.of(14, 0)), // Wed 14:00–18:00
-              endDate = at(thisWeekMonday.plusDays(2), LocalTime.of(14, 0)).plus(Duration.ofHours(4)),
-              cloudStorageStatuses = emptySet(),
-              participants = emptySet(),
-          ),
-          createEvent(
-              title = "Top Event",
-              startDate = at(thisWeekMonday.plusDays(3), LocalTime.of(11, 0)), // Thu 11:00–13:00
-              endDate = at(thisWeekMonday.plusDays(3), LocalTime.of(11, 0)).plus(Duration.ofHours(2)),
-              cloudStorageStatuses = emptySet(),
-              participants = emptySet(),
-          ),
-      )
+    // Events that belong to the CURRENT visible week
+    val current =
+        listOf(
+            // Current week
+            createEvent(
+                title = "First Event",
+                startDate = at(thisWeekMonday.plusDays(1), LocalTime.of(9, 30)), // Tue 09:30–11:30
+                endDate =
+                    at(thisWeekMonday.plusDays(1), LocalTime.of(9, 30)).plus(Duration.ofHours(2)),
+                cloudStorageStatuses = emptySet(),
+                participants = emptySet(),
+            ),
+            createEvent(
+                title = "Nice Event",
+                startDate = at(thisWeekMonday.plusDays(2), LocalTime.of(14, 0)), // Wed 14:00–18:00
+                endDate =
+                    at(thisWeekMonday.plusDays(2), LocalTime.of(14, 0)).plus(Duration.ofHours(4)),
+                cloudStorageStatuses = emptySet(),
+                participants = emptySet(),
+            ),
+            createEvent(
+                title = "Top Event",
+                startDate = at(thisWeekMonday.plusDays(3), LocalTime.of(11, 0)), // Thu 11:00–13:00
+                endDate =
+                    at(thisWeekMonday.plusDays(3), LocalTime.of(11, 0)).plus(Duration.ofHours(2)),
+                cloudStorageStatuses = emptySet(),
+                participants = emptySet(),
+            ),
+        )
 
-      // Events that belong to the NEXT week (should appear after swipe-left)
-      val next = listOf(
-          // Next week
-          createEvent(
-              title = "Next Event",
-              startDate = at(thisWeekMonday.plusWeeks(1), LocalTime.of(10, 0)), // Mon 10:00–13:00
-              endDate = at(thisWeekMonday.plusWeeks(1), LocalTime.of(10, 0)).plus(Duration.ofHours(3)),
-              cloudStorageStatuses = emptySet(),
-              participants = emptySet(),
-          ),
-          createEvent(
-              title = "Later Event",
-              startDate = at(thisWeekMonday.plusWeeks(1).plusDays(3), LocalTime.of(16, 0)), // Thu
-              endDate = at(thisWeekMonday.plusWeeks(1).plusDays(3), LocalTime.of(16, 0)).plus(Duration.ofHours(4)),
-              cloudStorageStatuses = emptySet(),
-              participants = emptySet(),
-          ),
-      )
+    // Events that belong to the NEXT week (should appear after swipe-left)
+    val next =
+        listOf(
+            // Next week
+            createEvent(
+                title = "Next Event",
+                startDate = at(thisWeekMonday.plusWeeks(1), LocalTime.of(10, 0)), // Mon 10:00–13:00
+                endDate =
+                    at(thisWeekMonday.plusWeeks(1), LocalTime.of(10, 0)).plus(Duration.ofHours(3)),
+                cloudStorageStatuses = emptySet(),
+                participants = emptySet(),
+            ),
+            createEvent(
+                title = "Later Event",
+                startDate = at(thisWeekMonday.plusWeeks(1).plusDays(3), LocalTime.of(16, 0)), // Thu
+                endDate =
+                    at(thisWeekMonday.plusWeeks(1).plusDays(3), LocalTime.of(16, 0))
+                        .plus(Duration.ofHours(4)),
+                cloudStorageStatuses = emptySet(),
+                participants = emptySet(),
+            ),
+        )
 
-      // Events that belong to the PREVIOUS week (should appear after swipe-right)
-      val previous = listOf(
-          // Previous week
-          createEvent(
-              title = "Previous Event",
-              startDate = at(thisWeekMonday.minusWeeks(1).plusDays(1), LocalTime.of(17, 0)), // Tue
-              endDate = at(thisWeekMonday.minusWeeks(1).plusDays(1), LocalTime.of(17, 0)).plus(Duration.ofHours(2)),
-              cloudStorageStatuses = emptySet(),
-              participants = emptySet(),
-          ),
-          createEvent(
-              title = "Earlier Event",
-              startDate = at(thisWeekMonday.minusWeeks(1).plusDays(4), LocalTime.of(8, 0)), // Fri 8–12
-              endDate = at(thisWeekMonday.minusWeeks(1).plusDays(4), LocalTime.of(8, 0)).plus(Duration.ofHours(4)),
-              cloudStorageStatuses = emptySet(),
-              participants = emptySet(),
-          ),
-      )
+    // Events that belong to the PREVIOUS week (should appear after swipe-right)
+    val previous =
+        listOf(
+            // Previous week
+            createEvent(
+                title = "Previous Event",
+                startDate =
+                    at(thisWeekMonday.minusWeeks(1).plusDays(1), LocalTime.of(17, 0)), // Tue
+                endDate =
+                    at(thisWeekMonday.minusWeeks(1).plusDays(1), LocalTime.of(17, 0))
+                        .plus(Duration.ofHours(2)),
+                cloudStorageStatuses = emptySet(),
+                participants = emptySet(),
+            ),
+            createEvent(
+                title = "Earlier Event",
+                startDate =
+                    at(thisWeekMonday.minusWeeks(1).plusDays(4), LocalTime.of(8, 0)), // Fri 8–12
+                endDate =
+                    at(thisWeekMonday.minusWeeks(1).plusDays(4), LocalTime.of(8, 0))
+                        .plus(Duration.ofHours(4)),
+                cloudStorageStatuses = emptySet(),
+                participants = emptySet(),
+            ),
+        )
 
-      // Merge in this order so tests can check visibility by title across ranges
-      return previous + current + next
+    // Merge in this order so tests can check visibility by title across ranges
+    return previous + current + next
   }
 
-  /** Inserts [events] into the given in-memory local repository.
-   *  Preload the repo with our test events before composing the screen. */
+  /**
+   * Inserts [events] into the given in-memory local repository. Preload the repo with our test
+   * events before composing the screen.
+   */
   private fun populateRepo(repo: EventRepositoryLocal, events: List<Event>) = runBlocking {
     // Synchronously insert events so data is ready when the UI composes
     events.forEach { repo.insertEvent(it) }
   }
 
-  /** Minimal factory that builds a `CalendarViewModel` backed by [repo].
-   *  Create the ViewModel using our test repository. */
+  /**
+   * Minimal factory that builds a `CalendarViewModel` backed by [repo]. Create the ViewModel using
+   * our test repository.
+   */
   private class CalendarVMFactory(private val repo: EventRepository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T = when {
-      // Provide CalendarViewModel wired to the local repo for tests
-      modelClass.isAssignableFrom(CalendarViewModel::class.java) -> CalendarViewModel(repo) as T
-      else -> error("Unknown ViewModel class: $modelClass")
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T =
+        when {
+          // Provide CalendarViewModel wired to the local repo for tests
+          modelClass.isAssignableFrom(CalendarViewModel::class.java) -> CalendarViewModel(repo) as T
+          else -> error("Unknown ViewModel class: $modelClass")
+        }
   }
 
-  /** Lightweight `ViewModelStoreOwner` exposing [defaultViewModelProviderFactory] to Compose.
-   *  Plug our factory so `viewModel()` in CalendarScreen gets the right instance. */
+  /**
+   * Lightweight `ViewModelStoreOwner` exposing [defaultViewModelProviderFactory] to Compose. Plug
+   * our factory so `viewModel()` in CalendarScreen gets the right instance.
+   */
   private class TestOwner(override val defaultViewModelProviderFactory: ViewModelProvider.Factory) :
       ViewModelStoreOwner, HasDefaultViewModelProviderFactory {
     // Hold ViewModels created during the test composition
     private val store = ViewModelStore()
-    override val viewModelStore: ViewModelStore get() = store
+    override val viewModelStore: ViewModelStore
+      get() = store
   }
 
   /**
    * Composes `CalendarScreen()` with an in-memory local repository pre-populated with [events].
-   * Keeps `CalendarScreen` and its `ViewModel` unchanged by providing a custom `ViewModelStoreOwner`
-   * exposing a default factory that builds the real `CalendarViewModel` with our local repo.
-   * Munt the real screen, but make it read from our test data. */
+   * Keeps `CalendarScreen` and its `ViewModel` unchanged by providing a custom
+   * `ViewModelStoreOwner` exposing a default factory that builds the real `CalendarViewModel` with
+   * our local repo. Munt the real screen, but make it read from our test data.
+   */
   private fun setContentWithLocalRepo(events: List<Event> = buildTestEvents()) {
     // Create an in-memory repository instance for tests
     val repo = EventRepositoryLocal()
@@ -208,9 +240,7 @@ class CalendarScreenTest {
     val owner = TestOwner(CalendarVMFactory(repo))
     composeTestRule.setContent {
       // Compose CalendarScreen, viewModel() will resolve using our TestOwner factory
-      CompositionLocalProvider(LocalViewModelStoreOwner provides owner) {
-        CalendarScreen()
-      }
+      CompositionLocalProvider(LocalViewModelStoreOwner provides owner) { CalendarScreen() }
     }
   }
 
@@ -218,8 +248,9 @@ class CalendarScreenTest {
    * Performs a horizontal swipe gesture on the calendar event grid.
    *
    * @param deltaX The horizontal drag in pixels. Use a **negative** value to swipe **left**
-   * (navigate to next range) and a **positive** value to swipe **right** (previous range).
-   * In tests we typically pass `±2 * DefaultSwipeThreshold` to guarantee crossing the threshold. */
+   *   (navigate to next range) and a **positive** value to swipe **right** (previous range). In
+   *   tests we typically pass `±2 * DefaultSwipeThreshold` to guarantee crossing the threshold.
+   */
   private fun swipeEventGrid(deltaX: Float) {
     composeTestRule
         .onNodeWithTag(CalendarScreenTestTags.EVENT_GRID)
@@ -245,7 +276,9 @@ class CalendarScreenTest {
         }
   }
 
-  /** Slow swipe: multiple small drags that sum to the target delta, to verify cumulative handling. */
+  /**
+   * Slow swipe: multiple small drags that sum to the target delta, to verify cumulative handling.
+   */
   private fun swipeEventGridSlow(totalDeltaX: Float, steps: Int = 8) {
     // Break the total distance into small steps to simulate a slow gesture
     val step = totalDeltaX / steps
@@ -517,7 +550,6 @@ class CalendarScreenTest {
   private fun dowLabel(date: LocalDate, locale: Locale = Locale.ENGLISH): String =
       date.format(DateTimeFormatter.ofPattern("EEE", locale))
 
-
   @Test
   fun calendarGridContent_whenSwipeJustBelowThreshold_doesNotChangeWeek() {
     // Arrange & Act: CalendarScreen with local repo test data
@@ -526,14 +558,18 @@ class CalendarScreenTest {
     // current week, should be displayed
     scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
     // next week, should not be displayed
-    composeTestRule.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event").assertIsNotDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event")
+        .assertIsNotDisplayed()
 
     // swipe left just below the threshold => should NOT trigger onSwipeLeft
     swipeEventGrid(-(DefaultSwipeThreshold - 1f))
 
     // Still current week
     scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
-    composeTestRule.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event").assertIsNotDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event")
+        .assertIsNotDisplayed()
   }
 
   @Test
@@ -546,7 +582,9 @@ class CalendarScreenTest {
 
     // Require a swipe gesture strictly greater than threshold => remain on current week
     scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
-    composeTestRule.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event").assertIsNotDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event")
+        .assertIsNotDisplayed()
   }
 
   @Test
@@ -570,7 +608,9 @@ class CalendarScreenTest {
 
     // Baseline: current week visible, next week not visible
     scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
-    composeTestRule.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event").assertIsNotDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event")
+        .assertIsNotDisplayed()
 
     // Vertical gesture only => must not change week
     swipeEventGridVertical(3 * DefaultSwipeThreshold)
@@ -580,7 +620,9 @@ class CalendarScreenTest {
 
     // Still current week
     scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
-    composeTestRule.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event").assertIsNotDisplayed()
+    composeTestRule
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event")
+        .assertIsNotDisplayed()
   }
 
   @Test

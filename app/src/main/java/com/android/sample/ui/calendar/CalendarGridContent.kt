@@ -15,13 +15,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import com.android.sample.model.calendar.Event
 import com.android.sample.ui.calendar.components.DayHeaderRow
 import com.android.sample.ui.calendar.components.EventsPane
 import com.android.sample.ui.calendar.components.GridCanvas
 import com.android.sample.ui.calendar.components.NowIndicatorLine
 import com.android.sample.ui.calendar.components.TimeAxisColumn
 import com.android.sample.ui.calendar.data.LocalDateRange
-import com.android.sample.ui.calendar.mockData.MockEvent
 import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.style.GridContentStyle
 import com.android.sample.ui.calendar.style.defaultGridContentStyle
@@ -43,7 +43,7 @@ import kotlinx.coroutines.delay
 fun CalendarGridContent(
     modifier: Modifier = Modifier,
     dateRange: LocalDateRange = CalendarDefaults.DefaultDateRange,
-    events: List<MockEvent> = listOf(),
+    events: List<Event> = listOf(),
     style: GridContentStyle = defaultGridContentStyle()
     // Later : receive onEventClick and onEventLongPress
 ) {

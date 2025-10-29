@@ -106,10 +106,10 @@ class CalendarEventsTest {
   }
 
   @Test
-  fun calendarGridContent_showsEventBlocks_forEveryWorkingDays() {
+  fun calendarGridContent_showsEventBlocks_forEveryDayOfWeek() {
     val events =
         listOf(
-            // Event on Monday [9:00 - 10:00] — baseline per working day
+            // Event on Monday [9:00 - 10:00]
             createEvent(
                 title = "Monday Event",
                 startDate = at(LocalDate.now().with(DayOfWeek.MONDAY), LocalTime.of(9, 0)),
@@ -117,7 +117,7 @@ class CalendarEventsTest {
                 cloudStorageStatuses = emptySet(),
                 participants = emptySet(),
             ),
-            // Event on Tuesday [9:00 - 10:00] — baseline per working day
+            // Event on Tuesday [9:00 - 10:00]
             createEvent(
                 title = "Tuesday Event",
                 startDate = at(LocalDate.now().with(DayOfWeek.TUESDAY), LocalTime.of(9, 0)),
@@ -125,7 +125,7 @@ class CalendarEventsTest {
                 cloudStorageStatuses = emptySet(),
                 participants = emptySet(),
             ),
-            // Event on Wednesday [9:00 - 10:00] — baseline per working day
+            // Event on Wednesday [9:00 - 10:00]
             createEvent(
                 title = "Wednesday Event",
                 startDate = at(LocalDate.now().with(DayOfWeek.WEDNESDAY), LocalTime.of(9, 0)),
@@ -133,7 +133,7 @@ class CalendarEventsTest {
                 cloudStorageStatuses = emptySet(),
                 participants = emptySet(),
             ),
-            // Event on Thursday [9:00 - 10:00] — baseline per working day
+            // Event on Thursday [9:00 - 10:00]
             createEvent(
                 title = "Thursday Event",
                 startDate = at(LocalDate.now().with(DayOfWeek.THURSDAY), LocalTime.of(9, 0)),
@@ -141,7 +141,7 @@ class CalendarEventsTest {
                 cloudStorageStatuses = emptySet(),
                 participants = emptySet(),
             ),
-            // Event on Friday [9:00 - 10:00] — baseline per working day
+            // Event on Friday [9:00 - 10:00]
             createEvent(
                 title = "Friday Event",
                 startDate = at(LocalDate.now().with(DayOfWeek.FRIDAY), LocalTime.of(9, 0)),
@@ -149,15 +149,33 @@ class CalendarEventsTest {
                 cloudStorageStatuses = emptySet(),
                 participants = emptySet(),
             ),
+            // Event on Saturday [9:00 - 10:00]
+            createEvent(
+                title = "Saturday Event",
+                startDate = at(LocalDate.now().with(DayOfWeek.SATURDAY), LocalTime.of(9, 0)),
+                endDate = at(LocalDate.now().with(DayOfWeek.SATURDAY), LocalTime.of(9, 0)).plus(Duration.ofHours(1)),
+                cloudStorageStatuses = emptySet(),
+                participants = emptySet(),
+            ),
+            // Event on Sunday [9:00 - 10:00]
+            createEvent(
+                title = "Sunday Event",
+                startDate = at(LocalDate.now().with(DayOfWeek.SUNDAY), LocalTime.of(9, 0)),
+                endDate = at(LocalDate.now().with(DayOfWeek.SUNDAY), LocalTime.of(9, 0)).plus(Duration.ofHours(1)),
+                cloudStorageStatuses = emptySet(),
+                participants = emptySet(),
+            ),
         )
 
     compose.setContent { CalendarGridContent(events = events) }
 
-      scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Monday Event")
-      scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Tuesday Event")
-      scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Wednesday Event")
-      scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Thursday Event")
-      scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Friday Event")
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Monday Event")
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Tuesday Event")
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Wednesday Event")
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Thursday Event")
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Friday Event")
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Saturday Event")
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Sunday Event")
   }
 
   @Test
@@ -194,21 +212,23 @@ class CalendarEventsTest {
 
   @Test
   fun calendarGridContent_doesNotShowsEventBlocks_whenEventsRightNextToDateRange() {
+    val monday = LocalDate.now().with(DayOfWeek.MONDAY)
+
     val events =
         listOf(
-            // Event on Sunday [9:00 - 10:00] — adjacent day before visible range
+            // Event on previous Sunday [9:00 - 10:00] — adjacent day before visible range
             createEvent(
-                title = "Last Sunday Event",
-                startDate = at(LocalDate.now().with(DayOfWeek.MONDAY.minus(1)), LocalTime.of(9, 0)),
-                endDate = at(LocalDate.now().with(DayOfWeek.MONDAY.minus(1)), LocalTime.of(9, 0)).plus(Duration.ofHours(1)),
+                title = "Previous Sunday Event",
+                startDate = at(monday.minusDays(1), LocalTime.of(9, 0)),
+                endDate = at(monday.minusDays(1), LocalTime.of(9, 0)).plus(Duration.ofHours(1)),
                 cloudStorageStatuses = emptySet(),
                 participants = emptySet(),
             ),
-            // Event on Saturday [9:00 - 10:00] — adjacent day after visible range
+            // Event on next Monday [9:00 - 10:00] — adjacent day after visible range
             createEvent(
-                title = "Next Saturday Event",
-                startDate = at(LocalDate.now().with(DayOfWeek.FRIDAY.plus(1)), LocalTime.of(9, 0)),
-                endDate = at(LocalDate.now().with(DayOfWeek.FRIDAY.plus(1)), LocalTime.of(9, 0)).plus(Duration.ofHours(1)),
+                title = "Next Monday Event",
+                startDate = at(monday.plusDays(7), LocalTime.of(9, 0)),
+                endDate = at(monday.plusDays(7), LocalTime.of(9, 0)).plus(Duration.ofHours(1)),
                 cloudStorageStatuses = emptySet(),
                 participants = emptySet(),
             ),
@@ -217,10 +237,10 @@ class CalendarEventsTest {
     compose.setContent { CalendarGridContent(events = events) }
 
     compose
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Last Sunday Event")
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Previous Sunday Event")
         .assertIsNotDisplayed()
     compose
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Saturday Event")
+        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Monday Event")
         .assertIsNotDisplayed()
   }
 

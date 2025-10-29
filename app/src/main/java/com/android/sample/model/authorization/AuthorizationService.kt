@@ -1,13 +1,19 @@
 package com.android.sample.model.authorization
 
-import com.android.sample.model.organization.EmployeeRepositoryProvider
+import com.android.sample.model.organization.EmployeeRepository
+import com.android.sample.model.organization.EmployeeRepositoryFirebase
 import com.android.sample.model.organization.Role
+import com.github.se.bootcamp.model.authentication.AuthRepositoryFirebase
+import com.google.firebase.firestore.FirebaseFirestore
 
 /** Simple authorization helper */
-class AuthorizationService {
-
+class AuthorizationService(
+    private val repo: EmployeeRepository =
+        EmployeeRepositoryFirebase(
+            db = FirebaseFirestore.getInstance(), authRepository = AuthRepositoryFirebase())
+) {
   /** @return The current user's Role, or null */
-  suspend fun getMyRole(): Role? = EmployeeRepositoryProvider.repository.getMyRole()
+  suspend fun getMyRole(): Role? = repo.getMyRole()
 
   /** @return true if the current user is ADMIN */
   suspend fun canEditCourses(): Boolean = getMyRole() == Role.ADMIN

@@ -148,7 +148,7 @@ jobs:
           api-level: 34
           target: google_apis
           arch: x86_64
-          force-avd-creation: true
+          force-avd-creation: false
           profile: pixel_6
           emulator-boot-timeout: 120000
           emulator-options: >
@@ -163,7 +163,7 @@ jobs:
           disable-animations: true
           script: |
             echo "Starting connected tests..."
-            ./gradlew connectedCheck --build-cache
+            ./gradlew connectedCheck --parallel --build-cache
 
       # This step generates the coverage report which will be uploaded to sonar
       - name: Generate Coverage Report

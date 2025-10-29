@@ -14,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import com.android.sample.model.calendar.Event
 import com.android.sample.ui.calendar.components.DayHeaderRow
@@ -50,6 +51,17 @@ fun CalendarGridContent(
   val metrics = rememberWeekViewMetrics(dateRange)
 
   val scrollState = rememberScrollState()
+
+    val density = LocalDensity.current
+
+    // Start the viewport around 08:00 on first composition, while allowing full-day scrolling
+    LaunchedEffect(Unit) {
+        if (scrollState.value == 0) {
+            val initialHour = 8
+            val offsetPx = with(density) { (metrics.rowHeightDp * initialHour).roundToPx() }
+            scrollState.scrollTo(offsetPx)
+        }
+    }
 
   var now by remember { mutableStateOf(LocalTime.now()) }
   LaunchedEffect(Unit) {

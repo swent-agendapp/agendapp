@@ -9,7 +9,10 @@ import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeUp
+import androidx.compose.ui.test.swipeDown
 import androidx.lifecycle.HasDefaultViewModelProviderFactory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -39,8 +42,55 @@ class CalendarScreenTest {
 
   /** Converts a (LocalDate, LocalTime) to an Instant in the system zone for concise test setup. */
   private fun at(date: LocalDate, time: LocalTime) =
-      // Build a LocalDateTime, attach the system zone, then convert to Instant
-      date.atTime(time).atZone(ZoneId.systemDefault()).toInstant()
+      date.atTime(time) // Build a LocalDateTime
+          .atZone(ZoneId.systemDefault()) // Attach the system zone
+          .toInstant() // Convert to Instant
+  /** Returns the tag of the vertical scrollable area that hosts the hours grid. */
+  private fun scrollAreaTag() = CalendarScreenTestTags.SCROLL_AREA
+
+  /** Returns true if the node with [tag] intersects the root viewport (no assertions/exceptions). */
+  private fun isInViewport(tag: String): Boolean {
+    val node = composeTestRule.onNodeWithTag(tag).fetchSemanticsNode()
+    val root = composeTestRule.onRoot().fetchSemanticsNode()
+    val nb = node.boundsInRoot
+    val rb = root.boundsInRoot
+    val horizontally = nb.right > rb.left && nb.left < rb.right
+    val vertically = nb.bottom > rb.top && nb.top < rb.bottom
+    return horizontally && vertically
+  }
+
+  /**
+   * Scrolls vertically in a bounded way until the node with [tag] intersects the root viewport,
+   * then performs a single display assertion. This avoids depending on production auto-scroll timing.
+   */
+  private fun scrollUntilVisible(tag: String, maxSwipesPerDirection: Int = 1) { // For the now, one swipe is enough to see the whole screen, we can increase it when zooming weill make the grid very big
+    // Fast path: already visible
+    if (isInViewport(tag)) {
+      composeTestRule.onNodeWithTag(tag).assertIsDisplayed()
+      return
+    }
+
+    // Sweep towards later hours first (swipe up). Check after each swipe.
+    repeat(maxSwipesPerDirection) {
+      composeTestRule.onNodeWithTag(scrollAreaTag()).performTouchInput { swipeUp() }
+      if (isInViewport(tag)) {
+        composeTestRule.onNodeWithTag(tag).assertIsDisplayed()
+        return
+      }
+    }
+
+    // Then sweep towards earlier hours (swipe down). Check after each swipe.
+    repeat(maxSwipesPerDirection) {
+      composeTestRule.onNodeWithTag(scrollAreaTag()).performTouchInput { swipeDown() }
+      if (isInViewport(tag)) {
+        composeTestRule.onNodeWithTag(tag).assertIsDisplayed()
+        return
+      }
+    }
+
+    // Final assertion if the node never entered the viewport.
+    composeTestRule.onNodeWithTag(tag).assertIsDisplayed()
+  }
 
   /**
    * Builds a deterministic set of events spanning previous, current, and next weeks.
@@ -287,15 +337,9 @@ class CalendarScreenTest {
     setContentWithLocalRepo(buildTestEvents())
 
     // current week, should be displayed
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
-        .assertIsDisplayed()
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
-        .assertIsDisplayed()
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
-        .assertIsDisplayed()
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
 
     // next week, should not be displayed
     composeTestRule
@@ -309,12 +353,8 @@ class CalendarScreenTest {
     swipeEventGrid(-2 * DefaultSwipeThreshold)
 
     // next week, should be displayed
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event")
-        .assertIsDisplayed()
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Later Event")
-        .assertIsDisplayed()
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event")
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Later Event")
 
     // next week, should not be displayed
     composeTestRule
@@ -334,15 +374,9 @@ class CalendarScreenTest {
     setContentWithLocalRepo()
 
     // current week, should be displayed
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
-        .assertIsDisplayed()
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
-        .assertIsDisplayed()
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
-        .assertIsDisplayed()
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
 
     // previous week, should not be displayed
     composeTestRule
@@ -356,12 +390,8 @@ class CalendarScreenTest {
     swipeEventGrid(2 * DefaultSwipeThreshold)
 
     // previous week, should be displayed
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Previous Event")
-        .assertIsDisplayed()
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Earlier Event")
-        .assertIsDisplayed()
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Previous Event")
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Earlier Event")
 
     // previous week, should not be displayed
     composeTestRule
@@ -381,15 +411,9 @@ class CalendarScreenTest {
     setContentWithLocalRepo()
 
     // current week, should be displayed
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
-        .assertIsDisplayed()
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
-        .assertIsDisplayed()
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
-        .assertIsDisplayed()
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
 
     // previous week, should not be displayed
     composeTestRule
@@ -414,15 +438,9 @@ class CalendarScreenTest {
     swipeEventGrid(-2 * DefaultSwipeThreshold)
 
     // current week, should be displayed
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
-        .assertIsDisplayed()
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
-        .assertIsDisplayed()
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
-        .assertIsDisplayed()
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
 
     // previous week, should not be displayed
     composeTestRule
@@ -447,15 +465,9 @@ class CalendarScreenTest {
     setContentWithLocalRepo()
 
     // current week, should be displayed
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
-        .assertIsDisplayed()
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
-        .assertIsDisplayed()
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
-        .assertIsDisplayed()
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
 
     // previous week, should not be displayed
     composeTestRule
@@ -480,15 +492,9 @@ class CalendarScreenTest {
     swipeEventGrid(2 * DefaultSwipeThreshold)
 
     // current week, should be displayed
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
-        .assertIsDisplayed()
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
-        .assertIsDisplayed()
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
-        .assertIsDisplayed()
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
 
     // previous week, should not be displayed
     composeTestRule
@@ -518,7 +524,7 @@ class CalendarScreenTest {
     setContentWithLocalRepo()
 
     // current week, should be displayed
-    composeTestRule.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_First Event").assertIsDisplayed()
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
     // next week, should not be displayed
     composeTestRule.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event").assertIsNotDisplayed()
 
@@ -526,7 +532,7 @@ class CalendarScreenTest {
     swipeEventGrid(-(DefaultSwipeThreshold - 1f))
 
     // Still current week
-    composeTestRule.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_First Event").assertIsDisplayed()
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
     composeTestRule.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event").assertIsNotDisplayed()
   }
 
@@ -539,7 +545,7 @@ class CalendarScreenTest {
     swipeEventGrid(-DefaultSwipeThreshold)
 
     // Require a swipe gesture strictly greater than threshold => remain on current week
-    composeTestRule.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_First Event").assertIsDisplayed()
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
     composeTestRule.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event").assertIsNotDisplayed()
   }
 
@@ -550,11 +556,11 @@ class CalendarScreenTest {
 
     // Fast swipe left should navigate to next week
     swipeEventGridFast(-2 * DefaultSwipeThreshold)
-    composeTestRule.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event").assertIsDisplayed()
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event")
 
     // Swipe back to current week using a slow cumulative swipe to the right
     swipeEventGridSlow(2 * DefaultSwipeThreshold)
-    composeTestRule.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_First Event").assertIsDisplayed()
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
   }
 
   @Test
@@ -563,7 +569,7 @@ class CalendarScreenTest {
     setContentWithLocalRepo()
 
     // Baseline: current week visible, next week not visible
-    composeTestRule.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_First Event").assertIsDisplayed()
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
     composeTestRule.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event").assertIsNotDisplayed()
 
     // Vertical gesture only => must not change week
@@ -573,7 +579,7 @@ class CalendarScreenTest {
     swipeEventGridDiagonal(-(DefaultSwipeThreshold - 1f), 3 * DefaultSwipeThreshold)
 
     // Still current week
-    composeTestRule.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_First Event").assertIsDisplayed()
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
     composeTestRule.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event").assertIsNotDisplayed()
   }
 

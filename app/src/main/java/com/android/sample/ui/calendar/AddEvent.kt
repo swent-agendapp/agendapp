@@ -102,7 +102,7 @@ fun AddEventTitleAndDescriptionScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround) {
               Box(
-                  modifier = Modifier.weight(0.6f).fillMaxWidth(),
+                  modifier = Modifier.weight(1f).fillMaxWidth(),
                   contentAlignment = Alignment.Center) {
                     Text(
                         stringResource(R.string.enterTitleAndDescription),
@@ -177,7 +177,7 @@ fun AddEventTimeAndRecurrenceScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround) {
               Box(
-                  modifier = Modifier.weight(0.2f).fillMaxWidth(),
+                  modifier = Modifier.weight(0.6f).fillMaxWidth(),
                   contentAlignment = Alignment.Center) {
                     Text(
                         stringResource(R.string.enterTimeAndRecurrence),
@@ -218,7 +218,7 @@ fun AddEventTimeAndRecurrenceScreen(
                       }
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 DatePickerFieldToModal(
                     label = stringResource(R.string.startDatePickerLabel),
@@ -229,6 +229,8 @@ fun AddEventTimeAndRecurrenceScreen(
                     },
                     initialInstant = newEventUIState.startInstant)
 
+                Spacer(modifier = Modifier.height(8.dp))
+
                 DatePickerFieldToModal(
                     label = stringResource(R.string.endDatePickerLabel),
                     modifier = Modifier.testTag(AddEventTestTags.END_DATE_FIELD),
@@ -238,7 +240,7 @@ fun AddEventTimeAndRecurrenceScreen(
                     },
                     initialInstant = newEventUIState.endInstant)
 
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),

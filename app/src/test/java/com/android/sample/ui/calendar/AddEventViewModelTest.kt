@@ -1,9 +1,9 @@
 package com.android.sample.ui.calendar
 
+import com.android.sample.model.authorization.AuthorizationService
 import com.android.sample.model.calendar.*
 import com.android.sample.model.organization.Employee
 import com.android.sample.model.organization.EmployeeRepository
-import com.android.sample.model.organization.EmployeeRepositoryProvider
 import com.android.sample.model.organization.Role
 import java.time.Duration
 import java.time.Instant
@@ -37,7 +37,7 @@ class AddEventViewModelTest {
     Dispatchers.setMain(testDispatcher)
     repository = EventRepositoryLocal()
     // Make AuthorizationService.requireAdmin() pass during tests
-    EmployeeRepositoryProvider.repository =
+    val fakeRepo =
         object : EmployeeRepository {
           override suspend fun getEmployees(): List<Employee> = emptyList()
 
@@ -47,7 +47,8 @@ class AddEventViewModelTest {
 
           override suspend fun getMyRole(): Role? = Role.ADMIN
         }
-    viewModel = AddEventViewModel(repository)
+    val fakeAuthz = AuthorizationService(repo = fakeRepo)
+    viewModel = AddEventViewModel(repository, authz = fakeAuthz)
   }
 
   @After

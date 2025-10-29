@@ -2,7 +2,6 @@ package com.android.sample.model.authorization
 
 import com.android.sample.model.organization.Employee
 import com.android.sample.model.organization.EmployeeRepository
-import com.android.sample.model.organization.EmployeeRepositoryProvider
 import com.android.sample.model.organization.Role
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
@@ -36,8 +35,7 @@ class AuthorizationServiceTest {
   @Before
   fun setUp() {
     fakeRepo = FakeEmployeeRepository()
-    EmployeeRepositoryProvider.repository = fakeRepo
-    authz = AuthorizationService()
+    authz = AuthorizationService(repo = fakeRepo)
   }
 
   @Test

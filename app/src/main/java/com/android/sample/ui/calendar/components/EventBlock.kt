@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,14 +22,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.android.sample.model.calendar.Event
 import com.android.sample.ui.calendar.CalendarScreenTestTags
-import com.android.sample.ui.calendar.mockData.MockEvent
 import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.style.defaultGridContentDimensions
 import com.android.sample.ui.calendar.utils.EventPositionUtil
+import java.time.LocalDate
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
-import java.util.Locale
+import com.android.sample.ui.calendar.utils.DateTimeUtils
 
 /**
  * Draws visual blocks for a list of events within a single day column. Events are clipped to the
@@ -47,7 +46,8 @@ import java.util.Locale
 @Composable
 fun EventBlock(
     modifier: Modifier = Modifier,
-    events: List<MockEvent> = listOf(),
+    events: List<Event> = listOf(),
+    currentDate: LocalDate, // used to compute the visible portion of events that may span multiple days
     startTime: LocalTime = CalendarDefaults.DefaultStartTime,
     endTime: LocalTime = CalendarDefaults.DefaultEndTime,
     columnWidthDp: Dp = defaultGridContentDimensions().defaultColumnWidthDp
@@ -55,9 +55,13 @@ fun EventBlock(
   // Later : place this "filter" logic in "EventOverlapHandling", which will call this EventBlock
   // Filter events for the current day and time range
   val visibleEvents =
-      events.filter { event ->
-        // Check if event is within the visible time range
-        event.timeSpan.start < endTime && event.timeSpan.endExclusive > startTime
+      run {
+        val visibleStartInstant = DateTimeUtils.localDateTimeToInstant(currentDate, startTime)
+        val visibleEndInstantExclusive = DateTimeUtils.localDateTimeToInstant(currentDate, endTime)
+        events.filter { event ->
+          // Overlap on instants: [event.start, event.end[ AND [visibleStart, visibleEnd[ non-empty
+          event.endDate > visibleStartInstant && event.startDate < visibleEndInstantExclusive
+        }
       }
 
   if (visibleEvents.isEmpty()) return
@@ -66,12 +70,18 @@ fun EventBlock(
     Box(modifier = modifier.testTag("${CalendarScreenTestTags.EVENT_BLOCK}_${event.title}")) {
       val density = LocalDensity.current
 
+      // Compute offsets for the visible segment of the event within this day's time window
       val (topOffset, eventHeight) =
           EventPositionUtil.calculateVerticalOffsets(
-              event = event, startTime = startTime, density = density)
+              event = event,
+              currentDate = currentDate,
+              startTime = startTime,
+              endTime = endTime,
+              density = density,
+          )
 
       // Event styling
-      val backgroundColor = Color(event.backgroundColor)
+      val backgroundColor = event.color.toComposeColor()
       val textColor = Color.Black
       val cornerRadius = 4.dp
 
@@ -108,10 +118,11 @@ fun EventBlock(
               overflow = TextOverflow.Ellipsis,
           )
 
-          // Assignee name
-          if (event.assigneeName.isNotBlank()) {
+          // Participants (if any)
+          if (event.participants.isNotEmpty()) {
+            val participantsText = event.participants.joinToString(", ")
             Text(
-                text = event.assigneeName,
+                text = participantsText,
                 color = textColor.copy(alpha = 0.8f),
                 fontSize = 10.sp,
                 maxLines = 1,
@@ -120,9 +131,9 @@ fun EventBlock(
           }
 
           // Time information
-          val timeFormatter = remember { DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault()) }
           val timeText =
-              "${event.timeSpan.start.format(timeFormatter)} - ${event.timeSpan.endExclusive.format(timeFormatter)}"
+            "${DateTimeUtils.formatInstantToTime(event.startDate)} - " +
+               DateTimeUtils.formatInstantToTime(event.endDate)
 
           Text(
               text = timeText,

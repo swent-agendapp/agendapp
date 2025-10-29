@@ -261,4 +261,6 @@ class CalendarEventsTest {
     compose.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Morning Event").assertIsDisplayed()
     compose.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Night Event").assertIsDisplayed()
   }
+
+    // todo : test for an event from one day 12:00 to the next day at 12:00 (should see two half blocks)
 }

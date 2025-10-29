@@ -12,10 +12,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.android.sample.R
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.calendar.formatString
 import com.android.sample.ui.calendar.components.DatePickerFieldToModal
@@ -37,6 +40,14 @@ object EditEventTestTags {
   const val EDIT_PARTICIPANTS_BUTTON = "edit_participants_button"
   const val BACK_BUTTON = "edit_back_button"
 }
+// Spacing data class for consistent spacing values
+// Will be useful
+data class Spacing(
+    val small: Dp = 8.dp,
+    val medium: Dp = 16.dp,
+    val large: Dp = 24.dp
+)
+
 
 /**
  * Simple one-page Edit Event screen. This view uses placeholder state until EditEventViewModel is
@@ -68,14 +79,14 @@ fun EditEventScreen(
   var notifications by remember { mutableStateOf(listOf("30 min before")) }
 
   Scaffold(
-      topBar = { TopTitleBar(title = "Edit Event") },
+      topBar = { TopTitleBar(title = stringResource(R.string.edit_event_title)) },
       content = { paddingValues ->
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(paddingValues).padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally) {
               item {
                 Text(
-                    "Modify event details below:",
+                    text = stringResource(R.string.edit_event_instruction),
                     style = MaterialTheme.typography.headlineSmall,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(vertical = 16.dp).testTag("edit_instruction_text"))
@@ -83,24 +94,24 @@ fun EditEventScreen(
 
               item {
                 ValidatingTextField(
-                    label = "Title",
-                    placeholder = "Enter event title",
+                    label = stringResource(R.string.edit_event_title_label),
+                    placeholder = stringResource(R.string.edit_event_title_placeholder),
                     testTag = EditEventTestTags.TITLE_FIELD,
                     value = title,
                     onValueChange = { title = it },
                     isError = title.isBlank(),
-                    errorMessage = "Title cannot be empty")
+                    errorMessage = stringResource(R.string.edit_event_title_error))
               }
 
               item {
                 ValidatingTextField(
-                    label = "Description",
-                    placeholder = "Enter event description",
+                    label = stringResource(R.string.edit_event_description_label),
+                    placeholder = stringResource(R.string.edit_event_description_placeholder),
                     testTag = EditEventTestTags.DESCRIPTION_FIELD,
                     value = description,
                     onValueChange = { description = it },
                     isError = description.isBlank(),
-                    errorMessage = "Description cannot be empty",
+                    errorMessage = stringResource(R.string.edit_event_description_error),
                     singleLine = false,
                     minLines = 4)
               }
@@ -108,7 +119,7 @@ fun EditEventScreen(
               item {
                 Spacer(modifier = Modifier.height(12.dp))
                 DatePickerFieldToModal(
-                    label = "Start Date",
+                    label = stringResource(R.string.edit_event_start_date_label),
                     modifier = Modifier.testTag(EditEventTestTags.START_DATE_FIELD),
                     onDateSelected = { date ->
                       startInstant = DateTimeUtils.instantWithDate(startInstant, date)
@@ -118,7 +129,7 @@ fun EditEventScreen(
 
               item {
                 DatePickerFieldToModal(
-                    label = "End Date",
+                    label = stringResource(R.string.edit_event_end_date_label),
                     modifier = Modifier.testTag(EditEventTestTags.END_DATE_FIELD),
                     onDateSelected = { date ->
                       endInstant = DateTimeUtils.instantWithDate(endInstant, date)
@@ -132,7 +143,8 @@ fun EditEventScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically) {
-                      Text(text = "Start Time:", style = MaterialTheme.typography.titleMedium)
+                      Text(text = stringResource(R.string.edit_event_start_time_label),
+                          style = MaterialTheme.typography.titleMedium)
                       Button(
                           onClick = { showStartTimePicker = true },
                           modifier = Modifier.testTag(EditEventTestTags.START_TIME_BUTTON)) {
@@ -147,7 +159,8 @@ fun EditEventScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically) {
-                      Text(text = "End Time:", style = MaterialTheme.typography.titleMedium)
+                      Text(text = stringResource(R.string.edit_event_end_time_label),
+                          style = MaterialTheme.typography.titleMedium)
                       Button(
                           onClick = { showEndTimePicker = true },
                           modifier = Modifier.testTag(EditEventTestTags.END_TIME_BUTTON)) {
@@ -164,7 +177,7 @@ fun EditEventScreen(
                           value = recurrence.formatString(),
                           onValueChange = {},
                           readOnly = true,
-                          label = { Text("Recurrence") },
+                          label = { Text(stringResource(R.string.edit_event_recurrence_label)) },
                           trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                           },
@@ -199,7 +212,8 @@ fun EditEventScreen(
 
               item {
                 Spacer(modifier = Modifier.height(12.dp))
-                Text("Participants:", style = MaterialTheme.typography.titleMedium)
+                Text(text = stringResource(R.string.edit_event_participants_label),
+                    style = MaterialTheme.typography.titleMedium)
 
                 OutlinedButton(
                     onClick = onEditParticipants,
@@ -207,7 +221,7 @@ fun EditEventScreen(
                         Modifier.fillMaxWidth()
                             .padding(vertical = 8.dp)
                             .testTag(EditEventTestTags.EDIT_PARTICIPANTS_BUTTON)) {
-                      Text("Edit Participants")
+                      Text(stringResource(R.string.edit_event_edit_participants_button))
                     }
               }
             }
@@ -221,7 +235,7 @@ fun EditEventScreen(
                   modifier =
                       Modifier.size(width = 120.dp, height = 60.dp)
                           .testTag(EditEventTestTags.CANCEL_BUTTON)) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.common_cancel))
                   }
               Button(
                   onClick = onSave,
@@ -229,7 +243,7 @@ fun EditEventScreen(
                       Modifier.size(width = 120.dp, height = 60.dp)
                           .testTag(EditEventTestTags.SAVE_BUTTON),
                   enabled = title.isNotBlank() && description.isNotBlank()) {
-                    Text("Save")
+                    Text(stringResource(R.string.common_save))
                   }
             }
       })
@@ -275,11 +289,11 @@ fun NotificationSection(
 ) {
   Column(modifier = modifier.fillMaxWidth().padding(vertical = 16.dp)) {
     Text(
-        text = "Notify",
+        text = stringResource(R.string.edit_event_notify_label),
         style = MaterialTheme.typography.titleMedium,
         modifier = Modifier.padding(bottom = 8.dp))
 
-    // 当前所有提醒
+    // Existing notifications
     notifications.forEach { notification ->
       OutlinedButton(
           onClick = { onRemoveNotification(notification) },
@@ -291,12 +305,13 @@ fun NotificationSection(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically) {
                   Text(notification)
-                  Text("✕", color = MaterialTheme.colorScheme.error)
+                  Text(stringResource(R.string.edit_event_remove_notification_symbol),
+                      color = MaterialTheme.colorScheme.error)
                 }
           }
     }
 
-    // “Add a notification” 按钮
+    // “Add a notification” button
     OutlinedButton(
         onClick = onAddNotification,
         modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
@@ -305,9 +320,10 @@ fun NotificationSection(
               verticalAlignment = Alignment.CenterVertically,
               horizontalArrangement = Arrangement.Center,
               modifier = Modifier.fillMaxWidth()) {
-                Text("Add a notification")
+                Text(stringResource(R.string.edit_event_add_notification_button))
                 Spacer(modifier = Modifier.width(4.dp))
-                Text("+", color = MaterialTheme.colorScheme.primary)
+                Text(stringResource(R.string.edit_event_add_notification_symbol),
+                    color = MaterialTheme.colorScheme.primary)
               }
         }
   }
@@ -315,9 +331,6 @@ fun NotificationSection(
 
 /**
  * EditEventAttendantScreen
- *
- * Displays the list of available participants. Allows adding/removing attendees for the current
- * event. Currently uses a hardcoded list for demo purposes.
  */
 @Composable
 fun EditEventAttendantScreen(
@@ -329,7 +342,7 @@ fun EditEventAttendantScreen(
   val allParticipants = listOf("Alice", "Bob", "Charlie", "David", "Eve", "Frank")
 
   Scaffold(
-      topBar = { TopTitleBar(title = "Edit Event Participants") },
+      topBar = { TopTitleBar(title = stringResource(R.string.edit_event_participants_screen_title)) },
       content = { paddingValues ->
         Column(
             modifier = Modifier.fillMaxSize().padding(horizontal = 40.dp).padding(paddingValues),
@@ -338,7 +351,8 @@ fun EditEventAttendantScreen(
               Box(
                   modifier = Modifier.weight(1f).fillMaxWidth(),
                   contentAlignment = Alignment.Center) {
-                    Text("Select participants", style = MaterialTheme.typography.headlineMedium)
+                    Text(stringResource(R.string.edit_event_select_participants_text),
+                        style = MaterialTheme.typography.headlineMedium)
                   }
 
               Card(
@@ -376,8 +390,8 @@ fun EditEventAttendantScreen(
         BottomNavigationButtons(
             onNext = { onSave() },
             onBack = onBack,
-            backButtonText = "Cancel",
-            nextButtonText = "Save",
+            backButtonText = stringResource(R.string.common_cancel),
+            nextButtonText = stringResource(R.string.common_save),
             canGoNext = true,
             backButtonTestTag = EditEventTestTags.BACK_BUTTON,
             nextButtonTestTag = EditEventTestTags.SAVE_BUTTON)

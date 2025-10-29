@@ -71,7 +71,7 @@ class CalendarScreenTest {
       tag: String,
       maxSwipesPerDirection: Int = 1
   ) { // For the now, one swipe is enough to see the whole screen, we can increase it when zooming
-      // weill make the grid very big
+    // weill make the grid very big
     // Fast path: already visible
     if (isInViewport(tag)) {
       composeTestRule.onNodeWithTag(tag).assertIsDisplayed()

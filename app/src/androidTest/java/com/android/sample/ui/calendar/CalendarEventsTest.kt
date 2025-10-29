@@ -1,10 +1,16 @@
 package com.android.sample.ui.calendar
 
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
+import androidx.compose.ui.test.isRoot
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeUp
+import androidx.compose.ui.test.swipeDown
 import com.android.sample.model.calendar.createEvent
 import java.time.ZoneId
 import java.time.DayOfWeek
@@ -20,6 +26,50 @@ class CalendarEventsTest {
   private fun at(date: LocalDate, time: LocalTime) =
       date.atTime(time).atZone(ZoneId.systemDefault()).toInstant()
   @get:Rule val compose = createComposeRule()
+
+    /**
+     * Scrolls the vertical grid in a bounded way until the node with [tag] intersects
+     * the root viewport, then asserts it is displayed.
+     */
+    private fun scrollUntilVisible(tag: String, maxSwipesPerDirection: Int = 1) { // For the now, one swipe is enough to see the whole screen, we can increase it when zooming weill make the grid very big
+        // Fast path: already visible
+        if (isInViewport(tag)) {
+            compose.onNodeWithTag(tag).assertIsDisplayed()
+            return
+        }
+
+        // Sweep towards later hours first (swipe up). Check after each swipe.
+        repeat(maxSwipesPerDirection) {
+            compose.onNodeWithTag(CalendarScreenTestTags.SCROLL_AREA).performTouchInput { swipeUp() }
+            if (isInViewport(tag)) {
+                compose.onNodeWithTag(tag).assertIsDisplayed()
+                return
+            }
+        }
+
+        // Then sweep towards earlier hours (swipe down). Check after each swipe.
+        repeat(maxSwipesPerDirection) {
+            compose.onNodeWithTag(CalendarScreenTestTags.SCROLL_AREA).performTouchInput { swipeDown() }
+            if (isInViewport(tag)) {
+                compose.onNodeWithTag(tag).assertIsDisplayed()
+                return
+            }
+        }
+
+        // Final assertion: if the node never entered the viewport, fail clearly here.
+        compose.onNodeWithTag(tag).assertIsDisplayed()
+    }
+
+    /** Returns true if the node with [tag] intersects the root viewport (no assertions/exceptions). */
+    private fun isInViewport(tag: String): Boolean {
+        val node = compose.onNodeWithTag(tag).fetchSemanticsNode()
+        val root = compose.onRoot().fetchSemanticsNode()
+        val nb = node.boundsInRoot
+        val rb = root.boundsInRoot
+        val horizontally = nb.right > rb.left && nb.left < rb.right
+        val vertically = nb.bottom > rb.top && nb.top < rb.bottom
+        return horizontally && vertically
+    }
 
   @Test
   fun calendarGridContentDisplayed() {
@@ -50,9 +100,9 @@ class CalendarEventsTest {
 
     compose.setContent { CalendarGridContent(events = events) }
 
-    compose.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Test Event")
-        .assertExists()
-        .assertIsDisplayed()
+    val tag = "${CalendarScreenTestTags.EVENT_BLOCK}_Test Event"
+    compose.onNodeWithTag(tag).assertExists()
+    scrollUntilVisible(tag)
   }
 
   @Test
@@ -103,15 +153,11 @@ class CalendarEventsTest {
 
     compose.setContent { CalendarGridContent(events = events) }
 
-    compose.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Monday Event").assertIsDisplayed()
-    compose.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Tuesday Event").assertIsDisplayed()
-    compose
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Wednesday Event")
-        .assertIsDisplayed()
-    compose
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Thursday Event")
-        .assertIsDisplayed()
-    compose.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Friday Event").assertIsDisplayed()
+      scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Monday Event")
+      scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Tuesday Event")
+      scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Wednesday Event")
+      scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Thursday Event")
+      scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Friday Event")
   }
 
   @Test
@@ -202,12 +248,8 @@ class CalendarEventsTest {
 
     compose.setContent { CalendarGridContent(events = events) }
 
-    compose
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_First semi-overlapping Event")
-        .assertIsDisplayed()
-    compose
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Second semi-overlapping Event")
-        .assertIsDisplayed()
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_First semi-overlapping Event")
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Second semi-overlapping Event")
   }
 
   @Test
@@ -234,17 +276,13 @@ class CalendarEventsTest {
 
     compose.setContent { CalendarGridContent(events = events) }
 
-    compose
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_First full-overlapping Event")
-        .assertIsDisplayed()
-    compose
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Second full-overlapping Event")
-        .assertIsDisplayed()
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_First full-overlapping Event")
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Second full-overlapping Event")
   }
 
   @Test
-  fun calendarGridContent_doesShowsEventBlock_whenEventOutOfCalendarHour() {
-    // Default configuration : screen renders from 8:00 to 23:00 (not before, neither after)
+  fun calendarGridContent_showsEventBlocks_outsideInitialViewport_afterScroll() {
+    // Grid covers 00:00–24:00; events can start before 08:00 or end after 23:00 and still be shown after scrolling.
     val events =
         listOf(
             // Event on Monday [6:00 - 10:00] — partially before visible hours (clipped at 08:00)
@@ -267,8 +305,8 @@ class CalendarEventsTest {
 
     compose.setContent { CalendarGridContent(events = events) }
 
-    compose.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Morning Event").assertIsDisplayed()
-    compose.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Night Event").assertIsDisplayed()
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Morning Event")
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Night Event")
   }
 
 
@@ -314,14 +352,14 @@ class CalendarEventsTest {
 
     @Test
     fun calendarGridContent_showsEvent_whenStartsExactlyAtStartTime() {
-        // Default visible window starts at 08:00
+        // Grid covers 00:00–24:00; verify event starting at 00:00
         val monday = LocalDate.now().with(DayOfWeek.MONDAY)
         val events = listOf(
             // Event on Monday [8:00 - 9:00] — starts exactly at visible startTime
             createEvent(
                 title = "Starts At StartTime",
-                startDate = at(monday, LocalTime.of(8, 0)),
-                endDate = at(monday, LocalTime.of(9, 0)),
+                startDate = at(monday, LocalTime.of(0, 0)),
+                endDate = at(monday, LocalTime.of(1, 0)),
                 cloudStorageStatuses = emptySet(),
                 participants = emptySet(),
             ),
@@ -329,21 +367,19 @@ class CalendarEventsTest {
 
         compose.setContent { CalendarGridContent(events = events) }
 
-        compose
-            .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Starts At StartTime")
-            .assertIsDisplayed()
+        scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Starts At StartTime")
     }
 
     @Test
     fun calendarGridContent_showsEvent_whenEndsExactlyAtEndTime() {
-        // Default visible window ends at 23:00 (exclusive)
+        // Grid ends at 24:00 (exclusive); verify event ending at 23:59
         val friday = LocalDate.now().with(DayOfWeek.FRIDAY)
         val events = listOf(
             // Event on Friday [22:00 - 23:00] — ends exactly at visible endTime (exclusive)
             createEvent(
                 title = "Ends At EndTime",
                 startDate = at(friday, LocalTime.of(22, 0)),
-                endDate = at(friday, LocalTime.of(23, 0)),
+                endDate = at(friday, LocalTime.of(23, 59)),
                 cloudStorageStatuses = emptySet(),
                 participants = emptySet(),
             ),
@@ -351,9 +387,7 @@ class CalendarEventsTest {
 
         compose.setContent { CalendarGridContent(events = events) }
 
-        compose
-            .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Ends At EndTime")
-            .assertIsDisplayed()
+        scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Ends At EndTime")
     }
 
     @Test
@@ -382,12 +416,9 @@ class CalendarEventsTest {
     }
 
     @Test
-    fun calendarGridContent_doesNotShowEvents_whenCompletelyOutsideVisibleHours() {
+    fun calendarGridContent_eventsOutsideInitialViewport_becomeVisibleAfterScroll() {
         val wednesday = LocalDate.now().with(DayOfWeek.WEDNESDAY)
-
         val events = listOf(
-            // Entirely before 08:00
-            // Event on Wednesday [6:00 - 7:30] — completely outside visible hours (early)
             createEvent(
                 title = "Too Early",
                 startDate = at(wednesday, LocalTime.of(6, 0)),
@@ -395,8 +426,6 @@ class CalendarEventsTest {
                 cloudStorageStatuses = emptySet(),
                 participants = emptySet(),
             ),
-            // Entirely after 23:00
-            // Event on Wednesday [23:30 - 23:59] — completely outside visible hours (late)
             createEvent(
                 title = "Too Late",
                 startDate = at(wednesday, LocalTime.of(23, 30)),
@@ -405,11 +434,10 @@ class CalendarEventsTest {
                 participants = emptySet(),
             ),
         )
-
         compose.setContent { CalendarGridContent(events = events) }
 
-        compose.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Too Early").assertIsNotDisplayed()
-        compose.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Too Late").assertIsNotDisplayed()
+        scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Too Early")
+        scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Too Late")
     }
 
     @Test
@@ -445,9 +473,10 @@ class CalendarEventsTest {
 
         compose.setContent { CalendarGridContent(events = events) }
 
-        compose.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Overlap A").assertIsDisplayed()
-        compose.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Overlap B").assertIsDisplayed()
-        compose.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Overlap C").assertIsDisplayed()
+        scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Overlap A")
+        scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Overlap B")
+        scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Overlap C")
+
     }
 
     @Test
@@ -469,7 +498,7 @@ class CalendarEventsTest {
 
         compose.setContent { CalendarGridContent(events = events) }
 
-        compose.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_$longTitle").assertIsDisplayed()
+        scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_$longTitle")
     }
 
     @Test
@@ -491,8 +520,6 @@ class CalendarEventsTest {
 
         compose.setContent { CalendarGridContent(events = events) }
 
-        compose
-            .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Week Boundary Event")
-            .assertIsDisplayed()
+        scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Week Boundary Event")
     }
 }

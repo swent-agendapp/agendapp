@@ -30,7 +30,7 @@ class UserMapperTest {
   }
 
   @Test
-  fun fromDocument_missingDisplayName_returnsNull() {
+  fun fromDocument_missingDisplayName_stillCreatesUser() {
     val doc = mock(DocumentSnapshot::class.java)
     `when`(doc.getString("id")).thenReturn(sampleUser.id)
     `when`(doc.getString("displayName")).thenReturn(null)
@@ -38,11 +38,15 @@ class UserMapperTest {
     `when`(doc.id).thenReturn("fallbackId")
 
     val user = UserMapper.fromDocument(doc)
-    assertNull(user)
+
+    assertNotNull(user)
+    assertEquals(sampleUser.id, user!!.id)
+    assertNull(user.displayName)
+    assertEquals(sampleUser.email, user.email)
   }
 
   @Test
-  fun fromDocument_missingEmail_returnsNull() {
+  fun fromDocument_missingEmail_stillCreatesUser() {
     val doc = mock(DocumentSnapshot::class.java)
     `when`(doc.getString("id")).thenReturn(sampleUser.id)
     `when`(doc.getString("displayName")).thenReturn(sampleUser.displayName)
@@ -50,8 +54,13 @@ class UserMapperTest {
     `when`(doc.id).thenReturn("fallbackId")
 
     val user = UserMapper.fromDocument(doc)
-    assertNull(user)
+
+    assertNotNull(user)
+    assertEquals(sampleUser.id, user!!.id)
+    assertEquals(sampleUser.displayName, user.displayName)
+    assertNull(user.email)
   }
+
 
   @Test
   fun fromDocument_missingId_usesDocumentId() {
@@ -72,20 +81,6 @@ class UserMapperTest {
     val user = UserMapper.fromMap(sampleMap)
     assertNotNull(user)
     assertEquals(sampleUser, user)
-  }
-
-  @Test
-  fun fromMap_missingDisplayName_returnsNull() {
-    val invalidMap = sampleMap - "displayName"
-    val user = UserMapper.fromMap(invalidMap)
-    assertNull(user)
-  }
-
-  @Test
-  fun fromMap_missingEmail_returnsNull() {
-    val invalidMap = sampleMap - "email"
-    val user = UserMapper.fromMap(invalidMap)
-    assertNull(user)
   }
 
   @Test

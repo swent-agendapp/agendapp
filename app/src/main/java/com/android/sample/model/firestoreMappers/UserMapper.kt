@@ -8,16 +8,16 @@ object UserMapper : FirestoreMapper<User> {
 
   override fun fromDocument(document: DocumentSnapshot): User? {
     val id = document.getString("id") ?: document.id
-    val displayName = document.getString("displayName") ?: return null
-    val email = document.getString("email") ?: return null
+    val displayName = document.getString("displayName")
+    val email = document.getString("email")
 
     return User(id = id, displayName = displayName, email = email)
   }
 
   override fun fromMap(data: Map<String, Any?>): User? {
     val id = data["id"] as? String ?: return null
-    val displayName = data["displayName"] as? String ?: return null
-    val email = data["email"] as? String ?: return null
+    val displayName = data["displayName"] as? String
+    val email = data["email"] as? String
 
     return User(id = id, displayName = displayName, email = email)
   }

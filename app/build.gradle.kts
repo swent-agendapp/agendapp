@@ -36,6 +36,7 @@ android {
             useSupportLibrary = true
         }
         manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
+        buildConfigField("String", "MAPS_API_KEY", "\"$mapsApiKey\"")
     }
 
     buildTypes {
@@ -144,6 +145,7 @@ fun DependencyHandlerScope.globalTestImplementation(dep: Any) {
 }
 
 dependencies {
+    implementation(platform(libs.kotlin.bom))
     dependencies {androidTestImplementation(libs.androidx.espresso.intents) }
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -151,6 +153,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(platform(libs.compose.bom))
     implementation(libs.googleid)
+    implementation(libs.play.services.location)
+    implementation(libs.places)
     testImplementation(libs.junit)
     globalTestImplementation(libs.androidx.junit)
     globalTestImplementation(libs.androidx.espresso.core)

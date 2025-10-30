@@ -61,7 +61,6 @@ class UserMapperTest {
     assertNull(user.email)
   }
 
-
   @Test
   fun fromDocument_missingId_usesDocumentId() {
     val doc = mock(DocumentSnapshot::class.java)

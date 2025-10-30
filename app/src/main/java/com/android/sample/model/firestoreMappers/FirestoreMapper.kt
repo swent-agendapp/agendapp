@@ -52,7 +52,14 @@ interface FirestoreMapper<T> {
   fun fromAny(input: Any?): T? {
     return when (input) {
       is DocumentSnapshot -> fromDocument(document = input)
-      is Map<*, *> -> @Suppress("UNCHECKED_CAST") fromMap(data = input as Map<String, Any?>)
+      is Map<*, *> -> {
+        val validMap =
+            input.entries
+                .takeIf { entries -> entries.all { it.key is String } }
+                ?.associate { it.key as String to it.value }
+
+        validMap?.let { fromMap(it) }
+      }
       else -> null
     }
   }

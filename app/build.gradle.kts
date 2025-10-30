@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.android.sample"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.android.sample"
@@ -131,6 +131,20 @@ fun DependencyHandlerScope.globalTestImplementation(dep: Any) {
 }
 
 dependencies {
+    configurations.all {
+        resolutionStrategy {
+            force(
+                libs.androidx.espresso.core,
+                libs.androidx.espresso.intents,
+                libs.androidx.espresso.contrib,
+                libs.androidx.espresso.web,
+            )
+        }
+    }
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.espresso.intents)
+    androidTestImplementation(libs.androidx.espresso.contrib)
+    androidTestImplementation(libs.androidx.espresso.web)
     dependencies {androidTestImplementation(libs.androidx.espresso.intents) }
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -138,6 +152,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(platform(libs.compose.bom))
     implementation(libs.googleid)
+    implementation(libs.androidx.ui.test.junit4)
     testImplementation(libs.junit)
     globalTestImplementation(libs.androidx.junit)
     globalTestImplementation(libs.androidx.espresso.core)

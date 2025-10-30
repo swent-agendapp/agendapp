@@ -4,6 +4,7 @@ import android.app.Instrumentation
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
@@ -13,9 +14,11 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
+import androidx.test.espresso.intent.rule.IntentsRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.android.sample.AgendappNavigation
+import com.android.sample.MainActivity
 import com.android.sample.ui.calendar.AddEventTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
 import com.android.sample.ui.profile.AdminContactScreenTestTags
@@ -36,12 +39,14 @@ import org.junit.runner.RunWith
 @MediumTest
 class AgendappNavigationTest {
 
-  @get:Rule val composeTestRule = createComposeRule()
+    // Use AndroidComposeRule tied to your real activity (better focus handling in CI)
+    @get:Rule val composeTestRule = createAndroidComposeRule<MainActivity>()
+
+    // Use IntentsRule to handle init/release automatically
+    @get:Rule val intentsRule = IntentsRule()
 
   @Test
   fun navigate_to_all_add_forms() {
-    composeTestRule.setContent { AgendappNavigation() }
-
     // Go to Calendar
     composeTestRule.onNodeWithTag(HomeTestTags.ADD_EVENT_BUTTON).assertExists().performClick()
     composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertExists().performClick()
@@ -64,7 +69,6 @@ class AgendappNavigationTest {
 
   @Test
   fun navigate_to_profile_and_admin_profile_and_back() {
-    composeTestRule.setContent { AgendappNavigation() }
     // Go to Profile
     composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).assertExists().performClick()
     composeTestRule.onNodeWithTag(SettingsScreenTestTags.ROOT).assertExists()
@@ -92,64 +96,59 @@ class AgendappNavigationTest {
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.BACK_BUTTON).assertExists().performClick()
   }
 
-  @Test
-  fun clickingEmail_opensEmailApp() {
-    Intents.init()
-    try {
 
-      composeTestRule.setContent { AgendappNavigation() }
+    @Test
+    fun clickingEmail_opensEmailApp() {
+        // Stub out external email intent before starting
+        intending(hasAction(Intent.ACTION_SENDTO))
+            .respondWith(Instrumentation.ActivityResult(0, null))
 
-      // Navigate to Profile screen
-      composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).performClick()
-      composeTestRule.onNodeWithTag(SettingsScreenTestTags.PROFILE_BUTTON).performClick()
-      composeTestRule.onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON).performClick()
-      // ✅ Wait for Compose to finish recomposing & window focus to stabilize
-      composeTestRule.waitForIdle()
-      Thread.sleep(500) // <- tiny extra buffer, helps on emulators
-      // Stub out the external email intent (prevent actual launch)
-      intending(hasAction(Intent.ACTION_SENDTO))
-          .respondWith(Instrumentation.ActivityResult(0, null))
+        // Navigate through the app
+        composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).performClick()
+        composeTestRule.onNodeWithTag(SettingsScreenTestTags.PROFILE_BUTTON).performClick()
+        composeTestRule.onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON).performClick()
 
-      // Click the email field (assuming it's clickable and launches ACTION_SENDTO)
-      composeTestRule.onNodeWithTag(AdminContactScreenTestTags.ADMIN_EMAIL_TEXT).performClick()
+        // Wait for Compose to stabilize (important for CI)
+        composeTestRule.waitForIdle()
+        Thread.sleep(500)
 
-      // Verify correct intent sent
-      intended(
-          allOf(
-              hasAction(Intent.ACTION_SENDTO),
-              hasData(Uri.parse("mailto:${AdminInformation.EMAIL}"))))
-    } finally {
-      Intents.release()
+        // Perform the click on the email text
+        composeTestRule.onNodeWithTag(AdminContactScreenTestTags.ADMIN_EMAIL_TEXT).performClick()
+
+        // Verify correct intent was sent
+        intended(
+            allOf(
+                hasAction(Intent.ACTION_SENDTO),
+                hasData(Uri.parse("mailto:${AdminInformation.EMAIL}"))
+            )
+        )
     }
-  }
 
-  @Test
-  fun clickingPhone_opensDialerApp() {
-    Intents.init()
-    try {
+    @Test
+    fun clickingPhone_opensDialerApp() {
+        // Stub out external dialer intent before starting
+        intending(hasAction(Intent.ACTION_DIAL))
+            .respondWith(Instrumentation.ActivityResult(0, null))
 
-      composeTestRule.setContent { AgendappNavigation() }
+        // Navigate through the app
+        composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).performClick()
+        composeTestRule.onNodeWithTag(SettingsScreenTestTags.PROFILE_BUTTON).performClick()
+        composeTestRule.onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON).performClick()
 
-      // Navigate to Profile screen
-      composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).performClick()
-      composeTestRule.onNodeWithTag(SettingsScreenTestTags.PROFILE_BUTTON).performClick()
-      composeTestRule.onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON).performClick()
-      // ✅ Wait for Compose to finish recomposing & window focus to stabilize
-      composeTestRule.waitForIdle()
-      Thread.sleep(500) // <- tiny extra buffer, helps on emulators
-      // Stub out dialer intent
-      intending(hasAction(Intent.ACTION_DIAL)).respondWith(Instrumentation.ActivityResult(0, null))
+        // Wait for Compose to stabilize (important for CI)
+        composeTestRule.waitForIdle()
+        Thread.sleep(500)
 
-      // Click the phone field (assuming it's clickable and launches ACTION_DIAL)
-      composeTestRule.onNodeWithTag(AdminContactScreenTestTags.ADMIN_PHONE_TEXT).performClick()
+        // Perform the click on the phone text
+        composeTestRule.onNodeWithTag(AdminContactScreenTestTags.ADMIN_PHONE_TEXT).performClick()
 
-      // Verify correct intent sent
-      intended(
-          allOf(
-              hasAction(Intent.ACTION_DIAL),
-              hasData(Uri.parse("tel:${AdminInformation.PHONE.replace(" ", "")}"))))
-    } finally {
-      Intents.release()
+        // Verify correct intent was sent
+        intended(
+            allOf(
+                hasAction(Intent.ACTION_DIAL),
+                hasData(Uri.parse("tel:${AdminInformation.PHONE.replace(" ", "")}"))
+            )
+        )
     }
-  }
 }
+

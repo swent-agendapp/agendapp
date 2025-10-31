@@ -13,8 +13,8 @@ import androidx.compose.ui.unit.dp
 object HomeTestTags {
   const val ROOT = "home_screen"
   const val ADD_EVENT_BUTTON = "add_event_button"
-    const val SETTINGS_BUTTON = "settings_button"
-    const val MAP_BUTTON = "map_button"
+  const val SETTINGS_BUTTON = "settings_button"
+  const val MAP_BUTTON = "map_button"
 }
 
 /** Home screen with navigation buttons for other screens. */
@@ -30,28 +30,23 @@ fun HomeScreen(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
-        Button(onClick = { onNavigateToEdit("E001") }) { Text("Go to Edit Event") }
-        Spacer(modifier = Modifier.height(12.dp))
-        Button(
-            modifier = Modifier.testTag(HomeTestTags.ADD_EVENT_BUTTON),
-            onClick = onNavigateToCalendar
-        ) {
-            Text("Go to Calendar")
-        }
-        Spacer(modifier = Modifier.height(12.dp))
-        Button(
-            modifier = Modifier.testTag(HomeTestTags.SETTINGS_BUTTON),
-            onClick = onNavigateToSettings
-        ) {
-            Text("Go to Settings")
-        }
-        Spacer(modifier = Modifier.height(12.dp))
-        Button(
-            modifier = Modifier.testTag(HomeTestTags.MAP_BUTTON),
-            onClick = onNavigateToMap
-        ) {
+          Button(onClick = { onNavigateToEdit("E001") }) { Text("Go to Edit Event") }
+          Spacer(modifier = Modifier.height(12.dp))
+          Button(
+              modifier = Modifier.testTag(HomeTestTags.ADD_EVENT_BUTTON),
+              onClick = onNavigateToCalendar) {
+                Text("Go to Calendar")
+              }
+          Spacer(modifier = Modifier.height(12.dp))
+          Button(
+              modifier = Modifier.testTag(HomeTestTags.SETTINGS_BUTTON),
+              onClick = onNavigateToSettings) {
+                Text("Go to Settings")
+              }
+          Spacer(modifier = Modifier.height(12.dp))
+          Button(modifier = Modifier.testTag(HomeTestTags.MAP_BUTTON), onClick = onNavigateToMap) {
             Text("Go to Map")
+          }
         }
-    }
   }
 }

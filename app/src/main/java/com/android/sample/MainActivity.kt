@@ -118,7 +118,8 @@ fun AgendappNavigation(modifier: Modifier = Modifier) {
             HomeScreen(
                 onNavigateToEdit = { eventId -> navigationActions.navigateToEditEvent(eventId) },
                 onNavigateToCalendar = { navigationActions.navigateTo(Screen.Calendar) },
-                onNavigateToSettings = { navigationActions.navigateTo(Screen.Settings) })
+                onNavigateToSettings = { navigationActions.navigateTo(Screen.Settings) },
+                onNavigateToMap = { navigationActions.navigateTo(Screen.Map) })
           }
         }
         navigation(startDestination = Screen.Calendar.route, route = "Calendar") {
@@ -127,7 +128,9 @@ fun AgendappNavigation(modifier: Modifier = Modifier) {
           }
         }
         navigation(startDestination = Screen.Map.route, route = "Map") {
-          composable(Screen.Map.route) { MapScreen() }
+          composable(Screen.Map.route) {
+            MapScreen(onGoBack = { navigationActions.navigateBack() })
+          }
         }
-  }
+      }
 }

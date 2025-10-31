@@ -4,6 +4,15 @@ import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -21,48 +30,66 @@ import com.google.maps.android.ktx.MapsExperimentalFeature
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 
-
 object MapScreenTestTags {
   const val GOOGLE_MAP_SCREEN = "mapScreen"
+  const val MAP_TITLE = "map_title"
+  const val MAP_GO_BACK_BUTTON = "map_go_back_button"
 }
 
 /** Displays the Map in a screen composable. */
-@OptIn(MapsExperimentalFeature::class)
+@OptIn(MapsExperimentalFeature::class, ExperimentalMaterial3Api::class)
 @Composable
 fun MapScreen(
-    mapViewModel: MapViewModel = viewModel()
+    mapViewModel: MapViewModel = viewModel(),
+    onGoBack: () -> Unit = {},
 ) {
-    val uiState by mapViewModel.state.collectAsState()
-    val cameraPositionState = rememberCameraPositionState()
+  val uiState by mapViewModel.state.collectAsState()
+  val cameraPositionState = rememberCameraPositionState()
 
-    LaunchedEffect(Unit) {
-        snapshotFlow { uiState.currentLocation }
-            .distinctUntilChanged()
-            .filterNotNull()
-            .collect { target ->
-                cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(target, 17f))
-            }
-    }
+  LaunchedEffect(Unit) {
+    snapshotFlow { uiState.currentLocation }
+        .distinctUntilChanged()
+        .filterNotNull()
+        .collect { target ->
+          cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(target, 17f))
+        }
+  }
 
-    val locationPermissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { granted ->
+  val locationPermissionLauncher =
+      rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         if (granted) mapViewModel.fetchUserLocation()
-    }
+      }
 
-    LaunchedEffect(Unit) {
-        locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-    }
+  LaunchedEffect(Unit) {
+    locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+  }
 
-    GoogleMap(
-        modifier =
-            Modifier.fillMaxSize().testTag(MapScreenTestTags.GOOGLE_MAP_SCREEN),
-        cameraPositionState = cameraPositionState,
-        properties = MapProperties(
-            isMyLocationEnabled = uiState.hasPermission,
-            mapType = MapType.NORMAL
+  Scaffold(
+      topBar = {
+        TopAppBar(
+            title = {
+              Text("Delimit your organisation", Modifier.testTag(MapScreenTestTags.MAP_TITLE))
+            },
+            navigationIcon = {
+              IconButton(
+                  onClick = { onGoBack() },
+                  Modifier.testTag(MapScreenTestTags.MAP_GO_BACK_BUTTON)) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+                        contentDescription = "Back")
+                  }
+            },
         )
-    ) {}
-
-
+      },
+      content = { padding ->
+        GoogleMap(
+            modifier =
+                Modifier.fillMaxSize()
+                    .testTag(MapScreenTestTags.GOOGLE_MAP_SCREEN)
+                    .padding(padding),
+            cameraPositionState = cameraPositionState,
+            properties =
+                MapProperties(
+                    isMyLocationEnabled = uiState.hasPermission, mapType = MapType.NORMAL)) {}
+      })
 }

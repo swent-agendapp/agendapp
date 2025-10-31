@@ -16,9 +16,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import com.android.sample.model.calendar.Event
 import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
 import com.android.sample.ui.calendar.data.LocalDateRange
-import com.android.sample.ui.calendar.mockData.MockEvent
 import com.android.sample.ui.calendar.style.CalendarDefaults
 
 /**
@@ -34,11 +34,10 @@ import com.android.sample.ui.calendar.style.CalendarDefaults
 fun CalendarContainer(
     modifier: Modifier = Modifier,
     dateRange: LocalDateRange = CalendarDefaults.DefaultDateRange,
-    events: List<MockEvent> = listOf(),
+    events: List<Event> = listOf(),
     onSwipeLeft: () -> Unit = {},
     onSwipeRight: () -> Unit = {},
     onCreateEvent: () -> Unit = {}
-    // Later : receive here the ViewModel (or the uiState to add/get/delete)
     // Later : receive here onEventClick, onEventLongPress
 ) {
   // Later : create here a variable transformableState for zoom changes
@@ -63,7 +62,6 @@ fun CalendarContainer(
             },
         dateRange = dateRange,
         events = events
-        // Later : give dateRange (like Monday-Friday) and events list from ViewModel
         // Later : give onEventClick and onEventLongPress
         )
     IconButton(

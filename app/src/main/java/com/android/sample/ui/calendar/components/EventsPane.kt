@@ -7,10 +7,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.times
+import com.android.sample.model.calendar.Event
 import com.android.sample.ui.calendar.data.workWeekDays
-import com.android.sample.ui.calendar.mockData.MockEvent
 import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.style.defaultGridContentStyle
+import com.android.sample.ui.calendar.utils.DateTimeUtils
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -29,14 +30,18 @@ import java.time.LocalTime
 @Composable
 fun EventsPane(
     days: List<LocalDate> = workWeekDays(),
-    events: List<MockEvent> = listOf(),
+    events: List<Event> = listOf(),
     columnWidthDp: Dp = defaultGridContentStyle().dimensions.defaultColumnWidthDp,
     gridHeightDp: Dp = defaultGridContentStyle().dimensions.rowHeightDp,
     gridStartTime: LocalTime = CalendarDefaults.DefaultStartTime,
     effectiveEndTime: LocalTime = CalendarDefaults.DefaultEndTime,
 ) {
   days.forEachIndexed { dayIndex, date ->
-    val eventsForDay = events.filter { it.date == date }
+    val dayStart = DateTimeUtils.dayStartInstant(date)
+    val dayEndExclusive =
+        DateTimeUtils.dayEndInstantExclusive(
+            date) // do not accept event of the day before finishing at 00:00
+    val eventsForDay = events.filter { it.endDate > dayStart && it.startDate < dayEndExclusive }
     if (eventsForDay.isNotEmpty()) {
       Box(
           modifier =
@@ -44,6 +49,7 @@ fun EventsPane(
             // for now (later : EventBlockWithOverlapHandling)
             EventBlock(
                 events = eventsForDay,
+                currentDate = date,
                 startTime = gridStartTime,
                 endTime = effectiveEndTime,
                 columnWidthDp = columnWidthDp)

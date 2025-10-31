@@ -34,19 +34,19 @@ class DateTimeUtilsTest {
   @Test
   fun formatInstantToDate_shouldReturnCorrectDateString() {
     val result = formatInstantToDate(instant)
-    assertEquals("2025/03/10", result)
+    assertEquals("10/03/2025", result)
   }
 
   @Test
   fun formatInstantToTime_shouldReturnCorrectTimeString() {
     val result = formatInstantToTime(instant)
-    assertEquals("02:30 PM", result)
+    assertEquals("14:30", result)
   }
 
   @Test
   fun parseDateTimeToInstant_shouldReturnSameInstantAsOriginal() {
-    val dateStr = "2025/03/10"
-    val timeStr = "02:30 PM"
+    val dateStr = "10/03/2025"
+    val timeStr = "14:30"
     val parsedInstant = parseDateTimeToInstant(dateStr, timeStr)
 
     assertEquals(instant.epochSecond, parsedInstant.epochSecond)

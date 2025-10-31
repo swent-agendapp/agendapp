@@ -1,4 +1,4 @@
-package com.android.sample.ui
+package com.android.sample.ui.calendar
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,8 +12,6 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeUp
 import androidx.compose.ui.unit.dp
-import com.android.sample.ui.calendar.CalendarGridContent
-import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.components.GridCanvas
 import com.android.sample.ui.calendar.data.workWeekDays
 import org.junit.Rule

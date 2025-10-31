@@ -21,6 +21,7 @@ import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
 import com.android.sample.ui.profile.AdminContactScreenTestTags
 import com.android.sample.ui.profile.AdminInformation
 import com.android.sample.ui.profile.ProfileScreenTestTags
+import com.android.sample.ui.replacement.ReplacementTestTags
 import com.android.sample.ui.screens.HomeTestTags
 import com.android.sample.ui.settings.SettingsScreenTestTags
 import org.hamcrest.CoreMatchers.allOf
@@ -60,6 +61,17 @@ class AgendappNavigationTest {
     composeTestRule.onNodeWithTag(AddEventTestTags.FINISH_BUTTON).assertExists().performClick()
 
     composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertIsDisplayed()
+  }
+
+  @Test
+  fun navigate_to_replacement() {
+    composeTestRule.setContent { AgendappNavigation() }
+
+    // Go to replacement
+    composeTestRule.onNodeWithTag(HomeTestTags.REPLACEMENT_BUTTON).assertExists().performClick()
+
+    // Validate screen content
+    composeTestRule.onNodeWithTag(ReplacementTestTags.SCREEN).assertIsDisplayed()
   }
 
   @Test

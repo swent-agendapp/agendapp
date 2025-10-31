@@ -153,7 +153,6 @@ jobs:
           emulator-boot-timeout: 180000
           emulator-options: >
             -no-snapshot
-            -no-window
             -gpu host
             -no-audio
             -no-boot-anim

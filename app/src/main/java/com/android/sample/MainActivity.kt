@@ -21,6 +21,7 @@ import com.android.sample.ui.calendar.AddEventTimeAndRecurrenceScreen
 import com.android.sample.ui.calendar.AddEventTitleAndDescriptionScreen
 import com.android.sample.ui.calendar.AddEventViewModel
 import com.android.sample.ui.calendar.CalendarScreen
+import com.android.sample.ui.map.MapScreen
 import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
 import com.android.sample.ui.profile.AdminContactScreen
@@ -117,12 +118,18 @@ fun AgendappNavigation(modifier: Modifier = Modifier) {
             HomeScreen(
                 onNavigateToEdit = { eventId -> navigationActions.navigateToEditEvent(eventId) },
                 onNavigateToCalendar = { navigationActions.navigateTo(Screen.Calendar) },
-                onNavigateToSettings = { navigationActions.navigateTo(Screen.Settings) })
+                onNavigateToSettings = { navigationActions.navigateTo(Screen.Settings) },
+                onNavigateToMap = { navigationActions.navigateTo(Screen.Map) })
           }
         }
         navigation(startDestination = Screen.Calendar.route, route = "Calendar") {
           composable(Screen.Calendar.route) {
             CalendarScreen(onCreateEvent = { navigationActions.navigateTo(Screen.AddEventTitle) })
+          }
+        }
+        navigation(startDestination = Screen.Map.route, route = "Map") {
+          composable(Screen.Map.route) {
+            MapScreen(onGoBack = { navigationActions.navigateBack() })
           }
         }
       }

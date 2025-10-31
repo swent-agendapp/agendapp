@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -12,6 +15,15 @@ android {
     namespace = "com.android.sample"
     compileSdk = 34
 
+    val localProperties = Properties()
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localProperties.load(FileInputStream(localPropertiesFile))
+    }
+
+    val mapsApiKey: String = localProperties.getProperty("MAPS_API_KEY") ?: ""
+
+
     defaultConfig {
         applicationId = "com.android.sample"
         minSdk = 29
@@ -23,6 +35,8 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
+        buildConfigField("String", "MAPS_API_KEY", "\"$mapsApiKey\"")
     }
 
     buildTypes {
@@ -131,6 +145,7 @@ fun DependencyHandlerScope.globalTestImplementation(dep: Any) {
 }
 
 dependencies {
+    implementation(platform(libs.kotlin.bom))
     dependencies {androidTestImplementation(libs.androidx.espresso.intents) }
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -138,6 +153,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(platform(libs.compose.bom))
     implementation(libs.googleid)
+    implementation(libs.play.services.location)
+    implementation(libs.places)
     testImplementation(libs.junit)
     globalTestImplementation(libs.androidx.junit)
     globalTestImplementation(libs.androidx.espresso.core)
@@ -152,11 +169,11 @@ dependencies {
 
     implementation(libs.androidx.navigation.compose)
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    testImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     androidTestImplementation(libs.androidx.navigation.testing)
     androidTestImplementation(libs.google.truth)
     testImplementation(libs.google.truth)
-
 
     // ------------- Jetpack Compose ------------------
     val composeBom = platform(libs.compose.bom)
@@ -203,6 +220,11 @@ dependencies {
     // Networking with OkHttp
     implementation(libs.okhttp)
     testImplementation(kotlin("test"))
+
+    // Map
+    implementation(libs.play.services.maps)
+    implementation(libs.maps.compose)
+    implementation(libs.maps.compose.utils)
 }
 
 tasks.withType<Test> {

@@ -150,17 +150,17 @@ jobs:
           arch: x86_64
           force-avd-creation: true
           profile: pixel_6
-          emulator-boot-timeout: 120000
+          emulator-boot-timeout: 180000
           emulator-options: >
             -no-snapshot
             -no-window
-            -gpu swiftshader_indirect
+            -gpu host
             -no-audio
             -no-boot-anim
             -camera-back none
             -camera-front none
-            -idle-grpc-timeout 300
-          disable-animations: true
+            -accel on
+          disable-animations: false
           script: |
             echo "Starting connected tests..."
             ./gradlew connectedCheck --parallel --build-cache

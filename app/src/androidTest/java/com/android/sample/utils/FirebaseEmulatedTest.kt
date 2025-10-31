@@ -4,6 +4,9 @@ import android.util.Log
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryFirebase
 import com.android.sample.model.constants.FirestoreConstants.EVENTS_COLLECTION_PATH
+import com.android.sample.model.constants.FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH
+import com.android.sample.model.organizations.OrganizationRepository
+import com.android.sample.model.organizations.OrganizationRepositoryFirebase
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -19,8 +22,16 @@ open class FirebaseEmulatedTest {
     return EventRepositoryFirebase(db = FirebaseEmulator.firestore)
   }
 
+  fun createInitializedOrganizationRepository(): OrganizationRepository {
+    return OrganizationRepositoryFirebase(db = FirebaseEmulator.firestore)
+  }
+
   suspend fun getEventsCount(): Int {
     return FirebaseEmulator.firestore.collection(EVENTS_COLLECTION_PATH).get().await().size()
+  }
+
+  suspend fun getOrganizationsCount(): Int {
+    return FirebaseEmulator.firestore.collection(ORGANIZATIONS_COLLECTION_PATH).get().await().size()
   }
 
   // --- Generic collection utilities ---
@@ -39,6 +50,8 @@ open class FirebaseEmulatedTest {
   // --- Specific collection helpers ---
   suspend fun clearEventsCollection() = clearCollection(EVENTS_COLLECTION_PATH)
 
+  suspend fun clearOrganizationsCollection() = clearCollection(ORGANIZATIONS_COLLECTION_PATH)
+
   /**
    * Sets up the test environment before each test.
    * - Checks if emulators are running
@@ -50,14 +63,16 @@ open class FirebaseEmulatedTest {
   open fun setUp() {
     runTest {
       val eventsCount = getEventsCount()
-      if (eventsCount > 0) {
+      val organizationsCount = getOrganizationsCount()
+      if (eventsCount > 0 || organizationsCount > 0) {
         Log.w(
             "FirebaseEmulatedTest",
-            "Warning: Test collection is not empty at the beginning of the test, count: $eventsCount events",
+            "Warning: Test collection is not empty at the beginning of the test, count: $eventsCount events + $organizationsCount organizations.",
         )
         clearEventsCollection()
+        clearOrganizationsCollection()
       }
-      assert(value = getEventsCount() == 0) {
+      assert(value = getEventsCount() == 0 && getOrganizationsCount() == 0) {
         "Test collection is not empty at the beginning of the test, clearing failed."
       }
     }
@@ -71,7 +86,10 @@ open class FirebaseEmulatedTest {
    */
   @After
   open fun tearDown() {
-    runTest { clearEventsCollection() }
+    runTest {
+      clearEventsCollection()
+      clearOrganizationsCollection()
+    }
     FirebaseEmulator.clearFirestoreEmulator()
     if (FirebaseEmulator.isRunning) {
       FirebaseEmulator.auth.signOut()

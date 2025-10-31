@@ -25,6 +25,7 @@ import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
 import com.android.sample.ui.profile.AdminContactScreen
 import com.android.sample.ui.profile.ProfileScreen
+import com.android.sample.ui.replacement.ReplacementScreen
 import com.android.sample.ui.screens.HomeScreen
 import com.android.sample.ui.settings.SettingsScreen
 import com.android.sample.ui.theme.SampleAppTheme
@@ -117,13 +118,19 @@ fun AgendappNavigation(modifier: Modifier = Modifier) {
             HomeScreen(
                 onNavigateToEdit = { eventId -> navigationActions.navigateToEditEvent(eventId) },
                 onNavigateToCalendar = { navigationActions.navigateTo(Screen.Calendar) },
-                onNavigateToSettings = { navigationActions.navigateTo(Screen.Settings) })
+                onNavigateToSettings = { navigationActions.navigateTo(Screen.Settings) },
+                onNavigateToReplacement = {
+                  navigationActions.navigateTo(Screen.ReplacementOverview)
+                })
           }
         }
         navigation(startDestination = Screen.Calendar.route, route = "Calendar") {
           composable(Screen.Calendar.route) {
             CalendarScreen(onCreateEvent = { navigationActions.navigateTo(Screen.AddEventTitle) })
           }
+        }
+        navigation(startDestination = Screen.ReplacementOverview.route, route = "Replacement") {
+          composable(Screen.ReplacementOverview.route) { ReplacementScreen() }
         }
       }
 }

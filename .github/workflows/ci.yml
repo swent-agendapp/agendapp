@@ -14,30 +14,19 @@ on:
       - reopened
 
 jobs:
-  setup:
+  build-and-test:
 
-    # ----------------------------------------------------------------------------------------------
-
-    name: Setup Environment
-    # Execute the CI on the course's runners
+    name: Build, Test & Sonar
     runs-on: ubuntu-latest
-    outputs:
-      gradle-cache: ${{ steps.gradle-cache.outputs.cache-hit }}
-      avd-cache: ${{ steps.avd-cache.outputs.cache-hit }}
-      firebase-path: ${{ steps.set-firebase-path.outputs.path }}
-
     steps:
-      # First step : Checkout the repository on the runner
+      # First step: Checkout the repository on the runner
       - name: Checkout
         uses: actions/checkout@v4
         with:
           submodules: recursive
-          # Shallow clones should be disabled for a better relevancy of Sonar analysis
-          #   (if we use Sonar Later)
           fetch-depth: 0
 
-      # Kernel-based Virtual Machine (KVM) is an open source virtualization technology built into
-      #   Linux. Enabling it allows the Android emulator to run faster.
+      # Kernel-based Virtual Machine (KVM) is built into Linux. Enabling it allows the Android emulator to run faster.
       - name: Enable KVM group perms
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -48,8 +37,8 @@ jobs:
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
-          distribution: "temurin"
-          java-version: "17"
+          distribution: temurin
+          java-version: 17
 
       # Setup NodeJS
       - name: Setup NodeJS
@@ -60,23 +49,43 @@ jobs:
       # Setup Firebase CLI
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
+
       # Cache Firebase CLI installation
       - name: Cache Firebase CLI
         uses: actions/cache@v4
         with:
           path: ~/.npm
           key: firebase-tools-cache
-      # Set Firebase path for future steps
+
+      # Add Firebase CLI to PATH
       - name: Set Firebase path
-        id: set-firebase-path
-        run: echo "path=$HOME/.npm-global/bin" >> $GITHUB_OUTPUT
+        run: echo "${HOME}/.npm-global/bin" >> $GITHUB_PATH
 
-        # Cache Gradle dependencies
-      - name: Gradle cache
-        id: gradle-cache
-        uses: gradle/actions/setup-gradle@v3
+      # Restore Gradle cache
+      - name: Restore Gradle cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
 
-      # Cache the Emulator, if the cache does not hit, create the emulator
+      # Make gradlew executable
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      # Load google-services.json from secrets
+      - name: Decode secrets
+        env:
+          GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
+        run: |
+          if [ -n "$GOOGLE_SERVICES" ]; then
+            echo "$GOOGLE_SERVICES" | base64 --decode > ./app/google-services.json
+          else
+            echo "::warning::GOOGLE_SERVICES secret is not set."
+          fi
+
+      # Cache the Emulator
       - name: AVD cache
         id: avd-cache
         uses: actions/cache@v4
@@ -86,8 +95,8 @@ jobs:
             ~/.android/adb*
           key: avd-34
 
-      # If the AVD cache did not hit, create the AVD and generate a snapshot for future caching
-      - name: create AVD and generate snapshot for caching
+      # Create AVD if cache missed
+      - name: Create AVD snapshot
         if: steps.avd-cache.outputs.cache-hit != 'true'
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -99,204 +108,33 @@ jobs:
           disable-animations: false
           script: echo "Generated AVD snapshot for caching."
 
-      # Load google-services.json and local.properties from the secrets
-      - name: Decode secrets
-        env:
-          GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
-        run: |
-          if [ -n "$GOOGLE_SERVICES" ]; then
-            echo "$GOOGLE_SERVICES" | base64 --decode > ./app/google-services.json
-          else
-            echo "::warning::GOOGLE_SERVICES secret is not set."
-          fi
+      # ------------------------------------------------------------------------------------------------
+      # Everything from now runs using the same Gradle Daemon
 
-      # Upload google-services.json as an artifact for future steps
-      - name: Upload google-services.json
-        uses: actions/upload-artifact@v4
-        with:
-          name: google-services
-          path: ./app/google-services.json
-
-
-      # Make gradlew executable
-      - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
-
-  # ------------------------------------------------------------------------------------------------
-
-  firebase_check:
-    name: Firestore Check
-    runs-on: ubuntu-latest
-    needs: setup
-    steps:
-      - uses: actions/checkout@v4
-
-      # Restore Firebase CLI cache and add it to PATH
-      - name: Restore Firebase cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: firebase-tools-cache
-      - name: Add Firebase to PATH
-        run: echo "${HOME}/.npm-global/bin" >> $GITHUB_PATH
-
-      # Check Firestore emulator configuration
-      - name: Firestore Check
-        run: |
-          if [ ! -e "firebase.json" ]; then # Check if firebase.json exists
-            echo "(Warning): 'firebase.json' file is missing. Run 'firebase emulators:init'."
-            exit 0
-          fi
-          jq -e '.emulators' firebase.json >/dev/null || { # Check if emulators are configured
-            echo "'firebase.json' is missing 'emulators'. Run 'firebase emulators:init'."
-            exit 1
-          }
-          for e in auth firestore; do # Check if auth and firestore emulators are configured
-            jq -e ".emulators.$e" firebase.json >/dev/null || {
-              echo "'firebase.json' is missing 'emulators.$e'. Run 'firebase emulators:init'."
-              exit 1
-            }
-          done
-
-  # ------------------------------------------------------------------------------------------------
-
-  check_format:
-    # Check formatting
-    name: KTFmt Check
-    runs-on: ubuntu-latest
-    needs: setup
-    steps:
-      - uses: actions/checkout@v4
-
-      # Restore Gradle cache
-      - name: Cache Gradle
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-
-      - name: Setup JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
+      # KTFmt Check
       - name: KTFmt Check
-        run: ./gradlew ktfmtCheck
+        run: ./gradlew ktfmtCheck --parallel --build-cache
 
-  # ------------------------------------------------------------------------------------------------
-
-  assemble:
-    name: Assemble
-    runs-on: ubuntu-latest
-    needs: [setup, firebase_check, check_format]
-    steps:
-      - uses: actions/checkout@v4
-
-      # Retrieve google-services.json
-      - name: Download google-services.json
-        uses: actions/download-artifact@v4
-        with:
-          name: google-services
-          path: ./app/
-
-      # Restore Gradle cache
-      - name: Cache Gradle
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-
-      - name: Setup JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
+      # Assemble project
       - name: Assemble project
         run: ./gradlew assemble lint --parallel --build-cache
 
-  # ------------------------------------------------------------------------------------------------
-
-  unit_tests:
-    name: Unit Tests
-    runs-on: ubuntu-latest
-    needs: [assemble, check_format]
-    steps:
-      - uses: actions/checkout@v4
-
-      # Restore Gradle cache
-      - name: Cache Gradle
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-
-      - name: Setup JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
+      # Unit Tests
       - name: Run Unit Tests
         run: ./gradlew check --parallel --build-cache
 
-  # ------------------------------------------------------------------------------------------------
-
-  ui_tests:
-    name: Instrumented Tests
-    runs-on: ubuntu-latest
-    needs: [assemble, firebase_check, check_format]
-    steps:
-      - uses: actions/checkout@v4
-
-      # Retrieve google-services.json
-      - name: Download google-services.json
-        uses: actions/download-artifact@v4
-        with:
-            name: google-services
-            path: ./app/
-
-      # Restore Gradle cache
-      - name: Cache Gradle
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-
-      - name: Setup JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
-
-      # Restore Firebase CLI cache and add it to PATH
-      - name: Restore Firebase cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: firebase-tools-cache
-      - name: Add Firebase to PATH
-        run: echo "${HOME}/.npm-global/bin" >> $GITHUB_PATH
-
-      # Start Firebase emulators for instrumentation tests
+      # Start Firebase emulators
       - name: Start Firebase emulators
         run: |
           if [ -e "firebase.json" ] && jq -e '.emulators' firebase.json >/dev/null; then
-            echo "Starting Firebase emulators for instrumentation tests..."
+            echo "Starting Firebase emulators..."
             firebase emulators:start --only auth,firestore --project demo-project &
-            echo "Firebase emulators started"
           else
-            echo "Firebase emulators not configured, skipping emulator startup..."
+            echo "Firebase emulators not configured, skipping startup..."
           fi
 
-      # Run connected tests on the emulator
-      - name: Run UI tests on emulator
+      # UI tests on emulator
+      - name: Run UI tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34
@@ -311,35 +149,12 @@ jobs:
             -no-audio
             -no-boot-anim
           disable-animations: false
-          script: |
-            echo "Starting connected tests..."
-            ./gradlew connectedCheck --parallel --build-cache
+          script: ./gradlew connectedCheck --parallel --build-cache
 
-  # ------------------------------------------------------------------------------------------------
-
-  sonarcloud:
-    name: Coverage & Sonar
-    runs-on: ubuntu-latest
-    needs: [ unit_tests, ui_tests ]
-    steps:
-      - uses: actions/checkout@v4
-
-      # Restore Gradle cache
-      - name: Cache Gradle
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-
-      - name: Setup JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
+      # Coverage & Sonar
       - name: Generate Coverage Report
-        run: ./gradlew jacocoTestReport
+        run: ./gradlew jacocoTestReport --parallel --build-cache
+
       - name: Upload to SonarCloud
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -57,6 +57,7 @@ jobs:
         with:
           node-version: 22
           cache: "npm"
+          cache-dependency-path: "" # Disable automatic caching to manage it manually
 
       # Setup Firebase CLI
       - name: Install Firebase CLI

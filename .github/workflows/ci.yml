@@ -159,7 +159,6 @@ jobs:
             -no-boot-anim
             -camera-back none
             -camera-front none
-            -accel on
           disable-animations: false
           script: |
             echo "Starting connected tests..."

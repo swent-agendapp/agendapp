@@ -417,17 +417,3 @@ fun EditEventAttendantScreen(
             nextButtonTestTag = EditEventTestTags.SAVE_BUTTON)
       })
 }
-
-/*
-@Preview(showBackground = true)
-@Composable
-fun EditEventPreview() {
-  EditEventScreen(eventId = "E123")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun EditEventAttendantScreenPreview() {
-  EditEventAttendantScreen(editEventViewModel = EditEventViewModel(), onBack = {}, onSave = {})
-}
- */

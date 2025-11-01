@@ -36,19 +36,6 @@ class AddEventViewModelTest {
   fun setUp() {
     Dispatchers.setMain(testDispatcher)
     repository = EventRepositoryLocal()
-    // Make AuthorizationService.requireAdmin() pass during tests
-    val fakeRepo =
-        object : EmployeeRepository {
-          override suspend fun getEmployees(): List<Employee> = emptyList()
-
-          override suspend fun newEmployee(employee: Employee) {}
-
-          override suspend fun deleteEmployee(userId: String) {}
-
-          override suspend fun getMyRole(): Role? = Role.ADMIN
-        }
-    val fakeAuthz = AuthorizationService(repo = fakeRepo)
-    viewModel = AddEventViewModel(repository, authz = fakeAuthz)
   }
 
   @After
@@ -58,7 +45,8 @@ class AddEventViewModelTest {
 
   @Test
   fun `initial UI state has default values`() {
-    val state = viewModel.uiState.value
+    val vm = makeAdminVm()
+    val state = vm.uiState.value
     assertTrue(state.title.isEmpty())
     assertTrue(state.description.isEmpty())
     assertEquals(0, state.participants.size)
@@ -67,74 +55,103 @@ class AddEventViewModelTest {
 
   @Test
   fun `setTitle updates the title in UI state`() {
-    viewModel.setTitle("SwEnt Meeting")
-    assertEquals("SwEnt Meeting", viewModel.uiState.value.title)
+    val vm = makeAdminVm()
+    vm.setTitle("SwEnt Meeting")
+    assertEquals("SwEnt Meeting", vm.uiState.value.title)
   }
 
   @Test
   fun `setDescription updates the description in UI state`() {
-    viewModel.setDescription("Standup meeting")
-    assertEquals("Standup meeting", viewModel.uiState.value.description)
+    val vm = makeAdminVm()
+    vm.setDescription("Standup meeting")
+    assertEquals("Standup meeting", vm.uiState.value.description)
   }
 
   @Test
   fun `setStartInstant updates the start instant in UI state`() {
+    val vm = makeAdminVm()
     val newStart = Instant.parse("2025-03-01T10:00:00Z")
-    viewModel.setStartInstant(newStart)
-    assertEquals(newStart, viewModel.uiState.value.startInstant)
+    vm.setStartInstant(newStart)
+    assertEquals(newStart, vm.uiState.value.startInstant)
   }
 
   @Test
   fun `setEndInstant updates the end instant in UI state`() {
+    val vm = makeAdminVm()
     val newEnd = Instant.parse("2025-03-01T11:00:00Z")
-    viewModel.setEndInstant(newEnd)
-    assertEquals(newEnd, viewModel.uiState.value.endInstant)
+    vm.setEndInstant(newEnd)
+    assertEquals(newEnd, vm.uiState.value.endInstant)
   }
 
   @Test
   fun `addParticipant and removeParticipant modify participants set`() {
-    viewModel.addParticipant("user1")
-    assertTrue(viewModel.uiState.value.participants.contains("user1"))
+    val vm = makeAdminVm()
 
-    viewModel.removeParticipant("user1")
-    assertFalse(viewModel.uiState.value.participants.contains("user1"))
+    vm.addParticipant("user1")
+    assertTrue(vm.uiState.value.participants.contains("user1"))
+
+    vm.removeParticipant("user1")
+    assertFalse(vm.uiState.value.participants.contains("user1"))
   }
 
   @Test
   fun `allFieldsValid returns false if title or description is blank`() {
-    viewModel.setTitle("")
-    viewModel.setDescription("desc")
-    assertFalse(viewModel.allFieldsValid())
+    val vm = makeAdminVm()
 
-    viewModel.setTitle("Title")
-    viewModel.setDescription("")
-    assertFalse(viewModel.allFieldsValid())
+    vm.setTitle("")
+    vm.setDescription("desc")
+    assertFalse(vm.allFieldsValid())
 
-    viewModel.setTitle("Title")
-    viewModel.setDescription("Desc")
-    assertTrue(viewModel.allFieldsValid())
+    vm.setTitle("Title")
+    vm.setDescription("")
+    assertFalse(vm.allFieldsValid())
+
+    vm.setTitle("Title")
+    vm.setDescription("Desc")
+    assertTrue(vm.allFieldsValid())
   }
 
   @Test
   fun `startTimeIsAfterEndTime returns true if start instant is after end instant`() {
-    val now = Instant.now()
-    viewModel.setStartInstant(now.plus(Duration.ofHours(2)))
-    viewModel.setEndInstant(now.plus(Duration.ofHours(1)))
-    assertTrue(viewModel.startTimeIsAfterEndTime())
+    val vm = makeAdminVm()
 
-    viewModel.setStartInstant(now)
-    viewModel.setEndInstant(now.plus(Duration.ofHours(1)))
-    assertFalse(viewModel.startTimeIsAfterEndTime())
+    val now = Instant.now()
+    vm.setStartInstant(now.plus(Duration.ofHours(2)))
+    vm.setEndInstant(now.plus(Duration.ofHours(1)))
+    assertTrue(vm.startTimeIsAfterEndTime())
+
+    vm.setStartInstant(now)
+    vm.setEndInstant(now.plus(Duration.ofHours(1)))
+    assertFalse(vm.startTimeIsAfterEndTime())
+  }
+
+  @Test
+  fun `resetUiState clears all fields to default`() {
+    val vm = makeAdminVm()
+    vm.setTitle("Some Title")
+    vm.setDescription("Some Description")
+    vm.addParticipant("user1")
+    vm.setStartInstant(Instant.parse("2025-03-01T10:00:00Z"))
+    vm.setEndInstant(Instant.parse("2025-03-01T11:00:00Z"))
+    vm.setRecurrenceMode(RecurrenceStatus.Weekly)
+
+    vm.resetUiState()
+    val state = vm.uiState.value
+    assertTrue(state.title.isEmpty())
+    assertTrue(state.description.isEmpty())
+    assertEquals(0, state.participants.size)
+    assertEquals(RecurrenceStatus.OneTime, state.recurrenceMode)
   }
 
   @Test
   fun `addEvent inserts event into repository`() = runTest {
-    viewModel.setTitle("Meeting")
-    viewModel.setDescription("Team sync")
-    viewModel.setStartInstant(Instant.now())
-    viewModel.setEndInstant(Instant.now().plus(Duration.ofHours(1)))
+    val vm = makeAdminVm()
+    vm.setTitle("Meeting")
+    vm.setDescription("Team sync")
+    vm.setStartInstant(Instant.now())
+    vm.setEndInstant(Instant.now().plus(Duration.ofHours(1)))
 
-    viewModel.addEvent()
+    vm.addEvent()
     testDispatcher.scheduler.advanceUntilIdle() // run pending coroutines
 
     val events = repository.getAllEvents()
@@ -142,20 +159,67 @@ class AddEventViewModelTest {
   }
 
   @Test
-  fun `resetUiState clears all fields to default`() {
-    viewModel.setTitle("Some Title")
-    viewModel.setDescription("Some Description")
-    viewModel.addParticipant("user1")
-    viewModel.setStartInstant(Instant.parse("2025-03-01T10:00:00Z"))
-    viewModel.setEndInstant(Instant.parse("2025-03-01T11:00:00Z"))
-    viewModel.setRecurrenceMode(RecurrenceStatus.Weekly)
+  fun `admin can add event`() = runTest {
+    val vm = makeAdminVm()
 
-    viewModel.resetUiState()
-    val state = viewModel.uiState.value
-    assertTrue(state.title.isEmpty())
-    assertTrue(state.description.isEmpty())
-    assertEquals(0, state.participants.size)
-    assertEquals(RecurrenceStatus.OneTime, state.recurrenceMode)
-    assertEquals(RecurrenceStatus.OneTime, state.recurrenceMode)
+    vm.setTitle("Meeting")
+    vm.setDescription("Team sync")
+    vm.setStartInstant(Instant.now())
+    vm.setEndInstant(Instant.now().plus(Duration.ofHours(1)))
+
+    vm.addEvent()
+    testDispatcher.scheduler.advanceUntilIdle()
+
+    val events = repository.getAllEvents()
+    assertTrue(events.any { it.title == "Meeting" && it.description == "Team sync" })
+  }
+
+  @Test
+  fun `employee cannot add event`() = runTest {
+    val vm = makeEmployeeVm()
+
+    vm.setTitle("Meeting")
+    vm.setDescription("Team sync")
+    vm.setStartInstant(Instant.now())
+    vm.setEndInstant(Instant.now().plus(Duration.ofHours(1)))
+
+    vm.addEvent()
+    testDispatcher.scheduler.advanceUntilIdle()
+
+    val events = repository.getAllEvents()
+    assertTrue(events.isEmpty())
+  }
+
+  /* Helper functions */
+  private fun makeAdminVm(): AddEventViewModel {
+    val adminAuthz =
+        AuthorizationService(
+            repo =
+                object : EmployeeRepository {
+                  override suspend fun getEmployees(): List<Employee> = emptyList()
+
+                  override suspend fun newEmployee(employee: Employee) {}
+
+                  override suspend fun deleteEmployee(userId: String) {}
+
+                  override suspend fun getMyRole(): Role? = Role.ADMIN
+                })
+    return AddEventViewModel(repository, authz = adminAuthz)
+  }
+
+  private fun makeEmployeeVm(): AddEventViewModel {
+    val employeeAuthz =
+        AuthorizationService(
+            repo =
+                object : EmployeeRepository {
+                  override suspend fun getEmployees(): List<Employee> = emptyList()
+
+                  override suspend fun newEmployee(employee: Employee) {}
+
+                  override suspend fun deleteEmployee(userId: String) {}
+
+                  override suspend fun getMyRole(): Role? = Role.EMPLOYEE
+                })
+    return AddEventViewModel(repository, authz = employeeAuthz)
   }
 }

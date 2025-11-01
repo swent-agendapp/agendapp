@@ -10,7 +10,6 @@ import androidx.lifecycle.viewModelScope
 import com.android.sample.R
 import com.android.sample.model.authentification.User
 import com.android.sample.model.authorization.AuthorizationService
-import com.android.sample.model.organization.EmployeeRepositoryProvider
 import com.android.sample.model.organization.Role
 import com.github.se.bootcamp.model.authentication.AuthRepository
 import com.github.se.bootcamp.model.authentication.AuthRepositoryFirebase
@@ -41,18 +40,17 @@ data class AuthUIState(
  *
  * @property repository The repository used to perform authentication operations.
  */
-class SignInViewModel(private val repository: AuthRepository = AuthRepositoryFirebase()) :
-    ViewModel() {
+class SignInViewModel(
+    private val repository: AuthRepository = AuthRepositoryFirebase(),
+    private val authz: AuthorizationService = AuthorizationService()
+) : ViewModel() {
 
-  private val authz = AuthorizationService()
   private val _uiState = MutableStateFlow(AuthUIState())
   val uiState: StateFlow<AuthUIState> = _uiState
 
   init {
     checkCurrentUser()
   }
-
-  private suspend fun loadRole(): Role? = EmployeeRepositoryProvider.repository.getMyRole()
 
   /** Checks if there's a persisted user session and restores it. */
   private fun checkCurrentUser() {

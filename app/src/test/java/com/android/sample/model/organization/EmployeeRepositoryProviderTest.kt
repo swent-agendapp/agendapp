@@ -1,9 +1,5 @@
-package com.android.sample.model.authorization
+package com.android.sample.model.organization
 
-import com.android.sample.model.organization.Employee
-import com.android.sample.model.organization.EmployeeRepository
-import com.android.sample.model.organization.EmployeeRepositoryProvider
-import com.android.sample.model.organization.Role
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
@@ -23,9 +19,18 @@ class EmployeeRepositoryProviderTest {
   @Test
   fun provider_holds_assigned_instance() = runBlocking {
     val stub = StubEmployeeRepo(Role.ADMIN)
-    EmployeeRepositoryProvider.repository = stub
+    EmployeeRepositoryProvider.init(stub)
 
     val result = EmployeeRepositoryProvider.repository.getMyRole()
     assertThat(result).isEqualTo(Role.ADMIN)
+  }
+
+  @Test(expected = IllegalStateException::class)
+  fun provider_throws_if_not_initialized() {
+    val field = EmployeeRepositoryProvider::class.java.getDeclaredField("_repository")
+    field.isAccessible = true
+    field.set(EmployeeRepositoryProvider, null)
+
+    EmployeeRepositoryProvider.repository
   }
 }

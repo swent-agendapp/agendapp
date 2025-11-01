@@ -24,6 +24,7 @@ data class AddCalendarEventUIState(
     val recurrenceEndTime: Instant = Instant.now(),
     val recurrenceMode: RecurrenceStatus = RecurrenceStatus.OneTime,
     val participants: Set<String> = emptySet(),
+    val errorMsg: String? = null,
 )
 
 class AddEventViewModel(
@@ -50,10 +51,16 @@ class AddEventViewModel(
   fun addEventToRepository(event: Event) {
     viewModelScope.launch {
       try {
-        authz.requireAdmin()
+        val allowed = runCatching { authz.requireAdmin() }.isSuccess
+        if (!allowed) {
+          _uiState.value = _uiState.value.copy(errorMsg = "You are not allowed to create events")
+          return@launch
+        }
+
         repository.insertEvent(event)
       } catch (e: Exception) {
         Log.e("AddEventViewModel", "Error adding event: ${e.message}")
+        _uiState.value = _uiState.value.copy(errorMsg = "Unexpected error while creating the event")
       }
     }
   }

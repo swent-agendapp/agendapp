@@ -1,5 +1,12 @@
 package com.android.sample.model.organization
 
 object EmployeeRepositoryProvider {
-  lateinit var repository: EmployeeRepository
+  private var _repository: EmployeeRepository? = null
+
+  val repository: EmployeeRepository
+    get() = _repository ?: error("EmployeeRepositoryProvider not initialized")
+
+  fun init(repo: EmployeeRepository) {
+    _repository = repo
+  }
 }

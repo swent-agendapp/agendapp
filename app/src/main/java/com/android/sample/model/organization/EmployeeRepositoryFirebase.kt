@@ -6,6 +6,29 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.tasks.await
 
+data class FirestoreEmployee(
+    val userId: String = "",
+    val displayName: String = "",
+    val email: String = "",
+    val role: String = Role.EMPLOYEE.name,
+    val updatedAt: Timestamp? = null,
+)
+
+fun Employee.toFirestore(): FirestoreEmployee =
+    FirestoreEmployee(
+        userId = userId,
+        displayName = displayName,
+        email = email,
+        role = role.name,
+        updatedAt = Timestamp.now())
+
+fun FirestoreEmployee.toDomain(): Employee =
+    Employee(
+        userId = userId,
+        displayName = displayName,
+        email = email,
+        role = runCatching { Role.valueOf(role) }.getOrDefault(Role.EMPLOYEE))
+
 /**
  * Firebase implementation using a global collection: /employees/{userId}
  *
@@ -25,17 +48,8 @@ class EmployeeRepositoryFirebase(
   }
 
   override suspend fun newEmployee(employee: Employee) {
-    require(employee.userId.isNotBlank()) { "userId is requiered" }
-    employeesCol()
-        .document(employee.userId)
-        .set(
-            mapOf(
-                "userId" to employee.userId,
-                "displayName" to employee.displayName,
-                "email" to employee.email,
-                "role" to employee.role.name,
-                "updatedAt" to Timestamp.now()))
-        .await()
+    require(employee.userId.isNotBlank()) { "userId is required" }
+    employeesCol().document(employee.userId).set(employee.toFirestore()).await()
   }
 
   override suspend fun deleteEmployee(userId: String) {
@@ -46,7 +60,7 @@ class EmployeeRepositoryFirebase(
     val uid = authRepository.getCurrentUser()?.id ?: return null
     val doc = employeesCol().document(uid).get().await()
     if (!doc.exists()) return null
-    return runCatching { Role.valueOf(doc.getString("role") ?: "EMPLOYEE") }
-        .getOrDefault(Role.EMPLOYEE)
+    val roleName = doc.getString("role") ?: return null
+    return runCatching { Role.valueOf(roleName) }.getOrNull()
   }
 }

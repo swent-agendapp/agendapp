@@ -6,7 +6,7 @@ interface EmployeeRepository {
   suspend fun getEmployees(): List<Employee>
 
   /**
-   * Create or update a employee
+   * Create or update an employee
    *
    * @param employee The employee to create
    */

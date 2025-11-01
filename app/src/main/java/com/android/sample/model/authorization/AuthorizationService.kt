@@ -21,7 +21,7 @@ class AuthorizationService(
   /** Throws if the current user is not ADMIN */
   suspend fun requireAdmin() {
     if (!canEditCourses()) {
-      throw IllegalAccessException("You do not have nessessary permission")
+      throw IllegalAccessException("You do not have necessary permission")
     }
   }
 }

@@ -14,8 +14,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
@@ -42,7 +40,7 @@ object EditEventTestTags {
 }
 // Spacing data class for consistent spacing values
 // Will be useful
-data class Spacing(val small: Dp = 8.dp, val medium: Dp = 16.dp, val large: Dp = 24.dp)
+// data class Spacing(val small: Dp = 8.dp, val medium: Dp = 16.dp, val large: Dp = 24.dp)
 
 /**
  * Simple one-page Edit Event screen. This view uses placeholder state until EditEventViewModel is
@@ -399,6 +397,7 @@ fun EditEventAttendantScreen(
       })
 }
 
+/*
 @Preview(showBackground = true)
 @Composable
 fun EditEventPreview() {
@@ -410,3 +409,4 @@ fun EditEventPreview() {
 fun EditEventAttendantScreenPreview() {
   EditEventAttendantScreen(editEventViewModel = EditEventViewModel(), onBack = {}, onSave = {})
 }
+ */

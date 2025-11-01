@@ -66,10 +66,6 @@ object DateTimeUtils {
     return instant.atZone(zone).minute
   }
 
-  fun nowInstant(): Instant {
-    return Instant.now()
-  }
-
   fun nowInstantPlusHours(hours: Long): Instant {
     return Instant.now().plusSeconds(hours * 3600)
   }

@@ -23,6 +23,7 @@ import com.android.sample.ui.calendar.components.DatePickerFieldToModal
 import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.calendar.components.ValidatingTextField
 import com.android.sample.ui.calendar.utils.DateTimeUtils
+import java.time.Instant
 
 object EditEventTestTags {
   const val TITLE_FIELD = "edit_title_field"
@@ -64,7 +65,7 @@ fun EditEventScreen(
   var recurrence by remember { mutableStateOf(RecurrenceStatus.Weekly) }
   var expanded by remember { mutableStateOf(false) }
 
-  var startInstant by remember { mutableStateOf(DateTimeUtils.nowInstant()) }
+  var startInstant by remember { mutableStateOf(Instant.now()) }
   var endInstant by remember { mutableStateOf(DateTimeUtils.nowInstantPlusHours(1)) }
 
   var showStartTimePicker by remember { mutableStateOf(false) }

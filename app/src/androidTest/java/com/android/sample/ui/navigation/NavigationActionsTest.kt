@@ -30,7 +30,6 @@ import com.android.sample.ui.profile.ProfileScreenTestTags
 import com.android.sample.ui.screens.HomeTestTags
 import com.android.sample.ui.settings.SettingsScreenTestTags
 import org.hamcrest.CoreMatchers.allOf
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -100,7 +99,7 @@ class AgendappNavigationTest {
   }
 
   @OptIn(ExperimentalTestApi::class)
-  @Ignore("Feature not ready yet")
+  @Test
   fun clickingEmail_opensEmailApp() {
     Intents.init()
     try {
@@ -137,7 +136,7 @@ class AgendappNavigationTest {
   }
 
   @OptIn(ExperimentalTestApi::class)
-  @Ignore("Feature not ready yet")
+  @Test
   fun clickingPhone_opensDialerApp() {
     Intents.init()
     try {

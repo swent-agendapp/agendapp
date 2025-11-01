@@ -110,6 +110,14 @@ jobs:
             echo "::warning::GOOGLE_SERVICES secret is not set."
           fi
 
+      # Upload google-services.json as an artifact for future steps
+      - name: Upload google-services.json
+        uses: actions/upload-artifact@v3
+        with:
+          name: google-services
+          path: ./app/google-services.json
+
+
       # Make gradlew executable
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
@@ -175,6 +183,14 @@ jobs:
     needs: [setup, firebase_check, check_format]
     steps:
       - uses: actions/checkout@v4
+
+      # Retrieve google-services.json
+      - name: Download google-services.json
+        uses: actions/download-artifact@v3
+        with:
+          name: google-services
+          path: ./app/
+
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
@@ -207,6 +223,14 @@ jobs:
     needs: [assemble, firebase_check, check_format]
     steps:
       - uses: actions/checkout@v4
+
+      # Retrieve google-services.json
+      - name: Download google-services.json
+        uses: actions/download-artifact@v3
+        with:
+            name: google-services
+            path: ./app/
+
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:

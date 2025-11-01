@@ -145,7 +145,7 @@ jobs:
           target: google_apis
           arch: x86_64
           force-avd-creation: false # Use the cached AVD
-          profile: pixel_6
+          profile: pixel_8
           emulator-boot-timeout: 120000
           emulator-options: >
             -no-snapshot

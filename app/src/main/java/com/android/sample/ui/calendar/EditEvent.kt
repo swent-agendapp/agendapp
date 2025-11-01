@@ -273,8 +273,17 @@ fun EditEventScreen(
 }
 
 /**
- * NotificationSection Displays a list of reminders associated with the event, allowing users to add
- * or remove notifications.
+ * **NotificationSection**
+ *
+ * A composable component that displays the list of reminder notifications associated with an event.
+ * It allows users to **view**, **add**, and **remove** notification entries interactively.
+ *
+ * ### Parameters:
+ *
+ * @param notifications The current list of notification labels (e.g. "30 min before").
+ * @param onAddNotification Callback invoked when the user presses the "Add a notification" button.
+ * @param onRemoveNotification Callback invoked when a specific notification is removed.
+ * @param modifier Modifier used to adjust layout or styling of this section (default: [Modifier]).
  */
 @Composable
 fun NotificationSection(
@@ -327,7 +336,19 @@ fun NotificationSection(
   }
 }
 
-/** EditEventAttendantScreen */
+/**
+ * **EditEventAttendantScreen**
+ *
+ * A composable screen that allows users to **view**, **select**, and **update** the list of
+ * participants associated with an event. It integrates with [EditEventViewModel] to keep the
+ * participant list state synchronized with the underlying event model.
+ *
+ * ### Parameters:
+ *
+ * @param editEventViewModel The [EditEventViewModel] that manages the participant selection state.
+ * @param onSave Callback invoked when the user confirms the participant selection.
+ * @param onBack Callback invoked when the user cancels and navigates back.
+ */
 @Composable
 fun EditEventAttendantScreen(
     editEventViewModel: EditEventViewModel = viewModel(),

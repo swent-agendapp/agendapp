@@ -112,7 +112,7 @@ jobs:
 
       # Upload google-services.json as an artifact for future steps
       - name: Upload google-services.json
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: google-services
           path: ./app/google-services.json
@@ -186,7 +186,7 @@ jobs:
 
       # Retrieve google-services.json
       - name: Download google-services.json
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: google-services
           path: ./app/
@@ -226,7 +226,7 @@ jobs:
 
       # Retrieve google-services.json
       - name: Download google-services.json
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
             name: google-services
             path: ./app/

@@ -564,17 +564,17 @@ class CalendarEventsTest {
   }
 
   @Test
-  fun calendarGridContent_showsEvent_whenSpanningWeekBoundary() {
-    // Event starting Sunday night and ending Monday morning should show on Monday column
-    val sunday = LocalDate.now().with(DayOfWeek.MONDAY).minusDays(1)
+  fun calendarGridContent_showsEvent_whenSpanningFromPreviousSundayToCurrentMonday() {
+    // Event starting Sunday (previous week) and ending Monday (current week) should show on Monday
+    // column
     val monday = LocalDate.now().with(DayOfWeek.MONDAY)
+    val previousSunday = monday.minusDays(1)
 
     val events =
         listOf(
-            // Event spanning week boundary [Sun 22:00 - Mon 10:00] — split across weeks
             createEvent(
                 title = "Week Boundary Event",
-                startDate = at(sunday, LocalTime.of(22, 0)),
+                startDate = at(previousSunday, LocalTime.of(22, 0)),
                 endDate = at(monday, LocalTime.of(10, 0)),
                 cloudStorageStatuses = emptySet(),
                 participants = emptySet(),
@@ -584,5 +584,28 @@ class CalendarEventsTest {
     compose.setContent { CalendarGridContent(events = events) }
 
     scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Week Boundary Event")
+  }
+
+  @Test
+  fun calendarGridContent_showsEvent_whenSpanningFromCurrentSundayToNextMonday() {
+    // Event starting Sunday (current week) and ending Monday (next week) should show on Sunday
+    // column
+    val currentSunday = LocalDate.now().with(DayOfWeek.SUNDAY)
+    val nextMonday = currentSunday.plusDays(1)
+
+    val events =
+        listOf(
+            createEvent(
+                title = "Current Week Boundary Event",
+                startDate = at(currentSunday, LocalTime.of(22, 0)),
+                endDate = at(nextMonday, LocalTime.of(10, 0)),
+                cloudStorageStatuses = emptySet(),
+                participants = emptySet(),
+            ),
+        )
+
+    compose.setContent { CalendarGridContent(events = events) }
+
+    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Current Week Boundary Event")
   }
 }

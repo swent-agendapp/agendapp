@@ -1,9 +1,9 @@
 package com.android.sample.model.organization
 
+import com.android.sample.model.firestoreMappers.EmployeeMapper
 import com.github.se.bootcamp.model.authentication.AuthRepository
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.tasks.await
 
 data class FirestoreEmployee(
@@ -44,12 +44,13 @@ class EmployeeRepositoryFirebase(
 
   override suspend fun getEmployees(): List<Employee> {
     val snap = employeesCol().get().await()
-    return snap.documents.mapNotNull { it.toObject<Employee>() }
+    return snap.documents.mapNotNull { EmployeeMapper.fromDocument(it) }
   }
 
   override suspend fun newEmployee(employee: Employee) {
     require(employee.userId.isNotBlank()) { "userId is required" }
-    employeesCol().document(employee.userId).set(employee.toFirestore()).await()
+    val data = EmployeeMapper.toMap(employee)
+    employeesCol().document(employee.userId).set(data).await()
   }
 
   override suspend fun deleteEmployee(userId: String) {
@@ -60,7 +61,7 @@ class EmployeeRepositoryFirebase(
     val uid = authRepository.getCurrentUser()?.id ?: return null
     val doc = employeesCol().document(uid).get().await()
     if (!doc.exists()) return null
-    val roleName = doc.getString("role") ?: return null
-    return runCatching { Role.valueOf(roleName) }.getOrNull()
+    val employee = EmployeeMapper.fromDocument(doc) ?: return null
+    return employee.role
   }
 }

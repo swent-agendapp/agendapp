@@ -45,9 +45,7 @@ data class ReplacementItem(
     val onClick: () -> Unit = {}
 )
 
-/**
- * Replacement Screen displaying different replacement options.
- */
+/** Replacement Screen displaying different replacement options. */
 @Composable
 fun ReplacementScreen(
     onOrganizeClick: () -> Unit = {},
@@ -97,9 +95,7 @@ fun ReplacementScreen(
       })
 }
 
-/**
- * Composable representing a single replacement option card.
- */
+/** Composable representing a single replacement option card. */
 @Composable
 fun ReplacementCard(item: ReplacementItem, onClick: () -> Unit = {}) {
   Card(

@@ -1,5 +1,6 @@
 package com.android.sample.ui.navigation
 
+import android.Manifest
 import android.app.Instrumentation
 import android.content.Intent
 import android.net.Uri
@@ -15,9 +16,11 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
-import com.android.sample.AgendappNavigation
+import androidx.test.rule.GrantPermissionRule
+import com.android.sample.Agendapp
 import com.android.sample.ui.calendar.AddEventTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
+import com.android.sample.ui.map.MapScreenTestTags
 import com.android.sample.ui.profile.AdminContactScreenTestTags
 import com.android.sample.ui.profile.AdminInformation
 import com.android.sample.ui.profile.ProfileScreenTestTags
@@ -36,11 +39,16 @@ import org.junit.runner.RunWith
 @MediumTest
 class AgendappNavigationTest {
 
+    @get:Rule
+    val permissionRule: GrantPermissionRule =
+        GrantPermissionRule.grant(
+            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+
   @get:Rule val composeTestRule = createComposeRule()
 
   @Test
   fun navigate_to_all_add_forms() {
-    composeTestRule.setContent { AgendappNavigation() }
+    composeTestRule.setContent { Agendapp() }
 
     // Go to Calendar
     composeTestRule.onNodeWithTag(HomeTestTags.ADD_EVENT_BUTTON).assertExists().performClick()
@@ -64,7 +72,7 @@ class AgendappNavigationTest {
 
   @Test
   fun navigate_to_profile_and_admin_profile_and_back() {
-    composeTestRule.setContent { AgendappNavigation() }
+    composeTestRule.setContent { Agendapp() }
     // Go to Profile
     composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).assertExists().performClick()
     composeTestRule.onNodeWithTag(SettingsScreenTestTags.ROOT).assertExists()
@@ -92,12 +100,29 @@ class AgendappNavigationTest {
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.BACK_BUTTON).assertExists().performClick()
   }
 
+    @Test
+    fun navigate_to_map_and_back() {
+        composeTestRule.setContent { Agendapp() }
+
+        composeTestRule.onNodeWithTag(HomeTestTags.MAP_BUTTON).assertExists().performClick()
+
+        composeTestRule
+            .onNodeWithTag(MapScreenTestTags.GOOGLE_MAP_SCREEN)
+            .assertExists()
+
+        composeTestRule.onNodeWithTag(MapScreenTestTags.MAP_GO_BACK_BUTTON)
+            .assertExists()
+            .performClick()
+
+        composeTestRule.onNodeWithTag(HomeTestTags.MAP_BUTTON).assertExists()
+    }
+
   @Test
   fun clickingEmail_opensEmailApp() {
     Intents.init()
     try {
 
-      composeTestRule.setContent { AgendappNavigation() }
+      composeTestRule.setContent { Agendapp() }
 
       // Navigate to Profile screen
       composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).performClick()
@@ -128,7 +153,7 @@ class AgendappNavigationTest {
     Intents.init()
     try {
 
-      composeTestRule.setContent { AgendappNavigation() }
+      composeTestRule.setContent { Agendapp() }
 
       // Navigate to Profile screen
       composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).performClick()

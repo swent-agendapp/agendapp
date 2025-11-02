@@ -48,16 +48,11 @@ class MainActivity : ComponentActivity() {
                   testTag = MainActivityTestTags.MAIN_SCREEN_CONTAINER
                 },
             color = MaterialTheme.colorScheme.background) {
-              AgendappNavigation()
+            Agendapp()
             }
       }
     }
   }
-}
-
-@Composable
-fun Agendapp() {
-  CalendarScreen()
 }
 
 /**
@@ -65,7 +60,7 @@ fun Agendapp() {
  * available routes and how composables are connected.
  */
 @Composable
-fun AgendappNavigation(modifier: Modifier = Modifier) {
+fun Agendapp(modifier: Modifier = Modifier) {
   val navController = rememberNavController()
   val navigationActions = NavigationActions(navController)
   val addEventViewModel: AddEventViewModel = viewModel()

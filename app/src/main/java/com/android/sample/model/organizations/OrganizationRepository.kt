@@ -59,8 +59,7 @@ interface OrganizationRepository {
    * Only admins of the organization can delete it.
    *
    * Implementations must perform an admin check (similar to insert/update). If you override this
-   * method, make sure to call `super.deleteOrganization(...)` if a default admin check is provided,
-   * or implement your own check.
+   * method in a subclass, you should perform the admin check accordingly to your data access logic.
    *
    * @param organizationId The ID of the organization to delete.
    * @param user The current user performing the action.

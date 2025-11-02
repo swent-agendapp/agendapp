@@ -1,9 +1,11 @@
 package com.android.sample.model.firestoreMappers
 
+import com.android.sample.model.authentification.User
 import com.android.sample.model.organization.Employee
 import com.android.sample.model.organization.Role
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
+/** Maps Firestore documents to [Employee] objects and vice versa. */
 
 object EmployeeMapper : FirestoreMapper<Employee> {
 

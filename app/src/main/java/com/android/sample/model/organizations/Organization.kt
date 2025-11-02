@@ -1,6 +1,7 @@
 package com.android.sample.model.organizations
 
 import com.android.sample.model.authentification.User
+import com.android.sample.model.calendar.Event
 import com.android.sample.model.map.Area
 import java.util.UUID
 
@@ -22,6 +23,7 @@ data class Organization(
     val name: String,
     val admins: List<User> = emptyList(),
     val members: List<User> = emptyList(),
+    val events: List<Event> = emptyList(),
     val areas: List<Area> = emptyList(),
     val geoCheckEnabled: Boolean = false,
 )

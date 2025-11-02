@@ -1,5 +1,6 @@
 package com.android.sample.model.authorization
 
+import com.android.sample.model.authentification.User
 import com.android.sample.model.organization.Employee
 import com.android.sample.model.organization.EmployeeRepository
 import com.android.sample.model.organization.Role
@@ -16,12 +17,12 @@ class FakeEmployeeRepositoryContractTest {
     override suspend fun getEmployees(): List<Employee> = l
 
     override suspend fun newEmployee(employee: Employee) {
-      l.removeAll { it.userId == employee.userId }
+      l.removeAll { it.user.id == employee.user.id }
       l.add(employee)
     }
 
     override suspend fun deleteEmployee(userId: String) {
-      l.removeAll { it.userId == userId }
+      l.removeAll { it.user.id == userId }
     }
 
     override suspend fun getMyRole(): Role? = role
@@ -31,16 +32,15 @@ class FakeEmployeeRepositoryContractTest {
   fun newEmployee_upserts_and_getEmployees_returnsList() = runTest {
     val fake = Fake()
     fake.newEmployee(
-        Employee(
-            userId = "u1", displayName = "Nathan", email = "nathan@rien.com", role = Role.EMPLOYEE))
+        Employee(User("u1","Nathan","nathan@rien.com"),Role.EMPLOYEE))
     fake.newEmployee(
         Employee(
-            userId = "u2", displayName = "Emilien", email = "emilien@rien.com", role = Role.ADMIN))
+           User("u2","Emilien", "emilien@rien.com"),Role.ADMIN))
     assertThat(fake.getEmployees()).hasSize(2)
 
     fake.newEmployee(
-        Employee(userId = "u2", displayName = "Emi2", email = "emi2@rien.com", role = Role.ADMIN))
-    assertThat(fake.getEmployees().first { it.userId == "u2" }.displayName).isEqualTo("Emi2")
+        Employee(User("u2", "Emi2", "emi2@rien.com"), role = Role.ADMIN))
+    assertThat(fake.getEmployees().first { it.user.id == "u2" }.user.displayName).isEqualTo("Emi2")
   }
 
   @Test
@@ -48,7 +48,7 @@ class FakeEmployeeRepositoryContractTest {
     val fake = Fake()
     fake.newEmployee(
         Employee(
-            userId = "u1", displayName = "Nathan", email = "nathan@rien.com", role = Role.EMPLOYEE))
+            User("u1", "Nathan", "nathan@rien.com"),Role.EMPLOYEE))
     fake.deleteEmployee("u1")
     assertThat(fake.getEmployees()).isEmpty()
   }

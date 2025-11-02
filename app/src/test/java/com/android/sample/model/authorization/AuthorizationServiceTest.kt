@@ -16,12 +16,12 @@ private class FakeEmployeeRepository(
   override suspend fun getEmployees(): List<Employee> = employees
 
   override suspend fun newEmployee(employee: Employee) {
-    employees.removeAll { it.userId == employee.userId }
+    employees.removeAll { it.user.id == employee.user.id }
     employees.add(employee)
   }
 
   override suspend fun deleteEmployee(userId: String) {
-    employees.removeAll { it.userId == userId }
+    employees.removeAll { it.user.id == userId }
   }
 
   override suspend fun getMyRole(): Role? = roleForCurrentUser

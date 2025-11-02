@@ -30,4 +30,39 @@
     <string name="process_replacement">Replacement to process</string>
     <string name="waiting_confirmation_replacement">Waiting replacement confirmation</string>
     <string name="confirmed_replacements">Confirmed replacements</string>
+
+    <!-- Edit Event Screen -->
+    <string name="edit_event_title">Edit Event</string>
+    <string name="edit_event_instruction">Modify event details below:</string>
+
+    <!-- Fields -->
+    <string name="edit_event_title_label">Title</string>
+    <string name="edit_event_title_placeholder">Enter event title</string>
+    <string name="edit_event_title_error">Title cannot be empty</string>
+
+    <string name="edit_event_description_label">Description</string>
+    <string name="edit_event_description_placeholder">Enter event description</string>
+    <string name="edit_event_description_error">Description cannot be empty</string>
+
+    <string name="edit_event_start_date_label">Start Date</string>
+    <string name="edit_event_end_date_label">End Date</string>
+    <string name="edit_event_start_time_label">Start Time:</string>
+    <string name="edit_event_end_time_label">End Time:</string>
+    <string name="edit_event_recurrence_label">Recurrence</string>
+
+    <!-- Participants -->
+    <string name="edit_event_participants_label">Participants:</string>
+    <string name="edit_event_edit_participants_button">Edit Participants</string>
+    <string name="edit_event_participants_screen_title">Edit Event Participants</string>
+    <string name="edit_event_select_participants_text">Select participants</string>
+
+    <!-- Notifications -->
+    <string name="edit_event_notify_label">Notify</string>
+    <string name="edit_event_add_notification_button">Add a notification</string>
+    <string name="edit_event_remove_notification_symbol">✕</string>
+    <string name="edit_event_add_notification_symbol">+</string>
+
+    <!-- Buttons -->
+    <string name="common_save">Save</string>
+    <string name="common_cancel">Cancel</string>
 </resources>

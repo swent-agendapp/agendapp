@@ -37,6 +37,7 @@ object ReplacementTestTags {
   const val CARD_CONFIRMED = "card_replacement_confirmed"
 }
 
+/* Data class representing a replacement item (only for UI)*/
 data class ReplacementItem(
     val title: String,
     val icon: ImageVector,
@@ -44,6 +45,9 @@ data class ReplacementItem(
     val onClick: () -> Unit = {}
 )
 
+/**
+ * Replacement Screen displaying different replacement options.
+ */
 @Composable
 fun ReplacementScreen(
     onOrganizeClick: () -> Unit = {},
@@ -93,6 +97,9 @@ fun ReplacementScreen(
       })
 }
 
+/**
+ * Composable representing a single replacement option card.
+ */
 @Composable
 fun ReplacementCard(item: ReplacementItem, onClick: () -> Unit = {}) {
   Card(

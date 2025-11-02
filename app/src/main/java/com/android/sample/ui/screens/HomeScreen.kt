@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 
 object HomeTestTags {
   const val ROOT = "home_screen"
-  const val ADD_EVENT_BUTTON = "add_event_button"
+  const val CALENDAR_BUTTON = "calendar_button"
   const val SETTINGS_BUTTON = "settings_button"
 }
 
@@ -31,7 +31,7 @@ fun HomeScreen(
           Button(onClick = { onNavigateToEdit("E001") }) { Text("Go to Edit Event") }
           Spacer(modifier = Modifier.height(12.dp))
           Button(
-              modifier = Modifier.testTag(HomeTestTags.ADD_EVENT_BUTTON),
+              modifier = Modifier.testTag(HomeTestTags.CALENDAR_BUTTON),
               onClick = onNavigateToCalendar) {
                 Text("Go to Calendar")
               }

@@ -7,7 +7,9 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import com.android.sample.BuildConfig
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.libraries.places.api.Places
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,6 +41,7 @@ class MapViewModel(app: Application) : AndroidViewModel(app) {
     val app = getApplication<Application>()
     val fine = Manifest.permission.ACCESS_FINE_LOCATION
     val coarse = Manifest.permission.ACCESS_COARSE_LOCATION
+    val cancellationTokenSource = CancellationTokenSource()
 
     val hasLocation =
         ContextCompat.checkSelfPermission(app, fine) == PackageManager.PERMISSION_GRANTED ||
@@ -53,11 +56,33 @@ class MapViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fusedClient.lastLocation
-        .addOnSuccessListener { location ->
-          _state.value =
-              MapUiState(
-                  currentLocation = LatLng(location.latitude, location.longitude),
-                  hasPermission = true)
+        .addOnSuccessListener { lastLocation ->
+          if (lastLocation == null) {
+            fusedClient
+                .getCurrentLocation(
+                    Priority.PRIORITY_BALANCED_POWER_ACCURACY, cancellationTokenSource.token)
+                .addOnSuccessListener { location ->
+                  if (location == null) {
+                    _state.value =
+                        MapUiState(
+                            errorLocation = "Error: Cannot fetch you location",
+                            hasPermission = true)
+                  } else {
+                    _state.value =
+                        MapUiState(
+                            currentLocation = LatLng(location.latitude, location.longitude),
+                            hasPermission = true)
+                  }
+                }
+                .addOnFailureListener { e ->
+                  _state.value = MapUiState(errorLocation = e.message, hasPermission = true)
+                }
+          } else {
+            _state.value =
+                MapUiState(
+                    currentLocation = LatLng(lastLocation.latitude, lastLocation.longitude),
+                    hasPermission = true)
+          }
         }
         .addOnFailureListener { e ->
           _state.value = MapUiState(errorLocation = e.message, hasPermission = true)

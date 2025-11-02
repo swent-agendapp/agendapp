@@ -14,7 +14,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(value = AndroidJUnit4::class)
-class FirebaseRepositoryTest : FirebaseEmulatedTest() {
+class EventFirebaseRepositoryTest : FirebaseEmulatedTest() {
 
   private lateinit var repository: EventRepository
   private lateinit var event1: Event
@@ -24,7 +24,7 @@ class FirebaseRepositoryTest : FirebaseEmulatedTest() {
   override fun setUp() {
 
     super.setUp()
-    repository = createInitializedRepository()
+    repository = createInitializedEventRepository()
 
     event1 =
         createEvent(

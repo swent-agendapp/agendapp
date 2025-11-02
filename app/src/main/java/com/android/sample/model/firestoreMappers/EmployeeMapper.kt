@@ -1,5 +1,6 @@
 package com.android.sample.model.firestoreMappers
 
+import com.android.sample.model.authentification.User
 import com.android.sample.model.organization.Employee
 import com.android.sample.model.organization.Role
 import com.google.firebase.Timestamp
@@ -16,7 +17,7 @@ object EmployeeMapper : FirestoreMapper<Employee> {
 
     val role = runCatching { Role.valueOf(roleName) }.getOrNull() ?: return null
 
-    return Employee(userId = userId, displayName = displayName, email = email, role = role)
+    return Employee(User(userId, displayName, email), role)
   }
 
   override fun fromMap(data: Map<String, Any?>): Employee? {
@@ -27,14 +28,14 @@ object EmployeeMapper : FirestoreMapper<Employee> {
 
     val role = runCatching { Role.valueOf(roleName) }.getOrNull() ?: return null
 
-    return Employee(userId = userId, displayName = displayName, email = email, role = role)
+    return Employee(User(userId, displayName, email), role)
   }
 
   override fun toMap(model: Employee): Map<String, Any?> {
     return mapOf(
-        "userId" to model.userId,
-        "displayName" to model.displayName,
-        "email" to model.email,
+        "userId" to model.user.id,
+        "displayName" to model.user.displayName,
+        "email" to model.user.email,
         "role" to model.role.name,
         "updatedAt" to Timestamp.now())
   }

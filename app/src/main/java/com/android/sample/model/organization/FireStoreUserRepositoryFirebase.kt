@@ -2,32 +2,8 @@ package com.android.sample.model.organization
 
 import com.android.sample.model.firestoreMappers.EmployeeMapper
 import com.github.se.bootcamp.model.authentication.AuthRepository
-import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
-
-data class FirestoreEmployee(
-    val userId: String = "",
-    val displayName: String = "",
-    val email: String = "",
-    val role: String = Role.EMPLOYEE.name,
-    val updatedAt: Timestamp? = null,
-)
-
-fun Employee.toFirestore(): FirestoreEmployee =
-    FirestoreEmployee(
-        userId = userId,
-        displayName = displayName,
-        email = email,
-        role = role.name,
-        updatedAt = Timestamp.now())
-
-fun FirestoreEmployee.toDomain(): Employee =
-    Employee(
-        userId = userId,
-        displayName = displayName,
-        email = email,
-        role = runCatching { Role.valueOf(role) }.getOrDefault(Role.EMPLOYEE))
 
 /**
  * Firebase implementation using a global collection: /employees/{userId}
@@ -48,9 +24,9 @@ class EmployeeRepositoryFirebase(
   }
 
   override suspend fun newEmployee(employee: Employee) {
-    require(employee.userId.isNotBlank()) { "userId is required" }
+    require(employee.user.id.isNotBlank()) { "userId is required" }
     val data = EmployeeMapper.toMap(employee)
-    employeesCol().document(employee.userId).set(data).await()
+    employeesCol().document(employee.user.id).set(data).await()
   }
 
   override suspend fun deleteEmployee(userId: String) {

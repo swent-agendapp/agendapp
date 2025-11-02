@@ -14,9 +14,7 @@ import com.google.android.libraries.places.api.Places
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-/**
- * EPFL Location for default value
- */
+/** EPFL Location for default value */
 object DefaultLocation {
   const val LATITUDE = 46.5191
   const val LONGITUDE = 6.5668
@@ -36,9 +34,7 @@ data class MapUiState(
 )
 
 class MapViewModel(app: Application) : AndroidViewModel(app) {
-    /**
-     * Provider for android GPS
-     */
+  /** Provider for android GPS */
   private val fusedClient = LocationServices.getFusedLocationProviderClient(app)
 
   private val _state = MutableStateFlow(MapUiState())
@@ -49,16 +45,16 @@ class MapViewModel(app: Application) : AndroidViewModel(app) {
     Places.initializeWithNewPlacesApiEnabled(app, apiKey)
   }
 
-    /**
-     * Verify that the user has given the right to get his location
-     *
-     * then fetch the User Location, if another app has already fetch it, it get this cached value
-     * with lastLocation
-     *
-     * if there is no cached location, it ask the GPS to compute a new one with getCurrentLocation
-     *
-     * if the provider make an error, it update the State to an error State
-     */
+  /**
+   * Verify that the user has given the right to get his location
+   *
+   * then fetch the User Location, if another app has already fetch it, it get this cached value
+   * with lastLocation
+   *
+   * if there is no cached location, it ask the GPS to compute a new one with getCurrentLocation
+   *
+   * if the provider make an error, it update the State to an error State
+   */
   fun fetchUserLocation() {
     val app = getApplication<Application>()
     val fine = Manifest.permission.ACCESS_FINE_LOCATION

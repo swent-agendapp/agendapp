@@ -40,10 +40,10 @@ import org.junit.runner.RunWith
 @MediumTest
 class AgendappNavigationTest {
 
-    @get:Rule
-    val permissionRule: GrantPermissionRule =
-        GrantPermissionRule.grant(
-            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+  @get:Rule
+  val permissionRule: GrantPermissionRule =
+      GrantPermissionRule.grant(
+          Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
 
   @get:Rule val composeTestRule = createComposeRule()
 
@@ -101,22 +101,21 @@ class AgendappNavigationTest {
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.BACK_BUTTON).assertExists().performClick()
   }
 
-    @Test
-    fun navigate_to_map_and_back() {
-        composeTestRule.setContent { Agendapp() }
+  @Test
+  fun navigate_to_map_and_back() {
+    composeTestRule.setContent { Agendapp() }
 
-        composeTestRule.onNodeWithTag(HomeTestTags.MAP_BUTTON).assertExists().performClick()
+    composeTestRule.onNodeWithTag(HomeTestTags.MAP_BUTTON).assertExists().performClick()
 
-        composeTestRule
-            .onNodeWithTag(MapScreenTestTags.GOOGLE_MAP_SCREEN)
-            .assertExists()
+    composeTestRule.onNodeWithTag(MapScreenTestTags.GOOGLE_MAP_SCREEN).assertExists()
 
-        composeTestRule.onNodeWithTag(MapScreenTestTags.MAP_GO_BACK_BUTTON)
-            .assertExists()
-            .performClick()
+    composeTestRule
+        .onNodeWithTag(MapScreenTestTags.MAP_GO_BACK_BUTTON)
+        .assertExists()
+        .performClick()
 
-        composeTestRule.onNodeWithTag(HomeTestTags.MAP_BUTTON).assertExists()
-    }
+    composeTestRule.onNodeWithTag(HomeTestTags.MAP_BUTTON).assertExists()
+  }
 
   @Ignore("Feature not ready yet")
   fun clickingEmail_opensEmailApp() {

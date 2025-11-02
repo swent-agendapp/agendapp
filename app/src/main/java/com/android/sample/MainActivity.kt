@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
                   testTag = MainActivityTestTags.MAIN_SCREEN_CONTAINER
                 },
             color = MaterialTheme.colorScheme.background) {
-            Agendapp()
+              Agendapp()
             }
       }
     }

@@ -35,8 +35,7 @@ class EmployeeMapperTest {
 
   @Test
   fun `toMap produces all expected fields`() {
-    val employee =
-        Employee(User("uid_2", "Bob", "bob@example.com"), Role.EMPLOYEE)
+    val employee = Employee(User("uid_2", "Bob", "bob@example.com"), Role.EMPLOYEE)
 
     val map = EmployeeMapper.toMap(employee)
 
@@ -46,13 +45,14 @@ class EmployeeMapperTest {
     assertEquals("EMPLOYEE", map["role"])
     assertNotNull(map["updatedAt"] as? Timestamp)
   }
+
   @Test
   fun toMap_writes_all_fields() {
     val employee =
-      Employee(
-        user = User("u1", "Alice", "alice@x.com"),
-        role = Role.ADMIN,
-      )
+        Employee(
+            user = User("u1", "Alice", "alice@x.com"),
+            role = Role.ADMIN,
+        )
 
     val map = EmployeeMapper.toMap(employee)
 
@@ -66,12 +66,12 @@ class EmployeeMapperTest {
   @Test
   fun fromMap_reads_valid_role() {
     val data =
-      mapOf(
-        "userId" to "u2",
-        "displayName" to "Bob",
-        "email" to "b@x.com",
-        "role" to "EMPLOYEE",
-      )
+        mapOf(
+            "userId" to "u2",
+            "displayName" to "Bob",
+            "email" to "b@x.com",
+            "role" to "EMPLOYEE",
+        )
 
     val employee = EmployeeMapper.fromMap(data)
 
@@ -82,12 +82,13 @@ class EmployeeMapperTest {
 
   @Test
   fun fromDocument_returns_null_when_role_invalid() {
-    val doc = mock<DocumentSnapshot> {
-      whenever(it.id).thenReturn("u3")
-      whenever(it.getString("displayName")).thenReturn("Charlie")
-      whenever(it.getString("email")).thenReturn("c@x.com")
-      whenever(it.getString("role")).thenReturn("INVALID_ROLE")
-    }
+    val doc =
+        mock<DocumentSnapshot> {
+          whenever(it.id).thenReturn("u3")
+          whenever(it.getString("displayName")).thenReturn("Charlie")
+          whenever(it.getString("email")).thenReturn("c@x.com")
+          whenever(it.getString("role")).thenReturn("INVALID_ROLE")
+        }
 
     val employee = EmployeeMapper.fromDocument(doc)
 

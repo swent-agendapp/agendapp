@@ -31,24 +31,18 @@ class FakeEmployeeRepositoryContractTest {
   @Test
   fun newEmployee_upserts_and_getEmployees_returnsList() = runTest {
     val fake = Fake()
-    fake.newEmployee(
-        Employee(User("u1","Nathan","nathan@rien.com"),Role.EMPLOYEE))
-    fake.newEmployee(
-        Employee(
-           User("u2","Emilien", "emilien@rien.com"),Role.ADMIN))
+    fake.newEmployee(Employee(User("u1", "Nathan", "nathan@rien.com"), Role.EMPLOYEE))
+    fake.newEmployee(Employee(User("u2", "Emilien", "emilien@rien.com"), Role.ADMIN))
     assertThat(fake.getEmployees()).hasSize(2)
 
-    fake.newEmployee(
-        Employee(User("u2", "Emi2", "emi2@rien.com"), role = Role.ADMIN))
+    fake.newEmployee(Employee(User("u2", "Emi2", "emi2@rien.com"), role = Role.ADMIN))
     assertThat(fake.getEmployees().first { it.user.id == "u2" }.user.displayName).isEqualTo("Emi2")
   }
 
   @Test
   fun deleteEmployee_removesUser() = runTest {
     val fake = Fake()
-    fake.newEmployee(
-        Employee(
-            User("u1", "Nathan", "nathan@rien.com"),Role.EMPLOYEE))
+    fake.newEmployee(Employee(User("u1", "Nathan", "nathan@rien.com"), Role.EMPLOYEE))
     fake.deleteEmployee("u1")
     assertThat(fake.getEmployees()).isEmpty()
   }

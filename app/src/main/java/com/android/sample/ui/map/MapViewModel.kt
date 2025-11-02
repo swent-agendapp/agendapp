@@ -14,11 +14,21 @@ import com.google.android.libraries.places.api.Places
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
+/**
+ * EPFL Location for default value
+ */
 object DefaultLocation {
   const val LATITUDE = 46.5191
   const val LONGITUDE = 6.5668
 }
 
+/**
+ * Represents the Stat of the screen UI .
+ *
+ * @property currentLocation current Location of the phone. has default value centered in EPFL
+ * @property errorLocation in case where we cannot fetch the location, we show the error message.
+ * @property hasPermission if the user has grant permission of location to our app.
+ */
 data class MapUiState(
     val currentLocation: LatLng = LatLng(DefaultLocation.LATITUDE, DefaultLocation.LONGITUDE),
     val errorLocation: String? = null,
@@ -26,7 +36,9 @@ data class MapUiState(
 )
 
 class MapViewModel(app: Application) : AndroidViewModel(app) {
-
+    /**
+     * Provider for android GPS
+     */
   private val fusedClient = LocationServices.getFusedLocationProviderClient(app)
 
   private val _state = MutableStateFlow(MapUiState())
@@ -37,6 +49,16 @@ class MapViewModel(app: Application) : AndroidViewModel(app) {
     Places.initializeWithNewPlacesApiEnabled(app, apiKey)
   }
 
+    /**
+     * Verify that the user has given the right to get his location
+     *
+     * then fetch the User Location, if another app has already fetch it, it get this cached value
+     * with lastLocation
+     *
+     * if there is no cached location, it ask the GPS to compute a new one with getCurrentLocation
+     *
+     * if the provider make an error, it update the State to an error State
+     */
   fun fetchUserLocation() {
     val app = getApplication<Application>()
     val fine = Manifest.permission.ACCESS_FINE_LOCATION

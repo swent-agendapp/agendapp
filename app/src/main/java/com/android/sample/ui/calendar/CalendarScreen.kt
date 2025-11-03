@@ -52,7 +52,7 @@ fun CalendarScreen(
   val events = uiState.events
 
   // Fetch events when the screen is recomposed
-  LaunchedEffect(Unit) { loadEventsForDateRange(calendarViewModel, currentDateRange) }
+  LaunchedEffect(currentDateRange) { loadEventsForDateRange(calendarViewModel, currentDateRange) }
 
   // Show error message if fetching events fails
   LaunchedEffect(uiState.errorMsg) {
@@ -91,13 +91,11 @@ fun CalendarScreen(
           val nextStart = currentDateRange.start.plusWeeks(1)
           val nextEnd = currentDateRange.endInclusive.plusWeeks(1)
           currentDateRange = LocalDateRange(nextStart, nextEnd)
-          loadEventsForDateRange(calendarViewModel, currentDateRange)
         },
         onSwipeRight = {
           val nextStart = currentDateRange.start.minusWeeks(1)
           val nextEnd = currentDateRange.endInclusive.minusWeeks(1)
           currentDateRange = LocalDateRange(nextStart, nextEnd)
-          loadEventsForDateRange(calendarViewModel, currentDateRange)
         },
         onCreateEvent = onCreateEvent
         // Later : give the ViewModel
@@ -109,7 +107,7 @@ fun CalendarScreen(
 /**
  * Loads the calendar events for a given date range using the provided [CalendarViewModel].
  *
- * Converts the [LocalDateRange] into corresponding [Instant] values covering the full duration from
+ * Converts the [LocalDateRange] into corresponding [java.time.Instant] values covering the full duration from
  * start of the first day (midnight) to the end of the last day.
  */
 private fun loadEventsForDateRange(

@@ -45,6 +45,9 @@ fun ProfileScreen(
   var emailError by remember { mutableStateOf<String?>(null) }
   var phoneError by remember { mutableStateOf<String?>(null) }
 
+  val emailErrorMessage = stringResource(R.string.profile_email_error)
+  val phoneErrorMessage = stringResource(R.string.profile_phone_error)
+
   Surface(
       modifier =
           Modifier.fillMaxSize().semantics { testTag = ProfileScreenTestTags.PROFILE_SCREEN }) {
@@ -74,10 +77,8 @@ fun ProfileScreen(
                   },
                   onSave = {
                     val (emailValid, phoneValid) = validateInputs(email, phone)
-                    emailError =
-                        if (!emailValid) stringResource(R.string.profile_email_error) else null
-                    phoneError =
-                        if (!phoneValid) stringResource(R.string.profile_phone_error) else null
+                    emailError = if (!emailValid) emailErrorMessage else null
+                    phoneError = if (!phoneValid) phoneErrorMessage else null
 
                     if (emailValid && phoneValid) {
                       profileViewModel.updateDisplayName(displayName)

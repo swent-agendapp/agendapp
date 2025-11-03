@@ -107,8 +107,8 @@ fun CalendarScreen(
 /**
  * Loads the calendar events for a given date range using the provided [CalendarViewModel].
  *
- * Converts the [LocalDateRange] into corresponding [java.time.Instant] values covering the full duration from
- * start of the first day (midnight) to the end of the last day.
+ * Converts the [LocalDateRange] into corresponding [java.time.Instant] values covering the full
+ * duration from start of the first day (midnight) to the end of the last day.
  */
 private fun loadEventsForDateRange(
     calendarViewModel: CalendarViewModel,

@@ -71,7 +71,7 @@ class CalendarScreenTest {
       tag: String,
       maxSwipesPerDirection: Int = 1
   ) { // For the now, one swipe is enough to see the whole screen, we can increase it when zooming
-    // weill make the grid very big
+    // will make the grid very big
     // Fast path: already visible
     if (isInViewport(tag)) {
       composeTestRule.onNodeWithTag(tag).assertIsDisplayed()
@@ -229,7 +229,7 @@ class CalendarScreenTest {
    * Composes `CalendarScreen()` with an in-memory local repository pre-populated with [events].
    * Keeps `CalendarScreen` and its `ViewModel` unchanged by providing a custom
    * `ViewModelStoreOwner` exposing a default factory that builds the real `CalendarViewModel` with
-   * our local repo. Munt the real screen, but make it read from our test data.
+   * our local repo. Mount the real screen, but make it read from our test data.
    */
   private fun setContentWithLocalRepo(events: List<Event> = buildTestEvents()) {
     // Create an in-memory repository instance for tests

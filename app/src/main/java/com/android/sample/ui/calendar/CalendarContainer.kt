@@ -77,8 +77,7 @@ fun CalendarContainer(
                 .testTag(ADD_EVENT_BUTTON)) {
           Icon(
               imageVector = Icons.Default.Add,
-              contentDescription =
-                  stringResource(R.string.calendar_add_event_content_description),
+              contentDescription = stringResource(R.string.calendar_add_event_content_description),
               tint = Color.Gray)
         }
   }

@@ -11,9 +11,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -150,7 +150,8 @@ private fun ProfileHeader(
       modifier = Modifier.fillMaxWidth(),
       horizontalArrangement = Arrangement.SpaceBetween,
       verticalAlignment = Alignment.CenterVertically) {
-        Text(stringResource(R.string.profile_title), style = MaterialTheme.typography.headlineMedium)
+        Text(
+            stringResource(R.string.profile_title), style = MaterialTheme.typography.headlineMedium)
 
         if (isEditMode) {
           Row {
@@ -176,8 +177,7 @@ private fun ProfileHeader(
               onClick = onEdit, modifier = Modifier.testTag(ProfileScreenTestTags.EDIT_BUTTON)) {
                 Icon(
                     Icons.Default.Edit,
-                    contentDescription =
-                        stringResource(R.string.profile_edit_content_description))
+                    contentDescription = stringResource(R.string.profile_edit_content_description))
               }
         }
       }

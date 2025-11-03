@@ -16,10 +16,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import com.android.sample.R
 import com.android.sample.ui.calendar.data.LocalDateRange
 import com.android.sample.ui.calendar.mockData.getMockEvents
 import com.android.sample.ui.calendar.style.CalendarDefaults.DefaultDateRange
-import com.android.sample.R
 
 object CalendarScreenTestTags {
   const val TOP_BAR_TITLE = "CalendarTopBarTitle"

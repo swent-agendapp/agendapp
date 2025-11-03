@@ -204,8 +204,9 @@ fun EditEventScreen(
 
                 NotificationSection(
                     notifications = notifications,
-                    onAddNotification =
-                        { notifications = notifications + defaultNotificationLabel },
+                    onAddNotification = {
+                      notifications = notifications + defaultNotificationLabel
+                    },
                     onRemoveNotification = { notif -> notifications = notifications - notif })
               }
 

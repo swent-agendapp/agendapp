@@ -51,7 +51,8 @@ fun DatePickerFieldToModal(
       trailingIcon = {
         Icon(
             Icons.Default.DateRange,
-            contentDescription = stringResource(R.string.date_picker_select_date_content_description))
+            contentDescription =
+                stringResource(R.string.date_picker_select_date_content_description))
       },
       modifier =
           modifier.fillMaxWidth().pointerInput(selectedDate) {

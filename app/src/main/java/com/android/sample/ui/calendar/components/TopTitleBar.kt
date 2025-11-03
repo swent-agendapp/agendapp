@@ -47,8 +47,7 @@ fun TopTitleBar(
               modifier = Modifier.testTag("")) { // later : NavigationTestTags.GO_BACK_BUTTON
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription =
-                        stringResource(R.string.top_bar_back_content_description))
+                    contentDescription = stringResource(R.string.top_bar_back_content_description))
               }
         }
       },

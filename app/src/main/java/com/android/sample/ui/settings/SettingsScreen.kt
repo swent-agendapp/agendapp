@@ -6,12 +6,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.android.sample.ui.settings.SettingsScreenTestTags.BACK_BUTTON
 import com.android.sample.R
+import com.android.sample.ui.settings.SettingsScreenTestTags.BACK_BUTTON
 
 object SettingsScreenTestTags {
   const val ROOT = "settings_screen"

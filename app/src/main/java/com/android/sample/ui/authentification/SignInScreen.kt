@@ -73,8 +73,7 @@ fun SignInScreen(
   LaunchedEffect(uiState.user) {
     uiState.user?.let {
       snackbarHostState.showSnackbar(
-          context.getString(R.string.sign_in_success_message),
-          duration = SnackbarDuration.Long)
+          context.getString(R.string.sign_in_success_message), duration = SnackbarDuration.Long)
       onSignedIn()
     }
   }

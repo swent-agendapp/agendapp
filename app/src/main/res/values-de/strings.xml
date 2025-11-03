@@ -50,7 +50,7 @@
     <string name="edit_event_recurrence_label">Wiederholung</string>
 
     <!-- Participants -->
-    <string name="edit_event_participants_label">Teilnehmende :</string>
+    <string name="edit_event_participants_label">Teilnehmende:</string>
     <string name="edit_event_edit_participants_button">Teilnehmende bearbeiten</string>
     <string name="edit_event_participants_screen_title">Teilnehmende des Ereignisses bearbeiten</string>
     <string name="edit_event_select_participants_text">Teilnehmende auswählen</string>

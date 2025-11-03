@@ -1,0 +1,483 @@
+package com.android.sample.ui.calendar
+
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotDisplayed
+import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeDown
+import androidx.compose.ui.test.swipeUp
+import com.android.sample.model.calendar.Event
+import com.android.sample.model.calendar.createEvent
+import java.time.DayOfWeek
+import java.time.Duration
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZoneId
+import org.junit.Assert.assertThrows
+import org.junit.Assert.assertTrue
+import org.junit.Rule
+import org.junit.Test
+
+/**
+ * Base class exposing shared helpers and setup for the Calendar *events* tests only.
+ *
+ * Rationale: mirror the structure used in `CalendarScreenTest` so individual suites are small and
+ * focused (visibility, overlap, scrolling, boundaries, validation) while reusing helpers.
+ */
+abstract class BaseEventsTest {
+
+  @get:Rule val compose = createComposeRule()
+
+  /** Converts a (LocalDate, LocalTime) to an Instant in the system zone for concise test setup. */
+  protected fun at(date: LocalDate, time: LocalTime) =
+      date.atTime(time).atZone(ZoneId.systemDefault()).toInstant()
+
+  /**
+   * Returns true if the node with [tag] intersects the root viewport (no assertions/exceptions).
+   */
+  protected fun isInViewport(tag: String): Boolean {
+    val node = compose.onNodeWithTag(tag).fetchSemanticsNode()
+    val root = compose.onRoot().fetchSemanticsNode()
+    val nb = node.boundsInRoot
+    val rb = root.boundsInRoot
+    val horizontally = nb.right > rb.left && nb.left < rb.right
+    val vertically = nb.bottom > rb.top && nb.top < rb.bottom
+    return horizontally && vertically
+  }
+
+  /**
+   * Scrolls the vertical grid in a bounded way until the node with [tag] intersects the viewport,
+   * then asserts it is displayed.
+   */
+  protected fun scrollUntilVisible(tag: String, maxSwipesPerDirection: Int = 1) {
+    // For now, one swipe is enough to see the whole screen, we can increase it when zooming makes
+    // grid larger
+    // Fast path: already visible
+    if (isInViewport(tag)) {
+      compose.onNodeWithTag(tag).assertIsDisplayed()
+      return
+    }
+
+    // Sweep towards later hours first (swipe up). Check after each swipe.
+    repeat(maxSwipesPerDirection) {
+      compose.onNodeWithTag(CalendarScreenTestTags.SCROLL_AREA).performTouchInput { swipeUp() }
+      if (isInViewport(tag)) {
+        compose.onNodeWithTag(tag).assertIsDisplayed()
+        return
+      }
+    }
+
+    // Then sweep towards earlier hours (swipe down). Check after each swipe.
+    repeat(maxSwipesPerDirection) {
+      compose.onNodeWithTag(CalendarScreenTestTags.SCROLL_AREA).performTouchInput { swipeDown() }
+      if (isInViewport(tag)) {
+        compose.onNodeWithTag(tag).assertIsDisplayed()
+        return
+      }
+    }
+
+    // Final assertion: if the node never entered the viewport, fail clearly here.
+    compose.onNodeWithTag(tag).assertIsDisplayed()
+  }
+
+  /** Builds the semantics tag for an event block from its [title]. */
+  protected fun eventTag(title: String) = "${CalendarScreenTestTags.EVENT_BLOCK}_$title"
+
+  /**
+   * Helper to create an [Event] with a simple API.
+   *
+   * @param title Event title
+   * @param date Day of event
+   * @param start LocalTime start
+   * @param duration Duration of the event
+   */
+  protected fun ev(title: String, date: LocalDate, start: LocalTime, duration: Duration): Event =
+      createEvent(
+          title = title,
+          startDate = at(date, start),
+          endDate = at(date, start).plus(duration),
+          cloudStorageStatuses = emptySet(),
+          participants = emptySet(),
+      )
+}
+
+/** Sanity/basic composition for the grid container. */
+class EventsSanityTests : BaseEventsTest() {
+
+  @Test
+  fun calendarGridContentDisplayed() {
+    compose.setContent { CalendarGridContent() }
+    compose.onNodeWithTag(CalendarScreenTestTags.EVENT_GRID).assertExists().assertIsDisplayed()
+  }
+}
+
+/** Visibility-focused tests: which events exist/are visible vs absent in the current week. */
+class EventsVisibilityTests : BaseEventsTest() {
+
+  @Test
+  fun calendarGridContent_showsEventBlocks_whenEventsProvided() {
+    val today = LocalDate.now()
+    val eventDate = today.with(DayOfWeek.TUESDAY)
+
+    val events = listOf(ev("Test Event", eventDate, LocalTime.of(9, 0), Duration.ofHours(1)))
+
+    compose.setContent { CalendarGridContent(events = events) }
+
+    val tag = eventTag("Test Event")
+    compose.onNodeWithTag(tag).assertExists()
+    scrollUntilVisible(tag)
+  }
+
+  @Test
+  fun calendarGridContent_showsEventBlocks_forEveryDayOfWeek() {
+    val events =
+        listOf(
+            // Event on Monday [9:00 - 10:00]
+            ev(
+                "Monday Event",
+                LocalDate.now().with(DayOfWeek.MONDAY),
+                LocalTime.of(9, 0),
+                Duration.ofHours(1)),
+            // Event on Tuesday [9:00 - 10:00]
+            ev(
+                "Tuesday Event",
+                LocalDate.now().with(DayOfWeek.TUESDAY),
+                LocalTime.of(9, 0),
+                Duration.ofHours(1)),
+            // Event on Wednesday [9:00 - 10:00]
+            ev(
+                "Wednesday Event",
+                LocalDate.now().with(DayOfWeek.WEDNESDAY),
+                LocalTime.of(9, 0),
+                Duration.ofHours(1)),
+            // Event on Thursday [9:00 - 10:00]
+            ev(
+                "Thursday Event",
+                LocalDate.now().with(DayOfWeek.THURSDAY),
+                LocalTime.of(9, 0),
+                Duration.ofHours(1)),
+            // Event on Friday [9:00 - 10:00]
+            ev(
+                "Friday Event",
+                LocalDate.now().with(DayOfWeek.FRIDAY),
+                LocalTime.of(9, 0),
+                Duration.ofHours(1)),
+            // Event on Saturday [9:00 - 10:00]
+            ev(
+                "Saturday Event",
+                LocalDate.now().with(DayOfWeek.SATURDAY),
+                LocalTime.of(9, 0),
+                Duration.ofHours(1)),
+            // Event on Sunday [9:00 - 10:00]
+            ev(
+                "Sunday Event",
+                LocalDate.now().with(DayOfWeek.SUNDAY),
+                LocalTime.of(9, 0),
+                Duration.ofHours(1)),
+        )
+
+    compose.setContent { CalendarGridContent(events = events) }
+
+    scrollUntilVisible(eventTag("Monday Event"))
+    scrollUntilVisible(eventTag("Tuesday Event"))
+    scrollUntilVisible(eventTag("Wednesday Event"))
+    scrollUntilVisible(eventTag("Thursday Event"))
+    scrollUntilVisible(eventTag("Friday Event"))
+    scrollUntilVisible(eventTag("Saturday Event"))
+    scrollUntilVisible(eventTag("Sunday Event"))
+  }
+
+  @Test
+  fun calendarGridContent_doesNotShowsEventBlocks_whenEventsOutOfDayRange() {
+    val events =
+        listOf(
+            // Event on 2000-01-01 [9:00 - 10:00] — outside current date range (early)
+            ev(
+                "Out-of-range (early) Event",
+                LocalDate.of(2000, 1, 1),
+                LocalTime.of(9, 0),
+                Duration.ofHours(1)),
+            // Event on 2100-01-01 [9:00 - 10:00] — outside current date range (late)
+            ev(
+                "Out-of-range (late) Event",
+                LocalDate.of(2100, 1, 1),
+                LocalTime.of(9, 0),
+                Duration.ofHours(1)),
+        )
+
+    compose.setContent { CalendarGridContent(events = events) }
+
+    // Use assertDoesNotExist(): nodes are not expected to be composed at all.
+    compose.onNodeWithTag(eventTag("Out-of-range (early) Event")).assertDoesNotExist()
+    compose.onNodeWithTag(eventTag("Out-of-range (late) Event")).assertDoesNotExist()
+  }
+
+  @Test
+  fun calendarGridContent_doesNotShowsEventBlocks_whenEventsRightNextToDateRange() {
+    val monday = LocalDate.now().with(DayOfWeek.MONDAY)
+
+    val events =
+        listOf(
+            // Event on previous Sunday [9:00 - 10:00] — adjacent day before visible range
+            ev(
+                "Previous Sunday Event",
+                monday.minusDays(1),
+                LocalTime.of(9, 0),
+                Duration.ofHours(1)),
+            // Event on next Monday [9:00 - 10:00] — adjacent day after visible range
+            ev("Next Monday Event", monday.plusDays(7), LocalTime.of(9, 0), Duration.ofHours(1)),
+        )
+
+    compose.setContent { CalendarGridContent(events = events) }
+
+    // Use assertDoesNotExist(): nodes should not be present for out-of-range days.
+    compose.onNodeWithTag(eventTag("Previous Sunday Event")).assertDoesNotExist()
+    compose.onNodeWithTag(eventTag("Next Monday Event")).assertDoesNotExist()
+  }
+}
+
+/** Scrolling-focused tests. */
+class EventsScrollingTests : BaseEventsTest() {
+
+  @Test
+  fun calendarGridContent_showsEventBlocks_outsideInitialViewport_afterScroll() {
+    // Grid covers 00:00–24:00; events can start before 08:00 or end after 23:00 and still be shown
+    // after scrolling.
+    val events =
+        listOf(
+            // Event on Monday [6:00 - 10:00] — partially before visible hours (clipped at 08:00)
+            ev(
+                "Morning Event",
+                LocalDate.now().with(DayOfWeek.MONDAY),
+                LocalTime.of(6, 0),
+                Duration.ofHours(4)),
+            // Event on Friday [20:30 - 23:30] — partially after visible hours (clipped at 23:00)
+            ev(
+                "Night Event",
+                LocalDate.now().with(DayOfWeek.FRIDAY),
+                LocalTime.of(20, 30),
+                Duration.ofHours(3)),
+        )
+
+    compose.setContent { CalendarGridContent(events = events) }
+
+    scrollUntilVisible(eventTag("Morning Event"))
+    scrollUntilVisible(eventTag("Night Event"))
+  }
+
+  @Test
+  fun calendarGridContent_eventsOutsideInitialViewport_becomeVisibleAfterScroll() {
+    val wednesday = LocalDate.now().with(DayOfWeek.WEDNESDAY)
+    val events =
+        listOf(
+            ev("Too Early", wednesday, LocalTime.of(6, 0), Duration.ofMinutes(90)),
+            ev("Too Late", wednesday, LocalTime.of(23, 30), Duration.ofMinutes(29)),
+        )
+    compose.setContent { CalendarGridContent(events = events) }
+
+    scrollUntilVisible(eventTag("Too Early"))
+    scrollUntilVisible(eventTag("Too Late"))
+  }
+}
+
+/** Overlap-focused tests (semi-overlap, full-overlap, same slot, multi-day segments). */
+class EventsOverlapTests : BaseEventsTest() {
+
+  @Test
+  fun calendarGridContent_doesShowsEventBlocks_whenEventsSemiOverlap() {
+    val events =
+        listOf(
+            // Event on Monday [9:00 - 11:00]
+            ev(
+                "First semi-overlapping Event",
+                LocalDate.now().with(DayOfWeek.MONDAY),
+                LocalTime.of(9, 0),
+                Duration.ofHours(2)),
+            // Event on Monday [10:00 - 12:00] — semi-overlap with previous
+            ev(
+                "Second semi-overlapping Event",
+                LocalDate.now().with(DayOfWeek.MONDAY),
+                LocalTime.of(10, 0),
+                Duration.ofHours(2)),
+        )
+
+    compose.setContent { CalendarGridContent(events = events) }
+
+    scrollUntilVisible(eventTag("First semi-overlapping Event"))
+    scrollUntilVisible(eventTag("Second semi-overlapping Event"))
+  }
+
+  @Test
+  fun calendarGridContent_doesShowsEventBlocks_whenEventsFullOverlap() {
+    val events =
+        listOf(
+            // Event on Monday [9:00 - 11:00] — first of two fully overlapping
+            ev(
+                "First full-overlapping Event",
+                LocalDate.now().with(DayOfWeek.MONDAY),
+                LocalTime.of(9, 0),
+                Duration.ofHours(2)),
+            // Event on Monday [9:00 - 11:00] — second of two fully overlapping
+            ev(
+                "Second full-overlapping Event",
+                LocalDate.now().with(DayOfWeek.MONDAY),
+                LocalTime.of(9, 0),
+                Duration.ofHours(2)),
+        )
+
+    compose.setContent { CalendarGridContent(events = events) }
+
+    scrollUntilVisible(eventTag("First full-overlapping Event"))
+    scrollUntilVisible(eventTag("Second full-overlapping Event"))
+  }
+
+  @Test
+  fun calendarGridContent_showsAllOverlappingEvents_whenSameSlot() {
+    val tuesday = LocalDate.now().with(DayOfWeek.TUESDAY)
+
+    val events =
+        listOf(
+            // Event on Tuesday [10:00 - 11:00] — overlapping group A
+            ev("Overlap A", tuesday, LocalTime.of(10, 0), Duration.ofHours(1)),
+            // Event on Tuesday [10:00 - 11:00] — overlapping group B
+            ev("Overlap B", tuesday, LocalTime.of(10, 0), Duration.ofHours(1)),
+            // Event on Tuesday [10:00 - 11:00] — overlapping group C
+            ev("Overlap C", tuesday, LocalTime.of(10, 0), Duration.ofHours(1)),
+        )
+
+    compose.setContent { CalendarGridContent(events = events) }
+
+    scrollUntilVisible(eventTag("Overlap A"))
+    scrollUntilVisible(eventTag("Overlap B"))
+    scrollUntilVisible(eventTag("Overlap C"))
+  }
+
+  @Test
+  fun calendarGridContent_showsEventSegments_whenMultiDayMoreThanTwoDays() {
+    val monday = LocalDate.now().with(DayOfWeek.MONDAY)
+    val thursday = LocalDate.now().with(DayOfWeek.THURSDAY)
+
+    val events =
+        listOf(
+            // Event Monday→Thursday [Mon 12:00 - Thu 12:00] — multi-day spanning > 2 days
+            createEvent(
+                title = "Multi-day 3+",
+                startDate = at(monday, LocalTime.of(12, 0)),
+                endDate = at(thursday, LocalTime.of(12, 0)),
+                cloudStorageStatuses = emptySet(),
+                participants = emptySet(),
+            ),
+        )
+
+    compose.setContent { CalendarGridContent(events = events) }
+
+    // We expect one segment per affected day column, allow multiple matches and assert presence
+    val nodes = compose.onAllNodesWithTag(eventTag("Multi-day 3+")).fetchSemanticsNodes()
+    assertTrue("Expected at least one visible segment for multi-day event", nodes.isNotEmpty())
+  }
+}
+
+/** Validation/guard-rail tests. */
+class EventsValidationTests : BaseEventsTest() {
+
+  @Test
+  fun calendarGridContent_doesNotShowEvent_whenZeroDuration() {
+    val monday = LocalDate.now().with(DayOfWeek.MONDAY)
+    val start = at(monday, LocalTime.of(10, 0))
+
+    val events =
+        listOf(
+            // Event on Monday [10:00 - 10:00] — zero-duration should not render
+            createEvent(
+                title = "Zero Duration Event",
+                startDate = start,
+                endDate = start, // same instant
+                cloudStorageStatuses = emptySet(),
+                participants = emptySet(),
+            ),
+        )
+
+    compose.setContent { CalendarGridContent(events = events) }
+
+    // Use assertIsNotDisplayed(): a zero-duration event should not be composed.
+    compose.onNodeWithTag(eventTag("Zero Duration Event")).assertIsNotDisplayed()
+  }
+
+  @Test
+  fun calendarGridContent_doesNotShowEvent_whenNegativeDuration() {
+    val monday = LocalDate.now().with(DayOfWeek.MONDAY)
+    val end = at(monday, LocalTime.of(10, 0))
+    val start = at(monday, LocalTime.of(11, 0)) // start after end => negative duration
+
+    assertThrows(IllegalArgumentException::class.java) {
+      createEvent(
+          title = "Negative Duration Event",
+          startDate = start,
+          endDate = end,
+          cloudStorageStatuses = emptySet(),
+          participants = emptySet(),
+      )
+    }
+  }
+}
+
+/**
+ * Week-boundary focused tests: more descriptive comments to explain expectations.
+ *
+ * Context: Week view is Monday→Sunday. When an event spans across weeks, only the segment that
+ * intersects the visible week should render (e.g., Sun→Mon shows on Sun of current or Mon of next,
+ * as appropriate).
+ */
+class EventsWeekBoundaryTests : BaseEventsTest() {
+
+  @Test
+  fun calendarGridContent_showsEvent_whenSpanningFromPreviousSundayToCurrentMonday() {
+    // Event starting Sunday (previous week) and ending Monday (current week) should show on Monday
+    // column (the portion intersecting the current visible week). This ensures boundary clipping
+    // is applied correctly at week transitions.
+    val monday = LocalDate.now().with(DayOfWeek.MONDAY)
+    val previousSunday = monday.minusDays(1)
+
+    val events =
+        listOf(
+            createEvent(
+                title = "Week Boundary Event",
+                startDate = at(previousSunday, LocalTime.of(22, 0)),
+                endDate = at(monday, LocalTime.of(10, 0)),
+                cloudStorageStatuses = emptySet(),
+                participants = emptySet(),
+            ),
+        )
+
+    compose.setContent { CalendarGridContent(events = events) }
+
+    scrollUntilVisible(eventTag("Week Boundary Event"))
+  }
+
+  @Test
+  fun calendarGridContent_showsEvent_whenSpanningFromCurrentSundayToNextMonday() {
+    // Event starting Sunday (current week) and ending Monday (next week) should show on Sunday
+    // column (the portion intersecting the current visible week). Again, this verifies that only
+    // the in-range segment is rendered for cross-week events.
+    val currentSunday = LocalDate.now().with(DayOfWeek.SUNDAY)
+    val nextMonday = currentSunday.plusDays(1)
+
+    val events =
+        listOf(
+            createEvent(
+                title = "Current Week Boundary Event",
+                startDate = at(currentSunday, LocalTime.of(22, 0)),
+                endDate = at(nextMonday, LocalTime.of(10, 0)),
+                cloudStorageStatuses = emptySet(),
+                participants = emptySet(),
+            ),
+        )
+
+    compose.setContent { CalendarGridContent(events = events) }
+
+    scrollUntilVisible(eventTag("Current Week Boundary Event"))
+  }
+}

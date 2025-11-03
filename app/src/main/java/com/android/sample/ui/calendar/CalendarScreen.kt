@@ -1,5 +1,6 @@
 package com.android.sample.ui.calendar
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -9,17 +10,22 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import com.android.sample.R
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.ui.calendar.data.LocalDateRange
-import com.android.sample.ui.calendar.mockData.getMockEvents
 import com.android.sample.ui.calendar.style.CalendarDefaults.DefaultDateRange
+import com.android.sample.ui.calendar.utils.DateTimeUtils.localDateTimeToInstant
+import java.time.LocalTime
 
 object CalendarScreenTestTags {
   const val TOP_BAR_TITLE = "CalendarTopBarTitle"
@@ -36,12 +42,30 @@ object CalendarScreenTestTags {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CalendarScreen(onCreateEvent: () -> Unit = {}) {
+fun CalendarScreen(
+    calendarViewModel: CalendarViewModel = viewModel(),
+    onCreateEvent: () -> Unit = {}
+) {
   // initialize the week from monday to friday
   var currentDateRange by remember { mutableStateOf(DefaultDateRange) }
 
+  val context = LocalContext.current
+  val uiState by calendarViewModel.uiState.collectAsState()
+  val events = uiState.events
+
+  // Fetch events when the screen is recomposed
+  LaunchedEffect(currentDateRange) { loadEventsForDateRange(calendarViewModel, currentDateRange) }
+
+  // Show error message if fetching events fails
+  LaunchedEffect(uiState.errorMsg) {
+    uiState.errorMsg?.let { message ->
+      Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+      calendarViewModel.clearErrorMsg()
+    }
+  }
+
   // generate mock events
-  val mockEvents = getMockEvents()
+  // val mockEvents = getMockEvents()
 
   Scaffold(
       topBar = {
@@ -66,7 +90,7 @@ fun CalendarScreen(onCreateEvent: () -> Unit = {}) {
                 .fillMaxSize()
                 .testTag((CalendarScreenTestTags.SCREEN_ROOT)),
         dateRange = currentDateRange,
-        events = mockEvents,
+        events = events,
         onSwipeLeft = {
           val nextStart = currentDateRange.start.plusWeeks(1)
           val nextEnd = currentDateRange.endInclusive.plusWeeks(1)
@@ -82,4 +106,19 @@ fun CalendarScreen(onCreateEvent: () -> Unit = {}) {
         // Later : add here onEventClick, onEventLongPress, onSwipeLeft, onSwipeRight
         )
   }
+}
+
+/**
+ * Loads the calendar events for a given date range using the provided [CalendarViewModel].
+ *
+ * Converts the [LocalDateRange] into corresponding [java.time.Instant] values covering the full
+ * duration from start of the first day (midnight) to the end of the last day.
+ */
+private fun loadEventsForDateRange(
+    calendarViewModel: CalendarViewModel,
+    dateRange: LocalDateRange
+) {
+  calendarViewModel.loadEventsBetween(
+      localDateTimeToInstant(dateRange.start, LocalTime.MIDNIGHT),
+      localDateTimeToInstant(dateRange.endInclusive, LocalTime.MAX))
 }

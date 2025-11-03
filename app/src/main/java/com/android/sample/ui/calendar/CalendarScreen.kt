@@ -15,9 +15,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import com.android.sample.ui.calendar.data.LocalDateRange
 import com.android.sample.ui.calendar.mockData.getMockEvents
 import com.android.sample.ui.calendar.style.CalendarDefaults.DefaultDateRange
+import com.android.sample.R
 
 object CalendarScreenTestTags {
   const val TOP_BAR_TITLE = "CalendarTopBarTitle"
@@ -45,7 +47,9 @@ fun CalendarScreen(onCreateEvent: () -> Unit = {}) {
       topBar = {
         TopAppBar(
             title = {
-              Text("Calendar", modifier = Modifier.testTag(CalendarScreenTestTags.TOP_BAR_TITLE))
+              Text(
+                  stringResource(R.string.calendar_screen_title),
+                  modifier = Modifier.testTag(CalendarScreenTestTags.TOP_BAR_TITLE))
             },
             colors =
                 TopAppBarDefaults.topAppBarColors(

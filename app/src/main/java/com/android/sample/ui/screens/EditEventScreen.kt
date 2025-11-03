@@ -7,7 +7,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.android.sample.R
 
 object EditEventTestTags {
   const val ROOT = "edit_event_screen"
@@ -22,9 +24,11 @@ fun EditEventScreen(eventId: String, onNavigateBack: () -> Unit) {
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
-          Text("Editing event ID: $eventId")
+          Text(stringResource(R.string.edit_event_id, eventId))
           Spacer(modifier = Modifier.height(16.dp))
-          Button(onClick = onNavigateBack) { Text("Back") }
+          Button(onClick = onNavigateBack) {
+            Text(stringResource(R.string.common_back))
+          }
         }
   }
 }

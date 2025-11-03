@@ -13,9 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.android.sample.R
 
 object ProfileScreenTestTags {
   const val PROFILE_SCREEN = "profile_screen"
@@ -43,6 +45,9 @@ fun ProfileScreen(
   var emailError by remember { mutableStateOf<String?>(null) }
   var phoneError by remember { mutableStateOf<String?>(null) }
 
+  val emailErrorMessage = stringResource(R.string.profile_email_error)
+  val phoneErrorMessage = stringResource(R.string.profile_phone_error)
+
   Surface(
       modifier =
           Modifier.fillMaxSize().semantics { testTag = ProfileScreenTestTags.PROFILE_SCREEN }) {
@@ -54,7 +59,7 @@ fun ProfileScreen(
                   modifier =
                       Modifier.testTag(ProfileScreenTestTags.BACK_BUTTON).align(Alignment.Start),
                   onClick = onNavigateBack) {
-                    Text("Back")
+                    Text(stringResource(R.string.common_back))
                   }
 
               Spacer(Modifier.height(24.dp))
@@ -72,10 +77,8 @@ fun ProfileScreen(
                   },
                   onSave = {
                     val (emailValid, phoneValid) = validateInputs(email, phone)
-                    emailError = if (!emailValid) "Please enter a valid email address" else null
-                    phoneError =
-                        if (!phoneValid) "Please enter a valid phone number (min 7 digits)"
-                        else null
+                    emailError = if (!emailValid) emailErrorMessage else null
+                    phoneError = if (!phoneValid) phoneErrorMessage else null
 
                     if (emailValid && phoneValid) {
                       profileViewModel.updateDisplayName(displayName)
@@ -89,7 +92,7 @@ fun ProfileScreen(
               Spacer(Modifier.height(24.dp))
 
               ProfileTextField(
-                  label = "Display Name",
+                  label = stringResource(R.string.profile_display_name_label),
                   value = displayName,
                   isEditMode = isEditMode,
                   onValueChange = { displayName = it },
@@ -98,7 +101,7 @@ fun ProfileScreen(
               Spacer(Modifier.height(16.dp))
 
               ProfileTextField(
-                  label = "Email",
+                  label = stringResource(R.string.profile_email_label),
                   value = email,
                   isEditMode = isEditMode,
                   onValueChange = {
@@ -112,7 +115,7 @@ fun ProfileScreen(
               Spacer(Modifier.height(16.dp))
 
               ProfileTextField(
-                  label = "Phone Number",
+                  label = stringResource(R.string.profile_phone_label),
                   value = phone,
                   isEditMode = isEditMode,
                   onValueChange = {
@@ -130,7 +133,7 @@ fun ProfileScreen(
                       Modifier.testTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON).fillMaxWidth(),
                   onClick = onNavigateToAdminContact,
                   enabled = !isEditMode) {
-                    Text("View Admin Contact")
+                    Text(stringResource(R.string.profile_admin_contact_button))
                   }
             }
       }
@@ -147,25 +150,34 @@ private fun ProfileHeader(
       modifier = Modifier.fillMaxWidth(),
       horizontalArrangement = Arrangement.SpaceBetween,
       verticalAlignment = Alignment.CenterVertically) {
-        Text("User Profile", style = MaterialTheme.typography.headlineMedium)
+        Text(stringResource(R.string.profile_title), style = MaterialTheme.typography.headlineMedium)
 
         if (isEditMode) {
           Row {
             IconButton(
                 onClick = onCancel,
                 modifier = Modifier.testTag(ProfileScreenTestTags.CANCEL_BUTTON)) {
-                  Icon(Icons.Default.Close, contentDescription = "Cancel")
+                  Icon(
+                      Icons.Default.Close,
+                      contentDescription =
+                          stringResource(R.string.profile_cancel_content_description))
                 }
 
             IconButton(
                 onClick = onSave, modifier = Modifier.testTag(ProfileScreenTestTags.SAVE_BUTTON)) {
-                  Icon(Icons.Default.Save, contentDescription = "Save")
+                  Icon(
+                      Icons.Default.Save,
+                      contentDescription =
+                          stringResource(R.string.profile_save_content_description))
                 }
           }
         } else {
           IconButton(
               onClick = onEdit, modifier = Modifier.testTag(ProfileScreenTestTags.EDIT_BUTTON)) {
-                Icon(Icons.Default.Edit, contentDescription = "Edit")
+                Icon(
+                    Icons.Default.Edit,
+                    contentDescription =
+                        stringResource(R.string.profile_edit_content_description))
               }
         }
       }

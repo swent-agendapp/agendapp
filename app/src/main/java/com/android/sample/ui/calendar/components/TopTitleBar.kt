@@ -17,8 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.android.sample.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,7 +47,8 @@ fun TopTitleBar(
               modifier = Modifier.testTag("")) { // later : NavigationTestTags.GO_BACK_BUTTON
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "backButton")
+                    contentDescription =
+                        stringResource(R.string.top_bar_back_content_description))
               }
         }
       },
@@ -56,7 +59,8 @@ fun TopTitleBar(
               modifier = Modifier.testTag("")) { // later : NavigationTestTags.LOGOUT_BUTTON
                 Icon(
                     imageVector = Icons.AutoMirrored.Default.Logout,
-                    contentDescription = "logoutButton")
+                    contentDescription =
+                        stringResource(R.string.top_bar_logout_content_description))
               }
         }
       },

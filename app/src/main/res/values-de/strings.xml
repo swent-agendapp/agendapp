@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SampleApp</string>
+    <string name="title_activity_main">Hauptaktivität</string>
+    <string name="title_activity_second">Zweite Aktivität</string>
+    <string name="next">Weiter</string>
+    <string name="addEventTitle">Neues Ereignis</string>
+    <string name="enterTitleAndDescription">Bitte geben Sie den Titel und die Beschreibung Ihres Ereignisses ein</string>
+    <string name="enterTimeAndRecurrence">Bitte wählen Sie den Ereignistyp und die Uhrzeit aus</string>
+    <string name="eventTitle">Titel</string>
+    <string name="eventTitlePlaceholder">Titel eingeben</string>
+    <string name="title_empty_error">Titel darf nicht leer sein</string>
+    <string name="description_empty_error">Beschreibung darf nicht leer sein</string>
+    <string name="eventDescriptionPlaceholder">Beschreiben Sie das Ereignis</string>
+    <string name="eventDescription">Beschreibung</string>
+    <string name="goBack">Zurück</string>
+    <string name="selectAttendants">Wählen Sie die Person aus, die an diesem Ereignis teilnimmt.</string>
+    <string name="startTime">Startzeit</string>
+    <string name="endTime">Endzeit</string>
+    <string name="startDatePickerLabel">Startdatum</string>
+    <string name="endDatePickerLabel">Enddatum</string>
+    <string name="recurrenceEndPickerLabel">Ende der Wiederholung</string>
+    <string name="recurrenceMenuLabel">Wiederholung</string>
+    <string name="finish">Fertigstellen</string>
+    <string name="create">Erstellen</string>
+    <string name="confirmationMessage">Glückwunsch!\nIhr Ereignis wurde erfolgreich erstellt und zum Kalender hinzugefügt</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="default_web_client_id">423898020035-fu7m7lmtsuu6cn7d3s4ev4mrf0ep68l3.apps.googleusercontent.com</string>
+
+    <!-- Common -->
+    <string name="replacement">Vertretung</string>
+    <string name="common_back">Zurück</string>
+
+    <!-- Edit Event Screen -->
+    <string name="edit_event_title">Ereignis bearbeiten</string>
+    <string name="edit_event_instruction">Ändern Sie unten die Ereignisdetails:</string>
+
+    <!-- Fields -->
+    <string name="edit_event_title_label">Titel</string>
+    <string name="edit_event_title_placeholder">Ereignistitel eingeben</string>
+    <string name="edit_event_title_error">Titel darf nicht leer sein</string>
+
+    <string name="edit_event_description_label">Beschreibung</string>
+    <string name="edit_event_description_placeholder">Ereignisbeschreibung eingeben</string>
+    <string name="edit_event_description_error">Beschreibung darf nicht leer sein</string>
+
+    <string name="edit_event_start_date_label">Startdatum</string>
+    <string name="edit_event_end_date_label">Enddatum</string>
+    <string name="edit_event_start_time_label">Startzeit:</string>
+    <string name="edit_event_end_time_label">Endzeit:</string>
+    <string name="edit_event_recurrence_label">Wiederholung</string>
+
+    <!-- Participants -->
+    <string name="edit_event_participants_label">Teilnehmende :</string>
+    <string name="edit_event_edit_participants_button">Teilnehmende bearbeiten</string>
+    <string name="edit_event_participants_screen_title">Teilnehmende des Ereignisses bearbeiten</string>
+    <string name="edit_event_select_participants_text">Teilnehmende auswählen</string>
+
+    <!-- Notifications -->
+    <string name="edit_event_notify_label">Benachrichtigen</string>
+    <string name="edit_event_add_notification_button">Benachrichtigung hinzufügen</string>
+    <string name="edit_event_remove_notification_symbol">✕</string>
+    <string name="edit_event_add_notification_symbol">+</string>
+
+    <!-- Buttons -->
+    <string name="common_save">Speichern</string>
+    <string name="common_cancel">Abbrechen</string>
+
+    <!-- Home Screen -->
+    <string name="home_go_to_edit_event">Zur Ereignisbearbeitung</string>
+    <string name="home_go_to_calendar">Zum Kalender</string>
+    <string name="home_go_to_settings">Zu den Einstellungen</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_screen_title">Einstellungen</string>
+    <string name="settings_profile_button">Profil</string>
+
+    <!-- Profile Screen -->
+    <string name="profile_email_error">Bitte geben Sie eine gültige E-Mail-Adresse ein</string>
+    <string name="profile_phone_error">Bitte geben Sie eine gültige Telefonnummer ein (mind. 7 Ziffern)</string>
+    <string name="profile_display_name_label">Anzeigename</string>
+    <string name="profile_email_label">E-Mail</string>
+    <string name="profile_phone_label">Telefonnummer</string>
+    <string name="profile_admin_contact_button">Administrator kontaktieren</string>
+    <string name="profile_title">Benutzerprofil</string>
+    <string name="profile_cancel_content_description">Abbrechen</string>
+    <string name="profile_save_content_description">Speichern</string>
+    <string name="profile_edit_content_description">Bearbeiten</string>
+
+    <!-- Admin Contact Screen -->
+    <string name="admin_contact_title">Administrator-Kontakt</string>
+    <string name="admin_contact_email_label">E-Mail</string>
+    <string name="admin_contact_phone_label">Telefon</string>
+    <string name="admin_contact_email_subject">Kontakt von Agendapp</string>
+
+    <!-- Calendar -->
+    <string name="calendar_screen_title">Kalender</string>
+    <string name="calendar_add_event_content_description">Ereignis hinzufügen</string>
+
+    <!-- Date Picker -->
+    <string name="date_picker_placeholder">TT/MM/JJJJ</string>
+    <string name="date_picker_select_date_content_description">Datum auswählen</string>
+
+    <!-- Recurrence -->
+    <string name="recurrence_one_time">Einmalig</string>
+    <string name="recurrence_weekly">Wöchentlich</string>
+    <string name="recurrence_monthly">Monatlich</string>
+    <string name="recurrence_yearly">Jährlich</string>
+
+    <!-- Edit Event -->
+    <string name="edit_event_id">Ereignis-ID wird bearbeitet: %1$s</string>
+    <string name="edit_event_default_notification">30 Min vorher</string>
+
+    <!-- Sign In -->
+    <string name="sign_in_success_message">Anmeldung erfolgreich!</string>
+    <string name="sign_in_app_title">Agendapp</string>
+    <string name="sign_in_message">Planen, verfolgen und verwalten</string>
+    <string name="sign_in_welcome">Willkommen</string>
+    <string name="sign_in_button_text">Mit Google anmelden</string>
+    <string name="sign_in_logout_content_description">Abmelden</string>
+    <string name="sign_in_logo_content_description">App-Logo</string>
+    <string name="sign_in_cancelled_error">Anmeldung abgebrochen</string>
+    <string name="sign_in_credentials_error">Anmeldeinformationen konnten nicht abgerufen werden: %1$s</string>
+    <string name="sign_in_unexpected_error">Unerwarteter Fehler: %1$s</string>
+
+    <!-- Top App Bar -->
+    <string name="top_bar_back_content_description">Zurück</string>
+    <string name="top_bar_logout_content_description">Abmelden</string>
+</resources>

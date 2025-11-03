@@ -27,6 +27,7 @@
     <string name="default_web_client_id">423898020035-fu7m7lmtsuu6cn7d3s4ev4mrf0ep68l3.apps.googleusercontent.com</string>
 
     <!-- Common -->
+    <string name="confirmed_replacements">Bestätigte Ersetzungen</string>
     <string name="common_back">Zurück</string>
 
     <!-- Edit Event Screen -->
@@ -94,6 +95,7 @@
     <!-- Calendar -->
     <string name="calendar_screen_title">Kalender</string>
     <string name="calendar_add_event_content_description">Ereignis hinzufügen</string>
+    <string name="replacement">Ersetzung</string>
 
     <!-- Date Picker -->
     <string name="date_picker_placeholder">TT/MM/JJJJ</string>
@@ -124,4 +126,7 @@
     <!-- Top App Bar -->
     <string name="top_bar_back_content_description">Zurück</string>
     <string name="top_bar_logout_content_description">Abmelden</string>
+    <string name="organize_replacement">Einen Ersatz organisieren</string>
+    <string name="process_replacement">Ersatz zur Bearbeitung</string>
+    <string name="waiting_confirmation_replacement">Warten auf Bestätigung des Ersatzes</string>
 </resources>

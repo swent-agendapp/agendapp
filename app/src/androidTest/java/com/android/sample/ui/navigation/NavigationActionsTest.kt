@@ -123,7 +123,6 @@ class AgendappNavigationTest {
     composeTestRule.onNodeWithTag(HomeTestTags.MAP_BUTTON).assertExists()
   }
 
-  @Ignore("Feature not ready yet")
   @OptIn(ExperimentalTestApi::class)
   @Test
   fun clickingEmail_opensEmailApp() {

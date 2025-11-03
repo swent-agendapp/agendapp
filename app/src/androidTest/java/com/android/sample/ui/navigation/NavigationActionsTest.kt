@@ -49,7 +49,6 @@ class AgendappNavigationTest {
 
   @Test
   fun navigate_to_all_add_forms() {
-    composeTestRule.setContent { AgendappNavigation() }
 
     // Go to Calendar
     composeTestRule.onNodeWithTag(CALENDAR_BUTTON).assertExists().performClick()
@@ -73,7 +72,6 @@ class AgendappNavigationTest {
 
   @Test
   fun navigate_to_replacement() {
-    composeTestRule.setContent { AgendappNavigation() }
 
     // Go to replacement
     composeTestRule.onNodeWithTag(HomeTestTags.REPLACEMENT_BUTTON).assertExists().performClick()
@@ -84,7 +82,7 @@ class AgendappNavigationTest {
 
   @Test
   fun navigate_to_profile_and_admin_profile_and_back() {
-    composeTestRule.setContent { AgendappNavigation() }
+
     // Go to Profile
     composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).assertExists().performClick()
     composeTestRule.onNodeWithTag(SettingsScreenTestTags.ROOT).assertExists()
@@ -117,8 +115,6 @@ class AgendappNavigationTest {
   fun clickingEmail_opensEmailApp() {
     Intents.init()
     try {
-
-      composeTestRule.setContent { AgendappNavigation() }
 
       // Dismiss any initial popups that might block interaction
       composeTestRule.waitUntilAtLeastOneExists(hasTestTag(HomeTestTags.SETTINGS_BUTTON))
@@ -154,8 +150,6 @@ class AgendappNavigationTest {
   fun clickingPhone_opensDialerApp() {
     Intents.init()
     try {
-
-      composeTestRule.setContent { AgendappNavigation() }
 
       composeTestRule.waitUntilAtLeastOneExists(hasTestTag(HomeTestTags.SETTINGS_BUTTON))
       composeTestRule.onRoot().performTouchInput { click(Offset(1f, 1f)) }

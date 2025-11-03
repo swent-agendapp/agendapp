@@ -4,6 +4,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -23,7 +24,9 @@ import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryLocal
 import com.android.sample.model.calendar.createEvent
+import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.style.CalendarDefaults.DefaultSwipeThreshold
+import com.android.sample.ui.calendar.utils.DateTimeUtils
 import java.time.DayOfWeek
 import java.time.Duration
 import java.time.LocalDate
@@ -374,6 +377,42 @@ class CalendarSanityTests : BaseCalendarScreenTest() {
   fun calendarContainerComposes() {
     composeTestRule.setContent { CalendarContainer() }
     composeTestRule.onNodeWithTag(CalendarScreenTestTags.ROOT).assertIsDisplayed()
+  }
+}
+
+/** Initial scroll behavior tests. */
+class CalendarInitialScrollTests : BaseCalendarScreenTest() {
+
+  @Test
+  fun initialScroll_startsAtDefaultInitialHour() {
+    // Purpose: Verify that on first composition, the grid auto-scrolls so that the
+    // default initial hour is at the top of the viewport. We assert that
+    // the default starting hour is visible while the hour before is not.
+
+    // Mount only the grid content to exercise the scroll logic in isolation.
+    composeTestRule.setContent { CalendarGridContent(modifier = Modifier) }
+
+    // Build Instants for (DefaultInitialHour - 1) and DefaultInitialHour on an arbitrary base date,
+    // then format them using the same utility as production, ensuring identical labels.
+    val baseDate = LocalDate.now()
+
+    val defaultStartingHourMinusOneInstant =
+        DateTimeUtils.localDateTimeToInstant(
+            baseDate, LocalTime.of(CalendarDefaults.DefaultInitialHour - 1, 0))
+    val defaultStartingHourMinusOne =
+        DateTimeUtils.formatInstantToTime(defaultStartingHourMinusOneInstant)
+
+    val defaultStartingHourInstant =
+        DateTimeUtils.localDateTimeToInstant(
+            baseDate, LocalTime.of(CalendarDefaults.DefaultInitialHour, 0))
+    val defaultStartingHour = DateTimeUtils.formatInstantToTime(defaultStartingHourInstant)
+    // The default initial hour should be visible at the top after the initial scroll
+    composeTestRule.onNodeWithText(defaultStartingHour, substring = false).assertIsDisplayed()
+
+    // The hour before should exists but should not be visible in the viewport
+    composeTestRule
+        .onNodeWithText(defaultStartingHourMinusOne, substring = false)
+        .assertIsNotDisplayed()
   }
 }
 

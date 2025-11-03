@@ -34,8 +34,8 @@ object MainActivityTestTags {
   const val MAIN_SCREEN_CONTAINER = "main_screen_container"
 }
 /**
- * Main entry point of the application. Sets up the theme and calls [Agendapp] to
- * initialize navigation.
+ * Main entry point of the application. Sets up the theme and calls [Agendapp] to initialize
+ * navigation.
  */
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {

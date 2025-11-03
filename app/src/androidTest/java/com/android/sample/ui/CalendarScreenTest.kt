@@ -8,7 +8,6 @@ import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performTouchInput
-import com.android.sample.Agendapp
 import com.android.sample.ui.calendar.CalendarContainer
 import com.android.sample.ui.calendar.CalendarGridContent
 import com.android.sample.ui.calendar.CalendarScreen

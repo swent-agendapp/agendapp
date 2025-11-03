@@ -4,7 +4,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -36,23 +35,30 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.Test
 
-class CalendarScreenTest {
+/**
+ * Base class exposing shared helpers and setup for CalendarScreen tests.
+ *
+ * Rationale: Smaller focused subclasses improve maintainability (grouped by concern) while reusing
+ * a single set of utilities.
+ */
+abstract class BaseCalendarScreenTest {
 
   @get:Rule val composeTestRule = createComposeRule()
 
   /** Converts a (LocalDate, LocalTime) to an Instant in the system zone for concise test setup. */
-  private fun at(date: LocalDate, time: LocalTime) =
+  protected fun at(date: LocalDate, time: LocalTime) =
       date
           .atTime(time) // Build a LocalDateTime
           .atZone(ZoneId.systemDefault()) // Attach the system zone
           .toInstant() // Convert to Instant
+
   /** Returns the tag of the vertical scrollable area that hosts the hours grid. */
-  private fun scrollAreaTag() = CalendarScreenTestTags.SCROLL_AREA
+  protected fun scrollAreaTag() = CalendarScreenTestTags.SCROLL_AREA
 
   /**
    * Returns true if the node with [tag] intersects the root viewport (no assertions/exceptions).
    */
-  private fun isInViewport(tag: String): Boolean {
+  protected fun isInViewport(tag: String): Boolean {
     val node = composeTestRule.onNodeWithTag(tag).fetchSemanticsNode()
     val root = composeTestRule.onRoot().fetchSemanticsNode()
     val nb = node.boundsInRoot
@@ -67,11 +73,11 @@ class CalendarScreenTest {
    * then performs a single display assertion. This avoids depending on production auto-scroll
    * timing.
    */
-  private fun scrollUntilVisible(
+  protected fun scrollUntilVisible(
       tag: String,
       maxSwipesPerDirection: Int = 1
-  ) { // For the now, one swipe is enough to see the whole screen, we can increase it when zooming
-    // will make the grid very big
+  ) { // For now, one swipe is enough to see the whole screen, we can increase it when zooming makes
+    // grid larger
     // Fast path: already visible
     if (isInViewport(tag)) {
       composeTestRule.onNodeWithTag(tag).assertIsDisplayed()
@@ -100,11 +106,77 @@ class CalendarScreenTest {
     composeTestRule.onNodeWithTag(tag).assertIsDisplayed()
   }
 
+  /** Makes event-block tag from a human title. */
+  protected fun eventBlockTag(title: String) = "${CalendarScreenTestTags.EVENT_BLOCK}_$title"
+
+  /** Helper: assert event block exists and is visible (auto-scrolls if needed). */
+  protected fun assertEventVisible(title: String) = scrollUntilVisible(eventBlockTag(title))
+
+  /** Helper: assert event block does not exist in the semantics tree. */
+  protected fun assertEventAbsent(title: String) =
+      composeTestRule.onNodeWithTag(eventBlockTag(title)).assertDoesNotExist()
+
+  /** Performs a horizontal swipe gesture on the calendar event grid. */
+  protected fun swipeEventGrid(deltaX: Float) {
+    composeTestRule
+        .onNodeWithTag(CalendarScreenTestTags.EVENT_GRID)
+        .assertIsDisplayed()
+        .performTouchInput {
+          down(center)
+          moveBy(Offset(deltaX, 0f))
+          up()
+        }
+  }
+
+  /** Fast swipe: single, large horizontal drag to cross the threshold quickly. */
+  protected fun swipeEventGridFast(deltaX: Float) = swipeEventGrid(deltaX)
+
   /**
-   * Builds a deterministic set of events spanning previous, current, and next weeks. Used to verify
-   * that CalendarScreen filters by date range and reacts to swipe gestures.
+   * Slow swipe: multiple small drags that sum to the target delta, to verify cumulative handling.
    */
-  private fun buildTestEvents(): List<Event> {
+  protected fun swipeEventGridSlow(totalDeltaX: Float, steps: Int = 8) {
+    val step = totalDeltaX / steps
+    composeTestRule
+        .onNodeWithTag(CalendarScreenTestTags.EVENT_GRID)
+        .assertIsDisplayed()
+        .performTouchInput {
+          down(center)
+          repeat(steps) { moveBy(Offset(step, 0f)) }
+          up()
+        }
+  }
+
+  /** Vertical-only gesture: should not trigger horizontal navigation. */
+  protected fun swipeEventGridVertical(deltaY: Float) {
+    composeTestRule
+        .onNodeWithTag(CalendarScreenTestTags.EVENT_GRID)
+        .assertIsDisplayed()
+        .performTouchInput {
+          down(center)
+          moveBy(Offset(0f, deltaY))
+          up()
+        }
+  }
+
+  /** Diagonal gesture with dominant vertical component: should not trigger navigation. */
+  protected fun swipeEventGridDiagonal(smallDeltaX: Float, largeDeltaY: Float) {
+    composeTestRule
+        .onNodeWithTag(CalendarScreenTestTags.EVENT_GRID)
+        .assertIsDisplayed()
+        .performTouchInput {
+          down(center)
+          moveBy(Offset(smallDeltaX, largeDeltaY))
+          up()
+        }
+  }
+
+  /** Convenience helpers for common navigation gestures. */
+  protected fun swipeLeft() = swipeEventGrid(-2 * DefaultSwipeThreshold)
+
+  protected fun swipeRight() = swipeEventGrid(2 * DefaultSwipeThreshold)
+
+  /** Builds a deterministic set of events spanning previous, current, and next weeks. */
+  protected fun buildTestEvents(): List<Event> {
     // Pick Monday of this week as the reference anchor
     val thisWeekMonday = LocalDate.now().with(DayOfWeek.MONDAY)
 
@@ -167,8 +239,7 @@ class CalendarScreenTest {
             // Previous week
             createEvent(
                 title = "Previous Event",
-                startDate =
-                    at(thisWeekMonday.minusWeeks(1).plusDays(1), LocalTime.of(17, 0)), // Tue
+                startDate = at(thisWeekMonday.minusWeeks(1).plusDays(1), LocalTime.of(17, 0)),
                 endDate =
                     at(thisWeekMonday.minusWeeks(1).plusDays(1), LocalTime.of(17, 0))
                         .plus(Duration.ofHours(2)),
@@ -177,8 +248,7 @@ class CalendarScreenTest {
             ),
             createEvent(
                 title = "Earlier Event",
-                startDate =
-                    at(thisWeekMonday.minusWeeks(1).plusDays(4), LocalTime.of(8, 0)), // Fri 8–12
+                startDate = at(thisWeekMonday.minusWeeks(1).plusDays(4), LocalTime.of(8, 0)),
                 endDate =
                     at(thisWeekMonday.minusWeeks(1).plusDays(4), LocalTime.of(8, 0))
                         .plus(Duration.ofHours(4)),
@@ -195,7 +265,7 @@ class CalendarScreenTest {
    * Inserts [events] into the given in-memory local repository. Preload the repo with our test
    * events before composing the screen.
    */
-  private fun populateRepo(repo: EventRepositoryLocal, events: List<Event>) = runBlocking {
+  protected fun populateRepo(repo: EventRepositoryLocal, events: List<Event>) = runBlocking {
     // Synchronously insert events so data is ready when the UI composes
     events.forEach { repo.insertEvent(it) }
   }
@@ -204,7 +274,7 @@ class CalendarScreenTest {
    * Minimal factory that builds a `CalendarViewModel` backed by [repo]. Create the ViewModel using
    * our test repository.
    */
-  private class CalendarVMFactory(private val repo: EventRepository) : ViewModelProvider.Factory {
+  protected class CalendarVMFactory(private val repo: EventRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T =
         when {
           // Provide CalendarViewModel wired to the local repo for tests
@@ -217,8 +287,9 @@ class CalendarScreenTest {
    * Lightweight `ViewModelStoreOwner` exposing [defaultViewModelProviderFactory] to Compose. Plug
    * our factory so `viewModel()` in CalendarScreen gets the right instance.
    */
-  private class TestOwner(override val defaultViewModelProviderFactory: ViewModelProvider.Factory) :
-      ViewModelStoreOwner, HasDefaultViewModelProviderFactory {
+  protected class TestOwner(
+      override val defaultViewModelProviderFactory: ViewModelProvider.Factory
+  ) : ViewModelStoreOwner, HasDefaultViewModelProviderFactory {
     // Hold ViewModels created during the test composition
     private val store = ViewModelStore()
     override val viewModelStore: ViewModelStore
@@ -231,7 +302,7 @@ class CalendarScreenTest {
    * `ViewModelStoreOwner` exposing a default factory that builds the real `CalendarViewModel` with
    * our local repo. Mount the real screen, but make it read from our test data.
    */
-  private fun setContentWithLocalRepo(events: List<Event> = buildTestEvents()) {
+  protected fun setContentWithLocalRepo(events: List<Event> = buildTestEvents()) {
     // Create an in-memory repository instance for tests
     val repo = EventRepositoryLocal()
     // Preload repository with our test events
@@ -244,80 +315,21 @@ class CalendarScreenTest {
     }
   }
 
-  /**
-   * Performs a horizontal swipe gesture on the calendar event grid.
-   *
-   * @param deltaX The horizontal drag in pixels. Use a **negative** value to swipe **left**
-   *   (navigate to next range) and a **positive** value to swipe **right** (previous range). In
-   *   tests we typically pass `±2 * DefaultSwipeThreshold` to guarantee crossing the threshold.
-   */
-  private fun swipeEventGrid(deltaX: Float) {
-    composeTestRule
-        .onNodeWithTag(CalendarScreenTestTags.EVENT_GRID)
-        .assertIsDisplayed()
-        .performTouchInput {
-          // Press, drag horizontally by deltaX, then release
-          down(center)
-          moveBy(Offset(deltaX, 0f))
-          up()
-        }
-  }
+  /** Returns the expected day-of-week short label (e.g., Mon, Tue) for a given date. */
+  protected fun dowLabel(date: LocalDate, locale: Locale = Locale.ENGLISH): String =
+      date.format(DateTimeFormatter.ofPattern("EEE", locale))
+}
 
-  /** Fast swipe: single, large horizontal drag to cross the threshold quickly. */
-  private fun swipeEventGridFast(deltaX: Float) {
-    composeTestRule
-        .onNodeWithTag(CalendarScreenTestTags.EVENT_GRID)
-        .assertIsDisplayed()
-        .performTouchInput {
-          // Press, drag once by deltaX, then release
-          down(center)
-          moveBy(Offset(deltaX, 0f))
-          up()
-        }
-  }
-
-  /**
-   * Slow swipe: multiple small drags that sum to the target delta, to verify cumulative handling.
-   */
-  private fun swipeEventGridSlow(totalDeltaX: Float, steps: Int = 8) {
-    // Break the total distance into small steps to simulate a slow gesture
-    val step = totalDeltaX / steps
-    composeTestRule
-        .onNodeWithTag(CalendarScreenTestTags.EVENT_GRID)
-        .assertIsDisplayed()
-        .performTouchInput {
-          // Press, drag in small increments, then release
-          down(center)
-          repeat(steps) { moveBy(Offset(step, 0f)) }
-          up()
-        }
-  }
-
-  /** Vertical-only gesture: should not trigger horizontal navigation. */
-  private fun swipeEventGridVertical(deltaY: Float) {
-    composeTestRule
-        .onNodeWithTag(CalendarScreenTestTags.EVENT_GRID)
-        .assertIsDisplayed()
-        .performTouchInput {
-          // Press, drag vertically by deltaY, then release
-          down(center)
-          moveBy(Offset(0f, deltaY))
-          up()
-        }
-  }
-
-  /** Diagonal gesture with dominant vertical component: should not trigger navigation. */
-  private fun swipeEventGridDiagonal(smallDeltaX: Float, largeDeltaY: Float) {
-    composeTestRule
-        .onNodeWithTag(CalendarScreenTestTags.EVENT_GRID)
-        .assertIsDisplayed()
-        .performTouchInput {
-          // Press, drag diagonally (small X, large Y), then release
-          down(center)
-          moveBy(Offset(smallDeltaX, largeDeltaY))
-          up()
-        }
-  }
+/**
+ * Sanity/basic composition tests (aka "smoke tests").
+ *
+ * These are fast, coarse checks that the calendar can compose without crashing and that the
+ * essential UI structure is present (root container, top bar, day row, time axis, grid, etc.). They
+ * are not concerned with business rules or interactions, the goal is simply to fail fast if the
+ * screen cannot mount or if critical tags disappear. This keeps feedback quick and localizes
+ * failures when deeper suites (visibility/swipe/header) would otherwise be noisy.
+ */
+class CalendarSanityTests : BaseCalendarScreenTest() {
 
   @Test
   fun testTagsAreCorrectlySet() {
@@ -363,294 +375,199 @@ class CalendarScreenTest {
     composeTestRule.setContent { CalendarContainer() }
     composeTestRule.onNodeWithTag(CalendarScreenTestTags.ROOT).assertIsDisplayed()
   }
+}
+
+/** Visibility-focused tests: which events exist/are visible vs absent by week. */
+class CalendarVisibilityTests : BaseCalendarScreenTest() {
 
   @Test
-  fun calendarGridContent_whenSwipeLeft_showsNextWeekWithEvents() {
-    // Arrange & Act: compose CalendarScreen with a local in-memory repo populated with events
+  fun currentWeek_eventsVisible_othersAbsent() {
+    setContentWithLocalRepo()
+
+    // Current week visible
+    assertEventVisible("First Event")
+    assertEventVisible("Nice Event")
+    assertEventVisible("Top Event")
+
+    // Other weeks: nodes should not exist in the tree
+    assertEventAbsent("Next Event")
+    assertEventAbsent("Later Event")
+    assertEventAbsent("Previous Event")
+    assertEventAbsent("Earlier Event")
+  }
+}
+
+/** Swipe/navigation-focused tests. */
+class CalendarSwipeTests : BaseCalendarScreenTest() {
+
+  @Test
+  fun whenSwipeLeft_showsNextWeekWithEvents() {
     setContentWithLocalRepo(buildTestEvents())
 
-    // current week, should be displayed
-    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
-    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
-    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
+    // Baseline
+    assertEventVisible("First Event")
+    assertEventAbsent("Next Event")
+    assertEventAbsent("Later Event")
 
-    // next week, should not be displayed
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event")
-        .assertIsNotDisplayed()
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Later Event")
-        .assertIsNotDisplayed()
+    // Navigate to next range
+    swipeLeft()
 
-    // swipe left of twice the threshold to trigger onSwipeLeft
-    swipeEventGrid(-2 * DefaultSwipeThreshold)
+    // Next week now
+    assertEventVisible("Next Event")
+    assertEventVisible("Later Event")
 
-    // next week, should be displayed
-    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event")
-    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Later Event")
-
-    // next week, should not be displayed
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
-        .assertIsNotDisplayed()
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
-        .assertIsNotDisplayed()
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
-        .assertIsNotDisplayed()
+    // Current week events are now filtered out
+    assertEventAbsent("First Event")
+    assertEventAbsent("Nice Event")
+    assertEventAbsent("Top Event")
   }
 
   @Test
-  fun calendarGridContent_whenSwipeRight_showsPreviousWeekWithEvents() {
-    // Arrange & Act: CalendarScreen with local repo test data
+  fun whenSwipeRight_showsPreviousWeekWithEvents() {
     setContentWithLocalRepo()
 
-    // current week, should be displayed
-    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
-    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
-    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
+    // Baseline
+    assertEventVisible("First Event")
+    assertEventAbsent("Previous Event")
+    assertEventAbsent("Earlier Event")
 
-    // previous week, should not be displayed
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Previous Event")
-        .assertIsNotDisplayed()
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Earlier Event")
-        .assertIsNotDisplayed()
+    // Navigate to previous range
+    swipeRight()
 
-    // swipe right of twice the threshold to trigger onSwipeRight
-    swipeEventGrid(2 * DefaultSwipeThreshold)
+    // Previous week now
+    assertEventVisible("Previous Event")
+    assertEventVisible("Earlier Event")
 
-    // previous week, should be displayed
-    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Previous Event")
-    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Earlier Event")
-
-    // previous week, should not be displayed
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
-        .assertIsNotDisplayed()
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
-        .assertIsNotDisplayed()
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
-        .assertIsNotDisplayed()
+    // Current week events filtered out
+    assertEventAbsent("First Event")
+    assertEventAbsent("Nice Event")
+    assertEventAbsent("Top Event")
   }
 
   @Test
-  fun calendarGridContent_whenSwipeRightThenLeft_showsCurrentWeekWithEvents() {
-    // Arrange & Act: CalendarScreen with local repo test data
+  fun whenSwipeRightThenLeft_backToCurrentWeek() {
     setContentWithLocalRepo()
 
-    // current week, should be displayed
-    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
-    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
-    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
+    assertEventVisible("First Event")
+    assertEventAbsent("Previous Event")
+    assertEventAbsent("Next Event")
 
-    // previous week, should not be displayed
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Previous Event")
-        .assertIsNotDisplayed()
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Earlier Event")
-        .assertIsNotDisplayed()
+    swipeRight()
+    swipeLeft()
 
-    // next week, should not be displayed
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event")
-        .assertIsNotDisplayed()
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Later Event")
-        .assertIsNotDisplayed()
+    assertEventVisible("First Event")
+    assertEventVisible("Nice Event")
+    assertEventVisible("Top Event")
 
-    // swipe right of twice the threshold to trigger onSwipeRight
-    swipeEventGrid(2 * DefaultSwipeThreshold)
-
-    // swipe left of twice the threshold to trigger onSwipeLeft
-    swipeEventGrid(-2 * DefaultSwipeThreshold)
-
-    // current week, should be displayed
-    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
-    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
-    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
-
-    // previous week, should not be displayed
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Previous Event")
-        .assertIsNotDisplayed()
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Earlier Event")
-        .assertIsNotDisplayed()
-
-    // next week, should not be displayed
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event")
-        .assertIsNotDisplayed()
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Later Event")
-        .assertIsNotDisplayed()
+    assertEventAbsent("Previous Event")
+    assertEventAbsent("Earlier Event")
+    assertEventAbsent("Next Event")
+    assertEventAbsent("Later Event")
   }
 
   @Test
-  fun calendarGridContent_whenSwipeLeftThenRight_showsCurrentWeekWithEvents() {
-    // Arrange & Act: CalendarScreen with local repo test data
+  fun whenSwipeLeftThenRight_backToCurrentWeek() {
     setContentWithLocalRepo()
 
-    // current week, should be displayed
-    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
-    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
-    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
+    assertEventVisible("First Event")
+    assertEventAbsent("Previous Event")
+    assertEventAbsent("Next Event")
 
-    // previous week, should not be displayed
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Previous Event")
-        .assertIsNotDisplayed()
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Earlier Event")
-        .assertIsNotDisplayed()
+    swipeLeft()
+    swipeRight()
 
-    // next week, should not be displayed
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event")
-        .assertIsNotDisplayed()
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Later Event")
-        .assertIsNotDisplayed()
+    assertEventVisible("First Event")
+    assertEventVisible("Nice Event")
+    assertEventVisible("Top Event")
 
-    // swipe left of twice the threshold to trigger onSwipeLeft
-    swipeEventGrid(-2 * DefaultSwipeThreshold)
-
-    // swipe right of twice the threshold to trigger onSwipeRight
-    swipeEventGrid(2 * DefaultSwipeThreshold)
-
-    // current week, should be displayed
-    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
-    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Nice Event")
-    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Top Event")
-
-    // previous week, should not be displayed
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Previous Event")
-        .assertIsNotDisplayed()
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Earlier Event")
-        .assertIsNotDisplayed()
-
-    // next week, should not be displayed
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event")
-        .assertIsNotDisplayed()
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Later Event")
-        .assertIsNotDisplayed()
+    assertEventAbsent("Previous Event")
+    assertEventAbsent("Earlier Event")
+    assertEventAbsent("Next Event")
+    assertEventAbsent("Later Event")
   }
 
-  /** Returns the expected day-of-week short label (e.g., Mon, Tue) for a given date. */
-  private fun dowLabel(date: LocalDate, locale: Locale = Locale.ENGLISH): String =
-      date.format(DateTimeFormatter.ofPattern("EEE", locale))
-
   @Test
-  fun calendarGridContent_whenSwipeJustBelowThreshold_doesNotChangeWeek() {
-    // Arrange & Act: CalendarScreen with local repo test data
+  fun whenSwipeJustBelowThreshold_doesNotChangeWeek() {
     setContentWithLocalRepo()
 
-    // current week, should be displayed
-    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
-    // next week, should not be displayed
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event")
-        .assertIsNotDisplayed()
+    assertEventVisible("First Event")
+    assertEventAbsent("Next Event")
 
-    // swipe left just below the threshold => should NOT trigger onSwipeLeft
     swipeEventGrid(-(DefaultSwipeThreshold - 1f))
 
     // Still current week
-    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event")
-        .assertIsNotDisplayed()
+    assertEventVisible("First Event")
+    assertEventAbsent("Next Event")
   }
 
   @Test
-  fun calendarGridContent_whenSwipeExactlyAtThreshold_doesNotChangeWeekUnlessInclusive() {
-    // Arrange & Act: CalendarScreen with local repo test data
+  fun whenSwipeExactlyAtThreshold_doesNotChangeWeekUnlessInclusive() {
     setContentWithLocalRepo()
 
-    // swipe left exactly at the threshold
     swipeEventGrid(-DefaultSwipeThreshold)
 
-    // Require a swipe gesture strictly greater than threshold => remain on current week
-    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event")
-        .assertIsNotDisplayed()
+    // Require strictly greater than threshold -> remain on current
+    assertEventVisible("First Event")
+    assertEventAbsent("Next Event")
   }
 
   @Test
-  fun calendarGridContent_whenSwipeFastAndSlow_bothTriggerNavigation() {
-    // Arrange & Act: CalendarScreen with local repo test data
+  fun whenSwipeFastAndSlow_bothTriggerNavigation() {
     setContentWithLocalRepo()
 
-    // Fast swipe left should navigate to next week
+    // Fast swipe left -> next week
     swipeEventGridFast(-2 * DefaultSwipeThreshold)
-    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event")
+    assertEventVisible("Next Event")
 
-    // Swipe back to current week using a slow cumulative swipe to the right
+    // Slow cumulative swipe right -> back to current week
     swipeEventGridSlow(2 * DefaultSwipeThreshold)
-    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
+    assertEventVisible("First Event")
   }
 
   @Test
-  fun calendarGridContent_whenVerticalOrDiagonalSwipe_doesNotNavigate() {
-    // Arrange & Act: CalendarScreen with local repo test data
+  fun whenVerticalOrDiagonalSwipe_doesNotNavigate() {
     setContentWithLocalRepo()
 
-    // Baseline: current week visible, next week not visible
-    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event")
-        .assertIsNotDisplayed()
+    // Baseline
+    assertEventVisible("First Event")
+    assertEventAbsent("Next Event")
 
-    // Vertical gesture only => must not change week
+    // Vertical only
     swipeEventGridVertical(3 * DefaultSwipeThreshold)
 
-    // Diagonal with small X (below threshold) and large Y => must not change week
+    // Diagonal: small X below threshold, large Y
     swipeEventGridDiagonal(-(DefaultSwipeThreshold - 1f), 3 * DefaultSwipeThreshold)
 
     // Still current week
-    scrollUntilVisible("${CalendarScreenTestTags.EVENT_BLOCK}_First Event")
-    composeTestRule
-        .onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Next Event")
-        .assertIsNotDisplayed()
+    assertEventVisible("First Event")
+    assertEventAbsent("Next Event")
   }
+}
+
+/** Header/labels-focused tests. */
+class CalendarHeaderTests : BaseCalendarScreenTest() {
 
   @Test
   fun dayHeaderRow_showsCorrectDays_beforeAndAfterSwipe() {
-    // Arrange & Act: CalendarScreen with local repo test data
     setContentWithLocalRepo()
 
     val monday = LocalDate.now().with(DayOfWeek.MONDAY)
     val expectedLabelsCurrent = (0 until 7).map { dowLabel(monday.plusDays(it.toLong())) }
 
-    // Header labels should be visible for the current week (Mon ... Sun)
     expectedLabelsCurrent.forEach { label ->
       composeTestRule.onNodeWithText(label, substring = true).assertIsDisplayed()
     }
 
-    // Swipe to next week
-    swipeEventGrid(-2 * DefaultSwipeThreshold)
+    swipeLeft()
 
     val nextMonday = monday.plusWeeks(1)
     val expectedLabelsNext = (0 until 7).map { dowLabel(nextMonday.plusDays(it.toLong())) }
 
-    // Header labels should update to the next week
     expectedLabelsNext.forEach { label ->
       composeTestRule.onNodeWithText(label, substring = true).assertIsDisplayed()
     }
 
-    // Swipe back to previous (current) week
-    swipeEventGrid(2 * DefaultSwipeThreshold)
+    swipeRight()
 
     expectedLabelsCurrent.forEach { label ->
       composeTestRule.onNodeWithText(label, substring = true).assertIsDisplayed()

@@ -1,5 +1,7 @@
 package com.android.sample.model.calendar
 
+import androidx.annotation.StringRes
+import com.android.sample.R
 import com.android.sample.utils.EventColor
 import java.time.Instant
 import java.time.LocalDate
@@ -108,10 +110,11 @@ fun createEvent(
       color = color)
 }
 
-fun RecurrenceStatus.formatString(): String =
+@StringRes
+fun RecurrenceStatus.labelRes(): Int =
     when (this) {
-      RecurrenceStatus.OneTime -> "One Time"
-      RecurrenceStatus.Weekly -> "Weekly"
-      RecurrenceStatus.Monthly -> "Monthly"
-      RecurrenceStatus.Yearly -> "Yearly"
+      RecurrenceStatus.OneTime -> R.string.recurrence_one_time
+      RecurrenceStatus.Weekly -> R.string.recurrence_weekly
+      RecurrenceStatus.Monthly -> R.string.recurrence_monthly
+      RecurrenceStatus.Yearly -> R.string.recurrence_yearly
     }

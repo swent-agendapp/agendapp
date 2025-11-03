@@ -8,8 +8,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.android.sample.ui.settings.SettingsScreenTestTags.BACK_BUTTON
+import com.android.sample.R
 
 object SettingsScreenTestTags {
   const val ROOT = "settings_screen"
@@ -24,16 +26,16 @@ fun SettingsScreen(onNavigateBack: () -> Unit = {}, onNavigateToProfile: () -> U
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
-          Text("Settings Screen")
+          Text(stringResource(R.string.settings_screen_title))
           Spacer(modifier = Modifier.height(16.dp))
           Button(
               modifier = Modifier.testTag(SettingsScreenTestTags.PROFILE_BUTTON),
               onClick = onNavigateToProfile) {
-                Text("Profile")
+                Text(stringResource(R.string.settings_profile_button))
               }
           Spacer(modifier = Modifier.height(16.dp))
           Button(modifier = Modifier.testTag(BACK_BUTTON), onClick = onNavigateBack) {
-            Text("Back")
+            Text(stringResource(R.string.common_back))
           }
         }
   }

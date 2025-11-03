@@ -28,6 +28,7 @@ import com.android.sample.ui.profile.AdminContactScreenTestTags
 import com.android.sample.ui.profile.AdminInformation
 import com.android.sample.ui.profile.ProfileScreenTestTags
 import com.android.sample.ui.screens.HomeTestTags
+import com.android.sample.ui.screens.HomeTestTags.CALENDAR_BUTTON
 import com.android.sample.ui.settings.SettingsScreenTestTags
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.Rule
@@ -49,7 +50,7 @@ class AgendappNavigationTest {
     composeTestRule.setContent { AgendappNavigation() }
 
     // Go to Calendar
-    composeTestRule.onNodeWithTag(HomeTestTags.ADD_EVENT_BUTTON).assertExists().performClick()
+    composeTestRule.onNodeWithTag(CALENDAR_BUTTON).assertExists().performClick()
     composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertExists().performClick()
     // Validate screen content
     composeTestRule

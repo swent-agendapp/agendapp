@@ -94,7 +94,11 @@ fun AgendappNavigation(modifier: Modifier = Modifier) {
                 onBack = { navigationActions.navigateBack() })
           }
           composable(Screen.AddEventEnd.route) {
-            AddEventConfirmationScreen(onFinish = { navigationActions.navigateTo(Screen.Calendar) })
+            AddEventConfirmationScreen(
+                onFinish = {
+                  navigationActions.navigateTo(Screen.Calendar)
+                  addEventViewModel.resetUiState()
+                })
           }
         }
         navigation(startDestination = Screen.Settings.route, route = "Settings") {

@@ -1,9 +1,8 @@
-package com.android.sample.ui
+package com.android.sample.ui.calendar
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
-import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.components.DayHeaderRow
 import org.junit.Rule
 import org.junit.Test

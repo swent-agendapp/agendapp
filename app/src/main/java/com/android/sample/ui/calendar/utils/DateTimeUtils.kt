@@ -6,8 +6,8 @@ import java.time.format.DateTimeFormatter
 object DateTimeUtils {
 
   private val zoneId: ZoneId = ZoneId.systemDefault()
-  private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd")
-  private val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("hh:mm a")
+  private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+  private val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
   fun formatInstantToDate(instant: Instant): String {
     return instant.atZone(zoneId).toLocalDate().format(dateFormatter)
@@ -68,5 +68,17 @@ object DateTimeUtils {
 
   fun nowInstantPlusHours(hours: Long): Instant {
     return Instant.now().plusSeconds(hours * 3600)
+  }
+
+  fun dayStartInstant(date: LocalDate, zone: ZoneId = ZoneId.systemDefault()): Instant {
+    return date.atStartOfDay(zone).toInstant()
+  }
+
+  /**
+   * End of the given day as an exclusive bound (for example the start of the next day). Prefer
+   * using this exclusive bound for interval-overlap checks.
+   */
+  fun dayEndInstantExclusive(date: LocalDate, zone: ZoneId = ZoneId.systemDefault()): Instant {
+    return date.plusDays(1).atStartOfDay(zone).toInstant()
   }
 }

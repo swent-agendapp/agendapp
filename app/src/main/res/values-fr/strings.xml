@@ -6,12 +6,12 @@
     <string name="next">Suivant</string>
     <string name="addEventTitle">Nouvel événement</string>
     <string name="enterTitleAndDescription">Veuillez saisir le titre et la description de votre événement</string>
-    <string name="enterTimeAndRecurrence">Veuillez sélectionner le type et l'heure de l'événement</string>
+    <string name="enterTimeAndRecurrence">Veuillez sélectionner le type et l’heure de l’événement</string>
     <string name="eventTitle">Titre</string>
     <string name="eventTitlePlaceholder">Saisir un titre</string>
     <string name="title_empty_error">Le titre ne peut pas être vide</string>
     <string name="description_empty_error">La description ne peut pas être vide</string>
-    <string name="eventDescriptionPlaceholder">Décrivez l'événement</string>
+    <string name="eventDescriptionPlaceholder">Décrivez l’événement</string>
     <string name="eventDescription">Description</string>
     <string name="goBack">Retour</string>
     <string name="selectAttendants">Sélectionnez la personne participant à cet événement.</string>
@@ -31,16 +31,16 @@
     <string name="common_back">Retour</string>
 
     <!-- Edit Event Screen -->
-    <string name="edit_event_title">Modifier l'événement</string>
-    <string name="edit_event_instruction">Modifiez les détails de l'événement ci-dessous :</string>
+    <string name="edit_event_title">Modifier l’événement</string>
+    <string name="edit_event_instruction">Modifiez les détails de l’événement ci-dessous :</string>
 
     <!-- Fields -->
     <string name="edit_event_title_label">Titre</string>
-    <string name="edit_event_title_placeholder">Entrez le titre de l'événement</string>
+    <string name="edit_event_title_placeholder">Entrez le titre de l’événement</string>
     <string name="edit_event_title_error">Le titre ne peut pas être vide</string>
 
     <string name="edit_event_description_label">Description</string>
-    <string name="edit_event_description_placeholder">Entrez la description de l'événement</string>
+    <string name="edit_event_description_placeholder">Entrez la description de l’événement</string>
     <string name="edit_event_description_error">La description ne peut pas être vide</string>
 
     <string name="edit_event_start_date_label">Date de début</string>
@@ -52,7 +52,7 @@
     <!-- Participants -->
     <string name="edit_event_participants_label">Participants :</string>
     <string name="edit_event_edit_participants_button">Modifier les participants</string>
-    <string name="edit_event_participants_screen_title">Modifier les participants de l'événement</string>
+    <string name="edit_event_participants_screen_title">Modifier les participants de l’événement</string>
     <string name="edit_event_select_participants_text">Sélectionnez les participants</string>
 
     <!-- Notifications -->
@@ -66,7 +66,7 @@
     <string name="common_cancel">Annuler</string>
 
     <!-- Home Screen -->
-    <string name="home_go_to_edit_event">Aller à la modification d'événement</string>
+    <string name="home_go_to_edit_event">Aller à la modification d’événement</string>
     <string name="home_go_to_calendar">Aller au calendrier</string>
     <string name="home_go_to_settings">Aller aux paramètres</string>
 
@@ -77,7 +77,7 @@
     <!-- Profile Screen -->
     <string name="profile_email_error">Veuillez saisir une adresse e-mail valide</string>
     <string name="profile_phone_error">Veuillez saisir un numéro de téléphone valide (min 7 chiffres)</string>
-    <string name="profile_display_name_label">Nom d'affichage</string>
+    <string name="profile_display_name_label">Nom d’affichage</string>
     <string name="profile_email_label">E-mail</string>
     <string name="profile_phone_label">Numéro de téléphone</string>
     <string name="profile_admin_contact_button">Voir le contact administrateur</string>
@@ -107,7 +107,7 @@
     <string name="recurrence_yearly">Annuel</string>
 
     <!-- Edit Event -->
-    <string name="edit_event_id">Modification de l'événement ID : %1$s</string>
+    <string name="edit_event_id">Modification de l’événement ID : %1$s</string>
     <string name="edit_event_default_notification">30 min avant</string>
 
     <!-- Sign In -->
@@ -117,9 +117,9 @@
     <string name="sign_in_welcome">Bienvenue</string>
     <string name="sign_in_button_text">Se connecter avec Google</string>
     <string name="sign_in_logout_content_description">Se déconnecter</string>
-    <string name="sign_in_logo_content_description">Logo de l'application</string>
+    <string name="sign_in_logo_content_description">Logo de l’application</string>
     <string name="sign_in_cancelled_error">Connexion annulée</string>
-    <string name="sign_in_credentials_error">Impossible d'obtenir les identifiants : %1$s</string>
+    <string name="sign_in_credentials_error">Impossible d’obtenir les identifiants : %1$s</string>
     <string name="sign_in_unexpected_error">Erreur inattendue : %1$s</string>
 
     <!-- Top App Bar -->

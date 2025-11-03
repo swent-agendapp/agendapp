@@ -26,6 +26,7 @@ import com.android.sample.ui.theme.SpacingMedium
 
 // Assisted by AI
 
+/** Contains the test tags used across the replacement screen UI. */
 object ReplacementTestTags {
   const val SCREEN = "replacement_screen"
   const val CARD_LIST = "replacement_card_list"
@@ -37,7 +38,14 @@ object ReplacementTestTags {
   const val CARD_CONFIRMED = "card_replacement_confirmed"
 }
 
-/* Data class representing a replacement item (only for UI)*/
+/**
+ * Represents a single replacement item in the UI.
+ *
+ * @property title The text displayed on the card.
+ * @property icon The icon representing the card.
+ * @property tag The test tag used for UI testing.
+ * @property onClick The action triggered when the card is clicked.
+ */
 data class ReplacementItem(
     val title: String,
     val icon: ImageVector,
@@ -45,7 +53,17 @@ data class ReplacementItem(
     val onClick: () -> Unit = {}
 )
 
-/** Replacement Screen displaying different replacement options. */
+/**
+ * Displays the main replacement screen with multiple replacement-related options.
+ *
+ * Each option is represented as a clickable card that navigates to a specific replacement flow
+ * (organize, process, waiting confirmation, or confirmed).
+ *
+ * @param onOrganizeClick Callback when the "Organize Replacement" card is clicked.
+ * @param onProcessClick Callback when the "Process Replacement" card is clicked.
+ * @param onWaitingConfirmationClick Callback when the "Waiting Confirmation" card is clicked.
+ * @param onConfirmedClick Callback when the "Confirmed Replacements" card is clicked.
+ */
 @Composable
 fun ReplacementScreen(
     onOrganizeClick: () -> Unit = {},
@@ -95,7 +113,14 @@ fun ReplacementScreen(
       })
 }
 
-/** Composable representing a single replacement option card. */
+/**
+ * Displays a single replacement option card.
+ *
+ * The card shows an icon and a title, and executes a callback when clicked.
+ *
+ * @param item The [ReplacementItem] containing display data.
+ * @param onClick The callback executed when the card is clicked.
+ */
 @Composable
 fun ReplacementCard(item: ReplacementItem, onClick: () -> Unit = {}) {
   Card(
@@ -117,6 +142,7 @@ fun ReplacementCard(item: ReplacementItem, onClick: () -> Unit = {}) {
       }
 }
 
+/** Preview of the [ReplacementScreen] for design inspection in Android Studio. */
 @Preview(showBackground = true)
 @Composable
 fun ReplacementScreenPreview() {

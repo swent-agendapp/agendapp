@@ -54,10 +54,13 @@ fun CalendarGridContent(
 
   val density = LocalDensity.current
 
-  // Start the viewport around 08:00 on first composition, while allowing full-day scrolling
+  // Start the viewport at the default initialHour on first composition, while allowing full-day
+  // scrolling.
+  // This ensures that the day start at this default time (instead of midnight), avoiding
+  // unnecessary scrolling to reach the relevant hours of the day.
   LaunchedEffect(Unit) {
     if (scrollState.value == 0) {
-      val initialHour = 8
+      val initialHour = CalendarDefaults.DefaultInitialHour
       val offsetPx = with(density) { (metrics.rowHeightDp * initialHour).roundToPx() }
       scrollState.scrollTo(offsetPx)
     }

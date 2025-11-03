@@ -34,4 +34,10 @@ data object CalendarDefaults {
 
   /** Default threshold distance (in pixels) for detecting swipe gestures. */
   const val DefaultSwipeThreshold = 64f
+
+  /**
+   * Default initial hour of the visible grid. Represents the hour shown at the top of the calendar
+   * on launch, to center the view on the most relevant hours of the day.
+   */
+  const val DefaultInitialHour: Int = 8
 }

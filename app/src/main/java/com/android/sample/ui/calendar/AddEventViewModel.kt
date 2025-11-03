@@ -20,7 +20,7 @@ data class AddCalendarEventUIState(
     val description: String = "",
     val startInstant: Instant = Instant.now(),
     val endInstant: Instant = Instant.now().plus(Duration.ofHours(1)),
-    val recurrenceEndTime: Instant = Instant.now(),
+    val recurrenceEndInstant: Instant = Instant.now(),
     val recurrenceMode: RecurrenceStatus = RecurrenceStatus.OneTime,
     val participants: Set<String> = emptySet(),
 )
@@ -84,7 +84,7 @@ class AddEventViewModel(
   }
 
   fun setRecurrenceEndTime(recurrenceEndTime: Instant) {
-    _uiState.value = _uiState.value.copy(recurrenceEndTime = recurrenceEndTime)
+    _uiState.value = _uiState.value.copy(recurrenceEndInstant = recurrenceEndTime)
   }
 
   fun addParticipant(participant: String) {

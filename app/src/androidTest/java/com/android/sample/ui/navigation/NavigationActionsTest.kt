@@ -4,11 +4,17 @@ import android.Manifest
 import android.app.Instrumentation
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.click
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.performTouchInput
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
@@ -25,9 +31,9 @@ import com.android.sample.ui.profile.AdminContactScreenTestTags
 import com.android.sample.ui.profile.AdminInformation
 import com.android.sample.ui.profile.ProfileScreenTestTags
 import com.android.sample.ui.screens.HomeTestTags
+import com.android.sample.ui.screens.HomeTestTags.CALENDAR_BUTTON
 import com.android.sample.ui.settings.SettingsScreenTestTags
 import org.hamcrest.CoreMatchers.allOf
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -52,7 +58,7 @@ class AgendappNavigationTest {
     composeTestRule.setContent { Agendapp() }
 
     // Go to Calendar
-    composeTestRule.onNodeWithTag(HomeTestTags.ADD_EVENT_BUTTON).assertExists().performClick()
+    composeTestRule.onNodeWithTag(CALENDAR_BUTTON).assertExists().performClick()
     composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertExists().performClick()
     // Validate screen content
     composeTestRule
@@ -118,11 +124,18 @@ class AgendappNavigationTest {
   }
 
   @Ignore("Feature not ready yet")
+  @OptIn(ExperimentalTestApi::class)
+  @Test
   fun clickingEmail_opensEmailApp() {
     Intents.init()
     try {
 
       composeTestRule.setContent { Agendapp() }
+
+      // Dismiss any initial popups that might block interaction
+      composeTestRule.waitUntilAtLeastOneExists(hasTestTag(HomeTestTags.SETTINGS_BUTTON))
+      composeTestRule.onRoot().performTouchInput { click(Offset(1f, 1f)) }
+      composeTestRule.waitForIdle()
 
       // Navigate to Profile screen
       composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).performClick()
@@ -148,12 +161,17 @@ class AgendappNavigationTest {
     }
   }
 
-  @Ignore("Feature not ready yet")
+  @OptIn(ExperimentalTestApi::class)
+  @Test
   fun clickingPhone_opensDialerApp() {
     Intents.init()
     try {
 
       composeTestRule.setContent { Agendapp() }
+
+      composeTestRule.waitUntilAtLeastOneExists(hasTestTag(HomeTestTags.SETTINGS_BUTTON))
+      composeTestRule.onRoot().performTouchInput { click(Offset(1f, 1f)) }
+      composeTestRule.waitForIdle()
 
       // Navigate to Profile screen
       composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).performClick()

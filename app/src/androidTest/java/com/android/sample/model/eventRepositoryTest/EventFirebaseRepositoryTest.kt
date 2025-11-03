@@ -77,16 +77,137 @@ class EventFirebaseRepositoryTest : FirebaseEmulatedTest() {
   }
 
   @Test
-  fun getEventsBetweenDates_shouldReturnEventsWithinRange() = runBlocking {
-    repository.insertEvent(event1)
-    repository.insertEvent(event2)
+  fun getEventsBetweenDates_returnsEventsFullyInsideRange() = runBlocking {
+    // event fully inside the range should be returned
+    repository.insertEvent(
+        event1.copy(
+            id = "in-range",
+            startDate = Instant.parse("2025-02-10T10:00:00Z"),
+            endDate = Instant.parse("2025-02-10T11:00:00Z")))
 
     val results =
         repository.getEventsBetweenDates(
-            Instant.parse("2025-01-01T00:00:00Z"), Instant.parse("2025-01-31T23:59:59Z"))
+            Instant.parse("2025-02-01T00:00:00Z"), Instant.parse("2025-02-28T23:59:59Z"))
 
     Assert.assertEquals(1, results.size)
-    Assert.assertEquals(event1.id, results.first().id)
+    Assert.assertEquals("in-range", results.first().id)
+  }
+
+  @Test
+  fun getEventsBetweenDates_excludesEventsBeforeRange() = runBlocking {
+    // event ending before the start of the range should be ignored
+    repository.insertEvent(
+        event1.copy(
+            id = "before-range",
+            startDate = Instant.parse("2025-01-31T09:00:00Z"),
+            endDate = Instant.parse("2025-01-31T10:00:00Z")))
+
+    val results =
+        repository.getEventsBetweenDates(
+            Instant.parse("2025-02-01T00:00:00Z"), Instant.parse("2025-02-28T23:59:59Z"))
+
+    Assert.assertTrue(results.isEmpty())
+  }
+
+  @Test
+  fun getEventsBetweenDates_excludesEventsAfterRange() = runBlocking {
+    // event starting after the end of the range should be ignored
+    repository.insertEvent(
+        event1.copy(
+            id = "after-range",
+            startDate = Instant.parse("2025-03-01T09:00:00Z"),
+            endDate = Instant.parse("2025-03-01T10:00:00Z")))
+
+    val results =
+        repository.getEventsBetweenDates(
+            Instant.parse("2025-02-01T00:00:00Z"), Instant.parse("2025-02-28T23:59:59Z"))
+
+    Assert.assertTrue(results.isEmpty())
+  }
+
+  @Test
+  fun getEventsBetweenDates_includesEventsOverlappingStart() = runBlocking {
+    // event starting before but ending inside the range should be returned
+    repository.insertEvent(
+        event1.copy(
+            id = "overlap-start",
+            startDate = Instant.parse("2025-01-31T23:00:00Z"),
+            endDate = Instant.parse("2025-02-01T01:00:00Z")))
+
+    val results =
+        repository.getEventsBetweenDates(
+            Instant.parse("2025-02-01T00:00:00Z"), Instant.parse("2025-02-28T23:59:59Z"))
+
+    Assert.assertEquals(1, results.size)
+    Assert.assertEquals("overlap-start", results.first().id)
+  }
+
+  @Test
+  fun getEventsBetweenDates_includesEventsOverlappingEnd() = runBlocking {
+    // event starting inside but ending after the range should be returned
+    repository.insertEvent(
+        event1.copy(
+            id = "overlap-end",
+            startDate = Instant.parse("2025-02-28T22:00:00Z"),
+            endDate = Instant.parse("2025-03-01T01:00:00Z")))
+
+    val results =
+        repository.getEventsBetweenDates(
+            Instant.parse("2025-02-01T00:00:00Z"), Instant.parse("2025-02-28T23:59:59Z"))
+
+    Assert.assertEquals(1, results.size)
+    Assert.assertEquals("overlap-end", results.first().id)
+  }
+
+  @Test
+  fun getEventsBetweenDates_includesEventsEndingExactlyAtStart() = runBlocking {
+    // event ending exactly at the start of the range should be returned
+    repository.insertEvent(
+        event1.copy(
+            id = "end-at-start",
+            startDate = Instant.parse("2025-01-31T22:00:00Z"),
+            endDate = Instant.parse("2025-02-01T00:00:00Z")))
+
+    val results =
+        repository.getEventsBetweenDates(
+            Instant.parse("2025-02-01T00:00:00Z"), Instant.parse("2025-02-28T23:59:59Z"))
+
+    Assert.assertEquals(1, results.size)
+    Assert.assertEquals("end-at-start", results.first().id)
+  }
+
+  @Test
+  fun getEventsBetweenDates_includesEventsEndingExactlyAtEnd() = runBlocking {
+    // event ending exactly at the end of the range should be returned
+    repository.insertEvent(
+        event1.copy(
+            id = "end-at-end",
+            startDate = Instant.parse("2025-02-28T22:00:00Z"),
+            endDate = Instant.parse("2025-02-28T23:59:59Z")))
+
+    val results =
+        repository.getEventsBetweenDates(
+            Instant.parse("2025-02-01T00:00:00Z"), Instant.parse("2025-02-28T23:59:59Z"))
+
+    Assert.assertEquals(1, results.size)
+    Assert.assertEquals("end-at-end", results.first().id)
+  }
+
+  @Test
+  fun getEventsBetweenDates_includesEventsCoveringWholeRange() = runBlocking {
+    // event that starts before and ends after the range should be returned
+    repository.insertEvent(
+        event1.copy(
+            id = "covering",
+            startDate = Instant.parse("2025-01-01T00:00:00Z"),
+            endDate = Instant.parse("2025-03-01T00:00:00Z")))
+
+    val results =
+        repository.getEventsBetweenDates(
+            Instant.parse("2025-02-01T00:00:00Z"), Instant.parse("2025-02-28T23:59:59Z"))
+
+    Assert.assertEquals(1, results.size)
+    Assert.assertEquals("covering", results.first().id)
   }
 
   @Test

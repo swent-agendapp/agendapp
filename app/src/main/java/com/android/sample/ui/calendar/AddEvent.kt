@@ -56,6 +56,7 @@ import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.calendar.components.ValidatingTextField
 import com.android.sample.ui.calendar.utils.DateTimeUtils
 
+// Assisted by AI
 object AddEventTestTags {
   // Tags for the different composable in the Add Event flow
   const val INSTRUCTION_TEXT = "instruction_text"
@@ -75,6 +76,14 @@ object AddEventTestTags {
   const val FINISH_BUTTON = "finish_button"
 
   const val ERROR_MESSAGE = "error_message"
+
+  fun recurrenceTag(status: RecurrenceStatus): String =
+      when (status) {
+        RecurrenceStatus.OneTime -> "recurrence_one_time"
+        RecurrenceStatus.Weekly -> "recurrence_weekly"
+        RecurrenceStatus.Monthly -> "recurrence_monthly"
+        RecurrenceStatus.Yearly -> "recurrence_yearly"
+      }
 }
 
 @Composable
@@ -212,7 +221,9 @@ fun AddEventTimeAndRecurrenceScreen(
                                     onClick = {
                                       addEventViewModel.setRecurrenceMode(option)
                                       expanded = false
-                                    })
+                                    },
+                                    modifier =
+                                        Modifier.testTag(AddEventTestTags.recurrenceTag(option)))
                               }
                             }
                       }
@@ -288,7 +299,8 @@ fun AddEventTimeAndRecurrenceScreen(
                         addEventViewModel.setRecurrenceEndTime(
                             DateTimeUtils.instantWithDate(
                                 newEventUIState.startInstant, date = date))
-                      })
+                      },
+                      initialInstant = newEventUIState.recurrenceEndInstant)
                 }
               }
 

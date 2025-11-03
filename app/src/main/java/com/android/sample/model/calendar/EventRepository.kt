@@ -39,15 +39,19 @@ interface EventRepository {
   suspend fun getEventById(itemId: String): Event?
 
   /**
-   * Retrieves all event items occurring between two dates (inclusive).
+   * Retrieves all event items that overlap the given date range [startDate, endDate] (inclusive).
    *
-   * @param startDate The start date of the range.
-   * @param endDate The end date of the range.
-   * @return A list of event items occurring between the specified dates (inclusive).
-   * @throws IllegalArgumentException if the date format is invalid or if startDate is after
-   *   endDate.
-   * @PerformanceNote: Uses linear scan. Could improve to TreeSet for O(log n) range queries if
-   *   needed.
+   * An event is considered overlapping the range if both of the following are true:
+   * - the event starts on or before `endDate` (event.startDate <= endDate), and
+   * - the event ends on or after `startDate` (event.endDate >= startDate).
+   *
+   * @param startDate The start (inclusive) of the range to query.
+   * @param endDate The end (inclusive) of the range to query. Must be >= startDate.
+   * @return A list of event items overlapping the specified date range.
+   * @throws IllegalArgumentException if `startDate` is after `endDate`.
+   * @PerformanceNote: Implementations may use a linear scan and filter in memory. For large
+   *   datasets, consider indexing or delegating the overlap check to the backing store when
+   *   supported.
    */
   suspend fun getEventsBetweenDates(startDate: Instant, endDate: Instant): List<Event>
 }

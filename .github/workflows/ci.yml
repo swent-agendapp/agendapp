@@ -18,6 +18,7 @@ jobs:
     name: CI
     # Execute the CI on the course's runners
     runs-on: ubuntu-latest
+    timeout-minutes: 45 # Set a timeout to avoid infinite loops
 
     steps:
       # First step : Checkout the repository on the runner
@@ -39,6 +40,7 @@ jobs:
         with:
           distribution: "temurin"
           java-version: "17"
+          cache: gradle # Enable gradle caching provided by the action
 
       # Caching is a very useful part of a CI, as a workflow is executed in a clean environment every time,
       # this means that one would need to re-download and re-process gradle files for every run. Which is very time consuming.
@@ -76,15 +78,10 @@ jobs:
 
       # Load google-services.json and local.properties from the secrets
       - name: Decode secrets
+        if: env.GOOGLE_SERVICES != ''
         env:
           GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
-
-        run: |
-          if [ -n "$GOOGLE_SERVICES" ]; then
-            echo "$GOOGLE_SERVICES" | base64 --decode > ./app/google-services.json
-          else
-            echo "::warning::GOOGLE_SERVICES secret is not set. google-services.json will not be created. Should be present after B2"
-          fi
+        run: echo "$GOOGLE_SERVICES" | base64 --decode > ./app/google-services.json
 
       - name: Grant execute permission for gradlew
         run: |
@@ -119,8 +116,7 @@ jobs:
 
       # Check formatting
       - name: KTFmt Check
-        run: |
-          ./gradlew ktfmtCheck
+        run: ./gradlew ktfmtCheck --parallel --build-cache
 
       # This step runs gradle commands to build the application
       - name: Assemble
@@ -153,7 +149,7 @@ jobs:
           target: google_apis
           arch: x86_64
           force-avd-creation: true
-          profile: pixel_6
+          profile: pixel_7
           emulator-boot-timeout: 120000
           emulator-options: >
             -no-snapshot

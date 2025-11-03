@@ -34,7 +34,7 @@ object MainActivityTestTags {
   const val MAIN_SCREEN_CONTAINER = "main_screen_container"
 }
 /**
- * Main entry point of the application. Sets up the theme and calls [AgendappNavigation] to
+ * Main entry point of the application. Sets up the theme and calls [Agendapp] to
  * initialize navigation.
  */
 class MainActivity : ComponentActivity() {

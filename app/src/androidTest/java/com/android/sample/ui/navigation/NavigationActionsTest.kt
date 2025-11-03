@@ -39,7 +39,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * Integration test for [AgendappNavigation] navigation. This test checks the navigation flow
+ * Integration test for [Agendapp] navigation. This test checks the navigation flow
  * between Home, EditEvent, Calendar, and Settings screens.
  */
 @RunWith(AndroidJUnit4::class)

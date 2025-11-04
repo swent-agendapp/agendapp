@@ -15,6 +15,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
+import com.android.sample.model.organization.EmployeeRepositoryFirebase
+import com.android.sample.model.organization.EmployeeRepositoryProvider
 import com.android.sample.ui.calendar.AddEventAttendantScreen
 import com.android.sample.ui.calendar.AddEventConfirmationScreen
 import com.android.sample.ui.calendar.AddEventTimeAndRecurrenceScreen
@@ -29,6 +31,8 @@ import com.android.sample.ui.replacement.ReplacementScreen
 import com.android.sample.ui.screens.HomeScreen
 import com.android.sample.ui.settings.SettingsScreen
 import com.android.sample.ui.theme.SampleAppTheme
+import com.github.se.bootcamp.model.authentication.AuthRepositoryFirebase
+import com.google.firebase.firestore.FirebaseFirestore
 
 object MainActivityTestTags {
   const val MAIN_SCREEN_CONTAINER = "main_screen_container"
@@ -40,6 +44,10 @@ object MainActivityTestTags {
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+
+    EmployeeRepositoryProvider.init(
+        EmployeeRepositoryFirebase(
+            db = FirebaseFirestore.getInstance(), authRepository = AuthRepositoryFirebase()))
     setContent {
       SampleAppTheme {
         Surface(

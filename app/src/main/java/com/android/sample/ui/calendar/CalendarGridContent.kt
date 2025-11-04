@@ -14,14 +14,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
+import com.android.sample.model.calendar.Event
 import com.android.sample.ui.calendar.components.DayHeaderRow
 import com.android.sample.ui.calendar.components.EventsPane
 import com.android.sample.ui.calendar.components.GridCanvas
 import com.android.sample.ui.calendar.components.NowIndicatorLine
 import com.android.sample.ui.calendar.components.TimeAxisColumn
 import com.android.sample.ui.calendar.data.LocalDateRange
-import com.android.sample.ui.calendar.mockData.MockEvent
 import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.style.GridContentStyle
 import com.android.sample.ui.calendar.style.defaultGridContentStyle
@@ -43,13 +44,27 @@ import kotlinx.coroutines.delay
 fun CalendarGridContent(
     modifier: Modifier = Modifier,
     dateRange: LocalDateRange = CalendarDefaults.DefaultDateRange,
-    events: List<MockEvent> = listOf(),
+    events: List<Event> = listOf(),
     style: GridContentStyle = defaultGridContentStyle()
     // Later : receive onEventClick and onEventLongPress
 ) {
   val metrics = rememberWeekViewMetrics(dateRange)
 
   val scrollState = rememberScrollState()
+
+  val density = LocalDensity.current
+
+  // Start the viewport at the default initialHour on first composition, while allowing full-day
+  // scrolling.
+  // This ensures that the day start at this default time (instead of midnight), avoiding
+  // unnecessary scrolling to reach the relevant hours of the day.
+  LaunchedEffect(Unit) {
+    if (scrollState.value == 0) {
+      val initialHour = CalendarDefaults.DefaultInitialHour
+      val offsetPx = with(density) { (metrics.rowHeightDp * initialHour).roundToPx() }
+      scrollState.scrollTo(offsetPx)
+    }
+  }
 
   var now by remember { mutableStateOf(LocalTime.now()) }
   LaunchedEffect(Unit) {

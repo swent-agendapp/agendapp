@@ -15,6 +15,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
+import com.android.sample.model.organization.EmployeeRepositoryFirebase
+import com.android.sample.model.organization.EmployeeRepositoryProvider
 import com.android.sample.ui.calendar.AddEventAttendantScreen
 import com.android.sample.ui.calendar.AddEventConfirmationScreen
 import com.android.sample.ui.calendar.AddEventTimeAndRecurrenceScreen
@@ -26,9 +28,12 @@ import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
 import com.android.sample.ui.profile.AdminContactScreen
 import com.android.sample.ui.profile.ProfileScreen
+import com.android.sample.ui.replacement.ReplacementScreen
 import com.android.sample.ui.screens.HomeScreen
 import com.android.sample.ui.settings.SettingsScreen
 import com.android.sample.ui.theme.SampleAppTheme
+import com.github.se.bootcamp.model.authentication.AuthRepositoryFirebase
+import com.google.firebase.firestore.FirebaseFirestore
 
 object MainActivityTestTags {
   const val MAIN_SCREEN_CONTAINER = "main_screen_container"
@@ -40,6 +45,10 @@ object MainActivityTestTags {
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+
+    EmployeeRepositoryProvider.init(
+        EmployeeRepositoryFirebase(
+            db = FirebaseFirestore.getInstance(), authRepository = AuthRepositoryFirebase()))
     setContent {
       SampleAppTheme {
         Surface(
@@ -118,13 +127,19 @@ fun Agendapp(modifier: Modifier = Modifier) {
                 onNavigateToEdit = { eventId -> navigationActions.navigateToEditEvent(eventId) },
                 onNavigateToCalendar = { navigationActions.navigateTo(Screen.Calendar) },
                 onNavigateToSettings = { navigationActions.navigateTo(Screen.Settings) },
-                onNavigateToMap = { navigationActions.navigateTo(Screen.Map) })
+                onNavigateToMap = { navigationActions.navigateTo(Screen.Map) },
+                onNavigateToReplacement = {
+                  navigationActions.navigateTo(Screen.ReplacementOverview)
+                })
           }
         }
         navigation(startDestination = Screen.Calendar.route, route = "Calendar") {
           composable(Screen.Calendar.route) {
             CalendarScreen(onCreateEvent = { navigationActions.navigateTo(Screen.AddEventTitle) })
           }
+        }
+        navigation(startDestination = Screen.ReplacementOverview.route, route = "Replacement") {
+          composable(Screen.ReplacementOverview.route) { ReplacementScreen() }
         }
         navigation(startDestination = Screen.Map.route, route = "Map") {
           composable(Screen.Map.route) {

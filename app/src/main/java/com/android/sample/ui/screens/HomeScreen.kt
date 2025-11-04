@@ -15,6 +15,7 @@ object HomeTestTags {
   const val CALENDAR_BUTTON = "calendar_button"
   const val SETTINGS_BUTTON = "settings_button"
   const val MAP_BUTTON = "map_button"
+  const val REPLACEMENT_BUTTON = "replacement_button"
 }
 
 /** Home screen with navigation buttons for other screens. */
@@ -24,6 +25,7 @@ fun HomeScreen(
     onNavigateToCalendar: () -> Unit = {},
     onNavigateToSettings: () -> Unit = {},
     onNavigateToMap: () -> Unit = {},
+    onNavigateToReplacement: () -> Unit = {}
 ) {
   Surface(modifier = Modifier.fillMaxSize().semantics { testTag = HomeTestTags.ROOT }) {
     Column(
@@ -47,6 +49,12 @@ fun HomeScreen(
           Button(modifier = Modifier.testTag(HomeTestTags.MAP_BUTTON), onClick = onNavigateToMap) {
             Text("Go to Map")
           }
+          Spacer(modifier = Modifier.height(12.dp))
+          Button(
+              modifier = Modifier.testTag(HomeTestTags.REPLACEMENT_BUTTON),
+              onClick = onNavigateToReplacement) {
+                Text("Go to Replacement")
+              }
         }
   }
 }

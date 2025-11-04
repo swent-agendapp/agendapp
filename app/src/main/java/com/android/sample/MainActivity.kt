@@ -23,6 +23,7 @@ import com.android.sample.ui.calendar.AddEventTimeAndRecurrenceScreen
 import com.android.sample.ui.calendar.AddEventTitleAndDescriptionScreen
 import com.android.sample.ui.calendar.AddEventViewModel
 import com.android.sample.ui.calendar.CalendarScreen
+import com.android.sample.ui.map.MapScreen
 import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
 import com.android.sample.ui.profile.AdminContactScreen
@@ -38,8 +39,8 @@ object MainActivityTestTags {
   const val MAIN_SCREEN_CONTAINER = "main_screen_container"
 }
 /**
- * Main entry point of the application. Sets up the theme and calls [AgendappNavigation] to
- * initialize navigation.
+ * Main entry point of the application. Sets up the theme and calls [Agendapp] to initialize
+ * navigation.
  */
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,16 +57,11 @@ class MainActivity : ComponentActivity() {
                   testTag = MainActivityTestTags.MAIN_SCREEN_CONTAINER
                 },
             color = MaterialTheme.colorScheme.background) {
-              AgendappNavigation()
+              Agendapp()
             }
       }
     }
   }
-}
-
-@Composable
-fun Agendapp() {
-  CalendarScreen()
 }
 
 /**
@@ -73,7 +69,7 @@ fun Agendapp() {
  * available routes and how composables are connected.
  */
 @Composable
-fun AgendappNavigation(modifier: Modifier = Modifier) {
+fun Agendapp(modifier: Modifier = Modifier) {
   val navController = rememberNavController()
   val navigationActions = NavigationActions(navController)
   val addEventViewModel: AddEventViewModel = viewModel()
@@ -131,6 +127,7 @@ fun AgendappNavigation(modifier: Modifier = Modifier) {
                 onNavigateToEdit = { eventId -> navigationActions.navigateToEditEvent(eventId) },
                 onNavigateToCalendar = { navigationActions.navigateTo(Screen.Calendar) },
                 onNavigateToSettings = { navigationActions.navigateTo(Screen.Settings) },
+                onNavigateToMap = { navigationActions.navigateTo(Screen.Map) },
                 onNavigateToReplacement = {
                   navigationActions.navigateTo(Screen.ReplacementOverview)
                 })
@@ -143,6 +140,11 @@ fun AgendappNavigation(modifier: Modifier = Modifier) {
         }
         navigation(startDestination = Screen.ReplacementOverview.route, route = "Replacement") {
           composable(Screen.ReplacementOverview.route) { ReplacementScreen() }
+        }
+        navigation(startDestination = Screen.Map.route, route = "Map") {
+          composable(Screen.Map.route) {
+            MapScreen(onGoBack = { navigationActions.navigateBack() })
+          }
         }
       }
 }

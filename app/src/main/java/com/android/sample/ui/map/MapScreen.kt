@@ -71,7 +71,9 @@ fun MapScreen(
       topBar = {
         TopAppBar(
             title = {
-              Text(stringResource(R.string.delimit_organization_title), Modifier.testTag(MapScreenTestTags.MAP_TITLE))
+              Text(
+                  stringResource(R.string.delimit_organization_title),
+                  Modifier.testTag(MapScreenTestTags.MAP_TITLE))
             },
             navigationIcon = {
               IconButton(

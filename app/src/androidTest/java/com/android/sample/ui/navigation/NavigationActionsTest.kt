@@ -80,7 +80,7 @@ class AgendappNavigationTest {
 
   @Test
   fun navigate_to_replacement() {
-    composeTestRule.setContent { AgendappNavigation() }
+    composeTestRule.setContent { Agendapp() }
 
     // Go to replacement
     composeTestRule.onNodeWithTag(HomeTestTags.REPLACEMENT_BUTTON).assertExists().performClick()

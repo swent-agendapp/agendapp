@@ -65,4 +65,7 @@
     <!-- Buttons -->
     <string name="common_save">Save</string>
     <string name="common_cancel">Cancel</string>
+
+    <!-- Map -->
+    <string name="delimit_organization_title">Delimit your organisation</string>
 </resources>

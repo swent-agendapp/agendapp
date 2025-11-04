@@ -9,6 +9,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.unit.dp
+import com.android.sample.ui.theme.SpacingMedium
 
 object HomeTestTags {
   const val ROOT = "home_screen"
@@ -33,23 +34,23 @@ fun HomeScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
           Button(onClick = { onNavigateToEdit("E001") }) { Text("Go to Edit Event") }
-          Spacer(modifier = Modifier.height(12.dp))
+          Spacer(modifier = Modifier.height(SpacingMedium))
           Button(
               modifier = Modifier.testTag(HomeTestTags.CALENDAR_BUTTON),
               onClick = onNavigateToCalendar) {
                 Text("Go to Calendar")
               }
-          Spacer(modifier = Modifier.height(12.dp))
+          Spacer(modifier = Modifier.height(SpacingMedium))
           Button(
               modifier = Modifier.testTag(HomeTestTags.SETTINGS_BUTTON),
               onClick = onNavigateToSettings) {
                 Text("Go to Settings")
               }
-          Spacer(modifier = Modifier.height(12.dp))
+          Spacer(modifier = Modifier.height(SpacingMedium))
           Button(modifier = Modifier.testTag(HomeTestTags.MAP_BUTTON), onClick = onNavigateToMap) {
             Text("Go to Map")
           }
-          Spacer(modifier = Modifier.height(12.dp))
+          Spacer(modifier = Modifier.height(SpacingMedium))
           Button(
               modifier = Modifier.testTag(HomeTestTags.REPLACEMENT_BUTTON),
               onClick = onNavigateToReplacement) {

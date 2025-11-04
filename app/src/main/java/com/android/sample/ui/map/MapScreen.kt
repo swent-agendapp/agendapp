@@ -20,7 +20,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.android.sample.R
+import com.android.sample.ui.theme.DefaultZoom
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
@@ -51,7 +54,7 @@ fun MapScreen(
         .distinctUntilChanged()
         .filterNotNull()
         .collect { target ->
-          cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(target, 17f))
+          cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(target, DefaultZoom))
         }
   }
 
@@ -68,7 +71,7 @@ fun MapScreen(
       topBar = {
         TopAppBar(
             title = {
-              Text("Delimit your organisation", Modifier.testTag(MapScreenTestTags.MAP_TITLE))
+              Text(stringResource(R.string.delimit_organization_title), Modifier.testTag(MapScreenTestTags.MAP_TITLE))
             },
             navigationIcon = {
               IconButton(

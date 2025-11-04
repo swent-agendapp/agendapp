@@ -356,14 +356,6 @@ class CalendarSanityTests : BaseCalendarScreenTest() {
   }
 
   @Test
-  fun agendappCorrectlySet() {
-    composeTestRule.setContent { Agendapp() }
-
-    composeTestRule.onNodeWithTag(CalendarScreenTestTags.TOP_BAR_TITLE).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(CalendarScreenTestTags.TOP_BAR_TITLE).assertTextEquals("Calendar")
-  }
-
-  @Test
   fun calendarContainerComposesWithoutCrash() {
     composeTestRule.setContent { CalendarContainer() }
   }

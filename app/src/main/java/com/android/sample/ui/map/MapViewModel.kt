@@ -61,11 +61,11 @@ class MapViewModel(app: Application) : AndroidViewModel(app) {
     val coarse = Manifest.permission.ACCESS_COARSE_LOCATION
     val cancellationTokenSource = CancellationTokenSource()
 
-    val hasLocation =
+    val hasLocationPermission =
         ContextCompat.checkSelfPermission(app, fine) == PackageManager.PERMISSION_GRANTED ||
             ContextCompat.checkSelfPermission(app, coarse) == PackageManager.PERMISSION_GRANTED
 
-    if (!hasLocation) {
+    if (!hasLocationPermission) {
       _state.value =
           MapUiState(
               errorLocation =

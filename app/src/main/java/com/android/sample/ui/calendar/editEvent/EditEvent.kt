@@ -1,4 +1,4 @@
-package com.android.sample.ui.calendar
+package com.android.sample.ui.calendar.editEvent
 
 import android.app.TimePickerDialog
 import androidx.compose.foundation.clickable

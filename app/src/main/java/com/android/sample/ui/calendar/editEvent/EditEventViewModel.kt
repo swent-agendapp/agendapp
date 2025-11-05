@@ -1,8 +1,9 @@
-package com.android.sample.ui.calendar
+package com.android.sample.ui.calendar.editEvent
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import java.time.Instant
 
 // This ViewModel is currently a placeholder generated with AI assistance.
 // The implementation has not yet been started, but this structure ensures that
@@ -29,7 +30,7 @@ data class EditEventUiState(
     val title: String = "",
     val description: String = "",
     val participants: List<String> = emptyList(),
-    val startInstant: java.time.Instant? = null,
-    val endInstant: java.time.Instant? = null,
+    val startInstant: Instant? = null,
+    val endInstant: Instant? = null,
     // Additional fields can be added as needed
 )

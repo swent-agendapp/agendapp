@@ -65,4 +65,10 @@
     <!-- Buttons -->
     <string name="common_save">Save</string>
     <string name="common_cancel">Cancel</string>
+
+    <!-- Remplacements screen -->
+    <string name="replacement_requests_title">Replacement requests</string>
+    <string name="replacement_requests_subtitle">Replacements waiting for confirmation</string>
+    <string name="replacement_substituted_label">Substituted: %1$s</string>
+    <string name="replacement_substitute_label">Substitute: %1$s</string>
 </resources>

@@ -18,8 +18,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.android.sample.R
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.mockData.getMockReplacements
 import com.android.sample.model.replacement.pendingReplacements
@@ -37,32 +39,45 @@ object ReplacementPendingTestTags {
   fun itemTag(id: String): String = ITEM_PREFIX + id
 }
 
+/**
+ * Displays the list of pending replacements
+ *
+ * @param replacements The list of replacements to display
+ */
 @Composable
 fun ReplacementPendingListScreen(
     replacements: List<Replacement> = getMockReplacements().pendingReplacements()
 ) {
-  Scaffold(topBar = { TopTitleBar(title = "Replacement requests") }) { paddingValues ->
-    Column(
-        modifier =
-            Modifier.fillMaxSize()
-                .padding(paddingValues)
-                .padding(PaddingMedium)
-                .testTag(ReplacementPendingTestTags.SCREEN)) {
-          Text(
-              text = "Replacements waiting for confirmation",
-              style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold))
-          Spacer(modifier = Modifier.height(SpacingMedium))
-          LazyColumn(
-              modifier = Modifier.fillMaxSize().testTag(ReplacementPendingTestTags.LIST),
-              verticalArrangement = Arrangement.spacedBy(SpacingMedium)) {
-                items(replacements, key = { it.id }) { replacement ->
-                  ReplacementPendingCard(replacement = replacement)
-                }
-              }
-        }
-  }
+  Scaffold(
+      topBar = { TopTitleBar(title = stringResource(id = R.string.replacement_requests_title)) }) {
+          paddingValues ->
+        Column(
+            modifier =
+                Modifier.fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(PaddingMedium)
+                    .testTag(ReplacementPendingTestTags.SCREEN)) {
+              Text(
+                  text = stringResource(id = R.string.replacement_requests_subtitle),
+                  style =
+                      MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold))
+              Spacer(modifier = Modifier.height(SpacingMedium))
+              LazyColumn(
+                  modifier = Modifier.fillMaxSize().testTag(ReplacementPendingTestTags.LIST),
+                  verticalArrangement = Arrangement.spacedBy(SpacingMedium)) {
+                    items(replacements, key = { it.id }) { replacement ->
+                      ReplacementPendingCard(replacement = replacement)
+                    }
+                  }
+            }
+      }
 }
 
+/**
+ * Display a single pending replacement card
+ *
+ * @param replacement The replacement request to display
+ */
 @Composable
 fun ReplacementPendingCard(replacement: Replacement) {
   val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
@@ -86,10 +101,14 @@ fun ReplacementPendingCard(replacement: Replacement) {
           Text(text = "$dateText • $timeText", style = MaterialTheme.typography.bodyMedium)
           Spacer(modifier = Modifier.height(SpacingMedium))
           Text(
-              text = "Substituted: ${replacement.substitutedUserId}",
+              text =
+                  stringResource(
+                      id = R.string.replacement_substituted_label, replacement.substitutedUserId),
               style = MaterialTheme.typography.bodySmall)
           Text(
-              text = "Substitute: ${replacement.substituteUserId}",
+              text =
+                  stringResource(
+                      id = R.string.replacement_substitute_label, replacement.substituteUserId),
               style = MaterialTheme.typography.bodySmall)
         }
       }

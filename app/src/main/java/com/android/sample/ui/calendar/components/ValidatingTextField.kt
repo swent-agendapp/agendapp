@@ -29,7 +29,7 @@ import com.android.sample.ui.theme.CornerRadiusLarge
  * @param onValueChange Lambda invoked on every user input change. State should be stored externally
  *   (typically in a ViewModel or screen-level state).
  * @param label Text displayed above the input field (floating label).
- * @param testTag Tag used by UI tests (Compose Test Rule). Defaults to `"testTag"`.
+ * @param testTag Tag used by UI tests (Compose Test Rule).
  * @param isError If `true`, the field will render in an error state and the `errorMessage` will be
  *   shown.
  * @param errorMessage Text shown below the field when `isError` is true.
@@ -53,10 +53,10 @@ import com.android.sample.ui.theme.CornerRadiusLarge
 @Composable
 fun ValidatingTextField(
     modifier: Modifier = Modifier,
-    value: String = "value",
+    value: String = "",
     onValueChange: (String) -> Unit = {},
-    label: String = "label",
-    testTag: String = "testTag",
+    label: String = "",
+    testTag: String = "",
     isError: Boolean = false,
     errorMessage: String = "",
     singleLine: Boolean = true,

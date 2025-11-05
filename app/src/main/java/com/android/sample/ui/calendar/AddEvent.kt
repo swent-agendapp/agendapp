@@ -50,7 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.model.calendar.RecurrenceStatus
-import com.android.sample.model.calendar.formatString
+import com.android.sample.model.calendar.labelRes
 import com.android.sample.ui.calendar.components.DatePickerFieldToModal
 import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.calendar.components.ValidatingTextField
@@ -200,7 +200,7 @@ fun AddEventTimeAndRecurrenceScreen(
                   ExposedDropdownMenuBox(
                       expanded = expanded, onExpandedChange = { expanded = !expanded }) {
                         OutlinedTextField(
-                            value = selectedRecurrence.formatString(),
+                            value = stringResource(selectedRecurrence.labelRes()),
                             onValueChange = {},
                             readOnly = true,
                             label = { Text(stringResource(R.string.recurrenceMenuLabel)) },
@@ -217,7 +217,7 @@ fun AddEventTimeAndRecurrenceScreen(
                             expanded = expanded, onDismissRequest = { expanded = false }) {
                               recurrenceOptions.forEach { option ->
                                 DropdownMenuItem(
-                                    text = { Text(option.name) },
+                                    text = { Text(stringResource(option.labelRes())) },
                                     onClick = {
                                       addEventViewModel.setRecurrenceMode(option)
                                       expanded = false

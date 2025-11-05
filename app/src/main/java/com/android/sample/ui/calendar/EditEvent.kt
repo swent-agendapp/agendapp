@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.model.calendar.RecurrenceStatus
-import com.android.sample.model.calendar.formatString
+import com.android.sample.model.calendar.labelRes
 import com.android.sample.ui.calendar.components.DatePickerFieldToModal
 import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.calendar.components.ValidatingTextField
@@ -70,7 +70,9 @@ fun EditEventScreen(
 
   var showStartTimePicker by remember { mutableStateOf(false) }
   var showEndTimePicker by remember { mutableStateOf(false) }
-  var notifications by remember { mutableStateOf(listOf("30 min before")) }
+  val defaultNotificationLabel = stringResource(R.string.edit_event_default_notification)
+  var notifications by
+      remember(defaultNotificationLabel) { mutableStateOf(listOf(defaultNotificationLabel)) }
 
   Scaffold(
       topBar = { TopTitleBar(title = stringResource(R.string.edit_event_title)) },
@@ -170,7 +172,7 @@ fun EditEventScreen(
                 ExposedDropdownMenuBox(
                     expanded = expanded, onExpandedChange = { expanded = !expanded }) {
                       OutlinedTextField(
-                          value = recurrence.formatString(),
+                          value = stringResource(recurrence.labelRes()),
                           onValueChange = {},
                           readOnly = true,
                           label = { Text(stringResource(R.string.edit_event_recurrence_label)) },
@@ -188,7 +190,7 @@ fun EditEventScreen(
                           expanded = expanded, onDismissRequest = { expanded = false }) {
                             RecurrenceStatus.entries.forEach { option ->
                               DropdownMenuItem(
-                                  text = { Text(option.name) },
+                                  text = { Text(stringResource(option.labelRes())) },
                                   onClick = {
                                     recurrence = option
                                     expanded = false
@@ -202,7 +204,9 @@ fun EditEventScreen(
 
                 NotificationSection(
                     notifications = notifications,
-                    onAddNotification = { notifications = notifications + "30 min before" },
+                    onAddNotification = {
+                      notifications = notifications + defaultNotificationLabel
+                    },
                     onRemoveNotification = { notif -> notifications = notifications - notif })
               }
 

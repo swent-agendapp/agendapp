@@ -120,23 +120,29 @@ class SignInViewModel(
       } catch (e: GetCredentialCancellationException) {
         // User cancelled the sign-in flow
         _uiState.update {
-          it.copy(isLoading = false, errorMsg = "Sign-in cancelled", signedOut = true, user = null)
+          it.copy(
+              isLoading = false,
+              errorMsg = context.getString(R.string.sign_in_cancelled_error),
+              signedOut = true,
+              user = null)
         }
       } catch (e: androidx.credentials.exceptions.GetCredentialException) {
         // Other credential errors
+        val errorMessage = e.localizedMessage.orEmpty()
         _uiState.update {
           it.copy(
               isLoading = false,
-              errorMsg = "Failed to get credentials: ${e.localizedMessage}",
+              errorMsg = context.getString(R.string.sign_in_credentials_error, errorMessage),
               signedOut = true,
               user = null)
         }
       } catch (e: Exception) {
         // Unexpected errors
+        val errorMessage = e.localizedMessage.orEmpty()
         _uiState.update {
           it.copy(
               isLoading = false,
-              errorMsg = "Unexpected error: ${e.localizedMessage}",
+              errorMsg = context.getString(R.string.sign_in_unexpected_error, errorMessage),
               signedOut = true,
               user = null)
         }

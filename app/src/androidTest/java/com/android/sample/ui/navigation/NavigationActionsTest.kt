@@ -47,163 +47,163 @@ import org.junit.runner.RunWith
 @MediumTest
 class AgendappNavigationTest {
 
-    @get:Rule
-    val permissionRule: GrantPermissionRule =
-        GrantPermissionRule.grant(
-            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+  @get:Rule
+  val permissionRule: GrantPermissionRule =
+      GrantPermissionRule.grant(
+          Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
 
-    @get:Rule val composeTestRule = createComposeRule()
+  @get:Rule val composeTestRule = createComposeRule()
 
-    @Test
-    fun navigate_to_all_add_forms() {
-        composeTestRule.setContent { Agendapp() }
+  @Test
+  fun navigate_to_all_add_forms() {
+    composeTestRule.setContent { Agendapp() }
 
-        // Go to Calendar
-        composeTestRule.onNodeWithTag(CALENDAR_BUTTON).assertExists().performClick()
-        composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertExists().performClick()
-        // Validate screen content
-        composeTestRule
-            .onNodeWithTag(AddEventTestTags.TITLE_TEXT_FIELD)
-            .assertExists()
-            .performTextInput("Test Event")
-        composeTestRule
-            .onNodeWithTag(AddEventTestTags.DESCRIPTION_TEXT_FIELD)
-            .assertExists()
-            .performTextInput("Test Description")
-        composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
-        composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
-        composeTestRule.onNodeWithTag(AddEventTestTags.CREATE_BUTTON).assertExists().performClick()
-        composeTestRule.onNodeWithTag(AddEventTestTags.FINISH_BUTTON).assertExists().performClick()
+    // Go to Calendar
+    composeTestRule.onNodeWithTag(CALENDAR_BUTTON).assertExists().performClick()
+    composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertExists().performClick()
+    // Validate screen content
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.TITLE_TEXT_FIELD)
+        .assertExists()
+        .performTextInput("Test Event")
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.DESCRIPTION_TEXT_FIELD)
+        .assertExists()
+        .performTextInput("Test Description")
+    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
+    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
+    composeTestRule.onNodeWithTag(AddEventTestTags.CREATE_BUTTON).assertExists().performClick()
+    composeTestRule.onNodeWithTag(AddEventTestTags.FINISH_BUTTON).assertExists().performClick()
 
-        composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertIsDisplayed()
+  }
+
+  @Test
+  fun navigate_to_replacement() {
+    composeTestRule.setContent { Agendapp() }
+
+    // Go to replacement
+    composeTestRule.onNodeWithTag(HomeTestTags.REPLACEMENT_BUTTON).assertExists().performClick()
+
+    // Validate screen content
+    composeTestRule.onNodeWithTag(ReplacementTestTags.SCREEN).assertIsDisplayed()
+  }
+
+  @Test
+  fun navigate_to_profile_and_admin_profile_and_back() {
+    composeTestRule.setContent { Agendapp() }
+    // Go to Profile
+    composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).assertExists().performClick()
+    composeTestRule.onNodeWithTag(SettingsScreenTestTags.ROOT).assertExists()
+    composeTestRule
+        .onNodeWithTag(SettingsScreenTestTags.PROFILE_BUTTON)
+        .assertExists()
+        .performClick()
+    composeTestRule.onNodeWithTag(ProfileScreenTestTags.PROFILE_SCREEN).assertIsDisplayed()
+    // Go to Admin Contact
+    composeTestRule
+        .onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON)
+        .assertExists()
+        .performClick()
+    composeTestRule.waitForIdle()
+    composeTestRule
+        .onNodeWithTag(AdminContactScreenTestTags.ADMIN_SCREEN_PROFILE)
+        .assertIsDisplayed()
+    // Back to Profile
+    composeTestRule
+        .onNodeWithTag(AdminContactScreenTestTags.BACK_BUTTON)
+        .assertExists()
+        .performClick()
+    composeTestRule.onNodeWithTag(ProfileScreenTestTags.PROFILE_SCREEN).assertIsDisplayed()
+    // back to Settings
+    composeTestRule.onNodeWithTag(ProfileScreenTestTags.BACK_BUTTON).assertExists().performClick()
+  }
+
+  @Test
+  fun navigate_to_map_and_back() {
+    composeTestRule.setContent { Agendapp() }
+
+    composeTestRule.onNodeWithTag(HomeTestTags.MAP_BUTTON).assertExists().performClick()
+
+    composeTestRule.onNodeWithTag(MapScreenTestTags.GOOGLE_MAP_SCREEN).assertExists()
+
+    composeTestRule
+        .onNodeWithTag(MapScreenTestTags.MAP_GO_BACK_BUTTON)
+        .assertExists()
+        .performClick()
+
+    composeTestRule.onNodeWithTag(HomeTestTags.MAP_BUTTON).assertExists()
+  }
+
+  @OptIn(ExperimentalTestApi::class)
+  @Test
+  fun clickingEmail_opensEmailApp() {
+    Intents.init()
+    try {
+
+      composeTestRule.setContent { Agendapp() }
+
+      // Dismiss any initial popups that might block interaction
+      composeTestRule.waitUntilAtLeastOneExists(hasTestTag(HomeTestTags.SETTINGS_BUTTON))
+      composeTestRule.onRoot().performTouchInput { click(Offset(1f, 1f)) }
+      composeTestRule.waitForIdle()
+
+      // Navigate to Profile screen
+      composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).performClick()
+      composeTestRule.onNodeWithTag(SettingsScreenTestTags.PROFILE_BUTTON).performClick()
+      composeTestRule.onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON).performClick()
+      // ✅ Wait for Compose to finish recomposing & window focus to stabilize
+      composeTestRule.waitForIdle()
+      Thread.sleep(500) // <- tiny extra buffer, helps on emulators
+      // Stub out the external email intent (prevent actual launch)
+      intending(hasAction(Intent.ACTION_SENDTO))
+          .respondWith(Instrumentation.ActivityResult(0, null))
+
+      // Click the email field (assuming it's clickable and launches ACTION_SENDTO)
+      composeTestRule.onNodeWithTag(AdminContactScreenTestTags.ADMIN_EMAIL_TEXT).performClick()
+
+      // Verify correct intent sent
+      intended(
+          allOf(
+              hasAction(Intent.ACTION_SENDTO),
+              hasData(Uri.parse("mailto:${AdminInformation.EMAIL}"))))
+    } finally {
+      Intents.release()
     }
+  }
 
-    @Test
-    fun navigate_to_replacement() {
-        composeTestRule.setContent { Agendapp() }
+  @OptIn(ExperimentalTestApi::class)
+  @Test
+  fun clickingPhone_opensDialerApp() {
+    Intents.init()
+    try {
 
-        // Go to replacement
-        composeTestRule.onNodeWithTag(HomeTestTags.REPLACEMENT_BUTTON).assertExists().performClick()
+      composeTestRule.setContent { Agendapp() }
 
-        // Validate screen content
-        composeTestRule.onNodeWithTag(ReplacementTestTags.SCREEN).assertIsDisplayed()
+      composeTestRule.waitUntilAtLeastOneExists(hasTestTag(HomeTestTags.SETTINGS_BUTTON))
+      composeTestRule.onRoot().performTouchInput { click(Offset(1f, 1f)) }
+      composeTestRule.waitForIdle()
+
+      // Navigate to Profile screen
+      composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).performClick()
+      composeTestRule.onNodeWithTag(SettingsScreenTestTags.PROFILE_BUTTON).performClick()
+      composeTestRule.onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON).performClick()
+      // ✅ Wait for Compose to finish recomposing & window focus to stabilize
+      composeTestRule.waitForIdle()
+      Thread.sleep(500) // <- tiny extra buffer, helps on emulators
+      // Stub out dialer intent
+      intending(hasAction(Intent.ACTION_DIAL)).respondWith(Instrumentation.ActivityResult(0, null))
+
+      // Click the phone field (assuming it's clickable and launches ACTION_DIAL)
+      composeTestRule.onNodeWithTag(AdminContactScreenTestTags.ADMIN_PHONE_TEXT).performClick()
+
+      // Verify correct intent sent
+      intended(
+          allOf(
+              hasAction(Intent.ACTION_DIAL),
+              hasData(Uri.parse("tel:${AdminInformation.PHONE.replace(" ", "")}"))))
+    } finally {
+      Intents.release()
     }
-
-    @Test
-    fun navigate_to_profile_and_admin_profile_and_back() {
-        composeTestRule.setContent { Agendapp() }
-        // Go to Profile
-        composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).assertExists().performClick()
-        composeTestRule.onNodeWithTag(SettingsScreenTestTags.ROOT).assertExists()
-        composeTestRule
-            .onNodeWithTag(SettingsScreenTestTags.PROFILE_BUTTON)
-            .assertExists()
-            .performClick()
-        composeTestRule.onNodeWithTag(ProfileScreenTestTags.PROFILE_SCREEN).assertIsDisplayed()
-        // Go to Admin Contact
-        composeTestRule
-            .onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON)
-            .assertExists()
-            .performClick()
-        composeTestRule.waitForIdle()
-        composeTestRule
-            .onNodeWithTag(AdminContactScreenTestTags.ADMIN_SCREEN_PROFILE)
-            .assertIsDisplayed()
-        // Back to Profile
-        composeTestRule
-            .onNodeWithTag(AdminContactScreenTestTags.BACK_BUTTON)
-            .assertExists()
-            .performClick()
-        composeTestRule.onNodeWithTag(ProfileScreenTestTags.PROFILE_SCREEN).assertIsDisplayed()
-        // back to Settings
-        composeTestRule.onNodeWithTag(ProfileScreenTestTags.BACK_BUTTON).assertExists().performClick()
-    }
-
-    @Test
-    fun navigate_to_map_and_back() {
-        composeTestRule.setContent { Agendapp() }
-
-        composeTestRule.onNodeWithTag(HomeTestTags.MAP_BUTTON).assertExists().performClick()
-
-        composeTestRule.onNodeWithTag(MapScreenTestTags.GOOGLE_MAP_SCREEN).assertExists()
-
-        composeTestRule
-            .onNodeWithTag(MapScreenTestTags.MAP_GO_BACK_BUTTON)
-            .assertExists()
-            .performClick()
-
-        composeTestRule.onNodeWithTag(HomeTestTags.MAP_BUTTON).assertExists()
-    }
-
-    @OptIn(ExperimentalTestApi::class)
-    @Test
-    fun clickingEmail_opensEmailApp() {
-        Intents.init()
-        try {
-
-            composeTestRule.setContent { Agendapp() }
-
-            // Dismiss any initial popups that might block interaction
-            composeTestRule.waitUntilAtLeastOneExists(hasTestTag(HomeTestTags.SETTINGS_BUTTON))
-            composeTestRule.onRoot().performTouchInput { click(Offset(1f, 1f)) }
-            composeTestRule.waitForIdle()
-
-            // Navigate to Profile screen
-            composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).performClick()
-            composeTestRule.onNodeWithTag(SettingsScreenTestTags.PROFILE_BUTTON).performClick()
-            composeTestRule.onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON).performClick()
-            // ✅ Wait for Compose to finish recomposing & window focus to stabilize
-            composeTestRule.waitForIdle()
-            Thread.sleep(500) // <- tiny extra buffer, helps on emulators
-            // Stub out the external email intent (prevent actual launch)
-            intending(hasAction(Intent.ACTION_SENDTO))
-                .respondWith(Instrumentation.ActivityResult(0, null))
-
-            // Click the email field (assuming it's clickable and launches ACTION_SENDTO)
-            composeTestRule.onNodeWithTag(AdminContactScreenTestTags.ADMIN_EMAIL_TEXT).performClick()
-
-            // Verify correct intent sent
-            intended(
-                allOf(
-                    hasAction(Intent.ACTION_SENDTO),
-                    hasData(Uri.parse("mailto:${AdminInformation.EMAIL}"))))
-        } finally {
-            Intents.release()
-        }
-    }
-
-    @OptIn(ExperimentalTestApi::class)
-    @Test
-    fun clickingPhone_opensDialerApp() {
-        Intents.init()
-        try {
-
-            composeTestRule.setContent { Agendapp() }
-
-            composeTestRule.waitUntilAtLeastOneExists(hasTestTag(HomeTestTags.SETTINGS_BUTTON))
-            composeTestRule.onRoot().performTouchInput { click(Offset(1f, 1f)) }
-            composeTestRule.waitForIdle()
-
-            // Navigate to Profile screen
-            composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).performClick()
-            composeTestRule.onNodeWithTag(SettingsScreenTestTags.PROFILE_BUTTON).performClick()
-            composeTestRule.onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON).performClick()
-            // ✅ Wait for Compose to finish recomposing & window focus to stabilize
-            composeTestRule.waitForIdle()
-            Thread.sleep(500) // <- tiny extra buffer, helps on emulators
-            // Stub out dialer intent
-            intending(hasAction(Intent.ACTION_DIAL)).respondWith(Instrumentation.ActivityResult(0, null))
-
-            // Click the phone field (assuming it's clickable and launches ACTION_DIAL)
-            composeTestRule.onNodeWithTag(AdminContactScreenTestTags.ADMIN_PHONE_TEXT).performClick()
-
-            // Verify correct intent sent
-            intended(
-                allOf(
-                    hasAction(Intent.ACTION_DIAL),
-                    hasData(Uri.parse("tel:${AdminInformation.PHONE.replace(" ", "")}"))))
-        } finally {
-            Intents.release()
-        }
-    }
+  }
 }

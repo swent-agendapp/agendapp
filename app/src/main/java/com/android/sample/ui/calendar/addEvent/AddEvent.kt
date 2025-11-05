@@ -2,17 +2,14 @@ package com.android.sample.ui.calendar.addEvent
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.ui.calendar.addEvent.components.AddEventAttendantScreen
 import com.android.sample.ui.calendar.addEvent.components.AddEventConfirmationScreen
 import com.android.sample.ui.calendar.addEvent.components.AddEventTimeAndRecurrenceScreen
 import com.android.sample.ui.calendar.addEvent.components.AddEventTitleAndDescriptionScreen
-import com.android.sample.ui.theme.*
 
 // Assisted by AI
 
@@ -62,28 +59,31 @@ fun AddEventScreen(
     onFinish: () -> Unit = {},
     onCancel: () -> Unit = {}
 ) {
-  var currentStep by remember { mutableIntStateOf(0) }
+  val uiState by addEventViewModel.uiState.collectAsState()
 
-  when (currentStep) {
-    0 ->
+  when (uiState.step) {
+    AddEventStep.TITLE_AND_DESC ->
         AddEventTitleAndDescriptionScreen(
             addEventViewModel = addEventViewModel,
-            onNext = { currentStep++ },
+            onNext = { addEventViewModel.nextStep() },
             onCancel = {
               onCancel()
               addEventViewModel.resetUiState()
             })
-    1 ->
+    AddEventStep.TIME_AND_RECURRENCE ->
         AddEventTimeAndRecurrenceScreen(
             addEventViewModel = addEventViewModel,
-            onNext = { currentStep++ },
-            onBack = { currentStep-- })
-    2 ->
+            onNext = { addEventViewModel.nextStep() },
+            onBack = { addEventViewModel.previousStep() })
+    AddEventStep.ATTENDEES ->
         AddEventAttendantScreen(
             addEventViewModel = addEventViewModel,
-            onCreate = { currentStep++ },
-            onBack = { currentStep-- })
-    3 ->
+            onCreate = {
+              addEventViewModel.addEvent()
+              addEventViewModel.nextStep()
+            },
+            onBack = { addEventViewModel.previousStep() })
+    AddEventStep.CONFIRMATION ->
         AddEventConfirmationScreen(
             onFinish = {
               onFinish()
@@ -92,5 +92,10 @@ fun AddEventScreen(
   }
 
   // Handle physical back button
-  BackHandler(enabled = currentStep > 0) { currentStep-- }
+  BackHandler(
+      enabled =
+          uiState.step != AddEventStep.TITLE_AND_DESC &&
+              uiState.step != AddEventStep.CONFIRMATION) {
+        addEventViewModel.previousStep()
+      }
 }

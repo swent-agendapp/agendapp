@@ -33,6 +33,7 @@ import kotlinx.coroutines.launch
  * @property recurrenceMode The recurrence mode for the event (OneTime, Weekly, ...).
  * @property participants The set of selected participant identifiers (currently `String` names).
  * @property errorMsg Optional error message surfaced to the UI (e.g., permission errors).
+ * @property step The current step in the multi-step Add Event flow.
  */
 data class AddCalendarEventUIState(
     val title: String = "",
@@ -43,7 +44,15 @@ data class AddCalendarEventUIState(
     val recurrenceMode: RecurrenceStatus = RecurrenceStatus.OneTime,
     val participants: Set<String> = emptySet(),
     val errorMsg: String? = null,
+    val step: AddEventStep = AddEventStep.TITLE_AND_DESC
 )
+
+enum class AddEventStep {
+  TITLE_AND_DESC,
+  TIME_AND_RECURRENCE,
+  ATTENDEES,
+  CONFIRMATION
+}
 
 /**
  * ViewModel that manages the UI state for the Add Event flow.
@@ -128,30 +137,71 @@ class AddEventViewModel(
    * - Start time must be before or equal to end time
    */
   fun allFieldsValid() = !(titleIsBlank() || descriptionIsBlank() || startTimeIsAfterEndTime())
+
+  /**
+   * Advances the Add Event flow to the next step.
+   *
+   * This updates the UI state to the next value of [AddEventStep], if one exists. If the current
+   * step is already the last step, the state remains unchanged.
+   *
+   * Typical trigger: user presses a "Next" button in the current step of the flow.
+   */
+  fun nextStep() {
+    val steps = AddEventStep.entries
+    val currentIndex = steps.indexOf(_uiState.value.step)
+
+    if (currentIndex < steps.lastIndex) {
+      _uiState.value = _uiState.value.copy(step = steps[currentIndex + 1])
+    }
+  }
+
+  /**
+   * Moves the Add Event flow back to the previous step.
+   *
+   * This updates the UI state to the previous value of [AddEventStep], if one exists. If the
+   * current step is already the first step, the state remains unchanged.
+   *
+   * Typical trigger: user presses Back (either UI back button or physical back button).
+   */
+  fun previousStep() {
+    val steps = AddEventStep.entries
+    val currentIndex = steps.indexOf(_uiState.value.step)
+
+    if (currentIndex > 0) {
+      _uiState.value = _uiState.value.copy(step = steps[currentIndex - 1])
+    }
+  }
+
   /** Updates the recurrence mode for the event. */
   fun setRecurrenceMode(mode: RecurrenceStatus) {
     _uiState.value = _uiState.value.copy(recurrenceMode = mode)
   }
+
   /** Sets or updates the event title. */
   fun setTitle(title: String) {
     _uiState.value = _uiState.value.copy(title = title)
   }
+
   /** Sets or updates the event description. */
   fun setDescription(description: String) {
     _uiState.value = _uiState.value.copy(description = description)
   }
+
   /** Updates the start date/time of the event. */
   fun setStartInstant(instant: Instant) {
     _uiState.value = _uiState.value.copy(startInstant = instant)
   }
+
   /** Updates the end date/time of the event. */
   fun setEndInstant(instant: Instant) {
     _uiState.value = _uiState.value.copy(endInstant = instant)
   }
+
   /** Sets the end date for the recurrence rule. Ignored when recurrence mode is OneTime. */
   fun setRecurrenceEndTime(recurrenceEndTime: Instant) {
     _uiState.value = _uiState.value.copy(recurrenceEndInstant = recurrenceEndTime)
   }
+
   /**
    * Adds a participant to the event.
    *
@@ -163,6 +213,7 @@ class AddEventViewModel(
     val updatedParticipants = _uiState.value.participants.toMutableSet().apply { add(participant) }
     _uiState.value = _uiState.value.copy(participants = updatedParticipants)
   }
+
   /**
    * Removes a participant from the event.
    *
@@ -173,6 +224,7 @@ class AddEventViewModel(
         _uiState.value.participants.toMutableSet().apply { remove(participant) }
     _uiState.value = _uiState.value.copy(participants = updatedParticipants)
   }
+
   /**
    * Resets all fields to the default event draft.
    *

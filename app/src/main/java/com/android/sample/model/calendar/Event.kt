@@ -38,6 +38,7 @@ data class Event(
     val recurrenceStatus: RecurrenceStatus,
     val hasBeenDeleted: Boolean = false,
     val color: EventColor
+    // val notifications: List<String> = emptyList()
 ) {
   // Returns the start date as a LocalDate in the system's default time zone
   val startLocalDate: LocalDate
@@ -91,6 +92,7 @@ fun createEvent(
     personalNotes: String? = null,
     participants: Set<String> = emptySet(),
     color: EventColor = EventColor.Blue
+    // notifications: List<String> = emptyList()
 ): Event {
   // Ensure the end date is not before the start date
   require(!endDate.isBefore(startDate)) { "End date cannot be before start date" }
@@ -105,7 +107,9 @@ fun createEvent(
       participants = participants,
       version = System.currentTimeMillis(),
       recurrenceStatus = RecurrenceStatus.OneTime,
-      color = color)
+      color = color
+      // notifications = notifications
+      )
 }
 
 fun RecurrenceStatus.formatString(): String =

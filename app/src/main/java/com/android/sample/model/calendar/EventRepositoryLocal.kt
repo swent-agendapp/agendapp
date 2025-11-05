@@ -1,9 +1,16 @@
 package com.android.sample.model.calendar
 
+import com.android.sample.utils.EventColor
+import java.time.Duration
 import java.time.Instant
 
 class EventRepositoryLocal : EventRepository {
   private val events: MutableList<Event> = mutableListOf()
+
+  init {
+    // Preload with sample data for testing / preview of Edit Event screen
+    populateSampleEvents()
+  }
 
   override suspend fun getAllEvents(): List<Event> {
     return events.filter { !it.hasBeenDeleted }
@@ -57,5 +64,51 @@ class EventRepositoryLocal : EventRepository {
   override suspend fun getEventsBetweenDates(startDate: Instant, endDate: Instant): List<Event> {
     require(startDate <= endDate) { "start date must be before or equal to end date" }
     return events.filter { it.startDate <= endDate && it.endDate >= startDate }
+  }
+
+  // ---------------------------------------------------------------------------------
+  // New additions below to add sample data for Edit Event screen preview/testing
+  // ---------------------------------------------------------------------------------
+
+  /** Preload local repository with fake events for testing / Edit VM preview. */
+  private fun populateSampleEvents() {
+    val now = Instant.now()
+    val event1 =
+        Event(
+            id = "E001",
+            title = "Weekly Team Meeting",
+            description = "Discuss ongoing project progress and next steps.",
+            startDate = now.plus(Duration.ofHours(2)),
+            endDate = now.plus(Duration.ofHours(3)),
+            participants = setOf("Alice", "Bob", "Charlie"),
+            recurrenceStatus = RecurrenceStatus.Weekly,
+            hasBeenDeleted = false,
+            color = EventColor.Blue,
+            // notifications = listOf("30 min before"),
+            version = System.currentTimeMillis(),
+            locallyStoredBy = listOf("LOCAL_USER"),
+            cloudStorageStatuses = emptySet(),
+            personalNotes = null)
+
+    val event2 =
+        Event(
+            id = "E002",
+            title = "Client Demo Preparation",
+            description = "Prepare slides and setup for Friday client demo.",
+            startDate = now.plus(Duration.ofDays(1)),
+            endDate = now.plus(Duration.ofDays(1)).plus(Duration.ofHours(1)),
+            participants = setOf("David", "Eve"),
+            recurrenceStatus = RecurrenceStatus.OneTime,
+            hasBeenDeleted = false,
+            color = EventColor.Green,
+            // notifications = listOf("1 hour before"),
+            version = System.currentTimeMillis(),
+            locallyStoredBy = listOf("LOCAL_USER"),
+            cloudStorageStatuses = emptySet(),
+            personalNotes = null)
+
+    if (events.isEmpty()) {
+      events.addAll(listOf(event1, event2))
+    }
   }
 }

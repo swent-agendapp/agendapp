@@ -5,6 +5,8 @@ package com.android.sample.ui.navigation
  * Composable destination in the NavHost.
  */
 sealed class Screen(val route: String) {
+  data object Authentication : Screen("authentication")
+
   data object Home : Screen("home")
 
   data object Calendar : Screen("calendar")

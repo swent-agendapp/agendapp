@@ -91,11 +91,10 @@ fun Agendapp(
   // Routes and navigation logic
   NavHost(
       navController = navController,
-      startDestination = Screen.Authentication.route,
+      startDestination = startDestination,
       modifier = modifier) {
-
         // Authentication Screen
-        navigation(startDestination = startDestination, route = "Authentication") {
+        navigation(startDestination=Screen.Authentication.route, route="Authentication") {
           composable(Screen.Authentication.route) {
             SignInScreen(
                 credentialManager = credentialManager,
@@ -153,7 +152,7 @@ fun Agendapp(
         }
 
         // Home Screen
-        navigation(startDestination = Screen.Home.route, route = "Home") {
+        //navigation(startDestination=Screen.Home.route, route="home") {
           composable(Screen.Home.route) {
             HomeScreen(
                 onNavigateToEdit = { eventId -> navigationActions.navigateToEditEvent(eventId) },
@@ -164,7 +163,7 @@ fun Agendapp(
                   navigationActions.navigateTo(Screen.ReplacementOverview)
                 })
           }
-        }
+        //}
 
         // Calendar Screen
         navigation(startDestination = Screen.Calendar.route, route = "Calendar") {

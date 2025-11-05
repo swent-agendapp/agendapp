@@ -19,11 +19,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.calendar.formatString
-import com.android.sample.ui.calendar.addEvent.BottomNavigationButtons
 import com.android.sample.ui.calendar.components.DatePickerFieldToModal
 import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.calendar.components.ValidatingTextField
 import com.android.sample.ui.calendar.utils.DateTimeUtils
+import com.android.sample.ui.components.BottomNavigationButtons
 import java.time.Instant
 
 object EditEventTestTags {

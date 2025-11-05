@@ -12,12 +12,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
@@ -56,6 +54,7 @@ import com.android.sample.ui.calendar.components.DatePickerFieldToModal
 import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.calendar.components.ValidatingTextField
 import com.android.sample.ui.calendar.utils.DateTimeUtils
+import com.android.sample.ui.components.BottomNavigationButtons
 
 // Assisted by AI
 object AddEventTestTags {
@@ -511,36 +510,6 @@ fun AddEventConfirmationScreen(
             canGoNext = true,
             nextButtonTestTag = AddEventTestTags.FINISH_BUTTON)
       })
-}
-
-@Composable
-fun BottomNavigationButtons(
-    onNext: () -> Unit = {},
-    onBack: () -> Unit = {},
-    canGoBack: Boolean = true,
-    backButtonText: String = "",
-    canGoNext: Boolean = false,
-    nextButtonText: String = "",
-    backButtonTestTag: String = "",
-    nextButtonTestTag: String = ""
-) {
-  Row(
-      modifier = Modifier.fillMaxWidth().padding(20.dp),
-      horizontalArrangement = Arrangement.SpaceEvenly) {
-        if (canGoBack) {
-          OutlinedButton(
-              onClick = onBack,
-              Modifier.size(width = 120.dp, height = 60.dp).testTag(backButtonTestTag)) {
-                Text(backButtonText)
-              }
-        }
-        Button(
-            onClick = onNext,
-            Modifier.size(width = 120.dp, height = 60.dp).testTag(nextButtonTestTag),
-            enabled = canGoNext) {
-              Text(nextButtonText)
-            }
-      }
 }
 
 @Preview(showBackground = true)

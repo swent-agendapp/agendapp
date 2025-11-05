@@ -129,4 +129,7 @@
     <string name="organize_replacement">Einen Ersatz organisieren</string>
     <string name="process_replacement">Ersatz zur Bearbeitung</string>
     <string name="waiting_confirmation_replacement">Warten auf Bestätigung des Ersatzes</string>
+    <!-- Map -->
+    <string name="delimit_organization_title">Begrenzen Sie Ihre Organisation</string>
+
 </resources>

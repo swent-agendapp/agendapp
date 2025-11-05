@@ -129,4 +129,6 @@
     <string name="organize_replacement">Organiser un remplacement</string>
     <string name="process_replacement">Remplacement à traiter</string>
     <string name="waiting_confirmation_replacement">En attente de confirmation du remplacement</string>
+    <!-- Map -->
+    <string name="delimit_organization_title">Délimitez votre organisation</string>
 </resources>

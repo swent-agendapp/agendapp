@@ -3,6 +3,7 @@ coroutinesTest = "1.7.3"
 agp = "8.4.2"
 kotlin = "1.9.0"
 coreKtx = "1.12.0"
+kotlinBom = "1.9.0"
 ktfmt = "0.17.0"
 junit = "4.13.2"
 mockitoAndroid = "5.13.0"
@@ -18,7 +19,7 @@ composeActivity = "1.8.2"
 composeViewModel = "2.7.0"
 lifecycleRuntimeKtx = "2.7.0"
 kaspresso = "1.5.5"
-robolectric = "4.11.1"
+robolectric = "4.13"
 sonar = "4.4.1.3373"
 gms = "4.4.2"
 navigation = "2.8.0"
@@ -43,8 +44,17 @@ mockkAndroid = "1.13.7"
 compose-m3 = "1.3.1"
 compose-icons = "1.5.0"
 
+# Google Service and Maps
+playServicesMaps = "19.0.0"
+mapsCompose = "4.3.3"
+mapsComposeUtils = "4.3.0"
+roomCompiler = "2.8.2"
+playServicesLocation = "19.2.0"
+places = "3.5.0"
+
 [libraries]
 
+kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlinBom" }
 kotlinx_coroutines_test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesTest" }
 
 # Firebase Libraries
@@ -98,6 +108,13 @@ androidx-compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4
 androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "composeUiTest" }
 
 google-truth = { module = "com.google.truth:truth", version.ref = "truth" }
+
+maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }
+maps-compose-utils = { module = "com.google.maps.android:maps-compose-utils", version.ref = "mapsComposeUtils" }
+play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomCompiler" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+places = { group = "com.google.android.libraries.places", name = "places", version.ref = "places" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

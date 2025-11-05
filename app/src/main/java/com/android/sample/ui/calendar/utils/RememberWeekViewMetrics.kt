@@ -57,13 +57,13 @@ internal fun rememberWeekViewMetrics(
     val days = dateRange.toList()
     val columnCount = days.size
 
-    val startTime = LocalTime.of(8, 0)
-    val endTime = LocalTime.of(23, 0)
+    val startTime = LocalTime.MIDNIGHT
+    val endTime = LocalTime.MAX
     val rowHeightDp = 60.dp
     val leftOffsetDp = 48.dp
     val topOffsetDp = 42.dp
 
-    val totalHours = ChronoUnit.HOURS.between(startTime, endTime).toInt()
+    val totalHours = 24
     val gridHeightDp = rowHeightDp * totalHours
 
     val gridStartTime = startTime.truncatedTo(ChronoUnit.HOURS)

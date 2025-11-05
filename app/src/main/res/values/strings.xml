@@ -71,4 +71,6 @@
     <string name="replacement_requests_subtitle">Replacements waiting for confirmation</string>
     <string name="replacement_substituted_label">Substituted: %1$s</string>
     <string name="replacement_substitute_label">Substitute: %1$s</string>
+    <!-- Map -->
+    <string name="delimit_organization_title">Delimit your organisation</string>
 </resources>

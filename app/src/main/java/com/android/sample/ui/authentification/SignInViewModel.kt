@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.sample.R
 import com.android.sample.model.authentification.User
+import com.android.sample.model.authorization.AuthorizationService
+import com.android.sample.model.organization.Role
 import com.github.se.bootcamp.model.authentication.AuthRepository
 import com.github.se.bootcamp.model.authentication.AuthRepositoryFirebase
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
@@ -29,7 +31,8 @@ data class AuthUIState(
     val isLoading: Boolean = false,
     val user: User? = null,
     val errorMsg: String? = null,
-    val signedOut: Boolean = true
+    val signedOut: Boolean = true,
+    val role: Role? = null
 )
 
 /**
@@ -37,8 +40,10 @@ data class AuthUIState(
  *
  * @property repository The repository used to perform authentication operations.
  */
-class SignInViewModel(private val repository: AuthRepository = AuthRepositoryFirebase()) :
-    ViewModel() {
+class SignInViewModel(
+    private val repository: AuthRepository = AuthRepositoryFirebase(),
+    private val authz: AuthorizationService = AuthorizationService()
+) : ViewModel() {
 
   private val _uiState = MutableStateFlow(AuthUIState())
   val uiState: StateFlow<AuthUIState> = _uiState
@@ -49,8 +54,17 @@ class SignInViewModel(private val repository: AuthRepository = AuthRepositoryFir
 
   /** Checks if there's a persisted user session and restores it. */
   private fun checkCurrentUser() {
-    repository.getCurrentUser()?.let { user ->
-      _uiState.update { it.copy(user = user, signedOut = false) }
+    val user = repository.getCurrentUser()
+    if (user == null) {
+      _uiState.update { it.copy(signedOut = true, isLoading = false, role = null, user = null) }
+      return
+    }
+
+    _uiState.update { it.copy(user = user, signedOut = false, isLoading = false) }
+
+    viewModelScope.launch {
+      val role = runCatching { authz.getMyRole() }.getOrNull()
+      _uiState.update { it.copy(role = role) }
     }
   }
 
@@ -88,19 +102,21 @@ class SignInViewModel(private val repository: AuthRepository = AuthRepositoryFir
         val credential = getCredential(context, signInRequest, credentialManager)
 
         // Pass the credential to your repository
-        repository.signInWithGoogle(credential).fold({ user ->
-          _uiState.update {
-            it.copy(isLoading = false, user = user, errorMsg = null, signedOut = false)
-          }
-        }) { failure ->
-          _uiState.update {
-            it.copy(
-                isLoading = false,
-                errorMsg = failure.localizedMessage,
-                signedOut = true,
-                user = null)
-          }
-        }
+        repository
+            .signInWithGoogle(credential)
+            .fold(
+                { user ->
+                  _uiState.update { it.copy(isLoading = false, user = user, signedOut = false) }
+                  viewModelScope.launch {
+                    val role = runCatching { authz.getMyRole() }.getOrNull()
+                    _uiState.update { it.copy(role = role) }
+                  }
+                },
+                { failure ->
+                  _uiState.update {
+                    it.copy(isLoading = false, errorMsg = failure.message, signedOut = true)
+                  }
+                })
       } catch (e: GetCredentialCancellationException) {
         // User cancelled the sign-in flow
         _uiState.update {

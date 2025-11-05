@@ -3,6 +3,7 @@ package com.android.sample.ui.calendar
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.sample.model.authorization.AuthorizationService
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
@@ -23,10 +24,12 @@ data class AddCalendarEventUIState(
     val recurrenceEndInstant: Instant = Instant.now(),
     val recurrenceMode: RecurrenceStatus = RecurrenceStatus.OneTime,
     val participants: Set<String> = emptySet(),
+    val errorMsg: String? = null,
 )
 
 class AddEventViewModel(
-    private val repository: EventRepository = EventRepositoryProvider.repository
+    private val repository: EventRepository = EventRepositoryProvider.repository,
+    private val authz: AuthorizationService = AuthorizationService()
 ) : ViewModel() {
   private val _uiState = MutableStateFlow(AddCalendarEventUIState())
   val uiState: StateFlow<AddCalendarEventUIState> = _uiState.asStateFlow()
@@ -48,9 +51,16 @@ class AddEventViewModel(
   fun addEventToRepository(event: Event) {
     viewModelScope.launch {
       try {
+        val allowed = runCatching { authz.requireAdmin() }.isSuccess
+        if (!allowed) {
+          _uiState.value = _uiState.value.copy(errorMsg = "You are not allowed to create events")
+          return@launch
+        }
+
         repository.insertEvent(event)
       } catch (e: Exception) {
         Log.e("AddEventViewModel", "Error adding event: ${e.message}")
+        _uiState.value = _uiState.value.copy(errorMsg = "Unexpected error while creating the event")
       }
     }
   }

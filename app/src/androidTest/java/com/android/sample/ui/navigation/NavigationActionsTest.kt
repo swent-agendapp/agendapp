@@ -1,5 +1,6 @@
 package com.android.sample.ui.navigation
 
+import android.Manifest
 import android.app.Instrumentation
 import android.content.Intent
 import android.net.Uri
@@ -23,8 +24,11 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.android.sample.MainActivity
+import androidx.test.rule.GrantPermissionRule
+import com.android.sample.Agendapp
 import com.android.sample.ui.calendar.AddEventTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
+import com.android.sample.ui.map.MapScreenTestTags
 import com.android.sample.ui.profile.AdminContactScreenTestTags
 import com.android.sample.ui.profile.AdminInformation
 import com.android.sample.ui.profile.ProfileScreenTestTags
@@ -38,19 +42,24 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * Integration test for [MainActivity] navigation. This test checks navigation flow between Home,
- * Calendar, Profile, and Settings screens.
+ * Integration test for [Agendapp] navigation. This test checks the navigation flow between Home,
+ * EditEvent, Calendar, and Settings screens.
  */
 @RunWith(AndroidJUnit4::class)
 @MediumTest
 class AgendappNavigationTest {
 
-  @get:Rule val composeTestRule = createAndroidComposeRule<MainActivity>()
+  @get:Rule
+  val permissionRule: GrantPermissionRule =
+      GrantPermissionRule.grant(
+          Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
 
-  // --- Navigation tests ---
+  @get:Rule val composeTestRule = createComposeRule()
 
   @Test
   fun navigate_to_all_add_forms() {
+    composeTestRule.setContent { Agendapp() }
+
     // Go to Calendar
     composeTestRule.onNodeWithTag(CALENDAR_BUTTON).assertExists().performClick()
     composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertExists().performClick()
@@ -76,6 +85,8 @@ class AgendappNavigationTest {
 
   @Test
   fun navigate_to_replacement() {
+    composeTestRule.setContent { Agendapp() }
+
     // Go to replacement
     composeTestRule.onNodeWithTag(HomeTestTags.REPLACEMENT_BUTTON).assertExists().performClick()
 
@@ -85,6 +96,7 @@ class AgendappNavigationTest {
 
   @Test
   fun navigate_to_profile_and_admin_profile_and_back() {
+    composeTestRule.setContent { Agendapp() }
     // Go to Profile
     composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).assertExists().performClick()
     composeTestRule.onNodeWithTag(SettingsScreenTestTags.ROOT).assertExists()
@@ -118,14 +130,31 @@ class AgendappNavigationTest {
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.BACK_BUTTON).assertExists().performClick()
   }
 
-  // --- Intent tests ---
+  @Test
+  fun navigate_to_map_and_back() {
+    composeTestRule.setContent { Agendapp() }
+
+    composeTestRule.onNodeWithTag(HomeTestTags.MAP_BUTTON).assertExists().performClick()
+
+    composeTestRule.onNodeWithTag(MapScreenTestTags.GOOGLE_MAP_SCREEN).assertExists()
+
+    composeTestRule
+        .onNodeWithTag(MapScreenTestTags.MAP_GO_BACK_BUTTON)
+        .assertExists()
+        .performClick()
+
+    composeTestRule.onNodeWithTag(HomeTestTags.MAP_BUTTON).assertExists()
+  }
 
   @OptIn(ExperimentalTestApi::class)
   @Test
   fun clickingEmail_opensEmailApp() {
     Intents.init()
     try {
-      // Wait for home screen
+
+      composeTestRule.setContent { Agendapp() }
+
+      // Dismiss any initial popups that might block interaction
       composeTestRule.waitUntilAtLeastOneExists(hasTestTag(HomeTestTags.SETTINGS_BUTTON))
       composeTestRule.onRoot().performTouchInput { click(Offset(1f, 1f)) }
       composeTestRule.waitForIdle()
@@ -169,6 +198,9 @@ class AgendappNavigationTest {
   fun clickingPhone_opensDialerApp() {
     Intents.init()
     try {
+
+      composeTestRule.setContent { Agendapp() }
+
       composeTestRule.waitUntilAtLeastOneExists(hasTestTag(HomeTestTags.SETTINGS_BUTTON))
       composeTestRule.onRoot().performTouchInput { click(Offset(1f, 1f)) }
       composeTestRule.waitForIdle()

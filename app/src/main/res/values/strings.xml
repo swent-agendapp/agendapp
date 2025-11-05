@@ -130,3 +130,6 @@
     <string name="top_bar_back_content_description">Back</string>
     <string name="top_bar_logout_content_description">Log out</string>
 </resources>
+    <!-- Map -->
+    <string name="delimit_organization_title">Delimit your organisation</string>
+</resources>

@@ -1,9 +1,9 @@
 package com.android.sample.ui.calendar.editEvent
 
 import androidx.lifecycle.ViewModel
+import java.time.Instant
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import java.time.Instant
 
 // This ViewModel is currently a placeholder generated with AI assistance.
 // The implementation has not yet been started, but this structure ensures that

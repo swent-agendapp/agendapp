@@ -59,6 +59,8 @@ import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.theme.*
 
 // Assisted by AI
+
+/** Contains the test tags used across the Add Event screen UI. */
 object AddEventTestTags {
   // Tags for the different composable in the Add Event flow
   const val INSTRUCTION_TEXT = "instruction_text"
@@ -88,6 +90,17 @@ object AddEventTestTags {
       }
 }
 
+/**
+ * Entry-point composable for the Add Event feature.
+ *
+ * Displays a sequential multi-step wizard using a local `currentStep` state. Screens never navigate
+ * by themselves — instead they call `onNext()` / `onBack()` and this composable decides which
+ * screen to show.
+ *
+ * @param addEventViewModel Shared ViewModel holding the draft event data.
+ * @param onFinish Callback triggered when the workflow is completed.
+ * @param onCancel Callback triggered when the user cancels the flow.
+ */
 @Composable
 fun AddEventScreen(
     addEventViewModel: AddEventViewModel = viewModel(),
@@ -127,6 +140,15 @@ fun AddEventScreen(
   BackHandler(enabled = currentStep > 0) { currentStep-- }
 }
 
+/**
+ * First step of the event creation flow.
+ *
+ * Lets the user input the event title and description. Validation: both fields must be non-blank to
+ * enable the Next button.
+ *
+ * @param onNext Triggered when validation passes and the user moves to step 2.
+ * @param onCancel Triggered when the user cancels the flow entirely.
+ */
 @Composable
 fun AddEventTitleAndDescriptionScreen(
     addEventViewModel: AddEventViewModel = viewModel(),
@@ -204,6 +226,12 @@ fun AddEventTitleAndDescriptionScreen(
       })
 }
 
+/**
+ * Second step: select start/end date and time, plus optional recurrence rules.
+ *
+ * The user selects date using a modal date picker and time with native TimePicker. Validation
+ * ensures start time is not after end time.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEventTimeAndRecurrenceScreen(
@@ -404,6 +432,13 @@ fun AddEventTimeAndRecurrenceScreen(
       })
 }
 
+/**
+ * Third step: allows selecting participants for the event.
+ *
+ * User selects the participants from a scrollable list with checkboxes.
+ *
+ * On "Create", the ViewModel persists the event.
+ */
 @Composable
 fun AddEventAttendantScreen(
     addEventViewModel: AddEventViewModel = viewModel(),
@@ -498,6 +533,11 @@ fun AddEventAttendantScreen(
       })
 }
 
+/**
+ * Final step: confirmation message displayed after successful event creation.
+ *
+ * Only shows a single "Finish" button.
+ */
 @Composable
 fun AddEventConfirmationScreen(
     onFinish: () -> Unit = {},

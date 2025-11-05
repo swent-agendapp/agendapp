@@ -23,7 +23,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.android.sample.R
+import com.android.sample.ui.theme.CornerRadiusLarge
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
@@ -46,7 +48,9 @@ fun DatePickerFieldToModal(
       onValueChange = {},
       label = { Text(label) },
       placeholder = { Text("DD/MM/YYYY") },
-      trailingIcon = { Icon(Icons.Default.DateRange, contentDescription = "Select date") },
+      trailingIcon = {
+        Icon(Icons.Default.DateRange, contentDescription = stringResource(R.string.select_date))
+      },
       modifier =
           modifier.fillMaxWidth().pointerInput(selectedDate) {
             awaitEachGesture {
@@ -57,7 +61,7 @@ fun DatePickerFieldToModal(
               }
             }
           },
-      shape = RoundedCornerShape(12.dp),
+      shape = RoundedCornerShape(CornerRadiusLarge),
       readOnly = true)
 
   if (showModal) {
@@ -92,10 +96,12 @@ fun DatePickerModal(onDateSelected: (Long?) -> Unit, onDismiss: () -> Unit) {
               onDateSelected(datePickerState.selectedDateMillis)
               onDismiss()
             }) {
-              Text("OK")
+              Text(stringResource(R.string.ok))
             }
       },
-      dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel") } }) {
+      dismissButton = {
+        TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) }
+      }) {
         DatePicker(state = datePickerState)
       }
 }

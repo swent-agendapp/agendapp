@@ -35,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -55,6 +56,7 @@ import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.calendar.components.ValidatingTextField
 import com.android.sample.ui.calendar.utils.DateTimeUtils
 import com.android.sample.ui.components.BottomNavigationButtons
+import com.android.sample.ui.theme.*
 
 // Assisted by AI
 object AddEventTestTags {
@@ -92,7 +94,7 @@ fun AddEventScreen(
     onFinish: () -> Unit = {},
     onCancel: () -> Unit = {}
 ) {
-  var currentStep by remember { mutableStateOf(0) }
+  var currentStep by remember { mutableIntStateOf(0) }
 
   when (currentStep) {
     0 ->
@@ -139,6 +141,8 @@ fun AddEventTitleAndDescriptionScreen(
         }
       }
 
+  val DESCRIPTION_MIN_LINES = 12
+
   var titleTouched by remember { mutableStateOf(false) }
   var descriptionTouched by remember { mutableStateOf(false) }
 
@@ -146,11 +150,14 @@ fun AddEventTitleAndDescriptionScreen(
       topBar = { TopTitleBar(title = stringResource(R.string.addEventTitle)) },
       content = { paddingValues ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(horizontal = 40.dp).padding(paddingValues),
+            modifier =
+                Modifier.fillMaxSize()
+                    .padding(horizontal = PaddingExtraLarge)
+                    .padding(paddingValues),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround) {
               Box(
-                  modifier = Modifier.weight(1f).fillMaxWidth(),
+                  modifier = Modifier.weight(WeightVeryHeavy).fillMaxWidth(),
                   contentAlignment = Alignment.Center) {
                     Text(
                         stringResource(R.string.enterTitleAndDescription),
@@ -158,7 +165,7 @@ fun AddEventTitleAndDescriptionScreen(
                         style = MaterialTheme.typography.headlineMedium,
                         modifier = Modifier.testTag(AddEventTestTags.INSTRUCTION_TEXT))
                   }
-              Column(modifier = Modifier.weight(1f)) {
+              Column(modifier = Modifier.weight(WeightVeryHeavy)) {
                 ValidatingTextField(
                     label = stringResource(R.string.eventTitle),
                     placeholder = stringResource(R.string.eventTitlePlaceholder),
@@ -181,7 +188,7 @@ fun AddEventTitleAndDescriptionScreen(
                       if (focusState.isFocused) descriptionTouched = true
                     },
                     singleLine = false,
-                    minLines = 12)
+                    minLines = DESCRIPTION_MIN_LINES)
               }
             }
       },
@@ -221,11 +228,14 @@ fun AddEventTimeAndRecurrenceScreen(
       topBar = { TopTitleBar(title = stringResource(R.string.addEventTitle)) },
       content = { paddingValues ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(horizontal = 40.dp).padding(paddingValues),
+            modifier =
+                Modifier.fillMaxSize()
+                    .padding(horizontal = PaddingExtraLarge)
+                    .padding(paddingValues),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround) {
               Box(
-                  modifier = Modifier.weight(0.6f).fillMaxWidth(),
+                  modifier = Modifier.weight(WeightMedium).fillMaxWidth(),
                   contentAlignment = Alignment.Center) {
                     Text(
                         stringResource(R.string.enterTimeAndRecurrence),
@@ -234,7 +244,7 @@ fun AddEventTimeAndRecurrenceScreen(
                         modifier = Modifier.testTag(AddEventTestTags.INSTRUCTION_TEXT))
                   }
 
-              Column(modifier = Modifier.weight(1f)) {
+              Column(modifier = Modifier.weight(WeightVeryHeavy)) {
                 if (!recurrenceOptions.isEmpty()) {
                   ExposedDropdownMenuBox(
                       expanded = expanded, onExpandedChange = { expanded = !expanded }) {
@@ -250,7 +260,7 @@ fun AddEventTimeAndRecurrenceScreen(
                                 Modifier.menuAnchor(type = MenuAnchorType.PrimaryNotEditable, true)
                                     .fillMaxWidth()
                                     .testTag(AddEventTestTags.RECURRENCE_STATUS_DROPDOWN),
-                            shape = RoundedCornerShape(12.dp),
+                            shape = RoundedCornerShape(CornerRadiusLarge),
                             colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors())
                         ExposedDropdownMenu(
                             expanded = expanded, onDismissRequest = { expanded = false }) {
@@ -268,7 +278,7 @@ fun AddEventTimeAndRecurrenceScreen(
                       }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(SpacingLarge))
 
                 DatePickerFieldToModal(
                     label = stringResource(R.string.startDatePickerLabel),
@@ -279,7 +289,7 @@ fun AddEventTimeAndRecurrenceScreen(
                     },
                     initialInstant = newEventUIState.startInstant)
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(SpacingSmall))
 
                 DatePickerFieldToModal(
                     label = stringResource(R.string.endDatePickerLabel),
@@ -290,7 +300,7 @@ fun AddEventTimeAndRecurrenceScreen(
                     },
                     initialInstant = newEventUIState.endInstant)
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(SpacingLarge))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -298,12 +308,13 @@ fun AddEventTimeAndRecurrenceScreen(
                     verticalAlignment = Alignment.CenterVertically) {
                       Text(
                           text = stringResource(R.string.startTime),
-                          modifier = Modifier.weight(1f),
+                          modifier = Modifier.weight(WeightVeryHeavy),
                           textAlign = TextAlign.Center)
                       OutlinedButton(
                           onClick = { showStartTimePicker = true },
                           modifier =
-                              Modifier.weight(1f).testTag(AddEventTestTags.START_TIME_BUTTON)) {
+                              Modifier.weight(WeightVeryHeavy)
+                                  .testTag(AddEventTestTags.START_TIME_BUTTON)) {
                             Text(
                                 text =
                                     DateTimeUtils.formatInstantToTime(newEventUIState.startInstant))
@@ -316,12 +327,13 @@ fun AddEventTimeAndRecurrenceScreen(
                     verticalAlignment = Alignment.CenterVertically) {
                       Text(
                           text = stringResource(R.string.endTime),
-                          modifier = Modifier.weight(1f),
+                          modifier = Modifier.weight(WeightVeryHeavy),
                           textAlign = TextAlign.Center)
                       OutlinedButton(
                           onClick = { showEndTimePicker = true },
                           modifier =
-                              Modifier.weight(1f).testTag(AddEventTestTags.END_TIME_BUTTON)) {
+                              Modifier.weight(WeightVeryHeavy)
+                                  .testTag(AddEventTestTags.END_TIME_BUTTON)) {
                             Text(
                                 text =
                                     DateTimeUtils.formatInstantToTime(newEventUIState.endInstant))
@@ -329,7 +341,7 @@ fun AddEventTimeAndRecurrenceScreen(
                     }
 
                 if (selectedRecurrence != RecurrenceStatus.OneTime) {
-                  Spacer(modifier = Modifier.height(8.dp))
+                  Spacer(modifier = Modifier.height(SpacingSmall))
 
                   DatePickerFieldToModal(
                       label = stringResource(R.string.recurrenceEndPickerLabel),
@@ -415,11 +427,14 @@ fun AddEventAttendantScreen(
       topBar = { TopTitleBar(title = stringResource(R.string.addEventTitle)) },
       content = { paddingValues ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(horizontal = 40.dp).padding(paddingValues),
+            modifier =
+                Modifier.fillMaxSize()
+                    .padding(horizontal = PaddingExtraLarge)
+                    .padding(paddingValues),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround) {
               Box(
-                  modifier = Modifier.weight(1f).fillMaxWidth(),
+                  modifier = Modifier.weight(WeightVeryHeavy).fillMaxWidth(),
                   contentAlignment = Alignment.Center) {
                     Text(
                         stringResource(R.string.selectAttendants),
@@ -428,11 +443,14 @@ fun AddEventAttendantScreen(
                         modifier = Modifier.testTag(AddEventTestTags.INSTRUCTION_TEXT))
                   }
               Card(
-                  modifier = Modifier.weight(1f).fillMaxWidth().padding(vertical = 8.dp),
-                  shape = RoundedCornerShape(12.dp),
+                  modifier =
+                      Modifier.weight(WeightVeryHeavy)
+                          .fillMaxWidth()
+                          .padding(vertical = PaddingSmall),
+                  shape = RoundedCornerShape(CornerRadiusLarge),
                   elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
                     // Scrollable list
-                    LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+                    LazyColumn(modifier = Modifier.fillMaxSize().padding(PaddingMedium)) {
                       items(allParticipants) { participant ->
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -445,7 +463,7 @@ fun AddEventAttendantScreen(
                                         addEventViewModel.addParticipant(participant)
                                       }
                                     }
-                                    .padding(vertical = 8.dp)) {
+                                    .padding(vertical = PaddingSmall)) {
                               Checkbox(
                                   checked = newEventUIState.participants.contains(participant),
                                   onCheckedChange = { checked ->
@@ -455,7 +473,7 @@ fun AddEventAttendantScreen(
                                       addEventViewModel.removeParticipant(participant)
                                     }
                                   })
-                              Spacer(modifier = Modifier.width(8.dp))
+                              Spacer(modifier = Modifier.width(SpacingSmall))
                               Text(text = participant)
                             }
                         HorizontalDivider(
@@ -488,11 +506,14 @@ fun AddEventConfirmationScreen(
       topBar = { TopTitleBar(title = stringResource(R.string.addEventTitle)) },
       content = { paddingValues ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(horizontal = 40.dp).padding(paddingValues),
+            modifier =
+                Modifier.fillMaxSize()
+                    .padding(horizontal = PaddingExtraLarge)
+                    .padding(paddingValues),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround) {
               Box(
-                  modifier = Modifier.weight(1f).fillMaxWidth(),
+                  modifier = Modifier.weight(WeightVeryHeavy).fillMaxWidth(),
                   contentAlignment = Alignment.Center) {
                     Text(
                         stringResource(R.string.confirmationMessage),

@@ -10,8 +10,8 @@ import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
+import com.android.sample.ui.theme.CornerRadiusLarge
 
 @Composable
 fun ValidatingTextField(
@@ -41,7 +41,7 @@ fun ValidatingTextField(
           Text(text = errorMessage, modifier = Modifier.testTag(AddEventTestTags.ERROR_MESSAGE))
         }
       },
-      shape = RoundedCornerShape(12.dp),
+      shape = RoundedCornerShape(CornerRadiusLarge),
   )
 }
 

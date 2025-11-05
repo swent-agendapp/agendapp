@@ -38,19 +38,19 @@ fun getMockReplacements(): List<Replacement> {
   return listOf(
       Replacement(
           id = "r1",
-          substitutedUserId = "emilien.barde@epfl.ch",
+          absentUserId = "emilien.barde@epfl.ch",
           substituteUserId = "noa.floret@epfl.ch",
           event = eventA,
           status = ReplacementStatus.Pending),
       Replacement(
           id = "r2",
-          substitutedUserId = "weifeng.ding@epfl.ch",
+          absentUserId = "weifeng.ding@epfl.ch",
           substituteUserId = "timael.andrie@epfl.ch",
           event = eventB,
           status = ReplacementStatus.Pending),
       Replacement(
           id = "r3",
-          substitutedUserId = "emilien.barde@epfl.ch",
+          absentUserId = "emilien.barde@epfl.ch",
           substituteUserId = "timael.andrie@epfl.ch",
           event = eventC,
           status = ReplacementStatus.Accepted))

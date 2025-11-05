@@ -25,7 +25,7 @@ class ReplacementExtensionsTest {
     val pending =
         Replacement(
             id = "1",
-            substitutedUserId = "user-a",
+            absentUserId = "user-a",
             substituteUserId = "user-b",
             event = baseEvent,
             status = ReplacementStatus.Pending)
@@ -33,7 +33,7 @@ class ReplacementExtensionsTest {
     val accepted =
         Replacement(
             id = "2",
-            substitutedUserId = "user-c",
+            absentUserId = "user-c",
             substituteUserId = "user-d",
             event = baseEvent,
             status = ReplacementStatus.Accepted)
@@ -41,7 +41,7 @@ class ReplacementExtensionsTest {
     val declined =
         Replacement(
             id = "3",
-            substitutedUserId = "user-e",
+            absentUserId = "user-e",
             substituteUserId = "user-f",
             event = baseEvent,
             status = ReplacementStatus.Declined)

@@ -103,7 +103,7 @@ fun ReplacementPendingCard(replacement: Replacement) {
           Text(
               text =
                   stringResource(
-                      id = R.string.replacement_substituted_label, replacement.substitutedUserId),
+                      id = R.string.replacement_substituted_label, replacement.absentUserId),
               style = MaterialTheme.typography.bodySmall)
           Text(
               text =

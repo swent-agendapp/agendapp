@@ -19,7 +19,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.android.sample.R
 import com.android.sample.ui.calendar.data.LocalDateRange
 import com.android.sample.ui.calendar.style.CalendarDefaults.DefaultDateRange
 import com.android.sample.ui.calendar.utils.DateTimeUtils.localDateTimeToInstant
@@ -69,7 +71,9 @@ fun CalendarScreen(
       topBar = {
         TopAppBar(
             title = {
-              Text("Calendar", modifier = Modifier.testTag(CalendarScreenTestTags.TOP_BAR_TITLE))
+              Text(
+                  stringResource(R.string.calendar_screen_title),
+                  modifier = Modifier.testTag(CalendarScreenTestTags.TOP_BAR_TITLE))
             },
             colors =
                 TopAppBarDefaults.topAppBarColors(

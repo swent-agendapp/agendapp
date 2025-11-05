@@ -15,7 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.android.sample.R
 import com.android.sample.model.calendar.Event
 import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
 import com.android.sample.ui.calendar.data.LocalDateRange
@@ -71,7 +73,10 @@ fun CalendarContainer(
                 .padding(top = 5.dp, start = 8.dp)
                 .size(35.dp)
                 .testTag(ADD_EVENT_BUTTON)) {
-          Icon(imageVector = Icons.Default.Add, contentDescription = "Add", tint = Color.Gray)
+          Icon(
+              imageVector = Icons.Default.Add,
+              contentDescription = stringResource(R.string.calendar_add_event_content_description),
+              tint = Color.Gray)
         }
   }
 }

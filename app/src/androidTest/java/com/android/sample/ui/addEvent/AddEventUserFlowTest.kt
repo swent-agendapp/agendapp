@@ -6,7 +6,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
-import com.android.sample.AgendappNavigation
+import com.android.sample.Agendapp
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.ui.calendar.AddEventTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
@@ -20,7 +20,7 @@ class AddEventUserFlowTest {
 
   @Test
   fun addEventAndResetsTheFieldsTheNextTime() {
-    composeTestRule.setContent { AgendappNavigation() }
+    composeTestRule.setContent { Agendapp() }
 
     // Go to add event screen
     composeTestRule.onNodeWithTag(CALENDAR_BUTTON).assertExists().performClick()

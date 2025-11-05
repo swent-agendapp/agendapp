@@ -15,12 +15,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
+import com.android.sample.model.organization.EmployeeRepositoryFirebase
+import com.android.sample.model.organization.EmployeeRepositoryProvider
 import com.android.sample.ui.calendar.AddEventAttendantScreen
 import com.android.sample.ui.calendar.AddEventConfirmationScreen
 import com.android.sample.ui.calendar.AddEventTimeAndRecurrenceScreen
 import com.android.sample.ui.calendar.AddEventTitleAndDescriptionScreen
 import com.android.sample.ui.calendar.AddEventViewModel
 import com.android.sample.ui.calendar.CalendarScreen
+import com.android.sample.ui.map.MapScreen
 import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
 import com.android.sample.ui.profile.AdminContactScreen
@@ -30,17 +33,23 @@ import com.android.sample.ui.replacement.ReplacementScreen
 import com.android.sample.ui.screens.HomeScreen
 import com.android.sample.ui.settings.SettingsScreen
 import com.android.sample.ui.theme.SampleAppTheme
+import com.github.se.bootcamp.model.authentication.AuthRepositoryFirebase
+import com.google.firebase.firestore.FirebaseFirestore
 
 object MainActivityTestTags {
   const val MAIN_SCREEN_CONTAINER = "main_screen_container"
 }
 /**
- * Main entry point of the application. Sets up the theme and calls [AgendappNavigation] to
- * initialize navigation.
+ * Main entry point of the application. Sets up the theme and calls [Agendapp] to initialize
+ * navigation.
  */
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+
+    EmployeeRepositoryProvider.init(
+        EmployeeRepositoryFirebase(
+            db = FirebaseFirestore.getInstance(), authRepository = AuthRepositoryFirebase()))
     setContent {
       SampleAppTheme {
         Surface(
@@ -49,16 +58,11 @@ class MainActivity : ComponentActivity() {
                   testTag = MainActivityTestTags.MAIN_SCREEN_CONTAINER
                 },
             color = MaterialTheme.colorScheme.background) {
-              AgendappNavigation()
+              Agendapp()
             }
       }
     }
   }
-}
-
-@Composable
-fun Agendapp() {
-  CalendarScreen()
 }
 
 /**
@@ -66,7 +70,7 @@ fun Agendapp() {
  * available routes and how composables are connected.
  */
 @Composable
-fun AgendappNavigation(modifier: Modifier = Modifier) {
+fun Agendapp(modifier: Modifier = Modifier) {
   val navController = rememberNavController()
   val navigationActions = NavigationActions(navController)
   val addEventViewModel: AddEventViewModel = viewModel()
@@ -124,6 +128,7 @@ fun AgendappNavigation(modifier: Modifier = Modifier) {
                 onNavigateToEdit = { eventId -> navigationActions.navigateToEditEvent(eventId) },
                 onNavigateToCalendar = { navigationActions.navigateTo(Screen.Calendar) },
                 onNavigateToSettings = { navigationActions.navigateTo(Screen.Settings) },
+                onNavigateToMap = { navigationActions.navigateTo(Screen.Map) },
                 onNavigateToReplacement = {
                   navigationActions.navigateTo(Screen.ReplacementOverview)
                 })
@@ -142,5 +147,10 @@ fun AgendappNavigation(modifier: Modifier = Modifier) {
         }
 
         composable(Screen.ReplacementPending.route) { ReplacementPendingListScreen() }
+        navigation(startDestination = Screen.Map.route, route = "Map") {
+          composable(Screen.Map.route) {
+            MapScreen(onGoBack = { navigationActions.navigateBack() })
+          }
+        }
       }
 }

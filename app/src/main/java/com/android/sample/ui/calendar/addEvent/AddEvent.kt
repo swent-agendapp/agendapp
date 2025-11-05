@@ -1,6 +1,7 @@
-package com.android.sample.ui.calendar
+package com.android.sample.ui.calendar.addEvent
 
 import android.app.TimePickerDialog
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -84,6 +85,45 @@ object AddEventTestTags {
         RecurrenceStatus.Monthly -> "recurrence_monthly"
         RecurrenceStatus.Yearly -> "recurrence_yearly"
       }
+}
+
+@Composable
+fun AddEventScreen(
+    addEventViewModel: AddEventViewModel = viewModel(),
+    onFinish: () -> Unit = {},
+    onCancel: () -> Unit = {}
+) {
+  var currentStep by remember { mutableStateOf(0) }
+
+  when (currentStep) {
+    0 ->
+        AddEventTitleAndDescriptionScreen(
+            addEventViewModel = addEventViewModel,
+            onNext = { currentStep++ },
+            onCancel = {
+              onCancel()
+              addEventViewModel.resetUiState()
+            })
+    1 ->
+        AddEventTimeAndRecurrenceScreen(
+            addEventViewModel = addEventViewModel,
+            onNext = { currentStep++ },
+            onBack = { currentStep-- })
+    2 ->
+        AddEventAttendantScreen(
+            addEventViewModel = addEventViewModel,
+            onCreate = { currentStep++ },
+            onBack = { currentStep-- })
+    3 ->
+        AddEventConfirmationScreen(
+            onFinish = {
+              onFinish()
+              addEventViewModel.resetUiState()
+            })
+  }
+
+  // Handle physical back button
+  BackHandler(enabled = currentStep > 0) { currentStep-- }
 }
 
 @Composable

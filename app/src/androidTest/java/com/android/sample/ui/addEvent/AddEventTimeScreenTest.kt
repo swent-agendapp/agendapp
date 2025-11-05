@@ -4,9 +4,9 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import com.android.sample.model.calendar.RecurrenceStatus
-import com.android.sample.ui.calendar.AddEventTestTags
-import com.android.sample.ui.calendar.AddEventTimeAndRecurrenceScreen
-import com.android.sample.ui.calendar.AddEventViewModel
+import com.android.sample.ui.calendar.addEvent.AddEventTestTags
+import com.android.sample.ui.calendar.addEvent.AddEventTimeAndRecurrenceScreen
+import com.android.sample.ui.calendar.addEvent.AddEventViewModel
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

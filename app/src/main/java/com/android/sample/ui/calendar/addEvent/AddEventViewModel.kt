@@ -1,4 +1,4 @@
-package com.android.sample.ui.calendar
+package com.android.sample.ui.calendar.addEvent
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

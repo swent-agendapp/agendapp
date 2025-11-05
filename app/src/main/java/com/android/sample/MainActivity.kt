@@ -10,19 +10,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.android.sample.model.organization.EmployeeRepositoryFirebase
 import com.android.sample.model.organization.EmployeeRepositoryProvider
-import com.android.sample.ui.calendar.AddEventAttendantScreen
-import com.android.sample.ui.calendar.AddEventConfirmationScreen
-import com.android.sample.ui.calendar.AddEventTimeAndRecurrenceScreen
-import com.android.sample.ui.calendar.AddEventTitleAndDescriptionScreen
-import com.android.sample.ui.calendar.AddEventViewModel
 import com.android.sample.ui.calendar.CalendarScreen
+import com.android.sample.ui.calendar.addEvent.AddEventScreen
 import com.android.sample.ui.map.MapScreen
 import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
@@ -72,38 +67,14 @@ class MainActivity : ComponentActivity() {
 fun Agendapp(modifier: Modifier = Modifier) {
   val navController = rememberNavController()
   val navigationActions = NavigationActions(navController)
-  val addEventViewModel: AddEventViewModel = viewModel()
 
   NavHost(
       navController = navController, startDestination = Screen.Home.route, modifier = modifier) {
-        navigation(startDestination = Screen.AddEventTitle.route, route = "Add Event") {
-          composable(Screen.AddEventTitle.route) {
-            AddEventTitleAndDescriptionScreen(
-                addEventViewModel = addEventViewModel,
-                onNext = { navigationActions.navigateTo(Screen.AddEventTime) },
-                onCancel = {
-                  navigationActions.navigateBack()
-                  addEventViewModel.resetUiState()
-                })
-          }
-          composable(Screen.AddEventTime.route) {
-            AddEventTimeAndRecurrenceScreen(
-                addEventViewModel = addEventViewModel,
-                onNext = { navigationActions.navigateTo(Screen.AddEventMember) },
-                onBack = { navigationActions.navigateBack() })
-          }
-          composable(Screen.AddEventMember.route) {
-            AddEventAttendantScreen(
-                addEventViewModel = addEventViewModel,
-                onCreate = { navigationActions.navigateTo(Screen.AddEventEnd) },
-                onBack = { navigationActions.navigateBack() })
-          }
-          composable(Screen.AddEventEnd.route) {
-            AddEventConfirmationScreen(
-                onFinish = {
-                  navigationActions.navigateTo(Screen.Calendar)
-                  addEventViewModel.resetUiState()
-                })
+        navigation(startDestination = Screen.AddEvent.route, route = "Add Event") {
+          composable(Screen.AddEvent.route) {
+            AddEventScreen(
+                onFinish = { navigationActions.navigateTo(Screen.Calendar) },
+                onCancel = { navigationActions.navigateBack() })
           }
         }
         navigation(startDestination = Screen.Settings.route, route = "Settings") {
@@ -135,7 +106,7 @@ fun Agendapp(modifier: Modifier = Modifier) {
         }
         navigation(startDestination = Screen.Calendar.route, route = "Calendar") {
           composable(Screen.Calendar.route) {
-            CalendarScreen(onCreateEvent = { navigationActions.navigateTo(Screen.AddEventTitle) })
+            CalendarScreen(onCreateEvent = { navigationActions.navigateTo(Screen.AddEvent) })
           }
         }
         navigation(startDestination = Screen.ReplacementOverview.route, route = "Replacement") {

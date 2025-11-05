@@ -131,4 +131,12 @@
     <string name="waiting_confirmation_replacement">En attente de confirmation du remplacement</string>
     <!-- Map -->
     <string name="delimit_organization_title">Délimitez votre organisation</string>
+
+    <!-- Replacement -->
+    <string name="replacement_requests_title">Demandes de remplacement</string>
+    <string name="replacement_requests_subtitle">Remplacements en attente de confirmation</string>
+    <string name="replacement_substituted_label">Personne absente : %1$s</string>
+    <string name="replacement_substitute_label">Remplaçant : %1$s</string>
+
+
 </resources>

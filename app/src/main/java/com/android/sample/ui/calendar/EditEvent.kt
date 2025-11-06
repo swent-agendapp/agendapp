@@ -20,7 +20,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.model.calendar.EventRepositoryLocal
 import com.android.sample.model.calendar.RecurrenceStatus
-import com.android.sample.model.calendar.formatString
+import com.android.sample.model.calendar.labelRes
 import com.android.sample.ui.calendar.components.DatePickerFieldToModal
 import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.calendar.components.ValidatingTextField
@@ -178,7 +178,7 @@ fun EditEventScreen(
                 ExposedDropdownMenuBox(
                     expanded = expanded, onExpandedChange = { expanded = !expanded }) {
                       OutlinedTextField(
-                          value = uiState.recurrenceMode.formatString(),
+                          value = stringResource(uiState.recurrenceMode.labelRes()),
                           onValueChange = {},
                           readOnly = true,
                           label = { Text(stringResource(R.string.edit_event_recurrence_label)) },

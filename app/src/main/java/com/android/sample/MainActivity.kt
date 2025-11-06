@@ -155,7 +155,19 @@ fun Agendapp(
     navigation(
         startDestination = Screen.ReplacementOverview.route,
         route = Screen.ReplacementOverview.name) {
-          composable(Screen.ReplacementOverview.route) { ReplacementScreen() }
+          composable(Screen.ReplacementOverview.route) {
+            ReplacementScreen(
+                onWaitingConfirmationClick = {
+                  navigationActions.navigateTo(Screen.ReplacementPending)
+                })
+          }
+        }
+
+    // Pending Replacement Graph
+    navigation(
+        startDestination = Screen.ReplacementPending.route,
+        route = Screen.ReplacementPending.name) {
+          composable(Screen.ReplacementPending.route) { ReplacementPendingListScreen() }
         }
 
     // Settings Graph

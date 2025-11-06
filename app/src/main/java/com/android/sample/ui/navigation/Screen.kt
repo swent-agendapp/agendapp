@@ -26,9 +26,13 @@ sealed class Screen(val route: String, val name: String) {
 
   data object AddEventMember : Screen(route = "add_event/member", name = "Add Event Member")
 
-  data object ReplacementPending : Screen("replacement/pending")
+  data object AddEventEnd : Screen("add_event/end", name = "Add Event Confirmation")
 
-  data object EditEvent : Screen("edit_event/{eventId}") {
+  data object ReplacementOverview : Screen("replacement_overview", name = "Replacement Overview")
+
+  data object ReplacementPending : Screen("replacement/pending", name = "Replacement Pending")
+
+  data object EditEvent : Screen("edit_event/{eventId}", name = "Edit Event") {
     fun createRoute(eventId: String) = "edit_event/$eventId"
   }
 }

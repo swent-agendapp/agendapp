@@ -10,9 +10,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.unit.dp
+import com.android.sample.R
 
 object AdminContactScreenTestTags {
   const val ADMIN_SCREEN_PROFILE = "admin_contact_screen"
@@ -55,20 +57,24 @@ fun AdminContactScreen(onNavigateBack: () -> Unit = {}) {
                       Modifier.testTag(AdminContactScreenTestTags.BACK_BUTTON)
                           .align(Alignment.Start),
                   onClick = onNavigateBack) {
-                    Text("Back")
+                    Text(stringResource(R.string.common_back))
                   }
 
               Spacer(modifier = Modifier.height(24.dp))
 
               // Title
-              Text("Admin Contact", style = MaterialTheme.typography.headlineMedium)
+              Text(
+                  stringResource(R.string.admin_contact_title),
+                  style = MaterialTheme.typography.headlineMedium)
 
               Spacer(modifier = Modifier.height(24.dp))
 
               // Admin Email
               Card(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                  Text("Email", style = MaterialTheme.typography.labelMedium)
+                  Text(
+                      stringResource(R.string.admin_contact_email_label),
+                      style = MaterialTheme.typography.labelMedium)
                   Text(
                       AdminInformation.EMAIL,
                       style = MaterialTheme.typography.bodyLarge,
@@ -80,7 +86,9 @@ fun AdminContactScreen(onNavigateBack: () -> Unit = {}) {
                                         Uri.parse("mailto:${AdminInformation.EMAIL}"))
                                     .apply {
                                       putExtra(Intent.EXTRA_EMAIL, arrayOf(AdminInformation.EMAIL))
-                                      putExtra(Intent.EXTRA_SUBJECT, "Contact from Agendapp")
+                                      putExtra(
+                                          Intent.EXTRA_SUBJECT,
+                                          context.getString(R.string.admin_contact_email_subject))
                                     }
                             context.startActivity(intent)
                           })
@@ -90,7 +98,9 @@ fun AdminContactScreen(onNavigateBack: () -> Unit = {}) {
               // Admin Phone
               Card(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                  Text("Phone", style = MaterialTheme.typography.labelMedium)
+                  Text(
+                      stringResource(R.string.admin_contact_phone_label),
+                      style = MaterialTheme.typography.labelMedium)
                   Text(
                       AdminInformation.PHONE,
                       style = MaterialTheme.typography.bodyLarge,

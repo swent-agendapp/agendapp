@@ -6,8 +6,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
+import com.android.sample.R
 import com.android.sample.ui.theme.SpacingMedium
 
 object HomeTestTags {
@@ -32,18 +34,20 @@ fun HomeScreen(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
-          Button(onClick = { onNavigateToEdit("E001") }) { Text("Go to Edit Event") }
+          Button(onClick = { onNavigateToEdit("E001") }) {
+            Text(stringResource(R.string.home_go_to_edit_event))
+          }
           Spacer(modifier = Modifier.height(SpacingMedium))
           Button(
               modifier = Modifier.testTag(HomeTestTags.CALENDAR_BUTTON),
               onClick = onNavigateToCalendar) {
-                Text("Go to Calendar")
+                Text(stringResource(R.string.home_go_to_calendar))
               }
           Spacer(modifier = Modifier.height(SpacingMedium))
           Button(
               modifier = Modifier.testTag(HomeTestTags.SETTINGS_BUTTON),
               onClick = onNavigateToSettings) {
-                Text("Go to Settings")
+                Text(stringResource(R.string.home_go_to_settings))
               }
           Spacer(modifier = Modifier.height(SpacingMedium))
           Button(modifier = Modifier.testTag(HomeTestTags.MAP_BUTTON), onClick = onNavigateToMap) {

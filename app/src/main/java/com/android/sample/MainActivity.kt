@@ -23,6 +23,7 @@ import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
 import com.android.sample.ui.profile.AdminContactScreen
 import com.android.sample.ui.profile.ProfileScreen
+import com.android.sample.ui.replacement.ReplacementPendingListScreen
 import com.android.sample.ui.replacement.ReplacementScreen
 import com.android.sample.ui.screens.HomeScreen
 import com.android.sample.ui.settings.SettingsScreen
@@ -109,9 +110,14 @@ fun Agendapp(modifier: Modifier = Modifier) {
             CalendarScreen(onCreateEvent = { navigationActions.navigateTo(Screen.AddEvent) })
           }
         }
-        navigation(startDestination = Screen.ReplacementOverview.route, route = "Replacement") {
-          composable(Screen.ReplacementOverview.route) { ReplacementScreen() }
+        composable(Screen.ReplacementOverview.route) {
+          ReplacementScreen(
+              onWaitingConfirmationClick = {
+                navigationActions.navigateTo(Screen.ReplacementPending)
+              })
         }
+
+        composable(Screen.ReplacementPending.route) { ReplacementPendingListScreen() }
         navigation(startDestination = Screen.Map.route, route = "Map") {
           composable(Screen.Map.route) {
             MapScreen(onGoBack = { navigationActions.navigateBack() })

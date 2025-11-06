@@ -65,7 +65,7 @@ import java.util.Locale
 @Composable
 fun DatePickerFieldToModal(
     modifier: Modifier = Modifier,
-    label: String = "label",
+    label: String,
     initialInstant: Instant? = null,
     onDateSelected: (LocalDate) -> Unit
 ) {
@@ -76,9 +76,12 @@ fun DatePickerFieldToModal(
       value = selectedDate?.let { convertMillisToDate(it) } ?: "",
       onValueChange = {},
       label = { Text(label) },
-      placeholder = { Text("DD/MM/YYYY") },
+      placeholder = { Text(stringResource(R.string.date_picker_placeholder)) },
       trailingIcon = {
-        Icon(Icons.Default.DateRange, contentDescription = stringResource(R.string.select_date))
+        Icon(
+            Icons.Default.DateRange,
+            contentDescription =
+                stringResource(R.string.date_picker_select_date_content_description))
       },
       modifier =
           modifier.fillMaxWidth().pointerInput(selectedDate) {
@@ -145,7 +148,7 @@ fun DatePickerModal(onDateSelected: (Long?) -> Unit, onDismiss: () -> Unit) {
               onDateSelected(datePickerState.selectedDateMillis)
               onDismiss()
             }) {
-              Text(stringResource(R.string.ok))
+              Text(stringResource(android.R.string.ok))
             }
       },
       dismissButton = {

@@ -27,7 +27,7 @@ class EditEventWithViewModelTest {
   // -------------------------------------------------------------------------
   @Test
   fun editEventScreen_showsErrorWhenFieldsEmpty_withViewModel() {
-    val fakeRepository = EventRepositoryLocal()
+    val fakeRepository = EventRepositoryLocal(preloadSampleData = true)
     val fakeViewModel = EditEventViewModel(fakeRepository)
 
     composeTestRule.setContent {
@@ -59,7 +59,7 @@ class EditEventWithViewModelTest {
     var saveClicked = false
     var cancelClicked = false
 
-    val fakeRepository = EventRepositoryLocal()
+    val fakeRepository = EventRepositoryLocal(preloadSampleData = true)
     val fakeViewModel = EditEventViewModel(fakeRepository)
 
     composeTestRule.setContent {
@@ -102,7 +102,7 @@ class EditEventWithViewModelTest {
     var saveClicked = false
     var backClicked = false
 
-    val fakeRepository = EventRepositoryLocal()
+    val fakeRepository = EventRepositoryLocal(preloadSampleData = true)
     val fakeViewModel = EditEventViewModel(fakeRepository)
 
     composeTestRule.setContent {
@@ -133,7 +133,7 @@ class EditEventWithViewModelTest {
   // -------------------------------------------------------------------------
   @Test
   fun editEventAttendantScreen_toggleParticipantCheckbox_withViewModel() {
-    val fakeRepository = EventRepositoryLocal()
+    val fakeRepository = EventRepositoryLocal(preloadSampleData = true)
     val fakeViewModel = EditEventViewModel(fakeRepository)
 
     composeTestRule.setContent {

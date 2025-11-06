@@ -4,12 +4,13 @@ import com.android.sample.utils.EventColor
 import java.time.Duration
 import java.time.Instant
 
-class EventRepositoryLocal : EventRepository {
+class EventRepositoryLocal(preloadSampleData: Boolean = false) : EventRepository {
   private val events: MutableList<Event> = mutableListOf()
 
   init {
-    // Preload with sample data for testing / preview of Edit Event screen
-    populateSampleEvents()
+    if (preloadSampleData) {
+      populateSampleEvents()
+    }
   }
 
   override suspend fun getAllEvents(): List<Event> {

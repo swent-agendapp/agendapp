@@ -110,4 +110,16 @@ class EditEventScreenTest {
     alice.performClick()
     alice.performClick()
   }
+
+  @Test
+  fun test_showStartAndEndTimePickers_areTriggeredOnClick() {
+    // Arrange: Render the EditEventScreen
+    composeTestRule.setContent { EditEventScreen(eventId = "test_event_id", skipLoad = true) }
+
+    // Act: Click start time button (should trigger showStartTimePicker)
+    composeTestRule.onNodeWithTag(EditEventTestTags.START_TIME_BUTTON).performClick()
+
+    // Act: Click end time button (should trigger showEndTimePicker)
+    composeTestRule.onNodeWithTag(EditEventTestTags.END_TIME_BUTTON).performClick()
+  }
 }

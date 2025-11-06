@@ -14,11 +14,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
-import com.android.sample.model.calendar.EventRepositoryLocal
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.calendar.labelRes
 import com.android.sample.ui.calendar.components.DatePickerFieldToModal
@@ -283,76 +281,6 @@ fun EditEventScreen(
   }
 }
 
-// Confirm if notification management will be implemented
-/**
- * **NotificationSection**
- *
- * A composable UI section that displays the list of reminder notifications associated with an event
- * and allows the user to add or remove reminders.
- *
- * This component is designed to be stateless — it relies on external state (e.g., from
- * [EditEventViewModel]) passed through its parameters. The parent ViewModel or screen should handle
- * the actual data updates.
- *
- * ### Parameters:
- *
- * @param notifications The current list of reminder notifications (e.g., "10 minutes before").
- * @param onAddNotification Callback invoked when the user requests to add a new notification.
- * @param onRemoveNotification Callback invoked when the user requests to remove an existing
- *   notification.
- * @param modifier [Modifier] used to adjust layout or styling for this composable.
- */
-@Composable
-fun NotificationSection(
-    notifications: List<String>,
-    onAddNotification: () -> Unit,
-    onRemoveNotification: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-  Column(modifier = modifier.fillMaxWidth().padding(vertical = 16.dp)) {
-    Text(
-        text = stringResource(R.string.edit_event_notify_label),
-        style = MaterialTheme.typography.titleMedium,
-        modifier = Modifier.padding(bottom = 8.dp))
-
-    // Existing notifications
-    notifications.forEach { notification ->
-      OutlinedButton(
-          onClick = { onRemoveNotification(notification) },
-          modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-          shape = RoundedCornerShape(12.dp),
-          border = ButtonDefaults.outlinedButtonBorder(enabled = true)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically) {
-                  Text(notification)
-                  Text(
-                      stringResource(R.string.edit_event_remove_notification_symbol),
-                      color = MaterialTheme.colorScheme.error)
-                }
-          }
-    }
-
-    // “Add a notification” button
-    OutlinedButton(
-        onClick = onAddNotification,
-        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-        shape = RoundedCornerShape(12.dp)) {
-          Row(
-              verticalAlignment = Alignment.CenterVertically,
-              horizontalArrangement = Arrangement.Center,
-              modifier = Modifier.fillMaxWidth()) {
-                Text(stringResource(R.string.edit_event_add_notification_button))
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    stringResource(R.string.edit_event_add_notification_symbol),
-                    color = MaterialTheme.colorScheme.primary)
-              }
-        }
-  }
-}
-
 /**
  * **EditEventAttendantScreen**
  *
@@ -438,36 +366,4 @@ fun EditEventAttendantScreen(
             backButtonTestTag = EditEventTestTags.BACK_BUTTON,
             nextButtonTestTag = EditEventTestTags.SAVE_BUTTON)
       })
-}
-
-@Preview(showBackground = true)
-@Composable
-fun EditEventScreenPreview() {
-  // use a fake ViewModel with mock data for preview
-  val fakeRepository = EventRepositoryLocal()
-  val fakeViewModel = EditEventViewModel(fakeRepository)
-
-  LaunchedEffect(Unit) { fakeViewModel.loadEvent("E001") }
-
-  // Prepopulate some data for preview
-  val uiState by fakeViewModel.uiState.collectAsState()
-  if (uiState.title.isBlank() || uiState.description.isBlank()) {
-    fakeViewModel.setTitle("Preview Meeting")
-    fakeViewModel.setDescription("Discuss weekly roadmap and blockers.")
-  }
-
-  EditEventScreen(
-      eventId = "E001",
-      editEventViewModel = fakeViewModel,
-      onSave = {},
-      onCancel = {},
-      onEditParticipants = {})
-}
-
-@Preview(showBackground = true)
-@Composable
-fun EditEventAttendantScreenPreview() {
-  val vm = EditEventViewModel()
-  LaunchedEffect(Unit) { vm.loadEvent("E001") }
-  EditEventAttendantScreen(editEventViewModel = vm)
 }

@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
+import androidx.credentials.CredentialManager
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -74,6 +75,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Agendapp(
     modifier: Modifier = Modifier,
+    credentialManager: CredentialManager = CredentialManager.create(LocalContext.current),
 ) {
   val navController = rememberNavController()
   val navigationActions = NavigationActions(navController)
@@ -81,107 +83,100 @@ fun Agendapp(
 
   val authRepository = AuthRepositoryProvider.repository
 
-  val credentialManager: androidx.credentials.CredentialManager =
-      androidx.credentials.CredentialManager.create(LocalContext.current)
-
   val startDestination =
       if (authRepository.getCurrentUser() != null) Screen.Home.route
       else Screen.Authentication.route
 
   // Routes and navigation logic
-  NavHost(
-      navController = navController,
-      startDestination = startDestination,
-      modifier = modifier) {
-        // Authentication Screen
-        navigation(startDestination=Screen.Authentication.route, route="Authentication") {
-          composable(Screen.Authentication.route) {
-            SignInScreen(
-                credentialManager = credentialManager,
-                onSignedIn = { navigationActions.navigateTo(Screen.Home) })
-          }
-        }
+  NavHost(navController = navController, startDestination = startDestination, modifier = modifier) {
 
-        // Edit Event Screen
-        navigation(startDestination = Screen.AddEventTitle.route, route = "Add Event") {
-          composable(Screen.AddEventTitle.route) {
-            AddEventTitleAndDescriptionScreen(
-                addEventViewModel = addEventViewModel,
-                onNext = { navigationActions.navigateTo(Screen.AddEventTime) },
-                onCancel = {
-                  navigationActions.navigateBack()
-                  addEventViewModel.resetUiState()
-                })
-          }
-          composable(Screen.AddEventTime.route) {
-            AddEventTimeAndRecurrenceScreen(
-                addEventViewModel = addEventViewModel,
-                onNext = { navigationActions.navigateTo(Screen.AddEventMember) },
-                onBack = { navigationActions.navigateBack() })
-          }
-          composable(Screen.AddEventMember.route) {
-            AddEventAttendantScreen(
-                addEventViewModel = addEventViewModel,
-                onCreate = { navigationActions.navigateTo(Screen.AddEventEnd) },
-                onBack = { navigationActions.navigateBack() })
-          }
-          composable(Screen.AddEventEnd.route) {
-            AddEventConfirmationScreen(
-                onFinish = {
-                  navigationActions.navigateTo(Screen.Calendar)
-                  addEventViewModel.resetUiState()
-                })
-          }
-        }
+    // Authentication Graph
+    navigation(startDestination = Screen.Authentication.route, route = Screen.Authentication.name) {
+      composable(Screen.Authentication.route) {
+        SignInScreen(
+            credentialManager = credentialManager,
+            onSignedIn = { navigationActions.navigateTo(Screen.Home) })
+      }
+    }
 
-        // Settings Screen
-        navigation(startDestination = Screen.Settings.route, route = "Settings") {
-          composable(Screen.Settings.route) {
-            SettingsScreen(
-                onNavigateBack = { navigationActions.navigateBack() },
-                onNavigateToProfile = { navigationActions.navigateTo(Screen.Profile) })
-          }
-          composable(Screen.Profile.route) {
-            ProfileScreen(
-                onNavigateBack = { navigationActions.navigateBack() },
-                onNavigateToAdminContact = { navigationActions.navigateTo(Screen.AdminContact) })
-          }
-          composable(Screen.AdminContact.route) {
-            AdminContactScreen(onNavigateBack = { navigationActions.navigateBack() })
-          }
-        }
+    // Home Graph
+    navigation(startDestination = Screen.Home.route, route = Screen.Home.name) {
+      composable(Screen.Home.route) {
+        HomeScreen(
+            onNavigateToEdit = { eventId -> navigationActions.navigateToEditEvent(eventId) },
+            onNavigateToCalendar = { navigationActions.navigateTo(Screen.Calendar) },
+            onNavigateToSettings = { navigationActions.navigateTo(Screen.Settings) },
+            onNavigateToMap = { navigationActions.navigateTo(Screen.Map) },
+            onNavigateToReplacement = { navigationActions.navigateTo(Screen.ReplacementOverview) })
+      }
+    }
 
-        // Home Screen
-        //navigation(startDestination=Screen.Home.route, route="home") {
-          composable(Screen.Home.route) {
-            HomeScreen(
-                onNavigateToEdit = { eventId -> navigationActions.navigateToEditEvent(eventId) },
-                onNavigateToCalendar = { navigationActions.navigateTo(Screen.Calendar) },
-                onNavigateToSettings = { navigationActions.navigateTo(Screen.Settings) },
-                onNavigateToMap = { navigationActions.navigateTo(Screen.Map) },
-                onNavigateToReplacement = {
-                  navigationActions.navigateTo(Screen.ReplacementOverview)
-                })
-          }
-        //}
+    // Calendar Graph
+    navigation(startDestination = Screen.Calendar.route, route = Screen.Calendar.name) {
+      composable(Screen.Calendar.route) {
+        CalendarScreen(onCreateEvent = { navigationActions.navigateTo(Screen.AddEventTitle) })
+      }
+    }
 
-        // Calendar Screen
-        navigation(startDestination = Screen.Calendar.route, route = "Calendar") {
-          composable(Screen.Calendar.route) {
-            CalendarScreen(onCreateEvent = { navigationActions.navigateTo(Screen.AddEventTitle) })
-          }
-        }
+    // Add Event Screen Flow
+    navigation(startDestination = Screen.AddEventTitle.route, route = Screen.AddEventTitle.name) {
+      composable(Screen.AddEventTitle.route) {
+        AddEventTitleAndDescriptionScreen(
+            addEventViewModel = addEventViewModel,
+            onNext = { navigationActions.navigateTo(Screen.AddEventTime) },
+            onCancel = {
+              navigationActions.navigateBack()
+              addEventViewModel.resetUiState()
+            })
+      }
+      composable(Screen.AddEventTime.route) {
+        AddEventTimeAndRecurrenceScreen(
+            addEventViewModel = addEventViewModel,
+            onNext = { navigationActions.navigateTo(Screen.AddEventMember) },
+            onBack = { navigationActions.navigateBack() })
+      }
+      composable(Screen.AddEventMember.route) {
+        AddEventAttendantScreen(
+            addEventViewModel = addEventViewModel,
+            onCreate = { navigationActions.navigateTo(Screen.AddEventEnd) },
+            onBack = { navigationActions.navigateBack() })
+      }
+      composable(Screen.AddEventEnd.route) {
+        AddEventConfirmationScreen(
+            onFinish = {
+              navigationActions.navigateTo(Screen.Calendar)
+              addEventViewModel.resetUiState()
+            })
+      }
+    }
 
-        // Replacement Screen
-        navigation(startDestination = Screen.ReplacementOverview.route, route = "Replacement") {
+    // Replacement Graph
+    navigation(
+        startDestination = Screen.ReplacementOverview.route,
+        route = Screen.ReplacementOverview.name) {
           composable(Screen.ReplacementOverview.route) { ReplacementScreen() }
         }
 
-        // Map Screen
-        navigation(startDestination = Screen.Map.route, route = "Map") {
-          composable(Screen.Map.route) {
-            MapScreen(onGoBack = { navigationActions.navigateBack() })
-          }
-        }
+    // Settings Graph
+    navigation(startDestination = Screen.Settings.route, route = Screen.Settings.name) {
+      composable(Screen.Settings.route) {
+        SettingsScreen(
+            onNavigateBack = { navigationActions.navigateBack() },
+            onNavigateToProfile = { navigationActions.navigateTo(Screen.Profile) })
       }
+      composable(Screen.Profile.route) {
+        ProfileScreen(
+            onNavigateBack = { navigationActions.navigateBack() },
+            onNavigateToAdminContact = { navigationActions.navigateTo(Screen.AdminContact) })
+      }
+      composable(Screen.AdminContact.route) {
+        AdminContactScreen(onNavigateBack = { navigationActions.navigateBack() })
+      }
+    }
+
+    // Map Graph
+    navigation(startDestination = Screen.Map.route, route = Screen.Map.name) {
+      composable(Screen.Map.route) { MapScreen(onGoBack = { navigationActions.navigateBack() }) }
+    }
+  }
 }

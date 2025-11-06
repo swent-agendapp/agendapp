@@ -20,7 +20,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.model.calendar.EventRepositoryLocal
 import com.android.sample.model.calendar.RecurrenceStatus
-import com.android.sample.model.calendar.formatString
+import com.android.sample.model.calendar.labelRes
 import com.android.sample.ui.calendar.components.DatePickerFieldToModal
 import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.calendar.components.ValidatingTextField
@@ -193,7 +193,7 @@ fun EditEventScreen(
                           expanded = expanded, onDismissRequest = { expanded = false }) {
                             RecurrenceStatus.entries.forEach { option ->
                               DropdownMenuItem(
-                                  text = { Text(option.name) },
+                                  text = { Text(stringResource(option.labelRes())) },
                                   onClick = {
                                     editEventViewModel.setRecurrenceMode(option)
                                     expanded = false

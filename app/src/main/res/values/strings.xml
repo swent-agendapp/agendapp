@@ -31,6 +31,9 @@
     <string name="waiting_confirmation_replacement">Waiting replacement confirmation</string>
     <string name="confirmed_replacements">Confirmed replacements</string>
 
+    <!-- Common -->
+    <string name="common_back">Back</string>
+
     <!-- Edit Event Screen -->
     <string name="edit_event_title">Edit Event</string>
     <string name="edit_event_instruction">Modify event details below:</string>
@@ -66,6 +69,73 @@
     <string name="common_save">Save</string>
     <string name="common_cancel">Cancel</string>
 
+    <!-- Replacements screen -->
+    <string name="replacement_requests_title">Replacement requests</string>
+    <string name="replacement_requests_subtitle">Replacements waiting for confirmation</string>
+    <string name="replacement_substituted_label">Absent person: %1$s: %1$s</string>
+    <string name="replacement_substitute_label">Substitute: %1$s</string>
+    <!-- Home Screen -->
+    <string name="home_go_to_edit_event">Go to Edit Event</string>
+    <string name="home_go_to_calendar">Go to Calendar</string>
+    <string name="home_go_to_settings">Go to Settings</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_screen_title">Settings Screen</string>
+    <string name="settings_profile_button">Profile</string>
+
+    <!-- Profile Screen -->
+    <string name="profile_email_error">Please enter a valid email address</string>
+    <string name="profile_phone_error">Please enter a valid phone number (min 7 digits)</string>
+    <string name="profile_display_name_label">Display Name</string>
+    <string name="profile_email_label">Email</string>
+    <string name="profile_phone_label">Phone Number</string>
+    <string name="profile_admin_contact_button">View Admin Contact</string>
+    <string name="profile_title">User Profile</string>
+    <string name="profile_cancel_content_description">Cancel</string>
+    <string name="profile_save_content_description">Save</string>
+    <string name="profile_edit_content_description">Edit</string>
+
+    <!-- Admin Contact Screen -->
+    <string name="admin_contact_title">Admin Contact</string>
+    <string name="admin_contact_email_label">Email</string>
+    <string name="admin_contact_phone_label">Phone</string>
+    <string name="admin_contact_email_subject">Contact from Agendapp</string>
+
+    <!-- Calendar -->
+    <string name="calendar_screen_title">Calendar</string>
+    <string name="calendar_add_event_content_description">Add event</string>
+
+    <!-- Date Picker -->
+    <string name="date_picker_placeholder">DD/MM/YYYY</string>
+    <string name="date_picker_select_date_content_description">Select date</string>
+
+    <!-- Recurrence -->
+    <string name="recurrence_one_time">One Time</string>
+    <string name="recurrence_weekly">Weekly</string>
+    <string name="recurrence_monthly">Monthly</string>
+    <string name="recurrence_yearly">Yearly</string>
+
+    <!-- Edit Event -->
+    <string name="edit_event_id">Editing event ID: %1$s</string>
+    <string name="edit_event_default_notification">30 min before</string>
+
+    <!-- Sign In -->
+    <string name="sign_in_success_message">Login successful!</string>
+    <string name="sign_in_app_title">Agendapp</string>
+    <string name="sign_in_message">Plan, track and manage</string>
+    <string name="sign_in_welcome">Welcome</string>
+    <string name="sign_in_button_text">Sign in with Google</string>
+    <string name="sign_in_logout_content_description">Sign out</string>
+    <string name="sign_in_logo_content_description">App logo</string>
+    <string name="sign_in_cancelled_error">Sign-in cancelled</string>
+    <string name="sign_in_credentials_error">Failed to get credentials: %1$s</string>
+    <string name="sign_in_unexpected_error">Unexpected error: %1$s</string>
+
+    <!-- Top App Bar -->
+    <string name="top_bar_back_content_description">Back</string>
+    <string name="top_bar_logout_content_description">Log out</string>
     <!-- Map -->
     <string name="delimit_organization_title">Delimit your organisation</string>
 </resources>
+
+

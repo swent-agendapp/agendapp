@@ -19,8 +19,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import com.android.sample.ui.theme.CornerRadiusExtraLarge
 import com.android.sample.R
+import com.android.sample.ui.theme.CornerRadiusExtraLarge
 
 /**
  * A configurable top app bar with optional navigation and logout actions.

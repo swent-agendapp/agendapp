@@ -69,6 +69,11 @@
     <string name="common_save">Save</string>
     <string name="common_cancel">Cancel</string>
 
+    <!-- Replacements screen -->
+    <string name="replacement_requests_title">Replacement requests</string>
+    <string name="replacement_requests_subtitle">Replacements waiting for confirmation</string>
+    <string name="replacement_substituted_label">Absent person: %1$s: %1$s</string>
+    <string name="replacement_substitute_label">Substitute: %1$s</string>
     <!-- Home Screen -->
     <string name="home_go_to_edit_event">Go to Edit Event</string>
     <string name="home_go_to_calendar">Go to Calendar</string>

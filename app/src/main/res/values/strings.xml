@@ -83,6 +83,10 @@
     <string name="settings_screen_title">Settings Screen</string>
     <string name="settings_profile_button">Profile</string>
 
+    <!-- Language Selection -->
+    <string name="language_screen_title">Choose app language</string>
+    <string name="language_follow_system">Use device language</string>
+
     <!-- Profile Screen -->
     <string name="profile_email_error">Please enter a valid email address</string>
     <string name="profile_phone_error">Please enter a valid phone number (min 7 digits)</string>

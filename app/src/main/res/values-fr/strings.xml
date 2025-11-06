@@ -74,6 +74,10 @@
     <string name="settings_screen_title">Écran des paramètres</string>
     <string name="settings_profile_button">Profil</string>
 
+    <!-- Language Selection -->
+    <string name="language_screen_title">Choisir la langue de l’application</string>
+    <string name="language_follow_system">Utiliser la langue de l’appareil</string>
+
     <!-- Profile Screen -->
     <string name="profile_email_error">Veuillez entrer une adresse e-mail valide</string>
     <string name="profile_phone_error">Veuillez entrer un numéro de téléphone valide (minimum 7 chiffres)</string>

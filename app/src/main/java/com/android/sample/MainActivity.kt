@@ -7,7 +7,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -17,6 +22,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.android.sample.model.organization.EmployeeRepositoryFirebase
 import com.android.sample.model.organization.EmployeeRepositoryProvider
+import com.android.sample.localization.LanguageOption
+import com.android.sample.localization.LanguagePreferences
 import com.android.sample.ui.calendar.AddEventAttendantScreen
 import com.android.sample.ui.calendar.AddEventConfirmationScreen
 import com.android.sample.ui.calendar.AddEventTimeAndRecurrenceScreen
@@ -50,6 +57,7 @@ class MainActivity : ComponentActivity() {
     EmployeeRepositoryProvider.init(
         EmployeeRepositoryFirebase(
             db = FirebaseFirestore.getInstance(), authRepository = AuthRepositoryFirebase()))
+    LanguagePreferences(applicationContext).applyStoredLanguage()
     setContent {
       SampleAppTheme {
         Surface(
@@ -64,7 +72,6 @@ class MainActivity : ComponentActivity() {
     }
   }
 }
-
 /**
  * Root composable containing the navigation graph for the application. This function defines all
  * available routes and how composables are connected.
@@ -109,7 +116,21 @@ fun Agendapp(modifier: Modifier = Modifier) {
         }
         navigation(startDestination = Screen.Settings.route, route = "Settings") {
           composable(Screen.Settings.route) {
+            val context = LocalContext.current
+            val languagePreferences = remember { LanguagePreferences(context.applicationContext) }
+            val languageOptions = remember { languagePreferences.getSupportedLanguages() }
+            var selectedLanguage by remember {
+              mutableStateOf(languagePreferences.getPreferredLanguageTag())
+            }
+
             SettingsScreen(
+                languageOptions = languageOptions,
+                selectedLanguageTag = selectedLanguage,
+                onLanguageSelected = { option: LanguageOption ->
+                  selectedLanguage = option.languageTag
+                  languagePreferences.persistPreferredLanguage(option.languageTag)
+                  languagePreferences.applyLanguage(option.languageTag)
+                },
                 onNavigateBack = { navigationActions.navigateBack() },
                 onNavigateToProfile = { navigationActions.navigateTo(Screen.Profile) })
           }

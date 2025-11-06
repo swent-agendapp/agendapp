@@ -74,6 +74,10 @@
     <string name="settings_screen_title">Einstellungsbildschirm</string>
     <string name="settings_profile_button">Profil</string>
 
+    <!-- Language Selection -->
+    <string name="language_screen_title">App-Sprache wählen</string>
+    <string name="language_follow_system">Gerätesprache verwenden</string>
+
     <!-- Profile Screen -->
     <string name="profile_email_error">Bitte geben Sie eine gültige E-Mail-Adresse ein</string>
     <string name="profile_phone_error">Bitte geben Sie eine gültige Telefonnummer ein (mindestens 7 Ziffern)</string>

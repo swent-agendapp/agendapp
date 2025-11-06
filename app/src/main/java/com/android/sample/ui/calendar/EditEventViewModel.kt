@@ -15,7 +15,22 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-/** UI state representing the editable fields for an existing calendar event. */
+// Assisted by AI
+/**
+ * UI state representing all editable fields for an existing calendar event.
+ *
+ * @property eventId Unique identifier of the event.
+ * @property title Title of the event.
+ * @property description Optional description providing more details about the event.
+ * @property startInstant Starting time of the event as an [Instant].
+ * @property endInstant Ending time of the event as an [Instant].
+ * @property recurrenceMode Defines how the event repeats (e.g., one-time or recurring).
+ * @property participants Set of participant IDs (or emails) associated with the event.
+ * @property notifications List of notification identifiers or descriptions linked to the event.
+ * @property isLoading Indicates whether the data is currently being loaded or saved.
+ * @property errorMessage Optional message describing any error that occurred during loading or
+ *   saving.
+ */
 data class EditCalendarEventUIState(
     val eventId: String = "",
     val title: String = "",
@@ -29,7 +44,14 @@ data class EditCalendarEventUIState(
     val errorMessage: String? = null,
 )
 
-/** ViewModel responsible for managing the Edit Event screen logic. */
+/**
+ * ViewModel responsible for handling the logic of the Edit Event screen.
+ *
+ * It manages the [EditCalendarEventUIState], provides functions to load an existing event, update
+ * individual fields, and save modifications back to the [EventRepository].
+ *
+ * @property repository The [EventRepository] used to fetch and update events.
+ */
 class EditEventViewModel(
     private val repository: EventRepository = EventRepositoryProvider.repository
 ) : ViewModel() {
@@ -37,7 +59,11 @@ class EditEventViewModel(
   private val _uiState = MutableStateFlow(EditCalendarEventUIState())
   val uiState: StateFlow<EditCalendarEventUIState> = _uiState.asStateFlow()
 
-  /** Loads an existing event by ID from the repository. */
+  /**
+   * Loads an existing event by its [eventId] from the repository and updates the UI state.
+   *
+   * @param eventId The unique identifier of the event to load.
+   */
   fun loadEvent(eventId: String) {
     viewModelScope.launch {
       _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
@@ -68,7 +94,7 @@ class EditEventViewModel(
   }
 
   /** Saves changes made to the event (updates the existing record). */
-  fun saveChanges() {
+  fun saveEditEventChanges() {
     viewModelScope.launch {
       val state = _uiState.value
       try {

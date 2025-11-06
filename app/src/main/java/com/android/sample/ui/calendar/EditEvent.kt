@@ -24,6 +24,7 @@ import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.calendar.components.ValidatingTextField
 import com.android.sample.ui.calendar.utils.DateTimeUtils
 
+// Assisted by AI
 object EditEventTestTags {
   const val TITLE_FIELD = "edit_title_field"
   const val DESCRIPTION_FIELD = "edit_description_field"
@@ -201,7 +202,7 @@ fun EditEventScreen(
                     }
               }
 
-              // Notifications
+              // Notifications (implement later if needed)
               /**
                * item { Spacer(modifier = Modifier.height(12.dp))
                * NotificationSection(editEventViewModel = editEventViewModel) }
@@ -238,7 +239,7 @@ fun EditEventScreen(
               Button(
                   onClick = {
                     if (editEventViewModel.allFieldsValid()) {
-                      editEventViewModel.saveChanges()
+                      editEventViewModel.saveEditEventChanges()
                       onSave()
                     }
                   },
@@ -356,7 +357,7 @@ fun EditEventAttendantScreen(
       bottomBar = {
         BottomNavigationButtons(
             onNext = {
-              editEventViewModel.saveChanges()
+              editEventViewModel.saveEditEventChanges()
               onSave()
             },
             onBack = onBack,

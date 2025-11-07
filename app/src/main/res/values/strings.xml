@@ -72,8 +72,23 @@
     <!-- Replacements screen -->
     <string name="replacement_requests_title">Replacement requests</string>
     <string name="replacement_requests_subtitle">Replacements waiting for confirmation</string>
-    <string name="replacement_substituted_label">Absent person: %1$s: %1$s</string>
+    <string name="replacement_substituted_label">Absent person: %1$s</string>
     <string name="replacement_substitute_label">Substitute: %1$s</string>
+    <string name="replacement_to_process_section_title">Replacements to process</string>
+    <string name="replacement_waiting_answer_section_title">Waiting for an answer</string>
+    <string name="replacement_process_button">Process</string>
+    <plurals name="replacement_no_response_count">
+        <item quantity="one">%d no response</item>
+        <item quantity="other">%d no responses</item>
+    </plurals>
+    <plurals name="replacement_declined_count">
+        <item quantity="one">%d declined</item>
+        <item quantity="other">%d declined</item>
+    </plurals>
+    <string name="replacement_pending_people_title">No response</string>
+    <string name="replacement_declined_people_title">Declined</string>
+    <string name="replacement_people_dialog_close">Close</string>
+
     <!-- Home Screen -->
     <string name="home_go_to_edit_event">Go to Edit Event</string>
     <string name="home_go_to_calendar">Go to Calendar</string>

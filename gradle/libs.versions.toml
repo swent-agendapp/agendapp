@@ -1,6 +1,6 @@
 [versions]
 coroutinesTest = "1.7.3"
-agp = "8.4.2"
+agp = "8.6.0"
 kotlin = "1.9.0"
 coreKtx = "1.12.0"
 kotlinBom = "1.9.0"
@@ -51,6 +51,8 @@ mapsComposeUtils = "4.3.0"
 roomCompiler = "2.8.2"
 playServicesLocation = "19.2.0"
 places = "3.5.0"
+material3 = "1.4.0"
+benchmarkTraceprocessor = "1.4.1"
 
 [libraries]
 
@@ -115,6 +117,8 @@ play-services-maps = { module = "com.google.android.gms:play-services-maps", ver
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomCompiler" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 places = { group = "com.google.android.libraries.places", name = "places", version.ref = "places" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
+androidx-benchmark-traceprocessor = { group = "androidx.benchmark", name = "benchmark-traceprocessor", version.ref = "benchmarkTraceprocessor" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

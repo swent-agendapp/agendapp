@@ -5,6 +5,7 @@ import com.android.sample.model.calendar.createEvent
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementStatus
 import com.android.sample.model.replacement.pendingReplacements
+import com.android.sample.model.replacement.waitingForAnswerAndDeclinedReplacements
 import com.android.sample.utils.EventColor
 import com.google.common.truth.Truth
 import java.time.Instant
@@ -28,7 +29,7 @@ class ReplacementExtensionsTest {
             absentUserId = "user-a",
             substituteUserId = "user-b",
             event = baseEvent,
-            status = ReplacementStatus.Pending)
+            status = ReplacementStatus.ToProcess)
 
     val accepted =
         Replacement(
@@ -49,5 +50,44 @@ class ReplacementExtensionsTest {
     val result = listOf(pending, accepted, declined).pendingReplacements()
 
     Truth.assertThat(result).containsExactly(pending)
+  }
+
+  @Test
+  fun waitingForAnswerReplacementsUsefullList_returnsWaitingAndDeclined() {
+    val baseEvent =
+        createEvent(
+            title = "Test event",
+            startDate = Instant.parse("2025-01-01T08:00:00Z"),
+            endDate = Instant.parse("2025-01-01T10:00:00Z"),
+            cloudStorageStatuses = setOf(CloudStorageStatus.FIRESTORE),
+            color = EventColor.Blue)
+
+    val waiting =
+        Replacement(
+            id = "1",
+            absentUserId = "user-a",
+            substituteUserId = "user-b",
+            event = baseEvent,
+            status = ReplacementStatus.WaitingForAnswer)
+
+    val declined =
+        Replacement(
+            id = "2",
+            absentUserId = "user-c",
+            substituteUserId = "user-d",
+            event = baseEvent,
+            status = ReplacementStatus.Declined)
+
+    val accepted =
+        Replacement(
+            id = "3",
+            absentUserId = "user-e",
+            substituteUserId = "user-f",
+            event = baseEvent,
+            status = ReplacementStatus.Accepted)
+
+    val result = listOf(waiting, declined, accepted).waitingForAnswerAndDeclinedReplacements()
+
+    Truth.assertThat(result).containsExactly(waiting, declined)
   }
 }

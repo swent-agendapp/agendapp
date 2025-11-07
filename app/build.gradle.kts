@@ -13,7 +13,7 @@ plugins {
 
 android {
     namespace = "com.android.sample"
-    compileSdk = 34
+    compileSdk = 35
 
     val localProperties = Properties()
     val localPropertiesFile = rootProject.file("local.properties")
@@ -27,7 +27,7 @@ android {
     defaultConfig {
         applicationId = "com.android.sample"
         minSdk = 29
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -151,10 +151,11 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(platform(libs.compose.bom))
     implementation(libs.googleid)
     implementation(libs.play.services.location)
     implementation(libs.places)
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.benchmark.traceprocessor)
     testImplementation(libs.junit)
     globalTestImplementation(libs.androidx.junit)
     globalTestImplementation(libs.androidx.espresso.core)

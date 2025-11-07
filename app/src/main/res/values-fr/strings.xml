@@ -137,6 +137,20 @@
     <string name="replacement_requests_subtitle">Remplacements en attente de confirmation</string>
     <string name="replacement_substituted_label">Personne absente : %1$s</string>
     <string name="replacement_substitute_label">Remplaçant : %1$s</string>
+    <string name="replacement_to_process_section_title">Remplacements à traiter</string>
+    <string name="replacement_waiting_answer_section_title">En attente d’une réponse</string>
+    <string name="replacement_process_button">Traiter</string>
+    <plurals name="replacement_no_response_count">
+        <item quantity="one">%d sans réponse</item>
+        <item quantity="other">%d sans réponse</item>
+    </plurals>
+    <plurals name="replacement_declined_count">
+        <item quantity="one">%d refusé</item>
+        <item quantity="other">%d refusés</item>
+    </plurals>
+    <string name="replacement_pending_people_title">Sans réponse</string>
+    <string name="replacement_declined_people_title">Refusé</string>
+    <string name="replacement_people_dialog_close">Fermer</string>
 
 
 </resources>

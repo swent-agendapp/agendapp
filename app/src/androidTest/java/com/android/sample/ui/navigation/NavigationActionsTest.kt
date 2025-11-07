@@ -42,6 +42,8 @@ import org.junit.runner.RunWith
 @MediumTest
 class AgendappNavigationTest : FirebaseEmulatedTest() {
 
+  // Timeout for UI authentication operations
+  // This is used to wait for the UI to update after authentication actions
   val uiAuthWaitTimeOut = 10_000L
 
   // Create a fake Google ID token for testing
@@ -61,7 +63,7 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
   @Before
   override fun setUp() {
     super.setUp()
-    // Ensure a user is signed before each test (use runBlocking to call suspend function)
+    // Ensure a user is signed in before each test (use runBlocking to call suspend function)
     runBlocking { FirebaseEmulator.signInWithFakeGoogleUser(fakeGoogleIdToken) }
   }
 

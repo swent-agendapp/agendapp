@@ -1,4 +1,4 @@
-package com.android.sample.ui.calendar
+package com.android.sample.ui.calendar.addEvent
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -25,13 +25,22 @@ data class AddCalendarEventUIState(
     val recurrenceMode: RecurrenceStatus = RecurrenceStatus.OneTime,
     val participants: Set<String> = emptySet(),
     val errorMsg: String? = null,
+    val step: AddEventStep = AddEventStep.TITLE_AND_DESC
 )
+
+enum class AddEventStep {
+  TITLE_AND_DESC,
+  TIME_AND_RECURRENCE,
+  ATTENDEES,
+  CONFIRMATION
+}
 
 class AddEventViewModel(
     private val repository: EventRepository = EventRepositoryProvider.repository,
     private val authz: AuthorizationService = AuthorizationService()
 ) : ViewModel() {
   private val _uiState = MutableStateFlow(AddCalendarEventUIState())
+
   val uiState: StateFlow<AddCalendarEventUIState> = _uiState.asStateFlow()
 
   fun addEvent() {
@@ -72,6 +81,24 @@ class AddEventViewModel(
   fun startTimeIsAfterEndTime() = _uiState.value.startInstant.isAfter(_uiState.value.endInstant)
 
   fun allFieldsValid() = !(titleIsBlank() || descriptionIsBlank() || startTimeIsAfterEndTime())
+
+  fun nextStep() {
+    val steps = AddEventStep.entries
+    val currentIndex = steps.indexOf(_uiState.value.step)
+
+    if (currentIndex < steps.lastIndex) {
+      _uiState.value = _uiState.value.copy(step = steps[currentIndex + 1])
+    }
+  }
+
+  fun previousStep() {
+    val steps = AddEventStep.entries
+    val currentIndex = steps.indexOf(_uiState.value.step)
+
+    if (currentIndex > 0) {
+      _uiState.value = _uiState.value.copy(step = steps[currentIndex - 1])
+    }
+  }
 
   fun setRecurrenceMode(mode: RecurrenceStatus) {
     _uiState.value = _uiState.value.copy(recurrenceMode = mode)

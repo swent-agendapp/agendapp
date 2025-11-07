@@ -8,8 +8,8 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import com.android.sample.Agendapp
 import com.android.sample.model.calendar.RecurrenceStatus
-import com.android.sample.ui.calendar.AddEventTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
+import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.screens.HomeTestTags.CALENDAR_BUTTON
 import org.junit.Rule
 import org.junit.Test

@@ -18,6 +18,7 @@ class MapRepositoryLocal : MapRepository {
   }
 
   override fun getMarkerById(id: String): Marker? = markers[id]
+
   override fun getAllMarkers(): List<Marker> = markers.values.toList()
 
   override fun getAllMarkersIds(): List<String> = markers.keys.toList()

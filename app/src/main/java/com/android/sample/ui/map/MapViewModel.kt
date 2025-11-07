@@ -59,32 +59,43 @@ class MapViewModel(
     fetchAllArea()
   }
 
-    fun fetchAllArea() {
-        _state.value = _state.value.copy(listArea = mapRepository.getAllAreas())
-    }
+  fun fetchAllArea() {
+    _state.value = _state.value.copy(listArea = mapRepository.getAllAreas())
+  }
 
-    fun createNewArea() {
-        _state.value.listNewMarker.forEach { marker -> mapRepository.addMarker(marker) }
-        mapRepository.createArea()
-        fetchAllArea()
-        cancelNewMarker()
-        isInAnArea()
-    }
+  fun createNewArea() {
+    _state.value.listNewMarker.forEach { marker -> mapRepository.addMarker(marker) }
+    mapRepository.createArea()
+    fetchAllArea()
+    cancelNewMarker()
+    isInAnArea()
+  }
 
-    fun addNewMarker(coordinate: LatLng) {
-        _state.value = _state.value.copy(listNewMarker = listOf(Marker(location = Location(coordinate.latitude, coordinate.longitude))) + _state.value.listNewMarker)
-    }
+  fun addNewMarker(coordinate: LatLng) {
+    _state.value =
+        _state.value.copy(
+            listNewMarker =
+                listOf(Marker(location = Location(coordinate.latitude, coordinate.longitude))) +
+                    _state.value.listNewMarker)
+  }
 
-    fun cancelNewMarker() {
-        _state.value = _state.value.copy(listNewMarker = emptyList())
-    }
+  fun cancelNewMarker() {
+    _state.value = _state.value.copy(listNewMarker = emptyList())
+  }
 
-    fun isInAnArea() {
-        _state.value = _state.value.copy(isInArea = _state.value.listArea.any { area -> area.contains(Marker(latitude = _state.value.currentLocation.latitude, longitude = _state.value.currentLocation.longitude)) })
-    }
+  fun isInAnArea() {
+    _state.value =
+        _state.value.copy(
+            isInArea =
+                _state.value.listArea.any { area ->
+                  area.contains(
+                      Marker(
+                          latitude = _state.value.currentLocation.latitude,
+                          longitude = _state.value.currentLocation.longitude))
+                })
+  }
 
-
-   /**
+  /**
    * Verify that the user has given the right to get his location
    *
    * then fetch the User Location, if another app has already fetch it, it get this cached value

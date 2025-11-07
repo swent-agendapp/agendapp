@@ -1,7 +1,6 @@
 package com.android.sample.ui.map
 
 import android.Manifest
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -18,12 +17,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -40,7 +36,6 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.theme.DefaultZoom
@@ -52,7 +47,6 @@ import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.Polygon
-import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.ktx.MapsExperimentalFeature
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -109,81 +103,63 @@ fun MapScreen(
                         contentDescription = "Back")
                   }
             },
-            actions = { Box(
-                modifier = Modifier
-                    .padding(end = 16.dp)
-                    .size(20.dp)
-                    .background(color = if (uiState.isInArea) Color.Green else Color.Red, shape = CircleShape)
-            ) }
-        )
+            actions = {
+              Box(
+                  modifier =
+                      Modifier.padding(end = 16.dp)
+                          .size(20.dp)
+                          .background(
+                              color = if (uiState.isInArea) Color.Green else Color.Red,
+                              shape = CircleShape))
+            })
       },
       content = { padding ->
-          Column(
-              modifier = Modifier
-                  .fillMaxSize()
-          ) {
-              Box(
-                  modifier = Modifier.weight(1f).fillMaxWidth().padding(padding)
-              ) {
-                  GoogleMap(
-                      modifier =
-                          Modifier.matchParentSize()
-                              .testTag(MapScreenTestTags.GOOGLE_MAP_SCREEN),
-                      cameraPositionState = cameraPositionState,
-                      onMapLongClick = { pos -> mapViewModel.addNewMarker(pos) },
-                      properties =
-                          MapProperties(
-                              isMyLocationEnabled = uiState.hasPermission, mapType = MapType.NORMAL
-                          )
-                  ) {
-                      uiState.listNewMarker.forEach { marker ->
-                          Marker(
-                              state = MarkerState(
-                                  position = LatLng(
-                                      marker.location.latitude,
-                                      marker.location.longitude
-                                  )
-                              ),
-                              title = marker.label,
-                              draggable = false,
-                          )
-                      }
-                      uiState.listArea.forEach { area ->
-                          Polygon(
-                              points = area.markers.map { marker ->
-                                  LatLng(
-                                      marker.location.latitude,
-                                      marker.location.longitude
-                                  )
-                              }
-                          )
-                      }
+        Column(modifier = Modifier.fillMaxSize()) {
+          Box(modifier = Modifier.weight(1f).fillMaxWidth().padding(padding)) {
+            GoogleMap(
+                modifier = Modifier.matchParentSize().testTag(MapScreenTestTags.GOOGLE_MAP_SCREEN),
+                cameraPositionState = cameraPositionState,
+                onMapLongClick = { pos -> mapViewModel.addNewMarker(pos) },
+                properties =
+                    MapProperties(
+                        isMyLocationEnabled = uiState.hasPermission, mapType = MapType.NORMAL)) {
+                  uiState.listNewMarker.forEach { marker ->
+                    Marker(
+                        state =
+                            MarkerState(
+                                position =
+                                    LatLng(marker.location.latitude, marker.location.longitude)),
+                        title = marker.label,
+                        draggable = false,
+                    )
                   }
-              }
-              Row(
-                  modifier = Modifier
-                      .fillMaxWidth()
-                      .height(30.dp)
-              ) {
-                  Button(
-                      modifier = Modifier
-                          .weight(1f)
-                          .fillMaxHeight(),
-                      onClick = { mapViewModel.cancelNewMarker() },
-                      shape = RectangleShape,
-                      contentPadding = PaddingValues(4.dp),
-                      colors = ButtonDefaults.textButtonColors()
-                  ) { Text("cancel") }
-
-                  Button(
-                      modifier = Modifier
-                          .weight(1f)
-                          .fillMaxHeight(),
-                      shape = RectangleShape,
-                      onClick = { mapViewModel.createNewArea() },
-                      contentPadding = PaddingValues(4.dp)
-                  ) { Text("save") }
-              }
+                  uiState.listArea.forEach { area ->
+                    Polygon(
+                        points =
+                            area.markers.map { marker ->
+                              LatLng(marker.location.latitude, marker.location.longitude)
+                            })
+                  }
+                }
           }
+          Row(modifier = Modifier.fillMaxWidth().height(30.dp)) {
+            Button(
+                modifier = Modifier.weight(1f).fillMaxHeight(),
+                onClick = { mapViewModel.cancelNewMarker() },
+                shape = RectangleShape,
+                contentPadding = PaddingValues(4.dp),
+                colors = ButtonDefaults.textButtonColors()) {
+                  Text("cancel")
+                }
+
+            Button(
+                modifier = Modifier.weight(1f).fillMaxHeight(),
+                shape = RectangleShape,
+                onClick = { mapViewModel.createNewArea() },
+                contentPadding = PaddingValues(4.dp)) {
+                  Text("save")
+                }
+          }
+        }
       })
 }

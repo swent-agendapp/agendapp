@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Resources
 import android.os.Build
+import android.os.LocaleList
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import com.android.sample.R
@@ -79,7 +80,8 @@ class LanguagePreferences(private val context: Context) {
     } else {
       val primaryLocale = localeList[0]
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        configuration.setLocales(localeList.toLocaleList())
+        val localesArray = Array(localeList.size()) { index -> localeList[index] }
+        configuration.setLocales(LocaleList(*localesArray))
       } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
         configuration.setLocale(primaryLocale)
       } else {

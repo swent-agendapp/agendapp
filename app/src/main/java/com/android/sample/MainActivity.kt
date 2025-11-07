@@ -145,8 +145,8 @@ fun Agendapp(modifier: Modifier = Modifier) {
                 navigationActions.navigateTo(Screen.ReplacementPending)
               })
         }
-
         composable(Screen.ReplacementPending.route) { ReplacementPendingListScreen() }
+
         navigation(startDestination = Screen.Map.route, route = "Map") {
           composable(Screen.Map.route) {
             MapScreen(onGoBack = { navigationActions.navigateBack() })

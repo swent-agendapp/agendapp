@@ -18,7 +18,6 @@ class MapRepositoryLocal : MapRepository {
   }
 
   override fun getMarkerById(id: String): Marker? = markers[id]
-
   override fun getAllMarkers(): List<Marker> = markers.values.toList()
 
   override fun getAllMarkersIds(): List<String> = markers.keys.toList()
@@ -27,6 +26,7 @@ class MapRepositoryLocal : MapRepository {
     val selectedMarkers = markerIds.mapNotNull { markers[it] }
     val area = Area(label = label, markers = selectedMarkers)
     areas[area.id] = area
+    markerIds.forEach { id -> removeMarker(id) }
   }
 
   override fun getAllAreas(): List<Area> = areas.values.toList()

@@ -22,7 +22,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.android.sample.model.organization.EmployeeRepositoryFirebase
 import com.android.sample.model.organization.EmployeeRepositoryProvider
-import com.android.sample.localization.LanguageOption
 import com.android.sample.localization.LanguagePreferences
 import com.android.sample.ui.calendar.AddEventAttendantScreen
 import com.android.sample.ui.calendar.AddEventConfirmationScreen
@@ -38,6 +37,7 @@ import com.android.sample.ui.profile.ProfileScreen
 import com.android.sample.ui.replacement.ReplacementPendingListScreen
 import com.android.sample.ui.replacement.ReplacementScreen
 import com.android.sample.ui.screens.HomeScreen
+import com.android.sample.ui.settings.LanguageSelectionScreen
 import com.android.sample.ui.settings.SettingsScreen
 import com.android.sample.ui.theme.SampleAppTheme
 import com.github.se.bootcamp.model.authentication.AuthRepositoryFirebase
@@ -116,23 +116,31 @@ fun Agendapp(modifier: Modifier = Modifier) {
         }
         navigation(startDestination = Screen.Settings.route, route = "Settings") {
           composable(Screen.Settings.route) {
+            SettingsScreen(
+                onNavigateBack = { navigationActions.navigateBack() },
+                onNavigateToProfile = { navigationActions.navigateTo(Screen.Profile) },
+                onNavigateToLanguageSelection = {
+                  navigationActions.navigateTo(Screen.LanguageSelection)
+                })
+          }
+          composable(Screen.LanguageSelection.route) {
             val context = LocalContext.current
             val languagePreferences = remember { LanguagePreferences(context.applicationContext) }
             val languageOptions = remember { languagePreferences.getSupportedLanguages() }
-            var selectedLanguage by remember {
+            var selectedLanguageTag by remember {
               mutableStateOf(languagePreferences.getPreferredLanguageTag())
             }
 
-            SettingsScreen(
+            LanguageSelectionScreen(
                 languageOptions = languageOptions,
-                selectedLanguageTag = selectedLanguage,
-                onLanguageSelected = { option: LanguageOption ->
-                  selectedLanguage = option.languageTag
-                  languagePreferences.persistPreferredLanguage(option.languageTag)
-                  languagePreferences.applyLanguage(option.languageTag)
+                selectedLanguageTag = selectedLanguageTag,
+                onLanguageSelected = { option -> selectedLanguageTag = option.languageTag },
+                onSave = {
+                  languagePreferences.persistPreferredLanguage(selectedLanguageTag)
+                  languagePreferences.applyLanguage(selectedLanguageTag)
+                  navigationActions.navigateBack()
                 },
-                onNavigateBack = { navigationActions.navigateBack() },
-                onNavigateToProfile = { navigationActions.navigateTo(Screen.Profile) })
+                onNavigateBack = { navigationActions.navigateBack() })
           }
           composable(Screen.Profile.route) {
             ProfileScreen(

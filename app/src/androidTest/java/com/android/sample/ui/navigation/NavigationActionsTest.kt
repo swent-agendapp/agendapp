@@ -18,7 +18,7 @@ import com.android.sample.ui.profile.ProfileScreenTestTags
 import com.android.sample.ui.replacement.ReplacementTestTags
 import com.android.sample.ui.screens.HomeTestTags
 import com.android.sample.ui.screens.HomeTestTags.CALENDAR_BUTTON
-import com.android.sample.ui.settings.LanguageSelectionSectionTestTags
+import com.android.sample.ui.settings.LanguageSelectionScreenTestTags
 import com.android.sample.ui.settings.SettingsScreenTestTags
 import org.junit.Rule
 import org.junit.Test
@@ -81,8 +81,14 @@ class AgendappNavigationTest {
     composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).assertExists().performClick()
     composeTestRule.onNodeWithTag(SettingsScreenTestTags.ROOT).assertExists()
     composeTestRule
-        .onNodeWithTag(LanguageSelectionSectionTestTags.ROOT)
+        .onNodeWithTag(SettingsScreenTestTags.SELECT_LANGUAGE_BUTTON)
         .assertExists()
+        .performClick()
+    composeTestRule.onNodeWithTag(LanguageSelectionScreenTestTags.ROOT).assertExists()
+    composeTestRule
+        .onNodeWithTag(LanguageSelectionScreenTestTags.BACK_BUTTON)
+        .assertExists()
+        .performClick()
     composeTestRule
         .onNodeWithTag(SettingsScreenTestTags.PROFILE_BUTTON)
         .assertExists()

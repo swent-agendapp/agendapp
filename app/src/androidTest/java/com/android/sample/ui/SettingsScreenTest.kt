@@ -5,9 +5,8 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import com.android.sample.localization.LanguageOption
-import com.android.sample.ui.settings.LanguageSelectionSectionTestTags
 import com.android.sample.ui.settings.SettingsScreen
+import com.android.sample.ui.settings.SettingsScreenTestTags
 import org.junit.Rule
 import org.junit.Test
 
@@ -20,11 +19,9 @@ class SettingsScreenTest {
     var backClicked = false
     composeTestRule.setContent {
       SettingsScreen(
-          languageOptions = emptyList(),
-          selectedLanguageTag = "",
-          onLanguageSelected = {},
           onNavigateBack = { backClicked = true },
-          onNavigateToProfile = {})
+          onNavigateToProfile = {},
+          onNavigateToLanguageSelection = {})
     }
 
     composeTestRule.onNodeWithText("Settings Screen").assertIsDisplayed()
@@ -38,11 +35,9 @@ class SettingsScreenTest {
     var profileClicked = false
     composeTestRule.setContent {
       SettingsScreen(
-          languageOptions = emptyList(),
-          selectedLanguageTag = "",
-          onLanguageSelected = {},
           onNavigateBack = {},
-          onNavigateToProfile = { profileClicked = true })
+          onNavigateToProfile = { profileClicked = true },
+          onNavigateToLanguageSelection = {})
     }
 
     composeTestRule.onNodeWithText("Profile").assertIsDisplayed()
@@ -52,21 +47,20 @@ class SettingsScreenTest {
   }
 
   @Test
-  fun settingsScreen_displaysLanguageSection() {
-    val options =
-        listOf(
-            LanguageOption(languageTag = "", displayName = "System", isSystemDefault = true),
-            LanguageOption(languageTag = "en", displayName = "English"),
-        )
+  fun settingsScreen_languageButtonNavigates() {
+    var languageClicked = false
     composeTestRule.setContent {
       SettingsScreen(
-          languageOptions = options,
-          selectedLanguageTag = "en",
-          onLanguageSelected = {},
           onNavigateBack = {},
-          onNavigateToProfile = {})
+          onNavigateToProfile = {},
+          onNavigateToLanguageSelection = { languageClicked = true })
     }
 
-    composeTestRule.onNodeWithTag(LanguageSelectionSectionTestTags.ROOT).assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag(SettingsScreenTestTags.SELECT_LANGUAGE_BUTTON)
+        .assertIsDisplayed()
+        .performClick()
+
+    assert(languageClicked)
   }
 }

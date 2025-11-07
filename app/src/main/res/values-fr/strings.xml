@@ -73,6 +73,7 @@
     <!-- Settings Screen -->
     <string name="settings_screen_title">Écran des paramètres</string>
     <string name="settings_profile_button">Profil</string>
+    <string name="settings_language_button">Langue</string>
 
     <!-- Language Selection -->
     <string name="language_screen_title">Choisir la langue de l’application</string>

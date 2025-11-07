@@ -17,22 +17,20 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.unit.dp
 import com.android.sample.R
-import com.android.sample.localization.LanguageOption
-import com.android.sample.ui.settings.SettingsScreenTestTags.BACK_BUTTON
 
 object SettingsScreenTestTags {
   const val ROOT = "settings_screen"
   const val BACK_BUTTON = "back_button"
   const val PROFILE_BUTTON = "profile_button"
+  const val SELECT_LANGUAGE_BUTTON = "language_button"
 }
-/** Settings screen with navigation to profile. */
+
+/** Settings screen with navigation to profile and language selection. */
 @Composable
 fun SettingsScreen(
-    languageOptions: List<LanguageOption>,
-    selectedLanguageTag: String,
-    onLanguageSelected: (LanguageOption) -> Unit,
     onNavigateBack: () -> Unit = {},
     onNavigateToProfile: () -> Unit = {},
+    onNavigateToLanguageSelection: () -> Unit = {},
 ) {
   Surface(modifier = Modifier.fillMaxSize().semantics { testTag = SettingsScreenTestTags.ROOT }) {
     Column(
@@ -47,12 +45,13 @@ fun SettingsScreen(
                 Text(stringResource(R.string.settings_profile_button))
               }
           Spacer(modifier = Modifier.height(32.dp))
-          LanguageSelectionSection(
-              options = languageOptions,
-              selectedLanguageTag = selectedLanguageTag,
-              onLanguageSelected = onLanguageSelected)
+          Button(
+              modifier = Modifier.testTag(SettingsScreenTestTags.SELECT_LANGUAGE_BUTTON),
+              onClick = onNavigateToLanguageSelection) {
+                Text(stringResource(R.string.settings_language_button))
+              }
           Spacer(modifier = Modifier.height(32.dp))
-          Button(modifier = Modifier.testTag(BACK_BUTTON), onClick = onNavigateBack) {
+          Button(modifier = Modifier.testTag(SettingsScreenTestTags.BACK_BUTTON), onClick = onNavigateBack) {
             Text(stringResource(R.string.common_back))
           }
         }

@@ -3,6 +3,7 @@ package com.android.sample.localization
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.test.core.app.ApplicationProvider
+import com.android.sample.R
 import com.google.common.truth.Truth.assertThat
 import org.junit.After
 import org.junit.Before
@@ -55,5 +56,17 @@ class LanguagePreferencesTest {
     languagePreferences.persistPreferredLanguage("")
 
     assertThat(languagePreferences.getPreferredLanguageTag()).isEmpty()
+  }
+
+  @Test
+  fun applyLanguage_updatesResourcesFromSelectedLocale() {
+    languagePreferences.applyLanguage("fr")
+
+    val localizedLabel =
+        ApplicationProvider.getApplicationContext<Context>()
+            .resources
+            .getString(R.string.settings_language_button)
+
+    assertThat(localizedLabel).isEqualTo("Langue")
   }
 }

@@ -2,6 +2,8 @@ package com.android.sample.localization
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Resources
+import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import com.android.sample.R
@@ -45,12 +47,56 @@ class LanguagePreferences(private val context: Context) {
         } else {
           LocaleListCompat.forLanguageTags(languageTag)
         }
+
     AppCompatDelegate.setApplicationLocales(localeList)
+
+    if (localeList.isEmpty) {
+      Locale.setDefault(resolveSystemLocale())
+    } else {
+      Locale.setDefault(localeList[0])
+    }
+
+    updateContextResources(localeList)
   }
 
   /** Reads the stored language (if any) and applies it. */
   fun applyStoredLanguage() {
     applyLanguage(getPreferredLanguageTag())
+  }
+
+  private fun updateContextResources(localeList: LocaleListCompat) {
+    val resources = context.resources
+    val configuration = resources.configuration
+
+    if (localeList.isEmpty) {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        configuration.setLocales(Resources.getSystem().configuration.locales)
+      } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        configuration.setLocale(resolveSystemLocale())
+      } else {
+        @Suppress("DEPRECATION") configuration.locale = resolveSystemLocale()
+      }
+    } else {
+      val primaryLocale = localeList[0]
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        configuration.setLocales(localeList.toLocaleList())
+      } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        configuration.setLocale(primaryLocale)
+      } else {
+        @Suppress("DEPRECATION") configuration.locale = primaryLocale
+      }
+    }
+
+    @Suppress("DEPRECATION")
+    resources.updateConfiguration(configuration, resources.displayMetrics)
+  }
+
+  private fun resolveSystemLocale(): Locale {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+      Resources.getSystem().configuration.locales[0]
+    } else {
+      @Suppress("DEPRECATION") Resources.getSystem().configuration.locale
+    }
   }
 
   /** Returns the list of languages exposed to the user. */

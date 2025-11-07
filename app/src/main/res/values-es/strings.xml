@@ -1,0 +1,151 @@
+<resources>
+    <string name="app_name">SampleApp</string>
+    <string name="title_activity_main">Actividad Principal</string>
+    <string name="title_activity_second">Segunda Actividad</string>
+    <string name="next">Siguiente</string>
+    <string name="addEventTitle">Nuevo evento</string>
+    <string name="enterTitleAndDescription">Por favor, escribe el título y la descripción de tu evento</string>
+    <string name="enterTimeAndRecurrence">Por favor, selecciona el tipo y la hora del evento</string>
+    <string name="eventTitle">Título</string>
+    <string name="eventTitlePlaceholder">Introduce un título</string>
+    <string name="title_empty_error">El título no puede estar vacío</string>
+    <string name="description_empty_error">La descripción no puede estar vacía</string>
+    <string name="eventDescriptionPlaceholder">Describe el evento</string>
+    <string name="eventDescription">Descripción</string>
+    <string name="goBack">Volver</string>
+    <string name="selectAttendants">Selecciona las personas que asistirán a este evento.</string>
+    <string name="startTime">Hora de inicio</string>
+    <string name="endTime">Hora de fin</string>
+    <string name="startDatePickerLabel">Fecha de inicio</string>
+    <string name="endDatePickerLabel">Fecha de fin</string>
+    <string name="recurrenceEndPickerLabel">Fin de la recurrencia</string>
+    <string name="recurrenceMenuLabel">Recurrencia</string>
+    <string name="finish">Finalizar</string>
+    <string name="create">Crear</string>
+    <string name="confirmationMessage">¡Felicidades!\nTu evento ha sido creado exitosamente y añadido a tu calendario</string>
+    <string name="cancel">Cancelar</string>
+    <string name="default_web_client_id">423898020035-fu7m7lmtsuu6cn7d3s4ev4mrf0ep68l3.apps.googleusercontent.com</string>
+    <string name="replacement">Sustitución</string>
+    <string name="organize_replacement">Organizar una sustitución</string>
+    <string name="process_replacement">Sustitución en proceso</string>
+    <string name="waiting_confirmation_replacement">Esperando confirmación de sustitución</string>
+    <string name="confirmed_replacements">Sustituciones confirmadas</string>
+
+    <!-- Common -->
+    <string name="common_back">Atrás</string>
+
+    <!-- Edit Event Screen -->
+    <string name="edit_event_title">Editar evento</string>
+    <string name="edit_event_instruction">Modifica los detalles del evento a continuación:</string>
+
+    <!-- Fields -->
+    <string name="edit_event_title_label">Título</string>
+    <string name="edit_event_title_placeholder">Introduce el título del evento</string>
+    <string name="edit_event_title_error">El título no puede estar vacío</string>
+
+    <string name="edit_event_description_label">Descripción</string>
+    <string name="edit_event_description_placeholder">Introduce la descripción del evento</string>
+    <string name="edit_event_description_error">La descripción no puede estar vacía</string>
+
+    <string name="edit_event_start_date_label">Fecha de inicio</string>
+    <string name="edit_event_end_date_label">Fecha de fin</string>
+    <string name="edit_event_start_time_label">Hora de inicio:</string>
+    <string name="edit_event_end_time_label">Hora de fin:</string>
+    <string name="edit_event_recurrence_label">Recurrencia</string>
+
+    <!-- Participants -->
+    <string name="edit_event_participants_label">Participantes:</string>
+    <string name="edit_event_edit_participants_button">Editar participantes</string>
+    <string name="edit_event_participants_screen_title">Editar participantes del evento</string>
+    <string name="edit_event_select_participants_text">Seleccionar participantes</string>
+
+    <!-- Notifications -->
+    <string name="edit_event_notify_label">Notificar</string>
+    <string name="edit_event_add_notification_button">Añadir una notificación</string>
+    <string name="edit_event_remove_notification_symbol">✕</string>
+    <string name="edit_event_add_notification_symbol">+</string>
+
+    <!-- Buttons -->
+    <string name="common_save">Guardar</string>
+    <string name="common_cancel">Cancelar</string>
+
+    <!-- Replacements screen -->
+    <string name="replacement_requests_title">Solicitudes de sustitución</string>
+    <string name="replacement_requests_subtitle">Sustituciones en espera de confirmación</string>
+    <string name="replacement_substituted_label">Persona ausente:</string>
+    <string name="replacement_substitute_label">"Sustituto: "</string>
+
+    <!-- Home Screen -->
+    <string name="home_go_to_edit_event">Ir a Editar Evento</string>
+    <string name="home_go_to_calendar">Ir al Calendario</string>
+    <string name="home_go_to_settings">Ir a Configuración</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_screen_title">Pantalla de configuración</string>
+    <string name="settings_profile_button">Perfil</string>
+    <string name="settings_language_button">Idioma</string>
+
+    <!-- Language Selection Screen -->
+    <string name="language_screen_title">Elige tu idioma</string>
+    <string name="language_screen_description">Selecciona el idioma que deseas usar en la aplicación.</string>
+    <string name="language_apply_button_label">Aplicar idioma</string>
+    <string name="language_option_english">Inglés</string>
+    <string name="language_option_french">Francés</string>
+    <string name="language_option_spanish">Español</string>
+    <string name="language_option_german">Alemán</string>
+
+    <!-- Profile Screen -->
+    <string name="profile_email_error">Por favor, introduce una dirección de correo válida</string>
+    <string name="profile_phone_error">Por favor, introduce un número de teléfono válido (mínimo 7 dígitos)</string>
+    <string name="profile_display_name_label">Nombre visible</string>
+    <string name="profile_email_label">Correo electrónico</string>
+    <string name="profile_phone_label">Número de teléfono</string>
+    <string name="profile_admin_contact_button">Ver contacto del administrador</string>
+    <string name="profile_title">Perfil de usuario</string>
+    <string name="profile_cancel_content_description">Cancelar</string>
+    <string name="profile_save_content_description">Guardar</string>
+    <string name="profile_edit_content_description">Editar</string>
+
+    <!-- Admin Contact Screen -->
+    <string name="admin_contact_title">Contacto del administrador</string>
+    <string name="admin_contact_email_label">Correo electrónico</string>
+    <string name="admin_contact_phone_label">Teléfono</string>
+    <string name="admin_contact_email_subject">Contacto desde Agendapp</string>
+
+    <!-- Calendar -->
+    <string name="calendar_screen_title">Calendario</string>
+    <string name="calendar_add_event_content_description">Añadir evento</string>
+
+    <!-- Date Picker -->
+    <string name="date_picker_placeholder">DD/MM/AAAA</string>
+    <string name="date_picker_select_date_content_description">Seleccionar fecha</string>
+
+    <!-- Recurrence -->
+    <string name="recurrence_one_time">Una vez</string>
+    <string name="recurrence_weekly">Semanal</string>
+    <string name="recurrence_monthly">Mensual</string>
+    <string name="recurrence_yearly">Anual</string>
+
+    <!-- Edit Event -->
+    <string name="edit_event_id">Editando evento ID: %1$s</string>
+    <string name="edit_event_default_notification">30 minutos antes</string>
+
+    <!-- Sign In -->
+    <string name="sign_in_success_message">¡Inicio de sesión exitoso!</string>
+    <string name="sign_in_app_title">Agendapp</string>
+    <string name="sign_in_message">Planifica, sigue y gestiona</string>
+    <string name="sign_in_welcome">Bienvenido</string>
+    <string name="sign_in_button_text">Iniciar sesión con Google</string>
+    <string name="sign_in_logout_content_description">Cerrar sesión</string>
+    <string name="sign_in_logo_content_description">Logotipo de la aplicación</string>
+    <string name="sign_in_cancelled_error">Inicio de sesión cancelado</string>
+    <string name="sign_in_credentials_error">Error al obtener credenciales: %1$s</string>
+    <string name="sign_in_unexpected_error">Error inesperado: %1$s</string>
+
+    <!-- Top App Bar -->
+    <string name="top_bar_back_content_description">Atrás</string>
+    <string name="top_bar_logout_content_description">Cerrar sesión</string>
+
+    <!-- Map -->
+    <string name="delimit_organization_title">Delimita tu organización</string>
+</resources>

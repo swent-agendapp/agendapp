@@ -1,6 +1,6 @@
 package com.android.sample.model.firestoreMappersTests
 
-import com.android.sample.model.authentification.User
+import com.android.sample.model.authentication.User
 import com.android.sample.model.firestoreMappers.EmployeeMapper
 import com.android.sample.model.organization.Employee
 import com.android.sample.model.organization.Role

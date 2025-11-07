@@ -31,6 +31,7 @@ import com.android.sample.ui.profile.ProfileScreen
 import com.android.sample.ui.replacement.ReplacementPendingListScreen
 import com.android.sample.ui.replacement.ReplacementScreen
 import com.android.sample.ui.screens.HomeScreen
+import com.android.sample.ui.settings.LanguageSelectionScreen
 import com.android.sample.ui.settings.SettingsScreen
 import com.android.sample.ui.theme.SampleAppTheme
 import com.github.se.bootcamp.model.authentication.AuthRepositoryFirebase
@@ -111,7 +112,11 @@ fun Agendapp(modifier: Modifier = Modifier) {
           composable(Screen.Settings.route) {
             SettingsScreen(
                 onNavigateBack = { navigationActions.navigateBack() },
-                onNavigateToProfile = { navigationActions.navigateTo(Screen.Profile) })
+                onNavigateToProfile = { navigationActions.navigateTo(Screen.Profile) },
+                onNavigateToLanguage = { navigationActions.navigateTo(Screen.LanguageSelection) })
+          }
+          composable(Screen.LanguageSelection.route) {
+            LanguageSelectionScreen(onNavigateBack = { navigationActions.navigateBack() })
           }
           composable(Screen.Profile.route) {
             ProfileScreen(

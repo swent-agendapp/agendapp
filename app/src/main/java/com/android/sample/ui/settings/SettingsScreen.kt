@@ -17,10 +17,14 @@ object SettingsScreenTestTags {
   const val ROOT = "settings_screen"
   const val BACK_BUTTON = "back_button"
   const val PROFILE_BUTTON = "profile_button"
+  const val LANGUAGE_BUTTON = "language_button"
 }
 /** Settings screen with navigation to profile. */
 @Composable
-fun SettingsScreen(onNavigateBack: () -> Unit = {}, onNavigateToProfile: () -> Unit = {}) {
+fun SettingsScreen(
+    onNavigateBack: () -> Unit = {},
+    onNavigateToProfile: () -> Unit = {},
+    onNavigateToLanguage: () -> Unit = {}) {
   Surface(modifier = Modifier.fillMaxSize().semantics { testTag = SettingsScreenTestTags.ROOT }) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -32,6 +36,12 @@ fun SettingsScreen(onNavigateBack: () -> Unit = {}, onNavigateToProfile: () -> U
               modifier = Modifier.testTag(SettingsScreenTestTags.PROFILE_BUTTON),
               onClick = onNavigateToProfile) {
                 Text(stringResource(R.string.settings_profile_button))
+              }
+          Spacer(modifier = Modifier.height(16.dp))
+          Button(
+              modifier = Modifier.testTag(SettingsScreenTestTags.LANGUAGE_BUTTON),
+              onClick = onNavigateToLanguage) {
+                Text(stringResource(R.string.settings_language_button))
               }
           Spacer(modifier = Modifier.height(16.dp))
           Button(modifier = Modifier.testTag(BACK_BUTTON), onClick = onNavigateBack) {

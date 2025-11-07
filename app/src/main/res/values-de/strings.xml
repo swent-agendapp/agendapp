@@ -75,6 +75,7 @@
     <string name="settings_profile_button">Profil</string>
 
     <!-- Profile Screen -->
+    <string name="language_option_german">Deutsch</string>
     <string name="profile_email_error">Bitte geben Sie eine gültige E-Mail-Adresse ein</string>
     <string name="profile_phone_error">Bitte geben Sie eine gültige Telefonnummer ein (mindestens 7 Ziffern)</string>
     <string name="profile_display_name_label">Anzeigename</string>
@@ -135,7 +136,14 @@
     <!-- Replacement -->
     <string name="replacement_requests_title">Vertretungsanfragen</string>
     <string name="replacement_requests_subtitle">Vertretungen, die auf Bestätigung warten</string>
-    <string name="replacement_substituted_label">Abwesende Person: %1$s</string>
-    <string name="replacement_substitute_label">Vertretende Person: %1$s</string>
+    <string name="replacement_substituted_label">"Abwesende Person: "</string>
+    <string name="replacement_substitute_label">"Vertretende Person: "</string>
+    <string name="settings_language_button">Sprache</string>
+    <string name="language_screen_title">Wähle deine Sprache</string>
+    <string name="language_screen_description">Wähle die Sprache aus, die du in der Anwendung verwenden möchtest.</string>
+    <string name="language_apply_button_label">Sprache anwenden</string>
+    <string name="language_option_english">Englisch</string>
+    <string name="language_option_french">Französisch</string>
+    <string name="language_option_spanish">Spanisch</string>
 
 </resources>

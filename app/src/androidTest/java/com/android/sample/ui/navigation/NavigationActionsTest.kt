@@ -4,12 +4,15 @@ import android.Manifest
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import androidx.test.rule.GrantPermissionRule
 import com.android.sample.Agendapp
+import com.android.sample.localization.LanguagePreferences
 import com.android.sample.ui.calendar.AddEventTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
 import com.android.sample.ui.map.MapScreenTestTags
@@ -19,6 +22,7 @@ import com.android.sample.ui.replacement.ReplacementTestTags
 import com.android.sample.ui.screens.HomeTestTags
 import com.android.sample.ui.screens.HomeTestTags.CALENDAR_BUTTON
 import com.android.sample.ui.settings.LanguageSelectionScreenTestTags
+import com.android.sample.ui.settings.LanguageSelectionSectionTestTags
 import com.android.sample.ui.settings.SettingsScreenTestTags
 import org.junit.Rule
 import org.junit.Test
@@ -127,5 +131,55 @@ class AgendappNavigationTest {
         .performClick()
 
     composeTestRule.onNodeWithTag(HomeTestTags.MAP_BUTTON).assertExists()
+  }
+
+  @Test
+  fun selecting_language_updates_settings_locale() {
+    val applicationContext = ApplicationProvider.getApplicationContext<android.content.Context>()
+    val languagePreferences = LanguagePreferences(applicationContext)
+    try {
+      languagePreferences.persistPreferredLanguage("")
+      languagePreferences.applyLanguage("")
+
+      composeTestRule.setContent { Agendapp() }
+
+      composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).assertExists().performClick()
+      composeTestRule
+          .onNodeWithTag(SettingsScreenTestTags.SELECT_LANGUAGE_BUTTON)
+          .assertExists()
+          .performClick()
+
+      composeTestRule
+          .onNodeWithTag(LanguageSelectionSectionTestTags.option("fr"))
+          .assertExists()
+          .performClick()
+      composeTestRule
+          .onNodeWithTag(LanguageSelectionScreenTestTags.SAVE_BUTTON)
+          .assertExists()
+          .performClick()
+
+      composeTestRule
+          .onNodeWithTag(LanguageSelectionScreenTestTags.BACK_BUTTON)
+          .assertExists()
+          .performClick()
+
+      composeTestRule.onNodeWithText("Langue").assertIsDisplayed()
+
+      composeTestRule
+          .onNodeWithTag(SettingsScreenTestTags.SELECT_LANGUAGE_BUTTON)
+          .assertExists()
+          .performClick()
+      composeTestRule
+          .onNodeWithTag(LanguageSelectionSectionTestTags.option(""))
+          .assertExists()
+          .performClick()
+      composeTestRule
+          .onNodeWithTag(LanguageSelectionScreenTestTags.SAVE_BUTTON)
+          .assertExists()
+          .performClick()
+    } finally {
+      languagePreferences.persistPreferredLanguage("")
+      languagePreferences.applyLanguage("")
+    }
   }
 }

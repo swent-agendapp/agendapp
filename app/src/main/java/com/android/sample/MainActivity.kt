@@ -1,8 +1,5 @@
 package com.android.sample
 
-import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -10,9 +7,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -25,6 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.android.sample.model.organization.EmployeeRepositoryFirebase
 import com.android.sample.model.organization.EmployeeRepositoryProvider
+import com.android.sample.localization.LanguageOption
 import com.android.sample.localization.LanguagePreferences
 import com.android.sample.ui.calendar.AddEventAttendantScreen
 import com.android.sample.ui.calendar.AddEventConfirmationScreen
@@ -60,7 +60,8 @@ class MainActivity : ComponentActivity() {
     EmployeeRepositoryProvider.init(
         EmployeeRepositoryFirebase(
             db = FirebaseFirestore.getInstance(), authRepository = AuthRepositoryFirebase()))
-    LanguagePreferences(applicationContext).applyStoredLanguage()
+    val languagePreferences = LanguagePreferences(applicationContext)
+    languagePreferences.applyStoredLanguage()
     setContent {
       SampleAppTheme {
         Surface(
@@ -76,11 +77,41 @@ class MainActivity : ComponentActivity() {
   }
 }
 /**
+ * Entry point composable that wires language preferences to [AgendappContent].
+ */
+@Composable
+fun Agendapp(modifier: Modifier = Modifier) {
+  val context = LocalContext.current
+  val languagePreferences = remember { LanguagePreferences(context.applicationContext) }
+  var selectedLanguageTag by rememberSaveable {
+    mutableStateOf(languagePreferences.getPreferredLanguageTag())
+  }
+
+  LaunchedEffect(selectedLanguageTag) {
+    languagePreferences.persistPreferredLanguage(selectedLanguageTag)
+    languagePreferences.applyLanguage(selectedLanguageTag)
+  }
+
+  val languageOptions = languagePreferences.getSupportedLanguages()
+
+  AgendappContent(
+      modifier = modifier,
+      languageOptions = languageOptions,
+      selectedLanguageTag = selectedLanguageTag,
+      onLanguageSaved = { tag -> selectedLanguageTag = tag })
+}
+
+/**
  * Root composable containing the navigation graph for the application. This function defines all
  * available routes and how composables are connected.
  */
 @Composable
-fun Agendapp(modifier: Modifier = Modifier) {
+fun AgendappContent(
+    modifier: Modifier = Modifier,
+    languageOptions: List<LanguageOption>,
+    selectedLanguageTag: String,
+    onLanguageSaved: (String) -> Unit,
+) {
   val navController = rememberNavController()
   val navigationActions = NavigationActions(navController)
   val addEventViewModel: AddEventViewModel = viewModel()
@@ -127,23 +158,13 @@ fun Agendapp(modifier: Modifier = Modifier) {
                 })
           }
           composable(Screen.LanguageSelection.route) {
-            val context = LocalContext.current
-            val languagePreferences = remember { LanguagePreferences(context.applicationContext) }
-            val languageOptions = remember { languagePreferences.getSupportedLanguages() }
-            var selectedLanguageTag by remember {
-              mutableStateOf(languagePreferences.getPreferredLanguageTag())
-            }
-
+            var pendingSelection by rememberSaveable { mutableStateOf(selectedLanguageTag) }
+            LaunchedEffect(selectedLanguageTag) { pendingSelection = selectedLanguageTag }
             LanguageSelectionScreen(
                 languageOptions = languageOptions,
-                selectedLanguageTag = selectedLanguageTag,
-                onLanguageSelected = { option -> selectedLanguageTag = option.languageTag },
-                onSave = {
-                  languagePreferences.persistPreferredLanguage(selectedLanguageTag)
-                  languagePreferences.applyLanguage(selectedLanguageTag)
-                  context.findActivity()?.recreate()
-                  navigationActions.navigateBack()
-                },
+                selectedLanguageTag = pendingSelection,
+                onLanguageSelected = { option -> pendingSelection = option.languageTag },
+                onSave = { onLanguageSaved(pendingSelection) },
                 onNavigateBack = { navigationActions.navigateBack() })
           }
           composable(Screen.Profile.route) {
@@ -187,10 +208,3 @@ fun Agendapp(modifier: Modifier = Modifier) {
         }
       }
 }
-
-private tailrec fun Context.findActivity(): Activity? =
-    when (this) {
-      is Activity -> this
-      is ContextWrapper -> baseContext.findActivity()
-      else -> null
-    }

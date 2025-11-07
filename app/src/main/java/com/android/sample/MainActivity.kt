@@ -91,32 +91,26 @@ fun Agendapp(
   // Routes and navigation logic
   NavHost(navController = navController, startDestination = startDestination, modifier = modifier) {
 
-    // Authentication Graph
-    navigation(startDestination = Screen.Authentication.route, route = Screen.Authentication.name) {
-      composable(Screen.Authentication.route) {
-        SignInScreen(
-            credentialManager = credentialManager,
-            onSignedIn = { navigationActions.navigateTo(Screen.Home) })
-      }
+    // Authentication Screen
+    composable(Screen.Authentication.route) {
+      SignInScreen(
+          credentialManager = credentialManager,
+          onSignedIn = { navigationActions.navigateTo(Screen.Home) })
     }
 
-    // Home Graph
-    navigation(startDestination = Screen.Home.route, route = Screen.Home.name) {
-      composable(Screen.Home.route) {
-        HomeScreen(
-            onNavigateToEdit = { eventId -> navigationActions.navigateToEditEvent(eventId) },
-            onNavigateToCalendar = { navigationActions.navigateTo(Screen.Calendar) },
-            onNavigateToSettings = { navigationActions.navigateTo(Screen.Settings) },
-            onNavigateToMap = { navigationActions.navigateTo(Screen.Map) },
-            onNavigateToReplacement = { navigationActions.navigateTo(Screen.ReplacementOverview) })
-      }
+    // Home Screen
+    composable(Screen.Home.route) {
+      HomeScreen(
+          onNavigateToEdit = { eventId -> navigationActions.navigateToEditEvent(eventId) },
+          onNavigateToCalendar = { navigationActions.navigateTo(Screen.Calendar) },
+          onNavigateToSettings = { navigationActions.navigateTo(Screen.Settings) },
+          onNavigateToMap = { navigationActions.navigateTo(Screen.Map) },
+          onNavigateToReplacement = { navigationActions.navigateTo(Screen.ReplacementOverview) })
     }
 
     // Calendar Graph
-    navigation(startDestination = Screen.Calendar.route, route = Screen.Calendar.name) {
-      composable(Screen.Calendar.route) {
-        CalendarScreen(onCreateEvent = { navigationActions.navigateTo(Screen.AddEventTitle) })
-      }
+    composable(Screen.Calendar.route) {
+      CalendarScreen(onCreateEvent = { navigationActions.navigateTo(Screen.AddEventTitle) })
     }
 
     // Add Event Screen Flow
@@ -151,24 +145,14 @@ fun Agendapp(
       }
     }
 
-    // Replacement Graph
-    navigation(
-        startDestination = Screen.ReplacementOverview.route,
-        route = Screen.ReplacementOverview.name) {
-          composable(Screen.ReplacementOverview.route) {
-            ReplacementScreen(
-                onWaitingConfirmationClick = {
-                  navigationActions.navigateTo(Screen.ReplacementPending)
-                })
-          }
-        }
+    // Replacement Overview Screen
+    composable(Screen.ReplacementOverview.route) {
+      ReplacementScreen(
+          onWaitingConfirmationClick = { navigationActions.navigateTo(Screen.ReplacementPending) })
+    }
 
-    // Pending Replacement Graph
-    navigation(
-        startDestination = Screen.ReplacementPending.route,
-        route = Screen.ReplacementPending.name) {
-          composable(Screen.ReplacementPending.route) { ReplacementPendingListScreen() }
-        }
+    // Pending Replacement Screen
+    composable(Screen.ReplacementPending.route) { ReplacementPendingListScreen() }
 
     // Settings Graph
     navigation(startDestination = Screen.Settings.route, route = Screen.Settings.name) {
@@ -187,9 +171,7 @@ fun Agendapp(
       }
     }
 
-    // Map Graph
-    navigation(startDestination = Screen.Map.route, route = Screen.Map.name) {
-      composable(Screen.Map.route) { MapScreen(onGoBack = { navigationActions.navigateBack() }) }
-    }
+    // Map Screen
+    composable(Screen.Map.route) { MapScreen(onGoBack = { navigationActions.navigateBack() }) }
   }
 }

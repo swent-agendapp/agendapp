@@ -24,7 +24,6 @@ import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.calendar.components.ValidatingTextField
 import com.android.sample.ui.calendar.utils.DateTimeUtils
 import com.android.sample.ui.components.BottomNavigationButtons
-import java.time.Instant
 
 // Assisted by AI
 object EditEventTestTags {

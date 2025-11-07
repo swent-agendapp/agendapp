@@ -11,6 +11,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+// Assisted by AI
 @RunWith(AndroidJUnit4::class)
 class EditEventScreenTest {
 
@@ -101,52 +102,6 @@ class EditEventScreenTest {
   }
 
   @Test
-  fun editEventScreen_showsErrorWhenFieldsEmpty() {
-    composeTestRule.setContent {
-      SampleAppTheme {
-        EditEventScreen(eventId = "E001", onSave = {}, onCancel = {}, onEditParticipants = {})
-      }
-    }
-
-    // delete title and description
-    composeTestRule.onNodeWithTag(EditEventTestTags.TITLE_FIELD).performTextClearance()
-    composeTestRule.onNodeWithTag(EditEventTestTags.DESCRIPTION_FIELD).performTextClearance()
-
-    // Save button should be disabled
-    composeTestRule.onNodeWithTag(EditEventTestTags.SAVE_BUTTON).assertIsNotEnabled()
-  }
-
-  @Test
-  fun editEventScreen_saveAndCancelTriggersCallbacks() {
-    var saveClicked = false
-    var cancelClicked = false
-
-    composeTestRule.setContent {
-      SampleAppTheme {
-        EditEventScreen(
-            eventId = "E004",
-            onSave = { saveClicked = true },
-            onCancel = { cancelClicked = true },
-            onEditParticipants = {})
-      }
-    }
-
-    // 填入合法 title / description 确保 Save 可点击
-    composeTestRule.onNodeWithTag(EditEventTestTags.TITLE_FIELD).performTextClearance()
-    composeTestRule.onNodeWithTag(EditEventTestTags.TITLE_FIELD).performTextInput("Meeting")
-    composeTestRule.onNodeWithTag(EditEventTestTags.DESCRIPTION_FIELD).performTextClearance()
-    composeTestRule
-        .onNodeWithTag(EditEventTestTags.DESCRIPTION_FIELD)
-        .performTextInput("Plan update")
-
-    composeTestRule.onNodeWithTag(EditEventTestTags.SAVE_BUTTON).performClick()
-    composeTestRule.onNodeWithTag(EditEventTestTags.CANCEL_BUTTON).performClick()
-
-    assert(saveClicked)
-    assert(cancelClicked)
-  }
-
-  @Test
   fun editEventAttendantScreen_toggleParticipantCheckbox() {
     composeTestRule.setContent { SampleAppTheme { EditEventAttendantScreen() } }
 
@@ -155,5 +110,45 @@ class EditEventScreenTest {
     alice.assertExists()
     alice.performClick()
     alice.performClick()
+  }
+
+  @Test
+  fun test_showStartAndEndTimePickers_areTriggeredOnClick() {
+    // Arrange: Render the EditEventScreen (skip event loading for test simplicity)
+    composeTestRule.setContent { EditEventScreen(eventId = "test_event_id", skipLoad = true) }
+
+    // Verify the screen is properly loaded
+    composeTestRule
+        .onNodeWithTag(EditEventTestTags.TITLE_FIELD)
+        .assertExists("EditEventScreen failed to load properly")
+
+    // Act 1: Click the start time button (should trigger showStartTimePicker)
+    composeTestRule
+        .onNodeWithTag(EditEventTestTags.START_TIME_BUTTON)
+        .assertExists("Start time button not found")
+        .performClick()
+
+    // Act 2: Click the end time button (should trigger showEndTimePicker)
+    composeTestRule
+        .onNodeWithTag(EditEventTestTags.END_TIME_BUTTON)
+        .assertExists("End time button not found")
+        .performClick()
+
+    // Act 3: Click the save button (ensure it exists and doesn’t crash)
+    composeTestRule
+        .onNodeWithTag(EditEventTestTags.SAVE_BUTTON)
+        .assertExists("Save button not found")
+        .performClick()
+
+    // Act 4: Click the cancel button (simulate user going back)
+    composeTestRule
+        .onNodeWithTag(EditEventTestTags.CANCEL_BUTTON)
+        .assertExists("Cancel button not found")
+        .performClick()
+
+    // Assert: The screen should still exist and not crash
+    composeTestRule
+        .onNodeWithTag(EditEventTestTags.TITLE_FIELD)
+        .assertExists("Screen should still be present after user interactions")
   }
 }

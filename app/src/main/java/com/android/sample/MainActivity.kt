@@ -1,5 +1,8 @@
 package com.android.sample
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -138,6 +141,7 @@ fun Agendapp(modifier: Modifier = Modifier) {
                 onSave = {
                   languagePreferences.persistPreferredLanguage(selectedLanguageTag)
                   languagePreferences.applyLanguage(selectedLanguageTag)
+                  context.findActivity()?.recreate()
                   navigationActions.navigateBack()
                 },
                 onNavigateBack = { navigationActions.navigateBack() })
@@ -183,3 +187,10 @@ fun Agendapp(modifier: Modifier = Modifier) {
         }
       }
 }
+
+private tailrec fun Context.findActivity(): Activity? =
+    when (this) {
+      is Activity -> this
+      is ContextWrapper -> baseContext.findActivity()
+      else -> null
+    }

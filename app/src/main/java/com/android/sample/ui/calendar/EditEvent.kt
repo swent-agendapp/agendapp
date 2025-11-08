@@ -23,6 +23,7 @@ import com.android.sample.ui.calendar.components.DatePickerFieldToModal
 import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.calendar.components.ValidatingTextField
 import com.android.sample.ui.calendar.utils.DateTimeUtils
+import com.android.sample.ui.components.BottomNavigationButtons
 
 // Assisted by AI
 object EditEventTestTags {

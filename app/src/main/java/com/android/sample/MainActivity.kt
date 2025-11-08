@@ -107,7 +107,7 @@ fun Agendapp(
 
     // Calendar Graph
     composable(Screen.Calendar.route) {
-      CalendarScreen(onCreateEvent = { navigationActions.navigateTo(Screen.AddEventTitle) })
+      CalendarScreen(onCreateEvent = { navigationActions.navigateTo(Screen.AddEvent) })
     }
 
     // Add Event Screen Flow

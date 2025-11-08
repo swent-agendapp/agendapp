@@ -16,10 +16,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.theme.PaddingMedium
+import com.android.sample.ui.theme.SpacingExtraLarge
+import com.android.sample.ui.theme.SpacingLarge
 
 object ProfileScreenTestTags {
   const val PROFILE_SCREEN = "profile_screen"
@@ -63,14 +64,13 @@ fun ProfileScreen(
                         contentDescription = stringResource(R.string.common_back))
                   }
             })
-      }) { innerPAdding ->
+      }) { innerPadding ->
         Column(
             modifier =
-                Modifier.padding(innerPAdding).padding(PaddingMedium).fillMaxSize().semantics {
+                Modifier.padding(innerPadding).padding(PaddingMedium).fillMaxSize().semantics {
                   testTag = ProfileScreenTestTags.PROFILE_SCREEN
                 },
             horizontalAlignment = Alignment.CenterHorizontally) {
-
               ProfileHeader(
                   isEditMode = isEditMode,
                   onEdit = { isEditMode = true },
@@ -96,7 +96,7 @@ fun ProfileScreen(
                     }
                   })
 
-              Spacer(Modifier.height(24.dp))
+              Spacer(Modifier.height(SpacingExtraLarge))
 
               ProfileTextField(
                   label = stringResource(R.string.profile_display_name_label),
@@ -105,7 +105,7 @@ fun ProfileScreen(
                   onValueChange = { displayName = it },
                   testTag = ProfileScreenTestTags.DISPLAY_NAME_FIELD)
 
-              Spacer(Modifier.height(16.dp))
+              Spacer(Modifier.height(SpacingLarge))
 
               ProfileTextField(
                   label = stringResource(R.string.profile_email_label),
@@ -119,7 +119,7 @@ fun ProfileScreen(
                   keyboardType = KeyboardType.Email,
                   testTag = ProfileScreenTestTags.EMAIL_FIELD)
 
-              Spacer(Modifier.height(16.dp))
+              Spacer(Modifier.height(SpacingLarge))
 
               ProfileTextField(
                   label = stringResource(R.string.profile_phone_label),

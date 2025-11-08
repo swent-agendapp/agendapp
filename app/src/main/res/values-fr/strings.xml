@@ -71,10 +71,14 @@
     <string name="home_go_to_settings">Aller aux paramètres</string>
 
     <!-- Settings Screen -->
-    <string name="settings_screen_title">Écran des paramètres</string>
+    <string name="settings_screen_title">Paramètres</string>
     <string name="settings_profile_button">Profil</string>
+    <string name="settings_admin_info_button">Infos administrateur</string>
+    <string name="settings_map_settings_button">Carte</string>
+
 
     <!-- Profile Screen -->
+    <string name="profile_screen_title">Profil</string>
     <string name="profile_email_error">Veuillez entrer une adresse e-mail valide</string>
     <string name="profile_phone_error">Veuillez entrer un numéro de téléphone valide (minimum 7 chiffres)</string>
     <string name="profile_display_name_label">Nom d’affichage</string>

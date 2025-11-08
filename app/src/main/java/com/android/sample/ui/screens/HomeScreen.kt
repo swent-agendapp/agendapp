@@ -26,7 +26,6 @@ fun HomeScreen(
     onNavigateToEdit: (String) -> Unit = {},
     onNavigateToCalendar: () -> Unit = {},
     onNavigateToSettings: () -> Unit = {},
-    onNavigateToMap: () -> Unit = {},
     onNavigateToReplacement: () -> Unit = {}
 ) {
   Surface(modifier = Modifier.fillMaxSize().semantics { testTag = HomeTestTags.ROOT }) {
@@ -49,10 +48,6 @@ fun HomeScreen(
               onClick = onNavigateToSettings) {
                 Text(stringResource(R.string.home_go_to_settings))
               }
-          Spacer(modifier = Modifier.height(SpacingMedium))
-          Button(modifier = Modifier.testTag(HomeTestTags.MAP_BUTTON), onClick = onNavigateToMap) {
-            Text("Go to Map")
-          }
           Spacer(modifier = Modifier.height(SpacingMedium))
           Button(
               modifier = Modifier.testTag(HomeTestTags.REPLACEMENT_BUTTON),

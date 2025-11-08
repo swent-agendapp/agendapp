@@ -20,13 +20,7 @@ sealed class Screen(val route: String, val name: String) {
 
   data object AdminContact : Screen(route = "admin_contact", name = "Admin Contact")
 
-  data object AddEventTitle : Screen(route = "add_event/title", name = "Add Event Title")
-
-  data object AddEventTime : Screen(route = "add_event/time", name = "Add Event Time")
-
-  data object AddEventMember : Screen(route = "add_event/member", name = "Add Event Member")
-
-  data object AddEventEnd : Screen("add_event/end", name = "Add Event Confirmation")
+  data object AddEvent : Screen(route = "add_event", name = "Add Event")
 
   data object ReplacementOverview : Screen("replacement_overview", name = "Replacement Overview")
 

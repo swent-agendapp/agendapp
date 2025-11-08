@@ -20,12 +20,9 @@ import androidx.navigation.navigation
 import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.organization.EmployeeRepositoryFirebase
 import com.android.sample.model.organization.EmployeeRepositoryProvider
-import com.android.sample.ui.calendar.AddEventAttendantScreen
-import com.android.sample.ui.calendar.AddEventConfirmationScreen
-import com.android.sample.ui.calendar.AddEventTimeAndRecurrenceScreen
-import com.android.sample.ui.calendar.AddEventTitleAndDescriptionScreen
-import com.android.sample.ui.calendar.AddEventViewModel
 import com.android.sample.ui.calendar.CalendarScreen
+import com.android.sample.ui.calendar.addEvent.AddEventScreen
+import com.android.sample.ui.calendar.addEvent.AddEventViewModel
 import com.android.sample.ui.map.MapScreen
 import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
@@ -110,38 +107,15 @@ fun Agendapp(
 
     // Calendar Graph
     composable(Screen.Calendar.route) {
-      CalendarScreen(onCreateEvent = { navigationActions.navigateTo(Screen.AddEventTitle) })
+      CalendarScreen(onCreateEvent = { navigationActions.navigateTo(Screen.AddEvent) })
     }
 
     // Add Event Screen Flow
-    navigation(startDestination = Screen.AddEventTitle.route, route = Screen.AddEventTitle.name) {
-      composable(Screen.AddEventTitle.route) {
-        AddEventTitleAndDescriptionScreen(
-            addEventViewModel = addEventViewModel,
-            onNext = { navigationActions.navigateTo(Screen.AddEventTime) },
-            onCancel = {
-              navigationActions.navigateBack()
-              addEventViewModel.resetUiState()
-            })
-      }
-      composable(Screen.AddEventTime.route) {
-        AddEventTimeAndRecurrenceScreen(
-            addEventViewModel = addEventViewModel,
-            onNext = { navigationActions.navigateTo(Screen.AddEventMember) },
-            onBack = { navigationActions.navigateBack() })
-      }
-      composable(Screen.AddEventMember.route) {
-        AddEventAttendantScreen(
-            addEventViewModel = addEventViewModel,
-            onCreate = { navigationActions.navigateTo(Screen.AddEventEnd) },
-            onBack = { navigationActions.navigateBack() })
-      }
-      composable(Screen.AddEventEnd.route) {
-        AddEventConfirmationScreen(
-            onFinish = {
-              navigationActions.navigateTo(Screen.Calendar)
-              addEventViewModel.resetUiState()
-            })
+    navigation(startDestination = Screen.AddEvent.route, route = "Add Event") {
+      composable(Screen.AddEvent.route) {
+        AddEventScreen(
+            onFinish = { navigationActions.navigateTo(Screen.Calendar) },
+            onCancel = { navigationActions.navigateBack() })
       }
     }
 

@@ -44,7 +44,15 @@ import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.PaddingSmall
 import com.android.sample.ui.theme.SpacingSmall
+import com.android.sample.ui.theme.WeightVeryHeavy
 
+/**
+ * Third step of event creation flow: allows selecting participants for the event.
+ *
+ * User selects the participants from a scrollable list with checkboxes.
+ *
+ * On "Create", the ViewModel persists the event.
+ */
 @Composable
 fun AddEventAttendantScreen(
     addEventViewModel: AddEventViewModel = viewModel(),
@@ -75,7 +83,7 @@ fun AddEventAttendantScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround) {
               Box(
-                  modifier = Modifier.weight(1f).fillMaxWidth(),
+                  modifier = Modifier.weight(WeightVeryHeavy).fillMaxWidth(),
                   contentAlignment = Alignment.Center) {
                     Text(
                         stringResource(R.string.selectAttendants),
@@ -84,7 +92,10 @@ fun AddEventAttendantScreen(
                         modifier = Modifier.testTag(AddEventTestTags.INSTRUCTION_TEXT))
                   }
               Card(
-                  modifier = Modifier.weight(1f).fillMaxWidth().padding(vertical = PaddingSmall),
+                  modifier =
+                      Modifier.weight(WeightVeryHeavy)
+                          .fillMaxWidth()
+                          .padding(vertical = PaddingSmall),
                   shape = RoundedCornerShape(CornerRadiusLarge),
                   elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
                     // Scrollable list

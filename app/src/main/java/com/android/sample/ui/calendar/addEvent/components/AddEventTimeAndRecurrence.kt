@@ -49,7 +49,16 @@ import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingSmall
+import com.android.sample.ui.theme.WeightMedium
+import com.android.sample.ui.theme.WeightVeryHeavy
 
+/**
+ * Second step of event creation flow: select start/end date and time, plus optional recurrence
+ * rules.
+ *
+ * The user selects date using a modal date picker and time with native TimePicker. Validation
+ * ensures start time is not after end time.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEventTimeAndRecurrenceScreen(
@@ -81,7 +90,7 @@ fun AddEventTimeAndRecurrenceScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround) {
               Box(
-                  modifier = Modifier.weight(0.6f).fillMaxWidth(),
+                  modifier = Modifier.weight(WeightMedium).fillMaxWidth(),
                   contentAlignment = Alignment.Center) {
                     Text(
                         stringResource(R.string.enterTimeAndRecurrence),
@@ -90,7 +99,7 @@ fun AddEventTimeAndRecurrenceScreen(
                         modifier = Modifier.testTag(AddEventTestTags.INSTRUCTION_TEXT))
                   }
 
-              Column(modifier = Modifier.weight(1f)) {
+              Column(modifier = Modifier.weight(WeightVeryHeavy)) {
                 if (recurrenceOptions.isNotEmpty()) {
                   ExposedDropdownMenuBox(
                       expanded = expanded, onExpandedChange = { expanded = !expanded }) {
@@ -154,12 +163,13 @@ fun AddEventTimeAndRecurrenceScreen(
                     verticalAlignment = Alignment.CenterVertically) {
                       Text(
                           text = stringResource(R.string.startTime),
-                          modifier = Modifier.weight(1f),
+                          modifier = Modifier.weight(WeightVeryHeavy),
                           textAlign = TextAlign.Center)
                       OutlinedButton(
                           onClick = { showStartTimePicker = true },
                           modifier =
-                              Modifier.weight(1f).testTag(AddEventTestTags.START_TIME_BUTTON)) {
+                              Modifier.weight(WeightVeryHeavy)
+                                  .testTag(AddEventTestTags.START_TIME_BUTTON)) {
                             Text(
                                 text =
                                     DateTimeUtils.formatInstantToTime(newEventUIState.startInstant))
@@ -172,12 +182,13 @@ fun AddEventTimeAndRecurrenceScreen(
                     verticalAlignment = Alignment.CenterVertically) {
                       Text(
                           text = stringResource(R.string.endTime),
-                          modifier = Modifier.weight(1f),
+                          modifier = Modifier.weight(WeightVeryHeavy),
                           textAlign = TextAlign.Center)
                       OutlinedButton(
                           onClick = { showEndTimePicker = true },
                           modifier =
-                              Modifier.weight(1f).testTag(AddEventTestTags.END_TIME_BUTTON)) {
+                              Modifier.weight(WeightVeryHeavy)
+                                  .testTag(AddEventTestTags.END_TIME_BUTTON)) {
                             Text(
                                 text =
                                     DateTimeUtils.formatInstantToTime(newEventUIState.endInstant))

@@ -22,3 +22,8 @@ val SpacingExtraLarge = 20.dp
 
 // Map
 val DefaultZoom = 17f
+
+// Border
+val BorderWidthThin = 1.dp
+val BorderWidthThick = 2.dp
+val BorderWidthExtraThick = 4.dp

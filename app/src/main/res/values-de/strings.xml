@@ -71,8 +71,10 @@
     <string name="home_go_to_settings">Zu den Einstellungen</string>
 
     <!-- Settings Screen -->
-    <string name="settings_screen_title">Einstellungsbildschirm</string>
+    <string name="settings_screen_title">Einstellungen</string>
     <string name="settings_profile_button">Profil</string>
+    <string name="settings_admin_info_button">Admin-Informationen</string>
+    <string name="settings_map_settings_button">Karte</string>
 
     <!-- Profile Screen -->
     <string name="profile_email_error">Bitte geben Sie eine gültige E-Mail-Adresse ein</string>

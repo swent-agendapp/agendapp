@@ -16,7 +16,7 @@ class SettingsScreenTest {
   fun settingsScreen_displaysAndBackButtonWorks() {
     var backClicked = false
     composeTestRule.setContent {
-      SettingsScreen(onNavigateBack = { backClicked = true }, onNavigateToProfile = {})
+      SettingsScreen(onNavigateBack = { backClicked = true }, onNavigateToUserProfile = {})
     }
 
     composeTestRule.onNodeWithText("Settings Screen").assertIsDisplayed()
@@ -29,7 +29,7 @@ class SettingsScreenTest {
   fun settingsScreen_profileButtonWorks() {
     var profileClicked = false
     composeTestRule.setContent {
-      SettingsScreen(onNavigateBack = {}, onNavigateToProfile = { profileClicked = true })
+      SettingsScreen(onNavigateBack = {}, onNavigateToUserProfile = { profileClicked = true })
     }
 
     composeTestRule.onNodeWithText("Profile").assertIsDisplayed()

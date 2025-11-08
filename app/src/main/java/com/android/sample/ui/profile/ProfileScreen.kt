@@ -3,6 +3,7 @@ package com.android.sample.ui.profile
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Save
@@ -18,6 +19,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
+import com.android.sample.ui.theme.PaddingMedium
 
 object ProfileScreenTestTags {
   const val PROFILE_SCREEN = "profile_screen"
@@ -31,10 +33,10 @@ object ProfileScreenTestTags {
   const val ADMIN_CONTACT_BUTTON = "admin_contact_button"
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
     onNavigateBack: () -> Unit = {},
-    onNavigateToAdminContact: () -> Unit = {},
     profileViewModel: ProfileViewModel = viewModel()
 ) {
   val uiState by profileViewModel.uiState.collectAsState()
@@ -48,21 +50,26 @@ fun ProfileScreen(
   val emailErrorMessage = stringResource(R.string.profile_email_error)
   val phoneErrorMessage = stringResource(R.string.profile_phone_error)
 
-  Surface(
-      modifier =
-          Modifier.fillMaxSize().semantics { testTag = ProfileScreenTestTags.PROFILE_SCREEN }) {
-        Column(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally) {
-              Button(
-                  modifier =
-                      Modifier.testTag(ProfileScreenTestTags.BACK_BUTTON).align(Alignment.Start),
-                  onClick = onNavigateBack) {
-                    Text(stringResource(R.string.common_back))
+  Scaffold(
+      topBar = {
+        TopAppBar(
+            title = { Text(stringResource(R.string.profile_screen_title)) },
+            navigationIcon = {
+              IconButton(
+                  onClick = onNavigateBack,
+                  modifier = Modifier.testTag(ProfileScreenTestTags.BACK_BUTTON)) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.common_back))
                   }
-
-              Spacer(Modifier.height(24.dp))
+            })
+      }) { innerPAdding ->
+        Column(
+            modifier =
+                Modifier.padding(innerPAdding).padding(PaddingMedium).fillMaxSize().semantics {
+                  testTag = ProfileScreenTestTags.PROFILE_SCREEN
+                },
+            horizontalAlignment = Alignment.CenterHorizontally) {
 
               ProfileHeader(
                   isEditMode = isEditMode,
@@ -125,16 +132,6 @@ fun ProfileScreen(
                   error = phoneError,
                   keyboardType = KeyboardType.Phone,
                   testTag = ProfileScreenTestTags.PHONE_FIELD)
-
-              Spacer(Modifier.height(24.dp))
-
-              OutlinedButton(
-                  modifier =
-                      Modifier.testTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON).fillMaxWidth(),
-                  onClick = onNavigateToAdminContact,
-                  enabled = !isEditMode) {
-                    Text(stringResource(R.string.profile_admin_contact_button))
-                  }
             }
       }
 }

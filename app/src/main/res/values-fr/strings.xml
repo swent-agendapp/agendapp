@@ -78,6 +78,7 @@
 
 
     <!-- Profile Screen -->
+    <string name="profile_screen_title">Profil</string>
     <string name="profile_email_error">Veuillez entrer une adresse e-mail valide</string>
     <string name="profile_phone_error">Veuillez entrer un numéro de téléphone valide (minimum 7 chiffres)</string>
     <string name="profile_display_name_label">Nom d’affichage</string>

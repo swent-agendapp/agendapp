@@ -19,7 +19,7 @@ class SettingsScreenTest {
   fun settingsScreen_displaysAndBackButtonWorks() {
     var backClicked = false
     composeTestRule.setContent {
-      SettingsScreen(onNavigateBack = { backClicked = true }, onNavigateToUserProfile = {})
+      SettingsScreen(onNavigateBack = { backClicked = true })
     }
 
     composeTestRule.onNodeWithTag(SettingsScreenTestTags.ROOT).isDisplayed()
@@ -35,12 +35,44 @@ class SettingsScreenTest {
   fun settingsScreen_profileButtonWorks() {
     var profileClicked = false
     composeTestRule.setContent {
-      SettingsScreen(onNavigateBack = {}, onNavigateToUserProfile = { profileClicked = true })
+      SettingsScreen(onNavigateToUserProfile = { profileClicked = true })
     }
 
-    composeTestRule.onNodeWithText("Profile").assertIsDisplayed()
-    composeTestRule.onNodeWithText("Profile").performClick()
+    composeTestRule
+      .onNodeWithTag(SettingsScreenTestTags.PROFILE_BUTTON)
+      .assertIsDisplayed()
+      .performClick()
 
     assert(profileClicked)
+  }
+
+  @Test
+  fun settingsScreen_adminButtonWorks() {
+    var adminClicked = false
+    composeTestRule.setContent {
+      SettingsScreen(onNavigateToAdminInfo = { adminClicked = true })
+    }
+
+    composeTestRule
+      .onNodeWithTag(SettingsScreenTestTags.ADMIN_BUTTON)
+      .assertIsDisplayed()
+      .performClick()
+
+    assert(adminClicked)
+  }
+
+  @Test
+  fun settingsScreen_mapSettingsButtonWorks() {
+    var mapSettingsClicked = false
+    composeTestRule.setContent {
+      SettingsScreen(onNavigateToMapSettings = { mapSettingsClicked = true })
+    }
+
+    composeTestRule
+      .onNodeWithTag(SettingsScreenTestTags.MAP_SETTINGS_BUTTON)
+      .assertIsDisplayed()
+      .performClick()
+
+    assert(mapSettingsClicked)
   }
 }

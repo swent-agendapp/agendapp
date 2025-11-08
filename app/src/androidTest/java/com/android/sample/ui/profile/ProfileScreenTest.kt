@@ -156,6 +156,20 @@ class ProfileScreenTest {
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.EMAIL_FIELD).assertIsDisplayed()
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.PHONE_FIELD).assertIsDisplayed()
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.EDIT_BUTTON).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(ProfileScreenTestTags.SIGN_OUT_BUTTON).assertIsDisplayed()
   }
+
+    @Test
+    fun profileScreen_signOutButtonWorks() {
+      var signOutClicked = false
+
+      composeTestRule.setContent {
+        ProfileScreen(
+          onSignOut = { signOutClicked = true }
+        )
+      }
+
+      composeTestRule.onNodeWithTag(ProfileScreenTestTags.SIGN_OUT_BUTTON).performClick()
+      assert(signOutClicked)
+    }
 }

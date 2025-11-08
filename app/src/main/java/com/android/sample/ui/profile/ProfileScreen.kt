@@ -34,7 +34,7 @@ object ProfileScreenTestTags {
   const val SAVE_BUTTON = "save_button"
   const val CANCEL_BUTTON = "cancel_button"
   const val EDIT_BUTTON = "edit_button"
-  const val ADMIN_CONTACT_BUTTON = "admin_contact_button"
+    const val SIGN_OUT_BUTTON = "sign_out_button"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -146,7 +146,7 @@ fun ProfileScreen(
                     authViewModel.signOut(credentialManager)
                     onSignOut()
                   },
-                  modifier = Modifier.testTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON)) {
+                  modifier = Modifier.testTag(ProfileScreenTestTags.SIGN_OUT_BUTTON)) {
                     Text(stringResource(R.string.sign_in_logout_content_description))
                   }
             }

@@ -13,20 +13,20 @@ class ReplacementScreenTest {
 
   @Before
   fun setUp() {
-    composeTestRule.setContent { ReplacementScreen() }
+    composeTestRule.setContent { ReplacementOverviewScreen() }
   }
 
   @Test
   fun displayScreenAndCardList() {
-    composeTestRule.onNodeWithTag(ReplacementTestTags.SCREEN).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(ReplacementTestTags.CARD_LIST).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(ReplacementOverviewTestTags.SCREEN).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(ReplacementOverviewTestTags.CARD_LIST).assertIsDisplayed()
   }
 
   @Test
   fun displayAllCards() {
-    composeTestRule.onNodeWithTag(ReplacementTestTags.CARD_ORGANIZE).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(ReplacementTestTags.CARD_PROCESS).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(ReplacementTestTags.CARD_WAITING).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(ReplacementTestTags.CARD_CONFIRMED).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(ReplacementOverviewTestTags.CARD_ORGANIZE).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(ReplacementOverviewTestTags.CARD_PROCESS).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(ReplacementOverviewTestTags.CARD_WAITING).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(ReplacementOverviewTestTags.CARD_CONFIRMED).assertIsDisplayed()
   }
 }

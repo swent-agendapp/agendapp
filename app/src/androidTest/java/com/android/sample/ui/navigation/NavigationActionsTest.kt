@@ -18,7 +18,7 @@ import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.map.MapScreenTestTags
 import com.android.sample.ui.profile.AdminContactScreenTestTags
 import com.android.sample.ui.profile.ProfileScreenTestTags
-import com.android.sample.ui.replacement.ReplacementTestTags
+import com.android.sample.ui.replacement.ReplacementOverviewTestTags
 import com.android.sample.ui.screens.HomeTestTags
 import com.android.sample.ui.screens.HomeTestTags.CALENDAR_BUTTON
 import com.android.sample.ui.settings.SettingsScreenTestTags
@@ -133,7 +133,7 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
     composeTestRule.onNodeWithTag(HomeTestTags.REPLACEMENT_BUTTON).assertExists().performClick()
 
     // Validate screen content
-    composeTestRule.onNodeWithTag(ReplacementTestTags.SCREEN).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(ReplacementOverviewTestTags.SCREEN).assertIsDisplayed()
   }
 
   @Test

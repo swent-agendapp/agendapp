@@ -9,10 +9,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.ui.navigation.Screen
+import com.android.sample.ui.replacement.ReplacementOverviewTestTags
 import com.android.sample.ui.replacement.ReplacementPendingListScreen
 import com.android.sample.ui.replacement.ReplacementPendingTestTags
-import com.android.sample.ui.replacement.ReplacementScreen
-import com.android.sample.ui.replacement.ReplacementTestTags
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -43,7 +42,7 @@ class ReplacementNavigationTest {
     }
 
     composeTestRule
-        .onNodeWithTag(ReplacementTestTags.CARD_WAITING)
+        .onNodeWithTag(ReplacementOverviewTestTags.CARD_WAITING)
         .assertIsDisplayed()
         .performClick()
 

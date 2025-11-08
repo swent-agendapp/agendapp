@@ -2,8 +2,8 @@ package com.android.sample.ui.profile
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import com.android.sample.model.authentification.FakeAuthRepository
-import com.android.sample.model.authentification.User
+import com.android.sample.model.authentication.FakeAuthRepository
+import com.android.sample.model.authentication.User
 import org.junit.Rule
 import org.junit.Test
 

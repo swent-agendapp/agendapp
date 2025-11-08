@@ -1,7 +1,7 @@
 package com.android.sample.model.organizationRepositoryTest
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.android.sample.model.authentification.User
+import com.android.sample.model.authentication.User
 import com.android.sample.model.organizations.Organization
 import com.android.sample.model.organizations.OrganizationRepository
 import com.android.sample.utils.FirebaseEmulatedTest

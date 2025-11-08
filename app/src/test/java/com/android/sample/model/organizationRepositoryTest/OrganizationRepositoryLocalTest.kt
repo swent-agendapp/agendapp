@@ -1,6 +1,6 @@
 package com.android.sample.model.organizationRepositoryTest
 
-import com.android.sample.model.authentification.User
+import com.android.sample.model.authentication.User
 import com.android.sample.model.organizations.Organization
 import com.android.sample.model.organizations.OrganizationRepositoryLocal
 import kotlinx.coroutines.runBlocking

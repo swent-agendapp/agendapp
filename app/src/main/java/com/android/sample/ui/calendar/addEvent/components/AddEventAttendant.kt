@@ -123,9 +123,7 @@ fun AddEventAttendantScreen(
       },
       bottomBar = {
         BottomNavigationButtons(
-            onNext = {
-              onCreate()
-            },
+            onNext = { onCreate() },
             onBack = onBack,
             backButtonText = stringResource(R.string.goBack),
             nextButtonText = stringResource(R.string.create),

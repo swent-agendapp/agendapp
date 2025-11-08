@@ -140,14 +140,8 @@
     <string name="replacement_to_process_section_title">Zu bearbeitende Vertretungen</string>
     <string name="replacement_waiting_answer_section_title">Warten auf eine Antwort</string>
     <string name="replacement_process_button">Bearbeiten</string>
-    <plurals name="replacement_no_response_count">
-        <item quantity="one">%d ohne Antwort</item>
-        <item quantity="other">%d ohne Antwort</item>
-    </plurals>
-    <plurals name="replacement_declined_count">
-        <item quantity="one">%d abgelehnt</item>
-        <item quantity="other">%d abgelehnt</item>
-    </plurals>
+    <string name="replacement_no_response_label">%1$d ohne Antwort</string>
+    <string name="replacement_declined_label">%1$d abgelehnt</string>
     <string name="replacement_pending_people_title">Ohne Antwort</string>
     <string name="replacement_declined_people_title">Abgelehnt</string>
     <string name="replacement_people_dialog_close">Schließen</string>

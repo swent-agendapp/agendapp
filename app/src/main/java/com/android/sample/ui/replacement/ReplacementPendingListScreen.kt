@@ -32,7 +32,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -258,11 +257,7 @@ fun ReplacementWaitingCard(replacements: List<Replacement>) {
                 enabled = pending.isNotEmpty(),
                 onClick = { showPendingDialog = true },
                 label = {
-                  Text(
-                      pluralStringResource(
-                          id = R.plurals.replacement_no_response_count,
-                          count = pending.size,
-                          pending.size))
+                  Text(stringResource(id = R.string.replacement_no_response_label, pending.size))
                 },
                 leadingIcon = {
                   Icon(
@@ -270,15 +265,12 @@ fun ReplacementWaitingCard(replacements: List<Replacement>) {
                       contentDescription = null,
                       tint = MaterialTheme.colorScheme.tertiary)
                 })
+
             AssistChip(
                 enabled = declined.isNotEmpty(),
                 onClick = { showDeclinedDialog = true },
                 label = {
-                  Text(
-                      pluralStringResource(
-                          id = R.plurals.replacement_declined_count,
-                          count = declined.size,
-                          declined.size))
+                  Text(stringResource(id = R.string.replacement_declined_label, declined.size))
                 },
                 leadingIcon = {
                   Icon(

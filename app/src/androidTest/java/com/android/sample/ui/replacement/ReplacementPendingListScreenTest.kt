@@ -60,10 +60,8 @@ class ReplacementPendingListScreenTest {
   @Test
   fun waitingSection_displaysPendingAndDeclinedCounts() {
     val context = InstrumentationRegistry.getInstrumentation().targetContext
-    val noResponseText =
-        context.resources.getQuantityString(R.plurals.replacement_no_response_count, 1, 1)
-    val declinedText =
-        context.resources.getQuantityString(R.plurals.replacement_declined_count, 1, 1)
+    val noResponseText = context.getString(R.string.replacement_no_response_label, 1)
+    val declinedText = context.getString(R.string.replacement_declined_label, 1)
 
     composeTestRule.onNodeWithText(noResponseText).assertIsDisplayed()
     composeTestRule.onNodeWithText(declinedText).assertIsDisplayed()
@@ -72,10 +70,8 @@ class ReplacementPendingListScreenTest {
   @Test
   fun clickingChips_opensDialogsWithCorrectPeople() {
     val context = InstrumentationRegistry.getInstrumentation().targetContext
-    val noResponseText =
-        context.resources.getQuantityString(R.plurals.replacement_no_response_count, 1, 1)
-    val declinedText =
-        context.resources.getQuantityString(R.plurals.replacement_declined_count, 1, 1)
+    val noResponseText = context.getString(R.string.replacement_no_response_label, 1)
+    val declinedText = context.getString(R.string.replacement_declined_label, 1)
     val closeText = context.getString(R.string.replacement_people_dialog_close)
 
     composeTestRule.onNodeWithText(noResponseText).performClick()

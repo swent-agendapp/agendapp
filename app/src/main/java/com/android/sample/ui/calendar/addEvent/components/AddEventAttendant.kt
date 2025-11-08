@@ -124,7 +124,6 @@ fun AddEventAttendantScreen(
       bottomBar = {
         BottomNavigationButtons(
             onNext = {
-              addEventViewModel.addEvent()
               onCreate()
             },
             onBack = onBack,

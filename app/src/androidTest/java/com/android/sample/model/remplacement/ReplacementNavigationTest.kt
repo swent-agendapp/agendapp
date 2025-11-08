@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.ui.navigation.Screen
+import com.android.sample.ui.replacement.ReplacementOverviewScreen
 import com.android.sample.ui.replacement.ReplacementOverviewTestTags
 import com.android.sample.ui.replacement.ReplacementPendingListScreen
 import com.android.sample.ui.replacement.ReplacementPendingTestTags
@@ -28,7 +29,7 @@ class ReplacementNavigationTest {
 
       NavHost(navController = navController, startDestination = Screen.ReplacementOverview.route) {
         composable(Screen.ReplacementOverview.route) {
-          ReplacementScreen(
+          ReplacementOverviewScreen(
               onOrganizeClick = {},
               onProcessClick = {},
               onWaitingConfirmationClick = {

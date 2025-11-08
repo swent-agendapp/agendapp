@@ -137,5 +137,9 @@
     <string name="replacement_requests_subtitle">Vertretungen, die auf Bestätigung warten</string>
     <string name="replacement_substituted_label">Abwesende Person: %1$s</string>
     <string name="replacement_substitute_label">Vertretende Person: %1$s</string>
+    <string name="edit_event_time_recurrence_title">Zeit und Wiederholung des Ereignisses bearbeiten</string>
+    <string name="edit_event_confirmation_title">Bestätigung der Ereignisbearbeitung</string>
+    <string name="edit_event_confirmation_message">Bitte bestätigen Sie die Änderungen an Ihrem Ereignis</string>
+    <string name="common_finish">Fertigstellen</string>
 
 </resources>

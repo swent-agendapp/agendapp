@@ -136,6 +136,10 @@
     <string name="top_bar_logout_content_description">Log out</string>
     <!-- Map -->
     <string name="delimit_organization_title">Delimit your organisation</string>
+    <string name="edit_event_time_recurrence_title">Edit Event Time and Recurrence Selection</string>
+    <string name="edit_event_confirmation_title">Edit Event Confirmation</string>
+    <string name="edit_event_confirmation_message">Please confirm your event changes</string>
+    <string name="common_finish">Finish</string>
 </resources>
 
 

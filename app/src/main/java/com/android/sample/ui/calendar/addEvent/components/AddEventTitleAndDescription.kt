@@ -30,16 +30,25 @@ import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.calendar.components.ValidatingTextField
 import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.theme.PaddingExtraLarge
+import com.android.sample.ui.theme.WeightVeryHeavy
 
 private const val DESCRIPTION_FIELD_MIN_LINES = 12
 
+/**
+ * First step of the event creation flow.
+ *
+ * Lets the user input the event title and description. Validation: both fields must be non-blank to
+ * enable the Next button.
+ *
+ * @param onNext Triggered when validation passes and the user moves to step 2.
+ * @param onCancel Triggered when the user cancels the flow entirely.
+ */
 @Composable
 fun AddEventTitleAndDescriptionScreen(
     addEventViewModel: AddEventViewModel = viewModel(),
     onNext: () -> Unit = {},
     onCancel: () -> Unit = {},
 ) {
-
   val newEventUIState by addEventViewModel.uiState.collectAsState()
   val titleAndDescValid by
       remember(newEventUIState) {
@@ -62,7 +71,7 @@ fun AddEventTitleAndDescriptionScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround) {
               Box(
-                  modifier = Modifier.weight(1f).fillMaxWidth(),
+                  modifier = Modifier.weight(WeightVeryHeavy).fillMaxWidth(),
                   contentAlignment = Alignment.Center) {
                     Text(
                         stringResource(R.string.enterTitleAndDescription),
@@ -70,7 +79,7 @@ fun AddEventTitleAndDescriptionScreen(
                         style = MaterialTheme.typography.headlineMedium,
                         modifier = Modifier.testTag(AddEventTestTags.INSTRUCTION_TEXT))
                   }
-              Column(modifier = Modifier.weight(1f)) {
+              Column(modifier = Modifier.weight(WeightVeryHeavy)) {
                 ValidatingTextField(
                     label = stringResource(R.string.eventTitle),
                     placeholder = stringResource(R.string.eventTitlePlaceholder),

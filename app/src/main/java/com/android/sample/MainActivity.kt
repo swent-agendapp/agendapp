@@ -28,8 +28,9 @@ import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
 import com.android.sample.ui.profile.AdminContactScreen
 import com.android.sample.ui.profile.ProfileScreen
+import com.android.sample.ui.replacement.ReplacementOverviewScreen
 import com.android.sample.ui.replacement.ReplacementPendingListScreen
-import com.android.sample.ui.replacement.organize.OrganizeReplacementScreen
+import com.android.sample.ui.replacement.organize.ReplacementOrganizeScreen
 import com.android.sample.ui.screens.HomeScreen
 import com.android.sample.ui.settings.SettingsScreen
 import com.android.sample.ui.theme.SampleAppTheme
@@ -118,15 +119,23 @@ fun Agendapp(
             onCancel = { navigationActions.navigateBack() })
       }
     }
-
     // Replacement Overview Screen
-    composable(Screen.ReplacementOverview.route) {
-      ReplacementScreen(
-          onWaitingConfirmationClick = { navigationActions.navigateTo(Screen.ReplacementPending) })
-    }
-
-    // Pending Replacement Screen
-    composable(Screen.ReplacementPending.route) { ReplacementPendingListScreen() }
+    navigation(
+        startDestination = Screen.ReplacementOverview.route,
+        route = Screen.ReplacementOverview.name) {
+          composable(Screen.ReplacementOverview.route) {
+            ReplacementOverviewScreen(
+                onOrganizeClick = { navigationActions.navigateTo(Screen.ReplacementOrganize) },
+                onWaitingConfirmationClick = {
+                  navigationActions.navigateTo(Screen.ReplacementPending)
+                })
+          }
+          composable(Screen.ReplacementOrganize.route) {
+            ReplacementOrganizeScreen(onCancel = { navigationActions.navigateBack() })
+          }
+          // Pending Replacement Screen
+          composable(Screen.ReplacementPending.route) { ReplacementPendingListScreen() }
+        }
 
     // Settings Graph
     navigation(startDestination = Screen.Settings.route, route = Screen.Settings.name) {

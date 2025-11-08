@@ -11,16 +11,19 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.credentials.CredentialManager
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.SpacingExtraLarge
 import com.android.sample.ui.theme.SpacingLarge
+import com.github.se.bootcamp.ui.authentication.SignInViewModel
 
 object ProfileScreenTestTags {
   const val PROFILE_SCREEN = "profile_screen"
@@ -38,7 +41,10 @@ object ProfileScreenTestTags {
 @Composable
 fun ProfileScreen(
     onNavigateBack: () -> Unit = {},
-    profileViewModel: ProfileViewModel = viewModel()
+    profileViewModel: ProfileViewModel = viewModel(),
+    authViewModel: SignInViewModel = viewModel(),
+    credentialManager: CredentialManager = CredentialManager.create(LocalContext.current),
+    onSignOut: () -> Unit = {}
 ) {
   val uiState by profileViewModel.uiState.collectAsState()
   var isEditMode by remember { mutableStateOf(false) }
@@ -132,6 +138,17 @@ fun ProfileScreen(
                   error = phoneError,
                   keyboardType = KeyboardType.Phone,
                   testTag = ProfileScreenTestTags.PHONE_FIELD)
+
+              Spacer(Modifier.height(SpacingLarge))
+
+              Button(
+                  onClick = {
+                    authViewModel.signOut(credentialManager)
+                    onSignOut()
+                  },
+                  modifier = Modifier.testTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON)) {
+                    Text(stringResource(R.string.sign_in_logout_content_description))
+                  }
             }
       }
 }

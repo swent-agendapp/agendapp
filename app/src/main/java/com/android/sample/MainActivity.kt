@@ -11,10 +11,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.android.sample.model.calendar.EventRepositoryLocal
 import com.android.sample.model.organization.EmployeeRepositoryFirebase
 import com.android.sample.model.organization.EmployeeRepositoryProvider
 import com.android.sample.ui.calendar.AddEventAttendantScreen
@@ -23,6 +26,9 @@ import com.android.sample.ui.calendar.AddEventTimeAndRecurrenceScreen
 import com.android.sample.ui.calendar.AddEventTitleAndDescriptionScreen
 import com.android.sample.ui.calendar.AddEventViewModel
 import com.android.sample.ui.calendar.CalendarScreen
+import com.android.sample.ui.calendar.EditEventAttendantScreen
+import com.android.sample.ui.calendar.EditEventScreen
+import com.android.sample.ui.calendar.EditEventViewModel
 import com.android.sample.ui.map.MapScreen
 import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
@@ -65,6 +71,7 @@ class MainActivity : ComponentActivity() {
   }
 }
 
+// Assisted by AI
 /**
  * Root composable containing the navigation graph for the application. This function defines all
  * available routes and how composables are connected.
@@ -74,6 +81,10 @@ fun Agendapp(modifier: Modifier = Modifier) {
   val navController = rememberNavController()
   val navigationActions = NavigationActions(navController)
   val addEventViewModel: AddEventViewModel = viewModel()
+
+  // Local ViewModel with local repository for Edit Event screen
+  val localRepository = EventRepositoryLocal(preloadSampleData = true)
+  val localViewModel = EditEventViewModel(localRepository)
 
   NavHost(
       navController = navController, startDestination = Screen.Home.route, modifier = modifier) {
@@ -151,6 +162,25 @@ fun Agendapp(modifier: Modifier = Modifier) {
           composable(Screen.Map.route) {
             MapScreen(onGoBack = { navigationActions.navigateBack() })
           }
+        }
+
+        composable(
+            route = Screen.EditEvent.route,
+            arguments = listOf(navArgument("eventId") { type = NavType.StringType })) {
+                backStackEntry ->
+              val eventId = backStackEntry.arguments?.getString("eventId") ?: ""
+
+              EditEventScreen(
+                  editEventViewModel = localViewModel,
+                  eventId = eventId,
+                  onSave = { navigationActions.navigateBack() },
+                  onCancel = { navigationActions.navigateBack() },
+                  onEditParticipants = { navigationActions.navigateToEditParticipants() })
+            }
+        composable(Screen.EditParticipants.route) {
+          EditEventAttendantScreen(
+              onSave = { navigationActions.navigateBack() },
+              onBack = { navigationActions.navigateBack() })
         }
       }
 }

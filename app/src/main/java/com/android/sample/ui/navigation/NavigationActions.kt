@@ -15,7 +15,11 @@ class NavigationActions(val navController: NavHostController) {
 
   /** Navigate to EditEvent screen with eventId parameter. */
   fun navigateToEditEvent(eventId: String) {
-    navController.navigate(Screen.EditEvent.createRoute(eventId))
+    navController.navigate(Screen.EditEvent.createRoute(eventId)) { launchSingleTop = true }
+  }
+
+  fun navigateToEditParticipants() {
+    navController.navigate(Screen.EditParticipants.route) { launchSingleTop = true }
   }
 
   /** Navigate back to previous screen. */

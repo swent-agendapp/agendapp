@@ -1,6 +1,7 @@
 package com.android.sample.ui.calendar
 
 import android.app.TimePickerDialog
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -38,6 +39,7 @@ object EditEventTestTags {
   const val CANCEL_BUTTON = "edit_cancel_button"
   const val EDIT_PARTICIPANTS_BUTTON = "edit_participants_button"
   const val BACK_BUTTON = "edit_back_button"
+    const val EDIT_EVENT_ATTENDANT_ROOT = "edit_event_attendant_root"
 }
 // Spacing data class for consistent spacing values
 // Will be useful
@@ -301,12 +303,14 @@ fun EditEventAttendantScreen(
     onSave: () -> Unit = {},
     onBack: () -> Unit = {},
 ) {
+    Log.d("EditEventAttendant", "Screen loaded!")
   val uiState by editEventViewModel.uiState.collectAsState()
   // Placeholder for all possible participants
   // This would come from a repository or service
   val allParticipants = listOf("Alice", "Bob", "Charlie", "David", "Eve", "Frank")
 
   Scaffold(
+      modifier = Modifier.testTag(EditEventTestTags.EDIT_EVENT_ATTENDANT_ROOT),
       topBar = {
         TopTitleBar(title = stringResource(R.string.edit_event_participants_screen_title))
       },

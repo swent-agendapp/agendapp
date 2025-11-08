@@ -4,7 +4,6 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import com.android.sample.ui.screens.EditEventScreen
 import com.android.sample.ui.screens.HomeScreen
 import org.junit.Rule
 import org.junit.Test
@@ -34,16 +33,5 @@ class UiTests {
     assert(editClicked)
     assert(calendarClicked)
     assert(settingsClicked)
-  }
-
-  @Test
-  fun editEventScreen_showsContent_andBackWorks() {
-    var backClicked = false
-    composeTestRule.setContent {
-      EditEventScreen(eventId = "E123", onNavigateBack = { backClicked = true })
-    }
-    composeTestRule.onNodeWithText("Editing event ID: E123").assertIsDisplayed()
-    composeTestRule.onNodeWithText("Back").performClick()
-    assert(backClicked)
   }
 }

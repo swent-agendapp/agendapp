@@ -18,6 +18,7 @@ object HomeTestTags {
   const val SETTINGS_BUTTON = "settings_button"
   const val MAP_BUTTON = "map_button"
   const val REPLACEMENT_BUTTON = "replacement_button"
+    const val EDIT_BUTTON = "edit_button"
 }
 
 /** Home screen with navigation buttons for other screens. */
@@ -34,7 +35,9 @@ fun HomeScreen(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
-          Button(onClick = { onNavigateToEdit("E001") }) {
+          Button(
+              modifier = Modifier.testTag(HomeTestTags.EDIT_BUTTON),
+              onClick = { onNavigateToEdit("E001") }) {
             Text(stringResource(R.string.home_go_to_edit_event))
           }
           Spacer(modifier = Modifier.height(SpacingMedium))

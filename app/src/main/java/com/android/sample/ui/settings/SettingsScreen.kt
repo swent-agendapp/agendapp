@@ -64,7 +64,7 @@ fun SettingsScreen(
                   onClick = onNavigateToUserProfile)
 
               SettingTab(
-                  title = stringResource(R.string.admin_contact_title),
+                  title = stringResource(R.string.settings_admin_info_button),
                   testTag = SettingsScreenTestTags.ADMIN_BUTTON,
                   onClick = onNavigateToAdminInfo)
 

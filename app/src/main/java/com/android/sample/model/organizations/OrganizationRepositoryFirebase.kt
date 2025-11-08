@@ -1,6 +1,6 @@
 package com.android.sample.model.organizations
 
-import com.android.sample.model.authentification.User
+import com.android.sample.model.authentication.User
 import com.android.sample.model.constants.FirestoreConstants
 import com.android.sample.model.firestoreMappers.OrganizationMapper
 import com.google.firebase.firestore.FirebaseFirestore

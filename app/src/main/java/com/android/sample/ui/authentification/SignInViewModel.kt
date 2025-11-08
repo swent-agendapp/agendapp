@@ -8,7 +8,7 @@ import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.sample.R
-import com.android.sample.model.authentification.User
+import com.android.sample.model.authentication.User
 import com.android.sample.model.authorization.AuthorizationService
 import com.android.sample.model.organization.Role
 import com.github.se.bootcamp.model.authentication.AuthRepository

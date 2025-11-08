@@ -1,6 +1,6 @@
 package com.android.sample.model.firestoreMappersTests
 
-import com.android.sample.model.authentification.User
+import com.android.sample.model.authentication.User
 import com.android.sample.model.firestoreMappers.UserMapper
 import com.google.firebase.firestore.DocumentSnapshot
 import org.junit.Assert.*

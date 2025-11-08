@@ -91,7 +91,7 @@ fun AddEventTimeAndRecurrenceScreen(
                   }
 
               Column(modifier = Modifier.weight(1f)) {
-                if (!recurrenceOptions.isEmpty()) {
+                if (recurrenceOptions.isNotEmpty()) {
                   ExposedDropdownMenuBox(
                       expanded = expanded, onExpandedChange = { expanded = !expanded }) {
                         OutlinedTextField(

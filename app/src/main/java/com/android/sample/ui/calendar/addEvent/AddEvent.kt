@@ -13,6 +13,7 @@ import com.android.sample.ui.calendar.addEvent.components.AddEventTitleAndDescri
 
 // Assisted by AI
 
+/** Contains the test tags used across the Add Event screen UI. */
 object AddEventTestTags {
   const val INSTRUCTION_TEXT = "instruction_text"
   const val TITLE_TEXT_FIELD = "title_text_field"
@@ -41,6 +42,17 @@ object AddEventTestTags {
       }
 }
 
+/**
+ * Entry-point composable for the Add Event feature.
+ *
+ * Displays a sequential multi-step wizard using a local `currentStep` state. Screens never navigate
+ * by themselves — instead they call `onNext()` / `onBack()` and this composable decides which
+ * screen to show.
+ *
+ * @param addEventViewModel Shared ViewModel holding the draft event data.
+ * @param onFinish Callback triggered when the workflow is completed.
+ * @param onCancel Callback triggered when the user cancels the flow.
+ */
 @Composable
 fun AddEventScreen(
     addEventViewModel: AddEventViewModel = viewModel(),

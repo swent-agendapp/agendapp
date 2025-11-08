@@ -165,8 +165,7 @@ fun Agendapp(
       }
       // User profile Screen
       composable(Screen.Profile.route) {
-        ProfileScreen(
-            onNavigateBack = { navigationActions.navigateBack() })
+        ProfileScreen(onNavigateBack = { navigationActions.navigateBack() })
       }
 
       // Admin contact Screen

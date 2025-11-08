@@ -1,9 +1,10 @@
 package com.android.sample.ui.profile
 
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -13,8 +14,11 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
-import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import com.android.sample.R
+import com.android.sample.ui.theme.PaddingMedium
+import com.android.sample.ui.theme.SpacingLarge
+import com.android.sample.ui.theme.SpacingSmall
 
 object AdminContactScreenTestTags {
   const val ADMIN_SCREEN_PROFILE = "admin_contact_screen"
@@ -35,43 +39,35 @@ object AdminInformation {
  *
  * @param onNavigateBack Callback to navigate back to previous screen
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdminContactScreen(onNavigateBack: () -> Unit = {}) {
   val context = LocalContext.current
 
-  Surface(
-      modifier =
-          Modifier.fillMaxSize().semantics {
-            testTag = AdminContactScreenTestTags.ADMIN_SCREEN_PROFILE
-          }) {
+  Scaffold(
+      topBar = {
+        TopAppBar(
+            title = { Text(stringResource(R.string.admin_contact_title)) },
+            navigationIcon = {
+              IconButton(
+                  onClick = onNavigateBack,
+                  modifier = Modifier.testTag(AdminContactScreenTestTags.BACK_BUTTON)) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.common_back))
+                  }
+            })
+      }) { innerPadding ->
         Column(
             modifier =
-                Modifier.fillMaxSize()
-                    .padding(16.dp)
-                    .testTag(AdminContactScreenTestTags.ADMIN_CONTACT),
-            verticalArrangement = Arrangement.Top,
+                Modifier.fillMaxSize().padding(innerPadding).padding(PaddingMedium).semantics {
+                  testTag = AdminContactScreenTestTags.ADMIN_SCREEN_PROFILE
+                },
             horizontalAlignment = Alignment.CenterHorizontally) {
-              // Back Button
-              Button(
-                  modifier =
-                      Modifier.testTag(AdminContactScreenTestTags.BACK_BUTTON)
-                          .align(Alignment.Start),
-                  onClick = onNavigateBack) {
-                    Text(stringResource(R.string.common_back))
-                  }
-
-              Spacer(modifier = Modifier.height(24.dp))
-
-              // Title
-              Text(
-                  stringResource(R.string.admin_contact_title),
-                  style = MaterialTheme.typography.headlineMedium)
-
-              Spacer(modifier = Modifier.height(24.dp))
 
               // Admin Email
-              Card(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
-                Column(modifier = Modifier.padding(16.dp)) {
+              Card(modifier = Modifier.fillMaxWidth().padding(vertical = SpacingSmall)) {
+                Column(modifier = Modifier.padding(SpacingLarge)) {
                   Text(
                       stringResource(R.string.admin_contact_email_label),
                       style = MaterialTheme.typography.labelMedium)
@@ -83,7 +79,7 @@ fun AdminContactScreen(onNavigateBack: () -> Unit = {}) {
                             val intent =
                                 Intent(
                                         Intent.ACTION_SENDTO,
-                                        Uri.parse("mailto:${AdminInformation.EMAIL}"))
+                                        "mailto:${AdminInformation.EMAIL}".toUri())
                                     .apply {
                                       putExtra(Intent.EXTRA_EMAIL, arrayOf(AdminInformation.EMAIL))
                                       putExtra(
@@ -96,8 +92,8 @@ fun AdminContactScreen(onNavigateBack: () -> Unit = {}) {
               }
 
               // Admin Phone
-              Card(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
-                Column(modifier = Modifier.padding(16.dp)) {
+              Card(modifier = Modifier.fillMaxWidth().padding(vertical = SpacingSmall)) {
+                Column(modifier = Modifier.padding(SpacingLarge)) {
                   Text(
                       stringResource(R.string.admin_contact_phone_label),
                       style = MaterialTheme.typography.labelMedium)
@@ -109,7 +105,7 @@ fun AdminContactScreen(onNavigateBack: () -> Unit = {}) {
                             val intent =
                                 Intent(
                                     Intent.ACTION_DIAL,
-                                    Uri.parse("tel:${AdminInformation.PHONE.replace(" ", "")}"))
+                                    "tel:${AdminInformation.PHONE.replace(" ", "")}".toUri())
                             context.startActivity(intent)
                           })
                 }

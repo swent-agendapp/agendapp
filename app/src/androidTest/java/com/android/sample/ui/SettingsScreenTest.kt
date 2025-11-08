@@ -1,10 +1,13 @@
 package com.android.sample.ui
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.android.sample.ui.settings.SettingsScreen
+import com.android.sample.ui.settings.SettingsScreenTestTags
 import org.junit.Rule
 import org.junit.Test
 
@@ -19,8 +22,11 @@ class SettingsScreenTest {
       SettingsScreen(onNavigateBack = { backClicked = true }, onNavigateToUserProfile = {})
     }
 
-    composeTestRule.onNodeWithText("Settings Screen").assertIsDisplayed()
-    composeTestRule.onNodeWithText("Back").performClick()
+    composeTestRule.onNodeWithTag(SettingsScreenTestTags.ROOT).isDisplayed()
+    composeTestRule
+        .onNodeWithTag(SettingsScreenTestTags.BACK_BUTTON)
+        .assertIsDisplayed()
+        .performClick()
 
     assert(backClicked)
   }

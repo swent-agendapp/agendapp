@@ -23,10 +23,7 @@ class ProfileScreenTest {
     val fakeRepository = FakeAuthRepository(testUser)
     val viewModel = ProfileViewModel(fakeRepository)
 
-    composeTestRule.setContent {
-      ProfileScreen(
-          onNavigateBack = {}, onNavigateToAdminContact = {}, profileViewModel = viewModel)
-    }
+    composeTestRule.setContent { ProfileScreen(onNavigateBack = {}, profileViewModel = viewModel) }
 
     // Check that the fields are displayed in read-only mode
     composeTestRule
@@ -56,10 +53,7 @@ class ProfileScreenTest {
     val fakeRepository = FakeAuthRepository(testUser)
     val viewModel = ProfileViewModel(fakeRepository)
 
-    composeTestRule.setContent {
-      ProfileScreen(
-          onNavigateBack = {}, onNavigateToAdminContact = {}, profileViewModel = viewModel)
-    }
+    composeTestRule.setContent { ProfileScreen(onNavigateBack = {}, profileViewModel = viewModel) }
 
     // Initially, the save button should not be visible
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.SAVE_BUTTON).assertDoesNotExist()
@@ -79,10 +73,7 @@ class ProfileScreenTest {
     val fakeRepository = FakeAuthRepository(testUser)
     val viewModel = ProfileViewModel(fakeRepository)
 
-    composeTestRule.setContent {
-      ProfileScreen(
-          onNavigateBack = {}, onNavigateToAdminContact = {}, profileViewModel = viewModel)
-    }
+    composeTestRule.setContent { ProfileScreen(onNavigateBack = {}, profileViewModel = viewModel) }
 
     // Enter edit mode
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.EDIT_BUTTON).performClick()
@@ -110,31 +101,11 @@ class ProfileScreenTest {
     var backClicked = false
 
     composeTestRule.setContent {
-      ProfileScreen(
-          onNavigateBack = { backClicked = true },
-          onNavigateToAdminContact = {},
-          profileViewModel = viewModel)
+      ProfileScreen(onNavigateBack = { backClicked = true }, profileViewModel = viewModel)
     }
 
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.BACK_BUTTON).performClick()
     assert(backClicked)
-  }
-
-  @Test
-  fun profileScreen_adminContactButtonWorks() {
-    val fakeRepository = FakeAuthRepository(null)
-    val viewModel = ProfileViewModel(fakeRepository)
-    var adminContactClicked = false
-
-    composeTestRule.setContent {
-      ProfileScreen(
-          onNavigateBack = {},
-          onNavigateToAdminContact = { adminContactClicked = true },
-          profileViewModel = viewModel)
-    }
-
-    composeTestRule.onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON).performClick()
-    assert(adminContactClicked)
   }
 
   @Test
@@ -148,10 +119,7 @@ class ProfileScreenTest {
     val fakeRepository = FakeAuthRepository(testUser)
     val viewModel = ProfileViewModel(fakeRepository)
 
-    composeTestRule.setContent {
-      ProfileScreen(
-          onNavigateBack = {}, onNavigateToAdminContact = {}, profileViewModel = viewModel)
-    }
+    composeTestRule.setContent { ProfileScreen(onNavigateBack = {}, profileViewModel = viewModel) }
 
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.EDIT_BUTTON).performClick()
 
@@ -175,10 +143,7 @@ class ProfileScreenTest {
     val fakeRepository = FakeAuthRepository(null)
     val viewModel = ProfileViewModel(fakeRepository)
 
-    composeTestRule.setContent {
-      ProfileScreen(
-          onNavigateBack = {}, onNavigateToAdminContact = {}, profileViewModel = viewModel)
-    }
+    composeTestRule.setContent { ProfileScreen(onNavigateBack = {}, profileViewModel = viewModel) }
 
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.PROFILE_SCREEN).assertIsDisplayed()
   }

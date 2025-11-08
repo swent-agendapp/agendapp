@@ -24,7 +24,6 @@ object AdminContactScreenTestTags {
   const val ADMIN_SCREEN_PROFILE = "admin_contact_screen"
   const val BACK_BUTTON = "back_button"
 
-  const val ADMIN_CONTACT = "Admin Contact"
   const val ADMIN_EMAIL_TEXT = "admin_email_text"
   const val ADMIN_PHONE_TEXT = "admin_phone_text"
 }

@@ -53,10 +53,10 @@ import com.android.sample.ui.theme.CornerRadiusLarge
 @Composable
 fun ValidatingTextField(
     modifier: Modifier = Modifier,
-    value: String = "value",
+    value: String = "",
     onValueChange: (String) -> Unit = {},
-    label: String = "label",
-    testTag: String = "testTag",
+    label: String = "",
+    testTag: String = "",
     isError: Boolean = false,
     errorMessage: String = "",
     singleLine: Boolean = true,

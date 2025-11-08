@@ -38,7 +38,7 @@ fun getMockReplacements(): List<Replacement> {
   return listOf(
       Replacement(
           id = "r1",
-          absentUserId = "haolin.wu@epfl.ch",
+          absentUserId = "haobin.wang@epfl.ch",
           substituteUserId = "timael.andrie@epfl.ch",
           event = eventA,
           status = ReplacementStatus.ToProcess),

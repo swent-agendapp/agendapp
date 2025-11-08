@@ -31,13 +31,14 @@ import com.android.sample.ui.calendar.components.ValidatingTextField
 import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.theme.PaddingExtraLarge
 
+private const val DESCRIPTION_FIELD_MIN_LINES = 12
+
 @Composable
 fun AddEventTitleAndDescriptionScreen(
     addEventViewModel: AddEventViewModel = viewModel(),
     onNext: () -> Unit = {},
     onCancel: () -> Unit = {},
 ) {
-  val DESCRIPTION_MIN_LINES = 12
 
   val newEventUIState by addEventViewModel.uiState.collectAsState()
   val titleAndDescValid by
@@ -92,7 +93,7 @@ fun AddEventTitleAndDescriptionScreen(
                       if (focusState.isFocused) descriptionTouched = true
                     },
                     singleLine = false,
-                    minLines = DESCRIPTION_MIN_LINES)
+                    minLines = DESCRIPTION_FIELD_MIN_LINES)
               }
             }
       },

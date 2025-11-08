@@ -44,71 +44,74 @@ fun EditEventAttendantScreen(
     onSave: () -> Unit = {},
     onBack: () -> Unit = {},
 ) {
-    val uiState by editEventViewModel.uiState.collectAsState()
-    // Placeholder for all possible participants
-    // This would come from a repository or service
-    val allParticipants = listOf("Alice", "Bob", "Charlie", "David", "Eve", "Frank")
+  val uiState by editEventViewModel.uiState.collectAsState()
+  // Placeholder for all possible participants
+  // This would come from a repository or service
+  val allParticipants = listOf("Alice", "Bob", "Charlie", "David", "Eve", "Frank")
 
-    Scaffold(
-        topBar = {
-            TopTitleBar(title = stringResource(R.string.edit_event_participants_screen_title))
-        },
-        content = { paddingValues ->
-            Column(
-                modifier = Modifier.fillMaxSize().padding(horizontal = PaddingHuge).padding(paddingValues),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceAround) {
-                Box(
-                    modifier = Modifier.weight(WeightVeryHeavy).fillMaxWidth(),
-                    contentAlignment = Alignment.Center) {
+  Scaffold(
+      topBar = {
+        TopTitleBar(title = stringResource(R.string.edit_event_participants_screen_title))
+      },
+      content = { paddingValues ->
+        Column(
+            modifier =
+                Modifier.fillMaxSize().padding(horizontal = PaddingHuge).padding(paddingValues),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceAround) {
+              Box(
+                  modifier = Modifier.weight(WeightVeryHeavy).fillMaxWidth(),
+                  contentAlignment = Alignment.Center) {
                     Text(
                         stringResource(R.string.edit_event_select_participants_text),
                         style = MaterialTheme.typography.headlineMedium)
-                }
+                  }
 
-                Card(
-                    modifier = Modifier.weight(WeightVeryHeavy).fillMaxWidth().padding(vertical = PaddingSmall),
-                    shape = RoundedCornerShape(CornerRadiusLarge),
-                    elevation = CardDefaults.cardElevation(defaultElevation = ElevationLow)) {
+              Card(
+                  modifier =
+                      Modifier.weight(WeightVeryHeavy)
+                          .fillMaxWidth()
+                          .padding(vertical = PaddingSmall),
+                  shape = RoundedCornerShape(CornerRadiusLarge),
+                  elevation = CardDefaults.cardElevation(defaultElevation = ElevationLow)) {
                     LazyColumn(modifier = Modifier.fillMaxSize().padding(PaddingMedium)) {
-                        items(allParticipants) { name ->
-                            val isSelected = uiState.participants.contains(name)
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier =
-                                    Modifier.fillMaxWidth()
-                                        .clickable {
-                                            if (isSelected) editEventViewModel.removeParticipant(name)
-                                            else editEventViewModel.addParticipant(name)
-                                        }
-                                        .padding(vertical = PaddingSmall)
-                                        .testTag("${EditEventTestTags.PARTICIPANTS_LIST}_$name")) {
-                                Checkbox(
-                                    checked = isSelected,
-                                    onCheckedChange = { checked ->
-                                        if (checked) editEventViewModel.addParticipant(name)
-                                        else editEventViewModel.removeParticipant(name)
-                                    })
-                                Spacer(modifier = Modifier.width(PaddingSmall))
-                                Text(name)
+                      items(allParticipants) { name ->
+                        val isSelected = uiState.participants.contains(name)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier =
+                                Modifier.fillMaxWidth()
+                                    .clickable {
+                                      if (isSelected) editEventViewModel.removeParticipant(name)
+                                      else editEventViewModel.addParticipant(name)
+                                    }
+                                    .padding(vertical = PaddingSmall)
+                                    .testTag("${EditEventTestTags.PARTICIPANTS_LIST}_$name")) {
+                              Checkbox(
+                                  checked = isSelected,
+                                  onCheckedChange = { checked ->
+                                    if (checked) editEventViewModel.addParticipant(name)
+                                    else editEventViewModel.removeParticipant(name)
+                                  })
+                              Spacer(modifier = Modifier.width(PaddingSmall))
+                              Text(name)
                             }
-                        }
+                      }
                     }
-                }
+                  }
             }
-        },
-        bottomBar = {
-            BottomNavigationButtons(
-                onNext = {
-                    editEventViewModel.saveEditEventChanges()
-                    onSave()
-                },
-                onBack = onBack,
-                backButtonText = stringResource(R.string.common_cancel),
-                nextButtonText = stringResource(R.string.common_save),
-                canGoNext = true,
-                backButtonTestTag = EditEventTestTags.BACK_BUTTON,
-                nextButtonTestTag = EditEventTestTags.SAVE_BUTTON
-            )
-        })
+      },
+      bottomBar = {
+        BottomNavigationButtons(
+            onNext = {
+              editEventViewModel.saveEditEventChanges()
+              onSave()
+            },
+            onBack = onBack,
+            backButtonText = stringResource(R.string.common_cancel),
+            nextButtonText = stringResource(R.string.common_save),
+            canGoNext = true,
+            backButtonTestTag = EditEventTestTags.BACK_BUTTON,
+            nextButtonTestTag = EditEventTestTags.SAVE_BUTTON)
+      })
 }

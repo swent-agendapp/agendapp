@@ -26,8 +26,8 @@ object EditEventTestTags {
 /**
  * Entry point for the Edit Event flow.
  *
- * This composable decides whether to show the main event editor screen
- * or the participants editor screen.
+ * This composable decides whether to show the main event editor screen or the participants editor
+ * screen.
  */
 @Composable
 fun EditEventFlow(
@@ -36,53 +36,50 @@ fun EditEventFlow(
     onFinish: () -> Unit = {},
     onCancel: () -> Unit = {},
 ) {
-    val uiState by editEventViewModel.uiState.collectAsState()
+  val uiState by editEventViewModel.uiState.collectAsState()
 
-    when (uiState.step) {
-        EditEventStep.MAIN -> {
-            EditEventScreen(
-                eventId = eventId,
-                editEventViewModel = editEventViewModel,
-                onSave = {
-                    onFinish()
-                    editEventViewModel.resetUiState()
-                },
-                onCancel = {
-                    onCancel()
-                    editEventViewModel.resetUiState()
-                },
-                onEditParticipants = { editEventViewModel.goToAttendeesStep() }
-            )
-        }
-
-        EditEventStep.ATTENDEES -> {
-            EditEventAttendantScreen(
-                editEventViewModel = editEventViewModel,
-                onSave = { editEventViewModel.goBackToMainStep() },
-                onBack = { editEventViewModel.goBackToMainStep() }
-            )
-        }
+  when (uiState.step) {
+    EditEventStep.MAIN -> {
+      EditEventScreen(
+          eventId = eventId,
+          editEventViewModel = editEventViewModel,
+          onSave = {
+            onFinish()
+            editEventViewModel.resetUiState()
+          },
+          onCancel = {
+            onCancel()
+            editEventViewModel.resetUiState()
+          },
+          onEditParticipants = { editEventViewModel.goToAttendeesStep() })
     }
-
-    // Handle the Android system back button
-    BackHandler(enabled = uiState.step == EditEventStep.ATTENDEES) {
-        editEventViewModel.goBackToMainStep()
+    EditEventStep.ATTENDEES -> {
+      EditEventAttendantScreen(
+          editEventViewModel = editEventViewModel,
+          onSave = { editEventViewModel.goBackToMainStep() },
+          onBack = { editEventViewModel.goBackToMainStep() })
     }
+  }
+
+  // Handle the Android system back button
+  BackHandler(enabled = uiState.step == EditEventStep.ATTENDEES) {
+    editEventViewModel.goBackToMainStep()
+  }
 }
 
 @Preview(showBackground = true, name = "Main Edit Screen")
 @Composable
 fun EditEventFlowMainPreview() {
-    val vm = EditEventViewModel()
-    vm.setTitle("Weekly Team Meeting (preview)")
-    vm.setDescription("Discuss ongoing project progress and next steps. (preview)")
-    EditEventFlow(eventId = "E123", editEventViewModel = vm)
+  val vm = EditEventViewModel()
+  vm.setTitle("Weekly Team Meeting (preview)")
+  vm.setDescription("Discuss ongoing project progress and next steps. (preview)")
+  EditEventFlow(eventId = "E123", editEventViewModel = vm)
 }
 
 @Preview(showBackground = true, name = "Attendees Edit Screen")
 @Composable
 fun EditEventFlowAttendeesPreview() {
-    val vm = EditEventViewModel()
-    vm.setEditStep(EditEventStep.ATTENDEES)
-    EditEventFlow(eventId = "E123", editEventViewModel = vm)
+  val vm = EditEventViewModel()
+  vm.setEditStep(EditEventStep.ATTENDEES)
+  EditEventFlow(eventId = "E123", editEventViewModel = vm)
 }

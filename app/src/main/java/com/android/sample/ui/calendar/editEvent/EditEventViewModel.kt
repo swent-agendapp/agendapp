@@ -1,4 +1,5 @@
 package com.android.sample.ui.calendar.editEvent
+
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -29,99 +30,124 @@ data class EditCalendarEventUIState(
     val step: EditEventStep = EditEventStep.MAIN
 )
 
-enum class EditEventStep { MAIN, ATTENDEES }
+enum class EditEventStep {
+  MAIN,
+  ATTENDEES
+}
 
 class EditEventViewModel(
     private val repository: EventRepository = EventRepositoryProvider.repository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(EditCalendarEventUIState())
-    val uiState: StateFlow<EditCalendarEventUIState> = _uiState.asStateFlow()
+  private val _uiState = MutableStateFlow(EditCalendarEventUIState())
+  val uiState: StateFlow<EditCalendarEventUIState> = _uiState.asStateFlow()
 
-    fun loadEvent(eventId: String) {
-        viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
-            try {
-                val event = repository.getEventById(eventId)
-                if (event != null) {
-                    _uiState.value = _uiState.value.copy(
-                        eventId = event.id,
-                        title = event.title,
-                        description = event.description,
-                        startInstant = event.startDate,
-                        endInstant = event.endDate,
-                        recurrenceMode = event.recurrenceStatus,
-                        participants = event.participants,
-                        isLoading = false
-                    )
-                } else {
-                    _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = "Event not found.")
-                }
-            } catch (e: Exception) {
-                Log.e("EditEventViewModel", "Error loading event: ${e.message}")
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false, errorMessage = "Failed to load event: ${e.message}"
-                )
-            }
+  fun loadEvent(eventId: String) {
+    viewModelScope.launch {
+      _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
+      try {
+        val event = repository.getEventById(eventId)
+        if (event != null) {
+          _uiState.value =
+              _uiState.value.copy(
+                  eventId = event.id,
+                  title = event.title,
+                  description = event.description,
+                  startInstant = event.startDate,
+                  endInstant = event.endDate,
+                  recurrenceMode = event.recurrenceStatus,
+                  participants = event.participants,
+                  isLoading = false)
+        } else {
+          _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = "Event not found.")
         }
+      } catch (e: Exception) {
+        Log.e("EditEventViewModel", "Error loading event: ${e.message}")
+        _uiState.value =
+            _uiState.value.copy(
+                isLoading = false, errorMessage = "Failed to load event: ${e.message}")
+      }
     }
+  }
 
-    fun saveEditEventChanges() {
-        viewModelScope.launch {
-            val s = _uiState.value
-            try {
-                val updated = Event(
-                    id = s.eventId,
-                    title = s.title,
-                    description = s.description,
-                    startDate = s.startInstant,
-                    endDate = s.endInstant,
-                    cloudStorageStatuses = emptySet(),
-                    locallyStoredBy = emptyList(),
-                    personalNotes = null,
-                    participants = s.participants,
-                    version = System.currentTimeMillis(),
-                    recurrenceStatus = s.recurrenceMode,
-                    hasBeenDeleted = false,
-                    color = EventColor.Blue
-                )
-                repository.updateEvent(updated.id, updated)
-            } catch (e: Exception) {
-                Log.e("EditEventViewModel", "Error saving event changes: ${e.message}")
-            }
-        }
+  fun saveEditEventChanges() {
+    viewModelScope.launch {
+      val s = _uiState.value
+      try {
+        val updated =
+            Event(
+                id = s.eventId,
+                title = s.title,
+                description = s.description,
+                startDate = s.startInstant,
+                endDate = s.endInstant,
+                cloudStorageStatuses = emptySet(),
+                locallyStoredBy = emptyList(),
+                personalNotes = null,
+                participants = s.participants,
+                version = System.currentTimeMillis(),
+                recurrenceStatus = s.recurrenceMode,
+                hasBeenDeleted = false,
+                color = EventColor.Blue)
+        repository.updateEvent(updated.id, updated)
+      } catch (e: Exception) {
+        Log.e("EditEventViewModel", "Error saving event changes: ${e.message}")
+      }
     }
+  }
 
-    // --- field updates ---
-    fun setTitle(value: String)         { _uiState.value = _uiState.value.copy(title = value) }
-    fun setDescription(value: String)   { _uiState.value = _uiState.value.copy(description = value) }
-    fun setStartInstant(instant: Instant){ _uiState.value = _uiState.value.copy(startInstant = instant) }
-    fun setEndInstant(instant: Instant) { _uiState.value = _uiState.value.copy(endInstant = instant) }
-    fun setRecurrenceMode(mode: RecurrenceStatus) {
-        _uiState.value = _uiState.value.copy(recurrenceMode = mode)
-    }
+  // --- field updates ---
+  fun setTitle(value: String) {
+    _uiState.value = _uiState.value.copy(title = value)
+  }
 
-    fun addParticipant(name: String) {
-        _uiState.value = _uiState.value.copy(participants = _uiState.value.participants + name)
-    }
-    fun removeParticipant(name: String) {
-        _uiState.value = _uiState.value.copy(participants = _uiState.value.participants - name)
-    }
+  fun setDescription(value: String) {
+    _uiState.value = _uiState.value.copy(description = value)
+  }
 
-    // --- validation ---
-    private fun titleIsBlank() = _uiState.value.title.isBlank()
-    private fun descriptionIsBlank() = _uiState.value.description.isBlank()
-    private fun startAfterEnd() = _uiState.value.startInstant.isAfter(_uiState.value.endInstant)
-    fun allFieldsValid() = !(titleIsBlank() || descriptionIsBlank() || startAfterEnd())
+  fun setStartInstant(instant: Instant) {
+    _uiState.value = _uiState.value.copy(startInstant = instant)
+  }
 
-    // --- step navigation: ONLY via uiState.step ---
-    fun goToAttendeesStep()   { _uiState.value = _uiState.value.copy(step = EditEventStep.ATTENDEES) }
-    fun goBackToMainStep()    { _uiState.value = _uiState.value.copy(step = EditEventStep.MAIN) }
-    fun resetUiState() {
-        _uiState.value = _uiState.value.copy(step = EditEventStep.MAIN)
-    }
+  fun setEndInstant(instant: Instant) {
+    _uiState.value = _uiState.value.copy(endInstant = instant)
+  }
 
-    fun setEditStep(step: EditEventStep) {
-        _uiState.value = _uiState.value.copy(step = step)
-    }
+  fun setRecurrenceMode(mode: RecurrenceStatus) {
+    _uiState.value = _uiState.value.copy(recurrenceMode = mode)
+  }
+
+  fun addParticipant(name: String) {
+    _uiState.value = _uiState.value.copy(participants = _uiState.value.participants + name)
+  }
+
+  fun removeParticipant(name: String) {
+    _uiState.value = _uiState.value.copy(participants = _uiState.value.participants - name)
+  }
+
+  // --- validation ---
+  private fun titleIsBlank() = _uiState.value.title.isBlank()
+
+  private fun descriptionIsBlank() = _uiState.value.description.isBlank()
+
+  private fun startAfterEnd() = _uiState.value.startInstant.isAfter(_uiState.value.endInstant)
+
+  fun allFieldsValid() = !(titleIsBlank() || descriptionIsBlank() || startAfterEnd())
+
+  // --- step navigation: ONLY via uiState.step ---
+  fun goToAttendeesStep() {
+    _uiState.value = _uiState.value.copy(step = EditEventStep.ATTENDEES)
+  }
+
+  fun goBackToMainStep() {
+    _uiState.value = _uiState.value.copy(step = EditEventStep.MAIN)
+  }
+
+  fun resetUiState() {
+    _uiState.value = _uiState.value.copy(step = EditEventStep.MAIN)
+  }
+
+  fun setEditStep(step: EditEventStep) {
+    _uiState.value = _uiState.value.copy(step = step)
+  }
 }

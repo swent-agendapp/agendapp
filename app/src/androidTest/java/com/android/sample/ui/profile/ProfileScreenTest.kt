@@ -159,17 +159,13 @@ class ProfileScreenTest {
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.SIGN_OUT_BUTTON).assertIsDisplayed()
   }
 
-    @Test
-    fun profileScreen_signOutButtonWorks() {
-      var signOutClicked = false
+  @Test
+  fun profileScreen_signOutButtonWorks() {
+    var signOutClicked = false
 
-      composeTestRule.setContent {
-        ProfileScreen(
-          onSignOut = { signOutClicked = true }
-        )
-      }
+    composeTestRule.setContent { ProfileScreen(onSignOut = { signOutClicked = true }) }
 
-      composeTestRule.onNodeWithTag(ProfileScreenTestTags.SIGN_OUT_BUTTON).performClick()
-      assert(signOutClicked)
-    }
+    composeTestRule.onNodeWithTag(ProfileScreenTestTags.SIGN_OUT_BUTTON).performClick()
+    assert(signOutClicked)
+  }
 }

@@ -15,9 +15,6 @@ import com.android.sample.Agendapp
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
-import com.android.sample.ui.map.MapScreenTestTags
-import com.android.sample.ui.profile.AdminContactScreenTestTags
-import com.android.sample.ui.profile.ProfileScreenTestTags
 import com.android.sample.ui.replacement.ReplacementTestTags
 import com.android.sample.ui.screens.HomeTestTags
 import com.android.sample.ui.screens.HomeTestTags.CALENDAR_BUTTON

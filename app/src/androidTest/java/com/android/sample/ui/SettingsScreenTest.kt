@@ -4,7 +4,6 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.android.sample.ui.settings.SettingsScreen
 import com.android.sample.ui.settings.SettingsScreenTestTags
@@ -18,9 +17,7 @@ class SettingsScreenTest {
   @Test
   fun settingsScreen_displaysAndBackButtonWorks() {
     var backClicked = false
-    composeTestRule.setContent {
-      SettingsScreen(onNavigateBack = { backClicked = true })
-    }
+    composeTestRule.setContent { SettingsScreen(onNavigateBack = { backClicked = true }) }
 
     composeTestRule.onNodeWithTag(SettingsScreenTestTags.ROOT).isDisplayed()
     composeTestRule
@@ -39,9 +36,9 @@ class SettingsScreenTest {
     }
 
     composeTestRule
-      .onNodeWithTag(SettingsScreenTestTags.PROFILE_BUTTON)
-      .assertIsDisplayed()
-      .performClick()
+        .onNodeWithTag(SettingsScreenTestTags.PROFILE_BUTTON)
+        .assertIsDisplayed()
+        .performClick()
 
     assert(profileClicked)
   }
@@ -49,14 +46,12 @@ class SettingsScreenTest {
   @Test
   fun settingsScreen_adminButtonWorks() {
     var adminClicked = false
-    composeTestRule.setContent {
-      SettingsScreen(onNavigateToAdminInfo = { adminClicked = true })
-    }
+    composeTestRule.setContent { SettingsScreen(onNavigateToAdminInfo = { adminClicked = true }) }
 
     composeTestRule
-      .onNodeWithTag(SettingsScreenTestTags.ADMIN_BUTTON)
-      .assertIsDisplayed()
-      .performClick()
+        .onNodeWithTag(SettingsScreenTestTags.ADMIN_BUTTON)
+        .assertIsDisplayed()
+        .performClick()
 
     assert(adminClicked)
   }
@@ -69,9 +64,9 @@ class SettingsScreenTest {
     }
 
     composeTestRule
-      .onNodeWithTag(SettingsScreenTestTags.MAP_SETTINGS_BUTTON)
-      .assertIsDisplayed()
-      .performClick()
+        .onNodeWithTag(SettingsScreenTestTags.MAP_SETTINGS_BUTTON)
+        .assertIsDisplayed()
+        .performClick()
 
     assert(mapSettingsClicked)
   }

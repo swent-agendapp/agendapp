@@ -34,7 +34,7 @@ object ProfileScreenTestTags {
   const val SAVE_BUTTON = "save_button"
   const val CANCEL_BUTTON = "cancel_button"
   const val EDIT_BUTTON = "edit_button"
-    const val SIGN_OUT_BUTTON = "sign_out_button"
+  const val SIGN_OUT_BUTTON = "sign_out_button"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

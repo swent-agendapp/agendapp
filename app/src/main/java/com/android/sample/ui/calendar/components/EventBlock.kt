@@ -1,6 +1,7 @@
 package com.android.sample.ui.calendar.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -76,7 +77,8 @@ fun EventBlock(
         LocalDate, // used to compute the visible portion of events that may span multiple days
     startTime: LocalTime = CalendarDefaults.DefaultStartTime,
     endTime: LocalTime = CalendarDefaults.DefaultEndTime,
-    columnWidthDp: Dp = defaultGridContentDimensions().defaultColumnWidthDp
+    columnWidthDp: Dp = defaultGridContentDimensions().defaultColumnWidthDp,
+    onEventClick: (Event) -> Unit = {}
 ) {
   // Later : place this "filter" logic in "EventOverlapHandling", which will call this EventBlock
   // Filter events for the current day and time range using the helper
@@ -102,7 +104,8 @@ fun EventBlock(
         event = event,
         topOffset = topOffset,
         eventHeight = eventHeight,
-        columnWidthDp = columnWidthDp)
+        columnWidthDp = columnWidthDp,
+        onEventClick = onEventClick)
   }
 }
 
@@ -121,7 +124,8 @@ private fun DrawEventBlock(
     event: Event,
     topOffset: Dp,
     eventHeight: Dp,
-    columnWidthDp: Dp
+    columnWidthDp: Dp,
+    onEventClick: (Event) -> Unit = {}
 ) {
   // Event styling
   val backgroundColor = event.color.toComposeColor()
@@ -142,6 +146,7 @@ private fun DrawEventBlock(
               .clip(RoundedCornerShape(cornerRadius))
               .background(backgroundColor)
               .padding(start = 4.dp, top = 4.dp, end = 4.dp)
+              .clickable { onEventClick(event) }
               .testTag("${CalendarScreenTestTags.EVENT_BLOCK}_${event.title}"),
       // Later for testing : .testTag("EventView_${event.id}")
       // Later : handle onTap and onLongPress

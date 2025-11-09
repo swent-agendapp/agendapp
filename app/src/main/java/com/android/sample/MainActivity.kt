@@ -1,6 +1,7 @@
 package com.android.sample
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +24,7 @@ import com.android.sample.ui.calendar.AddEventTimeAndRecurrenceScreen
 import com.android.sample.ui.calendar.AddEventTitleAndDescriptionScreen
 import com.android.sample.ui.calendar.AddEventViewModel
 import com.android.sample.ui.calendar.CalendarScreen
+import com.android.sample.ui.calendar.eventOverview.EventOverviewScreen
 import com.android.sample.ui.map.MapScreen
 import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
@@ -135,7 +137,22 @@ fun Agendapp(modifier: Modifier = Modifier) {
         }
         navigation(startDestination = Screen.Calendar.route, route = "Calendar") {
           composable(Screen.Calendar.route) {
-            CalendarScreen(onCreateEvent = { navigationActions.navigateTo(Screen.AddEventTitle) })
+            CalendarScreen(
+                onCreateEvent = { navigationActions.navigateTo(Screen.AddEventTitle) },
+                onEventClick = { event -> navigationActions.navigateToEventOverview(event.id) })
+          }
+          composable(Screen.EventOverview.route) { navBackStackEntry ->
+            // Get the Event id from the arguments
+            val eventId = navBackStackEntry.arguments?.getString("eventId")
+
+            // Create the Overview screen with the Event id
+            eventId?.let {
+              EventOverviewScreen(
+                  eventId = eventId, onBackClick = { navigationActions.navigateBack() })
+            }
+                ?: run {
+                  Log.e("EventOverviewScreen", "Event id is null")
+                }
           }
         }
         navigation(startDestination = Screen.ReplacementOverview.route, route = "Replacement") {

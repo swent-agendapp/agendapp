@@ -22,6 +22,7 @@ val SpacingLarge = 16.dp
 val SpacingExtraLarge = 20.dp
 
 // Weights
+const val WeightVeryLight = 0.1f
 const val WeightLight = 0.3f
 const val WeightMedium = 0.5f
 const val WeightHeavy = 0.7f

@@ -1,6 +1,7 @@
 package com.android.sample
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,6 +28,7 @@ import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.organization.EmployeeRepositoryFirebase
 import com.android.sample.model.organization.EmployeeRepositoryProvider
 import com.android.sample.ui.calendar.CalendarScreen
+import com.android.sample.ui.calendar.eventOverview.EventOverviewScreen
 import com.android.sample.ui.calendar.addEvent.AddEventScreen
 import com.android.sample.ui.common.BottomBar
 import com.android.sample.ui.common.BottomBarItem
@@ -145,9 +147,24 @@ fun Agendapp(
               }
 
               // Calendar Graph
-              composable(Screen.Calendar.route) {
-                CalendarScreen(onCreateEvent = { navigationActions.navigateTo(Screen.AddEvent) })
-              }
+            composable(Screen.Calendar.route) {
+                CalendarScreen(
+                    onCreateEvent = { navigationActions.navigateTo(Screen.AddEvent) },
+                    onEventClick = { event -> navigationActions.navigateToEventOverview(event.id) })
+            }
+            composable(Screen.EventOverview.route) { navBackStackEntry ->
+                // Get the Event id from the arguments
+                val eventId = navBackStackEntry.arguments?.getString("eventId")
+
+                // Create the Overview screen with the Event id
+                eventId?.let {
+                    EventOverviewScreen(
+                        eventId = eventId, onBackClick = { navigationActions.navigateBack() })
+                }
+                    ?: run {
+                        Log.e("EventOverviewScreen", "Event id is null")
+                    }
+            }
               // Add Event Screen Flow
               navigation(startDestination = Screen.AddEvent.route, route = "Add Event") {
                 composable(Screen.AddEvent.route) {

@@ -141,7 +141,8 @@ fun Agendapp(
       composable(Screen.Profile.route) {
         ProfileScreen(
             onNavigateBack = { navigationActions.navigateBack() },
-            onSignOut = { navigationActions.navigateTo(Screen.Authentication) })
+            onSignOut = { navigationActions.navigateTo(Screen.Authentication) },
+            credentialManager = credentialManager)
       }
 
       // Admin contact Screen

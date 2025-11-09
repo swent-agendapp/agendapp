@@ -149,10 +149,7 @@ fun Agendapp(modifier: Modifier = Modifier) {
             eventId?.let {
               EventOverviewScreen(
                   eventId = eventId, onBackClick = { navigationActions.navigateBack() })
-            }
-                ?: run {
-                  Log.e("EventOverviewScreen", "Event id is null")
-                }
+            } ?: run { Log.e("EventOverviewScreen", "Event id is null") }
           }
         }
         navigation(startDestination = Screen.ReplacementOverview.route, route = "Replacement") {

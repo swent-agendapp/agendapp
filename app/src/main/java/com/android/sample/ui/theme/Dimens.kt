@@ -39,3 +39,8 @@ val ElevationHigh = 12.dp
 // widths and heights
 val widthLarge = 120.dp
 val heightLarge = 60.dp
+
+// Border
+val BorderWidthThin = 1.dp
+val BorderWidthThick = 2.dp
+val BorderWidthExtraThick = 4.dp

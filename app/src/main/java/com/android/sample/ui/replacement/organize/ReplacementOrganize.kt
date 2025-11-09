@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import com.android.sample.ui.replacement.organize.components.SelectEventScreen
 import com.android.sample.ui.replacement.organize.components.SelectSubstitutedScreen
 
 /**
@@ -18,9 +20,13 @@ import com.android.sample.ui.replacement.organize.components.SelectSubstitutedSc
 @Composable
 fun ReplacementOrganizeScreen(onCancel: () -> Unit = {}) {
   // This currentStep be handled by the view model in a complete implementation
-  val currentStep by remember { mutableIntStateOf(1) }
+  var currentStep by remember { mutableIntStateOf(1) }
 
   when (currentStep) {
-    1 -> SelectSubstitutedScreen(onBack = onCancel)
+    1 -> SelectSubstitutedScreen(onBack = onCancel, onSelectEvents = { currentStep++ })
+    2 -> SelectEventScreen(
+           onNext = { /* Navigate to next step */ },
+           onBack = { currentStep-- }
+       )
   }
 }

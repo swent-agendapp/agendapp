@@ -24,9 +24,6 @@ fun ReplacementOrganizeScreen(onCancel: () -> Unit = {}) {
 
   when (currentStep) {
     1 -> SelectSubstitutedScreen(onBack = onCancel, onSelectEvents = { currentStep++ })
-    2 -> SelectEventScreen(
-           onNext = { /* Navigate to next step */ },
-           onBack = { currentStep-- }
-       )
+    2 -> SelectEventScreen(onNext = { /* Navigate to next step */}, onBack = { currentStep-- })
   }
 }

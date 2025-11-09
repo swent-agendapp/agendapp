@@ -30,6 +30,11 @@ data class EditCalendarEventUIState(
     val step: EditEventStep = EditEventStep.MAIN
 )
 
+/**
+ * Enum representing the steps in the Edit Event flow.
+ * - MAIN: The main event editing screen.
+ * - ATTENDEES: The participants editing screen.
+ */
 enum class EditEventStep {
   MAIN,
   ATTENDEES

@@ -6,6 +6,7 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
 import io.mockk.InternalPlatformDsl.toArray
+import kotlinx.coroutines.tasks.await
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -82,7 +83,6 @@ object FirebaseEmulator {
    * Seeds a Google user in the Firebase Auth Emulator using a fake JWT id_token.
    *
    * @param fakeIdToken A JWT-shaped string, must contain at least "sub".
-   * @param email The email address to associate with the account.
    */
   fun createGoogleUser(fakeIdToken: String) {
     val url =
@@ -148,4 +148,10 @@ object FirebaseEmulator {
       Log.d("FirebaseEmulator", "Response received: ${response.toArray()}")
       return response.body.toString()
     }
+
+  /** Signs in to Firebase Auth Emulator with a fake Google ID token. */
+  suspend fun signInWithFakeGoogleUser(fakeIdToken: String) {
+    val credential = com.google.firebase.auth.GoogleAuthProvider.getCredential(fakeIdToken, null)
+    auth.signInWithCredential(credential).await()
+  }
 }

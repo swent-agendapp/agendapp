@@ -1,6 +1,6 @@
 package com.android.sample.model.firestoreMappers
 
-import com.android.sample.model.authentification.User
+import com.android.sample.model.authentication.User
 import com.google.firebase.firestore.DocumentSnapshot
 
 /** Maps Firestore documents to [User] objects and vice versa. */

@@ -1,4 +1,4 @@
-package com.android.sample.model.authentification
+package com.android.sample.model.authentication
 
 /**
  * Data class representing a User.

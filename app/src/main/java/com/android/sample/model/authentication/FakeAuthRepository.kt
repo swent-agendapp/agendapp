@@ -1,4 +1,4 @@
-package com.android.sample.model.authentification
+package com.android.sample.model.authentication
 
 import com.github.se.bootcamp.model.authentication.AuthRepository
 

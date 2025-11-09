@@ -1,6 +1,6 @@
 package com.android.sample.model.organization
 
-import com.android.sample.model.authentification.User
+import com.android.sample.model.authentication.User
 
 data class Employee(
     val user: User = User("", "", "", ""),

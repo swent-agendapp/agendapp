@@ -13,7 +13,9 @@ class AdminContactScreenTest {
   fun adminContactScreen_displaysAdminInformation() {
     composeTestRule.setContent { AdminContactScreen(onNavigateBack = {}) }
 
-    composeTestRule.onNodeWithTag(AdminContactScreenTestTags.ADMIN_CONTACT).assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag(AdminContactScreenTestTags.ADMIN_SCREEN_PROFILE)
+        .assertIsDisplayed()
 
     composeTestRule
         .onNodeWithTag(AdminContactScreenTestTags.ADMIN_EMAIL_TEXT)
@@ -52,7 +54,9 @@ class AdminContactScreenTest {
     composeTestRule.setContent { AdminContactScreen() }
 
     composeTestRule.onNodeWithTag(AdminContactScreenTestTags.BACK_BUTTON).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(AdminContactScreenTestTags.ADMIN_CONTACT).assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag(AdminContactScreenTestTags.ADMIN_SCREEN_PROFILE)
+        .assertIsDisplayed()
 
     composeTestRule
         .onNodeWithTag(AdminContactScreenTestTags.ADMIN_EMAIL_TEXT)

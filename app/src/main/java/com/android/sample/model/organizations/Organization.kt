@@ -1,6 +1,6 @@
 package com.android.sample.model.organizations
 
-import com.android.sample.model.authentification.User
+import com.android.sample.model.authentication.User
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.map.Area
 import java.util.UUID

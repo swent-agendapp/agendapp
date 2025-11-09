@@ -23,7 +23,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.android.sample.R
+import com.android.sample.ui.theme.CornerRadiusLarge
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
@@ -31,10 +33,39 @@ import java.time.ZoneId
 import java.util.Date
 import java.util.Locale
 
+// Assisted by AI
+
+/**
+ * Displays a read-only text field that opens a modal date picker when tapped.
+ *
+ * This composable shows a formatted date in an `OutlinedTextField`. When the user taps on the
+ * field, a `DatePickerDialog` is presented, allowing the user to select a date. Once a date is
+ * selected, the field updates and the selected value is passed upward through the `onDateSelected`
+ * callback.
+ *
+ * @param modifier Optional [Modifier] to customize the layout or behavior of the text field.
+ * @param label The label displayed in the input field (e.g., `"Start date"`).
+ * @param initialInstant Initial date to display in the input field. Defaults to the current date if
+ *   none is provided.
+ * @param onDateSelected Callback invoked when a date is confirmed in the modal. Exposes the
+ *   selected [LocalDate] to the caller for state management or persistence (e.g., ViewModel
+ *   update).
+ *
+ * Example usage:
+ * ```
+ * DatePickerFieldToModal(
+ *     label = "Start Date",
+ *     initialInstant = uiState.startInstant,
+ *     onDateSelected = { newDate ->
+ *         viewModel.onStartDateChanged(newDate)
+ *     }
+ * )
+ * ```
+ */
 @Composable
 fun DatePickerFieldToModal(
     modifier: Modifier = Modifier,
-    label: String = "label",
+    label: String,
     initialInstant: Instant? = null,
     onDateSelected: (LocalDate) -> Unit
 ) {
@@ -45,8 +76,13 @@ fun DatePickerFieldToModal(
       value = selectedDate?.let { convertMillisToDate(it) } ?: "",
       onValueChange = {},
       label = { Text(label) },
-      placeholder = { Text("DD/MM/YYYY") },
-      trailingIcon = { Icon(Icons.Default.DateRange, contentDescription = "Select date") },
+      placeholder = { Text(stringResource(R.string.date_picker_placeholder)) },
+      trailingIcon = {
+        Icon(
+            Icons.Default.DateRange,
+            contentDescription =
+                stringResource(R.string.date_picker_select_date_content_description))
+      },
       modifier =
           modifier.fillMaxWidth().pointerInput(selectedDate) {
             awaitEachGesture {
@@ -57,7 +93,7 @@ fun DatePickerFieldToModal(
               }
             }
           },
-      shape = RoundedCornerShape(12.dp),
+      shape = RoundedCornerShape(CornerRadiusLarge),
       readOnly = true)
 
   if (showModal) {
@@ -74,11 +110,31 @@ fun DatePickerFieldToModal(
   }
 }
 
+/**
+ * Converts UNIX timestamp milliseconds to a human-readable date string formatted as `dd/MM/yyyy`.
+ *
+ * @param millis The date expressed as a UNIX timestamp (milliseconds since epoch).
+ * @return Formatted date string (e.g., `"01/12/2025"`).
+ */
 fun convertMillisToDate(millis: Long): String {
   val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
   return formatter.format(Date(millis))
 }
 
+/**
+ * Displays a modal date picker using Material3's [DatePickerDialog].
+ *
+ * This dialog allows the user to scroll through calendar months and select a date. The dialog
+ * exposes callbacks for date confirmation and dismissal. The dialog is controlled externally
+ * (typically through state in the parent composable).
+ *
+ * @param onDateSelected Callback invoked when the user confirms a date selection. The selected date
+ *   is provided as the UNIX timestamp (in milliseconds), or `null` if no date was selected.
+ * @param onDismiss Callback invoked when the dialog is dismissed without confirmation.
+ *
+ * This composable does not manage UI state (such as dialog visibility); the parent is responsible
+ * for controlling when the dialog is shown.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerModal(onDateSelected: (Long?) -> Unit, onDismiss: () -> Unit) {
@@ -92,10 +148,12 @@ fun DatePickerModal(onDateSelected: (Long?) -> Unit, onDismiss: () -> Unit) {
               onDateSelected(datePickerState.selectedDateMillis)
               onDismiss()
             }) {
-              Text("OK")
+              Text(stringResource(android.R.string.ok))
             }
       },
-      dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel") } }) {
+      dismissButton = {
+        TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) }
+      }) {
         DatePicker(state = datePickerState)
       }
 }

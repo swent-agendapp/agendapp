@@ -1,5 +1,7 @@
 package com.android.sample.model.calendar
 
+import androidx.annotation.StringRes
+import com.android.sample.R
 import com.android.sample.utils.EventColor
 import java.time.Instant
 import java.time.LocalDate
@@ -38,6 +40,7 @@ data class Event(
     val recurrenceStatus: RecurrenceStatus,
     val hasBeenDeleted: Boolean = false,
     val color: EventColor
+    // val notifications: List<String> = emptyList()
 ) {
   // Returns the start date as a LocalDate in the system's default time zone
   val startLocalDate: LocalDate
@@ -91,6 +94,7 @@ fun createEvent(
     personalNotes: String? = null,
     participants: Set<String> = emptySet(),
     color: EventColor = EventColor.Blue
+    // notifications: List<String> = emptyList()
 ): Event {
   // Ensure the end date is not before the start date
   require(!endDate.isBefore(startDate)) { "End date cannot be before start date" }
@@ -105,13 +109,16 @@ fun createEvent(
       participants = participants,
       version = System.currentTimeMillis(),
       recurrenceStatus = RecurrenceStatus.OneTime,
-      color = color)
+      color = color
+      // notifications = notifications
+      )
 }
 
-fun RecurrenceStatus.formatString(): String =
+@StringRes
+fun RecurrenceStatus.labelRes(): Int =
     when (this) {
-      RecurrenceStatus.OneTime -> "One Time"
-      RecurrenceStatus.Weekly -> "Weekly"
-      RecurrenceStatus.Monthly -> "Monthly"
-      RecurrenceStatus.Yearly -> "Yearly"
+      RecurrenceStatus.OneTime -> R.string.recurrence_one_time
+      RecurrenceStatus.Weekly -> R.string.recurrence_weekly
+      RecurrenceStatus.Monthly -> R.string.recurrence_monthly
+      RecurrenceStatus.Yearly -> R.string.recurrence_yearly
     }

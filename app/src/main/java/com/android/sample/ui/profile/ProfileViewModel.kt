@@ -2,7 +2,7 @@ package com.android.sample.ui.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.android.sample.model.authentification.AuthRepositoryProvider
+import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.github.se.bootcamp.model.authentication.AuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

@@ -1,14 +1,11 @@
 package com.android.sample.ui.navigation
 
 import android.Manifest
-import android.app.Instrumentation
-import android.content.Intent
-import android.net.Uri
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.click
+import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onRoot
@@ -16,28 +13,26 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeUp
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.Intents.intending
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import androidx.test.rule.GrantPermissionRule
 import com.android.sample.Agendapp
-import com.android.sample.ui.calendar.AddEventTestTags
+import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
+import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreenTestTags
-import com.android.sample.ui.map.MapScreenTestTags
-import com.android.sample.ui.profile.AdminContactScreenTestTags
-import com.android.sample.ui.profile.AdminInformation
-import com.android.sample.ui.profile.ProfileScreenTestTags
 import com.android.sample.ui.replacement.ReplacementTestTags
 import com.android.sample.ui.screens.HomeTestTags
 import com.android.sample.ui.screens.HomeTestTags.CALENDAR_BUTTON
-import com.android.sample.ui.settings.SettingsScreenTestTags
-import org.hamcrest.CoreMatchers.allOf
+import com.android.sample.utils.FakeCredentialManager
+import com.android.sample.utils.FakeJwtGenerator
+import com.android.sample.utils.FirebaseEmulatedTest
+import com.android.sample.utils.FirebaseEmulator
+import com.github.se.bootcamp.ui.authentication.SignInScreenTestTags
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -48,7 +43,18 @@ import org.junit.runner.RunWith
  */
 @RunWith(AndroidJUnit4::class)
 @MediumTest
-class AgendappNavigationTest {
+class AgendappNavigationTest : FirebaseEmulatedTest() {
+
+  // Timeout for UI authentication operations
+  // This is used to wait for the UI to update after authentication actions
+  val uiAuthWaitTimeOut = 10_000L
+
+  // Create a fake Google ID token for testing
+  val fakeGoogleIdToken =
+      FakeJwtGenerator.createFakeGoogleIdToken("login_test", "12345", email = "test@example.com")
+
+  // Create a FakeCredentialManager with the fake token
+  val fakeCredentialManager = FakeCredentialManager.create(fakeGoogleIdToken)
 
   @get:Rule
   val permissionRule: GrantPermissionRule =
@@ -57,10 +63,50 @@ class AgendappNavigationTest {
 
   @get:Rule val composeTestRule = createComposeRule()
 
+  @Before
+  override fun setUp() {
+    super.setUp()
+    // Ensure a user is signed in before each test (use runBlocking to call suspend function)
+    runBlocking { FirebaseEmulator.signInWithFakeGoogleUser(fakeGoogleIdToken) }
+  }
+
+  @Test
+  fun ensure_sign_in_screen_if_not_signed_in() = runTest {
+    // Sign out user before launching app
+    FirebaseEmulator.auth.signOut()
+
+    // Launch app
+    composeTestRule.setContent { Agendapp(credentialManager = fakeCredentialManager) }
+
+    // Ensure Sign-In screen is displayed
+    composeTestRule.onNodeWithTag(SignInScreenTestTags.LOGIN_MESSAGE).assertIsDisplayed()
+
+    // Perform Sign-In
+    composeTestRule
+        .onNodeWithTag(SignInScreenTestTags.LOGIN_BUTTON)
+        .assertIsDisplayed()
+        .performClick()
+
+    // Wait for sign-in to complete
+    composeTestRule.waitUntil(timeoutMillis = uiAuthWaitTimeOut) {
+      // Verify Home screen is displayed
+      composeTestRule.onNodeWithTag(CALENDAR_BUTTON).isDisplayed()
+    }
+  }
+
+  @Test
+  fun ensure_home_if_signed_in() = runTest {
+
+    // Launch app with user already signed in
+    composeTestRule.setContent { Agendapp() }
+
+    // Verify Home screen is still displayed (user remains signed in)
+    composeTestRule.onNodeWithTag(CALENDAR_BUTTON).assertIsDisplayed()
+  }
+
   /**
    * Scrolls vertically through the calendar until the node with [tag] is visible and can be
-   * interacted with. We keep this logic here (test side) to avoid relying on implementation details
-   * of the Calendar screen and remain black‑box.
+   * interacted with.
    */
   private fun scrollUntilVisible(tag: String, maxAttempts: Int = 2) {
     // The node should exist in the semantics tree, if it doesn't, test data/setup is wrong.
@@ -122,49 +168,55 @@ class AgendappNavigationTest {
   }
 
   @Test
-  fun navigate_to_profile_and_admin_profile_and_back() {
-    composeTestRule.setContent { Agendapp() }
-    // Go to Profile
-    composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).assertExists().performClick()
-    composeTestRule.onNodeWithTag(SettingsScreenTestTags.ROOT).assertExists()
-    composeTestRule
-        .onNodeWithTag(SettingsScreenTestTags.PROFILE_BUTTON)
-        .assertExists()
-        .performClick()
-    composeTestRule.onNodeWithTag(ProfileScreenTestTags.PROFILE_SCREEN).assertIsDisplayed()
-    // Go to Admin Contact
-    composeTestRule
-        .onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON)
-        .assertExists()
-        .performClick()
-    composeTestRule.waitForIdle()
-    composeTestRule
-        .onNodeWithTag(AdminContactScreenTestTags.ADMIN_SCREEN_PROFILE)
-        .assertIsDisplayed()
-    // Back to Profile
-    composeTestRule
-        .onNodeWithTag(AdminContactScreenTestTags.BACK_BUTTON)
-        .assertExists()
-        .performClick()
-    composeTestRule.onNodeWithTag(ProfileScreenTestTags.PROFILE_SCREEN).assertIsDisplayed()
-    // back to Settings
-    composeTestRule.onNodeWithTag(ProfileScreenTestTags.BACK_BUTTON).assertExists().performClick()
-  }
-
-  @Test
-  fun navigate_to_map_and_back() {
+  fun addEventAndResetsTheFieldsTheNextTime() {
     composeTestRule.setContent { Agendapp() }
 
-    composeTestRule.onNodeWithTag(HomeTestTags.MAP_BUTTON).assertExists().performClick()
+    // Go to add event screen
+    composeTestRule.onNodeWithTag(CALENDAR_BUTTON).assertExists().performClick()
+    composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertExists().performClick()
 
-    composeTestRule.onNodeWithTag(MapScreenTestTags.GOOGLE_MAP_SCREEN).assertExists()
-
+    // Validate screen content
+    // Enter title and description
     composeTestRule
-        .onNodeWithTag(MapScreenTestTags.MAP_GO_BACK_BUTTON)
+        .onNodeWithTag(AddEventTestTags.TITLE_TEXT_FIELD)
+        .assertExists()
+        .performTextInput("Test Event")
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.DESCRIPTION_TEXT_FIELD)
+        .assertExists()
+        .performTextInput("Test Description")
+    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
+    // No recurrence end field for one time events
+    composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).assertDoesNotExist()
+    // Enter weekly recurrence
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.RECURRENCE_STATUS_DROPDOWN)
         .assertExists()
         .performClick()
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.recurrenceTag(RecurrenceStatus.Weekly))
+        .assertExists()
+        .performClick()
+    composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
+    // Create event without any assignees
+    composeTestRule.onNodeWithTag(AddEventTestTags.CREATE_BUTTON).assertExists().performClick()
+    // Finish screen
+    composeTestRule.onNodeWithTag(AddEventTestTags.FINISH_BUTTON).assertExists().performClick()
 
-    composeTestRule.onNodeWithTag(HomeTestTags.MAP_BUTTON).assertExists()
+    // Back to calendar screen
+    composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertExists().performClick()
+
+    // Validate that the fields are reset when adding a new event
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.TITLE_TEXT_FIELD)
+        .assertExists()
+        .assertTextContains("")
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.DESCRIPTION_TEXT_FIELD)
+        .assertExists()
+        .assertTextContains("")
   }
 
   /**
@@ -215,77 +267,5 @@ class AgendappNavigationTest {
         .performClick()
 
     composeTestRule.onNodeWithTag(CalendarScreenTestTags.TOP_BAR_TITLE).assertExists()
-  }
-
-  @OptIn(ExperimentalTestApi::class)
-  @Test
-  fun clickingEmail_opensEmailApp() {
-    Intents.init()
-    try {
-
-      composeTestRule.setContent { Agendapp() }
-
-      // Dismiss any initial popups that might block interaction
-      composeTestRule.waitUntilAtLeastOneExists(hasTestTag(HomeTestTags.SETTINGS_BUTTON))
-      composeTestRule.onRoot().performTouchInput { click(Offset(1f, 1f)) }
-      composeTestRule.waitForIdle()
-
-      // Navigate to Profile screen
-      composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).performClick()
-      composeTestRule.onNodeWithTag(SettingsScreenTestTags.PROFILE_BUTTON).performClick()
-      composeTestRule.onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON).performClick()
-      // ✅ Wait for Compose to finish recomposing & window focus to stabilize
-      composeTestRule.waitForIdle()
-      Thread.sleep(500) // <- tiny extra buffer, helps on emulators
-      // Stub out the external email intent (prevent actual launch)
-      intending(hasAction(Intent.ACTION_SENDTO))
-          .respondWith(Instrumentation.ActivityResult(0, null))
-
-      // Click the email field (assuming it's clickable and launches ACTION_SENDTO)
-      composeTestRule.onNodeWithTag(AdminContactScreenTestTags.ADMIN_EMAIL_TEXT).performClick()
-
-      // Verify correct intent sent
-      intended(
-          allOf(
-              hasAction(Intent.ACTION_SENDTO),
-              hasData(Uri.parse("mailto:${AdminInformation.EMAIL}"))))
-    } finally {
-      Intents.release()
-    }
-  }
-
-  @OptIn(ExperimentalTestApi::class)
-  @Test
-  fun clickingPhone_opensDialerApp() {
-    Intents.init()
-    try {
-
-      composeTestRule.setContent { Agendapp() }
-
-      composeTestRule.waitUntilAtLeastOneExists(hasTestTag(HomeTestTags.SETTINGS_BUTTON))
-      composeTestRule.onRoot().performTouchInput { click(Offset(1f, 1f)) }
-      composeTestRule.waitForIdle()
-
-      // Navigate to Profile screen
-      composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).performClick()
-      composeTestRule.onNodeWithTag(SettingsScreenTestTags.PROFILE_BUTTON).performClick()
-      composeTestRule.onNodeWithTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON).performClick()
-      // ✅ Wait for Compose to finish recomposing & window focus to stabilize
-      composeTestRule.waitForIdle()
-      Thread.sleep(500) // <- tiny extra buffer, helps on emulators
-      // Stub out dialer intent
-      intending(hasAction(Intent.ACTION_DIAL)).respondWith(Instrumentation.ActivityResult(0, null))
-
-      // Click the phone field (assuming it's clickable and launches ACTION_DIAL)
-      composeTestRule.onNodeWithTag(AdminContactScreenTestTags.ADMIN_PHONE_TEXT).performClick()
-
-      // Verify correct intent sent
-      intended(
-          allOf(
-              hasAction(Intent.ACTION_DIAL),
-              hasData(Uri.parse("tel:${AdminInformation.PHONE.replace(" ", "")}"))))
-    } finally {
-      Intents.release()
-    }
   }
 }

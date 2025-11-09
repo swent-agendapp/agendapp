@@ -3,6 +3,7 @@ package com.android.sample.ui.profile
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Save
@@ -10,12 +11,19 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
+import androidx.credentials.CredentialManager
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.android.sample.R
+import com.android.sample.ui.theme.PaddingMedium
+import com.android.sample.ui.theme.SpacingExtraLarge
+import com.android.sample.ui.theme.SpacingLarge
+import com.github.se.bootcamp.ui.authentication.SignInViewModel
 
 object ProfileScreenTestTags {
   const val PROFILE_SCREEN = "profile_screen"
@@ -26,14 +34,17 @@ object ProfileScreenTestTags {
   const val SAVE_BUTTON = "save_button"
   const val CANCEL_BUTTON = "cancel_button"
   const val EDIT_BUTTON = "edit_button"
-  const val ADMIN_CONTACT_BUTTON = "admin_contact_button"
+  const val SIGN_OUT_BUTTON = "sign_out_button"
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
     onNavigateBack: () -> Unit = {},
-    onNavigateToAdminContact: () -> Unit = {},
-    profileViewModel: ProfileViewModel = viewModel()
+    profileViewModel: ProfileViewModel = viewModel(),
+    authViewModel: SignInViewModel = viewModel(),
+    credentialManager: CredentialManager = CredentialManager.create(LocalContext.current),
+    onSignOut: () -> Unit = {}
 ) {
   val uiState by profileViewModel.uiState.collectAsState()
   var isEditMode by remember { mutableStateOf(false) }
@@ -43,22 +54,29 @@ fun ProfileScreen(
   var emailError by remember { mutableStateOf<String?>(null) }
   var phoneError by remember { mutableStateOf<String?>(null) }
 
-  Surface(
-      modifier =
-          Modifier.fillMaxSize().semantics { testTag = ProfileScreenTestTags.PROFILE_SCREEN }) {
-        Column(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally) {
-              Button(
-                  modifier =
-                      Modifier.testTag(ProfileScreenTestTags.BACK_BUTTON).align(Alignment.Start),
-                  onClick = onNavigateBack) {
-                    Text("Back")
+  val emailErrorMessage = stringResource(R.string.profile_email_error)
+  val phoneErrorMessage = stringResource(R.string.profile_phone_error)
+
+  Scaffold(
+      topBar = {
+        TopAppBar(
+            title = { Text(stringResource(R.string.profile_screen_title)) },
+            navigationIcon = {
+              IconButton(
+                  onClick = onNavigateBack,
+                  modifier = Modifier.testTag(ProfileScreenTestTags.BACK_BUTTON)) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.common_back))
                   }
-
-              Spacer(Modifier.height(24.dp))
-
+            })
+      }) { innerPadding ->
+        Column(
+            modifier =
+                Modifier.padding(innerPadding).padding(PaddingMedium).fillMaxSize().semantics {
+                  testTag = ProfileScreenTestTags.PROFILE_SCREEN
+                },
+            horizontalAlignment = Alignment.CenterHorizontally) {
               ProfileHeader(
                   isEditMode = isEditMode,
                   onEdit = { isEditMode = true },
@@ -72,10 +90,8 @@ fun ProfileScreen(
                   },
                   onSave = {
                     val (emailValid, phoneValid) = validateInputs(email, phone)
-                    emailError = if (!emailValid) "Please enter a valid email address" else null
-                    phoneError =
-                        if (!phoneValid) "Please enter a valid phone number (min 7 digits)"
-                        else null
+                    emailError = if (!emailValid) emailErrorMessage else null
+                    phoneError = if (!phoneValid) phoneErrorMessage else null
 
                     if (emailValid && phoneValid) {
                       profileViewModel.updateDisplayName(displayName)
@@ -86,19 +102,19 @@ fun ProfileScreen(
                     }
                   })
 
-              Spacer(Modifier.height(24.dp))
+              Spacer(Modifier.height(SpacingExtraLarge))
 
               ProfileTextField(
-                  label = "Display Name",
+                  label = stringResource(R.string.profile_display_name_label),
                   value = displayName,
                   isEditMode = isEditMode,
                   onValueChange = { displayName = it },
                   testTag = ProfileScreenTestTags.DISPLAY_NAME_FIELD)
 
-              Spacer(Modifier.height(16.dp))
+              Spacer(Modifier.height(SpacingLarge))
 
               ProfileTextField(
-                  label = "Email",
+                  label = stringResource(R.string.profile_email_label),
                   value = email,
                   isEditMode = isEditMode,
                   onValueChange = {
@@ -109,10 +125,10 @@ fun ProfileScreen(
                   keyboardType = KeyboardType.Email,
                   testTag = ProfileScreenTestTags.EMAIL_FIELD)
 
-              Spacer(Modifier.height(16.dp))
+              Spacer(Modifier.height(SpacingLarge))
 
               ProfileTextField(
-                  label = "Phone Number",
+                  label = stringResource(R.string.profile_phone_label),
                   value = phone,
                   isEditMode = isEditMode,
                   onValueChange = {
@@ -123,14 +139,15 @@ fun ProfileScreen(
                   keyboardType = KeyboardType.Phone,
                   testTag = ProfileScreenTestTags.PHONE_FIELD)
 
-              Spacer(Modifier.height(24.dp))
+              Spacer(Modifier.height(SpacingLarge))
 
-              OutlinedButton(
-                  modifier =
-                      Modifier.testTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON).fillMaxWidth(),
-                  onClick = onNavigateToAdminContact,
-                  enabled = !isEditMode) {
-                    Text("View Admin Contact")
+              Button(
+                  onClick = {
+                    authViewModel.signOut(credentialManager)
+                    onSignOut()
+                  },
+                  modifier = Modifier.testTag(ProfileScreenTestTags.SIGN_OUT_BUTTON)) {
+                    Text(stringResource(R.string.sign_in_logout_content_description))
                   }
             }
       }
@@ -147,25 +164,34 @@ private fun ProfileHeader(
       modifier = Modifier.fillMaxWidth(),
       horizontalArrangement = Arrangement.SpaceBetween,
       verticalAlignment = Alignment.CenterVertically) {
-        Text("User Profile", style = MaterialTheme.typography.headlineMedium)
+        Text(
+            stringResource(R.string.profile_title), style = MaterialTheme.typography.headlineMedium)
 
         if (isEditMode) {
           Row {
             IconButton(
                 onClick = onCancel,
                 modifier = Modifier.testTag(ProfileScreenTestTags.CANCEL_BUTTON)) {
-                  Icon(Icons.Default.Close, contentDescription = "Cancel")
+                  Icon(
+                      Icons.Default.Close,
+                      contentDescription =
+                          stringResource(R.string.profile_cancel_content_description))
                 }
 
             IconButton(
                 onClick = onSave, modifier = Modifier.testTag(ProfileScreenTestTags.SAVE_BUTTON)) {
-                  Icon(Icons.Default.Save, contentDescription = "Save")
+                  Icon(
+                      Icons.Default.Save,
+                      contentDescription =
+                          stringResource(R.string.profile_save_content_description))
                 }
           }
         } else {
           IconButton(
               onClick = onEdit, modifier = Modifier.testTag(ProfileScreenTestTags.EDIT_BUTTON)) {
-                Icon(Icons.Default.Edit, contentDescription = "Edit")
+                Icon(
+                    Icons.Default.Edit,
+                    contentDescription = stringResource(R.string.profile_edit_content_description))
               }
         }
       }

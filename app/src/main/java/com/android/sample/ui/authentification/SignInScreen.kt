@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -71,7 +72,8 @@ fun SignInScreen(
 
   LaunchedEffect(uiState.user) {
     uiState.user?.let {
-      snackbarHostState.showSnackbar("Login successful!", duration = SnackbarDuration.Long)
+      snackbarHostState.showSnackbar(
+          context.getString(R.string.sign_in_success_message), duration = SnackbarDuration.Long)
       onSignedIn()
     }
   }
@@ -95,7 +97,10 @@ fun SignInScreen(
           IconButton(
               onClick = { authViewModel.signOut(credentialManager = credentialManager) },
               modifier = Modifier.testTag(LOGOUT_BUTTON)) {
-                Icon(imageVector = Icons.Filled.Clear, contentDescription = "SignOut button")
+                Icon(
+                    imageVector = Icons.Filled.Clear,
+                    contentDescription =
+                        stringResource(R.string.sign_in_logout_content_description))
               }
         }
       },
@@ -108,12 +113,12 @@ fun SignInScreen(
           // App Logo Image
           Image(
               painter = painterResource(id = R.drawable.app_logo), // Ensure this drawable exists
-              contentDescription = "App Logo",
+              contentDescription = stringResource(R.string.sign_in_logo_content_description),
               modifier = Modifier.size(250.dp).testTag(SignInScreenTestTags.APP_LOGO))
 
           Text(
               modifier = Modifier.testTag(SignInScreenTestTags.LOGIN_TITLE),
-              text = "Agendapp",
+              text = stringResource(R.string.sign_in_app_title),
               style =
                   MaterialTheme.typography.headlineLarge.copy(
                       fontSize = 57.sp, lineHeight = 50.sp, color = Salmon),
@@ -122,7 +127,7 @@ fun SignInScreen(
               textAlign = TextAlign.Center)
           Text(
               modifier = Modifier.testTag(SignInScreenTestTags.LOGIN_MESSAGE),
-              text = "Plan, track and manage",
+              text = stringResource(R.string.sign_in_message),
               style =
                   MaterialTheme.typography.headlineLarge.copy(
                       fontSize = 20.sp, lineHeight = 24.sp, color = Salmon),
@@ -135,7 +140,7 @@ fun SignInScreen(
           // Welcome Text
           Text(
               modifier = Modifier.testTag(SignInScreenTestTags.LOGIN_WELCOME),
-              text = "Welcome",
+              text = stringResource(R.string.sign_in_welcome),
               style =
                   MaterialTheme.typography.headlineLarge.copy(fontSize = 57.sp, lineHeight = 64.sp),
               fontWeight = FontWeight.Bold,
@@ -173,7 +178,7 @@ fun GoogleSignInButton(onSignInClick: () -> Unit) {
 
               // Text for the button
               Text(
-                  text = "Sign in with Google",
+                  text = stringResource(R.string.sign_in_button_text),
                   color = Color.White, // Text color
                   fontSize = 16.sp, // Font size
                   fontWeight = FontWeight.Medium)

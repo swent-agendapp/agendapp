@@ -1,8 +1,8 @@
 package com.android.sample.model.eventRepositoryTest
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.android.sample.model.authentification.FakeAuthRepository
-import com.android.sample.model.authentification.User
+import com.android.sample.model.authentication.FakeAuthRepository
+import com.android.sample.model.authentication.User
 import com.android.sample.model.organization.Employee
 import com.android.sample.model.organization.EmployeeRepository
 import com.android.sample.model.organization.EmployeeRepositoryFirebase

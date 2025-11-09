@@ -15,6 +15,7 @@ import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeUp
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
@@ -25,7 +26,9 @@ import androidx.test.filters.MediumTest
 import androidx.test.rule.GrantPermissionRule
 import com.android.sample.Agendapp
 import com.android.sample.ui.calendar.AddEventTestTags
+import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
+import com.android.sample.ui.calendar.eventOverview.EventOverviewScreenTestTags
 import com.android.sample.ui.map.MapScreenTestTags
 import com.android.sample.ui.profile.AdminContactScreenTestTags
 import com.android.sample.ui.profile.AdminInformation
@@ -53,6 +56,35 @@ class AgendappNavigationTest {
           Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
 
   @get:Rule val composeTestRule = createComposeRule()
+
+  /**
+   * Scrolls vertically through the calendar until the node with [tag] is visible and can be
+   * interacted with. We keep this logic here (test side) to avoid relying on implementation details
+   * of the Calendar screen and remain black‑box.
+   */
+  private fun scrollUntilVisible(tag: String, maxAttempts: Int = 2) {
+    // The node should exist in the semantics tree, if it doesn't, test data/setup is wrong.
+    composeTestRule.onNodeWithTag(tag).assertExists()
+
+    repeat(maxAttempts) { attempt ->
+      val displayed =
+          runCatching {
+                composeTestRule.onNodeWithTag(tag).assertIsDisplayed()
+                true
+              }
+              .getOrElse { false }
+
+      if (displayed) return
+
+      // Perform a gentle swipe up to reveal later hours small deltas reduce flakiness.
+      composeTestRule.onRoot().performTouchInput { swipeUp() }
+
+      composeTestRule.waitForIdle()
+    }
+
+    // Final assert to fail with a clear message if nothing became visible.
+    composeTestRule.onNodeWithTag(tag).assertIsDisplayed()
+  }
 
   @Test
   fun navigate_to_all_add_forms() {
@@ -133,6 +165,58 @@ class AgendappNavigationTest {
         .performClick()
 
     composeTestRule.onNodeWithTag(HomeTestTags.MAP_BUTTON).assertExists()
+  }
+
+  /**
+   * Flow of this test : -> Home -> Calendar -> Add an Event -> Calendar -> (click on the event) ->
+   * EventOverview -> (click on GoBack) -> Calendar
+   */
+  @OptIn(ExperimentalTestApi::class)
+  @Test
+  fun navigate_calendar_to_eventOverview_and_back() {
+    composeTestRule.setContent { Agendapp() }
+
+    // Go to Calendar
+    composeTestRule.onNodeWithTag(CALENDAR_BUTTON).assertExists().performClick()
+
+    // Create a simple event using the real Add‑Event flow so that the calendar has at least one
+    // event
+    composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertExists().performClick()
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.TITLE_TEXT_FIELD)
+        .assertExists()
+        .performTextInput("Test Event")
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.DESCRIPTION_TEXT_FIELD)
+        .assertExists()
+        .performTextInput("Test Description")
+    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
+    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
+    composeTestRule.onNodeWithTag(AddEventTestTags.CREATE_BUTTON).assertExists().performClick()
+    composeTestRule.onNodeWithTag(AddEventTestTags.FINISH_BUTTON).assertExists().performClick()
+
+    // Wait for at least one event block to be present, then click it
+    composeTestRule.waitUntilAtLeastOneExists(
+        hasTestTag("${CalendarScreenTestTags.EVENT_BLOCK}_Test Event"))
+    // Small idle to avoid "failed to inject touch input" on emulator
+    composeTestRule.waitForIdle()
+    // Ensure the event is actually visible on screen (the even will span at the time slot where you
+    // run the test, which may be before 8:00 or after 20:00)
+    scrollUntilVisible(tag = "${CalendarScreenTestTags.EVENT_BLOCK}_Test Event")
+    composeTestRule.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Test Event").performClick()
+
+    // We should now be on EventOverview (root test tag defined by the screen)
+    composeTestRule
+        .onNodeWithTag(EventOverviewScreenTestTags.SCREEN)
+        .assertIsDisplayed()
+
+    // Click back and verify Calendar is shown again (by top bar title tag)
+    composeTestRule
+        .onNodeWithTag(EventOverviewScreenTestTags.BACK_BUTTON)
+        .assertExists()
+        .performClick()
+
+    composeTestRule.onNodeWithTag(CalendarScreenTestTags.TOP_BAR_TITLE).assertExists()
   }
 
   @OptIn(ExperimentalTestApi::class)

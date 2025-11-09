@@ -1,10 +1,14 @@
 package com.android.sample.ui.calendar
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.sample.model.authentification.AuthRepositoryProvider
+import com.android.sample.model.authentification.User
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
+import com.github.se.bootcamp.model.authentication.AuthRepository
 import java.time.Instant
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,9 +36,13 @@ data class CalendarUIState(
  * [EventRepository].
  *
  * @property eventRepository The repository used to fetch and manage Event items.
+ * @property authRepository The repository used to fetch user data, here the participant names.
  */
 class CalendarViewModel(
-    private val eventRepository: EventRepository = EventRepositoryProvider.repository
+    // used to get Events
+    private val eventRepository: EventRepository = EventRepositoryProvider.repository,
+    // used to get the name of the participants (the event only contains user id, not name)
+    private val authRepository: AuthRepository = AuthRepositoryProvider.repository
 ) : ViewModel() {
   private val _uiState = MutableStateFlow(CalendarUIState())
   // Publicly exposed immutable UI state
@@ -106,5 +114,74 @@ class CalendarViewModel(
     loadEventsHelper(
         loadEventsBlock = { eventRepository.getEventsBetweenDates(start, end) },
         errorMessage = "Failed to load events between $start and $end")
+  }
+
+  /**
+   * Returns an [Event] with the given [eventId]. This is a suspend function.
+   *
+   * The lookup first searches the in-memory cache (from [uiState]). If the event is not found
+   * there, it performs a direct repository lookup. If no event is found in either place, it throws
+   * a [NoSuchElementException].
+   *
+   * This method is synchronous and may perform a repository access.
+   *
+   * @throws NoSuchElementException if the event with the given [eventId] is not found.
+   */
+  suspend fun getEventById(eventId: String): Event {
+    // Check in the uiState first
+    _uiState.value.events
+        .firstOrNull { it.id == eventId }
+        ?.let {
+          return it
+        }
+
+    // Fallback to repository lookup
+    val event =
+        try {
+          eventRepository.getEventById(eventId)
+        } catch (e: Exception) {
+          setErrorMsg("Failed to fetch event $eventId: ${e.message}")
+          null
+        }
+
+    // Return the result or throw if not found
+    return event ?: throw NoSuchElementException("Event with id=$eventId not found.")
+  }
+
+  /**
+   * Returns the display names of all participants for the event identified by [eventId].
+   *
+   * The function resolves the event via [getEventById], then maps each participant ID to a display
+   * name using [resolveDisplayNameForUser]. Unknown users or users without a display name are
+   * skipped.
+   */
+  suspend fun getParticipantNames(eventId: String): List<String> {
+    val event = getEventById(eventId)
+    // If the list is empty, this will simply return an empty list
+    return event.participants.mapNotNull { userId ->
+      Log.d("", "userId = ${userId} --- user Name = ${resolveDisplayNameForUser(userId)}")
+      // For each ID, resolve a readable display name (nulls are filtered out by mapNotNull)
+      resolveDisplayNameForUser(userId)
+    }
+  }
+
+  /**
+   * Resolves a user's display name from their [userId] using [AuthRepository.getUserById].
+   *
+   * This is a suspend, potentially network-bound lookup. If the user cannot be found or has no
+   * display name, the function returns `null`.
+   *
+   * Errors are caught and surfaced to the UI via [setErrorMsg], while returning `null` so that the
+   * caller can decide how to handle missing names.
+   */
+  private suspend fun resolveDisplayNameForUser(userId: String): String? {
+    return try {
+      val user: User? = authRepository.getUserById(userId)
+      // Prefer the displayName, and if it is null or blank we return null to allow filtering
+      user?.displayName?.takeIf { it.isNotBlank() }
+    } catch (e: Exception) {
+      setErrorMsg("Failed to fetch user $userId: ${e.message}")
+      null
+    }
   }
 }

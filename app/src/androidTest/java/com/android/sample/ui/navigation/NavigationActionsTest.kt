@@ -206,9 +206,7 @@ class AgendappNavigationTest {
     composeTestRule.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Test Event").performClick()
 
     // We should now be on EventOverview (root test tag defined by the screen)
-    composeTestRule
-        .onNodeWithTag(EventOverviewScreenTestTags.SCREEN)
-        .assertIsDisplayed()
+    composeTestRule.onNodeWithTag(EventOverviewScreenTestTags.SCREEN).assertIsDisplayed()
 
     // Click back and verify Calendar is shown again (by top bar title tag)
     composeTestRule

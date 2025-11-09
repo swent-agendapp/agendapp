@@ -25,6 +25,26 @@ import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.WeightVeryHeavy
 import com.android.sample.ui.theme.WeightVeryLight
 
+/**
+ * Screen allowing the admin to **select the events** for which a member needs a replacement.
+ *
+ * This screen is one of the two options of the second step of the Organize Replacement workflow. It
+ * displays:
+ * - An instruction text describing what the user should do
+ * - a calendar where events will be displayed and selectable
+ * - Navigation buttons (Back / Create)
+ *
+ * ### UX behavior
+ * - Pressing the **Next** button triggers `onNext()`
+ * - Pressing the **Back** button triggers `onBack()`
+ * - The **Next** button remains disabled while no event is selected
+ *
+ * The parent `ReplacementOrganizeScreen` owns the navigation state and workflow. This composable
+ * does **not** handle navigation or persistence; it only exposes callbacks.
+ *
+ * @param onNext Called when the user confirms event selection and proceeds to the next step.
+ * @param onBack Called when the user navigates back to the previous screen.
+ */
 @Composable
 fun SelectEventScreen(onNext: () -> Unit = {}, onBack: () -> Unit = {}) {
 
@@ -57,7 +77,7 @@ fun SelectEventScreen(onNext: () -> Unit = {}, onBack: () -> Unit = {}) {
             onNext = { onNext() },
             onBack = onBack,
             backButtonText = stringResource(R.string.goBack),
-            nextButtonText = stringResource(R.string.create),
+            nextButtonText = stringResource(R.string.next),
             canGoNext = selectedEvents.isNotEmpty(),
             backButtonTestTag = AddEventTestTags.BACK_BUTTON,
             nextButtonTestTag = AddEventTestTags.CREATE_BUTTON)

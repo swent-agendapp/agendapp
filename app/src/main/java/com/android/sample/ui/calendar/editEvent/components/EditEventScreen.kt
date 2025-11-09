@@ -12,6 +12,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.model.calendar.RecurrenceStatus
@@ -31,10 +32,24 @@ import com.android.sample.ui.theme.heightLarge
 import com.android.sample.ui.theme.widthLarge
 
 // Assisted by AI
+
+// Minimum number of lines for the description input field.
 private const val DESCRIPTION_MIN_LINES = 4
 /**
- * Simple one-page Edit Event screen. This view uses placeholder state until EditEventViewModel is
- * connected.
+ * **EditEventScreen**
+ *
+ * A composable screen that allows users to **edit** the details of an existing calendar event. The
+ * screen includes fields for title, description, start/end dates and times, recurrence, and
+ * participants. It is fully synchronized with [EditEventViewModel].
+ *
+ * ### Parameters:
+ *
+ * @param eventId The unique identifier of the event to be edited.
+ * @param editEventViewModel The [EditEventViewModel] managing event state.
+ * @param onSave Called when the user saves the changes.
+ * @param onCancel Called when the user cancels the editing.
+ * @param onEditParticipants Called when the user wants to edit participants.
+ * @param skipLoad For testing purposes to skip loading the event.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -270,4 +285,10 @@ fun EditEventScreen(
         .show()
     showEndTimePicker = false
   }
+}
+
+@Preview(showBackground = true, name = "Edit Event Screen Preview")
+@Composable
+fun EditEventScreenPreview() {
+  EditEventScreen(eventId = "PREVIEW123", skipLoad = true)
 }

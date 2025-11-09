@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.calendar.components.TopTitleBar
@@ -114,4 +115,10 @@ fun EditEventAttendantScreen(
             backButtonTestTag = EditEventTestTags.BACK_BUTTON,
             nextButtonTestTag = EditEventTestTags.SAVE_BUTTON)
       })
+}
+
+@Preview(showBackground = true, name = "Edit Event Attendees Preview")
+@Composable
+fun EditEventAttendantScreenPreview() {
+  EditEventAttendantScreen()
 }

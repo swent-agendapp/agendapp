@@ -35,6 +35,16 @@ enum class EditEventStep {
   ATTENDEES
 }
 
+/**
+ * ViewModel that manages the UI state for editing an existing calendar event.
+ *
+ * Responsibilities:
+ * - Loading an existing event by ID.
+ * - Managing edits to event fields (title, description, dates, recurrence, participants).
+ * - Validating input fields.
+ * - Saving changes back to the repository.
+ * - Navigating between edit steps.
+ */
 class EditEventViewModel(
     private val repository: EventRepository = EventRepositoryProvider.repository
 ) : ViewModel() {
@@ -72,21 +82,21 @@ class EditEventViewModel(
 
   fun saveEditEventChanges() {
     viewModelScope.launch {
-      val s = _uiState.value
+      val state = _uiState.value
       try {
         val updated =
             Event(
-                id = s.eventId,
-                title = s.title,
-                description = s.description,
-                startDate = s.startInstant,
-                endDate = s.endInstant,
+                id = state.eventId,
+                title = state.title,
+                description = state.description,
+                startDate = state.startInstant,
+                endDate = state.endInstant,
                 cloudStorageStatuses = emptySet(),
                 locallyStoredBy = emptyList(),
                 personalNotes = null,
-                participants = s.participants,
+                participants = state.participants,
                 version = System.currentTimeMillis(),
-                recurrenceStatus = s.recurrenceMode,
+                recurrenceStatus = state.recurrenceMode,
                 hasBeenDeleted = false,
                 color = EventColor.Blue)
         repository.updateEvent(updated.id, updated)

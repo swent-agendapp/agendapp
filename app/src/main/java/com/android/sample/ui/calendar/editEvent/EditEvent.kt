@@ -2,7 +2,6 @@ package com.android.sample.ui.calendar.editEvent
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.*
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.ui.calendar.editEvent.components.EditEventAttendantScreen
 import com.android.sample.ui.calendar.editEvent.components.EditEventScreen
@@ -65,21 +64,4 @@ fun EditEventFlow(
   BackHandler(enabled = uiState.step == EditEventStep.ATTENDEES) {
     editEventViewModel.goBackToMainStep()
   }
-}
-
-@Preview(showBackground = true, name = "Main Edit Screen")
-@Composable
-fun EditEventFlowMainPreview() {
-  val vm = EditEventViewModel()
-  vm.setTitle("Weekly Team Meeting (preview)")
-  vm.setDescription("Discuss ongoing project progress and next steps. (preview)")
-  EditEventFlow(eventId = "E123", editEventViewModel = vm)
-}
-
-@Preview(showBackground = true, name = "Attendees Edit Screen")
-@Composable
-fun EditEventFlowAttendeesPreview() {
-  val vm = EditEventViewModel()
-  vm.setEditStep(EditEventStep.ATTENDEES)
-  EditEventFlow(eventId = "E123", editEventViewModel = vm)
 }

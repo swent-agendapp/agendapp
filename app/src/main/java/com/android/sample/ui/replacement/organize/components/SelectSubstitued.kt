@@ -188,7 +188,8 @@ fun SelectSubstitutedScreen(
                     OutlinedButton(
                         onClick = onSelectEvents,
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(CornerRadiusLarge)) {
+                        shape = RoundedCornerShape(CornerRadiusLarge),
+                        enabled = selectedMember.isNotEmpty()) {
                           Text("Select events", modifier = Modifier.padding(PaddingMedium))
                         }
 
@@ -196,7 +197,7 @@ fun SelectSubstitutedScreen(
                         onClick = onSelectDateRange,
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(CornerRadiusLarge),
-                        enabled = true) {
+                        enabled = selectedMember.isNotEmpty()) {
                           Text("Select a date range", modifier = Modifier.padding(PaddingMedium))
                         }
                   }

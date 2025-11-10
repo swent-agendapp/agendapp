@@ -140,7 +140,7 @@ fun Agendapp(
               composable(Screen.Authentication.route) {
                 SignInScreen(
                     credentialManager = credentialManager,
-                    onSignedIn = { navigationActions.navigateTo(Screen.Home) })
+                    onSignedIn = { navigationActions.navigateTo(Screen.Calendar) })
               }
 
               // Calendar Graph

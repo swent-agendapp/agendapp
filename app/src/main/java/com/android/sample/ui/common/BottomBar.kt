@@ -7,7 +7,16 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
+
+/** Test tags for BottomBar and its items. */
+object BottomBarTestTags {
+  const val BOTTOM_BAR = "bottom_bar"
+  const val ITEM_CALENDAR = "bottom_bar_item_calendar"
+  const val ITEM_REPLACEMENT = "bottom_bar_item_replacement"
+  const val ITEM_SETTINGS = "bottom_bar_item_settings"
+}
 
 /**
  * Represents an item in the bottom navigation bar.
@@ -23,7 +32,8 @@ data class BottomBarItem(
     val route: String = "",
     val onClick: () -> Unit = {},
     val contentDescription: String? = null,
-    val isSelected: Boolean = false
+    val isSelected: Boolean = false,
+    val testTag: String = "",
 )
 
 /**
@@ -37,13 +47,14 @@ fun BottomBar(
     items: List<BottomBarItem>,
     modifier: Modifier = Modifier,
 ) {
-  NavigationBar(modifier = modifier) {
+  NavigationBar(modifier = modifier.testTag(BottomBarTestTags.BOTTOM_BAR)) {
     items.forEach { item ->
       NavigationBarItem(
           selected = item.isSelected,
           onClick = item.onClick,
           icon = { Icon(imageVector = item.icon, contentDescription = item.contentDescription) },
-          label = { Text(text = item.label) })
+          label = { Text(text = item.label) },
+          modifier = modifier.testTag(item.testTag))
     }
   }
 }

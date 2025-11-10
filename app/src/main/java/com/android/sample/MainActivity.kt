@@ -30,6 +30,7 @@ import com.android.sample.ui.calendar.CalendarScreen
 import com.android.sample.ui.calendar.addEvent.AddEventScreen
 import com.android.sample.ui.common.BottomBar
 import com.android.sample.ui.common.BottomBarItem
+import com.android.sample.ui.common.BottomBarTestTags
 import com.android.sample.ui.map.MapScreen
 import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
@@ -104,21 +105,24 @@ fun Agendapp(
               route = Screen.Calendar.route,
               onClick = { navigationActions.navigateTo(Screen.Calendar) },
               contentDescription = "Calendar",
-              isSelected = currentRoute == Screen.Calendar.route),
+              isSelected = currentRoute == Screen.Calendar.route,
+              testTag = BottomBarTestTags.ITEM_CALENDAR),
           BottomBarItem(
               icon = Icons.Default.Accessibility,
               label = "Replacement",
               route = Screen.ReplacementOverview.route,
               onClick = { navigationActions.navigateTo(Screen.ReplacementOverview) },
               contentDescription = "Replacement",
-              isSelected = currentRoute == Screen.ReplacementOverview.route),
+              isSelected = currentRoute == Screen.ReplacementOverview.route,
+              testTag = BottomBarTestTags.ITEM_REPLACEMENT),
           BottomBarItem(
               icon = Icons.Default.Settings,
               label = "Settings",
               route = Screen.Settings.route,
               onClick = { navigationActions.navigateTo(Screen.Settings) },
               contentDescription = "Settings",
-              isSelected = currentRoute == Screen.Settings.route))
+              isSelected = currentRoute == Screen.Settings.route,
+              testTag = BottomBarTestTags.ITEM_SETTINGS))
 
   Scaffold(
       bottomBar = {

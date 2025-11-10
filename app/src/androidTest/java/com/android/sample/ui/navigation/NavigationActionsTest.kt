@@ -17,6 +17,7 @@ import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.common.BottomBarTestTags
 import com.android.sample.ui.replacement.ReplacementTestTags
+import com.android.sample.ui.settings.SettingsScreenTestTags
 import com.android.sample.utils.FakeCredentialManager
 import com.android.sample.utils.FakeJwtGenerator
 import com.android.sample.utils.FirebaseEmulatedTest
@@ -143,5 +144,30 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
         .onNodeWithTag(AddEventTestTags.DESCRIPTION_TEXT_FIELD)
         .assertExists()
         .assertTextContains("")
+  }
+
+  @Test
+  fun goBottomBarIcons() {
+    composeTestRule.setContent { Agendapp() }
+
+    // Assert the Bottom Bar is displayed
+    composeTestRule.onNodeWithTag(BottomBarTestTags.BOTTOM_BAR).assertIsDisplayed()
+
+    // Assert each icon is displayed
+    composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_CALENDAR).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_REPLACEMENT).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_SETTINGS).assertIsDisplayed()
+
+    // Navigate to Replacement screen
+    composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_REPLACEMENT).performClick()
+    composeTestRule.onNodeWithTag(ReplacementTestTags.SCREEN).assertIsDisplayed()
+
+    // Go to Settings screen
+    composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_SETTINGS).performClick()
+    composeTestRule.onNodeWithTag(SettingsScreenTestTags.ROOT).assertIsDisplayed()
+
+    // Navigate back to Calendar screen
+    composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_CALENDAR).performClick()
+    composeTestRule.onNodeWithTag(CalendarScreenTestTags.ROOT).assertIsDisplayed()
   }
 }

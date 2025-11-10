@@ -144,7 +144,7 @@ fun SelectDateRangeScreen(
             onBack = onBack,
             backButtonText = stringResource(R.string.goBack),
             nextButtonText = stringResource(R.string.next),
-            canGoNext = isRangeInvalid,
+            canGoNext = !isRangeInvalid,
             backButtonTestTag = AddEventTestTags.BACK_BUTTON,
             nextButtonTestTag = AddEventTestTags.NEXT_BUTTON)
       })

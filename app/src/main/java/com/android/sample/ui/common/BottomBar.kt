@@ -1,16 +1,12 @@
 package com.android.sample.ui.common
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.tooling.preview.Preview
-import com.android.sample.ui.common.BottomBarTestTags.ITEM_CALENDAR
 
 /** Test tags for BottomBar and its items. */
 object BottomBarTestTags {
@@ -59,27 +55,4 @@ fun BottomBar(
           modifier = modifier.testTag(item.testTag))
     }
   }
-}
-
-/** Preview of the BottomBar composable with sample items. */
-@Preview
-@Composable
-fun BottomBarPreview() {
-  val items =
-      listOf(
-          BottomBarItem(
-              icon = Icons.Default.Event,
-              onClick = {},
-              contentDescription = "Calendar",
-              isSelected = true,
-              label = "Calendar",
-              testTag = ITEM_CALENDAR),
-          BottomBarItem(
-              icon = Icons.Default.Settings,
-              onClick = {},
-              contentDescription = "Settings",
-              isSelected = false,
-              label = "Settings",
-              testTag = BottomBarTestTags.ITEM_SETTINGS))
-  BottomBar(items = items, modifier = Modifier)
 }

@@ -8,7 +8,6 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.ui.common.BottomBar
 import com.android.sample.ui.common.BottomBarItem
-import com.android.sample.ui.common.BottomBarPreview
 import com.android.sample.ui.common.BottomBarTestTags
 import org.junit.Before
 import org.junit.Rule
@@ -66,21 +65,5 @@ class BottomBarTest {
     // Clique sur Settings
     composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_SETTINGS).performClick()
     assert(clicked["settings"] == true)
-  }
-
-  @Test
-  fun bottomBarPreview_displaysItems() {
-    composeTestRule.setContent { BottomBarPreview() }
-
-    // Check that the bottom bar is displayed
-    composeTestRule.onNodeWithTag(BottomBarTestTags.BOTTOM_BAR).assertIsDisplayed()
-
-    // Check that each item is displayed
-    composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_CALENDAR).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_SETTINGS).assertIsDisplayed()
-
-    // Check that the labels are displayed
-    composeTestRule.onNodeWithText("Calendar").assertIsDisplayed()
-    composeTestRule.onNodeWithText("Settings").assertIsDisplayed()
   }
 }

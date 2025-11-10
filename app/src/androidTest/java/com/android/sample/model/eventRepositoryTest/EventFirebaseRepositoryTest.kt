@@ -225,6 +225,37 @@ class EventFirebaseRepositoryTest : FirebaseEmulatedTest() {
   }
 
   @Test
+  fun getEventById_returnsEvent_whenExists() = runBlocking {
+    val inserted =
+        createEvent(
+            title = "Board meeting",
+            description = "Quarterly review",
+            startDate = Instant.parse("2025-04-10T08:00:00Z"),
+            endDate = Instant.parse("2025-04-10T09:30:00Z"),
+            cloudStorageStatuses = setOf(CloudStorageStatus.FIRESTORE),
+            personalNotes = "Slides in drive")
+
+    // Insert the event into the repository
+    repository.insertEvent(inserted)
+
+    val retrieved = repository.getEventById(inserted.id)
+
+    // The event should exists with exact same fields as created
+    Assert.assertNotNull("Expected to retrieve an existing event by id", retrieved)
+    Assert.assertEquals(inserted.id, retrieved!!.id)
+    Assert.assertEquals("Board meeting", retrieved.title)
+    Assert.assertEquals(Instant.parse("2025-04-10T08:00:00Z"), retrieved.startDate)
+    Assert.assertEquals(Instant.parse("2025-04-10T09:30:00Z"), retrieved.endDate)
+  }
+
+
+  @Test
+  fun getEventById_returnsNull_whenMissing() = runBlocking {
+    val missing = repository.getEventById("no-such-event-id")
+    Assert.assertNull("Unknown id should yield null", missing)
+  }
+
+  @Test
   fun documentToEvent_customStorageStatus_shouldParse() = runBlocking {
     val customEvent =
         createEvent(

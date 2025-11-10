@@ -63,8 +63,8 @@ fun SelectEventScreen(onNext: () -> Unit = {}, onBack: () -> Unit = {}) {
                   modifier = Modifier.weight(WeightVeryLight).fillMaxWidth(),
                   contentAlignment = Alignment.Center) {
                     Text(
-                        text =
-                            "Select the date range for which <substituted> needs a replacement", // to be put in strings.xml
+                        // to be put in strings.xml
+                        text = "Select the events for which <substituted> needs a replacement",
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier.testTag(AddEventTestTags.INSTRUCTION_TEXT))

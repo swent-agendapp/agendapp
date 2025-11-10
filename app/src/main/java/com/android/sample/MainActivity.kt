@@ -37,7 +37,6 @@ import com.android.sample.ui.profile.AdminContactScreen
 import com.android.sample.ui.profile.ProfileScreen
 import com.android.sample.ui.replacement.ReplacementPendingListScreen
 import com.android.sample.ui.replacement.ReplacementScreen
-import com.android.sample.ui.screens.HomeScreen
 import com.android.sample.ui.settings.SettingsScreen
 import com.android.sample.ui.theme.SampleAppTheme
 import com.github.se.bootcamp.model.authentication.AuthRepositoryFirebase
@@ -138,19 +137,6 @@ fun Agendapp(
                 SignInScreen(
                     credentialManager = credentialManager,
                     onSignedIn = { navigationActions.navigateTo(Screen.Home) })
-              }
-
-              // Home Screen
-              composable(Screen.Home.route) {
-                HomeScreen(
-                    onNavigateToEdit = { eventId ->
-                      navigationActions.navigateToEditEvent(eventId)
-                    },
-                    onNavigateToCalendar = { navigationActions.navigateTo(Screen.Calendar) },
-                    onNavigateToSettings = { navigationActions.navigateTo(Screen.Settings) },
-                    onNavigateToReplacement = {
-                      navigationActions.navigateTo(Screen.ReplacementOverview)
-                    })
               }
 
               // Calendar Graph

@@ -82,7 +82,7 @@ fun Agendapp(
   val authRepository = AuthRepositoryProvider.repository
 
   val startDestination =
-      if (authRepository.getCurrentUser() != null) Screen.Home.route
+      if (authRepository.getCurrentUser() != null) Screen.Calendar.route
       else Screen.Authentication.route
 
   // Routes and navigation logic

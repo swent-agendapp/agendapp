@@ -66,4 +66,22 @@ class BottomBarTest {
     composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_SETTINGS).performClick()
     assert(clicked["settings"] == true)
   }
+
+    @Test
+    fun bottomBarPreview_displaysItems() {
+        composeTestRule.setContent {
+            BottomBar(items = items)
+        }
+
+        // Check that the bottom bar is displayed
+        composeTestRule.onNodeWithTag(BottomBarTestTags.BOTTOM_BAR).assertIsDisplayed()
+
+        // Check that each item is displayed
+        composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_CALENDAR).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_SETTINGS).assertIsDisplayed()
+
+        // Check that the labels are displayed
+        composeTestRule.onNodeWithText("Home").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Settings").assertIsDisplayed()
+    }
 }

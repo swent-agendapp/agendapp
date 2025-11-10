@@ -18,9 +18,10 @@ import androidx.compose.ui.tooling.preview.Preview
  * @param isSelected Whether the item is currently selected.
  */
 data class BottomBarItem(
-    val icon: ImageVector,
-    val label: String,
-    val onClick: () -> Unit,
+    val icon: ImageVector = Icons.Default.Home,
+    val label: String = "",
+    val route: String = "",
+    val onClick: () -> Unit = {},
     val contentDescription: String? = null,
     val isSelected: Boolean = false
 )

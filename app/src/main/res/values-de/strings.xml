@@ -137,5 +137,6 @@
     <string name="replacement_requests_subtitle">Vertretungen, die auf Bestätigung warten</string>
     <string name="replacement_substituted_label">Abwesende Person: %1$s</string>
     <string name="replacement_substitute_label">Vertretende Person: %1$s</string>
+    <string name="invalidDateRangeMessage">Ungültiger Zeitraum: Das Enddatum muss nach dem Startdatum liegen.</string>
 
 </resources>

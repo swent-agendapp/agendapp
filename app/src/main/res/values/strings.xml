@@ -74,6 +74,8 @@
     <string name="replacement_requests_subtitle">Replacements waiting for confirmation</string>
     <string name="replacement_substituted_label">Absent person: %1$s: %1$s</string>
     <string name="replacement_substitute_label">Substitute: %1$s</string>
+    <string name="invalidDateRangeMessage">Invalid date range: end date must be after start date.</string>
+
     <!-- Home Screen -->
     <string name="home_go_to_edit_event">Go to Edit Event</string>
     <string name="home_go_to_calendar">Go to Calendar</string>

@@ -33,6 +33,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -40,6 +41,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.theme.DefaultZoom
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.JointType
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
@@ -106,18 +108,25 @@ fun MapScreen(
             actions = {
               Box(
                   modifier =
-                      Modifier.padding(end = 16.dp)
+                      Modifier
+                          .padding(end = 16.dp)
                           .size(20.dp)
                           .background(
                               color = if (uiState.isInArea) Color.Green else Color.Red,
-                              shape = CircleShape))
+                              shape = CircleShape
+                          ))
             })
       },
       content = { padding ->
         Column(modifier = Modifier.fillMaxSize()) {
-          Box(modifier = Modifier.weight(1f).fillMaxWidth().padding(padding)) {
+          Box(modifier = Modifier
+              .weight(1f)
+              .fillMaxWidth()
+              .padding(padding)) {
             GoogleMap(
-                modifier = Modifier.matchParentSize().testTag(MapScreenTestTags.GOOGLE_MAP_SCREEN),
+                modifier = Modifier
+                    .matchParentSize()
+                    .testTag(MapScreenTestTags.GOOGLE_MAP_SCREEN),
                 cameraPositionState = cameraPositionState,
                 onMapLongClick = { pos -> mapViewModel.addNewMarker(pos) },
                 properties =
@@ -138,13 +147,21 @@ fun MapScreen(
                         points =
                             area.markers.map { marker ->
                               LatLng(marker.location.latitude, marker.location.longitude)
-                            })
+                            },
+                        strokeColor = Color.Blue,
+                        fillColor = Color(0, 0, 255, 125),
+                        onClick = { polygon -> polygon.fillColor = Color.Blue.toArgb() },
+                    )
                   }
                 }
           }
-          Row(modifier = Modifier.fillMaxWidth().height(30.dp)) {
+          Row(modifier = Modifier
+              .fillMaxWidth()
+              .height(30.dp)) {
             Button(
-                modifier = Modifier.weight(1f).fillMaxHeight(),
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
                 onClick = { mapViewModel.cancelNewMarker() },
                 shape = RectangleShape,
                 contentPadding = PaddingValues(4.dp),
@@ -153,7 +170,9 @@ fun MapScreen(
                 }
 
             Button(
-                modifier = Modifier.weight(1f).fillMaxHeight(),
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
                 shape = RectangleShape,
                 onClick = { mapViewModel.createNewArea() },
                 contentPadding = PaddingValues(4.dp)) {

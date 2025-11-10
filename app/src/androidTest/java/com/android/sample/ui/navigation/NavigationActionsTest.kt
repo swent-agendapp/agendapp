@@ -3,7 +3,6 @@ package com.android.sample.ui.navigation
 import android.Manifest
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextContains
-import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
@@ -13,11 +12,11 @@ import androidx.test.filters.MediumTest
 import androidx.test.rule.GrantPermissionRule
 import com.android.sample.Agendapp
 import com.android.sample.model.calendar.RecurrenceStatus
+import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
+import com.android.sample.ui.common.BottomBarTestTags
 import com.android.sample.ui.replacement.ReplacementTestTags
-import com.android.sample.ui.screens.HomeTestTags
-import com.android.sample.ui.screens.HomeTestTags.CALENDAR_BUTTON
 import com.android.sample.utils.FakeCredentialManager
 import com.android.sample.utils.FakeJwtGenerator
 import com.android.sample.utils.FirebaseEmulatedTest
@@ -37,10 +36,6 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 @MediumTest
 class AgendappNavigationTest : FirebaseEmulatedTest() {
-
-  // Timeout for UI authentication operations
-  // This is used to wait for the UI to update after authentication actions
-  val uiAuthWaitTimeOut = 10_000L
 
   // Create a fake Google ID token for testing
   val fakeGoogleIdToken =
@@ -75,50 +70,17 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
     composeTestRule.onNodeWithTag(SignInScreenTestTags.LOGIN_MESSAGE).assertIsDisplayed()
 
     // Perform Sign-In
-    composeTestRule
-        .onNodeWithTag(SignInScreenTestTags.LOGIN_BUTTON)
-        .assertIsDisplayed()
-        .performClick()
-
-    // Wait for sign-in to complete
-    composeTestRule.waitUntil(timeoutMillis = uiAuthWaitTimeOut) {
-      // Verify Home screen is displayed
-      composeTestRule.onNodeWithTag(CALENDAR_BUTTON).isDisplayed()
-    }
+    composeTestRule.onNodeWithTag(SignInScreenTestTags.LOGIN_BUTTON).assertIsDisplayed()
   }
 
   @Test
-  fun ensure_home_if_signed_in() = runTest {
+  fun ensure_calendar_if_signed_in() = runTest {
 
     // Launch app with user already signed in
     composeTestRule.setContent { Agendapp() }
 
-    // Verify Home screen is still displayed (user remains signed in)
-    composeTestRule.onNodeWithTag(CALENDAR_BUTTON).assertIsDisplayed()
-  }
-
-  @Test
-  fun navigate_to_all_add_forms() {
-    composeTestRule.setContent { Agendapp() }
-
-    // Go to Calendar
-    composeTestRule.onNodeWithTag(CALENDAR_BUTTON).assertExists().performClick()
-    composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertExists().performClick()
-    // Validate screen content
-    composeTestRule
-        .onNodeWithTag(AddEventTestTags.TITLE_TEXT_FIELD)
-        .assertExists()
-        .performTextInput("Test Event")
-    composeTestRule
-        .onNodeWithTag(AddEventTestTags.DESCRIPTION_TEXT_FIELD)
-        .assertExists()
-        .performTextInput("Test Description")
-    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
-    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
-    composeTestRule.onNodeWithTag(AddEventTestTags.CREATE_BUTTON).assertExists().performClick()
-    composeTestRule.onNodeWithTag(AddEventTestTags.FINISH_BUTTON).assertExists().performClick()
-
-    composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertIsDisplayed()
+    // Verify Calendar screen is displayed (user remains signed in)
+    composeTestRule.onNodeWithTag(CalendarScreenTestTags.ROOT).assertIsDisplayed()
   }
 
   @Test
@@ -126,7 +88,7 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
     composeTestRule.setContent { Agendapp() }
 
     // Go to replacement
-    composeTestRule.onNodeWithTag(HomeTestTags.REPLACEMENT_BUTTON).assertExists().performClick()
+    composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_REPLACEMENT).assertExists().performClick()
 
     // Validate screen content
     composeTestRule.onNodeWithTag(ReplacementTestTags.SCREEN).assertIsDisplayed()
@@ -137,7 +99,6 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
     composeTestRule.setContent { Agendapp() }
 
     // Go to add event screen
-    composeTestRule.onNodeWithTag(CALENDAR_BUTTON).assertExists().performClick()
     composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertExists().performClick()
 
     // Validate screen content

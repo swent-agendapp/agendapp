@@ -714,7 +714,7 @@ private val previewEvents: List<Event> by lazy {
       // e0) Simple event
       Event(
           id = "e0",
-          title = "Short title",
+          title = "A simple Event",
           description = "A simple single-day event.",
           startDate = base.plusSeconds(10 * 60 * 60),
           endDate = base.plusSeconds(12 * 60 * 60),
@@ -854,7 +854,7 @@ private fun EventSummaryCardPreview_Weekly() {
           "u10" to "Johan")
 
   // Change here the preview index for quick testing
-  val event = previewEvents[5]
+  val event = previewEvents[0]
   // Event index correspondence :
   // 0: Simple single-day             (should display correctly)
   // 1: Weekly recurring              (should display the recurrence)

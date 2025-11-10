@@ -111,7 +111,7 @@ fun Agendapp(
       // Main Calendar view
       composable(Screen.Calendar.route) {
         CalendarScreen(
-            onCreateEvent = { navigationActions.navigateTo(Screen.AddEventTitle) },
+            onCreateEvent = { navigationActions.navigateTo(Screen.AddEvent) },
             onEventClick = { event -> navigationActions.navigateToEventOverview(event.id) })
       }
       // Event overview

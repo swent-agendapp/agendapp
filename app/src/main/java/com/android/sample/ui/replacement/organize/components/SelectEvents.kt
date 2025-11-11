@@ -49,6 +49,8 @@ import com.android.sample.ui.theme.WeightVeryLight
 fun SelectEventScreen(onNext: () -> Unit = {}, onBack: () -> Unit = {}) {
 
   val selectedEvents: List<Event> = emptyList()
+  var substitutedUser = "example user" // to be provided by the viewmodel
+
   Scaffold(
       topBar = { TopTitleBar(title = stringResource(R.string.organize_replacement)) },
       content = { paddingValues ->
@@ -64,7 +66,7 @@ fun SelectEventScreen(onNext: () -> Unit = {}, onBack: () -> Unit = {}) {
                   contentAlignment = Alignment.Center) {
                     Text(
                         // to be put in strings.xml
-                        text = "Select the events for which <substituted> needs a replacement",
+                        text = stringResource(R.string.select_replacement_events, substitutedUser),
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier.testTag(AddEventTestTags.INSTRUCTION_TEXT))

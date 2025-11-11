@@ -141,5 +141,13 @@
     <string name="select_process_moment">Les traiter maintenant ?</string>
     <string name="process_now">Traiter maintenant</string>
     <string name="process_later">Traiter plus tard</string>
+    <string name="select_replacement_date_range">Sélectionnez la plage de dates pour laquelle %1$s a besoin d’un remplacement</string>
+    <string name="select_replacement_events">Sélectionnez les événements pour lesquels %1$s a besoin d’un remplacement</string>
+    <string name="which_member_to_be_replaced">Quel membre doit être remplacé?</string>
+    <string name="search_member">Rechercher un membre…</string>
+    <string name="selected_member">Membre sélectionné : %1$s</string>
+    <string name="select_events">Sélectionner les événements</string>
+    <string name="select_date_range">Sélectionner la plage de dates</string>
+    <string name="search_icon_content_description">Icône de recherche</string>
 
-    </resources>
+</resources>

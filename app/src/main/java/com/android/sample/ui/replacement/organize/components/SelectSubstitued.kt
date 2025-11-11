@@ -33,11 +33,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.android.sample.R
 import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.theme.CornerRadiusLarge
+import com.android.sample.ui.theme.DefaultCardElevation
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.PaddingLarge
 import com.android.sample.ui.theme.PaddingMedium
@@ -96,7 +98,10 @@ fun SelectSubstitutedScreen(
 
   Scaffold(
       topBar = {
-        TopTitleBar(title = "Organize Replacement", canNavigateBack = true, onBack = onBack)
+        TopTitleBar(
+            title = stringResource(R.string.organize_replacement),
+            canNavigateBack = true,
+            onBack = onBack)
       },
       content = { paddingValues ->
         Column(
@@ -109,7 +114,7 @@ fun SelectSubstitutedScreen(
 
               /** Title * */
               Text(
-                  "Which member needs to be replaced?",
+                  text = stringResource(R.string.which_member_to_be_replaced),
                   style = MaterialTheme.typography.headlineMedium,
                   textAlign = TextAlign.Center,
                   modifier = Modifier.padding(vertical = PaddingLarge))
@@ -125,13 +130,14 @@ fun SelectSubstitutedScreen(
                       TextField(
                           value = searchQuery,
                           onValueChange = { searchQuery = it },
-                          placeholder = { Text("Search member…") },
+                          placeholder = { Text(text = stringResource(R.string.search_member)) },
                           modifier = Modifier.fillMaxWidth(),
                           singleLine = true,
                           trailingIcon = {
                             Icon(
                                 imageVector = Icons.Default.Search,
-                                contentDescription = "Search icon")
+                                contentDescription =
+                                    stringResource(R.string.search_icon_content_description))
                           },
                           shape = RoundedCornerShape(CornerRadiusLarge))
 
@@ -145,8 +151,7 @@ fun SelectSubstitutedScreen(
                               Box(
                                   modifier =
                                       Modifier.fillMaxWidth()
-                                          .background(
-                                              if (isSelected) Color(0xFFFFC8C8) else Color.White)
+                                          .background(if (isSelected) Color.Gray else Color.White)
                                           .clickable {
                                             onMemberSelected(member)
                                             selectedMember = member
@@ -164,9 +169,8 @@ fun SelectSubstitutedScreen(
 
                       /** Read-only selected member field * */
                       OutlinedTextField(
-                          value = "Selected member : $selectedMember",
+                          value = stringResource(R.string.selected_member, selectedMember),
                           onValueChange = {}, // ignored because readOnly
-                          placeholder = { Text("Selected member :") },
                           modifier = Modifier.fillMaxWidth(),
                           singleLine = true,
                           shape = RoundedCornerShape(CornerRadiusLarge),
@@ -190,7 +194,9 @@ fun SelectSubstitutedScreen(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(CornerRadiusLarge),
                         enabled = selectedMember.isNotEmpty()) {
-                          Text("Select events", modifier = Modifier.padding(PaddingMedium))
+                          Text(
+                              text = stringResource(R.string.select_events),
+                              modifier = Modifier.padding(PaddingMedium))
                         }
 
                     OutlinedButton(
@@ -198,7 +204,9 @@ fun SelectSubstitutedScreen(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(CornerRadiusLarge),
                         enabled = selectedMember.isNotEmpty()) {
-                          Text("Select a date range", modifier = Modifier.padding(PaddingMedium))
+                          Text(
+                              text = stringResource(R.string.select_date_range),
+                              modifier = Modifier.padding(PaddingMedium))
                         }
                   }
             }

@@ -77,6 +77,7 @@ fun SelectDateRangeScreen(
   var startInstant by remember { mutableStateOf(Instant.now()) }
   var endInstant by remember { mutableStateOf(Instant.now().plusSeconds(3600)) }
   val isRangeInvalid = endInstant.isBefore(startInstant)
+  var substitutedUser = "example user" // to be provided by the viewmodel
 
   Scaffold(
       topBar = { TopTitleBar(title = stringResource(R.string.organize_replacement)) },
@@ -93,7 +94,7 @@ fun SelectDateRangeScreen(
                   contentAlignment = Alignment.Center) {
                     Text(
                         text =
-                            "Select the date range for which <substituted> needs a replacement", // to be put in strings.xml
+                            stringResource(R.string.select_replacement_date_range, substitutedUser),
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.headlineMedium,
                         modifier = Modifier.testTag(AddEventTestTags.INSTRUCTION_TEXT))

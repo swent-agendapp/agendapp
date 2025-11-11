@@ -47,8 +47,9 @@ class ProfileFlowE2ETest : FirebaseEmulatedTest() {
     FirebaseEmulator.auth.signOut()
   }
 
+  // Test a User info flow : signing in, viewing profile, viewing admin contact, and signing out
   @Test
-  fun signIn_modifyProfile_viewAdminContact_signOut() {
+  fun signIn_viewProfile_viewAdminContact_signOut() {
     // Launch app
     composeTestRule.setContent { Agendapp(credentialManager = fakeCredentialManager) }
 

@@ -31,5 +31,10 @@ const val WeightVeryHeavy = 1f
 // Map
 const val DefaultZoom = 17f
 
+// Border
+val BorderWidthThin = 1.dp
+val BorderWidthThick = 2.dp
+val BorderWidthExtraThick = 4.dp
+
 // Card elevation
 val DefaultCardElevation = 4.dp

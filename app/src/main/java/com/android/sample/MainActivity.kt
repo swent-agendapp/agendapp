@@ -102,7 +102,6 @@ fun Agendapp(
           onNavigateToEdit = { eventId -> navigationActions.navigateToEditEvent(eventId) },
           onNavigateToCalendar = { navigationActions.navigateTo(Screen.Calendar) },
           onNavigateToSettings = { navigationActions.navigateTo(Screen.Settings) },
-          onNavigateToMap = { navigationActions.navigateTo(Screen.Map) },
           onNavigateToReplacement = { navigationActions.navigateTo(Screen.ReplacementOverview) })
     }
 
@@ -142,22 +141,28 @@ fun Agendapp(
 
     // Settings Graph
     navigation(startDestination = Screen.Settings.route, route = Screen.Settings.name) {
+      // Settings Screen
       composable(Screen.Settings.route) {
         SettingsScreen(
             onNavigateBack = { navigationActions.navigateBack() },
-            onNavigateToProfile = { navigationActions.navigateTo(Screen.Profile) })
+            onNavigateToUserProfile = { navigationActions.navigateTo(Screen.Profile) },
+            onNavigateToAdminInfo = { navigationActions.navigateTo(Screen.AdminContact) },
+            onNavigateToMapSettings = { navigationActions.navigateTo(Screen.Map) })
       }
+      // User profile Screen
       composable(Screen.Profile.route) {
         ProfileScreen(
             onNavigateBack = { navigationActions.navigateBack() },
-            onNavigateToAdminContact = { navigationActions.navigateTo(Screen.AdminContact) })
+            onSignOut = { navigationActions.navigateTo(Screen.Authentication) })
       }
+
+      // Admin contact Screen
       composable(Screen.AdminContact.route) {
         AdminContactScreen(onNavigateBack = { navigationActions.navigateBack() })
       }
-    }
 
-    // Map Screen
-    composable(Screen.Map.route) { MapScreen(onGoBack = { navigationActions.navigateBack() }) }
+      // Map Settings Screen
+      composable(Screen.Map.route) { MapScreen(onGoBack = { navigationActions.navigateBack() }) }
+    }
   }
 }

@@ -3,6 +3,7 @@ package com.android.sample.ui.profile
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Save
@@ -10,14 +11,19 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
+import androidx.credentials.CredentialManager
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
+import com.android.sample.ui.theme.PaddingMedium
+import com.android.sample.ui.theme.SpacingExtraLarge
+import com.android.sample.ui.theme.SpacingLarge
+import com.github.se.bootcamp.ui.authentication.SignInViewModel
 
 object ProfileScreenTestTags {
   const val PROFILE_SCREEN = "profile_screen"
@@ -28,14 +34,17 @@ object ProfileScreenTestTags {
   const val SAVE_BUTTON = "save_button"
   const val CANCEL_BUTTON = "cancel_button"
   const val EDIT_BUTTON = "edit_button"
-  const val ADMIN_CONTACT_BUTTON = "admin_contact_button"
+  const val SIGN_OUT_BUTTON = "sign_out_button"
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
     onNavigateBack: () -> Unit = {},
-    onNavigateToAdminContact: () -> Unit = {},
-    profileViewModel: ProfileViewModel = viewModel()
+    profileViewModel: ProfileViewModel = viewModel(),
+    authViewModel: SignInViewModel = viewModel(),
+    credentialManager: CredentialManager = CredentialManager.create(LocalContext.current),
+    onSignOut: () -> Unit = {}
 ) {
   val uiState by profileViewModel.uiState.collectAsState()
   var isEditMode by remember { mutableStateOf(false) }
@@ -48,22 +57,26 @@ fun ProfileScreen(
   val emailErrorMessage = stringResource(R.string.profile_email_error)
   val phoneErrorMessage = stringResource(R.string.profile_phone_error)
 
-  Surface(
-      modifier =
-          Modifier.fillMaxSize().semantics { testTag = ProfileScreenTestTags.PROFILE_SCREEN }) {
-        Column(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally) {
-              Button(
-                  modifier =
-                      Modifier.testTag(ProfileScreenTestTags.BACK_BUTTON).align(Alignment.Start),
-                  onClick = onNavigateBack) {
-                    Text(stringResource(R.string.common_back))
+  Scaffold(
+      topBar = {
+        TopAppBar(
+            title = { Text(stringResource(R.string.profile_screen_title)) },
+            navigationIcon = {
+              IconButton(
+                  onClick = onNavigateBack,
+                  modifier = Modifier.testTag(ProfileScreenTestTags.BACK_BUTTON)) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.common_back))
                   }
-
-              Spacer(Modifier.height(24.dp))
-
+            })
+      }) { innerPadding ->
+        Column(
+            modifier =
+                Modifier.padding(innerPadding).padding(PaddingMedium).fillMaxSize().semantics {
+                  testTag = ProfileScreenTestTags.PROFILE_SCREEN
+                },
+            horizontalAlignment = Alignment.CenterHorizontally) {
               ProfileHeader(
                   isEditMode = isEditMode,
                   onEdit = { isEditMode = true },
@@ -89,7 +102,7 @@ fun ProfileScreen(
                     }
                   })
 
-              Spacer(Modifier.height(24.dp))
+              Spacer(Modifier.height(SpacingExtraLarge))
 
               ProfileTextField(
                   label = stringResource(R.string.profile_display_name_label),
@@ -98,7 +111,7 @@ fun ProfileScreen(
                   onValueChange = { displayName = it },
                   testTag = ProfileScreenTestTags.DISPLAY_NAME_FIELD)
 
-              Spacer(Modifier.height(16.dp))
+              Spacer(Modifier.height(SpacingLarge))
 
               ProfileTextField(
                   label = stringResource(R.string.profile_email_label),
@@ -112,7 +125,7 @@ fun ProfileScreen(
                   keyboardType = KeyboardType.Email,
                   testTag = ProfileScreenTestTags.EMAIL_FIELD)
 
-              Spacer(Modifier.height(16.dp))
+              Spacer(Modifier.height(SpacingLarge))
 
               ProfileTextField(
                   label = stringResource(R.string.profile_phone_label),
@@ -126,14 +139,15 @@ fun ProfileScreen(
                   keyboardType = KeyboardType.Phone,
                   testTag = ProfileScreenTestTags.PHONE_FIELD)
 
-              Spacer(Modifier.height(24.dp))
+              Spacer(Modifier.height(SpacingLarge))
 
-              OutlinedButton(
-                  modifier =
-                      Modifier.testTag(ProfileScreenTestTags.ADMIN_CONTACT_BUTTON).fillMaxWidth(),
-                  onClick = onNavigateToAdminContact,
-                  enabled = !isEditMode) {
-                    Text(stringResource(R.string.profile_admin_contact_button))
+              Button(
+                  onClick = {
+                    authViewModel.signOut(credentialManager)
+                    onSignOut()
+                  },
+                  modifier = Modifier.testTag(ProfileScreenTestTags.SIGN_OUT_BUTTON)) {
+                    Text(stringResource(R.string.sign_in_logout_content_description))
                   }
             }
       }

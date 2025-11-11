@@ -5,8 +5,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.android.sample.ui.replacement.organize.components.SelectDateRangeScreen
-import com.android.sample.ui.replacement.organize.components.SelectEventScreen
+import androidx.compose.ui.res.stringResource
+import com.android.sample.R
+import com.android.sample.ui.replacement.components.SelectDateRangeScreen
+import com.android.sample.ui.replacement.components.SelectEventScreen
 import com.android.sample.ui.replacement.organize.components.SelectProcessMomentScreen
 import com.android.sample.ui.replacement.organize.components.SelectSubstitutedScreen
 
@@ -51,8 +53,16 @@ fun ReplacementOrganizeScreen(
             onBack = onCancel,
             onSelectEvents = { currentStep = 2 },
             onSelectDateRange = { currentStep = 3 })
-    2 -> SelectEventScreen(onNext = { currentStep = 4 }, onBack = { currentStep = 1 })
-    3 -> SelectDateRangeScreen(onNext = { currentStep = 4 }, onBack = { currentStep = 1 })
+    2 ->
+        SelectEventScreen(
+            onNext = { currentStep = 4 },
+            onBack = { currentStep = 1 },
+            instruction = stringResource(R.string.select_replacement_events))
+    3 ->
+        SelectDateRangeScreen(
+            onNext = { currentStep = 4 },
+            onBack = { currentStep = 1 },
+            instruction = stringResource(R.string.organize_replacement))
     4 -> SelectProcessMomentScreen(onProcessNow = onProcessNow, onProcessLater = onProcessLater)
   }
 }

@@ -1,4 +1,4 @@
-package com.android.sample.ui.replacement.organize.components
+package com.android.sample.ui.replacement.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,15 +44,16 @@ import com.android.sample.ui.theme.WeightVeryLight
  *
  * @param onNext Called when the user confirms event selection and proceeds to the next step.
  * @param onBack Called when the user navigates back to the previous screen.
+ * @param instruction Instruction text to display to the user.
  */
 @Composable
-fun SelectEventScreen(onNext: () -> Unit = {}, onBack: () -> Unit = {}) {
+fun SelectEventScreen(onNext: () -> Unit = {}, onBack: () -> Unit = {}, instruction: String = "") {
 
   val selectedEvents: List<Event> = emptyList()
   var substitutedUser = "example user" // to be provided by the viewmodel
 
   Scaffold(
-      topBar = { TopTitleBar(title = stringResource(R.string.organize_replacement)) },
+      topBar = { TopTitleBar(title = instruction) },
       content = { paddingValues ->
         Column(
             modifier =

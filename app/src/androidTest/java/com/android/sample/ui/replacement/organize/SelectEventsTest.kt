@@ -2,7 +2,7 @@ package com.android.sample.ui.replacement.organize
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import com.android.sample.ui.replacement.organize.components.SelectEventScreen
+import com.android.sample.ui.replacement.components.SelectEventScreen
 import org.junit.Rule
 import org.junit.Test
 

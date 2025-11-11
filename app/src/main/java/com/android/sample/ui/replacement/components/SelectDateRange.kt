@@ -1,4 +1,4 @@
-package com.android.sample.ui.replacement.organize.components
+package com.android.sample.ui.replacement.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -71,6 +71,7 @@ import java.time.Instant
 fun SelectDateRangeScreen(
     onNext: () -> Unit = {},
     onBack: () -> Unit = {},
+    instruction: String = ""
 ) {
 
   // Later handled by the viewmodel
@@ -80,7 +81,7 @@ fun SelectDateRangeScreen(
   var substitutedUser = "example user" // to be provided by the viewmodel
 
   Scaffold(
-      topBar = { TopTitleBar(title = stringResource(R.string.organize_replacement)) },
+      topBar = { TopTitleBar(title = instruction) },
       content = { paddingValues ->
         Column(
             modifier =

@@ -131,7 +131,10 @@ fun Agendapp(
                 })
           }
           composable(Screen.ReplacementOrganize.route) {
-            ReplacementOrganizeScreen(onCancel = { navigationActions.navigateBack() })
+            ReplacementOrganizeScreen(
+                onCancel = { navigationActions.navigateBack() },
+                onProcessLater = { navigationActions.navigateTo(Screen.ReplacementOverview) },
+            )
           }
           // Pending Replacement Screen
           composable(Screen.ReplacementPending.route) { ReplacementPendingListScreen() }

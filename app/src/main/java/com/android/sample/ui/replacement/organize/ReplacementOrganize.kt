@@ -5,7 +5,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.android.sample.ui.replacement.organize.components.SelectDateRangeScreen
 import com.android.sample.ui.replacement.organize.components.SelectEventScreen
+import com.android.sample.ui.replacement.organize.components.SelectProcessMomentScreen
 import com.android.sample.ui.replacement.organize.components.SelectSubstitutedScreen
 
 /**
@@ -18,12 +20,23 @@ import com.android.sample.ui.replacement.organize.components.SelectSubstitutedSc
  * @param onCancel Callback triggered when the user cancels the flow
  */
 @Composable
-fun ReplacementOrganizeScreen(onCancel: () -> Unit = {}) {
+fun ReplacementOrganizeScreen(
+    onCancel: () -> Unit = {},
+    onProcessNow: () -> Unit = {},
+    onProcessLater: () -> Unit = {}
+) {
+
   // This currentStep be handled by the view model in a complete implementation
   var currentStep by remember { mutableIntStateOf(1) }
 
   when (currentStep) {
-    1 -> SelectSubstitutedScreen(onBack = onCancel, onSelectEvents = { currentStep++ })
-    2 -> SelectEventScreen(onNext = { /* Navigate to next step */}, onBack = { currentStep-- })
+    1 ->
+        SelectSubstitutedScreen(
+            onBack = onCancel,
+            onSelectEvents = { currentStep = 2 },
+            onSelectDateRange = { currentStep = 3 })
+    2 -> SelectEventScreen(onNext = { currentStep = 4 }, onBack = { currentStep = 1 })
+    3 -> SelectDateRangeScreen(onNext = { currentStep = 4 }, onBack = { currentStep = 1 })
+    4 -> SelectProcessMomentScreen(onProcessNow = onProcessNow, onProcessLater = onProcessLater)
   }
 }

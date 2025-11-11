@@ -28,6 +28,6 @@ data class EventSummaryTextConfig(
 
 /** Consolidated defaults for callers. */
 object EventSummaryCardDefaults {
-    val style = EventSummaryCardStyle()
-    val texts = EventSummaryTextConfig()
+  val style = EventSummaryCardStyle()
+  val texts = EventSummaryTextConfig()
 }

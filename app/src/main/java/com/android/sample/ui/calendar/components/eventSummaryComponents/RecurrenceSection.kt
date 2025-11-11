@@ -29,21 +29,21 @@ import com.android.sample.ui.theme.SpacingSmall
  */
 @Composable
 fun RecurrenceSection(recurrenceText: String? = null) {
-    if (!recurrenceText.isNullOrBlank()) {
-        // Extra breathing room to separate from the date/time block
-        Spacer(Modifier.height(SpacingMedium))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = Icons.Filled.Repeat,
-                contentDescription = "Recurrence",
-                modifier = Modifier.size(IconSizeMedium),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = AlphaMedium))
-            Spacer(Modifier.width(SpacingSmall))
-            Text(
-                text = recurrenceText,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = AlphaMedium),
-                modifier = Modifier.testTag(EventSummaryCardTags.Recurrence))
-        }
+  if (!recurrenceText.isNullOrBlank()) {
+    // Extra breathing room to separate from the date/time block
+    Spacer(Modifier.height(SpacingMedium))
+    Row(verticalAlignment = Alignment.CenterVertically) {
+      Icon(
+          imageVector = Icons.Filled.Repeat,
+          contentDescription = "Recurrence",
+          modifier = Modifier.size(IconSizeMedium),
+          tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = AlphaMedium))
+      Spacer(Modifier.width(SpacingSmall))
+      Text(
+          text = recurrenceText,
+          style = MaterialTheme.typography.bodySmall,
+          color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = AlphaMedium),
+          modifier = Modifier.testTag(EventSummaryCardTags.Recurrence))
     }
+  }
 }

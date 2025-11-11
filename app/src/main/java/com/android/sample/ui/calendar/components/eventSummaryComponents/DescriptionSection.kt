@@ -31,9 +31,9 @@ import com.android.sample.ui.theme.WeightVeryHeavy
 /**
  * Renders the event description with expand/collapse and a left accent bar.
  *
- * The accent bar height tracks the measured text height to avoid a floating bar.
- * The section also reports whether the collapsed text overflows so the caller can decide
- * to show a "Show more / Show less" toggle.
+ * The accent bar height tracks the measured text height to avoid a floating bar. The section also
+ * reports whether the collapsed text overflows so the caller can decide to show a "Show more / Show
+ * less" toggle.
  *
  * @param descriptionText Raw description to show. When blank, this section is omitted.
  * @param collapsedMaxLines Maximum number of lines when collapsed.
@@ -49,45 +49,45 @@ fun DescriptionSection(
     descriptionText: String = "No description provided...",
     collapsedMaxLines: Int = EventSummaryTextConfig().descriptionCollapsedMaxLines,
     isExpanded: Boolean = false,
-    onToggle: () -> Unit = { },
-    onOverflowChange: (Boolean) -> Unit = { },
+    onToggle: () -> Unit = {},
+    onOverflowChange: (Boolean) -> Unit = {},
     showToggle: Boolean = true,
     noToggleSpacer: Dp = EventSummaryCardStyle().descHasToggleSpacer,
     hasToggleSpacer: Dp = EventSummaryCardStyle().descNoToggleSpacer
 ) {
-    if (descriptionText.isNotBlank()) {
-        // Measured text height (px), drives the left accent bar height
-        var descHeightPx by remember { mutableStateOf(0) }
-        val descHeightDp = with(LocalDensity.current) { descHeightPx.toDp() }
+  if (descriptionText.isNotBlank()) {
+    // Measured text height (px), drives the left accent bar height
+    var descHeightPx by remember { mutableStateOf(0) }
+    val descHeightDp = with(LocalDensity.current) { descHeightPx.toDp() }
 
-        Row(modifier = Modifier.fillMaxWidth()) {
-            // Left accent bar scaled to text height
-            Box(
-                modifier =
-                    Modifier.width(BarWidthSmall)
-                        .height(descHeightDp)
-                        .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = AlphaLow)))
-            Spacer(Modifier.width(SpacingMedium))
-            Column(modifier = Modifier.weight(WeightVeryHeavy)) {
-                // Delegate expansion, overflow detection, and edge-fade to the reusable component
-                ExpandableText(
-                    text = descriptionText,
-                    style = MaterialTheme.typography.bodyMedium,
-                    collapsedMaxLines = collapsedMaxLines,
-                    isExpanded = isExpanded,
-                    onToggleExpand = onToggle,
-                    onOverflowChange = onOverflowChange,
-                    showToggle = showToggle,
-                    toggleLabels = EventSummaryCardDefaults.texts.toggleLabels,
-                    toggleTypography = MaterialTheme.typography.labelMedium,
-                    onTextHeightChange = { descHeightPx = it },
-                    modifier = Modifier.testTag(EventSummaryCardTags.DescriptionText),
-                    toggleTestTag = EventSummaryCardTags.ToggleDescription)
-            }
-        }
+    Row(modifier = Modifier.fillMaxWidth()) {
+      // Left accent bar scaled to text height
+      Box(
+          modifier =
+              Modifier.width(BarWidthSmall)
+                  .height(descHeightDp)
+                  .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = AlphaLow)))
+      Spacer(Modifier.width(SpacingMedium))
+      Column(modifier = Modifier.weight(WeightVeryHeavy)) {
+        // Delegate expansion, overflow detection, and edge-fade to the reusable component
+        ExpandableText(
+            text = descriptionText,
+            style = MaterialTheme.typography.bodyMedium,
+            collapsedMaxLines = collapsedMaxLines,
+            isExpanded = isExpanded,
+            onToggleExpand = onToggle,
+            onOverflowChange = onOverflowChange,
+            showToggle = showToggle,
+            toggleLabels = EventSummaryCardDefaults.texts.toggleLabels,
+            toggleTypography = MaterialTheme.typography.labelMedium,
+            onTextHeightChange = { descHeightPx = it },
+            modifier = Modifier.testTag(EventSummaryCardTags.DescriptionText),
+            toggleTestTag = EventSummaryCardTags.ToggleDescription)
+      }
     }
+  }
 
-    // Keep vertical rhythm consistent whether the toggle is visible or not
-    if (!showToggle) Spacer(Modifier.height(noToggleSpacer))
-    else Spacer(Modifier.height(hasToggleSpacer))
+  // Keep vertical rhythm consistent whether the toggle is visible or not
+  if (!showToggle) Spacer(Modifier.height(noToggleSpacer))
+  else Spacer(Modifier.height(hasToggleSpacer))
 }

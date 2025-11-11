@@ -32,8 +32,7 @@ import com.android.sample.ui.calendar.style.EventSummaryTextConfig
 import com.android.sample.ui.theme.SpacingSmall
 
 /**
- *  Aggregates localized labels used by the expand/collapse toggle
- * (like "Show more" / "Show less).
+ * Aggregates localized labels used by the expand/collapse toggle (like "Show more" / "Show less).
  */
 data class ToggleLabels(val expand: String, val collapse: String)
 
@@ -71,82 +70,83 @@ fun ExpandableText(
     style: TextStyle = MaterialTheme.typography.titleMedium,
     collapsedMaxLines: Int = EventSummaryTextConfig().descriptionCollapsedMaxLines,
     isExpanded: Boolean = false,
-    onToggleExpand: () -> Unit = { },
-    onOverflowChange: (Boolean) -> Unit = { },
+    onToggleExpand: () -> Unit = {},
+    onOverflowChange: (Boolean) -> Unit = {},
     showToggle: Boolean = true,
     toggleLabels: ToggleLabels = EventSummaryTextConfig().toggleLabels,
     toggleTypography: TextStyle = MaterialTheme.typography.labelMedium,
-    onTextHeightChange: (Int) -> Unit = { },
+    onTextHeightChange: (Int) -> Unit = {},
     toggleTestTag: String? = null
 ) {
-    Column(modifier = modifier.fillMaxWidth()) {
-        // If no explicit lineHeight, use a conservative multiplier to avoid cramped lines
-        val density = LocalDensity.current
-        val fontSizePx = with(density) { style.fontSize.toPx() }
-        val computedLineHeight =
-            if (style.lineHeight.isUnspecified) style.fontSize * 1.2f else style.lineHeight
-        val lineHeightPx = with(density) { computedLineHeight.toPx() }
-        // Scale fade width with font size for consistent perceived length
-        val fadeWidthPx = fontSizePx * 12f
+  Column(modifier = modifier.fillMaxWidth()) {
+    // If no explicit lineHeight, use a conservative multiplier to avoid cramped lines
+    val density = LocalDensity.current
+    val fontSizePx = with(density) { style.fontSize.toPx() }
+    val computedLineHeight =
+        if (style.lineHeight.isUnspecified) style.fontSize * 1.2f else style.lineHeight
+    val lineHeightPx = with(density) { computedLineHeight.toPx() }
+    // Scale fade width with font size for consistent perceived length
+    val fadeWidthPx = fontSizePx * 12f
 
-        Box(modifier = Modifier.fillMaxWidth()) {
-            Text(
-                text = text,
-                style = style,
-                maxLines = if (isExpanded) Int.MAX_VALUE else collapsedMaxLines,
-                overflow = TextOverflow.Clip,
-                softWrap = isExpanded || collapsedMaxLines > 1,
-                onTextLayout = { result ->
-                    // When expanded, keep the toggle visible as "Show less"
-                    if (!isExpanded) onOverflowChange(result.hasVisualOverflow) else onOverflowChange(true)
-                },
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier =
-                    Modifier.onSizeChanged { onTextHeightChange(it.height) }
-                        .then(
-                            if (!isExpanded && showToggle) {
-                                // Draw content first, then punch in a right-edge fade on ONLY the last visible line
-                                Modifier.graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
-                                    .drawWithContent {
-                                        drawContent()
-                                        // Target the vertical band of the last line only
-                                        val endX = size.width
-                                        val startX = (endX - fadeWidthPx).coerceAtLeast(0f)
-                                        val topY = (size.height - lineHeightPx).coerceAtLeast(0f)
-                                        val width = (endX - startX).coerceAtLeast(0f)
-                                        if (width > 0f && lineHeightPx > 0f) {
-                                            drawRect(
-                                                brush =
-                                                    Brush.horizontalGradient(
-                                                        colors = listOf(Color.Black, Color.Transparent),
-                                                        startX = startX,
-                                                        endX = endX),
-                                                topLeft = Offset(startX, topY),
-                                                size = Size(width, lineHeightPx),
-                                                blendMode = BlendMode.DstIn)
-                                        }
-                                    }
-                            } else {
-                                Modifier
-                            }))
-        }
-
-        // Toggle row aligned to end, remains visible in expanded mode (e.g. as "Show less")
-        if (showToggle) {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                TextButton(
-                    onClick = onToggleExpand,
-                    contentPadding = PaddingValues(0.dp),
-                    modifier = if (toggleTestTag != null) Modifier.testTag(toggleTestTag) else Modifier) {
-                    Text(
-                        text = if (isExpanded) toggleLabels.collapse else toggleLabels.expand,
-                        style = toggleTypography,
-                        color = MaterialTheme.colorScheme.primary)
-                }
-            }
-        } else {
-            // Keep vertical rhythm when no toggle is shown
-            Spacer(Modifier.height(SpacingSmall))
-        }
+    Box(modifier = Modifier.fillMaxWidth()) {
+      Text(
+          text = text,
+          style = style,
+          maxLines = if (isExpanded) Int.MAX_VALUE else collapsedMaxLines,
+          overflow = TextOverflow.Clip,
+          softWrap = isExpanded || collapsedMaxLines > 1,
+          onTextLayout = { result ->
+            // When expanded, keep the toggle visible as "Show less"
+            if (!isExpanded) onOverflowChange(result.hasVisualOverflow) else onOverflowChange(true)
+          },
+          color = MaterialTheme.colorScheme.onSurface,
+          modifier =
+              Modifier.onSizeChanged { onTextHeightChange(it.height) }
+                  .then(
+                      if (!isExpanded && showToggle) {
+                        // Draw content first, then punch in a right-edge fade on ONLY the last
+                        // visible line
+                        Modifier.graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
+                            .drawWithContent {
+                              drawContent()
+                              // Target the vertical band of the last line only
+                              val endX = size.width
+                              val startX = (endX - fadeWidthPx).coerceAtLeast(0f)
+                              val topY = (size.height - lineHeightPx).coerceAtLeast(0f)
+                              val width = (endX - startX).coerceAtLeast(0f)
+                              if (width > 0f && lineHeightPx > 0f) {
+                                drawRect(
+                                    brush =
+                                        Brush.horizontalGradient(
+                                            colors = listOf(Color.Black, Color.Transparent),
+                                            startX = startX,
+                                            endX = endX),
+                                    topLeft = Offset(startX, topY),
+                                    size = Size(width, lineHeightPx),
+                                    blendMode = BlendMode.DstIn)
+                              }
+                            }
+                      } else {
+                        Modifier
+                      }))
     }
+
+    // Toggle row aligned to end, remains visible in expanded mode (e.g. as "Show less")
+    if (showToggle) {
+      Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+        TextButton(
+            onClick = onToggleExpand,
+            contentPadding = PaddingValues(0.dp),
+            modifier = if (toggleTestTag != null) Modifier.testTag(toggleTestTag) else Modifier) {
+              Text(
+                  text = if (isExpanded) toggleLabels.collapse else toggleLabels.expand,
+                  style = toggleTypography,
+                  color = MaterialTheme.colorScheme.primary)
+            }
+      }
+    } else {
+      // Keep vertical rhythm when no toggle is shown
+      Spacer(Modifier.height(SpacingSmall))
+    }
+  }
 }

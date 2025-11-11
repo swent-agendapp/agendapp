@@ -14,12 +14,11 @@ import com.android.sample.ui.calendar.style.EventSummaryCardDefaults
 import com.android.sample.ui.calendar.style.EventSummaryCardStyle
 import com.android.sample.ui.calendar.style.EventSummaryTextConfig
 
-
 /**
  * Displays the event title with expand/collapse behavior for long titles.
  *
- * Overflow detection, last-line fade, and the toggle button are delegated to `ExpandableText`.
- * When the toggle is not visible, a spacer preserves vertical rhythm with neighboring sections.
+ * Overflow detection, last-line fade, and the toggle button are delegated to `ExpandableText`. When
+ * the toggle is not visible, a spacer preserves vertical rhythm with neighboring sections.
  *
  * @param text Title to display.
  * @param isExpanded Whether the title is expanded.
@@ -34,25 +33,25 @@ import com.android.sample.ui.calendar.style.EventSummaryTextConfig
 fun TitleSection(
     text: String = "No title provided...",
     isExpanded: Boolean = false,
-    onToggle: () -> Unit = { },
-    onOverflowChange: (Boolean) -> Unit = { },
+    onToggle: () -> Unit = {},
+    onOverflowChange: (Boolean) -> Unit = {},
     showToggle: Boolean = true,
     collapsedMaxLines: Int = EventSummaryTextConfig().titleCollapsedMaxLines,
     toggleLabels: ToggleLabels = EventSummaryCardDefaults.texts.toggleLabels,
     afterNoToggleSpacer: Dp = EventSummaryCardStyle().titleSpacer
 ) {
-    ExpandableText(
-        text = text,
-        style = MaterialTheme.typography.titleLarge,
-        collapsedMaxLines = collapsedMaxLines,
-        isExpanded = isExpanded,
-        onToggleExpand = onToggle,
-        onOverflowChange = onOverflowChange,
-        showToggle = showToggle,
-        toggleLabels = toggleLabels,
-        toggleTypography = MaterialTheme.typography.labelMedium,
-        modifier = Modifier.testTag(EventSummaryCardTags.TitleText),
-        toggleTestTag = EventSummaryCardTags.ToggleTitle)
-    // Preserve spacing when the toggle is absent
-    if (!showToggle) Spacer(Modifier.height(afterNoToggleSpacer))
+  ExpandableText(
+      text = text,
+      style = MaterialTheme.typography.titleLarge,
+      collapsedMaxLines = collapsedMaxLines,
+      isExpanded = isExpanded,
+      onToggleExpand = onToggle,
+      onOverflowChange = onOverflowChange,
+      showToggle = showToggle,
+      toggleLabels = toggleLabels,
+      toggleTypography = MaterialTheme.typography.labelMedium,
+      modifier = Modifier.testTag(EventSummaryCardTags.TitleText),
+      toggleTestTag = EventSummaryCardTags.ToggleTitle)
+  // Preserve spacing when the toggle is absent
+  if (!showToggle) Spacer(Modifier.height(afterNoToggleSpacer))
 }

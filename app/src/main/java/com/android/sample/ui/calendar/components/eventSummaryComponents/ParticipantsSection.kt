@@ -55,54 +55,57 @@ fun ParticipantsSection(
     visibleRows: Int = EventSummaryCardStyle().participantsVisibleRows,
     borderColor: Color = EventColor.Blue.toComposeColor(),
 ) {
-    if (participantNames.isNotEmpty()) {
-        // Section header with "Participants" label and people icon
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = Icons.Filled.Group,
-                contentDescription = "Participants",
-                modifier = Modifier.size(IconSizeMedium),
-                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaHigh))
-            Spacer(Modifier.width(SpacingSmall))
-            Text(
-                text = "Participants",
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaHigh))
-        }
-        Spacer(Modifier.height(SpacingSmall))
+  if (participantNames.isNotEmpty()) {
+    // Section header with "Participants" label and people icon
+    Row(verticalAlignment = Alignment.CenterVertically) {
+      Icon(
+          imageVector = Icons.Filled.Group,
+          contentDescription = "Participants",
+          modifier = Modifier.size(IconSizeMedium),
+          tint = MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaHigh))
+      Spacer(Modifier.width(SpacingSmall))
+      Text(
+          text = "Participants",
+          style = MaterialTheme.typography.labelLarge,
+          color = MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaHigh))
+    }
+    Spacer(Modifier.height(SpacingSmall))
 
-        val listState = rememberLazyListState()
-        val totalItems = participantNames.size
-        // Add a small extra (~0.6 row) so the next item peeks into view and hints scrollability
-        val containerHeight = rowHeight * visibleRows + rowHeight * 3 / 5
+    val listState = rememberLazyListState()
+    val totalItems = participantNames.size
+    // Add a small extra (~0.6 row) so the next item peeks into view and hints scrollability
+    val containerHeight = rowHeight * visibleRows + rowHeight * 3 / 5
 
-        Box(
-            modifier =
-                Modifier.fillMaxWidth()
-                    .border(width = BorderWidthThin, color = borderColor, shape = RoundedCornerShape(CornerRadiusLarge))
-                    .clip(RoundedCornerShape(CornerRadiusLarge))) {
-            LazyColumn(
-                state = listState,
-                modifier =
-                    Modifier.height(if (totalItems > visibleRows) containerHeight else Dp.Unspecified)
-                        .fillMaxWidth()
-                        .testTag(EventSummaryCardTags.ParticipantsList)) {
+    Box(
+        modifier =
+            Modifier.fillMaxWidth()
+                .border(
+                    width = BorderWidthThin,
+                    color = borderColor,
+                    shape = RoundedCornerShape(CornerRadiusLarge))
+                .clip(RoundedCornerShape(CornerRadiusLarge))) {
+          LazyColumn(
+              state = listState,
+              modifier =
+                  Modifier.height(if (totalItems > visibleRows) containerHeight else Dp.Unspecified)
+                      .fillMaxWidth()
+                      .testTag(EventSummaryCardTags.ParticipantsList)) {
                 itemsIndexed(participantNames) { idx, name ->
-                    // Gentle zebra striping improves scan-ability for long lists
-                    val bg =
-                        if (idx % 2 == 0) MaterialTheme.colorScheme.surface
-                        else MaterialTheme.colorScheme.surfaceVariant
-                    Box(
-                        modifier = Modifier.fillMaxWidth().height(rowHeight).background(bg),
-                        contentAlignment = Alignment.CenterStart) {
+                  // Gentle zebra striping improves scan-ability for long lists
+                  val bg =
+                      if (idx % 2 == 0) MaterialTheme.colorScheme.surface
+                      else MaterialTheme.colorScheme.surfaceVariant
+                  Box(
+                      modifier = Modifier.fillMaxWidth().height(rowHeight).background(bg),
+                      contentAlignment = Alignment.CenterStart) {
                         Text(
                             text = name,
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.padding(horizontal = PaddingMedium))
-                    }
+                      }
                 }
-            }
+              }
         }
-    }
+  }
 }

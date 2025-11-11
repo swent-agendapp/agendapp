@@ -26,7 +26,6 @@ import com.android.sample.ui.theme.ElevationExtraLow
 import com.android.sample.utils.EventColor
 import java.time.ZonedDateTime
 
-
 @Composable
 fun DrawEventSummaryCard(
     modifier: Modifier = Modifier,
@@ -38,88 +37,89 @@ fun DrawEventSummaryCard(
     titleText: String = "No title provided...",
     isTitleExpanded: Boolean = false,
     onTitleToggle: () -> Unit = {},
-    onTitleOverflowChange: (Boolean) -> Unit = { },
+    onTitleOverflowChange: (Boolean) -> Unit = {},
     showTitleToggle: Boolean = true,
     // Dates
-    datePresentation: DatePresentation = DatePresentation(
-        isMultiDay = false,
-        dateLine1 = "No date provided...",
-        dateLine2 = "No date provided...",
-        startDateShort = "No date provided...",
-        endDateShort = "No date provided...",
-        startTimeStr = "No date provided...",
-        endTimeStr = "No date provided...",
-        startZdt = ZonedDateTime.now(),
-        endZdt = ZonedDateTime.now()
-    ),
+    datePresentation: DatePresentation =
+        DatePresentation(
+            isMultiDay = false,
+            dateLine1 = "No date provided...",
+            dateLine2 = "No date provided...",
+            startDateShort = "No date provided...",
+            endDateShort = "No date provided...",
+            startTimeStr = "No date provided...",
+            endTimeStr = "No date provided...",
+            startZdt = ZonedDateTime.now(),
+            endZdt = ZonedDateTime.now()),
     // Recurrence
     recurrenceText: String? = null,
     // Description
     descriptionText: String = "No description provided...",
     isDescriptionExpanded: Boolean = false,
-    onDescriptionToggle: () -> Unit = { },
-    onDescriptionOverflowChange: (Boolean) -> Unit = { },
+    onDescriptionToggle: () -> Unit = {},
+    onDescriptionOverflowChange: (Boolean) -> Unit = {},
     showDescriptionToggle: Boolean = true,
     // Participants
     participantNames: List<String> = emptyList(),
 ) {
-    val overlayColor = sideColor.copy(alpha = AlphaExtraLow) // translucent event tint drawn above base
-    val baseContainerColor = MaterialTheme.colorScheme.surface // stable background for light/dark
+  val overlayColor =
+      sideColor.copy(alpha = AlphaExtraLow) // translucent event tint drawn above base
+  val baseContainerColor = MaterialTheme.colorScheme.surface // stable background for light/dark
 
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        shape = shape,
-        elevation = CardDefaults.cardElevation(defaultElevation = ElevationExtraLow),
-        colors = CardDefaults.cardColors(containerColor = baseContainerColor)) {
+  Card(
+      modifier = modifier.fillMaxWidth(),
+      shape = shape,
+      elevation = CardDefaults.cardElevation(defaultElevation = ElevationExtraLow),
+      colors = CardDefaults.cardColors(containerColor = baseContainerColor)) {
         // Draw a translucent overlay tinted by the event color above the stable base
         Box(modifier = Modifier.fillMaxWidth().clip(shape).background(overlayColor)) {
-            Row(modifier = Modifier.fillMaxWidth()) {
-                ColoredSideBar(width = style.leftBarWidthDp, color = sideColor, shape = shape)
+          Row(modifier = Modifier.fillMaxWidth()) {
+            ColoredSideBar(width = style.leftBarWidthDp, color = sideColor, shape = shape)
 
-                Column(
-                    modifier =
-                        Modifier.padding(horizontal = style.paddingH, vertical = style.paddingV)
-                            .fillMaxWidth()) {
-                    // 1) Title
-                    TitleSection(
-                        text = titleText,
-                        isExpanded = isTitleExpanded,
-                        onToggle = onTitleToggle,
-                        onOverflowChange = onTitleOverflowChange,
-                        showToggle = showTitleToggle,
-                        collapsedMaxLines = textConfig.titleCollapsedMaxLines,
-                        toggleLabels = textConfig.toggleLabels,
-                        afterNoToggleSpacer = style.titleSpacer)
+            Column(
+                modifier =
+                    Modifier.padding(horizontal = style.paddingH, vertical = style.paddingV)
+                        .fillMaxWidth()) {
+                  // 1) Title
+                  TitleSection(
+                      text = titleText,
+                      isExpanded = isTitleExpanded,
+                      onToggle = onTitleToggle,
+                      onOverflowChange = onTitleOverflowChange,
+                      showToggle = showTitleToggle,
+                      collapsedMaxLines = textConfig.titleCollapsedMaxLines,
+                      toggleLabels = textConfig.toggleLabels,
+                      afterNoToggleSpacer = style.titleSpacer)
 
-                    // 2) Dates
-                    DateSection(datePresentation)
+                  // 2) Dates
+                  DateSection(datePresentation)
 
-                    // 3) Recurrence
-                    RecurrenceSection(recurrenceText)
+                  // 3) Recurrence
+                  RecurrenceSection(recurrenceText)
 
-                    Spacer(Modifier.height(style.sectionGapLarge))
+                  Spacer(Modifier.height(style.sectionGapLarge))
 
-                    // 4) Description
-                    DescriptionSection(
-                        descriptionText = descriptionText,
-                        collapsedMaxLines = textConfig.descriptionCollapsedMaxLines,
-                        isExpanded = isDescriptionExpanded,
-                        onToggle = onDescriptionToggle,
-                        onOverflowChange = onDescriptionOverflowChange,
-                        showToggle = showDescriptionToggle,
-                        noToggleSpacer = style.descNoToggleSpacer,
-                        hasToggleSpacer = style.descHasToggleSpacer
-                    )
+                  // 4) Description
+                  DescriptionSection(
+                      descriptionText = descriptionText,
+                      collapsedMaxLines = textConfig.descriptionCollapsedMaxLines,
+                      isExpanded = isDescriptionExpanded,
+                      onToggle = onDescriptionToggle,
+                      onOverflowChange = onDescriptionOverflowChange,
+                      showToggle = showDescriptionToggle,
+                      noToggleSpacer = style.descNoToggleSpacer,
+                      hasToggleSpacer = style.descHasToggleSpacer)
 
-                    // 5) Participants
-                    ParticipantsSection(
-                        participantNames = participantNames,
-                        rowHeight = style.participantsRowHeight,
-                        visibleRows = style.participantsVisibleRows,
-                        borderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = AlphaLow),
-                    )
+                  // 5) Participants
+                  ParticipantsSection(
+                      participantNames = participantNames,
+                      rowHeight = style.participantsRowHeight,
+                      visibleRows = style.participantsVisibleRows,
+                      borderColor =
+                          MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = AlphaLow),
+                  )
                 }
-            }
+          }
         }
-    }
+      }
 }

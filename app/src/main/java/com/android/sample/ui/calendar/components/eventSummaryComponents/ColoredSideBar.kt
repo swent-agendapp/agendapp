@@ -33,18 +33,18 @@ fun ColoredSideBar(
     color: Color = EventColor.Blue.toComposeColor(),
     shape: RoundedCornerShape = RoundedCornerShape(EventSummaryCardStyle().cornerRadiusDp)
 ) {
-    Box(
-        modifier =
-            Modifier.width(width)
-                .fillMaxHeight()
-                // Keep only the start (left) radii so the bar merges seamlessly with the container
-                .background(
-                    color,
-                    shape =
-                        RoundedCornerShape(
-                            topStart = shape.topStart,
-                            bottomStart = shape.bottomStart,
-                            topEnd = CornerSize(0.dp),
-                            bottomEnd = CornerSize(0.dp)))
-                .testTag(EventSummaryCardTags.SideBar))
+  Box(
+      modifier =
+          Modifier.width(width)
+              .fillMaxHeight()
+              // Keep only the start (left) radii so the bar merges seamlessly with the container
+              .background(
+                  color,
+                  shape =
+                      RoundedCornerShape(
+                          topStart = shape.topStart,
+                          bottomStart = shape.bottomStart,
+                          topEnd = CornerSize(0.dp),
+                          bottomEnd = CornerSize(0.dp)))
+              .testTag(EventSummaryCardTags.SideBar))
 }

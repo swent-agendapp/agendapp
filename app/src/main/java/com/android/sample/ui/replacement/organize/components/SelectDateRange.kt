@@ -26,11 +26,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
-import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.components.DatePickerFieldToModal
 import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.calendar.utils.DateTimeUtils
 import com.android.sample.ui.components.BottomNavigationButtons
+import com.android.sample.ui.replacement.organize.ReplacementOrganizeTestTags
 import com.android.sample.ui.theme.CornerRadiusMedium
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.PaddingMedium
@@ -97,7 +97,7 @@ fun SelectDateRangeScreen(
                             stringResource(R.string.select_replacement_date_range, substitutedUser),
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.headlineMedium,
-                        modifier = Modifier.testTag(AddEventTestTags.INSTRUCTION_TEXT))
+                        modifier = Modifier.testTag(ReplacementOrganizeTestTags.INSTRUCTION_TEXT))
                   }
 
               Column(modifier = Modifier.weight(WeightVeryHeavy)) {
@@ -105,7 +105,7 @@ fun SelectDateRangeScreen(
 
                 DatePickerFieldToModal(
                     label = stringResource(R.string.startDatePickerLabel),
-                    modifier = Modifier.testTag(AddEventTestTags.START_DATE_FIELD),
+                    modifier = Modifier.testTag(ReplacementOrganizeTestTags.START_DATE_FIELD),
                     onDateSelected = { date ->
                       startInstant = DateTimeUtils.instantWithDate(startInstant, date = date)
                     },
@@ -115,7 +115,7 @@ fun SelectDateRangeScreen(
 
                 DatePickerFieldToModal(
                     label = stringResource(R.string.endDatePickerLabel),
-                    modifier = Modifier.testTag(AddEventTestTags.END_DATE_FIELD),
+                    modifier = Modifier.testTag(ReplacementOrganizeTestTags.END_DATE_FIELD),
                     onDateSelected = { date ->
                       endInstant = DateTimeUtils.instantWithDate(endInstant, date = date)
                     },
@@ -146,8 +146,8 @@ fun SelectDateRangeScreen(
             backButtonText = stringResource(R.string.goBack),
             nextButtonText = stringResource(R.string.next),
             canGoNext = !isRangeInvalid,
-            backButtonTestTag = AddEventTestTags.BACK_BUTTON,
-            nextButtonTestTag = AddEventTestTags.NEXT_BUTTON)
+            backButtonTestTag = ReplacementOrganizeTestTags.BACK_BUTTON,
+            nextButtonTestTag = ReplacementOrganizeTestTags.NEXT_BUTTON)
       })
 }
 

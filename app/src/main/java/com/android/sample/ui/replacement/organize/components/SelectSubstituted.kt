@@ -33,11 +33,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
 import com.android.sample.ui.calendar.components.TopTitleBar
+import com.android.sample.ui.replacement.organize.ReplacementOrganizeTestTags
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.DefaultCardElevation
 import com.android.sample.ui.theme.PaddingExtraLarge
@@ -117,7 +119,9 @@ fun SelectSubstitutedScreen(
                   text = stringResource(R.string.which_member_to_be_replaced),
                   style = MaterialTheme.typography.headlineMedium,
                   textAlign = TextAlign.Center,
-                  modifier = Modifier.padding(vertical = PaddingLarge))
+                  modifier =
+                      Modifier.padding(vertical = PaddingLarge)
+                          .testTag(ReplacementOrganizeTestTags.INSTRUCTION_TEXT))
 
               /** Scrollable selectable list * */
               Card(
@@ -131,7 +135,9 @@ fun SelectSubstitutedScreen(
                           value = searchQuery,
                           onValueChange = { searchQuery = it },
                           placeholder = { Text(text = stringResource(R.string.search_member)) },
-                          modifier = Modifier.fillMaxWidth(),
+                          modifier =
+                              Modifier.fillMaxWidth()
+                                  .testTag(ReplacementOrganizeTestTags.SEARCH_BAR),
                           singleLine = true,
                           trailingIcon = {
                             Icon(
@@ -143,7 +149,10 @@ fun SelectSubstitutedScreen(
 
                       /** Scrollable list * */
                       LazyColumn(
-                          modifier = Modifier.weight(WeightVeryHeavy).fillMaxWidth(),
+                          modifier =
+                              Modifier.weight(WeightVeryHeavy)
+                                  .fillMaxWidth()
+                                  .testTag(ReplacementOrganizeTestTags.MEMBER_LIST),
                           verticalArrangement = Arrangement.Top) {
                             items(filteredMembers) { member ->
                               val isSelected = member == selectedMember
@@ -171,7 +180,9 @@ fun SelectSubstitutedScreen(
                       OutlinedTextField(
                           value = stringResource(R.string.selected_member, selectedMember),
                           onValueChange = {}, // ignored because readOnly
-                          modifier = Modifier.fillMaxWidth(),
+                          modifier =
+                              Modifier.fillMaxWidth()
+                                  .testTag(ReplacementOrganizeTestTags.SELECTED_MEMBER_INFO),
                           singleLine = true,
                           shape = RoundedCornerShape(CornerRadiusLarge),
                           colors =
@@ -191,7 +202,9 @@ fun SelectSubstitutedScreen(
                   horizontalAlignment = Alignment.CenterHorizontally) {
                     OutlinedButton(
                         onClick = onSelectEvents,
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier =
+                            Modifier.fillMaxWidth()
+                                .testTag(ReplacementOrganizeTestTags.SELECT_EVENT_BUTTON),
                         shape = RoundedCornerShape(CornerRadiusLarge),
                         enabled = selectedMember.isNotEmpty()) {
                           Text(
@@ -201,7 +214,9 @@ fun SelectSubstitutedScreen(
 
                     OutlinedButton(
                         onClick = onSelectDateRange,
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier =
+                            Modifier.fillMaxWidth()
+                                .testTag(ReplacementOrganizeTestTags.SELECT_DATE_RANGE_BUTTON),
                         shape = RoundedCornerShape(CornerRadiusLarge),
                         enabled = selectedMember.isNotEmpty()) {
                           Text(

@@ -18,9 +18,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
 import com.android.sample.model.calendar.Event
-import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.components.BottomNavigationButtons
+import com.android.sample.ui.replacement.organize.ReplacementOrganizeTestTags
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.WeightVeryHeavy
 import com.android.sample.ui.theme.WeightVeryLight
@@ -69,7 +69,7 @@ fun SelectEventScreen(onNext: () -> Unit = {}, onBack: () -> Unit = {}) {
                         text = stringResource(R.string.select_replacement_events, substitutedUser),
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.testTag(AddEventTestTags.INSTRUCTION_TEXT))
+                        modifier = Modifier.testTag(ReplacementOrganizeTestTags.INSTRUCTION_TEXT))
                   }
               Box(modifier = Modifier.weight(WeightVeryHeavy).fillMaxWidth())
             } // Empty content waiting for implementation
@@ -81,8 +81,8 @@ fun SelectEventScreen(onNext: () -> Unit = {}, onBack: () -> Unit = {}) {
             backButtonText = stringResource(R.string.goBack),
             nextButtonText = stringResource(R.string.next),
             canGoNext = selectedEvents.isNotEmpty(),
-            backButtonTestTag = AddEventTestTags.BACK_BUTTON,
-            nextButtonTestTag = AddEventTestTags.CREATE_BUTTON)
+            backButtonTestTag = ReplacementOrganizeTestTags.BACK_BUTTON,
+            nextButtonTestTag = ReplacementOrganizeTestTags.NEXT_BUTTON)
       })
 }
 

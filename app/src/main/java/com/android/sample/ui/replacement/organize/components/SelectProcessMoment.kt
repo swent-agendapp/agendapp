@@ -19,8 +19,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
-import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.components.TopTitleBar
+import com.android.sample.ui.replacement.organize.ReplacementOrganizeTestTags
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.PaddingLarge
@@ -71,7 +71,7 @@ fun SelectProcessMomentScreen(
                         text = stringResource(R.string.select_process_moment),
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.headlineMedium,
-                        modifier = Modifier.testTag(AddEventTestTags.INSTRUCTION_TEXT))
+                        modifier = Modifier.testTag(ReplacementOrganizeTestTags.INSTRUCTION_TEXT))
                   }
 
               Column(
@@ -80,7 +80,9 @@ fun SelectProcessMomentScreen(
                   horizontalAlignment = Alignment.CenterHorizontally) {
                     OutlinedButton(
                         onClick = onProcessNow,
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier =
+                            Modifier.fillMaxWidth()
+                                .testTag(ReplacementOrganizeTestTags.PROCESS_NOW_BUTTON),
                         shape = RoundedCornerShape(CornerRadiusLarge)) {
                           Text(
                               text = stringResource(R.string.process_now),
@@ -92,7 +94,9 @@ fun SelectProcessMomentScreen(
 
                     OutlinedButton(
                         onClick = onProcessLater,
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier =
+                            Modifier.fillMaxWidth()
+                                .testTag(ReplacementOrganizeTestTags.PROCESS_LATER_BUTTON),
                         shape = RoundedCornerShape(CornerRadiusLarge)) {
                           Text(
                               text = stringResource(R.string.process_later),

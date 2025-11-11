@@ -10,6 +10,22 @@ import com.android.sample.ui.replacement.organize.components.SelectEventScreen
 import com.android.sample.ui.replacement.organize.components.SelectProcessMomentScreen
 import com.android.sample.ui.replacement.organize.components.SelectSubstitutedScreen
 
+/** Contains the test tags used across the replacement organization screen UI. */
+object ReplacementOrganizeTestTags {
+  const val INSTRUCTION_TEXT = "instruction_text"
+  const val SEARCH_BAR = "search_bar"
+  const val MEMBER_LIST = "member_list"
+  const val SELECTED_MEMBER_INFO = "selected_member_info"
+  const val SELECT_EVENT_BUTTON = "select_event_button"
+  const val SELECT_DATE_RANGE_BUTTON = "select_date_range_button"
+  const val START_DATE_FIELD = "start_date_field"
+  const val END_DATE_FIELD = "end_date_field"
+  const val PROCESS_NOW_BUTTON = "process_now_button"
+  const val PROCESS_LATER_BUTTON = "process_later_button"
+  const val NEXT_BUTTON = "next_button"
+  const val BACK_BUTTON = "back_button"
+}
+
 /**
  * Entry-point composable for the **Organize Replacement** feature.
  *

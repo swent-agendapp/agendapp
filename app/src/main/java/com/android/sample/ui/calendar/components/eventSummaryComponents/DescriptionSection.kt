@@ -23,6 +23,22 @@ import com.android.sample.ui.calendar.components.EventSummaryCardTags
 import com.android.sample.ui.calendar.components.ExpandableText
 import com.android.sample.ui.calendar.style.EventSummaryCardDefaults
 
+/**
+ * Renders the event description with expand/collapse and a left accent bar.
+ *
+ * The accent bar height tracks the measured text height to avoid a floating bar.
+ * The section also reports whether the collapsed text overflows so the caller can decide
+ * to show a "Show more / Show less" toggle.
+ *
+ * @param descriptionText Raw description to show. When blank, this section is omitted.
+ * @param collapsedMaxLines Maximum number of lines when collapsed.
+ * @param isExpanded Whether the text is expanded.
+ * @param onToggle Invoked when the user toggles expand/collapse.
+ * @param onOverflowChange Reports whether the collapsed content overflows.
+ * @param showToggle Whether the toggle button is visible.
+ * @param noToggleSpacer Spacer height used when the toggle is NOT shown.
+ * @param hasToggleSpacer Spacer height used when the toggle IS shown.
+ */
 @Composable
 fun DescriptionSection(
     descriptionText: String,
@@ -35,6 +51,7 @@ fun DescriptionSection(
     hasToggleSpacer: Dp
 ) {
     if (descriptionText.isNotBlank()) {
+        // Measured text height (px), drives the left accent bar height
         var descHeightPx by remember { mutableStateOf(0) }
         val descHeightDp = with(LocalDensity.current) { descHeightPx.toDp() }
 
@@ -47,6 +64,7 @@ fun DescriptionSection(
                         .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.35f)))
             Spacer(Modifier.width(10.dp))
             Column(modifier = Modifier.weight(1f)) {
+                // Delegate expansion, overflow detection, and edge-fade to the reusable component
                 ExpandableText(
                     text = descriptionText,
                     style = MaterialTheme.typography.bodyMedium,
@@ -64,6 +82,7 @@ fun DescriptionSection(
         }
     }
 
+    // Keep vertical rhythm consistent whether the toggle is visible or not
     if (!showToggle) Spacer(Modifier.height(noToggleSpacer))
     else Spacer(Modifier.height(hasToggleSpacer))
 }

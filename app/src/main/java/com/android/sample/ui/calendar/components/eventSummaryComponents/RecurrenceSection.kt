@@ -17,9 +17,17 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.android.sample.ui.calendar.components.EventSummaryCardTags
 
+/**
+ * Shows a concise recurrence line (e.g., "every week (Mon)") in a subdued style.
+ *
+ * The section self-hides when `recurrenceText` is null or blank.
+ *
+ * @param recurrenceText Human-readable recurrence string (already localized/constructed).
+ */
 @Composable
 fun RecurrenceSection(recurrenceText: String?) {
     if (!recurrenceText.isNullOrBlank()) {
+        // Extra breathing room to separate from the date/time block
         Spacer(Modifier.height(12.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(

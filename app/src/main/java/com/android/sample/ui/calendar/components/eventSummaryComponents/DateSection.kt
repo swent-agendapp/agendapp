@@ -22,12 +22,26 @@ import androidx.compose.ui.unit.dp
 import com.android.sample.ui.calendar.components.EventSummaryCardTags
 import com.android.sample.ui.calendar.utils.DatePresentation
 
+/**
+ * Renders the date/time area of the Event Summary.
+ *
+ * - Single-day events: two simple rows : date then time.
+ * - Multi-day events: three aligned columns to avoid ambiguity:
+ *   1) labels (“From” / “To”) with a calendar icon on the first row,
+ *   2) start/end dates,
+ *   3) start/end times prefixed with "at ".
+ *
+ * Formatting is delegated to [DatePresentation] so this composable remains layout-only.
+ *
+ * @param model Pre-formatted strings and flags produced by `DatePresentation`.
+ */
 @Composable
 fun DateSection(model: DatePresentation) {
+    // Three aligned columns => predictable scan: labels -> dates -> times
     if (model.isMultiDay) {
         // === Structure for multi-day ===
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            // Column 1: Labels (From / To) with calendar icon on first row
+            // First row shows calendar icon + "From"; second row aligns "To" text without icon for balance
             Column(modifier = Modifier.padding(end = 12.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
@@ -68,7 +82,7 @@ fun DateSection(model: DatePresentation) {
                     modifier = Modifier.testTag(EventSummaryCardTags.Multi_EndDate))
             }
 
-            // Column 3: Times
+            // Times are prefixed with "at " to read naturally next to the dates
             Column(horizontalAlignment = Alignment.Start) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Spacer(Modifier.width(6.dp))

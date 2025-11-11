@@ -7,7 +7,17 @@ import java.time.format.TextStyle
 import java.util.Locale
 
 
-/** Human-readable recurrence label in English (for now), with localized weekday short name. */
+/**
+ * Builds a short human-readable recurrence label in English (for now), with a locale-aware weekday for weekly events.
+ *
+ * Note: Only the weekday part is localized via [weekdayShortLocalized], the leading phrase
+ * ("every week/month/year") is currently English-only and can be externalized later.
+ *
+ * @param status Recurrence status.
+ * @param start Start date/time (used to derive the weekday for weekly recurrences).
+ * @param locale Locale used for weekday localization.
+ * @return A short single-line label, empty string for one-off events.
+ */
 fun recurrenceLabel(
     status: RecurrenceStatus,
     start: ZonedDateTime,
@@ -20,6 +30,6 @@ fun recurrenceLabel(
         RecurrenceStatus.Yearly -> "every year"
     }
 
-/** Locale-aware short weekday, e.g. "Mon", "Tue", etc. */
+/** @return Locale-aware short weekday name (e.g., "Mon", "Lun", "Mo."). */
 fun weekdayShortLocalized(d: DayOfWeek, locale: Locale): String =
     d.getDisplayName(TextStyle.SHORT, locale)

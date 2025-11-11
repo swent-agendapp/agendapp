@@ -29,6 +29,17 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.android.sample.ui.calendar.components.EventSummaryCardTags
 
+/**
+ * Displays a participant list with gentle zebra striping and optional fixed-height scrolling.
+ *
+ * If `participantNames.size` exceeds `visibleRows`, the list gets a fixed height and becomes
+ * scrollable. Otherwise it sizes to its content height.
+ *
+ * @param participantNames Names to display (already resolved by the caller).
+ * @param rowHeight Height of each row, also used to compute the container height.
+ * @param visibleRows Number of fully visible rows before enabling scrolling.
+ * @param borderColor Color of the rounded border around the list.
+ */
 @Composable
 fun ParticipantsSection(
     participantNames: List<String>,
@@ -37,6 +48,7 @@ fun ParticipantsSection(
     borderColor: Color,
 ) {
     if (participantNames.isNotEmpty()) {
+        // Section header with "Participants" label and people icon
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 imageVector = Icons.Filled.Group,
@@ -53,6 +65,7 @@ fun ParticipantsSection(
 
         val listState = rememberLazyListState()
         val totalItems = participantNames.size
+        // Add a small extra (~0.6 row) so the next item peeks into view and hints scrollability
         val containerHeight = rowHeight * visibleRows + rowHeight * 3 / 5
 
         Box(
@@ -67,6 +80,7 @@ fun ParticipantsSection(
                         .fillMaxWidth()
                         .testTag(EventSummaryCardTags.ParticipantsList)) {
                 itemsIndexed(participantNames) { idx, name ->
+                    // Gentle zebra striping improves scan-ability for long lists
                     val bg =
                         if (idx % 2 == 0) Color.Transparent
                         else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)

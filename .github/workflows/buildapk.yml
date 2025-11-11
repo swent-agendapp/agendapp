@@ -5,12 +5,12 @@ on:
     inputs:
       ref:
         description: "Branch or tag to build (e.g., refs/heads/M1 or refs/tags/v1.2.3)"
-        required: false
-        default: "refs/heads/M1"
+        required: true
+        default: "refs/heads/main"
       build-type:
         description: "Variant to build"
         type: choice
-        required: false
+        required: true
         default: Release
         options: [Debug, Release]
 
@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           # lets you build a different branch/tag from the button form
-          ref: ${{ github.event.inputs.ref || 'refs/tags/M1' }}
+          ref: ${{ github.event.inputs.ref }}
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -55,7 +55,7 @@ jobs:
           
       - name: Build APK
         run: |
-          VARIANT=${{ github.event.inputs['build-type'] || 'Release' }}
+          VARIANT=${{ github.event.inputs['build-type'] }}
           ./gradlew assemble${VARIANT}
 
       - name: Sign APK
@@ -69,11 +69,18 @@ jobs:
         env:
           BUILD_TOOLS_VERSION: "34.0.0"
 
-      - name: Collect APKs
+      - name: Collect release APKs
+        if: ${{ github.event.inputs['build-type'] == 'Release' }}
         run: |
           mkdir -p apk
-          # grabs all produced APKs (multi-module safe)
-          find . -path "*/build/outputs/apk/*/*signed.apk" -exec cp {} apk/ \;
+          find . -path "*/build/outputs/apk/*/*-signed.apk" -exec cp {} apk/ \;
+          ls -al apk
+
+      - name: Collect debug APKs
+        if: ${{ github.event.inputs['build-type'] == 'Debug' }}
+        run: |
+          mkdir -p apk
+          find . -path "*/build/outputs/apk/*/*.apk" -exec cp {} apk/ \;
           ls -al apk
 
       - name: Upload APK artifact

@@ -39,7 +39,14 @@ jobs:
 
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
-        
+
+      - name: Restore local.properties
+        env:
+          LOCAL_PROPERTIES: ${{ secrets.LOCAL_PROPERTIES }}
+        run: |
+          echo "$LOCAL_PROPERTIES" | base64 --decode > ./local.properties
+          test -s ./local.properties && echo "local.properties restored"
+
       - name: Restore google-services.json
         run: |
           mkdir -p app
@@ -66,7 +73,7 @@ jobs:
         run: |
           mkdir -p apk
           # grabs all produced APKs (multi-module safe)
-          find . -path "*/build/outputs/apk/*/*.apk" -exec cp {} apk/ \;
+          find . -path "*/build/outputs/apk/*/*signed.apk" -exec cp {} apk/ \;
           ls -al apk
 
       - name: Upload APK artifact

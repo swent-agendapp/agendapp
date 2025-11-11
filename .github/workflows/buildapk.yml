@@ -59,6 +59,7 @@ jobs:
           ./gradlew assemble${VARIANT}
 
       - name: Sign APK
+        if: ${{ github.event.inputs['build-type'] == 'Release' }}
         uses: r0adkll/sign-android-release@v1
         with:
           releaseDirectory: app/build/outputs/apk/release

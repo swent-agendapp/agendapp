@@ -1,7 +1,7 @@
 package com.android.sample.ui.common
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -25,7 +25,7 @@ object BottomBarTestTags {
  * @param isSelected Whether the item is currently selected.
  */
 data class BottomBarItem(
-    val icon: ImageVector = Icons.Default.Home,
+    val icon: ImageVector? = null,
     val label: String = "",
     val route: String = "",
     val onClick: () -> Unit = {},
@@ -50,7 +50,11 @@ fun BottomBar(
       NavigationBarItem(
           selected = item.isSelected,
           onClick = item.onClick,
-          icon = { Icon(imageVector = item.icon, contentDescription = item.contentDescription) },
+          icon = {
+            Icon(
+                imageVector = item.icon ?: Icons.Default.Warning,
+                contentDescription = item.contentDescription)
+          },
           label = { Text(text = item.label) },
           modifier = modifier.testTag(item.testTag))
     }

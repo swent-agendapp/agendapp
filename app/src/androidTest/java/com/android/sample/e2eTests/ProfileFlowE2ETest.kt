@@ -53,8 +53,8 @@ class ProfileFlowE2ETest : FirebaseEmulatedTest() {
   @Test
   fun signIn_viewProfile_viewAdminContact_signOut() {
 
-    // Check that a user is signed in at start
-    assert(FirebaseEmulator.auth.currentUser != null)
+    // Check that no user is signed in at start
+    assert(FirebaseEmulator.auth.currentUser == null)
 
     // Launch app
     composeTestRule.setContent { Agendapp(credentialManager = fakeCredentialManager) }
@@ -76,6 +76,9 @@ class ProfileFlowE2ETest : FirebaseEmulatedTest() {
           .fetchSemanticsNodes()
           .isNotEmpty()
     }
+
+    // Check that a user is signed in after sign in
+    assert(FirebaseEmulator.auth.currentUser != null)
 
     // Verify Home screen is displayed
     composeTestRule.onNodeWithTag(HomeTestTags.CALENDAR_BUTTON).assertIsDisplayed()

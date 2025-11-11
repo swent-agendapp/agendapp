@@ -144,5 +144,22 @@
     <string name="edit_event_confirmation_title">Bestätigung der Ereignisbearbeitung</string>
     <string name="edit_event_confirmation_message">Bitte bestätigen Sie die Änderungen an Ihrem Ereignis</string>
     <string name="common_finish">Fertigstellen</string>
+    <string name="replacement_view_title">Vertretungsanfrage</string>
+    <string name="replacement_event_description_label">Ereignisbeschreibung</string>
+    <string name="replacement_employees_label">Mitarbeiter</string>
+    <string name="replacement_accept_button">Annehmen</string>
+    <string name="replacement_decline_button">Ablehnen</string>
+    <string name="replacement_title">Vertretung</string>
+    <string name="replacement_ask_to_be_replaced">Vertretung anfordern</string>
+    <string name="replacement_card_title">Titel: %1$s</string>
+    <string name="replacement_card_description">Beschreibung: %1$s</string>
+    <string name="replacement_accept_short">Annehmen</string>
+    <string name="replacement_refuse_short">Ablehnen</string>
+    <string name="replacement_create_title">Vorheriger Schritt</string>
+    <string name="replacement_create_select_event">Ereignis auswählen</string>
+    <string name="replacement_create_choose_date_range">Datumsbereich auswählen</string>
+    <string name="replacement_list_title">Wählen Sie ein Ereignis, für das Sie eine Vertretung benötigen:</string>
+    <string name="replacement_list_instruction">Wählen Sie ein Ereignis, für das Sie eine Vertretung benötigen:</string>
+    <string name="common_send">Senden</string>
 
 </resources>

@@ -2,8 +2,8 @@ package com.android.sample.e2eTests
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextContains
-import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.android.sample.Agendapp
@@ -24,7 +24,9 @@ class ProfileFlowE2ETest : FirebaseEmulatedTest() {
 
   // Timeout for UI authentication operations
   // This is used to wait for the UI to update after authentication actions
-  val uiAuthWaitTimeOut = 10_000L
+  companion object {
+    private const val UI_AUTH_TIMEOUT = 10_000L
+  }
 
   val expectedName = "John Doe"
   val expectedEmail = "john.doe@test.com"
@@ -63,10 +65,16 @@ class ProfileFlowE2ETest : FirebaseEmulatedTest() {
         .performClick()
 
     // Wait for sign-in to complete
-    composeTestRule.waitUntil(timeoutMillis = uiAuthWaitTimeOut) {
-      // Verify Home screen is displayed
-      composeTestRule.onNodeWithTag(HomeTestTags.CALENDAR_BUTTON).isDisplayed()
+    composeTestRule.waitUntil(timeoutMillis = UI_AUTH_TIMEOUT) {
+      // Verify Home screen exists
+      composeTestRule
+          .onAllNodesWithTag(HomeTestTags.CALENDAR_BUTTON)
+          .fetchSemanticsNodes()
+          .isNotEmpty()
     }
+
+    // Verify Home screen is displayed
+    composeTestRule.onNodeWithTag(HomeTestTags.CALENDAR_BUTTON).assertIsDisplayed()
 
     // Go to Settings screen
     composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).assertIsDisplayed().performClick()

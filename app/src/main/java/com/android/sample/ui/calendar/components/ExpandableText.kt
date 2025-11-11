@@ -24,9 +24,11 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.isUnspecified
+import com.android.sample.ui.calendar.style.EventSummaryTextConfig
 import com.android.sample.ui.theme.SpacingSmall
 
 /**
@@ -64,17 +66,17 @@ data class ToggleLabels(val expand: String, val collapse: String)
  */
 @Composable
 fun ExpandableText(
-    text: String,
-    style: androidx.compose.ui.text.TextStyle,
-    collapsedMaxLines: Int,
-    isExpanded: Boolean,
-    onToggleExpand: () -> Unit,
-    onOverflowChange: (Boolean) -> Unit,
-    showToggle: Boolean,
-    toggleLabels: ToggleLabels,
-    toggleTypography: androidx.compose.ui.text.TextStyle,
     modifier: Modifier = Modifier,
-    onTextHeightChange: (Int) -> Unit = {},
+    text: String = "No text provided...",
+    style: TextStyle = MaterialTheme.typography.titleMedium,
+    collapsedMaxLines: Int = EventSummaryTextConfig().descriptionCollapsedMaxLines,
+    isExpanded: Boolean = false,
+    onToggleExpand: () -> Unit = { },
+    onOverflowChange: (Boolean) -> Unit = { },
+    showToggle: Boolean = true,
+    toggleLabels: ToggleLabels = EventSummaryTextConfig().toggleLabels,
+    toggleTypography: TextStyle = MaterialTheme.typography.labelMedium,
+    onTextHeightChange: (Int) -> Unit = { },
     toggleTestTag: String? = null
 ) {
     Column(modifier = modifier.fillMaxWidth()) {

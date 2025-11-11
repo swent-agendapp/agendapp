@@ -10,6 +10,9 @@ import androidx.compose.ui.unit.Dp
 import com.android.sample.ui.calendar.components.EventSummaryCardTags
 import com.android.sample.ui.calendar.components.ExpandableText
 import com.android.sample.ui.calendar.components.ToggleLabels
+import com.android.sample.ui.calendar.style.EventSummaryCardDefaults
+import com.android.sample.ui.calendar.style.EventSummaryCardStyle
+import com.android.sample.ui.calendar.style.EventSummaryTextConfig
 
 
 /**
@@ -29,14 +32,14 @@ import com.android.sample.ui.calendar.components.ToggleLabels
  */
 @Composable
 fun TitleSection(
-    text: String,
-    isExpanded: Boolean,
-    onToggle: () -> Unit,
-    onOverflowChange: (Boolean) -> Unit,
-    showToggle: Boolean,
-    collapsedMaxLines: Int,
-    toggleLabels: ToggleLabels,
-    afterNoToggleSpacer: Dp
+    text: String = "No title provided...",
+    isExpanded: Boolean = false,
+    onToggle: () -> Unit = { },
+    onOverflowChange: (Boolean) -> Unit = { },
+    showToggle: Boolean = true,
+    collapsedMaxLines: Int = EventSummaryTextConfig().titleCollapsedMaxLines,
+    toggleLabels: ToggleLabels = EventSummaryCardDefaults.texts.toggleLabels,
+    afterNoToggleSpacer: Dp = EventSummaryCardStyle().titleSpacer
 ) {
     ExpandableText(
         text = text,

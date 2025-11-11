@@ -14,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.unit.dp
 import com.android.sample.ui.calendar.components.EventSummaryCardTags
 import com.android.sample.ui.theme.AlphaMedium
 import com.android.sample.ui.theme.IconSizeMedium
@@ -29,7 +28,7 @@ import com.android.sample.ui.theme.SpacingSmall
  * @param recurrenceText Human-readable recurrence string (already localized/constructed).
  */
 @Composable
-fun RecurrenceSection(recurrenceText: String?) {
+fun RecurrenceSection(recurrenceText: String? = null) {
     if (!recurrenceText.isNullOrBlank()) {
         // Extra breathing room to separate from the date/time block
         Spacer(Modifier.height(SpacingMedium))

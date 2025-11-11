@@ -18,10 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.android.sample.ui.calendar.components.EventSummaryCardTags
 import com.android.sample.ui.calendar.components.ExpandableText
 import com.android.sample.ui.calendar.style.EventSummaryCardDefaults
+import com.android.sample.ui.calendar.style.EventSummaryCardStyle
+import com.android.sample.ui.calendar.style.EventSummaryTextConfig
 import com.android.sample.ui.theme.AlphaLow
 import com.android.sample.ui.theme.BarWidthSmall
 import com.android.sample.ui.theme.SpacingMedium
@@ -45,14 +46,14 @@ import com.android.sample.ui.theme.WeightVeryHeavy
  */
 @Composable
 fun DescriptionSection(
-    descriptionText: String,
-    collapsedMaxLines: Int,
-    isExpanded: Boolean,
-    onToggle: () -> Unit,
-    onOverflowChange: (Boolean) -> Unit,
-    showToggle: Boolean,
-    noToggleSpacer: Dp,
-    hasToggleSpacer: Dp
+    descriptionText: String = "No description provided...",
+    collapsedMaxLines: Int = EventSummaryTextConfig().descriptionCollapsedMaxLines,
+    isExpanded: Boolean = false,
+    onToggle: () -> Unit = { },
+    onOverflowChange: (Boolean) -> Unit = { },
+    showToggle: Boolean = true,
+    noToggleSpacer: Dp = EventSummaryCardStyle().descHasToggleSpacer,
+    hasToggleSpacer: Dp = EventSummaryCardStyle().descNoToggleSpacer
 ) {
     if (descriptionText.isNotBlank()) {
         // Measured text height (px), drives the left accent bar height

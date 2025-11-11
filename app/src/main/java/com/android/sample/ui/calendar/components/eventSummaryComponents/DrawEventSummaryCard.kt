@@ -16,40 +16,52 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
+import com.android.sample.ui.calendar.style.EventSummaryCardDefaults
 import com.android.sample.ui.calendar.style.EventSummaryCardStyle
 import com.android.sample.ui.calendar.style.EventSummaryTextConfig
 import com.android.sample.ui.calendar.utils.DatePresentation
 import com.android.sample.ui.theme.AlphaExtraLow
 import com.android.sample.ui.theme.AlphaLow
 import com.android.sample.ui.theme.ElevationExtraLow
+import com.android.sample.utils.EventColor
+import java.time.ZonedDateTime
 
 
 @Composable
 fun DrawEventSummaryCard(
-    modifier: Modifier,
-    style: EventSummaryCardStyle,
-    textConfig: EventSummaryTextConfig,
-    sideColor: Color,
-    shape: RoundedCornerShape,
+    modifier: Modifier = Modifier,
+    style: EventSummaryCardStyle = EventSummaryCardDefaults.style,
+    textConfig: EventSummaryTextConfig = EventSummaryCardDefaults.texts,
+    sideColor: Color = EventColor.Blue.toComposeColor(),
+    shape: RoundedCornerShape = RoundedCornerShape(style.cornerRadiusDp),
     // Title
-    titleText: String,
-    isTitleExpanded: Boolean,
-    onTitleToggle: () -> Unit,
-    onTitleOverflowChange: (Boolean) -> Unit,
-    showTitleToggle: Boolean,
+    titleText: String = "No title provided...",
+    isTitleExpanded: Boolean = false,
+    onTitleToggle: () -> Unit = {},
+    onTitleOverflowChange: (Boolean) -> Unit = { },
+    showTitleToggle: Boolean = true,
     // Dates
-    datePresentation: DatePresentation,
+    datePresentation: DatePresentation = DatePresentation(
+        isMultiDay = false,
+        dateLine1 = "No date provided...",
+        dateLine2 = "No date provided...",
+        startDateShort = "No date provided...",
+        endDateShort = "No date provided...",
+        startTimeStr = "No date provided...",
+        endTimeStr = "No date provided...",
+        startZdt = ZonedDateTime.now(),
+        endZdt = ZonedDateTime.now()
+    ),
     // Recurrence
-    recurrenceText: String?,
+    recurrenceText: String? = null,
     // Description
-    descriptionText: String,
-    isDescriptionExpanded: Boolean,
-    onDescriptionToggle: () -> Unit,
-    onDescriptionOverflowChange: (Boolean) -> Unit,
-    showDescriptionToggle: Boolean,
+    descriptionText: String = "No description provided...",
+    isDescriptionExpanded: Boolean = false,
+    onDescriptionToggle: () -> Unit = { },
+    onDescriptionOverflowChange: (Boolean) -> Unit = { },
+    showDescriptionToggle: Boolean = true,
     // Participants
-    participantNames: List<String>,
+    participantNames: List<String> = emptyList(),
 ) {
     val overlayColor = sideColor.copy(alpha = AlphaExtraLow) // translucent event tint drawn above base
     val baseContainerColor = MaterialTheme.colorScheme.surface // stable background for light/dark

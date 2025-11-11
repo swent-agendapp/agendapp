@@ -15,12 +15,14 @@ val CornerRadiusSmall = 4.dp
 val CornerRadiusMedium = 8.dp
 val CornerRadiusLarge = 12.dp
 val CornerRadiusExtraLarge = 16.dp
+val CornerRadiusHuge = 24.dp
 
 // Spacing
 val SpacingSmall = 8.dp
 val SpacingMedium = 12.dp
 val SpacingLarge = 16.dp
-val SpacingExtraLarge = 20.dp
+val SpacingExtraLarge = 24.dp
+val SpacingHuge = 32.dp
 
 // Weights
 const val WeightLight = 0.3f
@@ -39,6 +41,8 @@ val ElevationHigh = 12.dp
 // widths and heights
 val widthLarge = 120.dp
 val heightLarge = 60.dp
+val BarWidthMedium = 18.dp
+val RowHeightMedium = 32.dp
 
 // Border
 val BorderWidthThin = 1.dp

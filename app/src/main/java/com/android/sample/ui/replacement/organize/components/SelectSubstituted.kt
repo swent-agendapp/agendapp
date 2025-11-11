@@ -122,7 +122,7 @@ fun SelectSubstitutedScreen(
               /** Scrollable selectable list * */
               Card(
                   modifier = Modifier.fillMaxWidth().weight(WeightVeryHeavy),
-                  elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                  elevation = CardDefaults.cardElevation(defaultElevation = DefaultCardElevation),
                   shape = RoundedCornerShape(CornerRadiusLarge)) {
                     Column(Modifier.fillMaxSize()) {
 

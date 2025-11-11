@@ -30,3 +30,6 @@ const val WeightVeryHeavy = 1f
 
 // Map
 const val DefaultZoom = 17f
+
+// Card elevation
+val DefaultCardElevation = 4.dp

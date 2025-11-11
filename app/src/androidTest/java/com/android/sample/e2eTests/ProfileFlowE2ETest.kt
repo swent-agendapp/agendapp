@@ -7,9 +7,10 @@ import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.android.sample.Agendapp
+import com.android.sample.ui.calendar.CalendarScreenTestTags
+import com.android.sample.ui.common.BottomBarTestTags
 import com.android.sample.ui.profile.AdminContactScreenTestTags
 import com.android.sample.ui.profile.ProfileScreenTestTags
-import com.android.sample.ui.screens.HomeTestTags
 import com.android.sample.ui.settings.SettingsScreenTestTags
 import com.android.sample.utils.FakeCredentialManager
 import com.android.sample.utils.FakeJwtGenerator
@@ -70,9 +71,9 @@ class ProfileFlowE2ETest : FirebaseEmulatedTest() {
 
     // Wait for sign-in to complete
     composeTestRule.waitUntil(timeoutMillis = UI_AUTH_TIMEOUT) {
-      // Verify Home screen exists
+      // Verify Calendar screen exists
       composeTestRule
-          .onAllNodesWithTag(HomeTestTags.CALENDAR_BUTTON)
+          .onAllNodesWithTag(CalendarScreenTestTags.ROOT)
           .fetchSemanticsNodes()
           .isNotEmpty()
     }
@@ -80,11 +81,14 @@ class ProfileFlowE2ETest : FirebaseEmulatedTest() {
     // Check that a user is signed in after sign in
     assert(FirebaseEmulator.auth.currentUser != null)
 
-    // Verify Home screen is displayed
-    composeTestRule.onNodeWithTag(HomeTestTags.CALENDAR_BUTTON).assertIsDisplayed()
+    // Verify Calendar screen is displayed
+    composeTestRule.onNodeWithTag(CalendarScreenTestTags.ROOT).assertIsDisplayed()
 
     // Go to Settings screen
-    composeTestRule.onNodeWithTag(HomeTestTags.SETTINGS_BUTTON).assertIsDisplayed().performClick()
+    composeTestRule
+        .onNodeWithTag(BottomBarTestTags.ITEM_SETTINGS)
+        .assertIsDisplayed()
+        .performClick()
 
     // Verify Settings screen is displayed
     composeTestRule.onNodeWithTag(SettingsScreenTestTags.ROOT).assertIsDisplayed()

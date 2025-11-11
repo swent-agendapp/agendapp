@@ -138,5 +138,8 @@
     <string name="replacement_substituted_label">Abwesende Person: %1$s</string>
     <string name="replacement_substitute_label">Vertretende Person: %1$s</string>
     <string name="invalidDateRangeMessage">Ungültiger Zeitraum: Das Enddatum muss nach dem Startdatum liegen.</string>
+    <string name="select_process_moment">Möchten Sie sie jetzt verarbeiten?</string>
+    <string name="process_now">Jetzt verarbeiten</string>
+    <string name="process_later">Später verarbeiten</string>
 
 </resources>

@@ -153,5 +153,10 @@
     <string name="select_events">Sélectionner les événements</string>
     <string name="select_date_range">Sélectionner la plage de dates</string>
     <string name="search_icon_content_description">Icône de recherche</string>
+    <string name="edit_event_time_recurrence_title">Modifier l’heure et la récurrence de l’événement</string>
+    <string name="edit_event_confirmation_title">Confirmation de la modification de l’événement</string>
+    <string name="edit_event_confirmation_message">Veuillez confirmer les modifications de votre événement</string>
+    <string name="common_finish">Terminer</string>
+
 
 </resources>

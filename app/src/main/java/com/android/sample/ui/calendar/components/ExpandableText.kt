@@ -27,6 +27,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.isUnspecified
+import com.android.sample.ui.theme.SpacingSmall
 
 /**
  *  Aggregates localized labels used by the expand/collapse toggle
@@ -143,7 +144,7 @@ fun ExpandableText(
             }
         } else {
             // Keep vertical rhythm when no toggle is shown
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(SpacingSmall))
         }
     }
 }

@@ -18,9 +18,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.unit.dp
 import com.android.sample.ui.calendar.components.EventSummaryCardTags
 import com.android.sample.ui.calendar.utils.DatePresentation
+import com.android.sample.ui.theme.*
 
 /**
  * Renders the date/time area of the Event Summary.
@@ -42,27 +42,27 @@ fun DateSection(model: DatePresentation) {
         // === Structure for multi-day ===
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             // First row shows calendar icon + "From"; second row aligns "To" text without icon for balance
-            Column(modifier = Modifier.padding(end = 12.dp)) {
+            Column(modifier = Modifier.padding(end = PaddingMedium)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         imageVector = Icons.Filled.DateRange,
                         contentDescription = "From date",
-                        modifier = Modifier.size(16.dp),
-                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f))
-                    Spacer(Modifier.width(8.dp))
+                        modifier = Modifier.size(IconSizeMedium),
+                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaHigh))
+                    Spacer(Modifier.width(SpacingSmall))
                     Text(
                         text = "From",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaHigh),
                         modifier = Modifier.testTag(EventSummaryCardTags.Multi_FromLabel))
                 }
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(SpacingSmall))
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Spacer(Modifier.width(24.dp))
+                    Spacer(Modifier.width(SpacingExtraLarge))
                     Text(
                         text = "To",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaHigh),
                         modifier = Modifier.testTag(EventSummaryCardTags.Multi_ToLabel))
                 }
             }
@@ -72,33 +72,33 @@ fun DateSection(model: DatePresentation) {
                 Text(
                     text = model.startDateShort,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaHigh),
                     modifier = Modifier.testTag(EventSummaryCardTags.Multi_StartDate))
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(SpacingSmall))
                 Text(
                     text = model.endDateShort,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaHigh),
                     modifier = Modifier.testTag(EventSummaryCardTags.Multi_EndDate))
             }
 
             // Times are prefixed with "at " to read naturally next to the dates
             Column(horizontalAlignment = Alignment.Start) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Spacer(Modifier.width(6.dp))
+                    Spacer(Modifier.width(SpacingSmall))
                     Text(
                         text = "at " + model.startTimeStr,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaHigh),
                         modifier = Modifier.testTag(EventSummaryCardTags.Multi_StartTime))
                 }
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(SpacingSmall))
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Spacer(Modifier.width(6.dp))
+                    Spacer(Modifier.width(SpacingSmall))
                     Text(
                         text = "at " + model.endTimeStr,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaHigh),
                         modifier = Modifier.testTag(EventSummaryCardTags.Multi_EndTime))
                 }
             }
@@ -111,28 +111,28 @@ fun DateSection(model: DatePresentation) {
                 Icon(
                     imageVector = Icons.Filled.DateRange,
                     contentDescription = "Date",
-                    modifier = Modifier.size(16.dp),
-                    tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f))
-                Spacer(Modifier.width(8.dp))
+                    modifier = Modifier.size(SpacingLarge),
+                    tint = MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaHigh))
+                Spacer(Modifier.width(SpacingSmall))
                 Text(
                     text = model.dateLine1,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaHigh),
                     modifier = Modifier.testTag(EventSummaryCardTags.DateLine1))
             }
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(SpacingSmall))
             // Row 2: Time
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = Icons.Filled.AccessTime,
                     contentDescription = "Time",
-                    modifier = Modifier.size(16.dp),
-                    tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f))
-                Spacer(Modifier.width(8.dp))
+                    modifier = Modifier.size(SpacingLarge),
+                    tint = MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaHigh))
+                Spacer(Modifier.width(SpacingSmall))
                 Text(
                     text = model.dateLine2,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaHigh),
                     modifier = Modifier.testTag(EventSummaryCardTags.DateLine2))
             }
         }

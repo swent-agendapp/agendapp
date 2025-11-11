@@ -20,6 +20,9 @@ import androidx.compose.ui.unit.dp
 import com.android.sample.ui.calendar.style.EventSummaryCardStyle
 import com.android.sample.ui.calendar.style.EventSummaryTextConfig
 import com.android.sample.ui.calendar.utils.DatePresentation
+import com.android.sample.ui.theme.AlphaExtraLow
+import com.android.sample.ui.theme.AlphaLow
+import com.android.sample.ui.theme.ElevationExtraLow
 
 
 @Composable
@@ -48,13 +51,13 @@ fun DrawEventSummaryCard(
     // Participants
     participantNames: List<String>,
 ) {
-    val overlayColor = sideColor.copy(alpha = 0.1f) // translucent event tint drawn above base
+    val overlayColor = sideColor.copy(alpha = AlphaExtraLow) // translucent event tint drawn above base
     val baseContainerColor = MaterialTheme.colorScheme.surface // stable background for light/dark
 
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = shape,
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = ElevationExtraLow),
         colors = CardDefaults.cardColors(containerColor = baseContainerColor)) {
         // Draw a translucent overlay tinted by the event color above the stable base
         Box(modifier = Modifier.fillMaxWidth().clip(shape).background(overlayColor)) {
@@ -101,7 +104,7 @@ fun DrawEventSummaryCard(
                         participantNames = participantNames,
                         rowHeight = style.participantsRowHeight,
                         visibleRows = style.participantsVisibleRows,
-                        borderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
+                        borderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = AlphaLow),
                     )
                 }
             }

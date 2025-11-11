@@ -16,6 +16,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.android.sample.ui.calendar.components.EventSummaryCardTags
+import com.android.sample.ui.theme.AlphaMedium
+import com.android.sample.ui.theme.IconSizeMedium
+import com.android.sample.ui.theme.SpacingMedium
+import com.android.sample.ui.theme.SpacingSmall
 
 /**
  * Shows a concise recurrence line (e.g., "every week (Mon)") in a subdued style.
@@ -28,18 +32,18 @@ import com.android.sample.ui.calendar.components.EventSummaryCardTags
 fun RecurrenceSection(recurrenceText: String?) {
     if (!recurrenceText.isNullOrBlank()) {
         // Extra breathing room to separate from the date/time block
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(SpacingMedium))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 imageVector = Icons.Filled.Repeat,
                 contentDescription = "Recurrence",
-                modifier = Modifier.size(16.dp),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f))
-            Spacer(Modifier.width(8.dp))
+                modifier = Modifier.size(IconSizeMedium),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = AlphaMedium))
+            Spacer(Modifier.width(SpacingSmall))
             Text(
                 text = recurrenceText,
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = AlphaMedium),
                 modifier = Modifier.testTag(EventSummaryCardTags.Recurrence))
         }
     }

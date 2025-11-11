@@ -28,6 +28,13 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.android.sample.ui.calendar.components.EventSummaryCardTags
+import com.android.sample.ui.theme.AlphaHigh
+import com.android.sample.ui.theme.AlphaLow
+import com.android.sample.ui.theme.BorderWidthThin
+import com.android.sample.ui.theme.CornerRadiusLarge
+import com.android.sample.ui.theme.IconSizeMedium
+import com.android.sample.ui.theme.PaddingMedium
+import com.android.sample.ui.theme.SpacingSmall
 
 /**
  * Displays a participant list with gentle zebra striping and optional fixed-height scrolling.
@@ -53,15 +60,15 @@ fun ParticipantsSection(
             Icon(
                 imageVector = Icons.Filled.Group,
                 contentDescription = "Participants",
-                modifier = Modifier.size(16.dp),
-                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f))
-            Spacer(Modifier.width(8.dp))
+                modifier = Modifier.size(IconSizeMedium),
+                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaHigh))
+            Spacer(Modifier.width(SpacingSmall))
             Text(
                 text = "Participants",
                 style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f))
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaHigh))
         }
-        Spacer(Modifier.height(4.dp))
+        Spacer(Modifier.height(SpacingSmall))
 
         val listState = rememberLazyListState()
         val totalItems = participantNames.size
@@ -71,8 +78,8 @@ fun ParticipantsSection(
         Box(
             modifier =
                 Modifier.fillMaxWidth()
-                    .border(width = 1.dp, color = borderColor, shape = RoundedCornerShape(12.dp))
-                    .clip(RoundedCornerShape(12.dp))) {
+                    .border(width = BorderWidthThin, color = borderColor, shape = RoundedCornerShape(CornerRadiusLarge))
+                    .clip(RoundedCornerShape(CornerRadiusLarge))) {
             LazyColumn(
                 state = listState,
                 modifier =
@@ -82,8 +89,8 @@ fun ParticipantsSection(
                 itemsIndexed(participantNames) { idx, name ->
                     // Gentle zebra striping improves scan-ability for long lists
                     val bg =
-                        if (idx % 2 == 0) Color.Transparent
-                        else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+                        if (idx % 2 == 0) MaterialTheme.colorScheme.surface
+                        else MaterialTheme.colorScheme.surfaceVariant
                     Box(
                         modifier = Modifier.fillMaxWidth().height(rowHeight).background(bg),
                         contentAlignment = Alignment.CenterStart) {
@@ -91,7 +98,7 @@ fun ParticipantsSection(
                             text = name,
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.padding(horizontal = 10.dp))
+                            modifier = Modifier.padding(horizontal = PaddingMedium))
                     }
                 }
             }

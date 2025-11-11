@@ -52,6 +52,10 @@ class ProfileFlowE2ETest : FirebaseEmulatedTest() {
   // Test a User info flow : signing in, viewing profile, viewing admin contact, and signing out
   @Test
   fun signIn_viewProfile_viewAdminContact_signOut() {
+
+    // Check that a user is signed in at start
+    assert(FirebaseEmulator.auth.currentUser != null)
+
     // Launch app
     composeTestRule.setContent { Agendapp(credentialManager = fakeCredentialManager) }
 
@@ -133,6 +137,9 @@ class ProfileFlowE2ETest : FirebaseEmulatedTest() {
         .onNodeWithTag(ProfileScreenTestTags.SIGN_OUT_BUTTON)
         .assertIsDisplayed()
         .performClick()
+
+    // Check that no user is signed in after sign out
+    assert(FirebaseEmulator.auth.currentUser == null)
 
     // Verify Sign-In screen is displayed again
     composeTestRule.onNodeWithTag(SignInScreenTestTags.LOGIN_TITLE).assertIsDisplayed()

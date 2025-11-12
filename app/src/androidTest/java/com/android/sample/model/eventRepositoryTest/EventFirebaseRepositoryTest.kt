@@ -248,7 +248,6 @@ class EventFirebaseRepositoryTest : FirebaseEmulatedTest() {
     Assert.assertEquals(Instant.parse("2025-04-10T09:30:00Z"), retrieved.endDate)
   }
 
-
   @Test
   fun getEventById_returnsNull_whenMissing() = runBlocking {
     val missing = repository.getEventById("no-such-event-id")

@@ -21,7 +21,7 @@ class EventRepositoryLocal(preloadSampleData: Boolean = false) : EventRepository
     require(events.indexOfFirst { it.id == item.id } == -1) {
       "Item with id ${item.id} already exists."
     }
-    val currentUserId = "LOCAL_USER" // todo get current user id from auth when implemented
+    val currentUserId = "LOCAL_USER" // later get current user id from auth when implemented
     val updatedItem =
         item.copy(
             locallyStoredBy = item.locallyStoredBy + currentUserId,
@@ -35,7 +35,7 @@ class EventRepositoryLocal(preloadSampleData: Boolean = false) : EventRepository
     require(index != -1) { "Item with id $itemId does not exist." }
     require(!events[index].hasBeenDeleted) { "Cannot update a deleted event." }
 
-    val currentUserId = "LOCAL_USER" // todo get current user id from auth when implemented
+    val currentUserId = "LOCAL_USER" // later get current user id from auth when implemented
     val newEvent =
         item.copy(
             locallyStoredBy = listOf(currentUserId),

@@ -168,13 +168,11 @@ class CalendarViewModel(
   /**
    * Resolves a user's display name from their [userId] using [AuthRepository.getUserById].
    *
-   * This is a suspend, potentially network-bound lookup. If the user cannot be found or has no
-   * display name, the function returns `null`.
+   * If the user cannot be found or has no display name, the function returns `null`.
    *
-   * Errors are caught and surfaced to the UI via [setErrorMsg], while returning `null` so that the
-   * caller can decide how to handle missing names.
+   * Errors are caught and surfaced to the UI via [setErrorMsg] and return `null`.
    */
-  private suspend fun resolveDisplayNameForUser(userId: String): String? {
+  suspend fun resolveDisplayNameForUser(userId: String): String? {
     return try {
       val user: User? = authRepository.getUserById(userId)
       // Prefer the displayName, and if it is null or blank we return null to allow filtering

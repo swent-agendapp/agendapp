@@ -76,7 +76,9 @@ fun EventOverviewScreen(
               IconButton(
                   onClick = onBackClick,
                   modifier = modifier.testTag(EventOverviewScreenTestTags.BACK_BUTTON)) {
-                    Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back")
                   }
             })
       }) { innerPadding ->

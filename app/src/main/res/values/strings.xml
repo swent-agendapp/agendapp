@@ -80,10 +80,13 @@
     <string name="home_go_to_settings">Go to Settings</string>
 
     <!-- Settings Screen -->
-    <string name="settings_screen_title">Settings Screen</string>
+    <string name="settings_screen_title">Settings</string>
     <string name="settings_profile_button">Profile</string>
+    <string name="settings_admin_info_button">Admin info</string>
+    <string name="settings_map_settings_button">Map</string>
 
     <!-- Profile Screen -->
+    <string name="profile_screen_title">Profile</string>
     <string name="profile_email_error">Please enter a valid email address</string>
     <string name="profile_phone_error">Please enter a valid phone number (min 7 digits)</string>
     <string name="profile_display_name_label">Display Name</string>
@@ -151,6 +154,10 @@
     <string name="down_sheet_button_create">Save area</string>
     <string name="down_sheet_button_delete">Delete Marker</string>
 
+    <string name="edit_event_time_recurrence_title">Edit Event Time and Recurrence Selection</string>
+    <string name="edit_event_confirmation_title">Edit Event Confirmation</string>
+    <string name="edit_event_confirmation_message">Please confirm your event changes</string>
+    <string name="common_finish">Finish</string>
 </resources>
 
 

@@ -1,35 +1,32 @@
 package com.android.sample.ui.navigation
 
 /**
- * Represents all available destinations (screens) in the app. Each route corresponds to a
- * Composable destination in the NavHost.
+ * Centralized navigation actions for the app. Allows other Composable to navigate without directly
+ * using NavController.
  */
-sealed class Screen(val route: String) {
-  data object Home : Screen("home")
+sealed class Screen(val route: String, val name: String) {
 
-  data object Calendar : Screen("calendar")
+  data object Authentication : Screen(route = "authentication", name = "Authentication")
 
-  data object Map : Screen("map")
+  data object Home : Screen(route = "home", name = "Home")
 
-  data object Settings : Screen("settings")
+  data object Calendar : Screen(route = "calendar", name = "Calendar")
 
-  data object Profile : Screen("profile")
+  data object Map : Screen(route = "map", name = "Map")
 
-  data object AdminContact : Screen("admin_contact")
+  data object Settings : Screen(route = "settings", name = "Settings")
 
-  data object AddEventTitle : Screen("add_event/title")
+  data object Profile : Screen(route = "profile", name = "Profile")
 
-  data object AddEventTime : Screen("add_event/time")
+  data object AdminContact : Screen(route = "admin_contact", name = "Admin Contact")
 
-  data object AddEventMember : Screen("add_event/member")
+  data object AddEvent : Screen(route = "add_event", name = "Add Event")
 
-  data object AddEventEnd : Screen("add_event/end")
+  data object ReplacementOverview : Screen("replacement_overview", name = "Replacement Overview")
 
-  data object ReplacementOverview : Screen("replacement_overview")
+  data object ReplacementPending : Screen("replacement/pending", name = "Replacement Pending")
 
-  data object ReplacementPending : Screen("replacement/pending")
-
-  data object EditEvent : Screen("edit_event/{eventId}") {
+  data object EditEvent : Screen("edit_event/{eventId}", name = "Edit Event") {
     fun createRoute(eventId: String) = "edit_event/$eventId"
   }
 }

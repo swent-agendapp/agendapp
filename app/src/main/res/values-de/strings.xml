@@ -71,10 +71,13 @@
     <string name="home_go_to_settings">Zu den Einstellungen</string>
 
     <!-- Settings Screen -->
-    <string name="settings_screen_title">Einstellungsbildschirm</string>
+    <string name="settings_screen_title">Einstellungen</string>
     <string name="settings_profile_button">Profil</string>
+    <string name="settings_admin_info_button">Admin-Informationen</string>
+    <string name="settings_map_settings_button">Karte</string>
 
     <!-- Profile Screen -->
+    <string name="profile_screen_title">Profil</string>
     <string name="profile_email_error">Bitte geben Sie eine gültige E-Mail-Adresse ein</string>
     <string name="profile_phone_error">Bitte geben Sie eine gültige Telefonnummer ein (mindestens 7 Ziffern)</string>
     <string name="profile_display_name_label">Anzeigename</string>
@@ -151,6 +154,10 @@
     <string name="replacement_requests_subtitle">Vertretungen, die auf Bestätigung warten</string>
     <string name="replacement_substituted_label">Abwesende Person: %1$s</string>
     <string name="replacement_substitute_label">Vertretende Person: %1$s</string>
+    <string name="edit_event_time_recurrence_title">Zeit und Wiederholung des Ereignisses bearbeiten</string>
+    <string name="edit_event_confirmation_title">Bestätigung der Ereignisbearbeitung</string>
+    <string name="edit_event_confirmation_message">Bitte bestätigen Sie die Änderungen an Ihrem Ereignis</string>
+    <string name="common_finish">Fertigstellen</string>
 
 
 </resources>

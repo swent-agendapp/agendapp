@@ -4,7 +4,7 @@ import com.android.sample.model.calendar.CloudStorageStatus
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementStatus
-import com.android.sample.model.replacement.pendingReplacements
+import com.android.sample.model.replacement.pendingAdminReplacements
 import com.android.sample.model.replacement.waitingForAnswerAndDeclinedReplacements
 import com.android.sample.utils.EventColor
 import com.google.common.truth.Truth
@@ -47,7 +47,7 @@ class ReplacementExtensionsTest {
             event = baseEvent,
             status = ReplacementStatus.Declined)
 
-    val result = listOf(pending, accepted, declined).pendingReplacements()
+    val result = listOf(pending, accepted, declined).pendingAdminReplacements()
 
     Truth.assertThat(result).containsExactly(pending)
   }

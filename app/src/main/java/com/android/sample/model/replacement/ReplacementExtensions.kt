@@ -1,7 +1,7 @@
 package com.android.sample.model.replacement
 
 /** Return only the replacements that are currently pending */
-fun List<Replacement>.pendingReplacements(): List<Replacement> = filter {
+fun List<Replacement>.pendingAdminReplacements(): List<Replacement> = filter {
   it.status == ReplacementStatus.ToProcess || it.status == ReplacementStatus.WaitingForAnswer
 }
 

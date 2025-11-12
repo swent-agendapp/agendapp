@@ -2,7 +2,7 @@ package com.android.sample.model.remplacement
 
 import com.android.sample.model.replacement.ReplacementStatus
 import com.android.sample.model.replacement.mockData.getMockReplacements
-import com.android.sample.model.replacement.pendingReplacements
+import com.android.sample.model.replacement.pendingAdminReplacements
 import com.android.sample.model.replacement.waitingForAnswerAndDeclinedReplacements
 import com.google.common.truth.Truth
 import org.junit.Test
@@ -13,7 +13,7 @@ class MockReplacementsTest {
   fun getMockReplacements_containsPendingAndNonPending() {
     val replacements = getMockReplacements()
 
-    val pending = replacements.pendingReplacements()
+    val pending = replacements.pendingAdminReplacements()
     val nonPending = replacements.filter { it.status != ReplacementStatus.ToProcess }
 
     Truth.assertThat(replacements).isNotEmpty()

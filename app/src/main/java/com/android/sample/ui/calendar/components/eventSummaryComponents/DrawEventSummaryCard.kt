@@ -16,6 +16,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
+import com.android.sample.ui.calendar.components.EventSummaryCardTags
+import com.android.sample.ui.calendar.components.ExpandableText
 import com.android.sample.ui.calendar.style.EventSummaryCardDefaults
 import com.android.sample.ui.calendar.style.EventSummaryCardStyle
 import com.android.sample.ui.calendar.style.EventSummaryTextConfig
@@ -81,15 +84,20 @@ fun DrawEventSummaryCard(
                     Modifier.padding(horizontal = style.paddingH, vertical = style.paddingV)
                         .fillMaxWidth()) {
                   // 1) Title
-                  TitleSection(
+                  ExpandableText(
                       text = titleText,
+                      style = MaterialTheme.typography.titleLarge,
+                      collapsedMaxLines = textConfig.titleCollapsedMaxLines,
                       isExpanded = isTitleExpanded,
-                      onToggle = onTitleToggle,
+                      onToggleExpand = onTitleToggle,
                       onOverflowChange = onTitleOverflowChange,
                       showToggle = showTitleToggle,
-                      collapsedMaxLines = textConfig.titleCollapsedMaxLines,
                       toggleLabels = textConfig.toggleLabels,
-                      afterNoToggleSpacer = style.titleSpacer)
+                      toggleTypography = MaterialTheme.typography.labelMedium,
+                      modifier = Modifier.testTag(EventSummaryCardTags.TitleText),
+                      toggleTestTag = EventSummaryCardTags.ToggleTitle)
+                  // Preserve spacing when the toggle is absent
+                  if (!showTitleToggle) Spacer(Modifier.height(style.titleSpacer))
 
                   // 2) Dates
                   DateSection(datePresentation)

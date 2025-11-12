@@ -57,8 +57,6 @@ interface MapRepository {
    *
    * The Area constructor enforces a minimum of three distinct markers (a valid polygon).
    *
-   * If the Area is created, the Marker list is emptied
-   *
    * @param label Optional human-readable label for the area.
    * @param markerIds List of marker ids to include in the area. Defaults to all markers currently
    *   stored.

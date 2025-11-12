@@ -27,7 +27,6 @@ class MapRepositoryLocal : MapRepository {
     val selectedMarkers = markerIds.mapNotNull { markers[it] }
     val area = Area(label = label, markers = selectedMarkers)
     areas[area.id] = area
-    markerIds.forEach { id -> removeMarker(id) }
   }
 
   override fun getAllAreas(): List<Area> = areas.values.toList()

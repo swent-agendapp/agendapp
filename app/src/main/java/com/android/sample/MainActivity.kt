@@ -4,36 +4,45 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Accessibility
+import androidx.compose.material.icons.filled.Event
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.credentials.CredentialManager
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
+import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.organization.EmployeeRepositoryFirebase
 import com.android.sample.model.organization.EmployeeRepositoryProvider
-import com.android.sample.ui.calendar.AddEventAttendantScreen
-import com.android.sample.ui.calendar.AddEventConfirmationScreen
-import com.android.sample.ui.calendar.AddEventTimeAndRecurrenceScreen
-import com.android.sample.ui.calendar.AddEventTitleAndDescriptionScreen
-import com.android.sample.ui.calendar.AddEventViewModel
 import com.android.sample.ui.calendar.CalendarScreen
+import com.android.sample.ui.calendar.addEvent.AddEventScreen
+import com.android.sample.ui.common.BottomBar
+import com.android.sample.ui.common.BottomBarItem
+import com.android.sample.ui.common.BottomBarTestTags
 import com.android.sample.ui.map.MapScreen
 import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
 import com.android.sample.ui.profile.AdminContactScreen
 import com.android.sample.ui.profile.ProfileScreen
+import com.android.sample.ui.replacement.ReplacementOverviewScreen
 import com.android.sample.ui.replacement.ReplacementPendingListScreen
-import com.android.sample.ui.replacement.ReplacementScreen
-import com.android.sample.ui.screens.HomeScreen
+import com.android.sample.ui.replacement.organize.ReplacementOrganizeScreen
 import com.android.sample.ui.settings.SettingsScreen
 import com.android.sample.ui.theme.SampleAppTheme
 import com.github.se.bootcamp.model.authentication.AuthRepositoryFirebase
+import com.github.se.bootcamp.ui.authentication.SignInScreen
 import com.google.firebase.firestore.FirebaseFirestore
 
 object MainActivityTestTags {
@@ -67,90 +76,138 @@ class MainActivity : ComponentActivity() {
 
 /**
  * Root composable containing the navigation graph for the application. This function defines all
- * available routes and how composables are connected.
+ * available routes and how composable are connected.
  */
 @Composable
-fun Agendapp(modifier: Modifier = Modifier) {
+fun Agendapp(
+    modifier: Modifier = Modifier,
+    credentialManager: CredentialManager = CredentialManager.create(LocalContext.current),
+) {
   val navController = rememberNavController()
   val navigationActions = NavigationActions(navController)
-  val addEventViewModel: AddEventViewModel = viewModel()
 
-  NavHost(
-      navController = navController, startDestination = Screen.Home.route, modifier = modifier) {
-        navigation(startDestination = Screen.AddEventTitle.route, route = "Add Event") {
-          composable(Screen.AddEventTitle.route) {
-            AddEventTitleAndDescriptionScreen(
-                addEventViewModel = addEventViewModel,
-                onNext = { navigationActions.navigateTo(Screen.AddEventTime) },
-                onCancel = {
-                  navigationActions.navigateBack()
-                  addEventViewModel.resetUiState()
-                })
-          }
-          composable(Screen.AddEventTime.route) {
-            AddEventTimeAndRecurrenceScreen(
-                addEventViewModel = addEventViewModel,
-                onNext = { navigationActions.navigateTo(Screen.AddEventMember) },
-                onBack = { navigationActions.navigateBack() })
-          }
-          composable(Screen.AddEventMember.route) {
-            AddEventAttendantScreen(
-                addEventViewModel = addEventViewModel,
-                onCreate = { navigationActions.navigateTo(Screen.AddEventEnd) },
-                onBack = { navigationActions.navigateBack() })
-          }
-          composable(Screen.AddEventEnd.route) {
-            AddEventConfirmationScreen(
-                onFinish = {
-                  navigationActions.navigateTo(Screen.Calendar)
-                  addEventViewModel.resetUiState()
-                })
-          }
-        }
-        navigation(startDestination = Screen.Settings.route, route = "Settings") {
-          composable(Screen.Settings.route) {
-            SettingsScreen(
-                onNavigateBack = { navigationActions.navigateBack() },
-                onNavigateToProfile = { navigationActions.navigateTo(Screen.Profile) })
-          }
-          composable(Screen.Profile.route) {
-            ProfileScreen(
-                onNavigateBack = { navigationActions.navigateBack() },
-                onNavigateToAdminContact = { navigationActions.navigateTo(Screen.AdminContact) })
-          }
-          composable(Screen.AdminContact.route) {
-            AdminContactScreen(onNavigateBack = { navigationActions.navigateBack() })
-          }
-        }
-        navigation(startDestination = Screen.Home.route, route = "Home") {
-          composable(Screen.Home.route) {
-            HomeScreen(
-                onNavigateToEdit = { eventId -> navigationActions.navigateToEditEvent(eventId) },
-                onNavigateToCalendar = { navigationActions.navigateTo(Screen.Calendar) },
-                onNavigateToSettings = { navigationActions.navigateTo(Screen.Settings) },
-                onNavigateToMap = { navigationActions.navigateTo(Screen.Map) },
-                onNavigateToReplacement = {
-                  navigationActions.navigateTo(Screen.ReplacementOverview)
-                })
-          }
-        }
-        navigation(startDestination = Screen.Calendar.route, route = "Calendar") {
-          composable(Screen.Calendar.route) {
-            CalendarScreen(onCreateEvent = { navigationActions.navigateTo(Screen.AddEventTitle) })
-          }
-        }
-        composable(Screen.ReplacementOverview.route) {
-          ReplacementScreen(
-              onWaitingConfirmationClick = {
-                navigationActions.navigateTo(Screen.ReplacementPending)
-              })
-        }
+  val authRepository = AuthRepositoryProvider.repository
 
-        composable(Screen.ReplacementPending.route) { ReplacementPendingListScreen() }
-        navigation(startDestination = Screen.Map.route, route = "Map") {
-          composable(Screen.Map.route) {
-            MapScreen(onGoBack = { navigationActions.navigateBack() })
-          }
+  val startDestination =
+      if (authRepository.getCurrentUser() != null) Screen.Calendar.route
+      else Screen.Authentication.route
+
+  val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+
+  // List of screens that have a bottom navigation bar
+  val bottomBarScreens =
+      listOf(Screen.Calendar.route, Screen.ReplacementOverview.route, Screen.Settings.route)
+
+  val bottomBarItems =
+      listOf(
+          BottomBarItem(
+              icon = Icons.Default.Event,
+              label = "Calendar",
+              route = Screen.Calendar.route,
+              onClick = { navigationActions.navigateTo(Screen.Calendar) },
+              contentDescription = "Calendar",
+              isSelected = currentRoute == Screen.Calendar.route,
+              testTag = BottomBarTestTags.ITEM_CALENDAR),
+          BottomBarItem(
+              icon = Icons.Default.Accessibility,
+              label = "Replacement",
+              route = Screen.ReplacementOverview.route,
+              onClick = { navigationActions.navigateTo(Screen.ReplacementOverview) },
+              contentDescription = "Replacement",
+              isSelected = currentRoute == Screen.ReplacementOverview.route,
+              testTag = BottomBarTestTags.ITEM_REPLACEMENT),
+          BottomBarItem(
+              icon = Icons.Default.Settings,
+              label = "Settings",
+              route = Screen.Settings.route,
+              onClick = { navigationActions.navigateTo(Screen.Settings) },
+              contentDescription = "Settings",
+              isSelected = currentRoute == Screen.Settings.route,
+              testTag = BottomBarTestTags.ITEM_SETTINGS))
+
+  Scaffold(
+      bottomBar = {
+        if (currentRoute in bottomBarScreens) {
+          BottomBar(items = bottomBarItems.map { it.copy(isSelected = it.route == currentRoute) })
         }
+      }) { innerPadding ->
+        // Routes and navigation logic
+        NavHost(
+            navController = navController,
+            startDestination = startDestination,
+            modifier = modifier.padding(innerPadding)) {
+
+              // Authentication Screen
+              composable(Screen.Authentication.route) {
+                SignInScreen(
+                    credentialManager = credentialManager,
+                    onSignedIn = { navigationActions.navigateTo(Screen.Calendar) })
+              }
+
+              // Calendar Graph
+              composable(Screen.Calendar.route) {
+                CalendarScreen(onCreateEvent = { navigationActions.navigateTo(Screen.AddEvent) })
+              }
+              // Add Event Screen Flow
+              navigation(startDestination = Screen.AddEvent.route, route = "Add Event") {
+                composable(Screen.AddEvent.route) {
+                  AddEventScreen(
+                      onFinish = { navigationActions.navigateTo(Screen.Calendar) },
+                      onCancel = { navigationActions.navigateBack() })
+                }
+              }
+              // Replacement Overview Screen
+              navigation(
+                  startDestination = Screen.ReplacementOverview.route,
+                  route = Screen.ReplacementOverview.name) {
+                    composable(Screen.ReplacementOverview.route) {
+                      ReplacementOverviewScreen(
+                          onOrganizeClick = {
+                            navigationActions.navigateTo(Screen.ReplacementOrganize)
+                          },
+                          onWaitingConfirmationClick = {
+                            navigationActions.navigateTo(Screen.ReplacementPending)
+                          })
+                    }
+                    composable(Screen.ReplacementOrganize.route) {
+                      ReplacementOrganizeScreen(
+                          onCancel = { navigationActions.navigateBack() },
+                          onProcessLater = {
+                            navigationActions.navigateTo(Screen.ReplacementOverview)
+                          },
+                      )
+                    }
+                    // Pending Replacement Screen
+                    composable(Screen.ReplacementPending.route) { ReplacementPendingListScreen() }
+                  }
+
+              // Settings Graph
+              navigation(startDestination = Screen.Settings.route, route = Screen.Settings.name) {
+                // Settings Screen
+                composable(Screen.Settings.route) {
+                  SettingsScreen(
+                      onNavigateBack = { navigationActions.navigateBack() },
+                      onNavigateToUserProfile = { navigationActions.navigateTo(Screen.Profile) },
+                      onNavigateToAdminInfo = { navigationActions.navigateTo(Screen.AdminContact) },
+                      onNavigateToMapSettings = { navigationActions.navigateTo(Screen.Map) })
+                }
+                // User profile Screen
+                composable(Screen.Profile.route) {
+                  ProfileScreen(
+                      onNavigateBack = { navigationActions.navigateBack() },
+                      onSignOut = { navigationActions.navigateTo(Screen.Authentication) })
+                }
+
+                // Admin contact Screen
+                composable(Screen.AdminContact.route) {
+                  AdminContactScreen(onNavigateBack = { navigationActions.navigateBack() })
+                }
+
+                // Map Settings Screen
+                composable(Screen.Map.route) {
+                  MapScreen(onGoBack = { navigationActions.navigateBack() })
+                }
+              }
+            }
       }
 }

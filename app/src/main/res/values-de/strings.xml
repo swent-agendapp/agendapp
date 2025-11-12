@@ -71,10 +71,13 @@
     <string name="home_go_to_settings">Zu den Einstellungen</string>
 
     <!-- Settings Screen -->
-    <string name="settings_screen_title">Einstellungsbildschirm</string>
+    <string name="settings_screen_title">Einstellungen</string>
     <string name="settings_profile_button">Profil</string>
+    <string name="settings_admin_info_button">Admin-Informationen</string>
+    <string name="settings_map_settings_button">Karte</string>
 
     <!-- Profile Screen -->
+    <string name="profile_screen_title">Profil</string>
     <string name="profile_email_error">Bitte geben Sie eine gültige E-Mail-Adresse ein</string>
     <string name="profile_phone_error">Bitte geben Sie eine gültige Telefonnummer ein (mindestens 7 Ziffern)</string>
     <string name="profile_display_name_label">Anzeigename</string>
@@ -145,4 +148,21 @@
     <string name="replacement_pending_people_title">Ohne Antwort</string>
     <string name="replacement_declined_people_title">Abgelehnt</string>
     <string name="replacement_people_dialog_close">Schließen</string>
+    <string name="invalidDateRangeMessage">Ungültiger Zeitraum: Das Enddatum muss nach dem Startdatum liegen.</string>
+    <string name="select_process_moment">Möchten Sie sie jetzt verarbeiten?</string>
+    <string name="process_now">Jetzt verarbeiten</string>
+    <string name="process_later">Später verarbeiten</string>
+    <string name="select_replacement_date_range">Wählen Sie den Datumsbereich aus, für den %1$s eine Vertretung benötigt</string>
+    <string name="select_replacement_events">Wählen Sie die Ereignisse aus, für die %1$s eine Vertretung benötigt</string>
+    <string name="which_member_to_be_replaced">Welches Mitglied muss ersetzt werden?</string>
+    <string name="search_member">Mitglied suchen…</string>
+    <string name="selected_member">Ausgewähltes Mitglied: %1$s</string>
+    <string name="select_events">Ereignisse auswählen</string>
+    <string name="select_date_range">Datumsbereich auswählen</string>
+    <string name="search_icon_content_description">Suchsymbol</string>
+    <string name="edit_event_time_recurrence_title">Zeit und Wiederholung des Ereignisses bearbeiten</string>
+    <string name="edit_event_confirmation_title">Bestätigung der Ereignisbearbeitung</string>
+    <string name="edit_event_confirmation_message">Bitte bestätigen Sie die Änderungen an Ihrem Ereignis</string>
+    <string name="common_finish">Fertigstellen</string>
+
 </resources>

@@ -84,7 +84,8 @@ class MapViewModel(
   fun createNewArea() {
     _state.value.listNewMarker.forEach { marker -> mapRepository.addMarker(marker) }
     try {
-      mapRepository.createArea(label = _state.value.nextAreaName, markerIds = _state.value.listNewMarker.map { it.id })
+      mapRepository.createArea(
+          label = _state.value.nextAreaName, markerIds = _state.value.listNewMarker.map { it.id })
       _state.value = _state.value.copy(listNewMarker = emptyList(), nextAreaName = "Untitled")
       fetchAllArea()
     } catch (e: IllegalArgumentException) {

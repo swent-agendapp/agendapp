@@ -13,7 +13,7 @@ class MapViewModelTest {
   fun `fetch user position without permission`() {
     val vm = MapViewModel(ApplicationProvider.getApplicationContext())
     vm.fetchUserLocation()
-    assertTrue(vm.state.value.errorLocation != null)
+    assertTrue(vm.state.value.errorMessage != null)
     assertFalse(vm.state.value.hasPermission)
   }
 }

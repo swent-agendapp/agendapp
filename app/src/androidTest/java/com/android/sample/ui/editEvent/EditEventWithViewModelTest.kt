@@ -4,10 +4,10 @@ import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.calendar.EventRepositoryLocal
-import com.android.sample.ui.calendar.EditEventAttendantScreen
-import com.android.sample.ui.calendar.EditEventScreen
-import com.android.sample.ui.calendar.EditEventTestTags
-import com.android.sample.ui.calendar.EditEventViewModel
+import com.android.sample.ui.calendar.editEvent.EditEventTestTags
+import com.android.sample.ui.calendar.editEvent.EditEventViewModel
+import com.android.sample.ui.calendar.editEvent.components.EditEventAttendantScreen
+import com.android.sample.ui.calendar.editEvent.components.EditEventScreen
 import com.android.sample.ui.theme.SampleAppTheme
 import org.junit.Rule
 import org.junit.Test

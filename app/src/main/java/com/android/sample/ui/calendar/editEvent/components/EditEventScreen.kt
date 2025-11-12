@@ -1,10 +1,8 @@
-package com.android.sample.ui.calendar
+package com.android.sample.ui.calendar.editEvent.components
 
 import android.app.TimePickerDialog
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -14,7 +12,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.model.calendar.RecurrenceStatus
@@ -22,31 +20,36 @@ import com.android.sample.model.calendar.labelRes
 import com.android.sample.ui.calendar.components.DatePickerFieldToModal
 import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.calendar.components.ValidatingTextField
+import com.android.sample.ui.calendar.editEvent.EditEventTestTags
+import com.android.sample.ui.calendar.editEvent.EditEventViewModel
 import com.android.sample.ui.calendar.utils.DateTimeUtils
-import com.android.sample.ui.components.BottomNavigationButtons
+import com.android.sample.ui.theme.CornerRadiusLarge
+import com.android.sample.ui.theme.PaddingLarge
+import com.android.sample.ui.theme.PaddingMedium
+import com.android.sample.ui.theme.PaddingSmall
+import com.android.sample.ui.theme.SpacingMedium
+import com.android.sample.ui.theme.heightLarge
+import com.android.sample.ui.theme.widthLarge
 
 // Assisted by AI
-object EditEventTestTags {
-  const val TITLE_FIELD = "edit_title_field"
-  const val DESCRIPTION_FIELD = "edit_description_field"
-  const val START_DATE_FIELD = "edit_start_date"
-  const val END_DATE_FIELD = "edit_end_date"
-  const val START_TIME_BUTTON = "edit_start_time_button"
-  const val END_TIME_BUTTON = "edit_end_time_button"
-  const val RECURRENCE_DROPDOWN = "edit_recurrence_dropdown"
-  const val PARTICIPANTS_LIST = "edit_participants_list"
-  const val SAVE_BUTTON = "edit_save_button"
-  const val CANCEL_BUTTON = "edit_cancel_button"
-  const val EDIT_PARTICIPANTS_BUTTON = "edit_participants_button"
-  const val BACK_BUTTON = "edit_back_button"
-}
-// Spacing data class for consistent spacing values
-// Will be useful
-// data class Spacing(val small: Dp = 8.dp, val medium: Dp = 16.dp, val large: Dp = 24.dp)
 
+// Minimum number of lines for the description input field.
+private const val DESCRIPTION_MIN_LINES = 4
 /**
- * Simple one-page Edit Event screen. This view uses placeholder state until EditEventViewModel is
- * connected.
+ * **EditEventScreen**
+ *
+ * A composable screen that allows users to **edit** the details of an existing calendar event. The
+ * screen includes fields for title, description, start/end dates and times, recurrence, and
+ * participants. It is fully synchronized with [EditEventViewModel].
+ *
+ * ### Parameters:
+ *
+ * @param eventId The unique identifier of the event to be edited.
+ * @param editEventViewModel The [EditEventViewModel] managing event state.
+ * @param onSave Called when the user saves the changes.
+ * @param onCancel Called when the user cancels the editing.
+ * @param onEditParticipants Called when the user wants to edit participants.
+ * @param skipLoad For testing purposes to skip loading the event.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,14 +79,16 @@ fun EditEventScreen(
       topBar = { TopTitleBar(title = stringResource(R.string.edit_event_title)) },
       content = { paddingValues ->
         LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(paddingValues).padding(horizontal = 24.dp),
+            modifier =
+                Modifier.fillMaxSize().padding(paddingValues).padding(horizontal = PaddingLarge),
             horizontalAlignment = Alignment.CenterHorizontally) {
               item {
                 Text(
                     text = stringResource(R.string.edit_event_instruction),
                     style = MaterialTheme.typography.headlineSmall,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(vertical = 16.dp).testTag("edit_instruction_text"))
+                    modifier =
+                        Modifier.padding(vertical = PaddingMedium).testTag("edit_instruction_text"))
               }
 
               // Title
@@ -109,12 +114,12 @@ fun EditEventScreen(
                     isError = uiState.description.isBlank(),
                     errorMessage = stringResource(R.string.edit_event_description_error),
                     singleLine = false,
-                    minLines = 4)
+                    minLines = DESCRIPTION_MIN_LINES)
               }
 
               // Start & End Dates
               item {
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(SpacingMedium))
                 DatePickerFieldToModal(
                     label = stringResource(R.string.edit_event_start_date_label),
                     modifier = Modifier.testTag(EditEventTestTags.START_DATE_FIELD),
@@ -138,7 +143,7 @@ fun EditEventScreen(
 
               // Start Time Picker
               item {
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(SpacingMedium))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -156,7 +161,7 @@ fun EditEventScreen(
 
               // End Time Picker
               item {
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(SpacingMedium))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -174,7 +179,7 @@ fun EditEventScreen(
 
               // Recurrence dropdown
               item {
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(SpacingMedium))
                 ExposedDropdownMenuBox(
                     expanded = expanded, onExpandedChange = { expanded = !expanded }) {
                       OutlinedTextField(
@@ -187,7 +192,7 @@ fun EditEventScreen(
                               Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable, true)
                                   .fillMaxWidth()
                                   .testTag(EditEventTestTags.RECURRENCE_DROPDOWN),
-                          shape = RoundedCornerShape(12.dp),
+                          shape = RoundedCornerShape(CornerRadiusLarge),
                           colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors())
                       ExposedDropdownMenu(
                           expanded = expanded, onDismissRequest = { expanded = false }) {
@@ -205,13 +210,13 @@ fun EditEventScreen(
 
               // Notifications (implement later if needed)
               /**
-               * item { Spacer(modifier = Modifier.height(12.dp))
+               * item { Spacer(modifier = Modifier.height(SpacingMedium))
                * NotificationSection(editEventViewModel = editEventViewModel) }
                */
 
               // Participants
               item {
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(SpacingMedium))
                 Text(
                     text = stringResource(R.string.edit_event_participants_label),
                     style = MaterialTheme.typography.titleMedium)
@@ -219,7 +224,7 @@ fun EditEventScreen(
                     onClick = onEditParticipants,
                     modifier =
                         Modifier.fillMaxWidth()
-                            .padding(vertical = 8.dp)
+                            .padding(vertical = PaddingSmall)
                             .testTag(EditEventTestTags.EDIT_PARTICIPANTS_BUTTON)) {
                       Text(stringResource(R.string.edit_event_edit_participants_button))
                     }
@@ -228,12 +233,12 @@ fun EditEventScreen(
       },
       bottomBar = {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(20.dp),
+            modifier = Modifier.fillMaxWidth().padding(PaddingLarge),
             horizontalArrangement = Arrangement.SpaceEvenly) {
               OutlinedButton(
                   onClick = onCancel,
                   modifier =
-                      Modifier.size(width = 120.dp, height = 60.dp)
+                      Modifier.size(width = widthLarge, height = heightLarge)
                           .testTag(EditEventTestTags.CANCEL_BUTTON)) {
                     Text(stringResource(R.string.common_cancel))
                   }
@@ -245,7 +250,7 @@ fun EditEventScreen(
                     }
                   },
                   modifier =
-                      Modifier.size(width = 120.dp, height = 60.dp)
+                      Modifier.size(width = widthLarge, height = heightLarge)
                           .testTag(EditEventTestTags.SAVE_BUTTON),
                   enabled = editEventViewModel.allFieldsValid()) {
                     Text(stringResource(R.string.common_save))
@@ -267,7 +272,6 @@ fun EditEventScreen(
         .show()
     showStartTimePicker = false
   }
-
   if (showEndTimePicker) {
     TimePickerDialog(
             context,
@@ -283,89 +287,8 @@ fun EditEventScreen(
   }
 }
 
-/**
- * **EditEventAttendantScreen**
- *
- * A composable screen that allows users to **view**, **select**, and **update** the list of
- * participants for a calendar event. The participant list is fully synchronized with
- * [EditEventViewModel].
- *
- * ### Parameters:
- *
- * @param editEventViewModel The [EditEventViewModel] managing participant state.
- * @param onSave Called when the user confirms the changes.
- * @param onBack Called when the user cancels and navigates back.
- */
+@Preview(showBackground = true, name = "Edit Event Screen Preview")
 @Composable
-fun EditEventAttendantScreen(
-    editEventViewModel: EditEventViewModel = viewModel(),
-    onSave: () -> Unit = {},
-    onBack: () -> Unit = {},
-) {
-  val uiState by editEventViewModel.uiState.collectAsState()
-  // Placeholder for all possible participants
-  // This would come from a repository or service
-  val allParticipants = listOf("Alice", "Bob", "Charlie", "David", "Eve", "Frank")
-
-  Scaffold(
-      topBar = {
-        TopTitleBar(title = stringResource(R.string.edit_event_participants_screen_title))
-      },
-      content = { paddingValues ->
-        Column(
-            modifier = Modifier.fillMaxSize().padding(horizontal = 40.dp).padding(paddingValues),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceAround) {
-              Box(
-                  modifier = Modifier.weight(1f).fillMaxWidth(),
-                  contentAlignment = Alignment.Center) {
-                    Text(
-                        stringResource(R.string.edit_event_select_participants_text),
-                        style = MaterialTheme.typography.headlineMedium)
-                  }
-
-              Card(
-                  modifier = Modifier.weight(1f).fillMaxWidth().padding(vertical = 8.dp),
-                  shape = RoundedCornerShape(12.dp),
-                  elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
-                    LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-                      items(allParticipants) { name ->
-                        val isSelected = uiState.participants.contains(name)
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier =
-                                Modifier.fillMaxWidth()
-                                    .clickable {
-                                      if (isSelected) editEventViewModel.removeParticipant(name)
-                                      else editEventViewModel.addParticipant(name)
-                                    }
-                                    .padding(vertical = 8.dp)
-                                    .testTag("${EditEventTestTags.PARTICIPANTS_LIST}_$name")) {
-                              Checkbox(
-                                  checked = isSelected,
-                                  onCheckedChange = { checked ->
-                                    if (checked) editEventViewModel.addParticipant(name)
-                                    else editEventViewModel.removeParticipant(name)
-                                  })
-                              Spacer(modifier = Modifier.width(8.dp))
-                              Text(name)
-                            }
-                      }
-                    }
-                  }
-            }
-      },
-      bottomBar = {
-        BottomNavigationButtons(
-            onNext = {
-              editEventViewModel.saveEditEventChanges()
-              onSave()
-            },
-            onBack = onBack,
-            backButtonText = stringResource(R.string.common_cancel),
-            nextButtonText = stringResource(R.string.common_save),
-            canGoNext = true,
-            backButtonTestTag = EditEventTestTags.BACK_BUTTON,
-            nextButtonTestTag = EditEventTestTags.SAVE_BUTTON)
-      })
+fun EditEventScreenPreview() {
+  EditEventScreen(eventId = "PREVIEW123", skipLoad = true)
 }

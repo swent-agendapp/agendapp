@@ -326,7 +326,8 @@ class EventSummaryCardTest {
 
 /**
  * Utility function used in color tests to compare two Compose [Color] values with a tolerance. This
- * avoids false negatives caused by small rendering or rounding variations.
+ * avoids false negatives caused by small rendering or rounding variations. This function was
+ * generated using AI
  */
 private fun colorsAreClose(a: Color, b: Color, eps: Float = 0.015f): Boolean {
   return (kotlin.math.abs(a.red - b.red) < eps &&
@@ -339,7 +340,7 @@ private fun colorsAreClose(a: Color, b: Color, eps: Float = 0.015f): Boolean {
  * Computes the dominant (most frequent) visible color of a [Bitmap] using simple RGB quantization.
  * Used in tests to verify that rendered UI elements (like the colored sidebar) have the expected
  * color. The algorithm samples pixels, builds a histogram of quantized colors, and averages the
- * dominant bucket.
+ * dominant bucket. This function was generated using AI
  */
 private fun dominantColor(bm: Bitmap, step: Int = 2): Color {
   val counts = HashMap<Int, Int>()

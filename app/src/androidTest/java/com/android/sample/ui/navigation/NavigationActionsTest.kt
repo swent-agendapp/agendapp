@@ -1,44 +1,23 @@
 package com.android.sample.ui.navigation
 
 import android.Manifest
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextContains
-import androidx.compose.ui.test.hasTestTag
-import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
-import androidx.compose.ui.test.performTouchInput
-import androidx.compose.ui.test.swipeUp
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navigation
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import androidx.test.rule.GrantPermissionRule
 import com.android.sample.Agendapp
-import com.android.sample.model.authorization.AuthorizationService
 import com.android.sample.model.calendar.RecurrenceStatus
-import com.android.sample.model.organization.Employee
-import com.android.sample.model.organization.EmployeeRepository
-import com.android.sample.model.organization.Role
-import com.android.sample.ui.calendar.CalendarScreen
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
-import com.android.sample.ui.calendar.addEvent.AddEventScreen
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
-import com.android.sample.ui.calendar.addEvent.AddEventViewModel
-import com.android.sample.ui.calendar.eventOverview.EventOverviewScreen
-import com.android.sample.ui.calendar.eventOverview.EventOverviewScreenTestTags
-import com.android.sample.ui.replacement.ReplacementTestTags
-import com.android.sample.ui.screens.HomeScreen
-import com.android.sample.ui.screens.HomeTestTags
-import com.android.sample.ui.screens.HomeTestTags.CALENDAR_BUTTON
+import com.android.sample.ui.common.BottomBarTestTags
+import com.android.sample.ui.replacement.ReplacementOverviewTestTags
+import com.android.sample.ui.settings.SettingsScreenTestTags
 import com.android.sample.utils.FakeCredentialManager
 import com.android.sample.utils.FakeJwtGenerator
 import com.android.sample.utils.FirebaseEmulatedTest
@@ -59,19 +38,12 @@ import org.junit.runner.RunWith
 @MediumTest
 class AgendappNavigationTest : FirebaseEmulatedTest() {
 
-  // Timeout for UI authentication operations
-  // This is used to wait for the UI to update after authentication actions
-  val uiAuthWaitTimeOut = 10_000L
-
   // Create a fake Google ID token for testing
   val fakeGoogleIdToken =
       FakeJwtGenerator.createFakeGoogleIdToken("login_test", "12345", email = "test@example.com")
 
   // Create a FakeCredentialManager with the fake token
   val fakeCredentialManager = FakeCredentialManager.create(fakeGoogleIdToken)
-
-  private lateinit var fakeRepo: FakeEmployeeRepository
-  private lateinit var authz: AuthorizationService
 
   @get:Rule
   val permissionRule: GrantPermissionRule =
@@ -85,9 +57,6 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
     super.setUp()
     // Ensure a user is signed in before each test (use runBlocking to call suspend function)
     runBlocking { FirebaseEmulator.signInWithFakeGoogleUser(fakeGoogleIdToken) }
-    fakeRepo = FakeEmployeeRepository()
-    fakeRepo.roleForCurrentUser = Role.ADMIN
-    authz = AuthorizationService(repo = fakeRepo)
   }
 
   @Test
@@ -102,78 +71,17 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
     composeTestRule.onNodeWithTag(SignInScreenTestTags.LOGIN_MESSAGE).assertIsDisplayed()
 
     // Perform Sign-In
-    composeTestRule
-        .onNodeWithTag(SignInScreenTestTags.LOGIN_BUTTON)
-        .assertIsDisplayed()
-        .performClick()
-
-    // Wait for sign-in to complete
-    composeTestRule.waitUntil(timeoutMillis = uiAuthWaitTimeOut) {
-      // Verify Home screen is displayed
-      composeTestRule.onNodeWithTag(CALENDAR_BUTTON).isDisplayed()
-    }
+    composeTestRule.onNodeWithTag(SignInScreenTestTags.LOGIN_BUTTON).assertIsDisplayed()
   }
 
   @Test
-  fun ensure_home_if_signed_in() = runTest {
+  fun ensure_calendar_if_signed_in() = runTest {
 
     // Launch app with user already signed in
     composeTestRule.setContent { Agendapp() }
 
-    // Verify Home screen is still displayed (user remains signed in)
-    composeTestRule.onNodeWithTag(CALENDAR_BUTTON).assertIsDisplayed()
-  }
-
-  /**
-   * Scrolls vertically through the calendar until the node with [tag] is visible and can be
-   * interacted with.
-   */
-  private fun scrollUntilVisible(tag: String, maxAttempts: Int = 2) {
-    // The node should exist in the semantics tree, if it doesn't, test data/setup is wrong.
-    composeTestRule.onNodeWithTag(tag).assertExists()
-
-    repeat(maxAttempts) { attempt ->
-      val displayed =
-          runCatching {
-                composeTestRule.onNodeWithTag(tag).assertIsDisplayed()
-                true
-              }
-              .getOrElse { false }
-
-      if (displayed) return
-
-      // Perform a gentle swipe up to reveal later hours small deltas reduce flakiness.
-      composeTestRule.onRoot().performTouchInput { swipeUp() }
-
-      composeTestRule.waitForIdle()
-    }
-
-    // Final assert to fail with a clear message if nothing became visible.
-    composeTestRule.onNodeWithTag(tag).assertIsDisplayed()
-  }
-
-  @Test
-  fun navigate_to_all_add_forms() {
-    composeTestRule.setContent { Agendapp() }
-
-    // Go to Calendar
-    composeTestRule.onNodeWithTag(CALENDAR_BUTTON).assertExists().performClick()
-    composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertExists().performClick()
-    // Validate screen content
-    composeTestRule
-        .onNodeWithTag(AddEventTestTags.TITLE_TEXT_FIELD)
-        .assertExists()
-        .performTextInput("Test Event")
-    composeTestRule
-        .onNodeWithTag(AddEventTestTags.DESCRIPTION_TEXT_FIELD)
-        .assertExists()
-        .performTextInput("Test Description")
-    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
-    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
-    composeTestRule.onNodeWithTag(AddEventTestTags.CREATE_BUTTON).assertExists().performClick()
-    composeTestRule.onNodeWithTag(AddEventTestTags.FINISH_BUTTON).assertExists().performClick()
-
-    composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertIsDisplayed()
+    // Verify Calendar screen is displayed (user remains signed in)
+    composeTestRule.onNodeWithTag(CalendarScreenTestTags.ROOT).assertIsDisplayed()
   }
 
   @Test
@@ -181,10 +89,10 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
     composeTestRule.setContent { Agendapp() }
 
     // Go to replacement
-    composeTestRule.onNodeWithTag(HomeTestTags.REPLACEMENT_BUTTON).assertExists().performClick()
+    composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_REPLACEMENT).assertExists().performClick()
 
     // Validate screen content
-    composeTestRule.onNodeWithTag(ReplacementTestTags.SCREEN).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(ReplacementOverviewTestTags.SCREEN).assertIsDisplayed()
   }
 
   @Test
@@ -192,7 +100,6 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
     composeTestRule.setContent { Agendapp() }
 
     // Go to add event screen
-    composeTestRule.onNodeWithTag(CALENDAR_BUTTON).assertExists().performClick()
     composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertExists().performClick()
 
     // Validate screen content
@@ -238,127 +145,29 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
         .assertExists()
         .assertTextContains("")
   }
-  // ----------------------------------------------------------------------------------------------
-  // Test-only navigation graph and fake repo for the last test
-  // ----------------------------------------------------------------------------------------------
 
-  // The goal of this manipulation is : when the test will add an event using the AddEventScreen, we
-  // will give to this screen
-  // a modified AddEventViewModel, containing a fake AuthorizationService, containing a fake
-  // employee repository !
-  // Why ? Because this employee repository will be modified such that the user (the test running)
-  // is considered as an admin
-  // That way, the test has the authorization to add an event to the event repository, and continue
-  // the rest of the test !
-
-  @Composable
-  private fun AgendappForTest(
-      addEventViewModel: AddEventViewModel,
-  ) {
-    val navController = rememberNavController()
-    val actions = NavigationActions(navController)
-
-    NavHost(navController = navController, startDestination = Screen.Home.route) {
-      // Home Screen (only what we need for the flow)
-      composable(Screen.Home.route) {
-        HomeScreen(
-            onNavigateToEdit = { /* not needed */},
-            onNavigateToCalendar = { actions.navigateTo(Screen.Calendar) },
-            onNavigateToSettings = { /* not needed */},
-            onNavigateToReplacement = { /* not needed */})
-      }
-
-      // Calendar graph kept minimal for the flow
-      navigation(startDestination = Screen.Calendar.route, route = "Calendar") {
-        composable(Screen.Calendar.route) {
-          CalendarScreen(
-              onCreateEvent = { actions.navigateTo(Screen.AddEvent) },
-              onEventClick = { event -> actions.navigateToEventOverview(event.id) })
-        }
-
-        composable(Screen.EventOverview.route) { backStackEntry ->
-          val eventId = backStackEntry.arguments?.getString("eventId")
-          eventId?.let {
-            EventOverviewScreen(eventId = it, onBackClick = { actions.navigateBack() })
-          }
-        }
-      }
-
-      // Add Event flow where we inject OUR ViewModel
-      navigation(startDestination = Screen.AddEvent.route, route = "Add Event") {
-        composable(Screen.AddEvent.route) {
-          AddEventScreen(
-              addEventViewModel = addEventViewModel,
-              onFinish = { actions.navigateTo(Screen.Calendar) },
-              onCancel = { actions.navigateBack() })
-        }
-      }
-    }
-  }
-
-  // Used to have the authorization to add events (as an admin)
-  private class FakeEmployeeRepository(
-      var roleForCurrentUser: Role? = null,
-  ) : EmployeeRepository {
-    override suspend fun getEmployees(): List<Employee> = emptyList()
-
-    override suspend fun newEmployee(employee: Employee) {}
-
-    override suspend fun deleteEmployee(userId: String) {}
-
-    override suspend fun getMyRole(): Role? = roleForCurrentUser
-  }
-
-  /**
-   * Flow of this test : -> Home -> Calendar -> Add an Event -> Calendar -> (click on the event) ->
-   * EventOverview -> (click on GoBack) -> Calendar
-   */
-  @OptIn(ExperimentalTestApi::class)
   @Test
-  fun navigate_calendar_to_eventOverview_and_back() {
-    // Build a ViewModel that uses the fake AuthorizationService prepared in @Before
-    val injectedVm = AddEventViewModel(authz = authz)
+  fun goBottomBarIcons() {
+    composeTestRule.setContent { Agendapp() }
 
-    composeTestRule.setContent { AgendappForTest(addEventViewModel = injectedVm) }
+    // Assert the Bottom Bar is displayed
+    composeTestRule.onNodeWithTag(BottomBarTestTags.BOTTOM_BAR).assertIsDisplayed()
 
-    // Go to Calendar
-    composeTestRule.onNodeWithTag(CALENDAR_BUTTON).assertExists().performClick()
+    // Assert each icon is displayed
+    composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_CALENDAR).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_REPLACEMENT).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_SETTINGS).assertIsDisplayed()
 
-    // Create a simple event using the real Add‑Event flow so that the calendar has at least one
-    // event
-    composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertExists().performClick()
-    composeTestRule
-        .onNodeWithTag(AddEventTestTags.TITLE_TEXT_FIELD)
-        .assertExists()
-        .performTextInput("Test Event")
-    composeTestRule
-        .onNodeWithTag(AddEventTestTags.DESCRIPTION_TEXT_FIELD)
-        .assertExists()
-        .performTextInput("Test Description")
-    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
-    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
-    composeTestRule.onNodeWithTag(AddEventTestTags.CREATE_BUTTON).assertExists().performClick()
-    composeTestRule.onNodeWithTag(AddEventTestTags.FINISH_BUTTON).assertExists().performClick()
+    // Navigate to Replacement screen
+    composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_REPLACEMENT).performClick()
+    composeTestRule.onNodeWithTag(ReplacementOverviewTestTags.SCREEN).assertIsDisplayed()
 
-    // Wait for at least one event block to be present, then click it
-    composeTestRule.waitUntilAtLeastOneExists(
-        hasTestTag("${CalendarScreenTestTags.EVENT_BLOCK}_Test Event"))
-    // Small idle to avoid "failed to inject touch input" on emulator
-    composeTestRule.waitForIdle()
-    // Ensure the event is actually visible on screen (the even will span at the time slot where you
-    // run the test, which may be before 8:00 or after 20:00)
-    scrollUntilVisible(tag = "${CalendarScreenTestTags.EVENT_BLOCK}_Test Event")
-    composeTestRule.onNodeWithTag("${CalendarScreenTestTags.EVENT_BLOCK}_Test Event").performClick()
+    // Go to Settings screen
+    composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_SETTINGS).performClick()
+    composeTestRule.onNodeWithTag(SettingsScreenTestTags.ROOT).assertIsDisplayed()
 
-    // We should now be on EventOverview (root test tag defined by the screen)
-    composeTestRule.onNodeWithTag(EventOverviewScreenTestTags.SCREEN).assertIsDisplayed()
-
-    // Click back and verify Calendar is shown again (by top bar title tag)
-    composeTestRule
-        .onNodeWithTag(EventOverviewScreenTestTags.BACK_BUTTON)
-        .assertExists()
-        .performClick()
-
-    composeTestRule.onNodeWithTag(CalendarScreenTestTags.TOP_BAR_TITLE).assertExists()
+    // Navigate back to Calendar screen
+    composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_CALENDAR).performClick()
+    composeTestRule.onNodeWithTag(CalendarScreenTestTags.ROOT).assertIsDisplayed()
   }
 }

@@ -5,12 +5,12 @@ on:
     inputs:
       ref:
         description: "Branch or tag to build (e.g., refs/heads/M1 or refs/tags/v1.2.3)"
-        required: false
-        default: "refs/heads/M1"
+        required: true
+        default: "refs/heads/main"
       build-type:
         description: "Variant to build"
         type: choice
-        required: false
+        required: true
         default: Release
         options: [Debug, Release]
 
@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           # lets you build a different branch/tag from the button form
-          ref: ${{ github.event.inputs.ref || 'refs/tags/M1' }}
+          ref: ${{ github.event.inputs.ref }}
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -39,7 +39,14 @@ jobs:
 
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
-        
+
+      - name: Restore local.properties
+        env:
+          LOCAL_PROPERTIES: ${{ secrets.LOCAL_PROPERTIES }}
+        run: |
+          echo "$LOCAL_PROPERTIES" | base64 --decode > ./local.properties
+          test -s ./local.properties && echo "local.properties restored"
+
       - name: Restore google-services.json
         run: |
           mkdir -p app
@@ -48,13 +55,32 @@ jobs:
           
       - name: Build APK
         run: |
-          VARIANT=${{ github.event.inputs['build-type'] || 'Release' }}
+          VARIANT=${{ github.event.inputs['build-type'] }}
           ./gradlew assemble${VARIANT}
 
-      - name: Collect APKs
+      - name: Sign APK
+        if: ${{ github.event.inputs['build-type'] == 'Release' }}
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: app/build/outputs/apk/release
+          signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          alias: ${{ secrets.ANDROID_KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        env:
+          BUILD_TOOLS_VERSION: "34.0.0"
+
+      - name: Collect release APKs
+        if: ${{ github.event.inputs['build-type'] == 'Release' }}
         run: |
           mkdir -p apk
-          # grabs all produced APKs (multi-module safe)
+          find . -path "*/build/outputs/apk/*/*-signed.apk" -exec cp {} apk/ \;
+          ls -al apk
+
+      - name: Collect debug APKs
+        if: ${{ github.event.inputs['build-type'] == 'Debug' }}
+        run: |
+          mkdir -p apk
           find . -path "*/build/outputs/apk/*/*.apk" -exec cp {} apk/ \;
           ls -al apk
 

@@ -97,7 +97,9 @@ fun CalendarScreen(
               FilledTonalIconButton(
                   onClick = onCreateEvent,
                   modifier =
-                      Modifier.padding(end = PaddingMedium).size(IconSizeExtraLarge).testTag(ADD_EVENT_BUTTON),
+                      Modifier.padding(end = PaddingMedium)
+                          .size(IconSizeExtraLarge)
+                          .testTag(ADD_EVENT_BUTTON),
                   shape = CircleShape,
                   colors =
                       IconButtonDefaults.filledTonalIconButtonColors(

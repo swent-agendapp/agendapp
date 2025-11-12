@@ -1,5 +1,6 @@
 package com.android.sample.ui.replacement
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -56,6 +58,23 @@ object ReplacementPendingTestTags {
   const val ITEM_PREFIX = "replacement_pending_item_"
 
   fun itemTag(id: String): String = ITEM_PREFIX + id
+}
+
+// That function (ReplacementAssistChip) was created with the help of IA
+@Composable
+private fun ReplacementAssistChip(
+    count: Int,
+    @StringRes labelRes: Int,
+    enabled: Boolean,
+    onClick: () -> Unit,
+    icon: ImageVector,
+    tint: androidx.compose.ui.graphics.Color
+) {
+  AssistChip(
+      enabled = enabled,
+      onClick = onClick,
+      label = { Text(stringResource(id = labelRes, count)) },
+      leadingIcon = { Icon(imageVector = icon, contentDescription = null, tint = tint) })
 }
 
 /**
@@ -253,36 +272,25 @@ fun ReplacementWaitingCard(replacements: List<Replacement>) {
           Spacer(modifier = Modifier.height(SpacingMedium))
 
           Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            AssistChip(
+            ReplacementAssistChip(
+                count = pending.size,
+                labelRes = R.string.replacement_no_response_label,
                 enabled = pending.isNotEmpty(),
                 onClick = { showPendingDialog = true },
-                label = {
-                  Text(stringResource(id = R.string.replacement_no_response_label, pending.size))
-                },
-                leadingIcon = {
-                  Icon(
-                      imageVector = Icons.Outlined.HelpOutline,
-                      contentDescription = null,
-                      tint = MaterialTheme.colorScheme.tertiary)
-                })
+                icon = Icons.Outlined.HelpOutline,
+                tint = MaterialTheme.colorScheme.tertiary)
 
-            AssistChip(
+            ReplacementAssistChip(
+                count = declined.size,
+                labelRes = R.string.replacement_declined_label,
                 enabled = declined.isNotEmpty(),
                 onClick = { showDeclinedDialog = true },
-                label = {
-                  Text(stringResource(id = R.string.replacement_declined_label, declined.size))
-                },
-                leadingIcon = {
-                  Icon(
-                      imageVector = Icons.Outlined.Close,
-                      contentDescription = null,
-                      tint = MaterialTheme.colorScheme.error)
-                })
+                icon = Icons.Outlined.Close,
+                tint = MaterialTheme.colorScheme.error)
           }
         }
       }
 
-  // Dialogs listing people
   if (showPendingDialog) {
     PeopleListDialog(
         title = stringResource(R.string.replacement_pending_people_title),

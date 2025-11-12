@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.map.MapScreenTestTags.CREATE_AREA_BUTTON
+import com.android.sample.ui.map.MapScreenTestTags.CREATE_AREA_FLOATING_BUTTON
 import com.android.sample.ui.map.MapScreenTestTags.DELETE_MARKER_BUTTON
 import com.android.sample.ui.map.MapScreenTestTags.DOWN_SHEET
 import com.android.sample.ui.theme.Blue
@@ -79,13 +80,12 @@ object MapScreenTestTags {
   const val GOOGLE_MAP_SCREEN = "mapScreen"
   const val MAP_TITLE = "map_title"
   const val MAP_GO_BACK_BUTTON = "map_go_back_button"
-  const val TOOLTIP_BUTTON = "map_go_back_button"
-  const val TOOLTIP_TEXT = "map_go_back_button"
-  const val CREATE_AREA_BUTTON = "map_go_back_button"
-  const val DOWN_SHEET = "map_go_back_button"
-  const val DELETE_MARKER_BUTTON = "map_go_back_button"
-  const val MARKER = "map_go_back_button"
-  const val AREA = "map_go_back_button"
+  const val TOOLTIP_BUTTON = "tooltip_button"
+  const val TOOLTIP_TEXT = "tooltip_text"
+  const val CREATE_AREA_BUTTON = "create_area_button"
+  const val DOWN_SHEET = "down_sheet"
+  const val DELETE_MARKER_BUTTON = "delete_marker_button"
+  const val CREATE_AREA_FLOATING_BUTTON = "delete_marker_button"
 }
 
 enum class BottomSheetState {
@@ -190,6 +190,7 @@ fun MapScreen(
       },
       floatingActionButton = {
         ExtendedFloatingActionButton(
+          modifier = Modifier.testTag(CREATE_AREA_FLOATING_BUTTON),
             text = { Text(stringResource(R.string.create_area_button)) },
             icon = {
               Icon(

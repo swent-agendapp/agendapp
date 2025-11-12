@@ -13,7 +13,9 @@ class SelectDateRangeTest {
 
   @Test
   fun screenElements_areDisplayedCorrectly() {
-    composeTestRule.setContent { SelectDateRangeScreen() }
+    composeTestRule.setContent {
+      SelectDateRangeScreen(title = "Example title", instruction = "Example instruction")
+    }
 
     composeTestRule.onNodeWithTag(ReplacementOrganizeTestTags.INSTRUCTION_TEXT).assertIsDisplayed()
     composeTestRule.onNodeWithTag(ReplacementOrganizeTestTags.START_DATE_FIELD).assertIsDisplayed()

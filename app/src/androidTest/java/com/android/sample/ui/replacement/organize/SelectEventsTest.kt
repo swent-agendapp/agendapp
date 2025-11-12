@@ -13,7 +13,9 @@ class SelectEventsTest {
 
   @Test
   fun screenElements_areDisplayedCorrectly() {
-    composeTestRule.setContent { SelectEventScreen() }
+    composeTestRule.setContent {
+      SelectEventScreen(title = "Example title", instruction = "Example instruction")
+    }
 
     composeTestRule.onNodeWithTag(ReplacementOrganizeTestTags.INSTRUCTION_TEXT).assertIsDisplayed()
     composeTestRule.onNodeWithTag(ReplacementOrganizeTestTags.BACK_BUTTON).assertIsDisplayed()

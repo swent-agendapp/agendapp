@@ -58,12 +58,14 @@ fun ReplacementOrganizeScreen(
         SelectEventScreen(
             onNext = { currentStep = 4 },
             onBack = { currentStep = 1 },
+            title = stringResource(R.string.organize_replacement),
             instruction = stringResource(R.string.select_replacement_events))
     3 ->
         SelectDateRangeScreen(
             onNext = { currentStep = 4 },
             onBack = { currentStep = 1 },
-            instruction = stringResource(R.string.organize_replacement))
+            title = stringResource(R.string.organize_replacement),
+            instruction = stringResource(R.string.select_replacement_date_range))
     4 -> SelectProcessMomentScreen(onProcessNow = onProcessNow, onProcessLater = onProcessLater)
   }
 }

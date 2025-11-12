@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -38,6 +39,7 @@ import com.android.sample.ui.theme.SpacingExtraLarge
 import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.WeightVeryHeavy
 import java.time.Instant
+import java.time.LocalDate
 
 // Assisted by AI
 
@@ -71,17 +73,19 @@ import java.time.Instant
 fun SelectDateRangeScreen(
     onNext: () -> Unit = {},
     onBack: () -> Unit = {},
-    instruction: String = ""
+    title: String = "",
+    instruction: String = "",
+    onStartDateSelected: (LocalDate) -> Unit = {},
+    onEndDateSelected: (LocalDate) -> Unit = {},
 ) {
 
   // Later handled by the viewmodel
   var startInstant by remember { mutableStateOf(Instant.now()) }
   var endInstant by remember { mutableStateOf(Instant.now()) }
   val isRangeInvalid = !startInstant.isAfter(endInstant)
-  var substitutedUser = "example user" // to be provided by the viewmodel
 
   Scaffold(
-      topBar = { TopTitleBar(title = instruction) },
+      topBar = { TopTitleBar(title = title) },
       content = { paddingValues ->
         Column(
             modifier =
@@ -94,8 +98,7 @@ fun SelectDateRangeScreen(
                   modifier = Modifier.weight(WeightVeryHeavy).fillMaxWidth(),
                   contentAlignment = Alignment.Center) {
                     Text(
-                        text =
-                            stringResource(R.string.select_replacement_date_range, substitutedUser),
+                        text = instruction,
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.headlineMedium,
                         modifier = Modifier.testTag(ReplacementOrganizeTestTags.INSTRUCTION_TEXT))
@@ -108,7 +111,9 @@ fun SelectDateRangeScreen(
                     label = stringResource(R.string.startDatePickerLabel),
                     modifier = Modifier.testTag(ReplacementOrganizeTestTags.START_DATE_FIELD),
                     onDateSelected = { date ->
-                      startInstant = DateTimeUtils.instantWithDate(startInstant, date = date)
+                      onStartDateSelected(date)
+                      startInstant =
+                          DateTimeUtils.instantWithDate(instant = startInstant, date = date)
                     },
                     initialInstant = startInstant)
 
@@ -118,7 +123,8 @@ fun SelectDateRangeScreen(
                     label = stringResource(R.string.endDatePickerLabel),
                     modifier = Modifier.testTag(ReplacementOrganizeTestTags.END_DATE_FIELD),
                     onDateSelected = { date ->
-                      endInstant = DateTimeUtils.instantWithDate(endInstant, date = date)
+                      onEndDateSelected(date)
+                      endInstant = DateTimeUtils.instantWithDate(instant = endInstant, date = date)
                     },
                     initialInstant = endInstant)
               }
@@ -128,7 +134,7 @@ fun SelectDateRangeScreen(
                         Modifier.fillMaxWidth()
                             .padding(top = SpacingLarge)
                             .background(
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f),
+                                color = Color.LightGray,
                                 shape = RoundedCornerShape(CornerRadiusMedium))
                             .padding(vertical = PaddingMedium, horizontal = PaddingMedium)
                             .testTag(ReplacementOrganizeTestTags.DATE_RANGE_INVALID_TEXT),
@@ -156,5 +162,5 @@ fun SelectDateRangeScreen(
 @Preview(showBackground = true)
 @Composable
 fun SelectDateRangeScreenPreview() {
-  SelectDateRangeScreen()
+  SelectDateRangeScreen(title = "Example Title", instruction = "Example Instruction")
 }

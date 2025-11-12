@@ -17,7 +17,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
-import com.android.sample.model.calendar.Event
 import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeTestTags
@@ -47,13 +46,16 @@ import com.android.sample.ui.theme.WeightVeryLight
  * @param instruction Instruction text to display to the user.
  */
 @Composable
-fun SelectEventScreen(onNext: () -> Unit = {}, onBack: () -> Unit = {}, instruction: String = "") {
-
-  val selectedEvents: List<Event> = emptyList()
-  var substitutedUser = "example user" // to be provided by the viewmodel
+fun SelectEventScreen(
+    onNext: () -> Unit = {},
+    onBack: () -> Unit = {},
+    title: String = "",
+    instruction: String = "",
+    canGoNext: Boolean = false
+) {
 
   Scaffold(
-      topBar = { TopTitleBar(title = instruction) },
+      topBar = { TopTitleBar(title = title) },
       content = { paddingValues ->
         Column(
             modifier =
@@ -66,8 +68,7 @@ fun SelectEventScreen(onNext: () -> Unit = {}, onBack: () -> Unit = {}, instruct
                   modifier = Modifier.weight(WeightVeryLight).fillMaxWidth(),
                   contentAlignment = Alignment.Center) {
                     Text(
-                        // to be put in strings.xml
-                        text = stringResource(R.string.select_replacement_events, substitutedUser),
+                        text = instruction,
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier.testTag(ReplacementOrganizeTestTags.INSTRUCTION_TEXT))
@@ -81,7 +82,7 @@ fun SelectEventScreen(onNext: () -> Unit = {}, onBack: () -> Unit = {}, instruct
             onBack = onBack,
             backButtonText = stringResource(R.string.goBack),
             nextButtonText = stringResource(R.string.next),
-            canGoNext = selectedEvents.isNotEmpty(),
+            canGoNext = canGoNext,
             backButtonTestTag = ReplacementOrganizeTestTags.BACK_BUTTON,
             nextButtonTestTag = ReplacementOrganizeTestTags.NEXT_BUTTON)
       })
@@ -90,5 +91,5 @@ fun SelectEventScreen(onNext: () -> Unit = {}, onBack: () -> Unit = {}, instruct
 @Preview
 @Composable
 fun SelectEventScreenPreview() {
-  SelectEventScreen()
+  SelectEventScreen(title = "Example Title", instruction = "Example Instruction")
 }

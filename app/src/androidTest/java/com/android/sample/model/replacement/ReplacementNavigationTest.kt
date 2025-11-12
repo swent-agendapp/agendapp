@@ -1,4 +1,4 @@
-package com.android.sample.model.remplacement
+package com.android.sample.model.replacement
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule

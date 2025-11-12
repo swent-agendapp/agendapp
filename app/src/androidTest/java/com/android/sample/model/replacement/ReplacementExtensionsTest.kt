@@ -1,10 +1,7 @@
-package com.android.sample.model.remplacement
+package com.android.sample.model.replacement
 
 import com.android.sample.model.calendar.CloudStorageStatus
 import com.android.sample.model.calendar.createEvent
-import com.android.sample.model.replacement.Replacement
-import com.android.sample.model.replacement.ReplacementStatus
-import com.android.sample.model.replacement.pendingReplacements
 import com.android.sample.utils.EventColor
 import com.google.common.truth.Truth
 import java.time.Instant

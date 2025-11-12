@@ -38,7 +38,9 @@ class CalendarViewModelTest {
     Dispatchers.setMain(testDispatcher)
 
     repository = EventRepositoryLocal()
-    viewModel = CalendarViewModel(eventRepository = repository)
+    viewModel = CalendarViewModel(
+      eventRepository = repository,
+      authRepository = FakeAuthRepository())
 
     // Create two sample events for testing.
     event1 =
@@ -151,10 +153,9 @@ class CalendarViewModelTest {
 
   @Test
   fun getEventById_throws_whenEventDoesNotExist() = runTest {
-    val ex =
-        assertThrows(NoSuchElementException::class.java) {
-          runTest { viewModel.getEventById("unknown-event-id") }
-        }
+    val ex = kotlin.test.assertFailsWith<NoSuchElementException> {
+    viewModel.getEventById("unknown-event-id")
+  }
     assertTrue(ex.message?.contains("unknown-event-id") == true)
     // Error message is not set by this path (repository returns null, not an exception)
     assertNull(viewModel.uiState.value.errorMsg)

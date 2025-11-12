@@ -77,7 +77,7 @@
     <string name="replacement_to_process_section_title">Replacements to process</string>
     <string name="replacement_waiting_answer_section_title">Waiting for an answer</string>
     <string name="replacement_process_button">Process</string>
-    <string name="replacement_no_response_label">%1$d no responses</string>
+    <string name="replacement_no_response_label">%1$d awaiting replies</string>
     <string name="replacement_declined_label">%1$d declined</string>
     <string name="replacement_pending_people_title">No response</string>
     <string name="replacement_declined_people_title">Declined</string>

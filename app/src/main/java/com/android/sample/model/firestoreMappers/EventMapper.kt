@@ -100,6 +100,7 @@ object EventMapper : FirestoreMapper<Event> {
 
   override fun toMap(model: Event): Map<String, Any?> {
     return mapOf(
+        "id" to model.id,
         "title" to model.title,
         "description" to model.description,
         "startDate" to Timestamp(Date.from(model.startDate)),

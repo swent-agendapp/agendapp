@@ -21,4 +21,4 @@ val SpacingLarge = 16.dp
 val SpacingExtraLarge = 20.dp
 
 // Map
-val DefaultZoom = 17f
+const val DefaultZoom = 16f

@@ -222,8 +222,7 @@ fun MapScreen(
                           showBottomSheet = BottomSheetState.DELETE_MARKER
                           deleteMarkerId = marker.id
                           true
-                        },
-                        tag = marker.id)
+                        })
                   }
                   uiState.listArea.forEach { area ->
                     Polygon(
@@ -232,9 +231,7 @@ fun MapScreen(
                               LatLng(marker.location.latitude, marker.location.longitude)
                             },
                         strokeColor = Blue,
-                        fillColor = Blue70,
-                        onClick = {},
-                        tag = area.id)
+                        fillColor = Blue70)
                   }
                 }
           }
@@ -243,45 +240,43 @@ fun MapScreen(
                 modifier = Modifier.testTag(DOWN_SHEET),
                 onDismissRequest = { showBottomSheet = BottomSheetState.HIDE },
                 sheetState = sheetState) {
-                  when (showBottomSheet) {
-                    BottomSheetState.ADD_AREA ->
-                        Column(Modifier.fillMaxWidth().padding(SpacingLarge)) {
-                          Text(stringResource(R.string.down_sheet_title))
-                          Spacer(Modifier.height(SpacingSmall))
-                          OutlinedTextField(
-                              value = uiState.nextAreaName,
-                              onValueChange = { mapViewModel.setNewAreaName(it) },
-                              label = { Text(stringResource(R.string.down_sheet_text_field)) },
-                              singleLine = true,
-                              modifier = Modifier.fillMaxWidth())
-                          Spacer(Modifier.height(SpacingSmall))
-                          Button(
-                              onClick = {
-                                mapViewModel.createNewArea()
-                                showBottomSheet = BottomSheetState.HIDE
-                              },
-                              modifier = Modifier.fillMaxWidth().testTag(CREATE_AREA_BUTTON),
-                              colors =
-                                  ButtonColors(
-                                      Salmon, Color.Black, Color.DarkGray, Color.LightGray)) {
-                                Text(stringResource(R.string.down_sheet_button_create))
-                              }
-                        }
-                    BottomSheetState.DELETE_MARKER ->
-                        Column(Modifier.fillMaxWidth().padding(SpacingLarge)) {
-                          Button(
-                              onClick = {
-                                mapViewModel.deleteMarker(deleteMarkerId)
-                                showBottomSheet = BottomSheetState.HIDE
-                              },
-                              modifier = Modifier.fillMaxWidth().testTag(DELETE_MARKER_BUTTON),
-                              colors =
-                                  ButtonColors(
-                                      DangerRed, Color.Black, Color.DarkGray, Color.LightGray)) {
-                                Text(stringResource(R.string.down_sheet_button_delete))
-                              }
-                        }
-                    else -> {}
+                  if (showBottomSheet == BottomSheetState.ADD_AREA)
+                      Column(Modifier.fillMaxWidth().padding(SpacingLarge)) {
+                        Text(stringResource(R.string.down_sheet_title))
+                        Spacer(Modifier.height(SpacingSmall))
+                        OutlinedTextField(
+                            value = uiState.nextAreaName,
+                            onValueChange = { mapViewModel.setNewAreaName(it) },
+                            label = { Text(stringResource(R.string.down_sheet_text_field)) },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth())
+                        Spacer(Modifier.height(SpacingSmall))
+                        Button(
+                            onClick = {
+                              mapViewModel.createNewArea()
+                              showBottomSheet = BottomSheetState.HIDE
+                            },
+                            modifier = Modifier.fillMaxWidth().testTag(CREATE_AREA_BUTTON),
+                            colors =
+                                ButtonColors(
+                                    Salmon, Color.Black, Color.DarkGray, Color.LightGray)) {
+                              Text(stringResource(R.string.down_sheet_button_create))
+                            }
+                      }
+                  else if (showBottomSheet == BottomSheetState.DELETE_MARKER) {
+                    Column(Modifier.fillMaxWidth().padding(SpacingLarge)) {
+                      Button(
+                          onClick = {
+                            mapViewModel.deleteMarker(deleteMarkerId)
+                            showBottomSheet = BottomSheetState.HIDE
+                          },
+                          modifier = Modifier.fillMaxWidth().testTag(DELETE_MARKER_BUTTON),
+                          colors =
+                              ButtonColors(
+                                  DangerRed, Color.Black, Color.DarkGray, Color.LightGray)) {
+                            Text(stringResource(R.string.down_sheet_button_delete))
+                          }
+                    }
                   }
                 }
           }

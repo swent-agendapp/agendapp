@@ -65,12 +65,32 @@ fun AddEventAttendantScreen(
 
   val allParticipants =
       listOf(
-          "Alice",
-          "Bob",
-          "Charlie",
+          "Anaïs",
+          "Ania",
+          "Benjamin",
+          "Célestin",
+          "Chiara",
+          "Coralie",
           "David",
-          "Eve",
-          "Frank") // Placeholder for all possible participants
+          "Diana",
+          "Emi",
+          "Emilien",
+          "Giada",
+          "Héloïse",
+          "Jael",
+          "Laura",
+          "Ludovic",
+          "Maé",
+          "Mara",
+          "Maud",
+          "Maxime",
+          "Maya",
+          "Miki",
+          "Roby",
+          "Solene",
+          "Yukié",
+          "Zoé") // Placeholder for all possible participants
+    // note : these temporary names are inspired from the real Stakeholder's employee's names
 
   Scaffold(
       topBar = { TopTitleBar(title = stringResource(R.string.addEventTitle)) },

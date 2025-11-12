@@ -1,5 +1,7 @@
 package com.android.sample.model.replacement
 
+// Assisted by AI
+
 interface ReplacementRepository {
   /**
    * Retrieves all replacement requests from the repository.

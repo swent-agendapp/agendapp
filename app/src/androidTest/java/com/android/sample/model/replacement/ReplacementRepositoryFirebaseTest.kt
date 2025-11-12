@@ -10,6 +10,8 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
+// Assisted by AI
+
 @RunWith(AndroidJUnit4::class)
 class ReplacementRepositoryFirebaseTest : FirebaseEmulatedTest() {
 

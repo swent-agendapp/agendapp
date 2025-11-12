@@ -3,6 +3,8 @@ package com.android.sample.model.replacement
 import com.android.sample.model.calendar.Event
 import java.util.UUID
 
+// Assisted by AI
+
 class ReplacementRepositoryLocal(preloadSampleData: Boolean = false) : ReplacementRepository {
 
   private val replacements: MutableList<Replacement> = mutableListOf()

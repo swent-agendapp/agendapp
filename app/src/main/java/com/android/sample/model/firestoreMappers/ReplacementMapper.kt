@@ -4,6 +4,8 @@ import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementStatus
 import com.google.firebase.firestore.DocumentSnapshot
 
+// Assisted by AI
+
 /** Maps Firestore documents to [Replacement] objects and vice versa. */
 object ReplacementMapper : FirestoreMapper<Replacement> {
 

@@ -13,6 +13,8 @@ import java.time.Instant
 import org.junit.Test
 import org.mockito.Mockito.*
 
+// Assisted by AI
+
 class ReplacementMapperTest {
 
   private val sampleEvent =

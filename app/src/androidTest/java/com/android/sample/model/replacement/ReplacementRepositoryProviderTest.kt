@@ -3,6 +3,8 @@ package com.android.sample.model.replacement
 import org.junit.Assert.assertSame
 import org.junit.Test
 
+// Assisted by AI
+
 /**
  * Unit tests for [ReplacementRepositoryProvider].
  *

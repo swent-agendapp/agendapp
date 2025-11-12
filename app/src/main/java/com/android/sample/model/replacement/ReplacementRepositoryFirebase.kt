@@ -5,6 +5,8 @@ import com.android.sample.model.firestoreMappers.ReplacementMapper
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
+// Assisted by AI
+
 class ReplacementRepositoryFirebase(private val db: FirebaseFirestore) : ReplacementRepository {
 
   override suspend fun getAllReplacements(): List<Replacement> {

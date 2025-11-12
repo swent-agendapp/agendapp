@@ -80,6 +80,23 @@ fun CalendarScreen(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = MaterialTheme.colorScheme.onPrimary,
                 ),
+            actions = {
+              FilledTonalIconButton(
+                  onClick = onCreateEvent,
+                  modifier =
+                      Modifier.padding(end = PaddingMedium).size(30.dp).testTag(ADD_EVENT_BUTTON),
+                  shape = CircleShape,
+                  colors =
+                      IconButtonDefaults.filledTonalIconButtonColors(
+                          containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                          contentColor = MaterialTheme.colorScheme.onSecondaryContainer),
+              ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription =
+                        stringResource(R.string.calendar_add_event_content_description))
+              }
+            },
         )
       },
   ) { paddingValues ->
@@ -121,4 +138,10 @@ private fun loadEventsForDateRange(
   calendarViewModel.loadEventsBetween(
       localDateTimeToInstant(dateRange.start, LocalTime.MIDNIGHT),
       localDateTimeToInstant(dateRange.endInclusive, LocalTime.MAX))
+}
+
+@Preview
+@Composable
+fun CalendarScreenPreview() {
+  CalendarScreen()
 }

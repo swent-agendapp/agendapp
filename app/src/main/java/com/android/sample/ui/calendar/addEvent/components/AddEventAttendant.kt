@@ -90,7 +90,7 @@ fun AddEventAttendantScreen(
           "Solene",
           "Yukié",
           "Zoé") // Placeholder for all possible participants
-    // note : these temporary names are inspired from the real Stakeholder's employee's names
+  // note : these temporary names are inspired from the real Stakeholder's employee's names
 
   Scaffold(
       topBar = { TopTitleBar(title = stringResource(R.string.addEventTitle)) },

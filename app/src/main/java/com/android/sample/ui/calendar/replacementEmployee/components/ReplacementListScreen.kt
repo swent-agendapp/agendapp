@@ -11,13 +11,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.android.sample.R
 import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.theme.*
 
 // Assisted by AI
 
+private val titleMaxLine = 1
+private val descriptionMaxLine = 2
 /** ---------- Test Tags ---------- */
 object ReplacementEmployeeListTestTags {
   const val ROOT = "replacement_employee_list_root"
@@ -98,11 +99,11 @@ fun ReplacementEmployeeListScreen(
               // "Ask to be replaced" button
               OutlinedButton(
                   onClick = onAskToBeReplaced,
-                  shape = RoundedCornerShape(28.dp),
+                  shape = RoundedCornerShape(CornerRadiusHuge),
                   modifier =
                       Modifier.testTag(ReplacementEmployeeListTestTags.ASK_BUTTON)
-                          .height(56.dp)
-                          .fillMaxWidth(0.7f)) {
+                          .height(heightLarge)
+                          .fillMaxWidth(WeightHeavy)) {
                     Text(text = stringResource(R.string.replacement_ask_to_be_replaced))
                   }
             }
@@ -164,7 +165,7 @@ private fun ReplacementRequestCard(
   Card(
       modifier = Modifier.fillMaxWidth().testTag(testTag),
       shape = RoundedCornerShape(CornerRadiusLarge),
-      elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
+      elevation = CardDefaults.cardElevation(defaultElevation = ElevationLow)) {
         Column(modifier = Modifier.padding(PaddingLarge)) {
 
           // Date and time row
@@ -184,14 +185,14 @@ private fun ReplacementRequestCard(
           Text(
               text = stringResource(R.string.replacement_card_title, data.title),
               style = MaterialTheme.typography.bodyLarge,
-              maxLines = 1,
+              maxLines = titleMaxLine,
               overflow = TextOverflow.Ellipsis)
 
           // Description
           Text(
               text = stringResource(R.string.replacement_card_description, data.description),
               style = MaterialTheme.typography.bodyLarge,
-              maxLines = 2,
+              maxLines = descriptionMaxLine,
               overflow = TextOverflow.Ellipsis)
 
           Spacer(Modifier.height(PaddingMedium))

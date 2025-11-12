@@ -157,10 +157,8 @@
     <string name="replacement_accept_short">Accept</string>
     <string name="replacement_refuse_short">Refuse</string>
     <string name="replacement_create_title">Previous step</string>
-    <string name="replacement_create_select_event">Select a event</string>
+    <string name="replacement_create_select_event">Select an event</string>
     <string name="replacement_create_choose_date_range">Choose a date range</string>
-    <string name="replacement_list_title">Select a event you need to be replaced for:</string>
-    <string name="replacement_list_instruction">Select a event you need to be replaced for:</string>
     <string name="common_send">Send</string>
 </resources>
 

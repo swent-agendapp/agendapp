@@ -158,8 +158,6 @@
     <string name="replacement_create_title">Vorheriger Schritt</string>
     <string name="replacement_create_select_event">Ereignis auswählen</string>
     <string name="replacement_create_choose_date_range">Datumsbereich auswählen</string>
-    <string name="replacement_list_title">Wählen Sie ein Ereignis, für das Sie eine Vertretung benötigen:</string>
-    <string name="replacement_list_instruction">Wählen Sie ein Ereignis, für das Sie eine Vertretung benötigen:</string>
     <string name="common_send">Senden</string>
 
 </resources>

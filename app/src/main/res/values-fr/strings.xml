@@ -159,8 +159,6 @@
     <string name="replacement_create_title">Étape précédente</string>
     <string name="replacement_create_select_event">Sélectionner un événement</string>
     <string name="replacement_create_choose_date_range">Choisir une plage de dates</string>
-    <string name="replacement_list_title">Sélectionnez un événement pour lequel vous avez besoin d’un remplacement :</string>
-    <string name="replacement_list_instruction">Sélectionnez un événement pour lequel vous avez besoin d’un remplacement :</string>
     <string name="common_send">Envoyer</string>
 
 

@@ -14,6 +14,18 @@ import com.android.sample.ui.theme.*
 
 // Assisted by AI
 
+/**
+ * Defines the test tags used in the **Replacement Employee Create** screen.
+ *
+ * These tags are used to uniquely identify UI components during UI testing (Compose tests or
+ * end-to-end tests). Keeping them centralized here ensures consistency across tests and prevents
+ * hardcoded strings in test files.
+ *
+ * Test tags:
+ * - [SELECT_EVENT_BUTTON]: Button to select specific events for replacement.
+ * - [CHOOSE_DATE_RANGE_BUTTON]: Button to choose a date range instead of specific events.
+ * - [BACK_BUTTON]: Button to navigate back to the previous screen.
+ */
 object ReplacementEmployeeCreateTestTags {
   const val SELECT_EVENT_BUTTON = "replacement_select_event_button"
   const val CHOOSE_DATE_RANGE_BUTTON = "replacement_choose_date_range_button"
@@ -21,8 +33,14 @@ object ReplacementEmployeeCreateTestTags {
 }
 
 /**
- * Screen for employees to request a replacement. Contains two main actions: selecting an event or
- * choosing a date range.
+ * Replacement Employee Create Screen
+ *
+ * This screen allows users to initiate the process of creating a replacement by either selecting
+ * specific events or choosing a date range.
+ *
+ * @param onSelectEvent Callback invoked when the "Select an event" button is clicked.
+ * @param onChooseDateRange Callback invoked when the "Choose a date range" button is clicked.
+ * @param onBack Callback invoked when the back navigation is triggered.
  */
 @Composable
 fun ReplacementCreateScreen(
@@ -45,7 +63,7 @@ fun ReplacementCreateScreen(
                     .padding(horizontal = PaddingExtraLarge),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally) {
-              // "Select a event" button
+              // "Select an event" button
               OutlinedButton(
                   onClick = onSelectEvent,
                   modifier =

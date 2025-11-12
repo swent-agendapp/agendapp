@@ -74,6 +74,20 @@
     <string name="replacement_requests_subtitle">Replacements waiting for confirmation</string>
     <string name="replacement_substituted_label">Absent person: %1$s: %1$s</string>
     <string name="replacement_substitute_label">Substitute: %1$s</string>
+
+    <string name="invalidDateRangeMessage">Invalid date range: end date must be after start date.</string>
+    <string name="select_process_moment">Process them now ?</string>
+    <string name="process_now">Process now</string>
+    <string name="process_later">Process later</string>
+    <string name="select_replacement_date_range">Select the date range for which %1$s needs a replacement</string>
+    <string name="select_replacement_events">Select the events for which %1$s needs a replacement</string>
+    <string name="which_member_to_be_replaced">Which member needs to be replaced?</string>
+    <string name="search_member">Search member…</string>
+    <string name="selected_member">Selected member : %1$s</string>
+    <string name="select_events">Select events</string>
+    <string name="select_date_range">Select date range</string>
+    <string name="search_icon_content_description">Search icon</string>
+
     <!-- Home Screen -->
     <string name="home_go_to_edit_event">Go to Edit Event</string>
     <string name="home_go_to_calendar">Go to Calendar</string>

@@ -146,12 +146,13 @@ fun Agendapp(
                     onSignedIn = { navigationActions.navigateTo(Screen.Calendar) })
               }
 
-              // Calendar Graph
+              // Main Calendar view
             composable(Screen.Calendar.route) {
                 CalendarScreen(
                     onCreateEvent = { navigationActions.navigateTo(Screen.AddEvent) },
                     onEventClick = { event -> navigationActions.navigateToEventOverview(event.id) })
             }
+            // Event Overview
             composable(Screen.EventOverview.route) { navBackStackEntry ->
                 // Get the Event id from the arguments
                 val eventId = navBackStackEntry.arguments?.getString("eventId")

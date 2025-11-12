@@ -3,8 +3,8 @@ package com.android.sample.ui.calendar
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.android.sample.model.authentification.AuthRepositoryProvider
-import com.android.sample.model.authentification.User
+import com.android.sample.model.authentication.AuthRepositoryProvider
+import com.android.sample.model.authentication.User
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider

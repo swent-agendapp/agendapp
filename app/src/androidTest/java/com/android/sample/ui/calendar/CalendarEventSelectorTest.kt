@@ -18,10 +18,10 @@ import org.junit.Test
  *
  * We **inherit from [BaseCalendarScreenTest]** so we can reuse its utilities without
  * re-implementing them here: data builders (e.g. [buildTestEvents]), repository setup
- * ([populateRepo]), view-model factory & owner ([CalendarVMFactory], [TestOwner]), and
- * interaction helpers (e.g. [swipeLeft], [swipeRight], [assertEventVisible], [assertEventAbsent],
- * [dowLabel]). This keeps these tests focused on the Selector’s responsibilities instead of
- * retesting the internals of `CalendarContainer`, which is already covered by `CalendarScreen` tests.
+ * ([populateRepo]), view-model factory & owner ([CalendarVMFactory], [TestOwner]), and interaction
+ * helpers (e.g. [swipeLeft], [swipeRight], [assertEventVisible], [assertEventAbsent], [dowLabel]).
+ * This keeps these tests focused on the Selector’s responsibilities instead of retesting the
+ * internals of `CalendarContainer`, which is already covered by `CalendarScreen` tests.
  */
 class CalendarEventSelectorTests : BaseCalendarScreenTest() {
 
@@ -31,10 +31,10 @@ class CalendarEventSelectorTests : BaseCalendarScreenTest() {
    * Compose the **CalendarEventSelector** with an in-memory repository pre-populated with [events].
    *
    * Implementation notes:
-   *  - We reuse the helpers from the base class to build data, populate the repo, and provide
-   *    a `ViewModelStoreOwner` whose default factory knows how to create our `CalendarViewModel`.
-   *  - This mirrors `setContentWithLocalRepo(...)` from the CalendarScreen tests but mounts the
-   *    **Selector** instead of the full screen.
+   * - We reuse the helpers from the base class to build data, populate the repo, and provide a
+   *   `ViewModelStoreOwner` whose default factory knows how to create our `CalendarViewModel`.
+   * - This mirrors `setContentWithLocalRepo(...)` from the CalendarScreen tests but mounts the
+   *   **Selector** instead of the full screen.
    */
   private fun setSelectorContentWithLocalRepo(events: List<Event> = buildTestEvents()) {
     val repo = EventRepositoryLocal()
@@ -42,9 +42,7 @@ class CalendarEventSelectorTests : BaseCalendarScreenTest() {
     val owner = TestOwner(CalendarVMFactory(repo))
 
     composeTestRule.setContent {
-      CompositionLocalProvider(LocalViewModelStoreOwner provides owner) {
-        CalendarEventSelector()
-      }
+      CompositionLocalProvider(LocalViewModelStoreOwner provides owner) { CalendarEventSelector() }
     }
   }
 
@@ -54,9 +52,7 @@ class CalendarEventSelectorTests : BaseCalendarScreenTest() {
     setSelectorContentWithLocalRepo()
 
     // Root of the selector card/layout
-    composeTestRule
-        .onNodeWithTag(CalendarEventSelectorTestTags.SCREEN_ROOT)
-        .assertIsDisplayed()
+    composeTestRule.onNodeWithTag(CalendarEventSelectorTestTags.SCREEN_ROOT).assertIsDisplayed()
 
     // Core parts coming from CalendarContainer (already tested elsewhere, here just existence)
     composeTestRule.onNodeWithTag(CalendarScreenTestTags.EVENT_GRID).assertIsDisplayed()

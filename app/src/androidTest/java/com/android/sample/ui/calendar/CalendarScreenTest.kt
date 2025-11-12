@@ -45,7 +45,7 @@ import org.junit.Test
  */
 abstract class BaseCalendarScreenTest {
 
-  @get:Rule val composeTestRule = createComposeRule()
+  @get:Rule open val composeTestRule = createComposeRule()
 
   /** Converts a (LocalDate, LocalTime) to an Instant in the system zone for concise test setup. */
   protected fun at(date: LocalDate, time: LocalTime) =

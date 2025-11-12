@@ -60,16 +60,19 @@ fun EventOverviewScreen(
   LaunchedEffect(eventId) {
     try {
       event = calendarViewModel.getEventById(eventId)
-        // Later (when the Add flow will propose a list of User that are in the Auth repository
-        // instead of a fake name's list) :
+      // Later (when the Add flow will propose a list of User that are in the Auth repository
+      // instead of a fake name's list) :
 
-            // participantNames = calendarViewModel.getParticipantNames(eventId)
+      // participantNames = calendarViewModel.getParticipantNames(eventId)
 
-        // Note : we can't use it now because the AddViewModel add user ID like "Alice", "Bob" but no User with these ids exist in the Auth repo
-        // => the getParticipantName doesn't find any user with an "Alice" id, and return an empty list
+      // Note : we can't use it now because the AddViewModel add user ID like "Alice", "Bob" but no
+      // User with these ids exist in the Auth repo
+      // => the getParticipantName doesn't find any user with an "Alice" id, and return an empty
+      // list
 
-        // To still see something coherent with what we "add", we update it like so :
-        participantNames = event?.participants?.toList() ?: emptyList() // in reality these are the users' ids !
+      // To still see something coherent with what we "add", we update it like so :
+      participantNames =
+          event?.participants?.toList() ?: emptyList() // in reality these are the users' ids !
     } catch (_: Exception) {
       // If the event is not found or another error occurs, surface an empty UI state
       event = null

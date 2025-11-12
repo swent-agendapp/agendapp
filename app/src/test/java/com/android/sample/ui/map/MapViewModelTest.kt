@@ -10,7 +10,6 @@ import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import kotlin.test.assertFails
 
 @RunWith(AndroidJUnit4::class)
 class MapViewModelTest {
@@ -28,8 +27,8 @@ class MapViewModelTest {
 class MapViewModelTestWithPermission {
   @get:Rule
   val permissionRule: GrantPermissionRule =
-    GrantPermissionRule.grant(
-      Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+      GrantPermissionRule.grant(
+          Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
 
   @get:Rule val composeTestRule = createComposeRule()
 
@@ -62,7 +61,9 @@ class MapViewModelTestWithPermission {
 
     assertEquals(2, vm.state.value.listNewMarker.size)
     vm.createNewArea()
-    assertEquals("An Area must have at least 3 distinct markers with unique coordinates", vm.state.value.errorMessage)
+    assertEquals(
+        "An Area must have at least 3 distinct markers with unique coordinates",
+        vm.state.value.errorMessage)
     vm.cleanMessageError()
     assertEquals(null, vm.state.value.errorMessage)
   }
@@ -84,4 +85,3 @@ class MapViewModelTestWithPermission {
     assertEquals(3, vm.state.value.listArea[0].markers.size)
   }
 }
-

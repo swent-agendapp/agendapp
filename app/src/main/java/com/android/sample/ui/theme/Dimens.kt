@@ -25,6 +25,7 @@ val SpacingExtraLarge = 24.dp
 val SpacingHuge = 32.dp
 
 // Weights
+const val WeightVeryLight = 0.1f
 const val WeightLight = 0.3f
 const val WeightMedium = 0.5f
 const val WeightHeavy = 0.7f
@@ -59,3 +60,6 @@ val IconSizeMedium = 16.dp
 val BorderWidthThin = 1.dp
 val BorderWidthThick = 2.dp
 val BorderWidthExtraThick = 4.dp
+
+// Card elevation
+val DefaultCardElevation = 4.dp

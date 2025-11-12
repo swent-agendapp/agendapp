@@ -22,6 +22,8 @@ sealed class Screen(val route: String, val name: String) {
 
   data object ReplacementOverview : Screen("replacement_overview", name = "Replacement Overview")
 
+  data object ReplacementOrganize : Screen("replacement_organize", name = "Replacement Organize")
+
   data object ReplacementPending : Screen("replacement/pending", name = "Replacement Pending")
 
   data object EditEvent : Screen("edit_event/{eventId}", name = "Edit Event") {

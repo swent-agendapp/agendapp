@@ -16,7 +16,7 @@ import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.common.BottomBarTestTags
-import com.android.sample.ui.replacement.ReplacementTestTags
+import com.android.sample.ui.replacement.ReplacementOverviewTestTags
 import com.android.sample.ui.settings.SettingsScreenTestTags
 import com.android.sample.utils.FakeCredentialManager
 import com.android.sample.utils.FakeJwtGenerator
@@ -92,7 +92,7 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
     composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_REPLACEMENT).assertExists().performClick()
 
     // Validate screen content
-    composeTestRule.onNodeWithTag(ReplacementTestTags.SCREEN).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(ReplacementOverviewTestTags.SCREEN).assertIsDisplayed()
   }
 
   @Test
@@ -160,7 +160,7 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
 
     // Navigate to Replacement screen
     composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_REPLACEMENT).performClick()
-    composeTestRule.onNodeWithTag(ReplacementTestTags.SCREEN).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(ReplacementOverviewTestTags.SCREEN).assertIsDisplayed()
 
     // Go to Settings screen
     composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_SETTINGS).performClick()

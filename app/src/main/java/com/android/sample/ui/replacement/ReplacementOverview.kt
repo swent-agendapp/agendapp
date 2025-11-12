@@ -27,7 +27,7 @@ import com.android.sample.ui.theme.SpacingMedium
 // Assisted by AI
 
 /** Contains the test tags used across the replacement screen UI. */
-object ReplacementTestTags {
+object ReplacementOverviewTestTags {
   const val SCREEN = "replacement_screen"
   const val CARD_LIST = "replacement_card_list"
 
@@ -65,7 +65,7 @@ data class ReplacementItem(
  * @param onConfirmedClick Callback when the "Confirmed Replacements" card is clicked.
  */
 @Composable
-fun ReplacementScreen(
+fun ReplacementOverviewScreen(
     onOrganizeClick: () -> Unit = {},
     onProcessClick: () -> Unit = {},
     onWaitingConfirmationClick: () -> Unit = {},
@@ -76,22 +76,22 @@ fun ReplacementScreen(
           ReplacementItem(
               stringResource(R.string.organize_replacement),
               Icons.Default.GroupAdd,
-              ReplacementTestTags.CARD_ORGANIZE,
+              ReplacementOverviewTestTags.CARD_ORGANIZE,
               onClick = onOrganizeClick),
           ReplacementItem(
               stringResource(R.string.process_replacement),
               Icons.Default.Work,
-              ReplacementTestTags.CARD_PROCESS,
+              ReplacementOverviewTestTags.CARD_PROCESS,
               onClick = onProcessClick),
           ReplacementItem(
               stringResource(R.string.waiting_confirmation_replacement),
               Icons.Default.QuestionAnswer,
-              ReplacementTestTags.CARD_WAITING,
+              ReplacementOverviewTestTags.CARD_WAITING,
               onClick = onWaitingConfirmationClick),
           ReplacementItem(
               stringResource(R.string.confirmed_replacements),
               Icons.Default.CheckCircle,
-              ReplacementTestTags.CARD_CONFIRMED,
+              ReplacementOverviewTestTags.CARD_CONFIRMED,
               onClick = onConfirmedClick))
 
   Scaffold(
@@ -102,8 +102,8 @@ fun ReplacementScreen(
                 Modifier.fillMaxSize()
                     .padding(paddingValues)
                     .padding(PaddingMedium)
-                    .testTag(ReplacementTestTags.SCREEN)) {
-              Column(modifier = Modifier.testTag(ReplacementTestTags.CARD_LIST)) {
+                    .testTag(ReplacementOverviewTestTags.SCREEN)) {
+              Column(modifier = Modifier.testTag(ReplacementOverviewTestTags.CARD_LIST)) {
                 items.forEach { item ->
                   ReplacementCard(item, onClick = item.onClick)
                   Spacer(modifier = Modifier.height(SpacingMedium))
@@ -142,9 +142,9 @@ fun ReplacementCard(item: ReplacementItem, onClick: () -> Unit = {}) {
       }
 }
 
-/** Preview of the [ReplacementScreen] for design inspection in Android Studio. */
+/** Preview of the [ReplacementOverviewScreen] for design inspection in Android Studio. */
 @Preview(showBackground = true)
 @Composable
 fun ReplacementScreenPreview() {
-  ReplacementScreen()
+  ReplacementOverviewScreen()
 }

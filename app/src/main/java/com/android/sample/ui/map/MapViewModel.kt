@@ -125,9 +125,7 @@ class MapViewModel(
     _state.value = _state.value.copy(nextAreaName = areaName)
   }
 
-  /**
-   * Clear the current error message in the state, if any, to reset the UI to a neutral state.
-   */
+  /** Clear the current error message in the state, if any, to reset the UI to a neutral state. */
   fun cleanMessageError() {
     _state.value = _state.value.copy(errorMessage = null)
   }

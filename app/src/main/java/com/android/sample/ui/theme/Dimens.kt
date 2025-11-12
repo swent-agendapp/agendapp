@@ -39,6 +39,7 @@ val ElevationHigh = 12.dp
 // widths and heights
 val widthLarge = 120.dp
 val heightLarge = 60.dp
+val IconSizeExtraLarge = 30.dp
 
 // Border
 val BorderWidthThin = 1.dp

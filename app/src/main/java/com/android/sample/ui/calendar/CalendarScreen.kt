@@ -28,7 +28,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.model.calendar.Event
@@ -36,6 +35,7 @@ import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
 import com.android.sample.ui.calendar.data.LocalDateRange
 import com.android.sample.ui.calendar.style.CalendarDefaults.DefaultDateRange
 import com.android.sample.ui.calendar.utils.DateTimeUtils.localDateTimeToInstant
+import com.android.sample.ui.theme.IconSizeExtraLarge
 import com.android.sample.ui.theme.PaddingMedium
 import java.time.LocalTime
 
@@ -97,7 +97,7 @@ fun CalendarScreen(
               FilledTonalIconButton(
                   onClick = onCreateEvent,
                   modifier =
-                      Modifier.padding(end = PaddingMedium).size(30.dp).testTag(ADD_EVENT_BUTTON),
+                      Modifier.padding(end = PaddingMedium).size(IconSizeExtraLarge).testTag(ADD_EVENT_BUTTON),
                   shape = CircleShape,
                   colors =
                       IconButtonDefaults.filledTonalIconButtonColors(

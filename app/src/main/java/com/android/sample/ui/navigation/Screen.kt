@@ -8,8 +8,6 @@ sealed class Screen(val route: String, val name: String) {
 
   data object Authentication : Screen(route = "authentication", name = "Authentication")
 
-  data object Home : Screen(route = "home", name = "Home")
-
   data object Calendar : Screen(route = "calendar", name = "Calendar")
 
   data object Map : Screen(route = "map", name = "Map")
@@ -23,6 +21,8 @@ sealed class Screen(val route: String, val name: String) {
   data object AddEvent : Screen(route = "add_event", name = "Add Event")
 
   data object ReplacementOverview : Screen("replacement_overview", name = "Replacement Overview")
+
+  data object ReplacementOrganize : Screen("replacement_organize", name = "Replacement Organize")
 
   data object ReplacementPending : Screen("replacement/pending", name = "Replacement Pending")
 

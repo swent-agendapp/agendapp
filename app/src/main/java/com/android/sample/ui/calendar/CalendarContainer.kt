@@ -39,8 +39,9 @@ fun CalendarContainer(
     events: List<Event> = listOf(),
     onSwipeLeft: () -> Unit = {},
     onSwipeRight: () -> Unit = {},
-    onCreateEvent: () -> Unit = {}
-    // Later : receive here onEventClick, onEventLongPress
+    onCreateEvent: () -> Unit = {},
+    onEventClick: (Event) -> Unit = {}
+    // Later : receive here onEventLongPress
 ) {
   // Later : create here a variable transformableState for zoom changes
   // Later : handle here variables for animation of swiping (transparent box)
@@ -63,8 +64,9 @@ fun CalendarContainer(
                   onDragCancel = { totalDx = 0f })
             },
         dateRange = dateRange,
-        events = events
-        // Later : give onEventClick and onEventLongPress
+        events = events,
+        onEventClick = onEventClick
+        // Later : give onEventLongPress
         )
     IconButton(
         onClick = { onCreateEvent() },

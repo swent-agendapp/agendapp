@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.android.sample.model.calendar.Event
 import com.android.sample.R
 import com.android.sample.ui.calendar.data.LocalDateRange
 import com.android.sample.ui.calendar.style.CalendarDefaults.DefaultDateRange
@@ -44,7 +45,8 @@ object CalendarScreenTestTags {
 @Composable
 fun CalendarScreen(
     calendarViewModel: CalendarViewModel = viewModel(),
-    onCreateEvent: () -> Unit = {}
+    onCreateEvent: () -> Unit = {},
+    onEventClick: (Event) -> Unit = {}
 ) {
   // initialize the week from monday to friday
   var currentDateRange by remember { mutableStateOf(DefaultDateRange) }
@@ -101,9 +103,9 @@ fun CalendarScreen(
           val nextEnd = currentDateRange.endInclusive.minusWeeks(1)
           currentDateRange = LocalDateRange(nextStart, nextEnd)
         },
-        onCreateEvent = onCreateEvent
-        // Later : give the ViewModel
-        // Later : add here onEventClick, onEventLongPress, onSwipeLeft, onSwipeRight
+        onCreateEvent = onCreateEvent,
+        onEventClick = onEventClick
+        // Later : add here onEventLongPress
         )
   }
 }

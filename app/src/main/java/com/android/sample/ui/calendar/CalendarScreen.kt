@@ -56,7 +56,8 @@ object CalendarScreenTestTags {
 @Composable
 fun CalendarScreen(
     calendarViewModel: CalendarViewModel = viewModel(),
-    onCreateEvent: () -> Unit = {}
+    onCreateEvent: () -> Unit = {},
+    onEventClick: (Event) -> Unit = {}
 ) {
   // initialize the week from monday to friday
   var currentDateRange by remember { mutableStateOf(DefaultDateRange) }
@@ -130,10 +131,7 @@ fun CalendarScreen(
           val nextEnd = currentDateRange.endInclusive.minusWeeks(1)
           currentDateRange = LocalDateRange(nextStart, nextEnd)
         },
-        onCreateEvent = onCreateEvent
-        // Later : give the ViewModel
-        // Later : add here onEventClick, onEventLongPress, onSwipeLeft, onSwipeRight
-        )
+        onEventClick = onEventClick)
   }
 }
 

@@ -4,4 +4,5 @@ package com.android.sample.model.constants
 object FirestoreConstants {
   const val EVENTS_COLLECTION_PATH = "events"
   const val ORGANIZATIONS_COLLECTION_PATH = "organizations"
+  const val REPLACEMENTS_COLLECTION_PATH = "replacements"
 }

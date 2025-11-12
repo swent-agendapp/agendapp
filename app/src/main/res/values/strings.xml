@@ -157,6 +157,23 @@
     <string name="edit_event_confirmation_title">Edit Event Confirmation</string>
     <string name="edit_event_confirmation_message">Please confirm your event changes</string>
     <string name="common_finish">Finish</string>
+
+    <!-- Replacement - Employee -->
+    <string name="replacement_view_title">Replacement Request</string>
+    <string name="replacement_event_description_label">Event Description</string>
+    <string name="replacement_employees_label">Employees</string>
+    <string name="replacement_accept_button">Accept</string>
+    <string name="replacement_decline_button">Decline</string>
+    <string name="replacement_title">Replacement</string>
+    <string name="replacement_ask_to_be_replaced">Ask to be replaced</string>
+    <string name="replacement_card_title">Title: %1$s</string>
+    <string name="replacement_card_description">Description: %1$s</string>
+    <string name="replacement_accept_short">Accept</string>
+    <string name="replacement_refuse_short">Refuse</string>
+    <string name="replacement_create_title">Previous step</string>
+    <string name="replacement_create_select_event">Select an event</string>
+    <string name="replacement_create_choose_date_range">Choose a date range</string>
+    <string name="common_send">Send</string>
 </resources>
 
 

@@ -157,6 +157,21 @@
     <string name="edit_event_confirmation_title">Confirmation de la modification de l’événement</string>
     <string name="edit_event_confirmation_message">Veuillez confirmer les modifications de votre événement</string>
     <string name="common_finish">Terminer</string>
+    <string name="replacement_view_title">Demande de remplacement</string>
+    <string name="replacement_event_description_label">Description de l’événement</string>
+    <string name="replacement_employees_label">Employés</string>
+    <string name="replacement_accept_button">Accepter</string>
+    <string name="replacement_decline_button">Refuser</string>
+    <string name="replacement_title">Remplacement</string>
+    <string name="replacement_ask_to_be_replaced">Demander un remplacement</string>
+    <string name="replacement_card_title">Titre : %1$s</string>
+    <string name="replacement_card_description">Description : %1$s</string>
+    <string name="replacement_accept_short">Accepter</string>
+    <string name="replacement_refuse_short">Refuser</string>
+    <string name="replacement_create_title">Étape précédente</string>
+    <string name="replacement_create_select_event">Sélectionner un événement</string>
+    <string name="replacement_create_choose_date_range">Choisir une plage de dates</string>
+    <string name="common_send">Envoyer</string>
 
 
 </resources>

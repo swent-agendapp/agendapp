@@ -21,6 +21,7 @@ object ReplacementOrganizeTestTags {
   const val SELECT_EVENT_BUTTON = "select_event_button"
   const val SELECT_DATE_RANGE_BUTTON = "select_date_range_button"
   const val START_DATE_FIELD = "start_date_field"
+  const val DATE_RANGE_INVALID_TEXT = "date_range_invalid_text"
   const val END_DATE_FIELD = "end_date_field"
   const val PROCESS_NOW_BUTTON = "process_now_button"
   const val PROCESS_LATER_BUTTON = "process_later_button"

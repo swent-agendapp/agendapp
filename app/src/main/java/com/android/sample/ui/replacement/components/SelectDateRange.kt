@@ -76,8 +76,8 @@ fun SelectDateRangeScreen(
 
   // Later handled by the viewmodel
   var startInstant by remember { mutableStateOf(Instant.now()) }
-  var endInstant by remember { mutableStateOf(Instant.now().plusSeconds(3600)) }
-  val isRangeInvalid = endInstant.isBefore(startInstant)
+  var endInstant by remember { mutableStateOf(Instant.now()) }
+  val isRangeInvalid = !startInstant.isAfter(endInstant)
   var substitutedUser = "example user" // to be provided by the viewmodel
 
   Scaffold(
@@ -130,7 +130,8 @@ fun SelectDateRangeScreen(
                             .background(
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f),
                                 shape = RoundedCornerShape(CornerRadiusMedium))
-                            .padding(vertical = PaddingMedium, horizontal = PaddingMedium),
+                            .padding(vertical = PaddingMedium, horizontal = PaddingMedium)
+                            .testTag(ReplacementOrganizeTestTags.DATE_RANGE_INVALID_TEXT),
                     contentAlignment = Alignment.Center) {
                       Text(
                           text = stringResource(R.string.invalidDateRangeMessage),

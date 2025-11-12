@@ -21,4 +21,17 @@ class SelectDateRangeTest {
     composeTestRule.onNodeWithTag(ReplacementOrganizeTestTags.BACK_BUTTON).assertIsDisplayed()
     composeTestRule.onNodeWithTag(ReplacementOrganizeTestTags.NEXT_BUTTON).assertIsDisplayed()
   }
+
+  @Test
+  fun next_button_disabled_when_end_date_is_not_strictly_after_start_date() {
+    composeTestRule.setContent { SelectDateRangeScreen() }
+
+    composeTestRule
+        .onNodeWithTag(ReplacementOrganizeTestTags.NEXT_BUTTON)
+        .assertIsDisplayed()
+        .assertIsNotEnabled()
+    composeTestRule
+        .onNodeWithTag(ReplacementOrganizeTestTags.DATE_RANGE_INVALID_TEXT)
+        .assertIsDisplayed()
+  }
 }

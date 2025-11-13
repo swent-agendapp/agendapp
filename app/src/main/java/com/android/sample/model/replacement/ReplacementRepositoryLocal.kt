@@ -78,7 +78,7 @@ class ReplacementRepositoryLocal(preloadSampleData: Boolean = false) : Replaceme
             absentUserId = "Alice",
             substituteUserId = "Charlie",
             event = sampleEvent,
-            status = ReplacementStatus.Pending)
+            status = ReplacementStatus.ToProcess)
 
     val replacement2 =
         Replacement(

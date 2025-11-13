@@ -56,7 +56,7 @@ class ReplacementRepositoryLocalTest {
     assertNotNull(retrieved)
     assertEquals("Alice", retrieved?.absentUserId)
     assertEquals("Charlie", retrieved?.substituteUserId)
-    assertEquals(ReplacementStatus.Pending, retrieved?.status)
+    assertEquals(ReplacementStatus.ToProcess, retrieved?.status)
   }
 
   @Test(expected = IllegalArgumentException::class)
@@ -139,7 +139,7 @@ class ReplacementRepositoryLocalTest {
             absentUserId = "Alice",
             substituteUserId = "Charlie",
             event = sampleEvent,
-            status = ReplacementStatus.Pending)
+            status = ReplacementStatus.ToProcess)
     val r2 =
         Replacement(
             absentUserId = "Bob",
@@ -149,7 +149,7 @@ class ReplacementRepositoryLocalTest {
     repository.insertReplacement(r1)
     repository.insertReplacement(r2)
 
-    val pending = repository.getReplacementsByStatus(ReplacementStatus.Pending)
+    val pending = repository.getReplacementsByStatus(ReplacementStatus.ToProcess)
     val accepted = repository.getReplacementsByStatus(ReplacementStatus.Accepted)
 
     assertEquals(1, pending.size)

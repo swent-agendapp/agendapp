@@ -37,14 +37,14 @@ class ReplacementMapperTest {
           absentUserId = "user123",
           substituteUserId = "user456",
           event = sampleEvent,
-          status = ReplacementStatus.Pending)
+          status = ReplacementStatus.ToProcess)
 
   private val sampleMap: Map<String, Any?> =
       mapOf(
           "id" to "replacement1",
           "absentUserId" to "user123",
           "substituteUserId" to "user456",
-          "status" to "Pending",
+          "status" to "ToProcess",
           "event" to EventMapper.toMap(sampleEvent))
 
   // --- fromDocument tests ---
@@ -54,7 +54,7 @@ class ReplacementMapperTest {
     `when`(doc.getString("id")).thenReturn("replacement1")
     `when`(doc.getString("absentUserId")).thenReturn("user123")
     `when`(doc.getString("substituteUserId")).thenReturn("user456")
-    `when`(doc.getString("status")).thenReturn("Pending")
+    `when`(doc.getString("status")).thenReturn("ToProcess")
     `when`(doc.get("event")).thenReturn(EventMapper.toMap(sampleEvent))
 
     val replacement = ReplacementMapper.fromDocument(doc)
@@ -93,7 +93,7 @@ class ReplacementMapperTest {
     map["status"] = "INVALID_STATUS"
     val replacement = ReplacementMapper.fromMap(map)
     assertThat(replacement).isNotNull()
-    assertThat(replacement!!.status).isEqualTo(ReplacementStatus.Pending)
+    assertThat(replacement!!.status).isEqualTo(ReplacementStatus.ToProcess)
   }
 
   // --- fromAny tests ---
@@ -103,7 +103,7 @@ class ReplacementMapperTest {
     `when`(doc.getString("id")).thenReturn("replacement1")
     `when`(doc.getString("absentUserId")).thenReturn("user123")
     `when`(doc.getString("substituteUserId")).thenReturn("user456")
-    `when`(doc.getString("status")).thenReturn("Pending")
+    `when`(doc.getString("status")).thenReturn("ToProcess")
     `when`(doc.get("event")).thenReturn(EventMapper.toMap(sampleEvent))
 
     val replacement = ReplacementMapper.fromAny(doc)
@@ -131,7 +131,7 @@ class ReplacementMapperTest {
     assertThat(map["id"]).isEqualTo("replacement1")
     assertThat(map["absentUserId"]).isEqualTo("user123")
     assertThat(map["substituteUserId"]).isEqualTo("user456")
-    assertThat(map["status"]).isEqualTo("Pending")
+    assertThat(map["status"]).isEqualTo("ToProcess")
     assertThat(map["event"]).isEqualTo(EventMapper.toMap(sampleEvent))
   }
 }

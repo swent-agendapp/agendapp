@@ -25,8 +25,9 @@ object ReplacementMapper : FirestoreMapper<Replacement> {
     val status =
         runCatching { ReplacementStatus.valueOf(statusString) }
             .getOrElse {
-              Log.e("ReplacementMapper", "Unknown status \"$statusString\". By default : Pending.")
-              ReplacementStatus.Pending
+              Log.e(
+                  "ReplacementMapper", "Unknown status \"$statusString\". By default : ToProcess.")
+              ReplacementStatus.ToProcess
             }
 
     // The event is stored as a nested map inside the replacement document
@@ -51,8 +52,9 @@ object ReplacementMapper : FirestoreMapper<Replacement> {
     val status =
         runCatching { ReplacementStatus.valueOf(statusString) }
             .getOrElse {
-              Log.e("ReplacementMapper", "Unknown status \"$statusString\". By default : Pending.")
-              ReplacementStatus.Pending
+              Log.e(
+                  "ReplacementMapper", "Unknown status \"$statusString\". By default : ToProcess.")
+              ReplacementStatus.ToProcess
             }
 
     val rawEvent = data[FIELD_EVENT] as? Map<*, *>

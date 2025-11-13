@@ -26,9 +26,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,9 +36,12 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
+import com.android.sample.model.authentication.User
 import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeTestTags
+import com.android.sample.ui.replacement.organize.ReplacementOrganizeViewModel
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.DefaultCardElevation
 import com.android.sample.ui.theme.PaddingExtraLarge
@@ -76,27 +78,17 @@ import com.android.sample.ui.theme.WeightVeryHeavy
  */
 @Composable
 fun SelectSubstitutedScreen(
-    onMemberSelected: (String) -> Unit = {},
+    onMemberSelected: (User) -> Unit = {},
     onSelectEvents: () -> Unit = {},
     onSelectDateRange: () -> Unit = {},
     onBack: () -> Unit = {},
+    replacementOrganizeViewModel: ReplacementOrganizeViewModel = viewModel()
 ) {
-  var selectedMember by remember { mutableStateOf("") }
-  val members =
-      listOf(
-          "Alice",
-          "Bob",
-          "Charlie",
-          "David",
-          "Eve",
-          "Frank") // Placeholder for all possible participants
-
-  // Search UI state
-  var searchQuery by remember { mutableStateOf("") }
+  val uiState by replacementOrganizeViewModel.uiState.collectAsState()
 
   // Filter the list when search changes
   val filteredMembers =
-      remember(searchQuery) { members.filter { it.contains(searchQuery, ignoreCase = true) } }
+      uiState.memberList.filter { it.id.contains(uiState.memberSearchQuery, ignoreCase = true) }
 
   Scaffold(
       topBar = {
@@ -132,8 +124,8 @@ fun SelectSubstitutedScreen(
 
                       /** Search bar * */
                       TextField(
-                          value = searchQuery,
-                          onValueChange = { searchQuery = it },
+                          value = uiState.memberSearchQuery,
+                          onValueChange = { replacementOrganizeViewModel.setMemberSearchQuery(it) },
                           placeholder = { Text(text = stringResource(R.string.search_member)) },
                           modifier =
                               Modifier.fillMaxWidth()
@@ -155,7 +147,7 @@ fun SelectSubstitutedScreen(
                                   .testTag(ReplacementOrganizeTestTags.MEMBER_LIST),
                           verticalArrangement = Arrangement.Top) {
                             items(filteredMembers) { member ->
-                              val isSelected = member == selectedMember
+                              val isSelected = member == uiState.selectedMember
 
                               Box(
                                   modifier =
@@ -163,11 +155,11 @@ fun SelectSubstitutedScreen(
                                           .background(if (isSelected) Color.Gray else Color.White)
                                           .clickable {
                                             onMemberSelected(member)
-                                            selectedMember = member
+                                            replacementOrganizeViewModel.setSelectedMember(member)
                                           }
                                           .padding(vertical = PaddingMedium),
                                   contentAlignment = Alignment.Center) {
-                                    Text(text = member, textAlign = TextAlign.Center)
+                                    Text(text = member.id, textAlign = TextAlign.Center)
                                   }
 
                               HorizontalDivider(
@@ -178,7 +170,9 @@ fun SelectSubstitutedScreen(
 
                       /** Read-only selected member field * */
                       OutlinedTextField(
-                          value = stringResource(R.string.selected_member, selectedMember),
+                          value =
+                              stringResource(
+                                  R.string.selected_member, uiState.selectedMember?.id ?: ""),
                           onValueChange = {}, // ignored because readOnly
                           modifier =
                               Modifier.fillMaxWidth()
@@ -206,7 +200,7 @@ fun SelectSubstitutedScreen(
                             Modifier.fillMaxWidth()
                                 .testTag(ReplacementOrganizeTestTags.SELECT_EVENT_BUTTON),
                         shape = RoundedCornerShape(CornerRadiusLarge),
-                        enabled = selectedMember.isNotEmpty()) {
+                        enabled = uiState.selectedMember != null) {
                           Text(
                               text = stringResource(R.string.select_events),
                               modifier = Modifier.padding(PaddingMedium))
@@ -218,7 +212,7 @@ fun SelectSubstitutedScreen(
                             Modifier.fillMaxWidth()
                                 .testTag(ReplacementOrganizeTestTags.SELECT_DATE_RANGE_BUTTON),
                         shape = RoundedCornerShape(CornerRadiusLarge),
-                        enabled = selectedMember.isNotEmpty()) {
+                        enabled = uiState.selectedMember != null) {
                           Text(
                               text = stringResource(R.string.select_date_range),
                               modifier = Modifier.padding(PaddingMedium))

@@ -1,12 +1,14 @@
 package com.android.sample.ui.replacement.organize
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
+import com.android.sample.ui.calendar.utils.DateTimeUtils
 import com.android.sample.ui.replacement.components.SelectDateRangeScreen
 import com.android.sample.ui.replacement.components.SelectEventScreen
 import com.android.sample.ui.replacement.organize.components.SelectProcessMomentScreen
@@ -42,30 +44,68 @@ object ReplacementOrganizeTestTags {
 fun ReplacementOrganizeScreen(
     onCancel: () -> Unit = {},
     onProcessNow: () -> Unit = {},
-    onProcessLater: () -> Unit = {}
+    onProcessLater: () -> Unit = {},
+    replacementOrganizeViewModel: ReplacementOrganizeViewModel = viewModel()
 ) {
+  LaunchedEffect(Unit) { replacementOrganizeViewModel.loadOrganizationMembers() }
+  val uiState by replacementOrganizeViewModel.uiState.collectAsState()
 
-  // This currentStep be handled by the view model in a complete implementation
-  var currentStep by remember { mutableIntStateOf(1) }
-
-  when (currentStep) {
-    1 ->
+  when (uiState.step) {
+    ReplacementOrganizeStep.SelectSubstitute ->
         SelectSubstitutedScreen(
             onBack = onCancel,
-            onSelectEvents = { currentStep = 2 },
-            onSelectDateRange = { currentStep = 3 })
-    2 ->
+            onSelectEvents = {
+              replacementOrganizeViewModel.goToStep(ReplacementOrganizeStep.SelectEvents)
+            },
+            onSelectDateRange = {
+              replacementOrganizeViewModel.goToStep(ReplacementOrganizeStep.SelectDateRange)
+            },
+            replacementOrganizeViewModel = replacementOrganizeViewModel)
+    ReplacementOrganizeStep.SelectEvents ->
         SelectEventScreen(
-            onNext = { currentStep = 4 },
-            onBack = { currentStep = 1 },
+            onNext = {
+              replacementOrganizeViewModel.goToStep(ReplacementOrganizeStep.SelectProcessMoment)
+            },
+            onBack = {
+              replacementOrganizeViewModel.goToStep(ReplacementOrganizeStep.SelectSubstitute)
+            },
             title = stringResource(R.string.organize_replacement),
-            instruction = stringResource(R.string.select_replacement_events))
-    3 ->
+            instruction =
+                stringResource(R.string.select_replacement_events, uiState.selectedMember!!.id),
+            onEventClick = { replacementOrganizeViewModel.toggleSelectedEvent(event = it) },
+            canGoNext = uiState.selectedEvents.isNotEmpty())
+    ReplacementOrganizeStep.SelectDateRange ->
         SelectDateRangeScreen(
-            onNext = { currentStep = 4 },
-            onBack = { currentStep = 1 },
+            onNext = {
+              replacementOrganizeViewModel.goToStep(ReplacementOrganizeStep.SelectProcessMoment)
+            },
+            onBack = {
+              replacementOrganizeViewModel.goToStep(ReplacementOrganizeStep.SelectSubstitute)
+            },
+            initialStartInstant = uiState.startInstant,
+            initialEndInstant = uiState.endInstant,
+            onStartDateSelected = {
+              replacementOrganizeViewModel.setStartInstant(
+                  DateTimeUtils.instantWithDate(instant = uiState.startInstant, date = it))
+            },
+            onEndDateSelected = {
+              replacementOrganizeViewModel.setEndInstant(
+                  DateTimeUtils.instantWithDate(instant = uiState.endInstant, date = it))
+            },
             title = stringResource(R.string.organize_replacement),
-            instruction = stringResource(R.string.select_replacement_date_range))
-    4 -> SelectProcessMomentScreen(onProcessNow = onProcessNow, onProcessLater = onProcessLater)
+            instruction =
+                stringResource(R.string.select_replacement_date_range, uiState.selectedMember!!.id),
+            errorMessage = stringResource(R.string.invalidDateRangeMessage),
+            canGoNext = replacementOrganizeViewModel.dateRangeValid())
+    ReplacementOrganizeStep.SelectProcessMoment ->
+        SelectProcessMomentScreen(
+            onProcessNow = {
+              onProcessNow
+              replacementOrganizeViewModel.addReplacement()
+            },
+            onProcessLater = {
+              onProcessLater
+              replacementOrganizeViewModel.addReplacement()
+            })
   }
 }

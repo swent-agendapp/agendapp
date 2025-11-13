@@ -45,8 +45,8 @@ fun CalendarGridContent(
     modifier: Modifier = Modifier,
     dateRange: LocalDateRange = CalendarDefaults.DefaultDateRange,
     events: List<Event> = listOf(),
-    style: GridContentStyle = defaultGridContentStyle()
-    // Later : receive onEventClick and onEventLongPress
+    style: GridContentStyle = defaultGridContentStyle(),
+    onEventClick: (Event) -> Unit = {}
 ) {
   val metrics = rememberWeekViewMetrics(dateRange)
 
@@ -116,7 +116,7 @@ fun CalendarGridContent(
                   gridHeightDp = metrics.gridHeightDp,
                   gridStartTime = metrics.gridStartTime,
                   effectiveEndTime = metrics.effectiveEndTime,
-              )
+                  onEventClick = onEventClick)
 
               // Render the "now" indicator line
               NowIndicatorLine(

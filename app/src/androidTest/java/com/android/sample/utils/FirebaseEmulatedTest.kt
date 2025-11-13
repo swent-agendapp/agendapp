@@ -7,6 +7,7 @@ import com.android.sample.model.constants.FirestoreConstants.EVENTS_COLLECTION_P
 import com.android.sample.model.constants.FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH
 import com.android.sample.model.organizations.OrganizationRepository
 import com.android.sample.model.organizations.OrganizationRepositoryFirebase
+import com.android.sample.model.replacement.ReplacementRepositoryFirebase
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -24,6 +25,10 @@ open class FirebaseEmulatedTest {
 
   fun createInitializedOrganizationRepository(): OrganizationRepository {
     return OrganizationRepositoryFirebase(db = FirebaseEmulator.firestore)
+  }
+
+  fun createInitializedReplacementRepository(): ReplacementRepositoryFirebase {
+    return ReplacementRepositoryFirebase(db = FirebaseEmulator.firestore)
   }
 
   suspend fun getEventsCount(): Int {

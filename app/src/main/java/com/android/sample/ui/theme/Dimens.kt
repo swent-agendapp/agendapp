@@ -55,6 +55,7 @@ val BarWidthSmall = 4.dp
 val BarWidthMedium = 18.dp
 val RowHeightMedium = 32.dp
 val IconSizeMedium = 16.dp
+val IconSizeExtraLarge = 30.dp
 
 // Border
 val BorderWidthThin = 1.dp

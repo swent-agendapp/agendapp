@@ -1,6 +1,7 @@
 package com.android.sample.ui.calendar.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,15 +20,21 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.sample.model.calendar.Event
+import com.android.sample.model.calendar.createEvent
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.style.defaultGridContentDimensions
 import com.android.sample.ui.calendar.utils.DateTimeUtils
 import com.android.sample.ui.calendar.utils.EventPositionUtil
+import com.android.sample.ui.theme.CornerRadiusSmall
+import com.android.sample.ui.theme.PaddingExtraSmall
+import com.android.sample.ui.theme.widthLarge
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -76,7 +83,8 @@ fun EventBlock(
         LocalDate, // used to compute the visible portion of events that may span multiple days
     startTime: LocalTime = CalendarDefaults.DefaultStartTime,
     endTime: LocalTime = CalendarDefaults.DefaultEndTime,
-    columnWidthDp: Dp = defaultGridContentDimensions().defaultColumnWidthDp
+    columnWidthDp: Dp = defaultGridContentDimensions().defaultColumnWidthDp,
+    onEventClick: (Event) -> Unit = {}
 ) {
   // Later : place this "filter" logic in "EventOverlapHandling", which will call this EventBlock
   // Filter events for the current day and time range using the helper
@@ -102,7 +110,8 @@ fun EventBlock(
         event = event,
         topOffset = topOffset,
         eventHeight = eventHeight,
-        columnWidthDp = columnWidthDp)
+        columnWidthDp = columnWidthDp,
+        onEventClick = onEventClick)
   }
 }
 
@@ -117,16 +126,16 @@ fun EventBlock(
  */
 @Composable
 private fun DrawEventBlock(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     event: Event,
-    topOffset: Dp,
-    eventHeight: Dp,
-    columnWidthDp: Dp
+    topOffset: Dp = 0.dp,
+    eventHeight: Dp = widthLarge, // squared
+    columnWidthDp: Dp = widthLarge,
+    onEventClick: (Event) -> Unit = {}
 ) {
   // Event styling
   val backgroundColor = event.color.toComposeColor()
   val textColor = Color.Black
-  val cornerRadius = 4.dp
 
   // Later : add logic to adapt the view when orientation (portrait or not)
 
@@ -139,11 +148,11 @@ private fun DrawEventBlock(
                   width = columnWidthDp,
                   height = eventHeight) // Later when overlap : width = columnWidth *
               // eventLayout.widthFraction
-              .clip(RoundedCornerShape(cornerRadius))
+              .clip(RoundedCornerShape(CornerRadiusSmall))
               .background(backgroundColor)
-              .padding(start = 4.dp, top = 4.dp, end = 4.dp)
+              .padding(start = PaddingExtraSmall, top = PaddingExtraSmall, end = PaddingExtraSmall)
+              .clickable(onClick = { onEventClick(event) })
               .testTag("${CalendarScreenTestTags.EVENT_BLOCK}_${event.title}"),
-      // Later for testing : .testTag("EventView_${event.id}")
       // Later : handle onTap and onLongPress
   ) {
     Column(
@@ -190,4 +199,20 @@ private fun DrawEventBlock(
       // Later if needed : upperText and/or lowerText
     }
   }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun DrawEventBlockPreview() {
+  DrawEventBlock(
+      event =
+          createEvent(
+              title = "Title !",
+              description = "description...",
+              startDate = Instant.now(),
+              endDate = Instant.now().plusSeconds(60 * 60),
+              cloudStorageStatuses = emptySet(),
+              personalNotes = null,
+              participants = setOf("Alice"),
+          ))
 }

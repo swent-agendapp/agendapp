@@ -17,21 +17,21 @@ import java.util.Locale
 
 /** Test tags for UI testing */
 object EventSummaryCardTags {
-  const val TitleText = "EventCard_Title"
-  const val ToggleTitle = "EventCard_ToggleTitle"
-  const val DateLine1 = "EventCard_DateLine1"
-  const val DateLine2 = "EventCard_DateLine2"
-  const val Multi_FromLabel = "EventCard_Multi_FromLabel"
-  const val Multi_ToLabel = "EventCard_Multi_ToLabel"
-  const val Multi_StartDate = "EventCard_Multi_StartDate"
-  const val Multi_EndDate = "EventCard_Multi_EndDate"
-  const val Multi_StartTime = "EventCard_Multi_StartTime"
-  const val Multi_EndTime = "EventCard_Multi_EndTime"
-  const val Recurrence = "EventCard_Recurrence"
-  const val DescriptionText = "EventCard_Description"
-  const val ToggleDescription = "EventCard_ToggleDescription"
-  const val ParticipantsList = "EventCard_ParticipantsList"
-  const val SideBar = "EventCard_SideBar"
+  const val TITLE_TEXT = "EventCard_Title"
+  const val TOGGLE_TITLE = "EventCard_ToggleTitle"
+  const val DATE_LINE1 = "EventCard_DateLine1"
+  const val DATE_LINE2 = "EventCard_DateLine2"
+  const val MULTI_FROM_LABEL = "EventCard_Multi_FromLabel"
+  const val MULTI_TO_LABEL = "EventCard_Multi_ToLabel"
+  const val MULTI_START_DATE = "EventCard_Multi_StartDate"
+  const val MULTI_END_DATE = "EventCard_Multi_EndDate"
+  const val MULTI_START_TIME = "EventCard_Multi_StartTime"
+  const val MULTI_END_TIME = "EventCard_Multi_EndTime"
+  const val RECURRENCE = "EventCard_Recurrence"
+  const val DESCRIPTION_TEXT = "EventCard_Description"
+  const val TOGGLE_DESCRIPTION = "EventCard_ToggleDescription"
+  const val PARTICIPANTS_LIST = "EventCard_ParticipantsList"
+  const val SIDE_BAR = "EventCard_SideBar"
 }
 
 /**

@@ -81,8 +81,8 @@ fun DescriptionSection(
             toggleLabels = EventSummaryCardDefaults.texts.toggleLabels,
             toggleTypography = MaterialTheme.typography.labelMedium,
             onTextHeightChange = { descHeightPx = it },
-            modifier = Modifier.testTag(EventSummaryCardTags.DescriptionText),
-            toggleTestTag = EventSummaryCardTags.ToggleDescription)
+            modifier = Modifier.testTag(EventSummaryCardTags.DESCRIPTION_TEXT),
+            toggleTestTag = EventSummaryCardTags.TOGGLE_DESCRIPTION)
       }
     }
   }

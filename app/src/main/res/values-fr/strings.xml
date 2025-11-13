@@ -172,6 +172,9 @@
     <string name="delete">Supprimer</string>
     <string name="modify">Modifier</string>
     <string name="delete_event_message">Êtes-vous sûr de vouloir supprimer cet événement?</string>
+    <string name="common_send">Envoyer</string>
+    <string name="replacement_list_title">Sélectionner un événement</string>
+    <string name="replacement_list_instruction">Sélectionnez un événement pour lequel vous avez besoin d’un remplaçant</string>
 
     <!-- Organizations -->
     <string name="organization_list_title">Vos organisations</string>

@@ -62,17 +62,17 @@ class ProfileViewModel(
 
       _uiState.update {
         it.copy(
-          displayName = displayNameOverride ?: user.displayName.orEmpty(),
-          email = emailOverride ?: user.email.orEmpty(),
-          phoneNumber = phoneOverride ?: user.phoneNumber.orEmpty()
-        )
-      }
-    } ?: run {
-      cachedUser = null
-      _uiState.update {
-        ProfileUIState() // Reset to default/empty state if no user
+            displayName = displayNameOverride ?: user.displayName.orEmpty(),
+            email = emailOverride ?: user.email.orEmpty(),
+            phoneNumber = phoneOverride ?: user.phoneNumber.orEmpty())
       }
     }
+        ?: run {
+          cachedUser = null
+          _uiState.update {
+            ProfileUIState() // Reset to default/empty state if no user
+          }
+        }
   }
 
   /** Updates the display name in the UI state. */

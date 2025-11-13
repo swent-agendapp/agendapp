@@ -20,15 +20,20 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.sample.model.calendar.Event
+import com.android.sample.model.calendar.createEvent
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.style.defaultGridContentDimensions
 import com.android.sample.ui.calendar.utils.DateTimeUtils
 import com.android.sample.ui.calendar.utils.EventPositionUtil
+import com.android.sample.ui.theme.CornerRadiusSmall
+import com.android.sample.ui.theme.widthLarge
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -120,17 +125,16 @@ fun EventBlock(
  */
 @Composable
 private fun DrawEventBlock(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     event: Event,
-    topOffset: Dp,
-    eventHeight: Dp,
-    columnWidthDp: Dp,
+    topOffset: Dp = 0.dp,
+    eventHeight: Dp = widthLarge, // squared
+    columnWidthDp: Dp = widthLarge,
     onEventClick: (Event) -> Unit = {}
 ) {
   // Event styling
   val backgroundColor = event.color.toComposeColor()
   val textColor = Color.Black
-  val cornerRadius = 4.dp
 
   // Later : add logic to adapt the view when orientation (portrait or not)
 
@@ -143,7 +147,7 @@ private fun DrawEventBlock(
                   width = columnWidthDp,
                   height = eventHeight) // Later when overlap : width = columnWidth *
               // eventLayout.widthFraction
-              .clip(RoundedCornerShape(cornerRadius))
+              .clip(RoundedCornerShape(CornerRadiusSmall))
               .background(backgroundColor)
               .padding(start = 4.dp, top = 4.dp, end = 4.dp)
               .clickable(onClick = { onEventClick(event) })
@@ -194,4 +198,20 @@ private fun DrawEventBlock(
       // Later if needed : upperText and/or lowerText
     }
   }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun DrawEventBlockPreview() {
+  DrawEventBlock(
+      event =
+          createEvent(
+              title = "Title !",
+              description = "description...",
+              startDate = Instant.now(),
+              endDate = Instant.now().plusSeconds(60 * 60),
+              cloudStorageStatuses = emptySet(),
+              personalNotes = null,
+              participants = setOf("Alice"),
+          ))
 }

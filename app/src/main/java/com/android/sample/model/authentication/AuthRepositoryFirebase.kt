@@ -4,6 +4,7 @@ import androidx.credentials.Credential
 import androidx.credentials.CustomCredential
 import com.android.sample.model.authentication.User
 import com.android.sample.model.constants.FirestoreConstants.COLLECTION_USERS
+import com.android.sample.model.firestoreMappers.UserMapper
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
 import com.google.firebase.Firebase
@@ -33,13 +34,6 @@ class AuthRepositoryFirebase(
     private val helper: GoogleSignInHelper = DefaultGoogleSignInHelper(),
     private val firestore: FirebaseFirestore = KtxFirebase.firestore
 ) : AuthRepository {
-
-  private fun Map<String, Any?>.toDomainUser(fallbackId: String): User =
-      User(
-          id = (this["id"] as? String) ?: fallbackId,
-          displayName = this["displayName"] as? String,
-          email = this["email"] as? String,
-          phoneNumber = this["phoneNumber"] as? String)
 
   fun getGoogleSignInOption(serverClientId: String) =
       GetSignInWithGoogleOption.Builder(serverClientId = serverClientId).build()
@@ -101,7 +95,7 @@ class AuthRepositoryFirebase(
           firestore.collection(COLLECTION_USERS).whereEqualTo("id", userId).limit(1).get().await()
 
       val doc = snapshot.documents.firstOrNull() ?: return null
-      doc.data?.toDomainUser(fallbackId = doc.id)
+      UserMapper.fromMap(doc.data ?: emptyMap()) ?: UserMapper.fromDocument(doc)
     } catch (_: Exception) {
       null
     }

@@ -47,7 +47,6 @@ fun CalendarGridContent(
     events: List<Event> = listOf(),
     style: GridContentStyle = defaultGridContentStyle(),
     onEventClick: (Event) -> Unit = {}
-    // Later : receive onEventLongPress
 ) {
   val metrics = rememberWeekViewMetrics(dateRange)
 

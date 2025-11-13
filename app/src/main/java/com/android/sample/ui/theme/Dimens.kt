@@ -41,7 +41,7 @@ const val AlphaHigh = 0.8f
 const val AlphaVeryHigh = 1f
 
 // Map
-const val DefaultZoom = 17f
+const val DefaultZoom = 16f
 
 // Elevation
 val ElevationExtraLow = 2.dp
@@ -56,6 +56,7 @@ val BarWidthSmall = 4.dp
 val BarWidthMedium = 18.dp
 val RowHeightMedium = 32.dp
 val IconSizeMedium = 16.dp
+val IconSizeExtraLarge = 30.dp
 
 // Border
 val BorderWidthThin = 1.dp
@@ -64,3 +65,6 @@ val BorderWidthExtraThick = 4.dp
 
 // Card elevation
 val DefaultCardElevation = 4.dp
+
+// weight
+const val Weight = 1f

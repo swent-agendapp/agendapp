@@ -70,11 +70,30 @@ interface OrganizationRepository {
   /**
    * Retrieves an organization by its unique identifier.
    *
-   * Implementations should ensure the user has access rights to this organization.
+   * Implementations should ensure the user has access rights to this organization (user is member
+   * or admin).
    *
    * @param organizationId The unique identifier of the organization.
    * @param user The current user performing the action.
    * @return The organization if found and accessible, or null if not found or unauthorized.
    */
   suspend fun getOrganizationById(organizationId: String, user: User): Organization?
+
+  /**
+   * Retrieves all members of a specific organization.
+   *
+   * Implementations should ensure the user has access rights to this organization (user is member
+   * or admin).
+   *
+   * @param organizationId The unique identifier of the organization.
+   * @param user The current user performing the action.
+   * @return A list of users who are members of the organization.
+   */
+  suspend fun getMembersOfOrganization(organizationId: String, user: User): List<User> {
+    val organization =
+        getOrganizationById(organizationId, user)
+            ?: throw IllegalArgumentException(
+                "Organization with id $organizationId does not exist.")
+    return organization.members
+  }
 }

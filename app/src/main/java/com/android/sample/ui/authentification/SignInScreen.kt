@@ -72,8 +72,6 @@ fun SignInScreen(
 
   LaunchedEffect(uiState.user) {
     uiState.user?.let {
-      snackbarHostState.showSnackbar(
-          context.getString(R.string.sign_in_success_message), duration = SnackbarDuration.Long)
       onSignedIn()
     }
   }
@@ -91,18 +89,6 @@ fun SignInScreen(
       modifier = Modifier.fillMaxSize(),
       snackbarHost = {
         SnackbarHost(snackbarHostState, modifier = Modifier.testTag(END_SNACK_BAR))
-      },
-      floatingActionButton = {
-        if (!uiState.signedOut) {
-          IconButton(
-              onClick = { authViewModel.signOut(credentialManager = credentialManager) },
-              modifier = Modifier.testTag(LOGOUT_BUTTON)) {
-                Icon(
-                    imageVector = Icons.Filled.Clear,
-                    contentDescription =
-                        stringResource(R.string.sign_in_logout_content_description))
-              }
-        }
       },
       content = { padding ->
         Column(

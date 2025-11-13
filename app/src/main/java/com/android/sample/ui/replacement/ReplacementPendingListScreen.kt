@@ -48,7 +48,9 @@ import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.mockData.getMockReplacements
 import com.android.sample.model.replacement.toProcessReplacements
 import com.android.sample.model.replacement.waitingForAnswerAndDeclinedReplacements
+import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.theme.CornerRadiusLarge
+import com.android.sample.ui.theme.PaddingExtraSmall
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingMedium
@@ -195,9 +197,12 @@ private fun ReplacementToProcessCard(
                       id = R.string.replacement_substituted_label, replacement.absentUserId),
               style = MaterialTheme.typography.bodySmall)
           Spacer(modifier = Modifier.height(SpacingSmall))
-          Button(modifier = Modifier.align(Alignment.End), onClick = onProcessClick) {
-            Text(text = stringResource(id = R.string.replacement_process_button))
-          }
+
+          PrimaryButton(
+            onClick = onProcessClick,
+            text = stringResource(id = R.string.replacement_process_button),
+            innerPadding = PaddingExtraSmall
+          )
         }
       }
 }

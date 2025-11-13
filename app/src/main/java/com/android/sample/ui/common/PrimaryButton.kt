@@ -8,12 +8,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.PaddingSmall
 import com.android.sample.ui.theme.Salmon
 import com.android.sample.ui.theme.WeightLight
 import com.android.sample.ui.theme.WeightMedium
+import com.google.android.material.internal.ViewUtils
 
 /**
  * Displays a single replacement option card.
@@ -26,7 +28,8 @@ fun PrimaryButton(
     modifier: Modifier = Modifier,
     text: String = "Test",
     onClick: () -> Unit = {},
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    innerPadding: Dp = PaddingSmall
 ) {
   Button(
       modifier =
@@ -46,6 +49,6 @@ fun PrimaryButton(
               disabledContentColor = Color.White.copy(alpha = WeightMedium))) {
         Text(
             text = text,
-            modifier = Modifier.padding(horizontal = PaddingSmall, vertical = PaddingSmall))
+            modifier = Modifier.padding(innerPadding))
       }
 }

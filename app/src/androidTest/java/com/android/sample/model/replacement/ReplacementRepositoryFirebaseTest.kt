@@ -1,6 +1,7 @@
 package com.android.sample.model.replacement
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.utils.FirebaseEmulatedTest
 import java.time.Instant
@@ -16,7 +17,7 @@ import org.junit.runner.RunWith
 class ReplacementRepositoryFirebaseTest : FirebaseEmulatedTest() {
 
   private lateinit var repository: ReplacementRepository
-  private lateinit var sampleEvent: com.android.sample.model.calendar.Event
+  private lateinit var sampleEvent: Event
   private lateinit var replacement1: Replacement
   private lateinit var replacement2: Replacement
 

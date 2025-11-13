@@ -1,9 +1,6 @@
-package com.android.sample.model.remplacement
+package com.android.sample.model.replacement
 
-import com.android.sample.model.replacement.ReplacementStatus
 import com.android.sample.model.replacement.mockData.getMockReplacements
-import com.android.sample.model.replacement.pendingAdminReplacements
-import com.android.sample.model.replacement.waitingForAnswerAndDeclinedReplacements
 import com.google.common.truth.Truth
 import org.junit.Test
 

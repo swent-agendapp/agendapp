@@ -117,33 +117,22 @@ class CalendarViewModel(
   }
 
   /**
-   * Returns an [Event] with the given [eventId].
+   * Retrieves the [Event] corresponding to the given [eventId].
    *
-   * The lookup first searches the in-memory cache (from [uiState]). If the event is not found
-   * there, it performs a direct repository lookup. If no event is found in either place, it throws
-   * a [NoSuchElementException].
+   * This method performs a lookup in the [EventRepository] and returns the matching event.
+   * If no event is found or if an error occurs during the fetch, an error message is
+   * propagated to the UI layer and a [NoSuchElementException] is thrown.
    *
-   * @throws NoSuchElementException if the event with the given [eventId] is not found.
+   * @throws NoSuchElementException if no event with the given [eventId] exists.
    */
   suspend fun getEventById(eventId: String): Event {
-    // Check in the uiState first
-    _uiState.value.events
-        .firstOrNull { it.id == eventId }
-        ?.let {
-          return it
-        }
-
-    // Fallback to repository lookup
-    val event =
-        try {
-          eventRepository.getEventById(eventId)
-        } catch (e: Exception) {
-          setErrorMsg("Failed to fetch event $eventId: ${e.message}")
-          null
-        }
-
-    // Return the result or throw if not found
-    return event ?: throw NoSuchElementException("Event with id=$eventId not found.")
+    return try {
+      eventRepository.getEventById(eventId)
+        ?: throw NoSuchElementException("Event with id=$eventId not found.")
+    } catch (e: Exception) {
+      setErrorMsg("Failed to fetch event $eventId: ${e.message}")
+      throw NoSuchElementException("Event with id=$eventId not found.")
+    }
   }
 
   /**

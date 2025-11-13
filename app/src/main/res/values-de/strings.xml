@@ -132,14 +132,36 @@
     <string name="organize_replacement">Einen Ersatz organisieren</string>
     <string name="process_replacement">Ersatz zur Bearbeitung</string>
     <string name="waiting_confirmation_replacement">Warten auf Bestätigung des Ersatzes</string>
-    <!-- Map -->
+
+    <!-- Map (Translated by AI)-->
     <string name="delimit_organization_title">Begrenzen Sie Ihre Organisation</string>
+    <string name="create_area_button">Gebiet erstellen</string>
+    <string name="tooltip_area_marker_title">Markierungen hinzufügen :</string>
+    <string name="tooltip_area_marker_text">Drücke lange auf die Karte, um eine Markierung zu setzen.</string>
+    <string name="tooltip_area_multiple_marker_title">Weitere Punkte hinzufügen :</string>
+    <string name="tooltip_area_multiple_marker_text">Wiederhole diesen Schritt, um die Ecken deines Gebiets festzulegen.</string>
+    <string name="tooltip_area_delete_marker_title">Gebiet erstellen :</string>
+    <string name="tooltip_area_delete_marker_text">Sobald du mindestens 3 Markierungen hast, tippe auf „Gebiet erstellen“, um es automatisch zu generieren.</string>
+    <string name="tooltip_area_create_title">Bearbeiten oder löschen :</string>
+    <string name="tooltip_area_create_text">Du kannst Markierungen verschieben oder löschen, um die Form anzupassen.</string>
+    <string name="down_sheet_title">Benenne dein Gebiet</string>
+    <string name="down_sheet_text_field">Gebietsname</string>
+    <string name="down_sheet_button_create">Gebiet speichern</string>
+    <string name="down_sheet_button_delete">Markierung löschen</string>
 
     <!-- Replacement -->
     <string name="replacement_requests_title">Vertretungsanfragen</string>
     <string name="replacement_requests_subtitle">Vertretungen, die auf Bestätigung warten</string>
     <string name="replacement_substituted_label">Abwesende Person: %1$s</string>
     <string name="replacement_substitute_label">Vertretende Person: %1$s</string>
+    <string name="replacement_to_process_section_title">Zu bearbeitende Vertretungen</string>
+    <string name="replacement_waiting_answer_section_title">Warten auf eine Antwort</string>
+    <string name="replacement_process_button">Bearbeiten</string>
+    <string name="replacement_no_response_label">%1$d ohne Antwort</string>
+    <string name="replacement_declined_label">%1$d abgelehnt</string>
+    <string name="replacement_pending_people_title">Ohne Antwort</string>
+    <string name="replacement_declined_people_title">Abgelehnt</string>
+    <string name="replacement_people_dialog_close">Schließen</string>
     <string name="invalidDateRangeMessage">Ungültiger Zeitraum: Das Enddatum muss nach dem Startdatum liegen.</string>
     <string name="select_process_moment">Möchten Sie sie jetzt verarbeiten?</string>
     <string name="process_now">Jetzt verarbeiten</string>
@@ -171,5 +193,6 @@
     <string name="replacement_create_select_event">Ereignis auswählen</string>
     <string name="replacement_create_choose_date_range">Datumsbereich auswählen</string>
     <string name="common_send">Senden</string>
+
 
 </resources>

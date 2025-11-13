@@ -54,6 +54,14 @@ fun ProfileScreen(
   var emailError by remember { mutableStateOf<String?>(null) }
   var phoneError by remember { mutableStateOf<String?>(null) }
 
+  LaunchedEffect(uiState.displayName, uiState.email, uiState.phoneNumber, isEditMode) {
+    if (!isEditMode) {
+      displayName = uiState.displayName
+      email = uiState.email
+      phone = uiState.phoneNumber
+    }
+  }
+
   val emailErrorMessage = stringResource(R.string.profile_email_error)
   val phoneErrorMessage = stringResource(R.string.profile_phone_error)
 

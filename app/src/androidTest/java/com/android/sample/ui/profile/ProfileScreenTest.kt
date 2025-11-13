@@ -139,6 +139,28 @@ class ProfileScreenTest {
   }
 
   @Test
+  fun profileScreen_savingBlankDisplayName_keepsPreviousValue() {
+    val testUser =
+        User(
+            id = "test123",
+            displayName = "Keep Me",
+            email = "keep@example.com",
+            phoneNumber = "000-111-2222")
+    val fakeRepository = FakeAuthRepository(testUser)
+    val viewModel = ProfileViewModel(fakeRepository)
+
+    composeTestRule.setContent { ProfileScreen(onNavigateBack = {}, profileViewModel = viewModel) }
+
+    composeTestRule.onNodeWithTag(ProfileScreenTestTags.EDIT_BUTTON).performClick()
+    composeTestRule.onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD).performTextClearance()
+    composeTestRule.onNodeWithTag(ProfileScreenTestTags.SAVE_BUTTON).performClick()
+
+    composeTestRule
+        .onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD)
+        .assertTextContains("Keep Me")
+  }
+
+  @Test
   fun profileScreen_displayRootIsDisplayed() {
     val fakeRepository = FakeAuthRepository(null)
     val viewModel = ProfileViewModel(fakeRepository)

@@ -51,7 +51,7 @@ class ReplacementMapperTest {
   @Test
   fun fromDocument_withValidDocument_returnsReplacement() {
     val doc = mock(DocumentSnapshot::class.java)
-    `when`(doc.id).thenReturn("replacement1")
+    `when`(doc.getString("id")).thenReturn("replacement1")
     `when`(doc.getString("absentUserId")).thenReturn("user123")
     `when`(doc.getString("substituteUserId")).thenReturn("user456")
     `when`(doc.getString("status")).thenReturn("Pending")
@@ -100,7 +100,7 @@ class ReplacementMapperTest {
   @Test
   fun fromAny_withDocument_returnsReplacement() {
     val doc = mock(DocumentSnapshot::class.java)
-    `when`(doc.id).thenReturn("replacement1")
+    `when`(doc.getString("id")).thenReturn("replacement1")
     `when`(doc.getString("absentUserId")).thenReturn("user123")
     `when`(doc.getString("substituteUserId")).thenReturn("user456")
     `when`(doc.getString("status")).thenReturn("Pending")

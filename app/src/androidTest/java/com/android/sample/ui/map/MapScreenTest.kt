@@ -5,6 +5,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextInput
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.rule.GrantPermissionRule
 import com.google.android.gms.maps.MapsInitializer
@@ -57,6 +58,7 @@ class MapScreenTest {
         .assertIsDisplayed()
         .performClick()
     composeTestRule.onNodeWithTag(MapScreenTestTags.DOWN_SHEET).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(MapScreenTestTags.CREATE_AREA_BUTTON).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(MapScreenTestTags.DOWN_SHEET_FORM).assertIsDisplayed().performTextInput("Office")
+    composeTestRule.onNodeWithTag(MapScreenTestTags.CREATE_AREA_BUTTON).assertIsDisplayed().performClick()
   }
 }

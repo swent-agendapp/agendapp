@@ -54,6 +54,7 @@ import com.android.sample.ui.map.MapScreenTestTags.CREATE_AREA_BUTTON
 import com.android.sample.ui.map.MapScreenTestTags.CREATE_AREA_FLOATING_BUTTON
 import com.android.sample.ui.map.MapScreenTestTags.DELETE_MARKER_BUTTON
 import com.android.sample.ui.map.MapScreenTestTags.DOWN_SHEET
+import com.android.sample.ui.map.MapScreenTestTags.DOWN_SHEET_FORM
 import com.android.sample.ui.theme.Blue
 import com.android.sample.ui.theme.Blue70
 import com.android.sample.ui.theme.DangerRed
@@ -84,6 +85,7 @@ object MapScreenTestTags {
   const val TOOLTIP_TEXT = "tooltip_text"
   const val CREATE_AREA_BUTTON = "create_area_button"
   const val DOWN_SHEET = "down_sheet"
+  const val DOWN_SHEET_FORM = "down_sheet_form"
   const val DELETE_MARKER_BUTTON = "delete_marker_button"
   const val CREATE_AREA_FLOATING_BUTTON = "create_area_floating_button"
 }
@@ -253,7 +255,7 @@ fun MapScreen(
                             onValueChange = { mapViewModel.setNewAreaName(it) },
                             label = { Text(stringResource(R.string.down_sheet_text_field)) },
                             singleLine = true,
-                            modifier = Modifier.fillMaxWidth())
+                            modifier = Modifier.fillMaxWidth().testTag(DOWN_SHEET_FORM))
                         Spacer(Modifier.height(SpacingSmall))
                         Button(
                             onClick = {

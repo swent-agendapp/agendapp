@@ -3,9 +3,16 @@ package com.android.sample.ui.settings
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.AdminPanelSettings
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.GroupAdd
+import androidx.compose.material.icons.filled.Map
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.QuestionAnswer
+import androidx.compose.material.icons.filled.Work
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,7 +23,10 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
+import com.android.sample.ui.common.ButtonItem
+import com.android.sample.ui.common.MainPageButton
 import com.android.sample.ui.common.MainPageTopBar
+import com.android.sample.ui.replacement.ReplacementOverviewTestTags
 import com.android.sample.ui.theme.*
 
 object SettingsScreenTestTags {
@@ -35,67 +45,43 @@ fun SettingsScreen(
     onNavigateToAdminInfo: () -> Unit = {},
     onNavigateToMapSettings: () -> Unit = {},
 ) {
+  val items =
+    listOf(
+      ButtonItem(
+        stringResource(R.string.settings_profile_button),
+        Icons.Default.Person,
+        SettingsScreenTestTags.PROFILE_BUTTON,
+        onClick = onNavigateToUserProfile),
+      ButtonItem(
+        stringResource(R.string.settings_admin_info_button),
+        Icons.Default.AdminPanelSettings,
+        SettingsScreenTestTags.ADMIN_BUTTON,
+        onClick = onNavigateToAdminInfo),
+      ButtonItem(
+        stringResource(R.string.settings_map_settings_button),
+        Icons.Default.Map,
+        SettingsScreenTestTags.MAP_SETTINGS_BUTTON,
+        onClick = onNavigateToMapSettings)
+    )
+
   Scaffold(
       topBar = {
         MainPageTopBar(
-          title = stringResource(R.string.settings_screen_title),
+            title = stringResource(R.string.settings_screen_title),
         )
       }) { innerPadding ->
         Column(
             modifier =
-                Modifier.padding(innerPadding).fillMaxSize().semantics {
+                Modifier.padding(innerPadding).padding(PaddingMedium).fillMaxSize().semantics {
                   testTag = SettingsScreenTestTags.ROOT
                 },
             horizontalAlignment = Alignment.CenterHorizontally) {
-              Spacer(modifier = Modifier.height(SpacingLarge))
-
-              SettingTab(
-                  title = stringResource(R.string.settings_profile_button),
-                  testTag = SettingsScreenTestTags.PROFILE_BUTTON,
-                  onClick = onNavigateToUserProfile)
-
-              SettingTab(
-                  title = stringResource(R.string.settings_admin_info_button),
-                  testTag = SettingsScreenTestTags.ADMIN_BUTTON,
-                  onClick = onNavigateToAdminInfo)
-
-              SettingTab(
-                  title = stringResource(R.string.settings_map_settings_button),
-                  testTag = SettingsScreenTestTags.MAP_SETTINGS_BUTTON,
-                  onClick = onNavigateToMapSettings)
+              Column(modifier = Modifier.testTag(ReplacementOverviewTestTags.CARD_LIST)) {
+                items.forEach { item ->
+                  MainPageButton(item, onClick = item.onClick)
+                  Spacer(modifier = Modifier.height(SpacingMedium))
+                }
+              }
             }
       }
-}
-
-@Composable
-fun SettingTab(
-    title: String,
-    modifier: Modifier = Modifier,
-    testTag: String = "",
-    onClick: () -> Unit = {}
-) {
-  Surface(
-      modifier =
-          modifier
-              .padding(horizontal = PaddingMedium)
-              .fillMaxWidth()
-              .testTag(testTag)
-              .border(
-                  width = BorderWidthThin,
-                  color = MaterialTheme.colorScheme.outline,
-                  shape = MaterialTheme.shapes.medium)
-              .clickable(onClick = onClick),
-      shape = MaterialTheme.shapes.medium,
-      color = MaterialTheme.colorScheme.surface) {
-        Row(
-            modifier = Modifier.padding(horizontal = SpacingLarge, vertical = SpacingLarge),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically) {
-              Text(text = title, style = MaterialTheme.typography.bodyLarge)
-
-              Icon(imageVector = Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null)
-            }
-      }
-
-  Spacer(modifier = Modifier.height(SpacingLarge))
 }

@@ -16,7 +16,6 @@ import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.FirebaseEmulator
 import com.github.se.bootcamp.ui.authentication.SignInScreen
 import com.github.se.bootcamp.ui.authentication.SignInScreenTestTags
-import okhttp3.internal.wait
 import org.junit.Assert.assertTrue
 import org.junit.Assume.assumeTrue
 import org.junit.Before
@@ -69,7 +68,9 @@ class AuthentificationTest : FirebaseEmulatedTest() {
     val fakeCredentialManager = FakeCredentialManager.create(fakeGoogleIdToken)
     var isSignIn = false
 
-    composeTestRule.setContent { SignInScreen(credentialManager = fakeCredentialManager, onSignedIn = { isSignIn = true }) }
+    composeTestRule.setContent {
+      SignInScreen(credentialManager = fakeCredentialManager, onSignedIn = { isSignIn = true })
+    }
 
     composeTestRule
         .onNodeWithTag(SignInScreenTestTags.LOGIN_BUTTON)

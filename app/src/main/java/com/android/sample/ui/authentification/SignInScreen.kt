@@ -13,13 +13,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -47,7 +43,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.theme.Salmon
 import com.github.se.bootcamp.ui.authentication.SignInScreenTestTags.END_SNACK_BAR
-import com.github.se.bootcamp.ui.authentication.SignInScreenTestTags.LOGOUT_BUTTON
 
 object SignInScreenTestTags {
   const val APP_LOGO = "appLogo"
@@ -70,11 +65,7 @@ fun SignInScreen(
   val uiState by authViewModel.uiState.collectAsState()
   val snackbarHostState = remember { SnackbarHostState() }
 
-  LaunchedEffect(uiState.user) {
-    uiState.user?.let {
-      onSignedIn()
-    }
-  }
+  LaunchedEffect(uiState.user) { uiState.user?.let { onSignedIn() } }
 
   LaunchedEffect(uiState.errorMsg) {
     uiState.errorMsg?.let {

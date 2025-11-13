@@ -58,7 +58,13 @@ class MapScreenTest {
         .assertIsDisplayed()
         .performClick()
     composeTestRule.onNodeWithTag(MapScreenTestTags.DOWN_SHEET).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(MapScreenTestTags.DOWN_SHEET_FORM).assertIsDisplayed().performTextInput("Office")
-    composeTestRule.onNodeWithTag(MapScreenTestTags.CREATE_AREA_BUTTON).assertIsDisplayed().performClick()
+    composeTestRule
+        .onNodeWithTag(MapScreenTestTags.DOWN_SHEET_FORM)
+        .assertIsDisplayed()
+        .performTextInput("Office")
+    composeTestRule
+        .onNodeWithTag(MapScreenTestTags.CREATE_AREA_BUTTON)
+        .assertIsDisplayed()
+        .performClick()
   }
 }

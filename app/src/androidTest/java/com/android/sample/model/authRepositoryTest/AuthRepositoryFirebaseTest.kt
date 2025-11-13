@@ -22,15 +22,6 @@ class AuthRepositoryFirebaseTest : FirebaseEmulatedTest() {
   override fun setUp() {
     super.setUp()
     repository = AuthRepositoryFirebase()
-
-    // To be sure that the users collection is clean before each test
-    runBlocking {
-      val col = Firebase.firestore.collection("users")
-      val snapshot = col.get().await()
-      for (doc in snapshot.documents) {
-        col.document(doc.id).delete().await()
-      }
-    }
   }
 
   @Test

@@ -4,8 +4,13 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import com.android.sample.model.calendar.EventRepositoryProvider
+import com.android.sample.model.calendar.createEvent
+import com.android.sample.ui.calendar.components.EventSummaryCardTags
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreen
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreenTestTags
+import java.time.Instant
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
@@ -30,6 +35,38 @@ class CalendarEventOverviewTest {
 
     // Check that the top bar is displayed
     composeTestRule.onNodeWithTag(EventOverviewScreenTestTags.TOP_BAR).assertIsDisplayed()
+  }
+
+  @Test
+  fun eventOverview_showsTitleDescriptionParticipantsAndSidebar() {
+    // Arrange: create an in-memory repository and insert a single event
+    val repo = EventRepositoryProvider.repository
+
+    val event =
+        createEvent(
+            title = "Overviewed Event",
+            description = "This is an event used to test the summary card.",
+            startDate = Instant.parse("2025-01-10T10:00:00Z"),
+            endDate = Instant.parse("2025-01-10T11:00:00Z"),
+            participants = setOf("Alice", "Bob"))
+
+    runBlocking { repo.insertEvent(event) }
+
+    val viewModel = CalendarViewModel(repo)
+
+    // Act: compose the EventOverviewScreen with our populated ViewModel
+    composeTestRule.setContent {
+      EventOverviewScreen(
+          eventId = event.id,
+          calendarViewModel = viewModel,
+      )
+    }
+
+    // Assert: main EventSummaryCard sections are displayed
+    composeTestRule.onNodeWithTag(EventSummaryCardTags.TitleText).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(EventSummaryCardTags.DescriptionText).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(EventSummaryCardTags.ParticipantsList).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(EventSummaryCardTags.SideBar).assertIsDisplayed()
   }
 
   @Test

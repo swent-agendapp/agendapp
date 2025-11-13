@@ -134,4 +134,20 @@ class ReplacementMapperTest {
     assertThat(map["status"]).isEqualTo("ToProcess")
     assertThat(map["event"]).isEqualTo(EventMapper.toMap(sampleEvent))
   }
+
+  @Test
+  fun fromMap_missingEvent_returnsNull() {
+    val data =
+        mapOf(
+            "id" to "r1",
+            "absentUserId" to "u1",
+            "substituteUserId" to "u2",
+            "status" to "Pending",
+            // you don't mention "event" intentionally
+        )
+
+    val result = ReplacementMapper.fromMap(data)
+
+    assertThat(result).isNull()
+  }
 }

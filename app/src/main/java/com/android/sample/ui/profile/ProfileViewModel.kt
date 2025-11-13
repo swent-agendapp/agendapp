@@ -39,7 +39,7 @@ class ProfileViewModel(
     viewModelScope.launch { loadCurrentUser() }
   }
 
-  private suspend fun loadCurrentUser() {
+  private fun loadCurrentUser() {
     val currentUser = repository.getCurrentUser()
     currentUser?.let { user ->
       cachedUser = user
@@ -138,9 +138,7 @@ class ProfileViewModel(
 
         override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
           if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
-            val app =
-                extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as? Application
-                    ?: application
+            val app = extras[APPLICATION_KEY] ?: application
             @Suppress("UNCHECKED_CAST") return ProfileViewModel(app, repository) as T
           }
           return super.create(modelClass, extras)

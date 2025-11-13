@@ -15,6 +15,7 @@ val Blue70 = Color(0x8009099D)
 
 // Top Bar Color
 val TopBarBackgroundColor = Color(0xFFE6E4E9)
+val SecondTopBarBackgroundColor = Color(0xFFFFFFFF)
 val TopBarTextColor = Color(0xFF000000)
 
 // Circus Color

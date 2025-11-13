@@ -84,7 +84,7 @@
     <string name="profile_email_label">E-mail</string>
     <string name="profile_phone_label">Numéro de téléphone</string>
     <string name="profile_admin_contact_button">Voir le contact administrateur</string>
-    <string name="profile_title">Profil utilisateur</string>
+    <string name="profile_title">Votre Profil</string>
     <string name="profile_cancel_content_description">Annuler</string>
     <string name="profile_save_content_description">Enregistrer</string>
     <string name="profile_edit_content_description">Modifier</string>

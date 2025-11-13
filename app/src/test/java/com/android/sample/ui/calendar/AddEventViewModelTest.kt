@@ -175,9 +175,7 @@ class AddEventViewModelTest {
     assertTrue(events.any { it.title == "Meeting" && it.description == "Team sync" })
   }
 
-  /**
-   * We have to ignore the test for the M2 as this feature is not fully ready yet
-   */
+  /** We have to ignore the test for the M2 as this feature is not fully ready yet */
   @Ignore
   fun `employee cannot add event`() = runTest {
     val vm = makeEmployeeVm()

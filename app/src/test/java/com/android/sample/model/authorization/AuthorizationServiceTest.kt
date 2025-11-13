@@ -58,9 +58,7 @@ class AuthorizationServiceTest {
     assertThat(authz.canEditCourses()).isFalse()
   }
 
-  /**
-   * We have to ignore the test for the M2 as this feature is not fully ready yet
-   */
+  /** We have to ignore the test for the M2 as this feature is not fully ready yet */
   @Ignore
   fun requireAdmin_throws_when_not_admin() = runTest {
     fakeRepo.roleForCurrentUser = Role.EMPLOYEE

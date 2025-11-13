@@ -3,7 +3,6 @@ package com.android.sample.ui.profile
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Save
@@ -20,6 +19,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.credentials.CredentialManager
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
+import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.SpacingExtraLarge
 import com.android.sample.ui.theme.SpacingLarge
@@ -59,17 +59,10 @@ fun ProfileScreen(
 
   Scaffold(
       topBar = {
-        TopAppBar(
-            title = { Text(stringResource(R.string.profile_screen_title)) },
-            navigationIcon = {
-              IconButton(
-                  onClick = onNavigateBack,
-                  modifier = Modifier.testTag(ProfileScreenTestTags.BACK_BUTTON)) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.common_back))
-                  }
-            })
+        SecondaryPageTopBar(
+            title = stringResource(R.string.profile_screen_title),
+            onClick = onNavigateBack,
+            backButtonTestTags = ProfileScreenTestTags.BACK_BUTTON)
       }) { innerPadding ->
         Column(
             modifier =

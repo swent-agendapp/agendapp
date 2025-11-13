@@ -10,7 +10,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -29,6 +28,7 @@ import com.android.sample.R
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
 import com.android.sample.ui.calendar.components.ValidatingTextField
+import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.map.MapScreenTestTags
 import com.android.sample.ui.theme.PaddingExtraLarge
@@ -66,12 +66,10 @@ fun AddEventTitleAndDescriptionScreen(
 
   Scaffold(
       topBar = {
-        TopAppBar(
-            title = {
-              Text(
-                  stringResource(R.string.addEventTitle),
-                  modifier = Modifier.testTag(MapScreenTestTags.MAP_TITLE))
-            })
+        SecondaryPageTopBar(
+            modifier = Modifier.testTag(MapScreenTestTags.MAP_TITLE),
+            title = stringResource(R.string.addEventTitle),
+            canGoBack = false)
       },
       content = { paddingValues ->
         Column(

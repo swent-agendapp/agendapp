@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,8 +17,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import com.android.sample.R
+import com.android.sample.ui.map.BottomSheetState
+import com.android.sample.ui.map.MapScreenTestTags.CREATE_AREA_FLOATING_BUTTON
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingLarge
 import com.android.sample.ui.theme.PaddingMedium
@@ -37,31 +43,22 @@ import com.android.sample.ui.theme.widthLarge
  */
 @Composable
 @Preview
-fun PrimaryButton(
+fun FloatingButton(
   modifier: Modifier = Modifier,
   text: String = "Test",
   onClick: () -> Unit = {},
-  enabled: Boolean = true
+  icon: ImageVector = Icons.Default.Add
 ) {
-  Button(
-    modifier =
-      modifier.fillMaxWidth().padding(horizontal = PaddingMedium, vertical = PaddingSmall),
-    elevation = ButtonDefaults.buttonElevation(
-      defaultElevation = CornerRadiusLarge,
-    ),
-    shape = RoundedCornerShape(CornerRadiusLarge),
+  ExtendedFloatingActionButton(
+    modifier = modifier,
+    text = { Text(text) },
+    icon = {
+      Icon(
+       icon,
+        contentDescription = stringResource(R.string.create_area_button))
+    },
     onClick = onClick,
-    enabled = enabled,
-    colors =
-      ButtonDefaults.buttonColors(
-        containerColor = Salmon,
-        contentColor = Color.White,
-        disabledContainerColor = Salmon.copy(alpha = WeightLight),
-        disabledContentColor = Color.White.copy(alpha = WeightMedium))
-    ) {
-    Text(
-      text = text,
-      modifier =
-        Modifier.padding(horizontal = PaddingSmall, vertical = PaddingSmall))
-  }
+    containerColor = Salmon,
+    contentColor = Color.White
+    )
 }

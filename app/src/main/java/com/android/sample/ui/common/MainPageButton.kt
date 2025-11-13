@@ -17,7 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingLarge
 import com.android.sample.ui.theme.PaddingMedium
-import com.android.sample.ui.theme.Red80
+import com.android.sample.ui.theme.Salmon
 import com.android.sample.ui.theme.SpacingMedium
 
 /**
@@ -54,7 +54,7 @@ fun MainPageButton(item: ButtonItem, onClick: () -> Unit = {}) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween) {
               Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(imageVector = item.icon, contentDescription = null, tint = Red80)
+                Icon(imageVector = item.icon, contentDescription = null, tint = Salmon)
                 Spacer(modifier = Modifier.width(SpacingMedium))
                 Text(
                     text = item.title,

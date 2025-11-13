@@ -16,12 +16,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
+import com.android.sample.ui.common.PrimaryButton
+import com.android.sample.ui.common.SecondaryButton
 import com.android.sample.ui.theme.BorderWidthThin
 import com.android.sample.ui.theme.CornerRadiusLarge
-import com.android.sample.ui.theme.DangerRed
 import com.android.sample.ui.theme.PaddingLarge
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.PaddingSmall
+import com.android.sample.ui.theme.Weight
 import com.android.sample.ui.theme.WeightLight
 import com.android.sample.ui.theme.WeightMedium
 import com.android.sample.ui.theme.heightLarge
@@ -44,90 +46,23 @@ fun BottomNavigationButtons(
     nextButtonText: String = "",
     backButtonTestTag: String = "",
     nextButtonTestTag: String = "",
-    version: Int = 1
 ) {
-  if (version == 2) {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(PaddingLarge),
-        horizontalArrangement = Arrangement.SpaceEvenly) {
-          // Cancel / Back button
-          if (canGoBack) {
-            OutlinedButton(
-                onClick = onBack,
-                modifier =
-                    Modifier.size(width = widthLarge, height = heightLarge)
-                        .testTag(backButtonTestTag),
-                shape = RoundedCornerShape(CornerRadiusLarge),
-                border = BorderStroke(BorderWidthThin, DangerRed), // Red border
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = DangerRed)) {
-                  Text(
-                      text = backButtonText,
-                      modifier =
-                          Modifier.padding(horizontal = PaddingMedium, vertical = PaddingSmall))
-                }
-          }
 
-          // Next / Confirm button
-          Button(
-              onClick = onNext,
-              modifier =
-                  Modifier.size(width = widthLarge, height = heightLarge)
-                      .testTag(nextButtonTestTag),
-              shape = RoundedCornerShape(CornerRadiusLarge),
-              enabled = canGoNext,
-              colors =
-                  ButtonDefaults.buttonColors(
-                      containerColor = DangerRed,
-                      contentColor = Color.White,
-                      disabledContainerColor = DangerRed.copy(alpha = WeightLight),
-                      disabledContentColor = Color.White.copy(alpha = WeightMedium))) {
-                Text(
-                    text = nextButtonText,
-                    modifier =
-                        Modifier.padding(horizontal = PaddingMedium, vertical = PaddingSmall))
-              }
+  Row(
+      modifier = Modifier.fillMaxWidth().padding(PaddingMedium).padding(bottom = PaddingLarge),
+      horizontalArrangement = Arrangement.SpaceEvenly) {
+        if (canGoBack) {
+          SecondaryButton(
+            modifier = Modifier.testTag(backButtonTestTag).weight(Weight),
+            text = backButtonText,
+            onClick = onBack,
+          )
         }
-  } else {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(PaddingMedium),
-        horizontalArrangement = Arrangement.SpaceEvenly) {
-          if (canGoBack) {
-            // Cancel / Back button
-            OutlinedButton(onClick = onBack, Modifier.testTag(backButtonTestTag)) {
-              Text(
-                  text = backButtonText,
-                  modifier = Modifier.padding(horizontal = PaddingMedium, vertical = PaddingSmall))
-            }
-          }
-          // Next / Confirm button
-          Button(onClick = onNext, Modifier.testTag(nextButtonTestTag), enabled = canGoNext) {
-            Text(
-                text = nextButtonText,
-                modifier = Modifier.padding(horizontal = PaddingMedium, vertical = PaddingSmall))
-          }
-        }
-  }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun BottomNavigationButtonsPreviewV1() {
-  BottomNavigationButtons(
-      canGoBack = true,
-      backButtonText = "Back",
-      canGoNext = true,
-      nextButtonText = "Next",
-  )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun BottomNavigationButtonsPreviewV2() {
-  BottomNavigationButtons(
-      canGoBack = true,
-      backButtonText = "Back",
-      canGoNext = true,
-      nextButtonText = "Next",
-      version = 2,
-  )
+        PrimaryButton(
+          modifier = Modifier.testTag(nextButtonTestTag).weight(Weight),
+          text = nextButtonText,
+          onClick = onNext,
+          enabled = canGoNext
+        )
+      }
 }

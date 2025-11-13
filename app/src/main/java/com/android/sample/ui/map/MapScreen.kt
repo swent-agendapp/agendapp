@@ -50,6 +50,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
+import com.android.sample.ui.common.FloatingButton
 import com.android.sample.ui.map.MapScreenTestTags.CREATE_AREA_BUTTON
 import com.android.sample.ui.map.MapScreenTestTags.CREATE_AREA_FLOATING_BUTTON
 import com.android.sample.ui.map.MapScreenTestTags.DELETE_MARKER_BUTTON
@@ -57,7 +58,6 @@ import com.android.sample.ui.map.MapScreenTestTags.DOWN_SHEET
 import com.android.sample.ui.map.MapScreenTestTags.DOWN_SHEET_FORM
 import com.android.sample.ui.theme.Blue
 import com.android.sample.ui.theme.Blue70
-import com.android.sample.ui.theme.DangerRed
 import com.android.sample.ui.theme.DefaultZoom
 import com.android.sample.ui.theme.Salmon
 import com.android.sample.ui.theme.SpacingLarge
@@ -194,16 +194,12 @@ fun MapScreen(
             })
       },
       floatingActionButton = {
-        ExtendedFloatingActionButton(
-            modifier = Modifier.testTag(CREATE_AREA_FLOATING_BUTTON),
-            text = { Text(stringResource(R.string.create_area_button)) },
-            icon = {
-              Icon(
-                  Icons.Default.Add,
-                  contentDescription = stringResource(R.string.create_area_button))
-            },
-            onClick = { showBottomSheet = BottomSheetState.ADD_AREA },
-            containerColor = Salmon)
+        FloatingButton(
+          modifier = Modifier.testTag(CREATE_AREA_FLOATING_BUTTON),
+          text = stringResource(R.string.create_area_button),
+          icon = Icons.Default.Add,
+          onClick = { showBottomSheet = BottomSheetState.ADD_AREA }
+        )
       },
       floatingActionButtonPosition = FabPosition.Start,
       content = { padding ->
@@ -279,7 +275,7 @@ fun MapScreen(
                           modifier = Modifier.fillMaxWidth().testTag(DELETE_MARKER_BUTTON),
                           colors =
                               ButtonColors(
-                                  DangerRed, Color.Black, Color.DarkGray, Color.LightGray)) {
+                                  Salmon, Color.Black, Color.DarkGray, Color.LightGray)) {
                             Text(stringResource(R.string.down_sheet_button_delete))
                           }
                     }

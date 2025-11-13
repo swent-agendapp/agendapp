@@ -30,6 +30,7 @@ import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.calendar.components.ValidatingTextField
 import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.theme.PaddingExtraLarge
+import com.android.sample.ui.theme.WeightMedium
 import com.android.sample.ui.theme.WeightVeryHeavy
 
 private const val DESCRIPTION_FIELD_MIN_LINES = 12
@@ -71,7 +72,7 @@ fun AddEventTitleAndDescriptionScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround) {
               Box(
-                  modifier = Modifier.weight(WeightVeryHeavy).fillMaxWidth(),
+                  modifier = Modifier.weight(WeightMedium).fillMaxWidth(),
                   contentAlignment = Alignment.Center) {
                     Text(
                         stringResource(R.string.enterTitleAndDescription),

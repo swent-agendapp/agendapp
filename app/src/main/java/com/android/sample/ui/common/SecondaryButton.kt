@@ -18,11 +18,10 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.ui.theme.CornerRadiusLarge
-import com.android.sample.ui.theme.DangerRed
 import com.android.sample.ui.theme.PaddingLarge
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.PaddingSmall
-import com.android.sample.ui.theme.Red80
+import com.android.sample.ui.theme.Salmon
 import com.android.sample.ui.theme.SpacingMedium
 import com.android.sample.ui.theme.WeightLight
 import com.android.sample.ui.theme.WeightMedium
@@ -38,28 +37,33 @@ import com.android.sample.ui.theme.widthLarge
  */
 @Composable
 @Preview
-fun ScondaryButton(
+fun SecondaryButton(
+  modifier: Modifier = Modifier,
   text: String = "Test",
   onClick: () -> Unit = {},
-  testTags: String = "",
   enabled: Boolean = true
 ) {
   OutlinedButton(
-    onClick = onClick,
     modifier =
-      Modifier.size(width = widthLarge, height = heightLarge)
-        .testTag(testTags),
+      modifier.fillMaxWidth().padding(horizontal = PaddingMedium, vertical = PaddingSmall),
+    elevation = ButtonDefaults.buttonElevation(
+      defaultElevation = CornerRadiusLarge,
+    ),
     shape = RoundedCornerShape(CornerRadiusLarge),
+    onClick = onClick,
     enabled = enabled,
     colors =
       ButtonDefaults.buttonColors(
         containerColor = Color.White,
         contentColor = Color.Black,
-        disabledContainerColor = DangerRed.copy(alpha = WeightLight),
-        disabledContentColor = Color.White.copy(alpha = WeightMedium))) {
+        disabledContainerColor = Color.White.copy(alpha = WeightLight),
+        disabledContentColor = Color.Black.copy(alpha = WeightMedium)
+      )
+  ) {
     Text(
       text = text,
       modifier =
-        Modifier.padding(horizontal = PaddingMedium, vertical = PaddingSmall))
+        Modifier.padding(horizontal = PaddingSmall, vertical = PaddingSmall)
+    )
   }
 }

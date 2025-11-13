@@ -152,13 +152,19 @@ class CalendarViewModelTest {
 
   @Test
   fun getEventById_throws_whenEventDoesNotExist() = runTest {
+    val unknownId = "unknown-event-id"
+
     val ex =
-        kotlin.test.assertFailsWith<NoSuchElementException> {
-          viewModel.getEventById("unknown-event-id")
-        }
-    assertTrue(ex.message?.contains("unknown-event-id") == true)
-    // Error message is not set by this path (repository returns null, not an exception)
-    assertNull(viewModel.uiState.value.errorMsg)
+        kotlin.test.assertFailsWith<NoSuchElementException> { viewModel.getEventById(unknownId) }
+
+    // The thrown exception should still mention the unknown id
+    assertTrue(ex.message?.contains(unknownId) == true)
+
+    // Now the ViewModel also sets an error message when the event is missing
+    val errorMsg = viewModel.uiState.value.errorMsg
+    assertNotNull(errorMsg)
+    assertTrue(errorMsg!!.contains("Failed to fetch event"))
+    assertTrue(errorMsg.contains(unknownId))
   }
 
   @Test

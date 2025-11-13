@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.HelpOutline
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.HelpOutline
 import androidx.compose.material3.AlertDialog
@@ -293,7 +294,7 @@ fun ReplacementWaitingCard(replacements: List<Replacement>) {
                 labelRes = R.string.replacement_no_response_label,
                 enabled = pending.isNotEmpty(),
                 onClick = { showPendingDialog = true },
-                icon = Icons.Outlined.HelpOutline,
+                icon = Icons.AutoMirrored.Outlined.HelpOutline,
                 tint = MaterialTheme.colorScheme.tertiary)
 
             ReplacementAssistChip(

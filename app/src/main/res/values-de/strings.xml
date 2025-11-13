@@ -132,8 +132,22 @@
     <string name="organize_replacement">Einen Ersatz organisieren</string>
     <string name="process_replacement">Ersatz zur Bearbeitung</string>
     <string name="waiting_confirmation_replacement">Warten auf Bestätigung des Ersatzes</string>
-    <!-- Map -->
+
+    <!-- Map (Translated by AI)-->
     <string name="delimit_organization_title">Begrenzen Sie Ihre Organisation</string>
+    <string name="create_area_button">Gebiet erstellen</string>
+    <string name="tooltip_area_marker_title">Markierungen hinzufügen :</string>
+    <string name="tooltip_area_marker_text">Drücke lange auf die Karte, um eine Markierung zu setzen.</string>
+    <string name="tooltip_area_multiple_marker_title">Weitere Punkte hinzufügen :</string>
+    <string name="tooltip_area_multiple_marker_text">Wiederhole diesen Schritt, um die Ecken deines Gebiets festzulegen.</string>
+    <string name="tooltip_area_delete_marker_title">Gebiet erstellen :</string>
+    <string name="tooltip_area_delete_marker_text">Sobald du mindestens 3 Markierungen hast, tippe auf „Gebiet erstellen“, um es automatisch zu generieren.</string>
+    <string name="tooltip_area_create_title">Bearbeiten oder löschen :</string>
+    <string name="tooltip_area_create_text">Du kannst Markierungen verschieben oder löschen, um die Form anzupassen.</string>
+    <string name="down_sheet_title">Benenne dein Gebiet</string>
+    <string name="down_sheet_text_field">Gebietsname</string>
+    <string name="down_sheet_button_create">Gebiet speichern</string>
+    <string name="down_sheet_button_delete">Markierung löschen</string>
 
     <!-- Replacement -->
     <string name="replacement_requests_title">Vertretungsanfragen</string>
@@ -179,5 +193,6 @@
     <string name="replacement_create_select_event">Ereignis auswählen</string>
     <string name="replacement_create_choose_date_range">Datumsbereich auswählen</string>
     <string name="common_send">Senden</string>
+
 
 </resources>

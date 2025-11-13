@@ -25,9 +25,9 @@ import kotlinx.coroutines.launch
  * @property phoneNumber User's phone number.
  */
 data class ProfileUIState(
-  val displayName: String = "",
-  val email: String = "",
-  val phoneNumber: String = ""
+    val displayName: String = "",
+    val email: String = "",
+    val phoneNumber: String = ""
 )
 
 /**
@@ -36,12 +36,11 @@ data class ProfileUIState(
  * @property repository The repository used to retrieve user information.
  */
 class ProfileViewModel(
-  application: Application,
-  private val repository: AuthRepository = AuthRepositoryProvider.repository,
-  private val preferences: SharedPreferences =
-    application.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE),
-) :
-  AndroidViewModel(application) {
+    application: Application,
+    private val repository: AuthRepository = AuthRepositoryProvider.repository,
+    private val preferences: SharedPreferences =
+        application.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE),
+) : AndroidViewModel(application) {
 
   private val _uiState = MutableStateFlow(ProfileUIState())
   val uiState: StateFlow<ProfileUIState> = _uiState
@@ -55,9 +54,7 @@ class ProfileViewModel(
   /** Loads the current user from the repository. */
   private suspend fun loadCurrentUser() {
     val currentUser = repository.getCurrentUser()
-    currentUser?.let { user ->
-      cachedUser = user
-    } ?: run { cachedUser = null }
+    currentUser?.let { user -> cachedUser = user } ?: run { cachedUser = null }
 
     val displayNameOverride = readOverride(KEY_DISPLAY_NAME)
     val emailOverride = readOverride(KEY_EMAIL)
@@ -65,10 +62,9 @@ class ProfileViewModel(
 
     _uiState.update {
       it.copy(
-        displayName =
-          displayNameOverride ?: cachedUser?.displayName.orEmpty(),
-        email = emailOverride ?: cachedUser?.email.orEmpty(),
-        phoneNumber = phoneOverride ?: cachedUser?.phoneNumber.orEmpty())
+          displayName = displayNameOverride ?: cachedUser?.displayName.orEmpty(),
+          email = emailOverride ?: cachedUser?.email.orEmpty(),
+          phoneNumber = phoneOverride ?: cachedUser?.phoneNumber.orEmpty())
     }
   }
 
@@ -95,10 +91,10 @@ class ProfileViewModel(
     val trimmedPhone = currentState.phoneNumber.trim()
 
     val resolvedDisplayName =
-      trimmedDisplayName.takeIf { it.isNotEmpty() } ?: cachedUser?.displayName.orEmpty()
+        trimmedDisplayName.takeIf { it.isNotEmpty() } ?: cachedUser?.displayName.orEmpty()
     val resolvedEmail = trimmedEmail.takeIf { it.isNotEmpty() } ?: cachedUser?.email.orEmpty()
     val resolvedPhoneNumber =
-      trimmedPhone.takeIf { it.isNotEmpty() } ?: cachedUser?.phoneNumber.orEmpty()
+        trimmedPhone.takeIf { it.isNotEmpty() } ?: cachedUser?.phoneNumber.orEmpty()
 
     persistOverride(KEY_DISPLAY_NAME, trimmedDisplayName, cachedUser?.displayName)
     persistOverride(KEY_EMAIL, trimmedEmail, cachedUser?.email)
@@ -106,9 +102,9 @@ class ProfileViewModel(
 
     _uiState.update {
       it.copy(
-        displayName = resolvedDisplayName,
-        email = resolvedEmail,
-        phoneNumber = resolvedPhoneNumber)
+          displayName = resolvedDisplayName,
+          email = resolvedEmail,
+          phoneNumber = resolvedPhoneNumber)
     }
   }
 
@@ -140,28 +136,23 @@ class ProfileViewModel(
     private const val DEFAULT_USER_KEY = "default_user"
 
     fun provideFactory(
-      application: Application,
-      repository: AuthRepository = AuthRepositoryProvider.repository
+        application: Application,
+        repository: AuthRepository = AuthRepositoryProvider.repository
     ): ViewModelProvider.Factory {
       return object : ViewModelProvider.AndroidViewModelFactory(application) {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
           if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return ProfileViewModel(application, repository) as T
+            @Suppress("UNCHECKED_CAST") return ProfileViewModel(application, repository) as T
           }
           return super.create(modelClass)
         }
 
-        override fun <T : ViewModel> create(
-          modelClass: Class<T>,
-          extras: CreationExtras
-        ): T {
+        override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
           if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
             val app =
-              extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]
-                      as? Application ?: application
-            @Suppress("UNCHECKED_CAST")
-            return ProfileViewModel(app, repository) as T
+                extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as? Application
+                    ?: application
+            @Suppress("UNCHECKED_CAST") return ProfileViewModel(app, repository) as T
           }
           return super.create(modelClass, extras)
         }

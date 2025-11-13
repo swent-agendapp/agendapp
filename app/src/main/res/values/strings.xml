@@ -178,6 +178,9 @@
     <string name="delete">Delete</string>
     <string name="modify">Modify</string>
     <string name="delete_event_message">Are you sure you want to delete this event?</string>
+    <string name="common_send">Send</string>
+    <string name="replacement_list_title">Select an event</string>
+    <string name="replacement_list_instruction">Select an event you need to be replaced for</string>
 </resources>
 
 

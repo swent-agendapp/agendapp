@@ -118,16 +118,16 @@ class CalendarViewModel(
   /**
    * Retrieves the [Event] corresponding to the given [eventId].
    *
-   * This method performs a lookup in the [EventRepository] and returns the matching event.
-   * If no event is found or if an error occurs during the fetch, an error message is
-   * propagated to the UI layer and a [NoSuchElementException] is thrown.
+   * This method performs a lookup in the [EventRepository] and returns the matching event. If no
+   * event is found or if an error occurs during the fetch, an error message is propagated to the UI
+   * layer and a [NoSuchElementException] is thrown.
    *
    * @throws NoSuchElementException if no event with the given [eventId] exists.
    */
   suspend fun getEventById(eventId: String): Event {
     return try {
       eventRepository.getEventById(eventId)
-        ?: throw NoSuchElementException("Event with id=$eventId not found.")
+          ?: throw NoSuchElementException("Event with id=$eventId not found.")
     } catch (e: Exception) {
       setErrorMsg("Failed to fetch event $eventId: ${e.message}")
       throw NoSuchElementException("Event with id=$eventId not found.")

@@ -49,8 +49,8 @@ import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingSmall
-import com.android.sample.ui.theme.WeightMedium
 import com.android.sample.ui.theme.WeightExtraHeavy
+import com.android.sample.ui.theme.WeightMedium
 
 /**
  * Second step of event creation flow: select start/end date and time, plus optional recurrence

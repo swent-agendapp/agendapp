@@ -169,4 +169,21 @@ class OrganizationFirebaseRepositoryTest : FirebaseEmulatedTest() {
     val adminBRemaining = repository.getAllOrganizations(adminB)
     assertEquals(setOf("orgC"), adminBRemaining.map { it.id }.toSet())
   }
+
+  @Test
+  fun getMembersOfOrganization_asMember_shouldReturnMembers() = runBlocking {
+    repository.insertOrganization(orgA, adminA)
+    val members = repository.getMembersOfOrganization(orgA.id, memberA)
+    val memberIds = members.map { it.id }.toSet()
+    assertEquals(setOf("memberA", "adminA"), memberIds)
+  }
+
+  @Test
+  fun getMembersOfOrganization_asOutsider_shouldThrow() = runBlocking {
+    repository.insertOrganization(orgA, adminA)
+    try {
+      repository.getMembersOfOrganization(orgA.id, outsider)
+      fail("Expected IllegalArgumentException for outsider")
+    } catch (_: IllegalArgumentException) {}
+  }
 }

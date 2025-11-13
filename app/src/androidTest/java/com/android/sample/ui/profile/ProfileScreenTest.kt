@@ -253,19 +253,17 @@ class ProfileScreenTest {
             repository = fakeRepository,
             preferences = sharedPrefs)
 
-    // 🔥 Hoisted mutable ViewModel reference
-    lateinit var currentViewModel: ProfileViewModel
+    lateinit var setVm: (ProfileViewModel) -> Unit
 
     composeTestRule.setContent {
       var vm by remember { mutableStateOf(createViewModel()) }
-      currentViewModel = vm // expose it so the test can replace it
+      setVm = { newVm -> vm = newVm } // <-- assign into real compose state
 
       ProfileScreen(onNavigateBack = {}, profileViewModel = vm)
     }
 
     // --- Edit fields ---
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.EDIT_BUTTON).performClick()
-
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD).performTextClearance()
     composeTestRule
         .onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD)
@@ -285,11 +283,9 @@ class ProfileScreenTest {
 
     composeTestRule.waitForIdle()
 
-    // --- Simulate recreation by replacing the ViewModel inside the composition ---
+    // --- Simulate Process Death / Recreation ---
     composeTestRule.runOnUiThread {
-      val newViewModel = createViewModel()
-      // swap the VM inside the composition
-      currentViewModel = newViewModel
+      setVm(createViewModel()) // <-- this NOW triggers recomposition
     }
 
     composeTestRule.waitForIdle()

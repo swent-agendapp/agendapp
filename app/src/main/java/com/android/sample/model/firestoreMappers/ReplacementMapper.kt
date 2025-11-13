@@ -1,5 +1,6 @@
 package com.android.sample.model.firestoreMappers
 
+import android.util.Log
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementStatus
 import com.google.firebase.firestore.DocumentSnapshot
@@ -17,7 +18,10 @@ object ReplacementMapper : FirestoreMapper<Replacement> {
 
     val status =
         runCatching { ReplacementStatus.valueOf(statusString) }
-            .getOrDefault(ReplacementStatus.Pending)
+            .getOrElse {
+              Log.e("ReplacementMapper", "Unknown status \"$statusString\". By default : Pending.")
+              ReplacementStatus.Pending
+            }
 
     // The event is stored as a nested map inside the replacement document
     val rawEvent = document.get("event") as? Map<*, *>
@@ -40,7 +44,10 @@ object ReplacementMapper : FirestoreMapper<Replacement> {
 
     val status =
         runCatching { ReplacementStatus.valueOf(statusString) }
-            .getOrDefault(ReplacementStatus.Pending)
+            .getOrElse {
+              Log.e("ReplacementMapper", "Unknown status \"$statusString\". By default : Pending.")
+              ReplacementStatus.Pending
+            }
 
     val rawEvent = data["event"] as? Map<*, *>
     val eventMap = rawEvent?.mapKeys { it.key.toString() }

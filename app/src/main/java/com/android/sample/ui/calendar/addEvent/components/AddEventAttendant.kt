@@ -17,10 +17,12 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -39,6 +41,7 @@ import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
 import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.components.BottomNavigationButtons
+import com.android.sample.ui.map.MapScreenTestTags
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.PaddingMedium
@@ -53,6 +56,7 @@ import com.android.sample.ui.theme.WeightVeryHeavy
  *
  * On "Create", the ViewModel persists the event.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEventAttendantScreen(
     addEventViewModel: AddEventViewModel = viewModel(),
@@ -73,7 +77,14 @@ fun AddEventAttendantScreen(
           "Frank") // Placeholder for all possible participants
 
   Scaffold(
-      topBar = { TopTitleBar(title = stringResource(R.string.addEventTitle)) },
+      topBar = {
+        TopAppBar(
+          title = {
+            Text(
+              stringResource(R.string.addEventTitle),
+              modifier = Modifier.testTag(MapScreenTestTags.MAP_TITLE))
+          })
+      },
       content = { paddingValues ->
         Column(
             modifier =

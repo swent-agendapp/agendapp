@@ -6,9 +6,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -29,6 +35,7 @@ import com.android.sample.ui.calendar.addEvent.AddEventViewModel
 import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.calendar.components.ValidatingTextField
 import com.android.sample.ui.components.BottomNavigationButtons
+import com.android.sample.ui.map.MapScreenTestTags
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.WeightMedium
 import com.android.sample.ui.theme.WeightVeryHeavy
@@ -44,6 +51,7 @@ private const val DESCRIPTION_FIELD_MIN_LINES = 12
  * @param onNext Triggered when validation passes and the user moves to step 2.
  * @param onCancel Triggered when the user cancels the flow entirely.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEventTitleAndDescriptionScreen(
     addEventViewModel: AddEventViewModel = viewModel(),
@@ -62,7 +70,14 @@ fun AddEventTitleAndDescriptionScreen(
   var descriptionTouched by remember { mutableStateOf(false) }
 
   Scaffold(
-      topBar = { TopTitleBar(title = stringResource(R.string.addEventTitle)) },
+      topBar = {
+        TopAppBar(
+          title = {
+            Text(
+              stringResource(R.string.addEventTitle),
+              modifier = Modifier.testTag(MapScreenTestTags.MAP_TITLE))
+          })
+      },
       content = { paddingValues ->
         Column(
             modifier =

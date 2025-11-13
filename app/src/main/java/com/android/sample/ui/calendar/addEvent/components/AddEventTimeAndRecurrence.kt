@@ -21,6 +21,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -45,6 +46,7 @@ import com.android.sample.ui.calendar.components.DatePickerFieldToModal
 import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.calendar.utils.DateTimeUtils
 import com.android.sample.ui.components.BottomNavigationButtons
+import com.android.sample.ui.map.MapScreenTestTags
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.SpacingLarge
@@ -80,7 +82,13 @@ fun AddEventTimeAndRecurrenceScreen(
   var showEndTimePicker by remember { mutableStateOf(false) }
 
   Scaffold(
-      topBar = { TopTitleBar(title = stringResource(R.string.addEventTitle)) },
+      topBar = { TopAppBar(
+        title = {
+          Text(
+            stringResource(R.string.addEventTitle),
+            modifier = Modifier.testTag(MapScreenTestTags.MAP_TITLE))
+        })
+      },
       content = { paddingValues ->
         Column(
             modifier =

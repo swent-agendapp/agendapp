@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.authentication.FirebaseUserRepository
-import com.android.sample.model.authentication.UserProfile
+import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepository
 import com.github.se.bootcamp.model.authentication.AuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,49 +49,57 @@ class ProfileViewModel(
 
   /** Loads the current user from the repository. */
   private suspend fun loadCurrentUser() {
-    val currentUser = repository.getCurrentUser()
-    currentUser?.let { user ->
-      currentUserId = user.id
+    val currentUser = repository.getCurrentUser() ?: return
+    currentUserId = currentUser.id
 
-      val googleDisplayName = user.googleDisplayName ?: user.displayName
-      val googleEmail = user.googleEmail ?: user.email
-      val googlePhone = user.googlePhoneNumber ?: user.phoneNumber
+    val googleDisplayName = currentUser.googleDisplayName ?: currentUser.displayName
+    val googleEmail = currentUser.googleEmail ?: currentUser.email
+    val googlePhone = currentUser.googlePhoneNumber ?: currentUser.phoneNumber
 
-      // Persist Google provided information so it is available even after edits.
+    val storedUser = runCatching { userRepository.getUser(currentUser.id) }.getOrNull()
+
+    val finalGoogleDisplayName =
+        storedUser?.googleDisplayName?.takeIf { it.isNotBlank() }
+            ?: googleDisplayName.orEmpty()
+    val finalGoogleEmail =
+        storedUser?.googleEmail?.takeIf { it.isNotBlank() } ?: googleEmail.orEmpty()
+    val finalGooglePhone =
+        storedUser?.googlePhoneNumber?.takeIf { it.isNotBlank() } ?: googlePhone.orEmpty()
+
+    val displayName =
+        storedUser?.displayName?.takeIf { it.isNotBlank() } ?: finalGoogleDisplayName
+    val email = storedUser?.email?.takeIf { it.isNotBlank() } ?: finalGoogleEmail
+    val phone = storedUser?.phoneNumber?.takeIf { it.isNotBlank() } ?: finalGooglePhone
+
+    _uiState.update {
+      it.copy(
+          displayName = displayName,
+          email = email,
+          phoneNumber = phone,
+          googleDisplayName = finalGoogleDisplayName,
+          googleEmail = finalGoogleEmail,
+          googlePhoneNumber = finalGooglePhone)
+    }
+
+    val needsGoogleSync =
+        storedUser?.let {
+          it.googleDisplayName != googleDisplayName ||
+              it.googleEmail != googleEmail ||
+              it.googlePhoneNumber != googlePhone
+        } ?: true
+
+    if (needsGoogleSync) {
       runCatching {
-            userRepository.upsertProfile(
-                UserProfile(
-                    userId = user.id,
+            userRepository.upsertUser(
+                User(
+                    id = currentUser.id,
+                    displayName = storedUser?.displayName,
+                    email = storedUser?.email,
+                    phoneNumber = storedUser?.phoneNumber,
                     googleDisplayName = googleDisplayName,
                     googleEmail = googleEmail,
                     googlePhoneNumber = googlePhone))
           }
-
-      val storedProfile = runCatching { userRepository.getProfile(user.id) }.getOrNull()
-
-      val finalGoogleDisplayName =
-          storedProfile?.googleDisplayName?.takeIf { it.isNotBlank() }
-              ?: googleDisplayName.orEmpty()
-      val finalGoogleEmail =
-          storedProfile?.googleEmail?.takeIf { it.isNotBlank() } ?: googleEmail.orEmpty()
-      val finalGooglePhone =
-          storedProfile?.googlePhoneNumber?.takeIf { it.isNotBlank() }
-              ?: googlePhone.orEmpty()
-
-      val displayName =
-          storedProfile?.displayName?.takeIf { it.isNotBlank() } ?: finalGoogleDisplayName
-      val email = storedProfile?.email?.takeIf { it.isNotBlank() } ?: finalGoogleEmail
-      val phone = storedProfile?.phoneNumber?.takeIf { it.isNotBlank() } ?: finalGooglePhone
-
-      _uiState.update {
-        it.copy(
-            displayName = displayName,
-            email = email,
-            phoneNumber = phone,
-            googleDisplayName = finalGoogleDisplayName,
-            googleEmail = finalGoogleEmail,
-            googlePhoneNumber = finalGooglePhone)
-      }
     }
   }
 
@@ -116,9 +124,9 @@ class ProfileViewModel(
     val state = _uiState.value
 
     viewModelScope.launch {
-      userRepository.upsertProfile(
-          UserProfile(
-              userId = userId,
+      userRepository.upsertUser(
+          User(
+              id = userId,
               displayName = state.displayName.ifBlank { null },
               email = state.email.ifBlank { null },
               phoneNumber = state.phoneNumber.ifBlank { null },

@@ -1,10 +1,15 @@
 package com.android.sample.ui.profile
 
-import androidx.compose.ui.test.*
+import androidx.compose.ui.test.assertDoesNotExist
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextClearance
+import androidx.compose.ui.test.performTextInput
 import com.android.sample.model.authentication.FakeAuthRepository
 import com.android.sample.model.authentication.User
-import com.android.sample.model.authentication.UserProfile
 import com.android.sample.model.authentication.UserRepository
 import org.junit.Rule
 import org.junit.Test
@@ -12,22 +17,12 @@ import org.junit.Test
 class ProfileScreenTest {
 
   private class FakeUserRepository : UserRepository {
-    private val data = mutableMapOf<String, UserProfile>()
+    private val data = mutableMapOf<String, User>()
 
-    override suspend fun getProfile(userId: String): UserProfile? = data[userId]
+    override suspend fun getUser(userId: String): User? = data[userId]
 
-    override suspend fun upsertProfile(profile: UserProfile) {
-      val current = data[profile.userId]
-      val merged =
-          UserProfile(
-              userId = profile.userId,
-              displayName = profile.displayName ?: current?.displayName,
-              email = profile.email ?: current?.email,
-              phoneNumber = profile.phoneNumber ?: current?.phoneNumber,
-              googleDisplayName = profile.googleDisplayName ?: current?.googleDisplayName,
-              googleEmail = profile.googleEmail ?: current?.googleEmail,
-              googlePhoneNumber = profile.googlePhoneNumber ?: current?.googlePhoneNumber)
-      data[profile.userId] = merged
+    override suspend fun upsertUser(user: User) {
+      data[user.id] = user
     }
   }
 
@@ -162,11 +157,8 @@ class ProfileScreenTest {
 
   @Test
   fun profileScreen_displayRootIsDisplayed() {
-    val fakeRepository = FakeAuthRepository(null)
-    val viewModel = ProfileViewModel(fakeRepository, FakeUserRepository())
-
+    val viewModel = ProfileViewModel(FakeAuthRepository(null), FakeUserRepository())
     composeTestRule.setContent { ProfileScreen(onNavigateBack = {}, profileViewModel = viewModel) }
-
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.PROFILE_SCREEN).assertIsDisplayed()
   }
 

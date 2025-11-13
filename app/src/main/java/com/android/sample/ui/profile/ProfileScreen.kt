@@ -48,6 +48,7 @@ fun ProfileScreen(
     onSignOut: () -> Unit = {}
 ) {
   val uiState by profileViewModel.uiState.collectAsState()
+
   var isEditMode by remember { mutableStateOf(false) }
   var displayName by remember { mutableStateOf(uiState.displayName) }
   var email by remember { mutableStateOf(uiState.email) }
@@ -55,7 +56,8 @@ fun ProfileScreen(
   var emailError by remember { mutableStateOf<String?>(null) }
   var phoneError by remember { mutableStateOf<String?>(null) }
 
-  LaunchedEffect(uiState.displayName, uiState.email, uiState.phoneNumber, isEditMode) {
+  // FIXED: removed isEditMode from keys to avoid stale-state bugs
+  LaunchedEffect(uiState.displayName, uiState.email, uiState.phoneNumber) {
     if (!isEditMode) {
       displayName = uiState.displayName
       email = uiState.email
@@ -90,6 +92,7 @@ fun ProfileScreen(
                   isEditMode = isEditMode,
                   onEdit = { isEditMode = true },
                   onCancel = {
+                    // Reset fields to current ViewModel state
                     displayName = uiState.displayName
                     email = uiState.email
                     phone = uiState.phoneNumber
@@ -103,7 +106,13 @@ fun ProfileScreen(
                     phoneError = if (!phoneValid) phoneErrorMessage else null
 
                     if (emailValid && phoneValid) {
-                      profileViewModel.updateDisplayName(displayName)
+
+                      if (displayName.isBlank()) {
+                        displayName = uiState.displayName
+                      } else {
+                        profileViewModel.updateDisplayName(displayName)
+                      }
+
                       profileViewModel.updateEmail(email)
                       profileViewModel.updatePhoneNumber(phone)
                       profileViewModel.saveProfile()

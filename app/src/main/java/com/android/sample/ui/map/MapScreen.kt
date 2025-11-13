@@ -61,6 +61,7 @@ import com.android.sample.ui.theme.DefaultZoom
 import com.android.sample.ui.theme.Salmon
 import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingSmall
+import com.android.sample.ui.theme.Weight
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -202,7 +203,7 @@ fun MapScreen(
       floatingActionButtonPosition = FabPosition.Start,
       content = { padding ->
         Column(modifier = Modifier.fillMaxSize()) {
-          Box(modifier = Modifier.weight(1f).fillMaxWidth().padding(padding)) {
+          Box(modifier = Modifier.weight(Weight).fillMaxWidth().padding(padding)) {
             GoogleMap(
                 modifier = Modifier.matchParentSize().testTag(MapScreenTestTags.GOOGLE_MAP_SCREEN),
                 cameraPositionState = cameraPositionState,

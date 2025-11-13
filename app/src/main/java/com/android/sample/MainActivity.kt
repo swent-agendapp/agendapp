@@ -146,23 +146,29 @@ fun Agendapp(
                     onSignedIn = { navigationActions.navigateTo(Screen.Calendar) })
               }
 
-              // Main Calendar view
-              composable(Screen.Calendar.route) {
-                CalendarScreen(
-                    onCreateEvent = { navigationActions.navigateTo(Screen.AddEvent) },
-                    onEventClick = { event -> navigationActions.navigateToEventOverview(event.id) })
-              }
-              // Event Overview
-              composable(Screen.EventOverview.route) { navBackStackEntry ->
-                // Get the Event id from the arguments
-                val eventId = navBackStackEntry.arguments?.getString("eventId")
+              // Calendar Graph
+              navigation(startDestination = Screen.Calendar.route, route = Screen.Calendar.name) {
+                // Main Calendar Screen
+                composable(Screen.Calendar.route) {
+                  CalendarScreen(
+                      onCreateEvent = { navigationActions.navigateTo(Screen.AddEvent) },
+                      onEventClick = { event ->
+                        navigationActions.navigateToEventOverview(event.id)
+                      })
+                }
+                // Event Overview
+                composable(Screen.EventOverview.route) { navBackStackEntry ->
+                  // Get the Event id from the arguments
+                  val eventId = navBackStackEntry.arguments?.getString("eventId")
 
-                // Create the Overview screen with the Event id
-                eventId?.let {
-                  EventOverviewScreen(
-                      eventId = eventId, onBackClick = { navigationActions.navigateBack() })
-                } ?: run { Log.e("EventOverviewScreen", "Event id is null") }
+                  // Create the Overview screen with the Event id
+                  eventId?.let {
+                    EventOverviewScreen(
+                        eventId = eventId, onBackClick = { navigationActions.navigateBack() })
+                  } ?: run { Log.e("EventOverviewScreen", "Event id is null") }
+                }
               }
+
               // Add Event Screen Flow
               navigation(startDestination = Screen.AddEvent.route, route = "Add Event") {
                 composable(Screen.AddEvent.route) {

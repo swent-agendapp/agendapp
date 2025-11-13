@@ -40,7 +40,7 @@ const val AlphaHigh = 0.8f
 const val AlphaVeryHigh = 1f
 
 // Map
-const val DefaultZoom = 17f
+const val DefaultZoom = 16f
 
 // Elevation
 val ElevationExtraLow = 2.dp
@@ -63,3 +63,6 @@ val BorderWidthExtraThick = 4.dp
 
 // Card elevation
 val DefaultCardElevation = 4.dp
+
+// weight
+const val Weight = 1f

@@ -4,6 +4,8 @@ import android.Manifest
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextInput
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.rule.GrantPermissionRule
 import com.google.android.gms.maps.MapsInitializer
@@ -33,5 +35,36 @@ class MapScreenTest {
     composeTestRule.onNodeWithTag(MapScreenTestTags.GOOGLE_MAP_SCREEN).assertIsDisplayed()
     composeTestRule.onNodeWithTag(MapScreenTestTags.MAP_TITLE).assertIsDisplayed()
     composeTestRule.onNodeWithTag(MapScreenTestTags.MAP_GO_BACK_BUTTON).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(MapScreenTestTags.TOOLTIP_BUTTON).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(MapScreenTestTags.CREATE_AREA_FLOATING_BUTTON).assertIsDisplayed()
+  }
+
+  @Test
+  fun clickToolTipDisplayIt() {
+    composeTestRule.setContent { MapScreen() }
+
+    composeTestRule
+        .onNodeWithTag(MapScreenTestTags.TOOLTIP_BUTTON)
+        .assertIsDisplayed()
+        .performClick()
+    composeTestRule.onNodeWithTag(MapScreenTestTags.TOOLTIP_TEXT).assertIsDisplayed()
+  }
+
+  @Test
+  fun openTheCreateAreaDownSheet() {
+    composeTestRule.setContent { MapScreen() }
+    composeTestRule
+        .onNodeWithTag(MapScreenTestTags.CREATE_AREA_FLOATING_BUTTON)
+        .assertIsDisplayed()
+        .performClick()
+    composeTestRule.onNodeWithTag(MapScreenTestTags.DOWN_SHEET).assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag(MapScreenTestTags.DOWN_SHEET_FORM)
+        .assertIsDisplayed()
+        .performTextInput("Office")
+    composeTestRule
+        .onNodeWithTag(MapScreenTestTags.CREATE_AREA_BUTTON)
+        .assertIsDisplayed()
+        .performClick()
   }
 }

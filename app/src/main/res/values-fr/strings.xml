@@ -133,14 +133,35 @@
     <string name="organize_replacement">Organiser un remplacement</string>
     <string name="process_replacement">Remplacement à traiter</string>
     <string name="waiting_confirmation_replacement">En attente de confirmation du remplacement</string>
-    <!-- Map -->
+    <!-- Map (Translated by AI)-->
     <string name="delimit_organization_title">Délimitez votre organisation</string>
+    <string name="create_area_button">Créer une zone</string>
+    <string name="tooltip_area_marker_title">Ajoutez des marqueurs :</string>
+    <string name="tooltip_area_marker_text">Appuyez longuement sur la carte pour placer un marqueur.</string>
+    <string name="tooltip_area_multiple_marker_title">Ajoutez d’autres points :</string>
+    <string name="tooltip_area_multiple_marker_text">Répétez cette étape pour définir les coins de votre zone.</string>
+    <string name="tooltip_area_delete_marker_title">Créez votre zone :</string>
+    <string name="tooltip_area_delete_marker_text">Une fois que vous avez au moins 3 marqueurs, touchez « Créer une zone » pour la générer automatiquement.</string>
+    <string name="tooltip_area_create_title">Modifiez ou supprimez :</string>
+    <string name="tooltip_area_create_text">Vous pouvez déplacer ou supprimer des marqueurs si vous souhaitez ajuster la forme.</string>
+    <string name="down_sheet_title">Nommez votre zone</string>
+    <string name="down_sheet_text_field">Nom de la zone</string>
+    <string name="down_sheet_button_create">Enregistrer la zone</string>
+    <string name="down_sheet_button_delete">Supprimer le marqueur</string>
 
     <!-- Replacement -->
     <string name="replacement_requests_title">Demandes de remplacement</string>
     <string name="replacement_requests_subtitle">Remplacements en attente de confirmation</string>
     <string name="replacement_substituted_label">Personne absente : %1$s</string>
     <string name="replacement_substitute_label">Remplaçant : %1$s</string>
+    <string name="replacement_to_process_section_title">Remplacements à traiter</string>
+    <string name="replacement_waiting_answer_section_title">En attente d’une réponse</string>
+    <string name="replacement_process_button">Traiter</string>
+    <string name="replacement_no_response_label">%1$d sans réponse</string>
+    <string name="replacement_declined_label">%1$d refusés</string>
+    <string name="replacement_pending_people_title">Sans réponse</string>
+    <string name="replacement_declined_people_title">Refusé</string>
+    <string name="replacement_people_dialog_close">Fermer</string>
     <string name="invalidDateRangeMessage">Invalid date range: end date must be after start date.</string>
     <string name="select_process_moment">Les traiter maintenant ?</string>
     <string name="process_now">Traiter maintenant</string>
@@ -157,6 +178,21 @@
     <string name="edit_event_confirmation_title">Confirmation de la modification de l’événement</string>
     <string name="edit_event_confirmation_message">Veuillez confirmer les modifications de votre événement</string>
     <string name="common_finish">Terminer</string>
+    <string name="replacement_view_title">Demande de remplacement</string>
+    <string name="replacement_event_description_label">Description de l’événement</string>
+    <string name="replacement_employees_label">Employés</string>
+    <string name="replacement_accept_button">Accepter</string>
+    <string name="replacement_decline_button">Refuser</string>
+    <string name="replacement_title">Remplacement</string>
+    <string name="replacement_ask_to_be_replaced">Demander un remplacement</string>
+    <string name="replacement_card_title">Titre : %1$s</string>
+    <string name="replacement_card_description">Description : %1$s</string>
+    <string name="replacement_accept_short">Accepter</string>
+    <string name="replacement_refuse_short">Refuser</string>
+    <string name="replacement_create_title">Étape précédente</string>
+    <string name="replacement_create_select_event">Sélectionner un événement</string>
+    <string name="replacement_create_choose_date_range">Choisir une plage de dates</string>
+    <string name="common_send">Envoyer</string>
 
 
 </resources>

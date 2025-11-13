@@ -92,4 +92,17 @@ class ReplacementRepositoryFirebaseTest : FirebaseEmulatedTest() {
     Assert.assertEquals(1, user123Replacements.size)
     Assert.assertEquals("replacement1", user123Replacements.first().id)
   }
+
+  @Test
+  fun getReplacementById_unknownId_returnsNull() = runBlocking {
+    val retrieved = repository.getReplacementById("unknown-id")
+    Assert.assertNull(retrieved)
+  }
+
+  @Test
+  fun getReplacementsByAbsentUser_noMatch_returnsEmptyList() = runBlocking {
+    repository.insertReplacement(replacement1)
+    val result = repository.getReplacementsByAbsentUser("someone-else")
+    Assert.assertTrue(result.isEmpty())
+  }
 }

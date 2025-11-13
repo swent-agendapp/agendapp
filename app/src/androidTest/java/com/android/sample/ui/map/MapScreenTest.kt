@@ -57,8 +57,6 @@ class MapScreenTest {
         .assertIsDisplayed()
         .performClick()
     composeTestRule.onNodeWithTag(MapScreenTestTags.DOWN_SHEET).assertIsDisplayed()
-    composeTestRule
-        .onNodeWithTag(MapScreenTestTags.CREATE_AREA_BUTTON)
-        .assertIsDisplayed()
+    composeTestRule.onNodeWithTag(MapScreenTestTags.CREATE_AREA_BUTTON).assertIsDisplayed()
   }
 }

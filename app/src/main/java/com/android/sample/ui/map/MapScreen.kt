@@ -47,7 +47,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
@@ -162,24 +161,23 @@ fun MapScreen(
                     ) {
                       Column(modifier = Modifier.testTag(MapScreenTestTags.TOOLTIP_TEXT)) {
                         Text(
-                          text = stringResource(R.string.tooltip_area_marker_title),
-                          style = MaterialTheme.typography.titleSmall
-                        )
+                            text = stringResource(R.string.tooltip_area_marker_title),
+                            style = MaterialTheme.typography.titleSmall)
                         Text(text = stringResource(R.string.tooltip_area_marker_text))
                         Spacer(Modifier.height(SpacingSmall))
                         Text(
-                          text = stringResource(R.string.tooltip_area_multiple_marker_title),
-                          style = MaterialTheme.typography.titleSmall)
+                            text = stringResource(R.string.tooltip_area_multiple_marker_title),
+                            style = MaterialTheme.typography.titleSmall)
                         Text(text = stringResource(R.string.tooltip_area_multiple_marker_text))
                         Spacer(Modifier.height(SpacingSmall))
                         Text(
-                          text = stringResource(R.string.tooltip_area_delete_marker_title),
-                          style = MaterialTheme.typography.titleSmall)
+                            text = stringResource(R.string.tooltip_area_delete_marker_title),
+                            style = MaterialTheme.typography.titleSmall)
                         Text(text = stringResource(R.string.tooltip_area_delete_marker_text))
                         Spacer(Modifier.height(SpacingSmall))
                         Text(
-                          text = stringResource(R.string.tooltip_area_create_title),
-                          style = MaterialTheme.typography.titleSmall)
+                            text = stringResource(R.string.tooltip_area_create_title),
+                            style = MaterialTheme.typography.titleSmall)
                         Text(text = stringResource(R.string.tooltip_area_create_text))
                       }
                     }

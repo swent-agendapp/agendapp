@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
 import com.android.sample.ui.calendar.components.TopTitleBar
+import com.android.sample.ui.common.MainPageTopBar
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingLarge
 import com.android.sample.ui.theme.PaddingMedium
@@ -95,7 +96,11 @@ fun ReplacementOverviewScreen(
               onClick = onConfirmedClick))
 
   Scaffold(
-      topBar = { TopTitleBar(title = stringResource(R.string.replacement)) },
+      topBar = {
+        MainPageTopBar(
+          title = stringResource(R.string.replacement),
+        )
+      },
       content = { paddingValues ->
         Column(
             modifier =

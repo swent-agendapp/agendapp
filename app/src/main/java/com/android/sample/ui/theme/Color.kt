@@ -13,5 +13,8 @@ val Pink40 = Color(0xFF7D5260)
 val Red40 = Color(0xFFE05A5C)
 
 val Salmon = Color(0xFFf46b5d)
-
 val DangerRed = Color(0xFFDB4A39)
+
+// Top Bar Color
+val TopBarBackgroundColor = Color(0xFFE6E4E9)
+val TopBarTextColor = Color(0xFF000000)

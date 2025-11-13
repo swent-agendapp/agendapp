@@ -16,11 +16,11 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
+import com.android.sample.ui.common.MainPageTopBar
 import com.android.sample.ui.theme.*
 
 object SettingsScreenTestTags {
   const val ROOT = "settings_screen"
-  const val BACK_BUTTON = "back_button"
   const val PROFILE_BUTTON = "profile_button"
   const val ADMIN_BUTTON = "admin_info_button"
   const val MAP_SETTINGS_BUTTON = "map_settings_button"
@@ -31,24 +31,15 @@ object SettingsScreenTestTags {
 @Preview
 @Composable
 fun SettingsScreen(
-    onNavigateBack: () -> Unit = {},
     onNavigateToUserProfile: () -> Unit = {},
     onNavigateToAdminInfo: () -> Unit = {},
     onNavigateToMapSettings: () -> Unit = {},
 ) {
   Scaffold(
       topBar = {
-        TopAppBar(
-            title = { Text(stringResource(R.string.settings_screen_title)) },
-            navigationIcon = {
-              IconButton(
-                  onClick = onNavigateBack,
-                  modifier = Modifier.testTag(SettingsScreenTestTags.BACK_BUTTON)) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.common_back))
-                  }
-            })
+        MainPageTopBar(
+          title = stringResource(R.string.settings_screen_title),
+        )
       }) { innerPadding ->
         Column(
             modifier =

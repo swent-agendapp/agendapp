@@ -25,6 +25,7 @@ import com.android.sample.R
 import com.android.sample.ui.calendar.data.LocalDateRange
 import com.android.sample.ui.calendar.style.CalendarDefaults.DefaultDateRange
 import com.android.sample.ui.calendar.utils.DateTimeUtils.localDateTimeToInstant
+import com.android.sample.ui.common.MainPageTopBar
 import java.time.LocalTime
 
 object CalendarScreenTestTags {
@@ -69,17 +70,9 @@ fun CalendarScreen(
 
   Scaffold(
       topBar = {
-        TopAppBar(
-            title = {
-              Text(
-                  stringResource(R.string.calendar_screen_title),
-                  modifier = Modifier.testTag(CalendarScreenTestTags.TOP_BAR_TITLE))
-            },
-            colors =
-                TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                ),
+        MainPageTopBar(
+          title = stringResource(R.string.calendar_screen_title),
+          modifier = Modifier.testTag(CalendarScreenTestTags.TOP_BAR_TITLE)
         )
       },
   ) { paddingValues ->

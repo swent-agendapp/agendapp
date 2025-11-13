@@ -8,15 +8,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.android.sample.model.organization.EmployeeRepositoryFirebase
 import com.android.sample.model.organization.EmployeeRepositoryProvider
+import com.android.sample.settings.language.LanguageRepository
+import com.android.sample.settings.language.LanguageViewModel
 import com.android.sample.ui.calendar.AddEventAttendantScreen
 import com.android.sample.ui.calendar.AddEventConfirmationScreen
 import com.android.sample.ui.calendar.AddEventTimeAndRecurrenceScreen
@@ -38,124 +42,149 @@ import com.github.se.bootcamp.model.authentication.AuthRepositoryFirebase
 import com.google.firebase.firestore.FirebaseFirestore
 
 object MainActivityTestTags {
-  const val MAIN_SCREEN_CONTAINER = "main_screen_container"
+    const val MAIN_SCREEN_CONTAINER = "main_screen_container"
 }
+
 /**
  * Main entry point of the application. Sets up the theme and calls [Agendapp] to initialize
  * navigation.
  */
 class MainActivity : ComponentActivity() {
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-    EmployeeRepositoryProvider.init(
-        EmployeeRepositoryFirebase(
-            db = FirebaseFirestore.getInstance(), authRepository = AuthRepositoryFirebase()))
-    setContent {
-      SampleAppTheme {
-        Surface(
-            modifier =
-                Modifier.fillMaxSize().semantics {
-                  testTag = MainActivityTestTags.MAIN_SCREEN_CONTAINER
-                },
-            color = MaterialTheme.colorScheme.background) {
-              Agendapp()
+        EmployeeRepositoryProvider.init(
+            EmployeeRepositoryFirebase(
+                db = FirebaseFirestore.getInstance(), authRepository = AuthRepositoryFirebase()))
+
+        setContent {
+            SampleAppTheme {
+                Surface(
+                    modifier =
+                        Modifier.fillMaxSize().semantics {
+                            testTag = MainActivityTestTags.MAIN_SCREEN_CONTAINER
+                        },
+                    color = MaterialTheme.colorScheme.background) {
+                    Agendapp()
+                }
             }
-      }
+        }
     }
-  }
 }
 
 /**
- * Root composable containing the navigation graph for the application. This function defines all
- * available routes and how composables are connected.
+ * Root composable containing the navigation graph for the application.
  */
 @Composable
 fun Agendapp(modifier: Modifier = Modifier) {
-  val navController = rememberNavController()
-  val navigationActions = NavigationActions(navController)
-  val addEventViewModel: AddEventViewModel = viewModel()
+    val navController = rememberNavController()
+    val navigationActions = NavigationActions(navController)
+    val addEventViewModel: AddEventViewModel = viewModel()
 
-  NavHost(
-      navController = navController, startDestination = Screen.Home.route, modifier = modifier) {
+    // 🆕 Contexte nécessaire pour initialiser LanguageRepository
+    val context = LocalContext.current
+
+    NavHost(
+        navController = navController,
+        startDestination = Screen.Home.route,
+        modifier = modifier
+    ) {
+        // ---------- ADD EVENT FLOW ----------
         navigation(startDestination = Screen.AddEventTitle.route, route = "Add Event") {
-          composable(Screen.AddEventTitle.route) {
-            AddEventTitleAndDescriptionScreen(
-                addEventViewModel = addEventViewModel,
-                onNext = { navigationActions.navigateTo(Screen.AddEventTime) },
-                onCancel = {
-                  navigationActions.navigateBack()
-                  addEventViewModel.resetUiState()
-                })
-          }
-          composable(Screen.AddEventTime.route) {
-            AddEventTimeAndRecurrenceScreen(
-                addEventViewModel = addEventViewModel,
-                onNext = { navigationActions.navigateTo(Screen.AddEventMember) },
-                onBack = { navigationActions.navigateBack() })
-          }
-          composable(Screen.AddEventMember.route) {
-            AddEventAttendantScreen(
-                addEventViewModel = addEventViewModel,
-                onCreate = { navigationActions.navigateTo(Screen.AddEventEnd) },
-                onBack = { navigationActions.navigateBack() })
-          }
-          composable(Screen.AddEventEnd.route) {
-            AddEventConfirmationScreen(
-                onFinish = {
-                  navigationActions.navigateTo(Screen.Calendar)
-                  addEventViewModel.resetUiState()
-                })
-          }
+            composable(Screen.AddEventTitle.route) {
+                AddEventTitleAndDescriptionScreen(
+                    addEventViewModel = addEventViewModel,
+                    onNext = { navigationActions.navigateTo(Screen.AddEventTime) },
+                    onCancel = {
+                        navigationActions.navigateBack()
+                        addEventViewModel.resetUiState()
+                    })
+            }
+            composable(Screen.AddEventTime.route) {
+                AddEventTimeAndRecurrenceScreen(
+                    addEventViewModel = addEventViewModel,
+                    onNext = { navigationActions.navigateTo(Screen.AddEventMember) },
+                    onBack = { navigationActions.navigateBack() })
+            }
+            composable(Screen.AddEventMember.route) {
+                AddEventAttendantScreen(
+                    addEventViewModel = addEventViewModel,
+                    onCreate = { navigationActions.navigateTo(Screen.AddEventEnd) },
+                    onBack = { navigationActions.navigateBack() })
+            }
+            composable(Screen.AddEventEnd.route) {
+                AddEventConfirmationScreen(
+                    onFinish = {
+                        navigationActions.navigateTo(Screen.Calendar)
+                        addEventViewModel.resetUiState()
+                    })
+            }
         }
+
+        // ---------- SETTINGS FLOW ----------
         navigation(startDestination = Screen.Settings.route, route = "Settings") {
-          composable(Screen.Settings.route) {
-            SettingsScreen(
-                onNavigateBack = { navigationActions.navigateBack() },
-                onNavigateToProfile = { navigationActions.navigateTo(Screen.Profile) },
-                onNavigateToLanguage = { navigationActions.navigateTo(Screen.LanguageSelection) })
-          }
-          composable(Screen.LanguageSelection.route) {
-            LanguageSelectionScreen(onNavigateBack = { navigationActions.navigateBack() })
-          }
-          composable(Screen.Profile.route) {
-            ProfileScreen(
-                onNavigateBack = { navigationActions.navigateBack() },
-                onNavigateToAdminContact = { navigationActions.navigateTo(Screen.AdminContact) })
-          }
-          composable(Screen.AdminContact.route) {
-            AdminContactScreen(onNavigateBack = { navigationActions.navigateBack() })
-          }
+            composable(Screen.Settings.route) {
+                SettingsScreen(
+                    onNavigateBack = { navigationActions.navigateBack() },
+                    onNavigateToProfile = { navigationActions.navigateTo(Screen.Profile) },
+                    onNavigateToLanguage = { navigationActions.navigateTo(Screen.LanguageSelection) })
+            }
+
+            composable(Screen.LanguageSelection.route) {
+                val languageViewModel: LanguageViewModel = viewModel()
+
+                LanguageSelectionScreen(
+                    viewModel = languageViewModel,
+                    onNavigateBack = { navigationActions.navigateBack() }
+                )
+            }
+
+            composable(Screen.Profile.route) {
+                ProfileScreen(
+                    onNavigateBack = { navigationActions.navigateBack() },
+                    onNavigateToAdminContact = { navigationActions.navigateTo(Screen.AdminContact) })
+            }
+            composable(Screen.AdminContact.route) {
+                AdminContactScreen(onNavigateBack = { navigationActions.navigateBack() })
+            }
         }
+
+        // ---------- HOME FLOW ----------
         navigation(startDestination = Screen.Home.route, route = "Home") {
-          composable(Screen.Home.route) {
-            HomeScreen(
-                onNavigateToEdit = { eventId -> navigationActions.navigateToEditEvent(eventId) },
-                onNavigateToCalendar = { navigationActions.navigateTo(Screen.Calendar) },
-                onNavigateToSettings = { navigationActions.navigateTo(Screen.Settings) },
-                onNavigateToMap = { navigationActions.navigateTo(Screen.Map) },
-                onNavigateToReplacement = {
-                  navigationActions.navigateTo(Screen.ReplacementOverview)
-                })
-          }
+            composable(Screen.Home.route) {
+                HomeScreen(
+                    onNavigateToEdit = { eventId -> navigationActions.navigateToEditEvent(eventId) },
+                    onNavigateToCalendar = { navigationActions.navigateTo(Screen.Calendar) },
+                    onNavigateToSettings = { navigationActions.navigateTo(Screen.Settings) },
+                    onNavigateToMap = { navigationActions.navigateTo(Screen.Map) },
+                    onNavigateToReplacement = {
+                        navigationActions.navigateTo(Screen.ReplacementOverview)
+                    })
+            }
         }
+
+        // ---------- CALENDAR FLOW ----------
         navigation(startDestination = Screen.Calendar.route, route = "Calendar") {
-          composable(Screen.Calendar.route) {
-            CalendarScreen(onCreateEvent = { navigationActions.navigateTo(Screen.AddEventTitle) })
-          }
+            composable(Screen.Calendar.route) {
+                CalendarScreen(onCreateEvent = { navigationActions.navigateTo(Screen.AddEventTitle) })
+            }
         }
+
+        // ---------- REPLACEMENT FLOW ----------
         composable(Screen.ReplacementOverview.route) {
-          ReplacementScreen(
-              onWaitingConfirmationClick = {
-                navigationActions.navigateTo(Screen.ReplacementPending)
-              })
+            ReplacementScreen(
+                onWaitingConfirmationClick = {
+                    navigationActions.navigateTo(Screen.ReplacementPending)
+                })
         }
 
         composable(Screen.ReplacementPending.route) { ReplacementPendingListScreen() }
+
+        // ---------- MAP FLOW ----------
         navigation(startDestination = Screen.Map.route, route = "Map") {
-          composable(Screen.Map.route) {
-            MapScreen(onGoBack = { navigationActions.navigateBack() })
-          }
+            composable(Screen.Map.route) {
+                MapScreen(onGoBack = { navigationActions.navigateBack() })
+            }
         }
-      }
+    }
 }

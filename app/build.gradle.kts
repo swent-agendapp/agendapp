@@ -145,6 +145,7 @@ fun DependencyHandlerScope.globalTestImplementation(dep: Any) {
 }
 
 dependencies {
+    implementation("androidx.appcompat:appcompat:1.6.1")
     implementation(platform(libs.kotlin.bom))
     dependencies {androidTestImplementation(libs.androidx.espresso.intents) }
     implementation(libs.androidx.core.ktx)

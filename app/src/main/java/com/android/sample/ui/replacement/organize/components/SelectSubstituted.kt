@@ -42,7 +42,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
-import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.profile.AdminContactScreenTestTags
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeTestTags
 import com.android.sample.ui.theme.CornerRadiusLarge
@@ -107,16 +106,16 @@ fun SelectSubstitutedScreen(
   Scaffold(
       topBar = {
         TopAppBar(
-          title = { Text(text = stringResource(R.string.organize_replacement)) },
-          navigationIcon = {
-            IconButton(
-              onClick = onBack,
-              modifier = Modifier.testTag(AdminContactScreenTestTags.BACK_BUTTON)) {
-              Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = stringResource(R.string.common_back))
-            }
-          })
+            title = { Text(text = stringResource(R.string.organize_replacement)) },
+            navigationIcon = {
+              IconButton(
+                  onClick = onBack,
+                  modifier = Modifier.testTag(AdminContactScreenTestTags.BACK_BUTTON)) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.common_back))
+                  }
+            })
       },
       content = { paddingValues ->
         Column(

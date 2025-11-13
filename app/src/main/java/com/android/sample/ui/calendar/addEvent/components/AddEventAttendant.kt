@@ -106,21 +106,20 @@ fun AddEventAttendantScreen(
                             modifier =
                                 Modifier.fillMaxWidth()
                                     .clickable {
-                                      if (newEventUIState.participants.contains(participant)) {
-                                        addEventViewModel.removeParticipant(participant)
-                                      } else {
-                                        addEventViewModel.addParticipant(participant)
-                                      }
+                                      val action =
+                                          if (participant in newEventUIState.participants)
+                                              addEventViewModel::removeParticipant
+                                          else addEventViewModel::addParticipant
+                                      action(participant)
                                     }
                                     .padding(vertical = PaddingSmall)) {
                               Checkbox(
                                   checked = newEventUIState.participants.contains(participant),
                                   onCheckedChange = { checked ->
-                                    if (checked) {
-                                      addEventViewModel.addParticipant(participant)
-                                    } else {
-                                      addEventViewModel.removeParticipant(participant)
-                                    }
+                                    val action =
+                                        if (checked) addEventViewModel::addParticipant
+                                        else addEventViewModel::removeParticipant
+                                    action(participant)
                                   })
                               Spacer(modifier = Modifier.width(SpacingSmall))
                               Text(text = participant)

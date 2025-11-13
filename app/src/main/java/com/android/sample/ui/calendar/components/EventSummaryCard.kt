@@ -236,7 +236,7 @@ private val previewEvents: List<Event> by lazy {
 
 @Preview(showBackground = true)
 @Composable
-private fun EventSummaryCardPreview_Weekly() {
+private fun EventSummaryCardPreviewWeekly() {
   val names =
       mapOf(
           "u1" to "Alice",

@@ -48,8 +48,6 @@ import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.mockData.getMockReplacements
 import com.android.sample.model.replacement.toProcessReplacements
 import com.android.sample.model.replacement.waitingForAnswerAndDeclinedReplacements
-import com.android.sample.ui.calendar.components.TopTitleBar
-import com.android.sample.ui.profile.AdminContactScreenTestTags
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.SpacingLarge
@@ -101,17 +99,15 @@ fun ReplacementPendingListScreen(
   Scaffold(
       topBar = {
         TopAppBar(
-          title = { Text(stringResource(id = R.string.replacement_requests_title)) },
-          navigationIcon = {
-            IconButton(
-              onClick = onNavigateBack) {
-              Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = stringResource(R.string.common_back))
-            }
-          })
-      }) {
-          paddingValues ->
+            title = { Text(stringResource(id = R.string.replacement_requests_title)) },
+            navigationIcon = {
+              IconButton(onClick = onNavigateBack) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(R.string.common_back))
+              }
+            })
+      }) { paddingValues ->
         Column(
             modifier =
                 Modifier.fillMaxSize()

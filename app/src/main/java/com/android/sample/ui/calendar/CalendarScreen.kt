@@ -60,10 +60,6 @@ fun CalendarScreen(
       calendarViewModel.clearErrorMsg()
     }
   }
-
-  // generate mock events
-  // val mockEvents = getMockEvents()
-
   Scaffold(
       topBar = {
         MainPageTopBar(

@@ -4,10 +4,10 @@ import com.android.sample.model.organization.Employee
 import com.android.sample.model.organization.EmployeeRepository
 import com.android.sample.model.organization.Role
 import com.google.common.truth.Truth.assertThat
+import kotlin.test.Ignore
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.Ignore
 
 private class FakeEmployeeRepository(
     var roleForCurrentUser: Role? = null,

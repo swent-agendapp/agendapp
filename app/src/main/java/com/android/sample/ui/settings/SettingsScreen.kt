@@ -1,18 +1,11 @@
 package com.android.sample.ui.settings
 
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.AdminPanelSettings
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.GroupAdd
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.QuestionAnswer
-import androidx.compose.material.icons.filled.Work
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -46,23 +39,22 @@ fun SettingsScreen(
     onNavigateToMapSettings: () -> Unit = {},
 ) {
   val items =
-    listOf(
-      ButtonItem(
-        stringResource(R.string.settings_profile_button),
-        Icons.Default.Person,
-        SettingsScreenTestTags.PROFILE_BUTTON,
-        onClick = onNavigateToUserProfile),
-      ButtonItem(
-        stringResource(R.string.settings_admin_info_button),
-        Icons.Default.AdminPanelSettings,
-        SettingsScreenTestTags.ADMIN_BUTTON,
-        onClick = onNavigateToAdminInfo),
-      ButtonItem(
-        stringResource(R.string.settings_map_settings_button),
-        Icons.Default.Map,
-        SettingsScreenTestTags.MAP_SETTINGS_BUTTON,
-        onClick = onNavigateToMapSettings)
-    )
+      listOf(
+          ButtonItem(
+              stringResource(R.string.settings_profile_button),
+              Icons.Default.Person,
+              SettingsScreenTestTags.PROFILE_BUTTON,
+              onClick = onNavigateToUserProfile),
+          ButtonItem(
+              stringResource(R.string.settings_admin_info_button),
+              Icons.Default.AdminPanelSettings,
+              SettingsScreenTestTags.ADMIN_BUTTON,
+              onClick = onNavigateToAdminInfo),
+          ButtonItem(
+              stringResource(R.string.settings_map_settings_button),
+              Icons.Default.Map,
+              SettingsScreenTestTags.MAP_SETTINGS_BUTTON,
+              onClick = onNavigateToMapSettings))
 
   Scaffold(
       topBar = {

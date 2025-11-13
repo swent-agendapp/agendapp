@@ -178,7 +178,10 @@ fun Agendapp(
                       )
                     }
                     // Pending Replacement Screen
-                    composable(Screen.ReplacementPending.route) { ReplacementPendingListScreen(onNavigateBack = { navigationActions.navigateBack() }) }
+                    composable(Screen.ReplacementPending.route) {
+                      ReplacementPendingListScreen(
+                          onNavigateBack = { navigationActions.navigateBack() })
+                    }
                   }
 
               // Settings Graph

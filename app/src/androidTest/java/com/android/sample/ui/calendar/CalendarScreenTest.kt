@@ -192,7 +192,7 @@ abstract class BaseCalendarScreenTest {
                 endDate =
                     at(thisWeekMonday.plusDays(1), LocalTime.of(9, 30)).plus(Duration.ofHours(2)),
                 cloudStorageStatuses = emptySet(),
-                participants = emptySet(),
+                participants = setOf("Alice", "Bob"),
             ),
             createEvent(
                 title = "Nice Event",
@@ -200,7 +200,7 @@ abstract class BaseCalendarScreenTest {
                 endDate =
                     at(thisWeekMonday.plusDays(2), LocalTime.of(14, 0)).plus(Duration.ofHours(4)),
                 cloudStorageStatuses = emptySet(),
-                participants = emptySet(),
+                participants = setOf("Charlie", "David"),
             ),
             createEvent(
                 title = "Top Event",
@@ -208,7 +208,7 @@ abstract class BaseCalendarScreenTest {
                 endDate =
                     at(thisWeekMonday.plusDays(3), LocalTime.of(11, 0)).plus(Duration.ofHours(2)),
                 cloudStorageStatuses = emptySet(),
-                participants = emptySet(),
+                participants = setOf("Eve"),
             ),
         )
 
@@ -222,7 +222,7 @@ abstract class BaseCalendarScreenTest {
                 endDate =
                     at(thisWeekMonday.plusWeeks(1), LocalTime.of(10, 0)).plus(Duration.ofHours(3)),
                 cloudStorageStatuses = emptySet(),
-                participants = emptySet(),
+                participants = setOf("Alice", "Bob"),
             ),
             createEvent(
                 title = "Later Event",
@@ -231,7 +231,7 @@ abstract class BaseCalendarScreenTest {
                     at(thisWeekMonday.plusWeeks(1).plusDays(3), LocalTime.of(16, 0))
                         .plus(Duration.ofHours(4)),
                 cloudStorageStatuses = emptySet(),
-                participants = emptySet(),
+                participants = setOf("Charlie", "David"),
             ),
         )
 
@@ -246,7 +246,7 @@ abstract class BaseCalendarScreenTest {
                     at(thisWeekMonday.minusWeeks(1).plusDays(1), LocalTime.of(17, 0))
                         .plus(Duration.ofHours(2)),
                 cloudStorageStatuses = emptySet(),
-                participants = emptySet(),
+                participants = setOf("Alice", "Bob"),
             ),
             createEvent(
                 title = "Earlier Event",
@@ -255,7 +255,7 @@ abstract class BaseCalendarScreenTest {
                     at(thisWeekMonday.minusWeeks(1).plusDays(4), LocalTime.of(8, 0))
                         .plus(Duration.ofHours(4)),
                 cloudStorageStatuses = emptySet(),
-                participants = emptySet(),
+                participants = setOf("Charlie", "David"),
             ),
         )
 

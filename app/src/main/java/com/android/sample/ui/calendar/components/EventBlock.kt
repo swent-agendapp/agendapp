@@ -32,6 +32,7 @@ import com.android.sample.ui.calendar.style.defaultGridContentDimensions
 import com.android.sample.ui.calendar.utils.DateTimeUtils
 import com.android.sample.ui.calendar.utils.EventPositionUtil
 import com.android.sample.ui.theme.CornerRadiusSmall
+import com.android.sample.ui.theme.PaddingExtraSmall
 import com.android.sample.ui.theme.widthLarge
 import java.time.Instant
 import java.time.LocalDate
@@ -149,7 +150,7 @@ private fun DrawEventBlock(
               // eventLayout.widthFraction
               .clip(RoundedCornerShape(CornerRadiusSmall))
               .background(backgroundColor)
-              .padding(start = 4.dp, top = 4.dp, end = 4.dp)
+              .padding(start = PaddingExtraSmall, top = PaddingExtraSmall, end = PaddingExtraSmall)
               .clickable(onClick = { onEventClick(event) })
               .testTag("${CalendarScreenTestTags.EVENT_BLOCK}_${event.title}"),
       // Later : handle onTap and onLongPress

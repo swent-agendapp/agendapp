@@ -1,21 +1,22 @@
-package com.android.sample.model.profile
+package com.android.sample.model.authentication
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.tasks.await
 
-/** Firestore-backed implementation of [UserProfileRepository]. */
-class FirebaseUserProfileRepository(
+/** Firestore-backed implementation of [UserRepository]. */
+class FirebaseUserRepository(
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
-) : UserProfileRepository {
+) : UserRepository {
 
   private fun usersCollection() = firestore.collection("users")
 
-  override suspend fun getProfile(userId: String): UserProfileData? {
+  override suspend fun getProfile(userId: String): UserProfile? {
     val snapshot = usersCollection().document(userId).get().await()
     if (!snapshot.exists()) return null
 
-    return UserProfileData(
+    return UserProfile(
+        userId = userId,
         displayName = snapshot.getString("displayName"),
         email = snapshot.getString("email"),
         phoneNumber = snapshot.getString("phoneNumber"),
@@ -24,7 +25,7 @@ class FirebaseUserProfileRepository(
         googlePhoneNumber = snapshot.getString("googlePhoneNumber"))
   }
 
-  override suspend fun upsertProfile(userId: String, profile: UserProfileData) {
+  override suspend fun upsertProfile(profile: UserProfile) {
     val updates = mutableMapOf<String, Any?>()
 
     profile.displayName?.let { updates["displayName"] = it }
@@ -36,6 +37,6 @@ class FirebaseUserProfileRepository(
 
     if (updates.isEmpty()) return
 
-    usersCollection().document(userId).set(updates, SetOptions.merge()).await()
+    usersCollection().document(profile.userId).set(updates, SetOptions.merge()).await()
   }
 }

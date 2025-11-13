@@ -4,28 +4,30 @@ import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import com.android.sample.model.authentication.FakeAuthRepository
 import com.android.sample.model.authentication.User
-import com.android.sample.model.profile.UserProfileData
-import com.android.sample.model.profile.UserProfileRepository
+import com.android.sample.model.authentication.UserProfile
+import com.android.sample.model.authentication.UserRepository
 import org.junit.Rule
 import org.junit.Test
 
 class ProfileScreenTest {
 
-  private class FakeUserProfileRepository : UserProfileRepository {
-    private val data = mutableMapOf<String, UserProfileData>()
+  private class FakeUserRepository : UserRepository {
+    private val data = mutableMapOf<String, UserProfile>()
 
-    override suspend fun getProfile(userId: String): UserProfileData? = data[userId]
+    override suspend fun getProfile(userId: String): UserProfile? = data[userId]
 
-    override suspend fun upsertProfile(userId: String, profile: UserProfileData) {
-      val current = data[userId] ?: UserProfileData()
-      data[userId] =
-          UserProfileData(
-              displayName = profile.displayName ?: current.displayName,
-              email = profile.email ?: current.email,
-              phoneNumber = profile.phoneNumber ?: current.phoneNumber,
-              googleDisplayName = profile.googleDisplayName ?: current.googleDisplayName,
-              googleEmail = profile.googleEmail ?: current.googleEmail,
-              googlePhoneNumber = profile.googlePhoneNumber ?: current.googlePhoneNumber)
+    override suspend fun upsertProfile(profile: UserProfile) {
+      val current = data[profile.userId]
+      val merged =
+          UserProfile(
+              userId = profile.userId,
+              displayName = profile.displayName ?: current?.displayName,
+              email = profile.email ?: current?.email,
+              phoneNumber = profile.phoneNumber ?: current?.phoneNumber,
+              googleDisplayName = profile.googleDisplayName ?: current?.googleDisplayName,
+              googleEmail = profile.googleEmail ?: current?.googleEmail,
+              googlePhoneNumber = profile.googlePhoneNumber ?: current?.googlePhoneNumber)
+      data[profile.userId] = merged
     }
   }
 
@@ -41,7 +43,7 @@ class ProfileScreenTest {
             phoneNumber = "123-456-7890")
 
     val fakeRepository = FakeAuthRepository(testUser)
-    val viewModel = ProfileViewModel(fakeRepository, FakeUserProfileRepository())
+    val viewModel = ProfileViewModel(fakeRepository, FakeUserRepository())
 
     composeTestRule.setContent { ProfileScreen(onNavigateBack = {}, profileViewModel = viewModel) }
 
@@ -71,7 +73,7 @@ class ProfileScreenTest {
         User(
             id = "test123", displayName = "Test User", email = "test@example.com", phoneNumber = "")
     val fakeRepository = FakeAuthRepository(testUser)
-    val viewModel = ProfileViewModel(fakeRepository, FakeUserProfileRepository())
+    val viewModel = ProfileViewModel(fakeRepository, FakeUserRepository())
 
     composeTestRule.setContent { ProfileScreen(onNavigateBack = {}, profileViewModel = viewModel) }
 
@@ -91,7 +93,7 @@ class ProfileScreenTest {
     val testUser =
         User(id = "test123", displayName = "Old Name", email = "old@example.com", phoneNumber = "")
     val fakeRepository = FakeAuthRepository(testUser)
-    val viewModel = ProfileViewModel(fakeRepository, FakeUserProfileRepository())
+    val viewModel = ProfileViewModel(fakeRepository, FakeUserRepository())
 
     composeTestRule.setContent { ProfileScreen(onNavigateBack = {}, profileViewModel = viewModel) }
 
@@ -117,7 +119,7 @@ class ProfileScreenTest {
   @Test
   fun profileScreen_backButtonWorks() {
     val fakeRepository = FakeAuthRepository(null)
-    val viewModel = ProfileViewModel(fakeRepository, FakeUserProfileRepository())
+    val viewModel = ProfileViewModel(fakeRepository, FakeUserRepository())
     var backClicked = false
 
     composeTestRule.setContent {
@@ -137,7 +139,7 @@ class ProfileScreenTest {
             email = "orig@example.com",
             phoneNumber = "000-111-2222")
     val fakeRepository = FakeAuthRepository(testUser)
-    val viewModel = ProfileViewModel(fakeRepository, FakeUserProfileRepository())
+    val viewModel = ProfileViewModel(fakeRepository, FakeUserRepository())
 
     composeTestRule.setContent { ProfileScreen(onNavigateBack = {}, profileViewModel = viewModel) }
 
@@ -161,7 +163,7 @@ class ProfileScreenTest {
   @Test
   fun profileScreen_displayRootIsDisplayed() {
     val fakeRepository = FakeAuthRepository(null)
-    val viewModel = ProfileViewModel(fakeRepository, FakeUserProfileRepository())
+    val viewModel = ProfileViewModel(fakeRepository, FakeUserRepository())
 
     composeTestRule.setContent { ProfileScreen(onNavigateBack = {}, profileViewModel = viewModel) }
 
@@ -170,7 +172,7 @@ class ProfileScreenTest {
 
   @Test
   fun all_components_Displayed_inReadOnlyMode() {
-    val viewModel = ProfileViewModel(FakeAuthRepository(null), FakeUserProfileRepository())
+    val viewModel = ProfileViewModel(FakeAuthRepository(null), FakeUserRepository())
     composeTestRule.setContent { ProfileScreen(profileViewModel = viewModel) }
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.BACK_BUTTON).assertIsDisplayed()
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD).assertIsDisplayed()
@@ -184,7 +186,7 @@ class ProfileScreenTest {
   fun profileScreen_signOutButtonWorks() {
     var signOutClicked = false
 
-    val viewModel = ProfileViewModel(FakeAuthRepository(null), FakeUserProfileRepository())
+    val viewModel = ProfileViewModel(FakeAuthRepository(null), FakeUserRepository())
     composeTestRule.setContent {
       ProfileScreen(onSignOut = { signOutClicked = true }, profileViewModel = viewModel)
     }

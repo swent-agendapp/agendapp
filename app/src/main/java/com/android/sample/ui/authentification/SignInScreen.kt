@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.credentials.CredentialManager
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
+import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.theme.Salmon
 import com.github.se.bootcamp.ui.authentication.SignInScreenTestTags.END_SNACK_BAR
 
@@ -138,27 +139,10 @@ fun SignInScreen(
 
 @Composable
 fun GoogleSignInButton(onSignInClick: () -> Unit) {
-  Button(
-      onClick = onSignInClick,
-      colors = ButtonDefaults.buttonColors(containerColor = Salmon), // Button color
-      shape = RoundedCornerShape(50), // Circular edges for the button
-      border = BorderStroke(1.dp, Color.Transparent),
-      modifier =
-          Modifier.padding(8.dp)
-              .height(48.dp)
-              .width(250.dp)
-              .testTag(SignInScreenTestTags.LOGIN_BUTTON)) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()) {
-
-              // Text for the button
-              Text(
-                  text = stringResource(R.string.sign_in_button_text),
-                  color = Color.White, // Text color
-                  fontSize = 16.sp, // Font size
-                  fontWeight = FontWeight.Medium)
-            }
-      }
+  PrimaryButton(
+    modifier =
+      Modifier.testTag(SignInScreenTestTags.LOGIN_BUTTON),
+    text = stringResource(R.string.sign_in_button_text),
+    onClick = onSignInClick,
+    )
 }

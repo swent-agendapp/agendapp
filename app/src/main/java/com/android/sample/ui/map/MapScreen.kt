@@ -22,6 +22,7 @@ import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RichTooltip
@@ -85,7 +86,7 @@ object MapScreenTestTags {
   const val CREATE_AREA_BUTTON = "create_area_button"
   const val DOWN_SHEET = "down_sheet"
   const val DELETE_MARKER_BUTTON = "delete_marker_button"
-  const val CREATE_AREA_FLOATING_BUTTON = "delete_marker_button"
+  const val CREATE_AREA_FLOATING_BUTTON = "create_area_floating_button"
 }
 
 enum class BottomSheetState {
@@ -161,21 +162,25 @@ fun MapScreen(
                     ) {
                       Column(modifier = Modifier.testTag(MapScreenTestTags.TOOLTIP_TEXT)) {
                         Text(
-                            stringResource(R.string.tooltip_area_marker_title),
-                            fontWeight = FontWeight.Bold)
-                        Text(stringResource(R.string.tooltip_area_marker_text))
+                          text = stringResource(R.string.tooltip_area_marker_title),
+                          style = MaterialTheme.typography.titleSmall
+                        )
+                        Text(text = stringResource(R.string.tooltip_area_marker_text))
+                        Spacer(Modifier.height(SpacingSmall))
                         Text(
-                            stringResource(R.string.tooltip_area_multiple_marker_title),
-                            fontWeight = FontWeight.Bold)
-                        Text(stringResource(R.string.tooltip_area_multiple_marker_text))
+                          text = stringResource(R.string.tooltip_area_multiple_marker_title),
+                          style = MaterialTheme.typography.titleSmall)
+                        Text(text = stringResource(R.string.tooltip_area_multiple_marker_text))
+                        Spacer(Modifier.height(SpacingSmall))
                         Text(
-                            stringResource(R.string.tooltip_area_delete_marker_title),
-                            fontWeight = FontWeight.Bold)
-                        Text(stringResource(R.string.tooltip_area_delete_marker_text))
+                          text = stringResource(R.string.tooltip_area_delete_marker_title),
+                          style = MaterialTheme.typography.titleSmall)
+                        Text(text = stringResource(R.string.tooltip_area_delete_marker_text))
+                        Spacer(Modifier.height(SpacingSmall))
                         Text(
-                            stringResource(R.string.tooltip_area_create_title),
-                            fontWeight = FontWeight.Bold)
-                        Text(stringResource(R.string.tooltip_area_create_text))
+                          text = stringResource(R.string.tooltip_area_create_title),
+                          style = MaterialTheme.typography.titleSmall)
+                        Text(text = stringResource(R.string.tooltip_area_create_text))
                       }
                     }
                   },

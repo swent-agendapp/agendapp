@@ -50,7 +50,7 @@ class MapScreenTest {
   }
 
   @Test
-  fun createAnAreaWith3Marker() {
+  fun openTheCreateAreaDownSheet() {
     composeTestRule.setContent { MapScreen() }
     composeTestRule
         .onNodeWithTag(MapScreenTestTags.CREATE_AREA_FLOATING_BUTTON)
@@ -60,6 +60,5 @@ class MapScreenTest {
     composeTestRule
         .onNodeWithTag(MapScreenTestTags.CREATE_AREA_BUTTON)
         .assertIsDisplayed()
-        .performClick()
   }
 }

@@ -96,7 +96,6 @@
 
     <!-- Calendar -->
     <string name="calendar_screen_title">Kalender</string>
-    <string name="calendar_add_event_content_description">Ereignis hinzufügen</string>
     <string name="replacement">Ersetzung</string>
 
     <!-- Date Picker -->
@@ -114,7 +113,6 @@
     <string name="edit_event_default_notification">30 Min vorher</string>
 
     <!-- Sign In -->
-    <string name="sign_in_success_message">Anmeldung erfolgreich!</string>
     <string name="sign_in_app_title">Agendapp</string>
     <string name="sign_in_message">Planen, verfolgen und verwalten</string>
     <string name="sign_in_welcome">Willkommen</string>

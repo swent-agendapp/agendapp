@@ -127,7 +127,6 @@
 
     <!-- Calendar -->
     <string name="calendar_screen_title">Calendar</string>
-    <string name="calendar_add_event_content_description">Add event</string>
 
     <!-- Date Picker -->
     <string name="date_picker_placeholder">DD/MM/YYYY</string>
@@ -144,7 +143,6 @@
     <string name="edit_event_default_notification">30 min before</string>
 
     <!-- Sign In -->
-    <string name="sign_in_success_message">Login successful!</string>
     <string name="sign_in_app_title">Agendapp</string>
     <string name="sign_in_message">Plan, track and manage</string>
     <string name="sign_in_welcome">Welcome</string>

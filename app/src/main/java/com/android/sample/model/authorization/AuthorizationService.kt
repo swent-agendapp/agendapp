@@ -27,7 +27,7 @@ class AuthorizationService(
    * IllegalAccessException("You do not have necessary permission") } This is the code to add when
    * every thing is working
    */
-  suspend fun requireAdmin() {
+  fun requireAdmin() {
     true
   }
 }

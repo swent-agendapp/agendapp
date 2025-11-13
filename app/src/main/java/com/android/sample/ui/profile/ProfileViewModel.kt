@@ -5,7 +5,10 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.authentication.User
 import com.github.se.bootcamp.model.authentication.AuthRepository
@@ -135,5 +138,34 @@ class ProfileViewModel(
     private const val KEY_EMAIL = "email"
     private const val KEY_PHONE = "phone"
     private const val DEFAULT_USER_KEY = "default_user"
+
+    fun provideFactory(
+        application: Application,
+        repository: AuthRepository = AuthRepositoryProvider.repository
+    ): ViewModelProvider.Factory {
+      return object : ViewModelProvider.AndroidViewModelFactory(application) {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+          if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return ProfileViewModel(application, repository) as T
+          }
+          return super.create(modelClass)
+        }
+
+        override fun <T : ViewModel> create(
+            modelClass: Class<T>,
+            extras: CreationExtras
+        ): T {
+          if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
+            val app =
+                extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]
+                    as? Application ?: application
+            @Suppress("UNCHECKED_CAST")
+            return ProfileViewModel(app, repository) as T
+          }
+          return super.create(modelClass, extras)
+        }
+      }
+    }
   }
 }

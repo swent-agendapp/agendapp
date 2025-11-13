@@ -1,5 +1,6 @@
 package com.android.sample.ui.profile
 
+import android.app.Application
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -41,7 +42,7 @@ object ProfileScreenTestTags {
 @Composable
 fun ProfileScreen(
     onNavigateBack: () -> Unit = {},
-    profileViewModel: ProfileViewModel = viewModel(),
+    profileViewModel: ProfileViewModel = rememberProfileViewModel(),
     authViewModel: SignInViewModel = viewModel(),
     credentialManager: CredentialManager = CredentialManager.create(LocalContext.current),
     onSignOut: () -> Unit = {}
@@ -159,6 +160,12 @@ fun ProfileScreen(
                   }
             }
       }
+}
+
+@Composable
+private fun rememberProfileViewModel(): ProfileViewModel {
+  val application = LocalContext.current.applicationContext as Application
+  return viewModel(factory = ProfileViewModel.provideFactory(application))
 }
 
 @Composable

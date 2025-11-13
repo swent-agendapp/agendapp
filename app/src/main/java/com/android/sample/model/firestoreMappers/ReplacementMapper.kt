@@ -10,11 +10,11 @@ import com.google.firebase.firestore.DocumentSnapshot
 /** Maps Firestore documents to [Replacement] objects and vice versa. */
 object ReplacementMapper : FirestoreMapper<Replacement> {
 
-    private const val ID_FIELD = "id"
-    private const val FIELD_ABSENT_USER_ID = "absentUserId"
-    private const val FIELD_SUBSTITUTE_USER_ID = "substituteUserId"
-    private const val FIELD_STATUS = "status"
-    private const val FIELD_EVENT = "event"
+  private const val ID_FIELD = "id"
+  private const val FIELD_ABSENT_USER_ID = "absentUserId"
+  private const val FIELD_SUBSTITUTE_USER_ID = "substituteUserId"
+  private const val FIELD_STATUS = "status"
+  private const val FIELD_EVENT = "event"
 
   override fun fromDocument(document: DocumentSnapshot): Replacement? {
     val id = document.getString(ID_FIELD) ?: return null

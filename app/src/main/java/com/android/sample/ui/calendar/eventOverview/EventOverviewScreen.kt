@@ -35,8 +35,9 @@ import java.time.Instant
 
 // --- Test tags to use in UI tests ---
 object EventOverviewScreenTestTags {
-  const val SCREEN = "event_overview_screen"
+  const val SCREEN_ROOT = "event_overview_screen_root"
   const val BACK_BUTTON = "event_overview_back"
+  const val TOP_BAR = "event_overview_top_bar"
 }
 
 /**
@@ -83,6 +84,7 @@ fun EventOverviewScreen(
   Scaffold(
       topBar = {
         TopAppBar(
+            modifier = modifier.testTag(EventOverviewScreenTestTags.TOP_BAR),
             title = { Text("Event Overview", style = MaterialTheme.typography.titleLarge) },
             navigationIcon = {
               IconButton(
@@ -99,7 +101,7 @@ fun EventOverviewScreen(
                 modifier
                     .fillMaxSize()
                     .padding(innerPadding)
-                    .testTag(EventOverviewScreenTestTags.SCREEN),
+                    .testTag(EventOverviewScreenTestTags.SCREEN_ROOT),
             contentAlignment = Alignment.TopCenter) {
               // Constrain the card so it does not take the whole width on large screens.
               // EventSummaryCard internally uses fillMaxWidth(), so we wrap it in a box

@@ -15,7 +15,6 @@ import com.android.sample.ui.theme.PaddingSmall
 import com.android.sample.ui.theme.Salmon
 import com.android.sample.ui.theme.WeightLight
 import com.android.sample.ui.theme.WeightMedium
-import com.google.android.material.internal.ViewUtils
 
 /**
  * Displays a single replacement option card.
@@ -47,8 +46,6 @@ fun PrimaryButton(
               contentColor = Color.White,
               disabledContainerColor = Salmon.copy(alpha = WeightLight),
               disabledContentColor = Color.White.copy(alpha = WeightMedium))) {
-        Text(
-            text = text,
-            modifier = Modifier.padding(innerPadding))
+        Text(text = text, modifier = Modifier.padding(innerPadding))
       }
 }

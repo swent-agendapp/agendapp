@@ -1,6 +1,5 @@
 package com.android.sample.ui.calendar
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.sample.model.authentication.AuthRepositoryProvider
@@ -146,7 +145,6 @@ class CalendarViewModel(
     val event = getEventById(eventId)
     // If the list is empty, this will simply return an empty list
     return event.participants.mapNotNull { userId ->
-      Log.d("", "userId = ${userId} --- user Name = ${resolveDisplayNameForUser(userId)}")
       // For each ID, resolve a readable display name (nulls are filtered out by mapNotNull)
       resolveDisplayNameForUser(userId)
     }

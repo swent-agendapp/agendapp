@@ -5,7 +5,8 @@ import java.util.UUID
 
 /** Represents the current status of a replacement request */
 enum class ReplacementStatus {
-  Pending,
+  ToProcess,
+  WaitingForAnswer,
   Accepted,
   Declined
 }
@@ -24,5 +25,5 @@ data class Replacement(
     val absentUserId: String,
     val substituteUserId: String,
     val event: Event,
-    val status: ReplacementStatus = ReplacementStatus.Pending
+    val status: ReplacementStatus = ReplacementStatus.ToProcess
 )

@@ -140,6 +140,14 @@
     <string name="replacement_requests_subtitle">Vertretungen, die auf Bestätigung warten</string>
     <string name="replacement_substituted_label">Abwesende Person: %1$s</string>
     <string name="replacement_substitute_label">Vertretende Person: %1$s</string>
+    <string name="replacement_to_process_section_title">Zu bearbeitende Vertretungen</string>
+    <string name="replacement_waiting_answer_section_title">Warten auf eine Antwort</string>
+    <string name="replacement_process_button">Bearbeiten</string>
+    <string name="replacement_no_response_label">%1$d ohne Antwort</string>
+    <string name="replacement_declined_label">%1$d abgelehnt</string>
+    <string name="replacement_pending_people_title">Ohne Antwort</string>
+    <string name="replacement_declined_people_title">Abgelehnt</string>
+    <string name="replacement_people_dialog_close">Schließen</string>
     <string name="invalidDateRangeMessage">Ungültiger Zeitraum: Das Enddatum muss nach dem Startdatum liegen.</string>
     <string name="select_process_moment">Möchten Sie sie jetzt verarbeiten?</string>
     <string name="process_now">Jetzt verarbeiten</string>

@@ -22,9 +22,10 @@ class ReplacementRepositoryFirebase(private val db: FirebaseFirestore) : Replace
   }
 
   override suspend fun updateReplacement(itemId: String, item: Replacement) {
+    val updatedItem = item.copy(id = itemId)
     db.collection(REPLACEMENTS_COLLECTION_PATH)
         .document(itemId)
-        .set(ReplacementMapper.toMap(item))
+        .set(ReplacementMapper.toMap(updatedItem))
         .await()
   }
 

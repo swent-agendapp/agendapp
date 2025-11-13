@@ -8,6 +8,7 @@ import com.android.sample.model.organization.Role
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
 import java.time.Duration
 import java.time.Instant
+import kotlin.test.Ignore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -18,7 +19,6 @@ import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.Ignore
 
 @OptIn(ExperimentalCoroutinesApi::class)
 

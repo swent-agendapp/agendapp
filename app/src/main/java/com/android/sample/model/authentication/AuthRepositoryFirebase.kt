@@ -3,6 +3,7 @@ package com.github.se.bootcamp.model.authentication
 import androidx.credentials.Credential
 import androidx.credentials.CustomCredential
 import com.android.sample.model.authentication.User
+import com.android.sample.model.constants.FirestoreConstants.COLLECTION_USERS
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
 import com.google.firebase.Firebase
@@ -32,11 +33,6 @@ class AuthRepositoryFirebase(
     private val helper: GoogleSignInHelper = DefaultGoogleSignInHelper(),
     private val firestore: FirebaseFirestore = KtxFirebase.firestore
 ) : AuthRepository {
-
-  private companion object {
-    const val COLLECTION_USERS = "users"
-  }
-
   private fun Map<String, Any?>.toDomainUser(fallbackId: String): User =
       User(
           id = (this["id"] as? String) ?: fallbackId,

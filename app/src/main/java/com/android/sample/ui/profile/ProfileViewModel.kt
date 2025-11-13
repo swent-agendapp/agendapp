@@ -54,17 +54,24 @@ class ProfileViewModel(
   /** Loads the current user from the repository. */
   private suspend fun loadCurrentUser() {
     val currentUser = repository.getCurrentUser()
-    currentUser?.let { user -> cachedUser = user } ?: run { cachedUser = null }
+    currentUser?.let { user ->
+      cachedUser = user
+      val displayNameOverride = readOverride(KEY_DISPLAY_NAME)
+      val emailOverride = readOverride(KEY_EMAIL)
+      val phoneOverride = readOverride(KEY_PHONE)
 
-    val displayNameOverride = readOverride(KEY_DISPLAY_NAME)
-    val emailOverride = readOverride(KEY_EMAIL)
-    val phoneOverride = readOverride(KEY_PHONE)
-
-    _uiState.update {
-      it.copy(
-          displayName = displayNameOverride ?: cachedUser?.displayName.orEmpty(),
-          email = emailOverride ?: cachedUser?.email.orEmpty(),
-          phoneNumber = phoneOverride ?: cachedUser?.phoneNumber.orEmpty())
+      _uiState.update {
+        it.copy(
+          displayName = displayNameOverride ?: user.displayName.orEmpty(),
+          email = emailOverride ?: user.email.orEmpty(),
+          phoneNumber = phoneOverride ?: user.phoneNumber.orEmpty()
+        )
+      }
+    } ?: run {
+      cachedUser = null
+      _uiState.update {
+        ProfileUIState() // Reset to default/empty state if no user
+      }
     }
   }
 

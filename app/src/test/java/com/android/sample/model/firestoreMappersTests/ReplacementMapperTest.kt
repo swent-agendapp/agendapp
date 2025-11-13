@@ -128,6 +128,7 @@ class ReplacementMapperTest {
   @Test
   fun toMap_returnsCorrectMap() {
     val map = ReplacementMapper.toMap(sampleReplacement)
+    assertThat(map["id"]).isEqualTo("replacement1")
     assertThat(map["absentUserId"]).isEqualTo("user123")
     assertThat(map["substituteUserId"]).isEqualTo("user456")
     assertThat(map["status"]).isEqualTo("Pending")

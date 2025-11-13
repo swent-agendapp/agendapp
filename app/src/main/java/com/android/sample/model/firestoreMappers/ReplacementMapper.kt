@@ -56,6 +56,7 @@ object ReplacementMapper : FirestoreMapper<Replacement> {
 
   override fun toMap(model: Replacement): Map<String, Any?> {
     return mapOf(
+        "id" to model.id,
         "absentUserId" to model.absentUserId,
         "substituteUserId" to model.substituteUserId,
         "status" to model.status.name,

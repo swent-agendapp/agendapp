@@ -63,10 +63,10 @@ class CalendarEventOverviewTest {
     }
 
     // Assert: main EventSummaryCard sections are displayed
-    composeTestRule.onNodeWithTag(EventSummaryCardTags.TitleText).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(EventSummaryCardTags.DescriptionText).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(EventSummaryCardTags.ParticipantsList).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(EventSummaryCardTags.SideBar).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(EventSummaryCardTags.TITLE_TEXT).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(EventSummaryCardTags.DESCRIPTION_TEXT).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(EventSummaryCardTags.PARTICIPANTS_LIST).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(EventSummaryCardTags.SIDE_BAR).assertIsDisplayed()
   }
 
   @Test

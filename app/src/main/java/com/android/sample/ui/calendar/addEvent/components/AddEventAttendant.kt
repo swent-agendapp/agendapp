@@ -39,7 +39,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
-import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.map.MapScreenTestTags
 import com.android.sample.ui.theme.CornerRadiusLarge
@@ -79,11 +78,11 @@ fun AddEventAttendantScreen(
   Scaffold(
       topBar = {
         TopAppBar(
-          title = {
-            Text(
-              stringResource(R.string.addEventTitle),
-              modifier = Modifier.testTag(MapScreenTestTags.MAP_TITLE))
-          })
+            title = {
+              Text(
+                  stringResource(R.string.addEventTitle),
+                  modifier = Modifier.testTag(MapScreenTestTags.MAP_TITLE))
+            })
       },
       content = { paddingValues ->
         Column(

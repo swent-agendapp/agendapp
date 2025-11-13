@@ -43,7 +43,6 @@ import com.android.sample.model.calendar.labelRes
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
 import com.android.sample.ui.calendar.components.DatePickerFieldToModal
-import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.calendar.utils.DateTimeUtils
 import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.map.MapScreenTestTags
@@ -82,12 +81,13 @@ fun AddEventTimeAndRecurrenceScreen(
   var showEndTimePicker by remember { mutableStateOf(false) }
 
   Scaffold(
-      topBar = { TopAppBar(
-        title = {
-          Text(
-            stringResource(R.string.addEventTitle),
-            modifier = Modifier.testTag(MapScreenTestTags.MAP_TITLE))
-        })
+      topBar = {
+        TopAppBar(
+            title = {
+              Text(
+                  stringResource(R.string.addEventTitle),
+                  modifier = Modifier.testTag(MapScreenTestTags.MAP_TITLE))
+            })
       },
       content = { paddingValues ->
         Column(

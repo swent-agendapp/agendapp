@@ -6,11 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -32,7 +28,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
-import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.calendar.components.ValidatingTextField
 import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.map.MapScreenTestTags
@@ -72,11 +67,11 @@ fun AddEventTitleAndDescriptionScreen(
   Scaffold(
       topBar = {
         TopAppBar(
-          title = {
-            Text(
-              stringResource(R.string.addEventTitle),
-              modifier = Modifier.testTag(MapScreenTestTags.MAP_TITLE))
-          })
+            title = {
+              Text(
+                  stringResource(R.string.addEventTitle),
+                  modifier = Modifier.testTag(MapScreenTestTags.MAP_TITLE))
+            })
       },
       content = { paddingValues ->
         Column(

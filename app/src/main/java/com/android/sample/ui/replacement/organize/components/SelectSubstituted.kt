@@ -22,7 +22,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
@@ -215,21 +214,17 @@ fun SelectSubstitutedScreen(
                   verticalArrangement = Arrangement.spacedBy(PaddingMedium),
                   horizontalAlignment = Alignment.CenterHorizontally) {
                     SecondaryButton(
-                      modifier =
-                        Modifier
-                          .testTag(ReplacementOrganizeTestTags.SELECT_EVENT_BUTTON),
-                      text = stringResource(R.string.select_events),
-                      enabled = selectedMember.isNotEmpty(),
-                      onClick = onSelectEvents
-                    )
+                        modifier =
+                            Modifier.testTag(ReplacementOrganizeTestTags.SELECT_EVENT_BUTTON),
+                        text = stringResource(R.string.select_events),
+                        enabled = selectedMember.isNotEmpty(),
+                        onClick = onSelectEvents)
                     SecondaryButton(
-                      modifier =
-                        Modifier
-                          .testTag(ReplacementOrganizeTestTags.SELECT_DATE_RANGE_BUTTON),
-                      text = stringResource(R.string.select_date_range),
-                      enabled = selectedMember.isNotEmpty(),
-                      onClick = onSelectDateRange
-                    )
+                        modifier =
+                            Modifier.testTag(ReplacementOrganizeTestTags.SELECT_DATE_RANGE_BUTTON),
+                        text = stringResource(R.string.select_date_range),
+                        enabled = selectedMember.isNotEmpty(),
+                        onClick = onSelectDateRange)
                   }
             }
       },

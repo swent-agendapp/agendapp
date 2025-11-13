@@ -21,4 +21,3 @@ val TopBarTextColor = Color(0xFF000000)
 val Salmon = Color(0xFFED6B6D)
 val Violet = Color(0xFF8687BA)
 val Green = Color(0xFFB2C778)
-

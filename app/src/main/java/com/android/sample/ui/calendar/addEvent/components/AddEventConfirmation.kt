@@ -20,7 +20,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
-import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.map.MapScreenTestTags
 import com.android.sample.ui.theme.PaddingExtraLarge
@@ -39,12 +38,12 @@ fun AddEventConfirmationScreen(
 ) {
   Scaffold(
       topBar = {
-          TopAppBar(
-              title = {
-                  Text(
-                      stringResource(R.string.addEventTitle),
-                      modifier = Modifier.testTag(MapScreenTestTags.MAP_TITLE))
-              })
+        TopAppBar(
+            title = {
+              Text(
+                  stringResource(R.string.addEventTitle),
+                  modifier = Modifier.testTag(MapScreenTestTags.MAP_TITLE))
+            })
       },
       content = { paddingValues ->
         Column(

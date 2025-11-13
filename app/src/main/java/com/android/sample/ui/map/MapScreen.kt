@@ -18,7 +18,6 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -195,11 +194,10 @@ fun MapScreen(
       },
       floatingActionButton = {
         FloatingButton(
-          modifier = Modifier.testTag(CREATE_AREA_FLOATING_BUTTON),
-          text = stringResource(R.string.create_area_button),
-          icon = Icons.Default.Add,
-          onClick = { showBottomSheet = BottomSheetState.ADD_AREA }
-        )
+            modifier = Modifier.testTag(CREATE_AREA_FLOATING_BUTTON),
+            text = stringResource(R.string.create_area_button),
+            icon = Icons.Default.Add,
+            onClick = { showBottomSheet = BottomSheetState.ADD_AREA })
       },
       floatingActionButtonPosition = FabPosition.Start,
       content = { padding ->
@@ -274,8 +272,7 @@ fun MapScreen(
                           },
                           modifier = Modifier.fillMaxWidth().testTag(DELETE_MARKER_BUTTON),
                           colors =
-                              ButtonColors(
-                                  Salmon, Color.Black, Color.DarkGray, Color.LightGray)) {
+                              ButtonColors(Salmon, Color.Black, Color.DarkGray, Color.LightGray)) {
                             Text(stringResource(R.string.down_sheet_button_delete))
                           }
                     }

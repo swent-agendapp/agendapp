@@ -39,7 +39,7 @@ class ReplacementRepositoryFirebaseTest : FirebaseEmulatedTest() {
             absentUserId = "user123",
             substituteUserId = "user456",
             event = sampleEvent,
-            status = ReplacementStatus.Pending)
+            status = ReplacementStatus.ToProcess)
 
     replacement2 =
         Replacement(

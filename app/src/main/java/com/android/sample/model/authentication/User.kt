@@ -13,4 +13,7 @@ data class User(
     val displayName: String?,
     val email: String?,
     val phoneNumber: String? = null,
+    val googleDisplayName: String? = displayName,
+    val googleEmail: String? = email,
+    val googlePhoneNumber: String? = phoneNumber,
 )

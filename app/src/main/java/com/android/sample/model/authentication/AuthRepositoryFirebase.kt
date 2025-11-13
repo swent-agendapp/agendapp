@@ -33,7 +33,15 @@ class AuthRepositoryFirebase(
       GetSignInWithGoogleOption.Builder(serverClientId = serverClientId).build()
 
   /** Maps a [FirebaseUser] to our domain [User] model. */
-  private fun FirebaseUser.toDomainUser() = User(id = uid, displayName = displayName, email = email)
+  private fun FirebaseUser.toDomainUser() =
+      User(
+          id = uid,
+          displayName = displayName,
+          email = email,
+          phoneNumber = phoneNumber,
+          googleDisplayName = displayName,
+          googleEmail = email,
+          googlePhoneNumber = phoneNumber)
 
   override suspend fun signInWithGoogle(credential: Credential): Result<User> {
     return try {

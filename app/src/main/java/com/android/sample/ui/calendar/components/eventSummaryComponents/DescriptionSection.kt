@@ -26,7 +26,7 @@ import com.android.sample.ui.calendar.style.EventSummaryTextConfig
 import com.android.sample.ui.theme.AlphaLow
 import com.android.sample.ui.theme.BarWidthSmall
 import com.android.sample.ui.theme.SpacingMedium
-import com.android.sample.ui.theme.WeightVeryHeavy
+import com.android.sample.ui.theme.WeightExtraHeavy
 
 /**
  * Renders the event description with expand/collapse and a left accent bar.
@@ -68,7 +68,7 @@ fun DescriptionSection(
                   .height(descHeightDp)
                   .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = AlphaLow)))
       Spacer(Modifier.width(SpacingMedium))
-      Column(modifier = Modifier.weight(WeightVeryHeavy)) {
+      Column(modifier = Modifier.weight(WeightExtraHeavy)) {
         // Delegate expansion, overflow detection, and edge-fade to the reusable component
         ExpandableText(
             text = descriptionText,

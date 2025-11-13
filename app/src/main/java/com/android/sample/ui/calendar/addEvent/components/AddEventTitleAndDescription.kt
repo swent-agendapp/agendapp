@@ -30,7 +30,7 @@ import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.calendar.components.ValidatingTextField
 import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.theme.PaddingExtraLarge
-import com.android.sample.ui.theme.WeightVeryHeavy
+import com.android.sample.ui.theme.WeightExtraHeavy
 
 private const val DESCRIPTION_FIELD_MIN_LINES = 12
 
@@ -71,7 +71,7 @@ fun AddEventTitleAndDescriptionScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround) {
               Box(
-                  modifier = Modifier.weight(WeightVeryHeavy).fillMaxWidth(),
+                  modifier = Modifier.weight(WeightExtraHeavy).fillMaxWidth(),
                   contentAlignment = Alignment.Center) {
                     Text(
                         stringResource(R.string.enterTitleAndDescription),
@@ -79,7 +79,7 @@ fun AddEventTitleAndDescriptionScreen(
                         style = MaterialTheme.typography.headlineMedium,
                         modifier = Modifier.testTag(AddEventTestTags.INSTRUCTION_TEXT))
                   }
-              Column(modifier = Modifier.weight(WeightVeryHeavy)) {
+              Column(modifier = Modifier.weight(WeightExtraHeavy)) {
                 ValidatingTextField(
                     label = stringResource(R.string.eventTitle),
                     placeholder = stringResource(R.string.eventTitlePlaceholder),

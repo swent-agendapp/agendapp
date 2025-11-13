@@ -29,6 +29,8 @@ import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.ui.calendar.CalendarViewModel
 import com.android.sample.ui.calendar.components.EventSummaryCard
+import com.android.sample.ui.theme.WeightHeavy
+import com.android.sample.ui.theme.WeightVeryHeavy
 import com.android.sample.utils.EventColor
 import java.time.Duration
 import java.time.Instant
@@ -106,7 +108,7 @@ fun EventOverviewScreen(
               // Constrain the card so it does not take the whole width on large screens.
               // EventSummaryCard internally uses fillMaxWidth(), so we wrap it in a box
               // with a max width and a fraction of the screen width.
-              Box(modifier = Modifier.fillMaxWidth(0.9f).fillMaxHeight(0.73f)) {
+              Box(modifier = Modifier.fillMaxWidth(WeightVeryHeavy).fillMaxHeight(WeightHeavy)) {
                 event?.let { EventSummaryCard(event = it, participantNames = participantNames) }
               }
             }

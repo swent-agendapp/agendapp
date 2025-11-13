@@ -44,7 +44,7 @@ import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.PaddingSmall
 import com.android.sample.ui.theme.SpacingSmall
-import com.android.sample.ui.theme.WeightVeryHeavy
+import com.android.sample.ui.theme.WeightExtraHeavy
 
 /**
  * Third step of event creation flow: allows selecting participants for the event.
@@ -103,7 +103,7 @@ fun AddEventAttendantScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround) {
               Box(
-                  modifier = Modifier.weight(WeightVeryHeavy).fillMaxWidth(),
+                  modifier = Modifier.weight(WeightExtraHeavy).fillMaxWidth(),
                   contentAlignment = Alignment.Center) {
                     Text(
                         stringResource(R.string.selectAttendants),
@@ -113,7 +113,7 @@ fun AddEventAttendantScreen(
                   }
               Card(
                   modifier =
-                      Modifier.weight(WeightVeryHeavy)
+                      Modifier.weight(WeightExtraHeavy)
                           .fillMaxWidth()
                           .padding(vertical = PaddingSmall),
                   shape = RoundedCornerShape(CornerRadiusLarge),

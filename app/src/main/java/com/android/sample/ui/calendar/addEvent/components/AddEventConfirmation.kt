@@ -21,7 +21,7 @@ import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.theme.PaddingExtraLarge
-import com.android.sample.ui.theme.WeightVeryHeavy
+import com.android.sample.ui.theme.WeightExtraHeavy
 
 /**
  * Final step of event creation flow: confirmation message displayed after successful event
@@ -44,7 +44,7 @@ fun AddEventConfirmationScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround) {
               Box(
-                  modifier = Modifier.weight(WeightVeryHeavy).fillMaxWidth(),
+                  modifier = Modifier.weight(WeightExtraHeavy).fillMaxWidth(),
                   contentAlignment = Alignment.Center) {
                     Text(
                         stringResource(R.string.confirmationMessage),

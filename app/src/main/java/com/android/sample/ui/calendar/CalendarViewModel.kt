@@ -117,13 +117,11 @@ class CalendarViewModel(
   }
 
   /**
-   * Returns an [Event] with the given [eventId]. This is a suspend function.
+   * Returns an [Event] with the given [eventId].
    *
    * The lookup first searches the in-memory cache (from [uiState]). If the event is not found
    * there, it performs a direct repository lookup. If no event is found in either place, it throws
    * a [NoSuchElementException].
-   *
-   * This method is synchronous and may perform a repository access.
    *
    * @throws NoSuchElementException if the event with the given [eventId] is not found.
    */

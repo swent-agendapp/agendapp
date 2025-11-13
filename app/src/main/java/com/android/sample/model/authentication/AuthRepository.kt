@@ -28,9 +28,7 @@ interface AuthRepository {
   fun getCurrentUser(): User?
 
   /**
-   * Fetches a user by ID from the repository (remote store) using a filtered query.
-   *
-   * This is a network/database operation and is therefore suspendable.
+   * Fetches a user by ID from the repository using a filtered query.
    *
    * @param userId The ID of the user to retrieve.
    * @return The [User] matching the given ID, or null if not found.

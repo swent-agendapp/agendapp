@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -64,7 +64,10 @@ fun LogoutRow(
               .padding(horizontal = PaddingMedium, vertical = PaddingMedium),
       verticalAlignment = Alignment.CenterVertically,
       horizontalArrangement = Arrangement.Center) {
-        Icon(imageVector = Icons.Default.Logout, contentDescription = null, tint = errorColor)
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.Logout,
+            contentDescription = null,
+            tint = errorColor)
         Spacer(modifier = Modifier.width(SpacingSmall))
 
         Text(text = text, style = MaterialTheme.typography.bodyLarge, color = errorColor)

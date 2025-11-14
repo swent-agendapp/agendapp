@@ -75,13 +75,30 @@ fun ExpandableText(
           },
           color = MaterialTheme.colorScheme.onSurface,
           modifier =
-              Modifier.onSizeChanged { onTextHeightChange(it.height) }
-                  .then(
-                      fadeModifier(
-                          isExpanded = isExpanded,
-                          showToggle = showToggle,
-                          fadeWidthPx = fadeWidthPx,
-                          lineHeightPx = lineHeightPx)))
+              if (isExpanded || !showToggle) {
+                Modifier
+              } else {
+                Modifier.onSizeChanged { onTextHeightChange(it.height) }
+                    .graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
+                    .drawWithContent {
+                      drawContent()
+                      val endX = size.width
+                      val startX = (endX - fadeWidthPx).coerceAtLeast(0f)
+                      val topY = (size.height - lineHeightPx).coerceAtLeast(0f)
+                      val width = (endX - startX).coerceAtLeast(0f)
+                      if (width > 0f && lineHeightPx > 0f) {
+                        drawRect(
+                            brush =
+                                Brush.horizontalGradient(
+                                    colors = listOf(Color.Black, Color.Transparent),
+                                    startX = startX,
+                                    endX = endX),
+                            topLeft = Offset(startX, topY),
+                            size = Size(width, lineHeightPx),
+                            blendMode = BlendMode.DstIn)
+                      }
+                    }
+              })
     }
 
     ToggleSection(
@@ -100,35 +117,6 @@ private fun computeLineHeight(style: TextStyle): TextUnit {
   } else {
     style.lineHeight
   }
-}
-
-private fun fadeModifier(
-    isExpanded: Boolean,
-    showToggle: Boolean,
-    fadeWidthPx: Float,
-    lineHeightPx: Float
-): Modifier {
-  if (isExpanded || !showToggle) return Modifier
-
-  return Modifier.graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
-      .drawWithContent {
-        drawContent()
-        val endX = size.width
-        val startX = (endX - fadeWidthPx).coerceAtLeast(0f)
-        val topY = (size.height - lineHeightPx).coerceAtLeast(0f)
-        val width = (endX - startX).coerceAtLeast(0f)
-        if (width > 0f && lineHeightPx > 0f) {
-          drawRect(
-              brush =
-                  Brush.horizontalGradient(
-                      colors = listOf(Color.Black, Color.Transparent),
-                      startX = startX,
-                      endX = endX),
-              topLeft = Offset(startX, topY),
-              size = Size(width, lineHeightPx),
-              blendMode = BlendMode.DstIn)
-        }
-      }
 }
 
 @Composable

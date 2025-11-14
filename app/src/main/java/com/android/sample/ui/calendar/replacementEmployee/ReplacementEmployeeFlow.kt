@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.model.replacement.Replacement
@@ -75,7 +74,7 @@ fun ReplacementEmployeeFlow(
  * Date/time formatting is currently kept simple to avoid dependency on date utils. You can later
  * replace the `toString()` calls with proper formatting using `DateTimeUtils`.
  */
-private fun Replacement.toUi(): ReplacementRequestUi {
+fun Replacement.toUi(): ReplacementRequestUi {
   val start = event.startDate.atZone(ZoneId.systemDefault())
   val end = event.endDate.atZone(ZoneId.systemDefault())
 
@@ -91,34 +90,23 @@ private fun Replacement.toUi(): ReplacementRequestUi {
       description = event.description)
 }
 
-@Composable
-private fun PreviewFlowAt(step: ReplacementEmployeeStep) {
-  val vm = ReplacementEmployeeViewModel()
-  vm.forceStepForPreview(step)
-
-  ReplacementEmployeeFlow(viewModel = vm, onNavigateBack = {})
-}
-
-@Preview(showBackground = true, name = "Employee Flow – LIST")
-@Composable
-fun PreviewEmployeeFlowList() {
-  PreviewFlowAt(ReplacementEmployeeStep.LIST)
-}
-
-@Preview(showBackground = true, name = "Employee Flow – CREATE OPTIONS")
-@Composable
-fun PreviewEmployeeFlowCreateOptions() {
-  PreviewFlowAt(ReplacementEmployeeStep.CREATE_OPTIONS)
-}
-
-@Preview(showBackground = true, name = "Employee Flow – SELECT EVENT")
-@Composable
-fun PreviewEmployeeFlowSelectEvent() {
-  PreviewFlowAt(ReplacementEmployeeStep.SELECT_EVENT)
-}
-
-@Preview(showBackground = true, name = "Employee Flow – SELECT DATE RANGE")
-@Composable
-fun PreviewEmployeeFlowSelectDateRange() {
-  PreviewFlowAt(ReplacementEmployeeStep.SELECT_DATE_RANGE)
-}
+/**
+ * ---------- Previews (for design purposes only, remove after VM is implemented) ----------
+ *
+ * @Composable private fun PreviewFlowAt(step: ReplacementEmployeeStep) { val vm =
+ *   ReplacementEmployeeViewModel() vm.forceStepForPreview(step)
+ *
+ * ReplacementEmployeeFlow(viewModel = vm, onNavigateBack = {}) }
+ *
+ * @Preview(showBackground = true, name = "Employee Flow – LIST")
+ * @Composable fun PreviewEmployeeFlowList() { PreviewFlowAt(ReplacementEmployeeStep.LIST) }
+ * @Preview(showBackground = true, name = "Employee Flow – CREATE OPTIONS")
+ * @Composable fun PreviewEmployeeFlowCreateOptions() {
+ *   PreviewFlowAt(ReplacementEmployeeStep.CREATE_OPTIONS) }
+ * @Preview(showBackground = true, name = "Employee Flow – SELECT EVENT")
+ * @Composable fun PreviewEmployeeFlowSelectEvent() {
+ *   PreviewFlowAt(ReplacementEmployeeStep.SELECT_EVENT) }
+ * @Preview(showBackground = true, name = "Employee Flow – SELECT DATE RANGE")
+ * @Composable fun PreviewEmployeeFlowSelectDateRange() {
+ *   PreviewFlowAt(ReplacementEmployeeStep.SELECT_DATE_RANGE) }
+ */

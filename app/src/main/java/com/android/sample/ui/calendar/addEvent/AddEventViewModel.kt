@@ -214,7 +214,8 @@ class AddEventViewModel(
    * @param participant Unique participant identifier (currently String username).
    */
   fun addParticipant(participant: String) {
-    val updatedParticipants = _uiState.value.participants.toMutableSet().apply { add(participant) }
+    val updatedParticipants =
+        _uiState.value.participants.toMutableSet().apply { add(participant) }.toSet()
     _uiState.value = _uiState.value.copy(participants = updatedParticipants)
   }
 
@@ -225,7 +226,7 @@ class AddEventViewModel(
    */
   fun removeParticipant(participant: String) {
     val updatedParticipants =
-        _uiState.value.participants.toMutableSet().apply { remove(participant) }
+        _uiState.value.participants.toMutableSet().apply { remove(participant) }.toSet()
     _uiState.value = _uiState.value.copy(participants = updatedParticipants)
   }
 

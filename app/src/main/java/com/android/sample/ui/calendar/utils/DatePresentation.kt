@@ -6,6 +6,8 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
+const val NO_DATA_DEFAULT_VALUE = "No date provided..."
+
 /** Aggregates all date strings and flags needed by the UI. */
 data class DatePresentation(
     val isMultiDay: Boolean,

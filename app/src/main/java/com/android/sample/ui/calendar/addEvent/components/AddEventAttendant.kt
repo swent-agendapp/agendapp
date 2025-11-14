@@ -17,6 +17,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -37,8 +38,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
-import com.android.sample.ui.calendar.components.TopTitleBar
+import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.components.BottomNavigationButtons
+import com.android.sample.ui.map.MapScreenTestTags
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.PaddingMedium
@@ -53,6 +55,7 @@ import com.android.sample.ui.theme.WeightVeryHeavy
  *
  * On "Create", the ViewModel persists the event.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEventAttendantScreen(
     addEventViewModel: AddEventViewModel = viewModel(),
@@ -73,7 +76,12 @@ fun AddEventAttendantScreen(
           "Frank") // Placeholder for all possible participants
 
   Scaffold(
-      topBar = { TopTitleBar(title = stringResource(R.string.addEventTitle)) },
+      topBar = {
+        SecondaryPageTopBar(
+            modifier = Modifier.testTag(MapScreenTestTags.MAP_TITLE),
+            title = stringResource(R.string.addEventTitle),
+            canGoBack = false)
+      },
       content = { paddingValues ->
         Column(
             modifier =
@@ -106,21 +114,20 @@ fun AddEventAttendantScreen(
                             modifier =
                                 Modifier.fillMaxWidth()
                                     .clickable {
-                                      if (newEventUIState.participants.contains(participant)) {
-                                        addEventViewModel.removeParticipant(participant)
-                                      } else {
-                                        addEventViewModel.addParticipant(participant)
-                                      }
+                                      val action =
+                                          if (participant in newEventUIState.participants)
+                                              addEventViewModel::removeParticipant
+                                          else addEventViewModel::addParticipant
+                                      action(participant)
                                     }
                                     .padding(vertical = PaddingSmall)) {
                               Checkbox(
                                   checked = newEventUIState.participants.contains(participant),
                                   onCheckedChange = { checked ->
-                                    if (checked) {
-                                      addEventViewModel.addParticipant(participant)
-                                    } else {
-                                      addEventViewModel.removeParticipant(participant)
-                                    }
+                                    val action =
+                                        if (checked) addEventViewModel::addParticipant
+                                        else addEventViewModel::removeParticipant
+                                    action(participant)
                                   })
                               Spacer(modifier = Modifier.width(SpacingSmall))
                               Text(text = participant)

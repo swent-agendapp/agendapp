@@ -1,25 +1,14 @@
 package com.github.se.bootcamp.ui.authentication
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -33,7 +22,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -45,9 +33,9 @@ import androidx.compose.ui.unit.sp
 import androidx.credentials.CredentialManager
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
+import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.theme.Salmon
 import com.github.se.bootcamp.ui.authentication.SignInScreenTestTags.END_SNACK_BAR
-import com.github.se.bootcamp.ui.authentication.SignInScreenTestTags.LOGOUT_BUTTON
 
 object SignInScreenTestTags {
   const val APP_LOGO = "appLogo"
@@ -70,13 +58,7 @@ fun SignInScreen(
   val uiState by authViewModel.uiState.collectAsState()
   val snackbarHostState = remember { SnackbarHostState() }
 
-  LaunchedEffect(uiState.user) {
-    uiState.user?.let {
-      snackbarHostState.showSnackbar(
-          context.getString(R.string.sign_in_success_message), duration = SnackbarDuration.Long)
-      onSignedIn()
-    }
-  }
+  LaunchedEffect(uiState.user) { uiState.user?.let { onSignedIn() } }
 
   LaunchedEffect(uiState.errorMsg) {
     uiState.errorMsg?.let {
@@ -91,18 +73,6 @@ fun SignInScreen(
       modifier = Modifier.fillMaxSize(),
       snackbarHost = {
         SnackbarHost(snackbarHostState, modifier = Modifier.testTag(END_SNACK_BAR))
-      },
-      floatingActionButton = {
-        if (!uiState.signedOut) {
-          IconButton(
-              onClick = { authViewModel.signOut(credentialManager = credentialManager) },
-              modifier = Modifier.testTag(LOGOUT_BUTTON)) {
-                Icon(
-                    imageVector = Icons.Filled.Clear,
-                    contentDescription =
-                        stringResource(R.string.sign_in_logout_content_description))
-              }
-        }
       },
       content = { padding ->
         Column(
@@ -161,27 +131,9 @@ fun SignInScreen(
 
 @Composable
 fun GoogleSignInButton(onSignInClick: () -> Unit) {
-  Button(
+  PrimaryButton(
+      modifier = Modifier.testTag(SignInScreenTestTags.LOGIN_BUTTON),
+      text = stringResource(R.string.sign_in_button_text),
       onClick = onSignInClick,
-      colors = ButtonDefaults.buttonColors(containerColor = Salmon), // Button color
-      shape = RoundedCornerShape(50), // Circular edges for the button
-      border = BorderStroke(1.dp, Color.Transparent),
-      modifier =
-          Modifier.padding(8.dp)
-              .height(48.dp)
-              .width(250.dp)
-              .testTag(SignInScreenTestTags.LOGIN_BUTTON)) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()) {
-
-              // Text for the button
-              Text(
-                  text = stringResource(R.string.sign_in_button_text),
-                  color = Color.White, // Text color
-                  fontSize = 16.sp, // Font size
-                  fontWeight = FontWeight.Medium)
-            }
-      }
+  )
 }

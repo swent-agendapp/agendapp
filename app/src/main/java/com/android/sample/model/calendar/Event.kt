@@ -40,7 +40,6 @@ data class Event(
     val recurrenceStatus: RecurrenceStatus,
     val hasBeenDeleted: Boolean = false,
     val color: EventColor
-    // val notifications: List<String> = emptyList()
 ) {
   // Returns the start date as a LocalDate in the system's default time zone
   val startLocalDate: LocalDate

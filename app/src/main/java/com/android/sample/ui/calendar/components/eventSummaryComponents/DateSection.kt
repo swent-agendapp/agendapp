@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import com.android.sample.ui.calendar.components.EventSummaryCardTags
 import com.android.sample.ui.calendar.utils.DatePresentation
+import com.android.sample.ui.calendar.utils.NO_DATA_DEFAULT_VALUE
 import com.android.sample.ui.theme.AlphaHigh
 import com.android.sample.ui.theme.IconSizeMedium
 import com.android.sample.ui.theme.PaddingMedium
@@ -45,12 +46,12 @@ fun DateSection(
     model: DatePresentation =
         DatePresentation(
             isMultiDay = false,
-            dateLine1 = "No date provided...",
-            dateLine2 = "No date provided...",
-            startDateShort = "No date provided...",
-            endDateShort = "No date provided...",
-            startTimeStr = "No date provided...",
-            endTimeStr = "No date provided...",
+            dateLine1 = NO_DATA_DEFAULT_VALUE,
+            dateLine2 = NO_DATA_DEFAULT_VALUE,
+            startDateShort = NO_DATA_DEFAULT_VALUE,
+            endDateShort = NO_DATA_DEFAULT_VALUE,
+            startTimeStr = NO_DATA_DEFAULT_VALUE,
+            endTimeStr = NO_DATA_DEFAULT_VALUE,
             startZdt = ZonedDateTime.now(),
             endZdt = ZonedDateTime.now())
 ) {

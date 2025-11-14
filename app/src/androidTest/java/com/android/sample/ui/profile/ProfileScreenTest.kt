@@ -1,15 +1,48 @@
 package com.android.sample.ui.profile
 
+import android.app.Application
+import android.content.Context
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.platform.app.InstrumentationRegistry
 import com.android.sample.model.authentication.FakeAuthRepository
 import com.android.sample.model.authentication.User
+import com.github.se.bootcamp.model.authentication.AuthRepository
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 class ProfileScreenTest {
 
   @get:Rule val composeTestRule = createComposeRule()
+
+  private lateinit var application: Application
+
+  @Before
+  fun setUp() {
+    application =
+        InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as Application
+    clearPreferences()
+  }
+
+  @After
+  fun tearDown() {
+    clearPreferences()
+  }
+
+  private fun clearPreferences() {
+    val prefs = application.getSharedPreferences(ProfileViewModel.PREFS_NAME, Context.MODE_PRIVATE)
+    prefs.edit().clear().apply()
+  }
+
+  private fun createViewModel(repository: AuthRepository) =
+      ProfileViewModel(application, repository)
 
   @Test
   fun profileScreen_displaysUserInformation_inReadOnlyMode() {
@@ -21,7 +54,7 @@ class ProfileScreenTest {
             phoneNumber = "123-456-7890")
 
     val fakeRepository = FakeAuthRepository(testUser)
-    val viewModel = ProfileViewModel(fakeRepository)
+    val viewModel = createViewModel(fakeRepository)
 
     composeTestRule.setContent { ProfileScreen(onNavigateBack = {}, profileViewModel = viewModel) }
 
@@ -51,7 +84,7 @@ class ProfileScreenTest {
         User(
             id = "test123", displayName = "Test User", email = "test@example.com", phoneNumber = "")
     val fakeRepository = FakeAuthRepository(testUser)
-    val viewModel = ProfileViewModel(fakeRepository)
+    val viewModel = createViewModel(fakeRepository)
 
     composeTestRule.setContent { ProfileScreen(onNavigateBack = {}, profileViewModel = viewModel) }
 
@@ -71,7 +104,7 @@ class ProfileScreenTest {
     val testUser =
         User(id = "test123", displayName = "Old Name", email = "old@example.com", phoneNumber = "")
     val fakeRepository = FakeAuthRepository(testUser)
-    val viewModel = ProfileViewModel(fakeRepository)
+    val viewModel = createViewModel(fakeRepository)
 
     composeTestRule.setContent { ProfileScreen(onNavigateBack = {}, profileViewModel = viewModel) }
 
@@ -97,7 +130,7 @@ class ProfileScreenTest {
   @Test
   fun profileScreen_backButtonWorks() {
     val fakeRepository = FakeAuthRepository(null)
-    val viewModel = ProfileViewModel(fakeRepository)
+    val viewModel = createViewModel(fakeRepository)
     var backClicked = false
 
     composeTestRule.setContent {
@@ -117,7 +150,7 @@ class ProfileScreenTest {
             email = "orig@example.com",
             phoneNumber = "000-111-2222")
     val fakeRepository = FakeAuthRepository(testUser)
-    val viewModel = ProfileViewModel(fakeRepository)
+    val viewModel = createViewModel(fakeRepository)
 
     composeTestRule.setContent { ProfileScreen(onNavigateBack = {}, profileViewModel = viewModel) }
 
@@ -139,9 +172,31 @@ class ProfileScreenTest {
   }
 
   @Test
+  fun profileScreen_savingBlankDisplayName_keepsPreviousValue() {
+    val testUser =
+        User(
+            id = "test123",
+            displayName = "Keep Me",
+            email = "keep@example.com",
+            phoneNumber = "000-111-2222")
+    val fakeRepository = FakeAuthRepository(testUser)
+    val viewModel = createViewModel(fakeRepository)
+
+    composeTestRule.setContent { ProfileScreen(onNavigateBack = {}, profileViewModel = viewModel) }
+
+    composeTestRule.onNodeWithTag(ProfileScreenTestTags.EDIT_BUTTON).performClick()
+    composeTestRule.onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD).performTextClearance()
+    composeTestRule.onNodeWithTag(ProfileScreenTestTags.SAVE_BUTTON).performClick()
+
+    composeTestRule
+        .onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD)
+        .assertTextContains("Keep Me")
+  }
+
+  @Test
   fun profileScreen_displayRootIsDisplayed() {
     val fakeRepository = FakeAuthRepository(null)
-    val viewModel = ProfileViewModel(fakeRepository)
+    val viewModel = createViewModel(fakeRepository)
 
     composeTestRule.setContent { ProfileScreen(onNavigateBack = {}, profileViewModel = viewModel) }
 
@@ -150,7 +205,10 @@ class ProfileScreenTest {
 
   @Test
   fun all_components_Displayed_inReadOnlyMode() {
-    composeTestRule.setContent { ProfileScreen() }
+    val fakeRepository = FakeAuthRepository(null)
+    val viewModel = createViewModel(fakeRepository)
+
+    composeTestRule.setContent { ProfileScreen(profileViewModel = viewModel) }
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.BACK_BUTTON).assertIsDisplayed()
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD).assertIsDisplayed()
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.EMAIL_FIELD).assertIsDisplayed()
@@ -163,9 +221,86 @@ class ProfileScreenTest {
   fun profileScreen_signOutButtonWorks() {
     var signOutClicked = false
 
-    composeTestRule.setContent { ProfileScreen(onSignOut = { signOutClicked = true }) }
+    val fakeRepository = FakeAuthRepository(null)
+    val viewModel = createViewModel(fakeRepository)
+
+    composeTestRule.setContent {
+      ProfileScreen(onSignOut = { signOutClicked = true }, profileViewModel = viewModel)
+    }
 
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.SIGN_OUT_BUTTON).performClick()
     assert(signOutClicked)
+  }
+
+  @Test
+  fun profileScreen_savedChangesPersistAfterRecreation() {
+    val context = ApplicationProvider.getApplicationContext<Context>()
+    val sharedPrefs = context.getSharedPreferences("test_prefs", Context.MODE_PRIVATE)
+    sharedPrefs.edit().clear().commit()
+
+    val testUser =
+        User(
+            id = "test123",
+            displayName = "Original",
+            email = "orig@example.com",
+            phoneNumber = "000-111-2222")
+
+    val fakeRepository = FakeAuthRepository(testUser)
+
+    fun createViewModel(): ProfileViewModel =
+        ProfileViewModel(
+            application = context as Application,
+            repository = fakeRepository,
+            preferences = sharedPrefs)
+
+    lateinit var setVm: (ProfileViewModel) -> Unit
+
+    composeTestRule.setContent {
+      var vm by remember { mutableStateOf(createViewModel()) }
+      setVm = { newVm -> vm = newVm } // <-- assign into real compose state
+
+      ProfileScreen(onNavigateBack = {}, profileViewModel = vm)
+    }
+
+    // --- Edit fields ---
+    composeTestRule.onNodeWithTag(ProfileScreenTestTags.EDIT_BUTTON).performClick()
+    composeTestRule.onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD).performTextClearance()
+    composeTestRule
+        .onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD)
+        .performTextInput("Persisted Name")
+
+    composeTestRule.onNodeWithTag(ProfileScreenTestTags.EMAIL_FIELD).performTextClearance()
+    composeTestRule
+        .onNodeWithTag(ProfileScreenTestTags.EMAIL_FIELD)
+        .performTextInput("persisted@example.com")
+
+    composeTestRule.onNodeWithTag(ProfileScreenTestTags.PHONE_FIELD).performTextClearance()
+    composeTestRule
+        .onNodeWithTag(ProfileScreenTestTags.PHONE_FIELD)
+        .performTextInput("999-888-7777")
+
+    composeTestRule.onNodeWithTag(ProfileScreenTestTags.SAVE_BUTTON).performClick()
+
+    composeTestRule.waitForIdle()
+
+    // --- Simulate Process Death / Recreation ---
+    composeTestRule.runOnUiThread {
+      setVm(createViewModel()) // <-- this NOW triggers recomposition
+    }
+
+    composeTestRule.waitForIdle()
+
+    // --- Assertions ---
+    composeTestRule
+        .onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD)
+        .assertTextContains("Persisted Name")
+
+    composeTestRule
+        .onNodeWithTag(ProfileScreenTestTags.EMAIL_FIELD)
+        .assertTextContains("persisted@example.com")
+
+    composeTestRule
+        .onNodeWithTag(ProfileScreenTestTags.PHONE_FIELD)
+        .assertTextContains("999-888-7777")
   }
 }

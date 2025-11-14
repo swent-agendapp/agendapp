@@ -3,19 +3,10 @@ package com.android.sample.ui.calendar
 import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalIconButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -35,8 +26,8 @@ import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
 import com.android.sample.ui.calendar.data.LocalDateRange
 import com.android.sample.ui.calendar.style.CalendarDefaults.DefaultDateRange
 import com.android.sample.ui.calendar.utils.DateTimeUtils.localDateTimeToInstant
-import com.android.sample.ui.theme.IconSizeExtraLarge
-import com.android.sample.ui.theme.PaddingMedium
+import com.android.sample.ui.common.FloatingButton
+import com.android.sample.ui.common.MainPageTopBar
 import java.time.LocalTime
 
 object CalendarScreenTestTags {
@@ -76,65 +67,38 @@ fun CalendarScreen(
       calendarViewModel.clearErrorMsg()
     }
   }
-
-  // generate mock events
-  // val mockEvents = getMockEvents()
-
   Scaffold(
       topBar = {
-        TopAppBar(
-            title = {
-              Text(
-                  stringResource(R.string.calendar_screen_title),
-                  modifier = Modifier.testTag(CalendarScreenTestTags.TOP_BAR_TITLE))
-            },
-            colors =
-                TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                ),
-            actions = {
-              FilledTonalIconButton(
-                  onClick = onCreateEvent,
-                  modifier =
-                      Modifier.padding(end = PaddingMedium)
-                          .size(IconSizeExtraLarge)
-                          .testTag(ADD_EVENT_BUTTON),
-                  shape = CircleShape,
-                  colors =
-                      IconButtonDefaults.filledTonalIconButtonColors(
-                          containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                          contentColor = MaterialTheme.colorScheme.onSecondaryContainer),
-              ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription =
-                        stringResource(R.string.calendar_add_event_content_description))
-              }
-            },
-        )
+        MainPageTopBar(
+            title = stringResource(R.string.calendar_screen_title),
+            modifier = Modifier.testTag(CalendarScreenTestTags.TOP_BAR_TITLE))
       },
-  ) { paddingValues ->
-    // Later : place CalendarContainer in a Column to add button above/under
-    CalendarContainer(
-        modifier =
-            Modifier.padding(paddingValues)
-                .fillMaxSize()
-                .testTag((CalendarScreenTestTags.SCREEN_ROOT)),
-        dateRange = currentDateRange,
-        events = events,
-        onSwipeLeft = {
-          val nextStart = currentDateRange.start.plusWeeks(1)
-          val nextEnd = currentDateRange.endInclusive.plusWeeks(1)
-          currentDateRange = LocalDateRange(nextStart, nextEnd)
-        },
-        onSwipeRight = {
-          val nextStart = currentDateRange.start.minusWeeks(1)
-          val nextEnd = currentDateRange.endInclusive.minusWeeks(1)
-          currentDateRange = LocalDateRange(nextStart, nextEnd)
-        },
-        onEventClick = onEventClick)
-  }
+      floatingActionButton = {
+        FloatingButton(
+            modifier = Modifier.testTag(ADD_EVENT_BUTTON),
+            onClick = onCreateEvent,
+            icon = Icons.Default.Add)
+      }) { paddingValues ->
+        // Later : place CalendarContainer in a Column to add button above/under
+        CalendarContainer(
+            modifier =
+                Modifier.padding(paddingValues)
+                    .fillMaxSize()
+                    .testTag((CalendarScreenTestTags.SCREEN_ROOT)),
+            dateRange = currentDateRange,
+            events = events,
+            onSwipeLeft = {
+              val nextStart = currentDateRange.start.plusWeeks(1)
+              val nextEnd = currentDateRange.endInclusive.plusWeeks(1)
+              currentDateRange = LocalDateRange(nextStart, nextEnd)
+            },
+            onSwipeRight = {
+              val nextStart = currentDateRange.start.minusWeeks(1)
+              val nextEnd = currentDateRange.endInclusive.minusWeeks(1)
+              currentDateRange = LocalDateRange(nextStart, nextEnd)
+            },
+            onEventClick = onEventClick)
+      }
 }
 
 /**

@@ -13,9 +13,12 @@ val PaddingHuge = 40.dp
 // Corner radius
 val CornerRadiusSmall = 4.dp
 val CornerRadiusMedium = 8.dp
-val CornerRadiusLarge = 12.dp
+val CornerRadiusLarge = 10.dp
 val CornerRadiusExtraLarge = 16.dp
 val CornerRadiusHuge = 24.dp
+
+// Button Elevation
+val ButtonElevationMedium = 10.dp
 
 // Spacing
 val SpacingSmall = 8.dp

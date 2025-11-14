@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">SampleApp</string>
     <string name="title_activity_main">Hauptaktivität</string>
-    <string name="title_activity_second">Zweite Aktivität</string>
     <string name="next">Weiter</string>
     <string name="addEventTitle">Neues Ereignis</string>
     <string name="enterTitleAndDescription">Bitte geben Sie den Titel und die Beschreibung Ihres Ereignisses ein</string>
@@ -56,19 +55,12 @@
     <string name="edit_event_select_participants_text">Teilnehmer auswählen</string>
 
     <!-- Notifications -->
-    <string name="edit_event_notify_label">Benachrichtigung</string>
-    <string name="edit_event_add_notification_button">Benachrichtigung hinzufügen</string>
-    <string name="edit_event_remove_notification_symbol">✕</string>
-    <string name="edit_event_add_notification_symbol">+</string>
 
     <!-- Buttons -->
     <string name="common_save">Speichern</string>
     <string name="common_cancel">Abbrechen</string>
 
     <!-- Home Screen -->
-    <string name="home_go_to_edit_event">Zur Ereignisbearbeitung</string>
-    <string name="home_go_to_calendar">Zum Kalender</string>
-    <string name="home_go_to_settings">Zu den Einstellungen</string>
 
     <!-- Settings Screen -->
     <string name="settings_screen_title">Einstellungen</string>
@@ -83,7 +75,6 @@
     <string name="profile_display_name_label">Anzeigename</string>
     <string name="profile_email_label">E-Mail</string>
     <string name="profile_phone_label">Telefonnummer</string>
-    <string name="profile_admin_contact_button">Administrator-Kontakt anzeigen</string>
     <string name="profile_title">Benutzerprofil</string>
     <string name="profile_cancel_content_description">Abbrechen</string>
     <string name="profile_save_content_description">Speichern</string>
@@ -97,7 +88,6 @@
 
     <!-- Calendar -->
     <string name="calendar_screen_title">Kalender</string>
-    <string name="calendar_add_event_content_description">Ereignis hinzufügen</string>
     <string name="replacement">Ersetzung</string>
 
     <!-- Date Picker -->
@@ -112,10 +102,8 @@
 
     <!-- Edit Event -->
     <string name="edit_event_id">Ereignis-ID bearbeiten: %1$s</string>
-    <string name="edit_event_default_notification">30 Min vorher</string>
 
     <!-- Sign In -->
-    <string name="sign_in_success_message">Anmeldung erfolgreich!</string>
     <string name="sign_in_app_title">Agendapp</string>
     <string name="sign_in_message">Planen, verfolgen und verwalten</string>
     <string name="sign_in_welcome">Willkommen</string>
@@ -151,7 +139,6 @@
 
     <!-- Replacement -->
     <string name="replacement_requests_title">Vertretungsanfragen</string>
-    <string name="replacement_requests_subtitle">Vertretungen, die auf Bestätigung warten</string>
     <string name="replacement_substituted_label">Abwesende Person: %1$s</string>
     <string name="replacement_substitute_label">Vertretende Person: %1$s</string>
     <string name="replacement_to_process_section_title">Zu bearbeitende Vertretungen</string>
@@ -174,15 +161,6 @@
     <string name="select_events">Ereignisse auswählen</string>
     <string name="select_date_range">Datumsbereich auswählen</string>
     <string name="search_icon_content_description">Suchsymbol</string>
-    <string name="edit_event_time_recurrence_title">Zeit und Wiederholung des Ereignisses bearbeiten</string>
-    <string name="edit_event_confirmation_title">Bestätigung der Ereignisbearbeitung</string>
-    <string name="edit_event_confirmation_message">Bitte bestätigen Sie die Änderungen an Ihrem Ereignis</string>
-    <string name="common_finish">Fertigstellen</string>
-    <string name="replacement_view_title">Vertretungsanfrage</string>
-    <string name="replacement_event_description_label">Ereignisbeschreibung</string>
-    <string name="replacement_employees_label">Mitarbeiter</string>
-    <string name="replacement_accept_button">Annehmen</string>
-    <string name="replacement_decline_button">Ablehnen</string>
     <string name="replacement_title">Vertretung</string>
     <string name="replacement_ask_to_be_replaced">Vertretung anfordern</string>
     <string name="replacement_card_title">Titel: %1$s</string>
@@ -192,7 +170,6 @@
     <string name="replacement_create_title">Vorheriger Schritt</string>
     <string name="replacement_create_select_event">Ereignis auswählen</string>
     <string name="replacement_create_choose_date_range">Datumsbereich auswählen</string>
-    <string name="common_send">Senden</string>
 
 
 </resources>

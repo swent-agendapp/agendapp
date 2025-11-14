@@ -1,15 +1,21 @@
 package com.android.sample.ui.profile
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -19,10 +25,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.credentials.CredentialManager
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
-import com.android.sample.ui.common.SecondaryPageTopBar
+import com.android.sample.ui.theme.AlphaExtraLow
+import com.android.sample.ui.theme.CornerRadiusExtraLarge
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.SpacingExtraLarge
 import com.android.sample.ui.theme.SpacingLarge
+import com.android.sample.ui.theme.SpacingSmall
 import com.github.se.bootcamp.ui.authentication.SignInViewModel
 
 object ProfileScreenTestTags {
@@ -35,6 +43,31 @@ object ProfileScreenTestTags {
   const val CANCEL_BUTTON = "cancel_button"
   const val EDIT_BUTTON = "edit_button"
   const val SIGN_OUT_BUTTON = "sign_out_button"
+}
+
+@Composable
+fun LogoutRow(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+  val errorColor = MaterialTheme.colorScheme.error
+
+  Row(
+      modifier =
+          modifier
+              .fillMaxWidth()
+              .clip(RoundedCornerShape(CornerRadiusExtraLarge))
+              .clickable(onClick = onClick)
+              .background(errorColor.copy(alpha = AlphaExtraLow))
+              .padding(horizontal = PaddingMedium, vertical = PaddingMedium),
+      verticalAlignment = Alignment.CenterVertically,
+      horizontalArrangement = Arrangement.Center) {
+        Icon(imageVector = Icons.Default.Logout, contentDescription = null, tint = errorColor)
+        Spacer(modifier = Modifier.width(SpacingSmall))
+
+        Text(text = text, style = MaterialTheme.typography.bodyLarge, color = errorColor)
+      }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,10 +92,17 @@ fun ProfileScreen(
 
   Scaffold(
       topBar = {
-        SecondaryPageTopBar(
-            title = stringResource(R.string.profile_screen_title),
-            onClick = onNavigateBack,
-            backButtonTestTags = ProfileScreenTestTags.BACK_BUTTON)
+        TopAppBar(
+            title = { Text(stringResource(R.string.profile_screen_title)) },
+            navigationIcon = {
+              IconButton(
+                  onClick = onNavigateBack,
+                  modifier = Modifier.testTag(ProfileScreenTestTags.BACK_BUTTON)) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.common_back))
+                  }
+            })
       }) { innerPadding ->
         Column(
             modifier =
@@ -134,14 +174,13 @@ fun ProfileScreen(
 
               Spacer(Modifier.height(SpacingLarge))
 
-              Button(
+              LogoutRow(
+                  text = stringResource(R.string.sign_in_logout_content_description),
+                  modifier = Modifier.testTag(ProfileScreenTestTags.SIGN_OUT_BUTTON),
                   onClick = {
                     authViewModel.signOut(credentialManager)
                     onSignOut()
-                  },
-                  modifier = Modifier.testTag(ProfileScreenTestTags.SIGN_OUT_BUTTON)) {
-                    Text(stringResource(R.string.sign_in_logout_content_description))
-                  }
+                  })
             }
       }
 }

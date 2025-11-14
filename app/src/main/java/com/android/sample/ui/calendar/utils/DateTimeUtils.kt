@@ -3,8 +3,6 @@ package com.android.sample.ui.calendar.utils
 import java.time.*
 import java.time.format.DateTimeFormatter
 
-
-
 object DateTimeUtils {
   const val DATE_FORMAT_PATTERN = "dd/MM/yyyy"
   private val zoneId: ZoneId = ZoneId.systemDefault()

@@ -177,7 +177,8 @@ class ReplacementOrganizeViewModel(
         replacementRepository.insertReplacement(replacement)
       } catch (e: Exception) {
         Log.e("ReplacementOrganizeVM", "Error adding replacement: ${e.message}")
-        _uiState.value = _uiState.value.copy(errorMsg = "Unexpected error while creating the replacement")
+        _uiState.value =
+            _uiState.value.copy(errorMsg = "Unexpected error while creating the replacement")
       }
     }
   }

@@ -16,10 +16,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -27,7 +25,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
-import com.android.sample.ui.calendar.CalendarViewModel
 import com.android.sample.ui.calendar.components.EventSummaryCard
 import com.android.sample.ui.theme.WeightHeavy
 import com.android.sample.ui.theme.WeightVeryHeavy
@@ -53,20 +50,23 @@ object EventOverviewScreenTestTags {
 fun EventOverviewScreen(
     modifier: Modifier = Modifier,
     eventId: String,
-    calendarViewModel: CalendarViewModel = viewModel(),
+    eventOverviewViewModel: EventOverviewViewModel = viewModel(),
     onBackClick: () -> Unit = {},
 ) {
-  var event by remember { mutableStateOf<Event?>(null) }
-  var participantNames by remember { mutableStateOf<List<String>>(emptyList()) }
+  val overviewUIState by eventOverviewViewModel.uiState.collectAsState()
+  var event = overviewUIState.event
+  var participantNames = overviewUIState.participantsNames
 
   // Fetch the event and its participant display names
   LaunchedEffect(eventId) {
     try {
-      event = calendarViewModel.getEventById(eventId)
+      // ================= before (with wrong ViewModel) =================
+      // event = calendarViewModel.getEventById(eventId)
+
       // Later (when the Add flow will propose a list of User that are in the Auth repository
       // instead of a fake name's list) :
 
-      // participantNames = calendarViewModel.getParticipantNames(eventId)
+      //      participantNames = calendarViewModel.getParticipantNames(eventId)
 
       // Note : we can't use it now because the AddViewModel add user ID like "Alice", "Bob" but no
       // User with these ids exist in the Auth repo
@@ -74,8 +74,13 @@ fun EventOverviewScreen(
       // list
 
       // To still see something coherent with what we "add", we update it like so :
-      participantNames =
-          event?.participants?.toList() ?: emptyList() // in reality these are the users' ids !
+      //      participantNames =
+      //          event?.participants?.toList() ?: emptyList() // in reality these are the users'
+      // ids !
+
+      // ================= now =================
+      eventOverviewViewModel.loadEvent(eventId)
+      eventOverviewViewModel.loadParticipantNames(eventId)
     } catch (_: Exception) {
       // If the event is not found or another error occurs, surface an empty UI state
       event = null

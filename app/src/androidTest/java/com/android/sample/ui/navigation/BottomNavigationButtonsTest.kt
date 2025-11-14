@@ -26,7 +26,6 @@ class BottomNavigationButtonsTest {
 
     composeTestRule.setContent {
       BottomNavigationButtons(
-          version = 1,
           canGoBack = true,
           canGoNext = true,
           backButtonText = "Back",
@@ -53,7 +52,6 @@ class BottomNavigationButtonsTest {
   fun version1_backButtonHidden_whenCanGoBackFalse() {
     composeTestRule.setContent {
       BottomNavigationButtons(
-          version = 1,
           canGoBack = false,
           canGoNext = true,
           backButtonTestTag = backTag,
@@ -71,7 +69,6 @@ class BottomNavigationButtonsTest {
   fun version1_nextButtonDisabled_whenCanGoNextFalse() {
     composeTestRule.setContent {
       BottomNavigationButtons(
-          version = 1,
           canGoBack = true,
           canGoNext = false,
           backButtonTestTag = backTag,
@@ -87,7 +84,6 @@ class BottomNavigationButtonsTest {
 
     composeTestRule.setContent {
       BottomNavigationButtons(
-          version = 2,
           canGoBack = true,
           canGoNext = true,
           backButtonText = "Cancel",
@@ -109,7 +105,6 @@ class BottomNavigationButtonsTest {
   fun version2_nextButtonDisabled_whenCanGoNextFalse() {
     composeTestRule.setContent {
       BottomNavigationButtons(
-          version = 2,
           canGoBack = true,
           canGoNext = false,
           backButtonTestTag = backTag,

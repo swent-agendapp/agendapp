@@ -25,6 +25,7 @@ import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import com.android.sample.R
+import com.android.sample.ui.calendar.utils.DateTimeUtils.DATE_FORMAT_PATTERN
 import com.android.sample.ui.theme.CornerRadiusLarge
 import java.text.SimpleDateFormat
 import java.time.Instant
@@ -117,7 +118,7 @@ fun DatePickerFieldToModal(
  * @return Formatted date string (e.g., `"01/12/2025"`).
  */
 fun convertMillisToDate(millis: Long): String {
-  val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+  val formatter = SimpleDateFormat(DATE_FORMAT_PATTERN, Locale.getDefault())
   return formatter.format(Date(millis))
 }
 

@@ -16,10 +16,10 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
@@ -38,13 +38,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
-import com.android.sample.ui.calendar.components.TopTitleBar
+import com.android.sample.ui.common.SecondaryButton
+import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeTestTags
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.DefaultCardElevation
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.PaddingLarge
 import com.android.sample.ui.theme.PaddingMedium
+import com.android.sample.ui.theme.Violet
 import com.android.sample.ui.theme.WeightVeryHeavy
 
 // Assisted by AI
@@ -74,6 +76,7 @@ import com.android.sample.ui.theme.WeightVeryHeavy
  * @param onSelectDateRange Called when the user chooses to specify a time range first.
  * @param onBack Called when the user returns to the previous step (top bar back action).
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectSubstitutedScreen(
     onMemberSelected: (String) -> Unit = {},
@@ -100,10 +103,10 @@ fun SelectSubstitutedScreen(
 
   Scaffold(
       topBar = {
-        TopTitleBar(
+        SecondaryPageTopBar(
             title = stringResource(R.string.organize_replacement),
-            canNavigateBack = true,
-            onBack = onBack)
+            onClick = onBack,
+            backButtonTestTags = ReplacementOrganizeTestTags.BACK_BUTTON)
       },
       content = { paddingValues ->
         Column(
@@ -160,7 +163,7 @@ fun SelectSubstitutedScreen(
                               Box(
                                   modifier =
                                       Modifier.fillMaxWidth()
-                                          .background(if (isSelected) Color.Gray else Color.White)
+                                          .background(if (isSelected) Violet else Color.White)
                                           .clickable {
                                             onMemberSelected(member)
                                             selectedMember = member
@@ -200,29 +203,18 @@ fun SelectSubstitutedScreen(
                   modifier = Modifier.fillMaxWidth().padding(vertical = PaddingLarge),
                   verticalArrangement = Arrangement.spacedBy(PaddingMedium),
                   horizontalAlignment = Alignment.CenterHorizontally) {
-                    OutlinedButton(
-                        onClick = onSelectEvents,
+                    SecondaryButton(
                         modifier =
-                            Modifier.fillMaxWidth()
-                                .testTag(ReplacementOrganizeTestTags.SELECT_EVENT_BUTTON),
-                        shape = RoundedCornerShape(CornerRadiusLarge),
-                        enabled = selectedMember.isNotEmpty()) {
-                          Text(
-                              text = stringResource(R.string.select_events),
-                              modifier = Modifier.padding(PaddingMedium))
-                        }
-
-                    OutlinedButton(
-                        onClick = onSelectDateRange,
+                            Modifier.testTag(ReplacementOrganizeTestTags.SELECT_EVENT_BUTTON),
+                        text = stringResource(R.string.select_events),
+                        enabled = selectedMember.isNotEmpty(),
+                        onClick = onSelectEvents)
+                    SecondaryButton(
                         modifier =
-                            Modifier.fillMaxWidth()
-                                .testTag(ReplacementOrganizeTestTags.SELECT_DATE_RANGE_BUTTON),
-                        shape = RoundedCornerShape(CornerRadiusLarge),
-                        enabled = selectedMember.isNotEmpty()) {
-                          Text(
-                              text = stringResource(R.string.select_date_range),
-                              modifier = Modifier.padding(PaddingMedium))
-                        }
+                            Modifier.testTag(ReplacementOrganizeTestTags.SELECT_DATE_RANGE_BUTTON),
+                        text = stringResource(R.string.select_date_range),
+                        enabled = selectedMember.isNotEmpty(),
+                        onClick = onSelectDateRange)
                   }
             }
       },

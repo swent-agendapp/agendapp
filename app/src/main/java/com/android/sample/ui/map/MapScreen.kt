@@ -15,10 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -43,13 +40,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
+import com.android.sample.ui.common.FloatingButton
+import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.map.MapScreenTestTags.CREATE_AREA_BUTTON
 import com.android.sample.ui.map.MapScreenTestTags.CREATE_AREA_FLOATING_BUTTON
 import com.android.sample.ui.map.MapScreenTestTags.DELETE_MARKER_BUTTON
@@ -57,9 +55,8 @@ import com.android.sample.ui.map.MapScreenTestTags.DOWN_SHEET
 import com.android.sample.ui.map.MapScreenTestTags.DOWN_SHEET_FORM
 import com.android.sample.ui.theme.Blue
 import com.android.sample.ui.theme.Blue70
-import com.android.sample.ui.theme.DangerRed
 import com.android.sample.ui.theme.DefaultZoom
-import com.android.sample.ui.theme.Salmon
+import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingSmall
 import com.android.sample.ui.theme.Weight
@@ -194,16 +191,11 @@ fun MapScreen(
             })
       },
       floatingActionButton = {
-        ExtendedFloatingActionButton(
+        FloatingButton(
             modifier = Modifier.testTag(CREATE_AREA_FLOATING_BUTTON),
-            text = { Text(stringResource(R.string.create_area_button)) },
-            icon = {
-              Icon(
-                  Icons.Default.Add,
-                  contentDescription = stringResource(R.string.create_area_button))
-            },
-            onClick = { showBottomSheet = BottomSheetState.ADD_AREA },
-            containerColor = Salmon)
+            text = stringResource(R.string.create_area_button),
+            icon = Icons.Default.Add,
+            onClick = { showBottomSheet = BottomSheetState.ADD_AREA })
       },
       floatingActionButtonPosition = FabPosition.Start,
       content = { padding ->
@@ -255,33 +247,30 @@ fun MapScreen(
                             onValueChange = { mapViewModel.setNewAreaName(it) },
                             label = { Text(stringResource(R.string.down_sheet_text_field)) },
                             singleLine = true,
-                            modifier = Modifier.fillMaxWidth().testTag(DOWN_SHEET_FORM))
+                            modifier =
+                                Modifier.fillMaxWidth()
+                                    .testTag(DOWN_SHEET_FORM)
+                                    .padding(horizontal = PaddingMedium))
                         Spacer(Modifier.height(SpacingSmall))
-                        Button(
+                        PrimaryButton(
+                            modifier = Modifier.testTag(CREATE_AREA_BUTTON),
+                            text = stringResource(R.string.down_sheet_button_create),
                             onClick = {
                               mapViewModel.createNewArea()
                               showBottomSheet = BottomSheetState.HIDE
                             },
-                            modifier = Modifier.fillMaxWidth().testTag(CREATE_AREA_BUTTON),
-                            colors =
-                                ButtonColors(
-                                    Salmon, Color.Black, Color.DarkGray, Color.LightGray)) {
-                              Text(stringResource(R.string.down_sheet_button_create))
-                            }
+                        )
                       }
                   else if (showBottomSheet == BottomSheetState.DELETE_MARKER) {
                     Column(Modifier.fillMaxWidth().padding(SpacingLarge)) {
-                      Button(
+                      PrimaryButton(
+                          modifier = Modifier.testTag(DELETE_MARKER_BUTTON),
+                          text = stringResource(R.string.down_sheet_button_delete),
                           onClick = {
                             mapViewModel.deleteMarker(deleteMarkerId)
                             showBottomSheet = BottomSheetState.HIDE
                           },
-                          modifier = Modifier.fillMaxWidth().testTag(DELETE_MARKER_BUTTON),
-                          colors =
-                              ButtonColors(
-                                  DangerRed, Color.Black, Color.DarkGray, Color.LightGray)) {
-                            Text(stringResource(R.string.down_sheet_button_delete))
-                          }
+                      )
                     }
                   }
                 }

@@ -7,6 +7,8 @@ import com.android.sample.model.replacement.ReplacementStatus
 import com.android.sample.utils.EventColor
 import java.time.Instant
 
+const val DEFAULT_EMAIL = "timael.andrie@epfl.ch"
+
 fun getMockReplacements(): List<Replacement> {
   val eventA =
       createEvent(
@@ -39,19 +41,19 @@ fun getMockReplacements(): List<Replacement> {
       Replacement(
           id = "r1",
           absentUserId = "haobin.wang@epfl.ch",
-          substituteUserId = "timael.andrie@epfl.ch",
+          substituteUserId = DEFAULT_EMAIL,
           event = eventA,
           status = ReplacementStatus.ToProcess),
       Replacement(
           id = "r2",
           absentUserId = "weifeng.ding@epfl.ch",
-          substituteUserId = "timael.andrie@epfl.ch",
+          substituteUserId = DEFAULT_EMAIL,
           event = eventB,
           status = ReplacementStatus.WaitingForAnswer),
       Replacement(
           id = "r3",
           absentUserId = "emilien.barde@epfl.ch",
-          substituteUserId = "timael.andrie@epfl.ch",
+          substituteUserId = DEFAULT_EMAIL,
           event = eventC,
           status = ReplacementStatus.Accepted),
       Replacement(

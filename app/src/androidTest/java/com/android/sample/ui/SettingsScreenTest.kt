@@ -16,16 +16,8 @@ class SettingsScreenTest {
 
   @Test
   fun settingsScreen_displaysAndBackButtonWorks() {
-    var backClicked = false
-    composeTestRule.setContent { SettingsScreen(onNavigateBack = { backClicked = true }) }
-
+    composeTestRule.setContent { SettingsScreen() }
     composeTestRule.onNodeWithTag(SettingsScreenTestTags.ROOT).isDisplayed()
-    composeTestRule
-        .onNodeWithTag(SettingsScreenTestTags.BACK_BUTTON)
-        .assertIsDisplayed()
-        .performClick()
-
-    assert(backClicked)
   }
 
   @Test

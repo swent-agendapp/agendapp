@@ -13,24 +13,26 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.HelpOutline
 import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.HelpOutline
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AssistChip
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
@@ -44,8 +46,10 @@ import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.mockData.getMockReplacements
 import com.android.sample.model.replacement.toProcessReplacements
 import com.android.sample.model.replacement.waitingForAnswerAndDeclinedReplacements
-import com.android.sample.ui.calendar.components.TopTitleBar
+import com.android.sample.ui.calendar.utils.DateTimeUtils.DATE_FORMAT_PATTERN
+import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.theme.CornerRadiusLarge
+import com.android.sample.ui.theme.PaddingExtraSmall
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingMedium
@@ -84,16 +88,27 @@ private fun ReplacementAssistChip(
  * - replacements to process (admin must choose someone)
  * - replacements waiting for an answer from the substitute(s)
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReplacementPendingListScreen(
     replacementsToProcess: List<Replacement> = getMockReplacements().toProcessReplacements(),
     replacementsWaitingForAnswer: List<Replacement> =
         getMockReplacements().waitingForAnswerAndDeclinedReplacements(),
-    onProcessReplacement: (Replacement) -> Unit = {}
+    onProcessReplacement: (Replacement) -> Unit = {},
+    onNavigateBack: () -> Unit = {}
 ) {
   Scaffold(
-      topBar = { TopTitleBar(title = stringResource(id = R.string.replacement_requests_title)) }) {
-          paddingValues ->
+      topBar = {
+        TopAppBar(
+            title = { Text(stringResource(id = R.string.replacement_requests_title)) },
+            navigationIcon = {
+              IconButton(onClick = onNavigateBack) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(R.string.common_back))
+              }
+            })
+      }) { paddingValues ->
         Column(
             modifier =
                 Modifier.fillMaxSize()
@@ -155,7 +170,7 @@ private fun ReplacementToProcessCard(
     replacement: Replacement,
     onProcessClick: () -> Unit,
 ) {
-  val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+  val dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)
   val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
   val dateText = replacement.event.startLocalDate.format(dateFormatter)
@@ -181,9 +196,11 @@ private fun ReplacementToProcessCard(
                       id = R.string.replacement_substituted_label, replacement.absentUserId),
               style = MaterialTheme.typography.bodySmall)
           Spacer(modifier = Modifier.height(SpacingSmall))
-          Button(modifier = Modifier.align(Alignment.End), onClick = onProcessClick) {
-            Text(text = stringResource(id = R.string.replacement_process_button))
-          }
+
+          PrimaryButton(
+              onClick = onProcessClick,
+              text = stringResource(id = R.string.replacement_process_button),
+              innerPadding = PaddingExtraSmall)
         }
       }
 }
@@ -191,7 +208,7 @@ private fun ReplacementToProcessCard(
 /** Card for a pending replacement that is already waiting for a substitute's answer */
 @Composable
 fun ReplacementPendingCard(replacement: Replacement) {
-  val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+  val dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)
   val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
   val dateText = replacement.event.startLocalDate.format(dateFormatter)
@@ -245,7 +262,7 @@ fun ReplacementWaitingCard(replacements: List<Replacement>) {
   var showPendingDialog by remember { mutableStateOf(false) }
   var showDeclinedDialog by remember { mutableStateOf(false) }
 
-  val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+  val dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)
   val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
   val dateText = event.startLocalDate.format(dateFormatter)
@@ -277,7 +294,7 @@ fun ReplacementWaitingCard(replacements: List<Replacement>) {
                 labelRes = R.string.replacement_no_response_label,
                 enabled = pending.isNotEmpty(),
                 onClick = { showPendingDialog = true },
-                icon = Icons.Outlined.HelpOutline,
+                icon = Icons.AutoMirrored.Outlined.HelpOutline,
                 tint = MaterialTheme.colorScheme.tertiary)
 
             ReplacementAssistChip(

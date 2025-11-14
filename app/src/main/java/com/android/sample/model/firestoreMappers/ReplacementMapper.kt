@@ -31,7 +31,7 @@ object ReplacementMapper : FirestoreMapper<Replacement> {
             }
 
     // The event is stored as a nested map inside the replacement document
-    val rawEvent = document.get(FIELD_EVENT) as? Map<*, *>
+    val rawEvent = document[FIELD_EVENT] as? Map<*, *>
     val eventMap = rawEvent?.mapKeys { it.key.toString() }
     val event = eventMap?.let { EventMapper.fromMap(it) } ?: return null
 

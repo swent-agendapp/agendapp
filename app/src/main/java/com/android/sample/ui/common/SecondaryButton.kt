@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import com.android.sample.ui.theme.ButtonElevationMedium
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.PaddingSmall
@@ -32,7 +33,7 @@ fun SecondaryButton(
           modifier.fillMaxWidth().padding(horizontal = PaddingMedium, vertical = PaddingSmall),
       elevation =
           ButtonDefaults.buttonElevation(
-              defaultElevation = CornerRadiusLarge,
+              defaultElevation = ButtonElevationMedium,
           ),
       shape = RoundedCornerShape(CornerRadiusLarge),
       onClick = onClick,

@@ -28,6 +28,6 @@ class AuthorizationService(
    * every thing is working
    */
   fun requireAdmin() {
-    true
+    return
   }
 }

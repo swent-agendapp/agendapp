@@ -2,24 +2,39 @@ package com.android.sample.ui.replacement.organize
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
+import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import com.android.sample.ui.replacement.organize.components.SelectSubstitutedScreen
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-// Assisted by AI
-class SelectSubstitutedTest {
+class SelectSubstitutedScreenTest {
 
   @get:Rule val composeTestRule = createComposeRule()
 
+  private lateinit var fakeViewModel: ReplacementOrganizeViewModel
+
+  @Before
+  fun setUp() {
+    fakeViewModel = ReplacementOrganizeViewModel()
+    fakeViewModel.loadOrganizationMembers()
+    composeTestRule.setContent {
+      SelectSubstitutedScreen(
+          replacementOrganizeViewModel = fakeViewModel,
+          onMemberSelected = { fakeViewModel.setSelectedMember(it) },
+          onSelectEvents = {},
+          onSelectDateRange = {},
+          onBack = {})
+    }
+  }
+
   @Test
   fun screenElements_areDisplayedCorrectly() {
-    composeTestRule.setContent { SelectSubstitutedScreen() }
-
     composeTestRule.onNodeWithTag(ReplacementOrganizeTestTags.INSTRUCTION_TEXT).assertIsDisplayed()
     composeTestRule.onNodeWithTag(ReplacementOrganizeTestTags.SEARCH_BAR).assertIsDisplayed()
     composeTestRule.onNodeWithTag(ReplacementOrganizeTestTags.MEMBER_LIST).assertIsDisplayed()
@@ -35,22 +50,22 @@ class SelectSubstitutedTest {
   }
 
   @Test
+  fun buttons_areDisabled_whenNoMemberSelected() {
+    composeTestRule
+        .onNodeWithTag(ReplacementOrganizeTestTags.SELECT_EVENT_BUTTON)
+        .assertIsNotEnabled()
+    composeTestRule
+        .onNodeWithTag(ReplacementOrganizeTestTags.SELECT_DATE_RANGE_BUTTON)
+        .assertIsNotEnabled()
+  }
+
+  @Test
   fun memberSelection_enablesButtons() {
-    var selectedMember = ""
+    // Click on U3
+    composeTestRule.onNodeWithText("U3").performClick()
 
-    composeTestRule.setContent {
-      SelectSubstitutedScreen(
-          onMemberSelected = { selectedMember = it },
-          onSelectEvents = {},
-          onSelectDateRange = {},
-          onBack = {})
-    }
-
-    // Click on "Alice"
-    composeTestRule.onNodeWithText("Alice").performClick()
-
-    // Verify callbacks
-    assert(selectedMember == "Alice")
+    // Verify selected member
+    assert(fakeViewModel.uiState.value.selectedMember?.id == "U3")
 
     // Buttons should be enabled
     composeTestRule.onNodeWithTag(ReplacementOrganizeTestTags.SELECT_EVENT_BUTTON).assertIsEnabled()
@@ -61,14 +76,15 @@ class SelectSubstitutedTest {
 
   @Test
   fun searchFilter_filtersList() {
-    composeTestRule.setContent { SelectSubstitutedScreen() }
-
+    // Type "Ali" in search bar
     composeTestRule
         .onNodeWithTag(ReplacementOrganizeTestTags.SEARCH_BAR)
         .performClick()
-        .performTextInput("Ali")
+        .performTextInput("2")
 
-    composeTestRule.onNodeWithText("Alice").assertIsDisplayed()
-    composeTestRule.onNodeWithText("Bob").assertDoesNotExist()
+    composeTestRule.onNodeWithText("U2").assertIsDisplayed()
+    composeTestRule.onNodeWithText("U1").assertDoesNotExist()
+    composeTestRule.onNodeWithText("U3").assertDoesNotExist()
+    composeTestRule.onNodeWithText("U4").assertDoesNotExist()
   }
 }

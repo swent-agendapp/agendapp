@@ -84,7 +84,7 @@ class ReplacementOrganizeViewModel(
    *
    * Currently uses mock organizations for development/testing.
    *
-   * After loading, updates the memberlist in the UI state.
+   * After loading, updates the member list in the UI state.
    */
   fun loadOrganizationMembers() {
     viewModelScope.launch {
@@ -176,8 +176,8 @@ class ReplacementOrganizeViewModel(
 
         replacementRepository.insertReplacement(replacement)
       } catch (e: Exception) {
-        Log.e("ReplacementOrganizeVM", "Error adding event: ${e.message}")
-        _uiState.value = _uiState.value.copy(errorMsg = "Unexpected error while creating the event")
+        Log.e("ReplacementOrganizeVM", "Error adding replacement: ${e.message}")
+        _uiState.value = _uiState.value.copy(errorMsg = "Unexpected error while creating the replacement")
       }
     }
   }

@@ -122,7 +122,7 @@ fun AddEventAttendantScreen(
                                       action(participant)
                                     }
                                     .padding(vertical = PaddingSmall)
-                                  .testTag(CHECK_BOX_EMPLOYEE)) {
+                                    .testTag(CHECK_BOX_EMPLOYEE)) {
                               Checkbox(
                                   checked = newEventUIState.participants.contains(participant),
                                   onCheckedChange = { checked ->

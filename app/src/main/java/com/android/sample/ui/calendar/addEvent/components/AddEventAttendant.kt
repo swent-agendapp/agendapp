@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
+import com.android.sample.ui.calendar.addEvent.AddEventTestTags.CHECK_BOX_EMPLOYEE
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
 import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.components.BottomNavigationButtons
@@ -120,7 +121,8 @@ fun AddEventAttendantScreen(
                                           else addEventViewModel::addParticipant
                                       action(participant)
                                     }
-                                    .padding(vertical = PaddingSmall)) {
+                                    .padding(vertical = PaddingSmall)
+                                    .testTag(CHECK_BOX_EMPLOYEE)) {
                               Checkbox(
                                   checked = newEventUIState.participants.contains(participant),
                                   onCheckedChange = { checked ->

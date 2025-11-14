@@ -195,9 +195,9 @@ private fun rememberProfileScreenState(
 @Composable
 private fun ProfileTopBar(onNavigateBack: () -> Unit) {
   SecondaryPageTopBar(
-    title = stringResource(R.string.profile_screen_title),
-    onClick = onNavigateBack,
-    backButtonTestTags = ProfileScreenTestTags.BACK_BUTTON)
+      title = stringResource(R.string.profile_screen_title),
+      onClick = onNavigateBack,
+      backButtonTestTags = ProfileScreenTestTags.BACK_BUTTON)
 }
 
 @Composable
@@ -212,34 +212,33 @@ private fun ProfileContent(
   val phoneErrorMessage = stringResource(R.string.profile_phone_error)
 
   Column(
-    modifier =
-      modifier.padding(PaddingMedium).fillMaxSize().semantics {
-        testTag = ProfileScreenTestTags.PROFILE_SCREEN
-      },
-    horizontalAlignment = Alignment.CenterHorizontally
-  ) {
-    ProfileHeader(
-      isEditMode = screenState.isEditMode,
-      onEdit = screenState::onEdit,
-      onCancel = screenState::onCancel,
-      onSave = { screenState.onSave(emailErrorMessage, phoneErrorMessage) })
+      modifier =
+          modifier.padding(PaddingMedium).fillMaxSize().semantics {
+            testTag = ProfileScreenTestTags.PROFILE_SCREEN
+          },
+      horizontalAlignment = Alignment.CenterHorizontally) {
+        ProfileHeader(
+            isEditMode = screenState.isEditMode,
+            onEdit = screenState::onEdit,
+            onCancel = screenState::onCancel,
+            onSave = { screenState.onSave(emailErrorMessage, phoneErrorMessage) })
 
-    Spacer(Modifier.height(SpacingExtraLarge))
+        Spacer(Modifier.height(SpacingExtraLarge))
 
-    ProfileFieldsSection(screenState)
+        ProfileFieldsSection(screenState)
 
-    Spacer(Modifier.height(SpacingLarge))
+        Spacer(Modifier.height(SpacingLarge))
 
-    Spacer(Modifier.height(SpacingLarge))
+        Spacer(Modifier.height(SpacingLarge))
 
-    LogoutRow(
-      text = stringResource(R.string.sign_in_logout_content_description),
-      modifier = Modifier.testTag(ProfileScreenTestTags.SIGN_OUT_BUTTON),
-      onClick = {
-        authViewModel.signOut(credentialManager)
-        onSignOut()
-      })
-  }
+        LogoutRow(
+            text = stringResource(R.string.sign_in_logout_content_description),
+            modifier = Modifier.testTag(ProfileScreenTestTags.SIGN_OUT_BUTTON),
+            onClick = {
+              authViewModel.signOut(credentialManager)
+              onSignOut()
+            })
+      }
 }
 
 @Composable

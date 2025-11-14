@@ -100,11 +100,11 @@ fun ReplacementOrganizeScreen(
     ReplacementOrganizeStep.SelectProcessMoment ->
         SelectProcessMomentScreen(
             onProcessNow = {
-              onProcessNow
+              onProcessNow()
               replacementOrganizeViewModel.addReplacement()
             },
             onProcessLater = {
-              onProcessLater
+              onProcessLater()
               replacementOrganizeViewModel.addReplacement()
             })
   }

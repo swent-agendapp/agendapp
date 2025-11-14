@@ -1,17 +1,15 @@
 package com.android.sample.e2eTests
 
-import android.widget.TimePicker
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.contrib.PickerActions
-import androidx.test.espresso.matcher.ViewMatchers.withClassName
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeDown
+import androidx.compose.ui.test.swipeUp
 import com.android.sample.Agendapp
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.ui.calendar.CalendarScreenTestTags
@@ -21,7 +19,6 @@ import com.android.sample.utils.FakeJwtGenerator
 import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.FirebaseEmulator
 import com.github.se.bootcamp.ui.authentication.SignInScreenTestTags
-import org.hamcrest.Matchers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -112,20 +109,6 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
         .onNodeWithTag(AddEventTestTags.recurrenceTag(RecurrenceStatus.Weekly))
         .performClick()
 
-    composeTestRule.onNodeWithTag(AddEventTestTags.START_TIME_BUTTON).performClick()
-
-    onView(withClassName(Matchers.equalTo(TimePicker::class.java.name)))
-        .perform(PickerActions.setTime(14, 45))
-    onView(withText("OK")).perform(click())
-
-    composeTestRule.onNodeWithTag(AddEventTestTags.END_TIME_BUTTON).performClick()
-
-    onView(withClassName(Matchers.equalTo(TimePicker::class.java.name)))
-        .perform(PickerActions.setTime(15, 45))
-    onView(withText("OK")).perform(click())
-
-    composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).performClick()
-
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).performClick()
 
     composeTestRule.onAllNodesWithTag(AddEventTestTags.CHECK_BOX_EMPLOYEE)[0].performClick()
@@ -134,8 +117,44 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
 
     composeTestRule.onNodeWithTag(AddEventTestTags.FINISH_BUTTON).performClick()
 
+    composeTestRule.scrollCalendarUntilEventVisible(
+        calendarTag = CalendarScreenTestTags.SCROLL_AREA,
+        eventTag = CalendarScreenTestTags.EVENT_BLOCK + "_" + eventTitle,
+    )
+
     composeTestRule
         .onNodeWithTag(CalendarScreenTestTags.EVENT_BLOCK + "_" + eventTitle)
         .assertIsDisplayed()
+  }
+
+  private fun ComposeTestRule.isTagDisplayed(tag: String): Boolean =
+      try {
+        onNodeWithTag(tag).assertIsDisplayed()
+        true
+      } catch (_: AssertionError) {
+        false
+      }
+
+  private fun ComposeTestRule.scrollCalendarUntilEventVisible(
+      calendarTag: String,
+      eventTag: String,
+      maxDownScrolls: Int = 10,
+      maxUpScrolls: Int = 10
+  ) {
+    if (isTagDisplayed(eventTag)) return
+
+    val calendarNode = onNodeWithTag(calendarTag)
+
+    repeat(maxDownScrolls) {
+      calendarNode.performTouchInput { swipeUp() }
+      if (isTagDisplayed(eventTag)) return
+    }
+
+    repeat(maxUpScrolls) {
+      calendarNode.performTouchInput { swipeDown() }
+      if (isTagDisplayed(eventTag)) return
+    }
+
+    throw AssertionError("Event with tag $eventTag not found anywhere in calendar")
   }
 }

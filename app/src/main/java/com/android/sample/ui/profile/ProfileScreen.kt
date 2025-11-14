@@ -19,7 +19,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.credentials.CredentialManager
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.theme.PaddingMedium
@@ -264,7 +263,7 @@ private fun SignOutButton(
 @Composable
 private fun rememberProfileViewModel(): ProfileViewModel {
   val application = LocalContext.current.applicationContext as Application
-  return viewModel(factory = ViewModelProvider.AndroidViewModelFactory.getInstance(application))
+  return viewModel(factory = ProfileViewModel.provideFactory(application))
 }
 
 @Composable

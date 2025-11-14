@@ -54,9 +54,13 @@
     <string name="edit_event_participants_screen_title">Modifier les participants à l’événement</string>
     <string name="edit_event_select_participants_text">Sélectionner les participants</string>
 
+    <!-- Notifications -->
+
     <!-- Buttons -->
     <string name="common_save">Enregistrer</string>
     <string name="common_cancel">Annuler</string>
+
+    <!-- Home Screen -->
 
     <!-- Settings Screen -->
     <string name="settings_screen_title">Paramètres</string>
@@ -140,6 +144,8 @@
     <string name="replacement_to_process_section_title">Remplacements à traiter</string>
     <string name="replacement_waiting_answer_section_title">En attente d’une réponse</string>
     <string name="replacement_process_button">Traiter</string>
+    <string name="replacement_no_response_label">%1$d sans réponse</string>
+    <string name="replacement_declined_label">%1$d refusés</string>
     <string name="replacement_pending_people_title">Sans réponse</string>
     <string name="replacement_declined_people_title">Refusé</string>
     <string name="replacement_people_dialog_close">Fermer</string>
@@ -164,5 +170,6 @@
     <string name="replacement_create_title">Étape précédente</string>
     <string name="replacement_create_select_event">Sélectionner un événement</string>
     <string name="replacement_create_choose_date_range">Choisir une plage de dates</string>
+
 
 </resources>

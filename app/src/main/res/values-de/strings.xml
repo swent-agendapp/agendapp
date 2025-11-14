@@ -54,9 +54,13 @@
     <string name="edit_event_participants_screen_title">Ereignisteilnehmer bearbeiten</string>
     <string name="edit_event_select_participants_text">Teilnehmer auswählen</string>
 
+    <!-- Notifications -->
+
     <!-- Buttons -->
     <string name="common_save">Speichern</string>
     <string name="common_cancel">Abbrechen</string>
+
+    <!-- Home Screen -->
 
     <!-- Settings Screen -->
     <string name="settings_screen_title">Einstellungen</string>
@@ -140,6 +144,8 @@
     <string name="replacement_to_process_section_title">Zu bearbeitende Vertretungen</string>
     <string name="replacement_waiting_answer_section_title">Warten auf eine Antwort</string>
     <string name="replacement_process_button">Bearbeiten</string>
+    <string name="replacement_no_response_label">%1$d ohne Antwort</string>
+    <string name="replacement_declined_label">%1$d abgelehnt</string>
     <string name="replacement_pending_people_title">Ohne Antwort</string>
     <string name="replacement_declined_people_title">Abgelehnt</string>
     <string name="replacement_people_dialog_close">Schließen</string>
@@ -164,5 +170,6 @@
     <string name="replacement_create_title">Vorheriger Schritt</string>
     <string name="replacement_create_select_event">Ereignis auswählen</string>
     <string name="replacement_create_choose_date_range">Datumsbereich auswählen</string>
+
 
 </resources>

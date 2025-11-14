@@ -69,6 +69,8 @@
     <string name="replacement_to_process_section_title">Replacements to process</string>
     <string name="replacement_waiting_answer_section_title">Waiting for an answer</string>
     <string name="replacement_process_button">Process</string>
+    <string name="replacement_no_response_label">%1$d awaiting replies</string>
+    <string name="replacement_declined_label">%1$d declined</string>
     <string name="replacement_pending_people_title">No response</string>
     <string name="replacement_declined_people_title">Declined</string>
     <string name="replacement_people_dialog_close">Close</string>
@@ -99,7 +101,7 @@
     <string name="profile_display_name_label">Display Name</string>
     <string name="profile_email_label">Email</string>
     <string name="profile_phone_label">Phone Number</string>
-    <string name="profile_title">Your Profile</string>
+    <string name="profile_title">User Profile</string>
     <string name="profile_cancel_content_description">Cancel</string>
     <string name="profile_save_content_description">Save</string>
     <string name="profile_edit_content_description">Edit</string>

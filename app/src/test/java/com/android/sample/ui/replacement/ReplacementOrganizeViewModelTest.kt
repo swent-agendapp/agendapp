@@ -136,7 +136,7 @@ class ReplacementOrganizeViewModelTest {
   @Test
   fun `setSelectedMember updates selected member`() {
     val vm = makeAdminVm()
-    val member = User(id = "123", displayName = "Alice", email = "alice@gmail.com")
+    val member = User(id = "123", displayName = "Alice", email = "alice@example.com")
     vm.setSelectedMember(member)
     assertEquals(member, vm.uiState.value.selectedMember)
   }
@@ -244,7 +244,7 @@ class ReplacementOrganizeViewModelTest {
   @Test
   fun `admin can insert replacement for selected events`() = runTest {
     val vm = makeAdminVm()
-    val member = User("1", "John", "Doe", "")
+    val member = User("1", "John Doe", "john.doe@example.com")
     vm.setSelectedMember(member)
 
     // Add event selection
@@ -262,7 +262,7 @@ class ReplacementOrganizeViewModelTest {
   @Test
   fun `employee cannot create replacement (authorization fails)`() = runTest {
     val vm = makeEmployeeVm()
-    val member = User("1", "John", "Doe", "")
+    val member = User("1", "John Doe", "john.doe@example.com")
     vm.setSelectedMember(member)
     vm.addSelectedEvent(event1)
 
@@ -278,7 +278,7 @@ class ReplacementOrganizeViewModelTest {
     val vm = makeAdminVm()
 
     vm.setMemberSearchQuery("abc")
-    vm.setSelectedMember(User("1", "Test", "User", ""))
+    vm.setSelectedMember(User("1", "Test", "user@example.com"))
     vm.addSelectedEvent(event1)
     vm.goToStep(ReplacementOrganizeStep.SelectProcessMoment)
 

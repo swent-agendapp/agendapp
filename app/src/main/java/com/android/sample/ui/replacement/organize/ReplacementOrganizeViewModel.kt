@@ -168,6 +168,14 @@ class ReplacementOrganizeViewModel(
     viewModelScope.launch {
       try {
         val allowed = runCatching { authz.requireAdmin() }.isSuccess
+        // For now, we throw an exception if unauthorized, because requireAdmin() disabled
+        // temporarily and does nothing
+        if (!authz.canEditCourses()) {
+          _uiState.value =
+              _uiState.value.copy(errorMsg = "You are not allowed to organize replacements !")
+          return@launch
+        }
+        // End of temporary code
         if (!allowed) {
           _uiState.value =
               _uiState.value.copy(errorMsg = "You are not allowed to organize replacements !")

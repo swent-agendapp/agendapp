@@ -46,6 +46,7 @@ import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.mockData.getMockReplacements
 import com.android.sample.model.replacement.toProcessReplacements
 import com.android.sample.model.replacement.waitingForAnswerAndDeclinedReplacements
+import com.android.sample.ui.calendar.utils.DateTimeUtils.DATE_FORMAT_PATTERN
 import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingExtraSmall
@@ -169,7 +170,7 @@ private fun ReplacementToProcessCard(
     replacement: Replacement,
     onProcessClick: () -> Unit,
 ) {
-  val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+  val dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)
   val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
   val dateText = replacement.event.startLocalDate.format(dateFormatter)
@@ -207,7 +208,7 @@ private fun ReplacementToProcessCard(
 /** Card for a pending replacement that is already waiting for a substitute's answer */
 @Composable
 fun ReplacementPendingCard(replacement: Replacement) {
-  val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+  val dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)
   val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
   val dateText = replacement.event.startLocalDate.format(dateFormatter)
@@ -261,7 +262,7 @@ fun ReplacementWaitingCard(replacements: List<Replacement>) {
   var showPendingDialog by remember { mutableStateOf(false) }
   var showDeclinedDialog by remember { mutableStateOf(false) }
 
-  val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+  val dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)
   val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
   val dateText = event.startLocalDate.format(dateFormatter)

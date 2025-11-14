@@ -3,10 +3,12 @@ package com.android.sample.ui.calendar.utils
 import java.time.*
 import java.time.format.DateTimeFormatter
 
-object DateTimeUtils {
 
+
+object DateTimeUtils {
+  const val DATE_FORMAT_PATTERN = "dd/MM/yyyy"
   private val zoneId: ZoneId = ZoneId.systemDefault()
-  private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+  private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)
   private val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
   fun formatInstantToDate(instant: Instant): String {

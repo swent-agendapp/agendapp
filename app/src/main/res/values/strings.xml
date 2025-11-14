@@ -58,26 +58,17 @@
     <string name="edit_event_participants_screen_title">Edit Event Participants</string>
     <string name="edit_event_select_participants_text">Select participants</string>
 
-    <!-- Notifications -->
-    <string name="edit_event_notify_label">Notify</string>
-    <string name="edit_event_add_notification_button">Add a notification</string>
-    <string name="edit_event_remove_notification_symbol">✕</string>
-    <string name="edit_event_add_notification_symbol">+</string>
-
     <!-- Buttons -->
     <string name="common_save">Save</string>
     <string name="common_cancel">Cancel</string>
 
     <!-- Replacements screen -->
     <string name="replacement_requests_title">Replacement requests</string>
-    <string name="replacement_requests_subtitle">Replacements waiting for confirmation</string>
     <string name="replacement_substituted_label">Absent person: %1$s</string>
     <string name="replacement_substitute_label">Substitute: %1$s</string>
     <string name="replacement_to_process_section_title">Replacements to process</string>
     <string name="replacement_waiting_answer_section_title">Waiting for an answer</string>
     <string name="replacement_process_button">Process</string>
-    <string name="replacement_no_response_label">%1$d awaiting replies</string>
-    <string name="replacement_declined_label">%1$d declined</string>
     <string name="replacement_pending_people_title">No response</string>
     <string name="replacement_declined_people_title">Declined</string>
     <string name="replacement_people_dialog_close">Close</string>
@@ -95,11 +86,6 @@
     <string name="select_date_range">Select date range</string>
     <string name="search_icon_content_description">Search icon</string>
 
-    <!-- Home Screen -->
-    <string name="home_go_to_edit_event">Go to Edit Event</string>
-    <string name="home_go_to_calendar">Go to Calendar</string>
-    <string name="home_go_to_settings">Go to Settings</string>
-
     <!-- Settings Screen -->
     <string name="settings_screen_title">Settings</string>
     <string name="settings_profile_button">Profile</string>
@@ -113,7 +99,6 @@
     <string name="profile_display_name_label">Display Name</string>
     <string name="profile_email_label">Email</string>
     <string name="profile_phone_label">Phone Number</string>
-    <string name="profile_admin_contact_button">View Admin Contact</string>
     <string name="profile_title">Your Profile</string>
     <string name="profile_cancel_content_description">Cancel</string>
     <string name="profile_save_content_description">Save</string>
@@ -140,7 +125,6 @@
 
     <!-- Edit Event -->
     <string name="edit_event_id">Editing event ID: %1$s</string>
-    <string name="edit_event_default_notification">30 min before</string>
 
     <!-- Sign In -->
     <string name="sign_in_app_title">Agendapp</string>
@@ -173,17 +157,7 @@
     <string name="down_sheet_button_create">Save area</string>
     <string name="down_sheet_button_delete">Delete Marker</string>
 
-    <string name="edit_event_time_recurrence_title">Edit Event Time and Recurrence Selection</string>
-    <string name="edit_event_confirmation_title">Edit Event Confirmation</string>
-    <string name="edit_event_confirmation_message">Please confirm your event changes</string>
-    <string name="common_finish">Finish</string>
-
     <!-- Replacement - Employee -->
-    <string name="replacement_view_title">Replacement Request</string>
-    <string name="replacement_event_description_label">Event Description</string>
-    <string name="replacement_employees_label">Employees</string>
-    <string name="replacement_accept_button">Accept</string>
-    <string name="replacement_decline_button">Decline</string>
     <string name="replacement_title">Replacement</string>
     <string name="replacement_ask_to_be_replaced">Ask to be replaced</string>
     <string name="replacement_card_title">Title: %1$s</string>
@@ -193,7 +167,6 @@
     <string name="replacement_create_title">Previous step</string>
     <string name="replacement_create_select_event">Select an event</string>
     <string name="replacement_create_choose_date_range">Choose a date range</string>
-    <string name="common_send">Send</string>
 </resources>
 
 

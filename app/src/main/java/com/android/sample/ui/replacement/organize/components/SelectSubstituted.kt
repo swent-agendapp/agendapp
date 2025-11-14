@@ -71,8 +71,6 @@ import com.android.sample.ui.theme.WeightVeryHeavy
  * - Pressing **Select a date range** triggers `onSelectDateRange()`.
  * - The top bar back button triggers `onBack()`.
  *
- * @param onMemberSelected Callback invoked when a member is selected from the list. The selected
- *   member name is passed as a parameter.
  * @param onSelectEvents Called when the user confirms the member and wants to choose affected
  *   events.
  * @param onSelectDateRange Called when the user chooses to specify a time range first.
@@ -81,7 +79,6 @@ import com.android.sample.ui.theme.WeightVeryHeavy
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectSubstitutedScreen(
-    onMemberSelected: (User) -> Unit = {},
     onSelectEvents: () -> Unit = {},
     onSelectDateRange: () -> Unit = {},
     onBack: () -> Unit = {},
@@ -157,7 +154,6 @@ fun SelectSubstitutedScreen(
                                       Modifier.fillMaxWidth()
                                           .background(if (isSelected) Violet else Color.White)
                                           .clickable {
-                                            onMemberSelected(member)
                                             replacementOrganizeViewModel.setSelectedMember(member)
                                           }
                                           .padding(vertical = PaddingMedium),

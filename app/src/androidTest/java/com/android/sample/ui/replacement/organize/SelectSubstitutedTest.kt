@@ -26,7 +26,6 @@ class SelectSubstitutedScreenTest {
     composeTestRule.setContent {
       SelectSubstitutedScreen(
           replacementOrganizeViewModel = fakeViewModel,
-          onMemberSelected = { fakeViewModel.setSelectedMember(it) },
           onSelectEvents = {},
           onSelectDateRange = {},
           onBack = {})

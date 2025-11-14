@@ -38,7 +38,6 @@ class ReplacementOrganizeViewModelTest {
   private lateinit var orgRepo: OrganizationRepository
   private lateinit var replacementRepo: ReplacementRepository
   private lateinit var event1: Event
-  private lateinit var event2: Event
 
   @Before
   fun setUp() {
@@ -47,7 +46,7 @@ class ReplacementOrganizeViewModelTest {
     orgRepo = OrganizationRepositoryLocal()
     replacementRepo = ReplacementRepositoryLocal()
 
-    // Create a sample events for testing.
+    // Create a sample event for testing.
     event1 =
         createEvent(
             title = "Meeting",

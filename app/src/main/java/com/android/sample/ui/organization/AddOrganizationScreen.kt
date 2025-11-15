@@ -8,6 +8,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -35,6 +38,8 @@ fun AddOrganizationScreen(
 
   val uiState by addOrganizationViewModel.uiState.collectAsState()
 
+  var nameTouched by remember { mutableStateOf(false) }
+
   Scaffold(modifier = Modifier.fillMaxHeight().testTag(AddOrganizationScreenTestTags.ROOT)) {
       innerPadding ->
     Box(
@@ -46,10 +51,10 @@ fun AddOrganizationScreen(
                 value = uiState.name.orEmpty(),
                 onValueChange = { it -> addOrganizationViewModel.updateName(name = it) },
                 label = stringResource(R.string.organization_name_label),
-                isError = !addOrganizationViewModel.isValidOrganizationName(),
+                isError = !addOrganizationViewModel.isValidOrganizationName() && nameTouched,
                 errorMessage = stringResource(R.string.name_empty_error),
                 testTag = AddOrganizationScreenTestTags.ORGANIZATION_NAME_TEXT_FIELD,
-            )
+                onFocusChange = { focusState -> if (focusState.isFocused) nameTouched = true })
 
             // Bottom Navigation Buttons
             BottomNavigationButtons(
@@ -58,7 +63,7 @@ fun AddOrganizationScreen(
                   if (organizationName != null) {
                     organizationViewModel.addOrganizationFromName(organizationName)
                   }
-                  onFinish
+                  onFinish()
                 },
                 onBack = onNavigateBack,
                 canGoBack = true,

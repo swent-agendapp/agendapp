@@ -173,5 +173,6 @@
 
     <!-- Organizations -->
     <string name="organization_list_title">Vos organisations</string>
+    <string name="organization_loading">Chergement des organisations</string>
 
 </resources>

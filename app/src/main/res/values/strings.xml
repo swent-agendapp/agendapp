@@ -169,6 +169,10 @@
     <string name="replacement_create_title">Previous step</string>
     <string name="replacement_create_select_event">Select an event</string>
     <string name="replacement_create_choose_date_range">Choose a date range</string>
+
+    <!-- Organizations -->
+    <string name="organization_list_title">Your organizations</string>
+
 </resources>
 
 

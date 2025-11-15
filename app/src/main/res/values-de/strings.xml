@@ -171,5 +171,7 @@
     <string name="replacement_create_select_event">Ereignis auswählen</string>
     <string name="replacement_create_choose_date_range">Datumsbereich auswählen</string>
 
+    <!-- Organizations -->
+    <string name="organization_list_title">Ihre organisationen</string>
 
 </resources>

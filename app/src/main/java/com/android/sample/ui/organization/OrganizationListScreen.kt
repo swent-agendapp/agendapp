@@ -33,7 +33,9 @@ import com.android.sample.ui.theme.SpacingMedium
 object OrganizationListScreenTestTags {
   const val ROOT = "organizationListScreenRoot"
   const val ORGANIZATION_LIST = "organizationList"
-  const val ORGANIZATION_ITEM = "organizationItem"
+
+  fun organizationItemTag(organizationName: String): String = "organizationItem_$organizationName"
+
   const val LOADING_INDICATOR = "loadingIndicator"
   const val ADD_ORGANIZATION_BUTTON = "addOrganizationButton"
 }
@@ -104,7 +106,7 @@ fun OrganizationList(
           ButtonItem(
               title = organization.name,
               icon = Icons.Default.Business,
-              tag = OrganizationListScreenTestTags.ORGANIZATION_ITEM)
+              tag = OrganizationListScreenTestTags.organizationItemTag(organization.name))
       MainPageButton(item = organizationItem, onClick = { onOrganizationSelected(organization) })
       Spacer(modifier = Modifier.height(SpacingMedium))
     }

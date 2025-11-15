@@ -3,6 +3,7 @@ package com.android.sample.ui.organization
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.sample.model.authentication.AuthRepositoryProvider
+import com.android.sample.model.authentication.User
 import com.android.sample.model.organizations.Organization
 import com.android.sample.model.organizations.OrganizationRepository
 import com.android.sample.model.organizations.OrganizationRepositoryProvider
@@ -29,6 +30,10 @@ class OrganizationViewModel(
   // State holding the UI state of the organizations of the current user
   private val _uiState = MutableStateFlow(OrganizationUIState())
   val uiState: StateFlow<OrganizationUIState> = _uiState
+
+  // State holding the current user
+  private val _userState = MutableStateFlow(authRepository.getCurrentUser())
+  val userState: StateFlow<User?> = _userState
 
   // Initialize by loading organizations
   init {
@@ -67,5 +72,15 @@ class OrganizationViewModel(
 
     // Update the selected organization in the UI state
     _uiState.update { it.copy(selectedOrganization = organization) }
+  }
+
+  // Add a new organization for the current user
+  suspend fun addOrganization(organization: Organization) {
+    organizationRepository.insertOrganization(
+        organization = organization,
+        user = _userState.value ?: throw IllegalStateException("No authenticated user found."))
+
+    // Reload organizations after adding a new one
+    loadOrganizations()
   }
 }

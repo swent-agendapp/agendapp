@@ -64,25 +64,6 @@ fun EventOverviewScreen(
 
   // Fetch the event and its participant display names
   LaunchedEffect(eventId) {
-    // ================= before (with wrong ViewModel) =================
-    // event = calendarViewModel.getEventById(eventId)
-
-    // Later (when the Add flow will propose a list of User that are in the Auth repository
-    // instead of a fake name's list) :
-
-    //      participantNames = calendarViewModel.getParticipantNames(eventId)
-
-    // Note : we can't use it now because the AddViewModel add user ID like "Alice", "Bob" but no
-    // User with these ids exist in the Auth repo
-    // => the getParticipantName doesn't find any user with an "Alice" id, and return an empty
-    // list
-
-    // To still see something coherent with what we "add", we update it like so :
-    //      participantNames =
-    //          event?.participants?.toList() ?: emptyList() // in reality these are the users'
-    // ids !
-
-    // ================= now =================
     eventOverviewViewModel.loadEvent(eventId)
     eventOverviewViewModel.loadParticipantNames()
   }

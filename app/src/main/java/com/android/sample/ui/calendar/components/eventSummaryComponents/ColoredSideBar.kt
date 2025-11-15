@@ -46,5 +46,5 @@ fun ColoredSideBar(
                           bottomStart = shape.bottomStart,
                           topEnd = CornerSize(0.dp),
                           bottomEnd = CornerSize(0.dp)))
-              .testTag(EventSummaryCardTags.SideBar))
+              .testTag(EventSummaryCardTags.SIDE_BAR))
 }

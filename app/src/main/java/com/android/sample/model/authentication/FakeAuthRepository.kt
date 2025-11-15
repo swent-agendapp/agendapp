@@ -12,4 +12,8 @@ class FakeAuthRepository(private val user: User? = null) : AuthRepository {
   }
 
   override fun signOut(): Result<Unit> = Result.success(Unit)
+
+  override suspend fun getUserById(userId: String): User? {
+    return if (user?.id == userId) user else null
+  }
 }

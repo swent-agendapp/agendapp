@@ -43,7 +43,7 @@ fun RecurrenceSection(recurrenceText: String? = null) {
           text = recurrenceText,
           style = MaterialTheme.typography.bodySmall,
           color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = AlphaMedium),
-          modifier = Modifier.testTag(EventSummaryCardTags.Recurrence))
+          modifier = Modifier.testTag(EventSummaryCardTags.RECURRENCE))
     }
   }
 }

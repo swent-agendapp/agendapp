@@ -32,8 +32,8 @@ import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.map.MapScreenTestTags
 import com.android.sample.ui.theme.PaddingExtraLarge
+import com.android.sample.ui.theme.WeightExtraHeavy
 import com.android.sample.ui.theme.WeightMedium
-import com.android.sample.ui.theme.WeightVeryHeavy
 
 private const val DESCRIPTION_FIELD_MIN_LINES = 12
 
@@ -88,7 +88,7 @@ fun AddEventTitleAndDescriptionScreen(
                         style = MaterialTheme.typography.headlineMedium,
                         modifier = Modifier.testTag(AddEventTestTags.INSTRUCTION_TEXT))
                   }
-              Column(modifier = Modifier.weight(WeightVeryHeavy)) {
+              Column(modifier = Modifier.weight(WeightExtraHeavy)) {
                 ValidatingTextField(
                     label = stringResource(R.string.eventTitle),
                     placeholder = stringResource(R.string.eventTitlePlaceholder),

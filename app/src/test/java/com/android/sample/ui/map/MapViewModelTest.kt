@@ -5,7 +5,6 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.GrantPermissionRule
-import com.google.type.LatLng
 import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test

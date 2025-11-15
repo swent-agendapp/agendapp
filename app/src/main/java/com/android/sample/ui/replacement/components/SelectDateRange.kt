@@ -37,7 +37,7 @@ import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.SpacingExtraLarge
 import com.android.sample.ui.theme.SpacingLarge
-import com.android.sample.ui.theme.WeightVeryHeavy
+import com.android.sample.ui.theme.WeightExtraHeavy
 import java.time.Instant
 import java.time.LocalDate
 
@@ -95,7 +95,7 @@ fun SelectDateRangeScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround) {
               Box(
-                  modifier = Modifier.weight(WeightVeryHeavy).fillMaxWidth(),
+                  modifier = Modifier.weight(WeightExtraHeavy).fillMaxWidth(),
                   contentAlignment = Alignment.Center) {
                     Text(
                         text = instruction,
@@ -104,7 +104,7 @@ fun SelectDateRangeScreen(
                         modifier = Modifier.testTag(ReplacementOrganizeTestTags.INSTRUCTION_TEXT))
                   }
 
-              Column(modifier = Modifier.weight(WeightVeryHeavy)) {
+              Column(modifier = Modifier.weight(WeightExtraHeavy)) {
                 Spacer(modifier = Modifier.height(SpacingLarge))
 
                 DatePickerFieldToModal(

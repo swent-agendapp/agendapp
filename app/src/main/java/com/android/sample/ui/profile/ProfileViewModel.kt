@@ -39,7 +39,7 @@ class ProfileViewModel(
     viewModelScope.launch { loadCurrentUser() }
   }
 
-  private suspend fun loadCurrentUser() {
+  private fun loadCurrentUser() {
     val currentUser = repository.getCurrentUser()
     currentUser?.let { user ->
       cachedUser = user

@@ -21,7 +21,7 @@ import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeTestTags
 import com.android.sample.ui.theme.PaddingExtraLarge
-import com.android.sample.ui.theme.WeightVeryHeavy
+import com.android.sample.ui.theme.WeightExtraHeavy
 import com.android.sample.ui.theme.WeightVeryLight
 
 /**
@@ -73,7 +73,7 @@ fun SelectEventScreen(
                         style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier.testTag(ReplacementOrganizeTestTags.INSTRUCTION_TEXT))
                   }
-              Box(modifier = Modifier.weight(WeightVeryHeavy).fillMaxWidth())
+              Box(modifier = Modifier.weight(WeightExtraHeavy).fillMaxWidth())
             } // Empty content waiting for implementation
       },
       bottomBar = {

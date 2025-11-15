@@ -89,7 +89,7 @@ fun ParticipantsSection(
               modifier =
                   Modifier.height(if (totalItems > visibleRows) containerHeight else Dp.Unspecified)
                       .fillMaxWidth()
-                      .testTag(EventSummaryCardTags.ParticipantsList)) {
+                      .testTag(EventSummaryCardTags.PARTICIPANTS_LIST)) {
                 itemsIndexed(participantNames) { idx, name ->
                   // Gentle zebra striping improves scan-ability for long lists
                   val bg =

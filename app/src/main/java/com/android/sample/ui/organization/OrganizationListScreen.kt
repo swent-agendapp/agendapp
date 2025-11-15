@@ -35,6 +35,7 @@ object OrganizationListScreenTestTags {
   const val ORGANIZATION_LIST = "organizationList"
   const val ORGANIZATION_ITEM = "organizationItem"
   const val LOADING_INDICATOR = "loadingIndicator"
+  const val ADD_ORGANIZATION_BUTTON = "addOrganizationButton"
 }
 
 @Composable
@@ -61,7 +62,10 @@ fun OrganizationListScreen(
         )
       },
       floatingActionButton = {
-        FloatingButton(onClick = onAddOrganizationClicked, icon = Icons.Default.Add)
+        FloatingButton(
+            onClick = onAddOrganizationClicked,
+            icon = Icons.Default.Add,
+            modifier = Modifier.testTag(OrganizationListScreenTestTags.ADD_ORGANIZATION_BUTTON))
       },
       modifier = Modifier.testTag(OrganizationListScreenTestTags.ROOT),
       snackbarHost = { SnackbarHost(hostState = snackBarHostState) }) { innerPadding ->

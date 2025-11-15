@@ -17,6 +17,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
+import com.android.sample.model.calendar.Event
+import com.android.sample.ui.calendar.CalendarEventSelector
 import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeTestTags
@@ -51,6 +53,7 @@ fun SelectEventScreen(
     onBack: () -> Unit = {},
     title: String = "",
     instruction: String = "",
+    onEventClick: (Event) -> Unit = {},
     canGoNext: Boolean = false
 ) {
 
@@ -73,8 +76,10 @@ fun SelectEventScreen(
                         style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier.testTag(ReplacementOrganizeTestTags.INSTRUCTION_TEXT))
                   }
-              Box(modifier = Modifier.weight(WeightVeryHeavy).fillMaxWidth())
-            } // Empty content waiting for implementation
+              Box(modifier = Modifier.weight(WeightVeryHeavy).fillMaxWidth()) {
+                CalendarEventSelector(onEventClick = onEventClick)
+              }
+            }
       },
       bottomBar = {
         BottomNavigationButtons(

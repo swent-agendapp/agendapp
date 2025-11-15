@@ -16,8 +16,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,7 +27,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
 import com.android.sample.ui.calendar.components.DatePickerFieldToModal
 import com.android.sample.ui.calendar.components.TopTitleBar
-import com.android.sample.ui.calendar.utils.DateTimeUtils
 import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeTestTags
 import com.android.sample.ui.theme.CornerRadiusMedium
@@ -75,14 +72,13 @@ fun SelectDateRangeScreen(
     onBack: () -> Unit = {},
     title: String = "",
     instruction: String = "",
+    initialStartInstant: Instant = Instant.now(),
+    initialEndInstant: Instant = Instant.now(),
     onStartDateSelected: (LocalDate) -> Unit = {},
     onEndDateSelected: (LocalDate) -> Unit = {},
+    errorMessage: String = "",
+    canGoNext: Boolean = false,
 ) {
-
-  // Later handled by the viewmodel
-  var startInstant by remember { mutableStateOf(Instant.now()) }
-  var endInstant by remember { mutableStateOf(Instant.now()) }
-  val isRangeInvalid = !startInstant.isAfter(endInstant)
 
   Scaffold(
       topBar = { TopTitleBar(title = title) },
@@ -110,25 +106,18 @@ fun SelectDateRangeScreen(
                 DatePickerFieldToModal(
                     label = stringResource(R.string.startDatePickerLabel),
                     modifier = Modifier.testTag(ReplacementOrganizeTestTags.START_DATE_FIELD),
-                    onDateSelected = { date ->
-                      onStartDateSelected(date)
-                      startInstant =
-                          DateTimeUtils.instantWithDate(instant = startInstant, date = date)
-                    },
-                    initialInstant = startInstant)
+                    onDateSelected = { date -> onStartDateSelected(date) },
+                    initialInstant = initialStartInstant)
 
                 Spacer(modifier = Modifier.height(SpacingExtraLarge))
 
                 DatePickerFieldToModal(
                     label = stringResource(R.string.endDatePickerLabel),
                     modifier = Modifier.testTag(ReplacementOrganizeTestTags.END_DATE_FIELD),
-                    onDateSelected = { date ->
-                      onEndDateSelected(date)
-                      endInstant = DateTimeUtils.instantWithDate(instant = endInstant, date = date)
-                    },
-                    initialInstant = endInstant)
+                    onDateSelected = { date -> onEndDateSelected(date) },
+                    initialInstant = initialEndInstant)
               }
-              AnimatedVisibility(visible = isRangeInvalid) {
+              AnimatedVisibility(visible = !canGoNext) {
                 Box(
                     modifier =
                         Modifier.fillMaxWidth()
@@ -140,7 +129,7 @@ fun SelectDateRangeScreen(
                             .testTag(ReplacementOrganizeTestTags.DATE_RANGE_INVALID_TEXT),
                     contentAlignment = Alignment.Center) {
                       Text(
-                          text = stringResource(R.string.invalidDateRangeMessage),
+                          text = errorMessage,
                           style = MaterialTheme.typography.bodyMedium,
                           textAlign = TextAlign.Center)
                     }
@@ -153,7 +142,7 @@ fun SelectDateRangeScreen(
             onBack = onBack,
             backButtonText = stringResource(R.string.goBack),
             nextButtonText = stringResource(R.string.next),
-            canGoNext = !isRangeInvalid,
+            canGoNext = canGoNext,
             backButtonTestTag = ReplacementOrganizeTestTags.BACK_BUTTON,
             nextButtonTestTag = ReplacementOrganizeTestTags.NEXT_BUTTON)
       })

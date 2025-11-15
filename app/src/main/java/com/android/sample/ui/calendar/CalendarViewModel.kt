@@ -3,7 +3,6 @@ package com.android.sample.ui.calendar
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.sample.model.authentication.AuthRepositoryProvider
-import com.android.sample.model.authentication.User
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
@@ -113,58 +112,5 @@ class CalendarViewModel(
     loadEventsHelper(
         loadEventsBlock = { eventRepository.getEventsBetweenDates(start, end) },
         errorMessage = "Failed to load events between $start and $end")
-  }
-
-  /**
-   * Retrieves the [Event] corresponding to the given [eventId].
-   *
-   * This method performs a lookup in the [EventRepository] and returns the matching event. If no
-   * event is found or if an error occurs during the fetch, an error message is propagated to the UI
-   * layer and a [NoSuchElementException] is thrown.
-   *
-   * @throws NoSuchElementException if no event with the given [eventId] exists.
-   */
-  suspend fun getEventById(eventId: String): Event {
-    return try {
-      eventRepository.getEventById(eventId)
-          ?: throw NoSuchElementException("Event with id=$eventId not found.")
-    } catch (e: Exception) {
-      setErrorMsg("Failed to fetch event $eventId: ${e.message}")
-      throw NoSuchElementException("Event with id=$eventId not found.")
-    }
-  }
-
-  /**
-   * Returns the display names of all participants for the event identified by [eventId].
-   *
-   * The function resolves the event via [getEventById], then maps each participant ID to a display
-   * name using [resolveDisplayNameForUser]. Unknown users or users without a display name are
-   * skipped.
-   */
-  suspend fun getParticipantNames(eventId: String): List<String> {
-    val event = getEventById(eventId)
-    // If the list is empty, this will simply return an empty list
-    return event.participants.mapNotNull { userId ->
-      // For each ID, resolve a readable display name (nulls are filtered out by mapNotNull)
-      resolveDisplayNameForUser(userId)
-    }
-  }
-
-  /**
-   * Resolves a user's display name from their [userId] using [AuthRepository.getUserById].
-   *
-   * If the user cannot be found or has no display name, the function returns `null`.
-   *
-   * Errors are caught and surfaced to the UI via [setErrorMsg] and return `null`.
-   */
-  suspend fun resolveDisplayNameForUser(userId: String): String? {
-    return try {
-      val user: User? = authRepository.getUserById(userId)
-      // Prefer the displayName, and if it is null or blank we return null to allow filtering
-      user?.displayName?.takeIf { it.isNotBlank() }
-    } catch (e: Exception) {
-      setErrorMsg("Failed to fetch user $userId: ${e.message}")
-      null
-    }
   }
 }

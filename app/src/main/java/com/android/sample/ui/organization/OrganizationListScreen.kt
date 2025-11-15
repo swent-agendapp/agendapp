@@ -26,6 +26,7 @@ import com.android.sample.ui.common.FloatingButton
 import com.android.sample.ui.common.Loading
 import com.android.sample.ui.common.MainPageButton
 import com.android.sample.ui.common.MainPageTopBar
+import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.SpacingMedium
 
 @Composable
@@ -35,7 +36,7 @@ fun OrganizationListScreen(
     onAddOrganizationClicked: () -> Unit = {},
 ) {
   val uiState by organizationViewModel.uiState.collectAsState()
-    val snackBarHostState = remember { SnackbarHostState() }
+  val snackBarHostState = remember { SnackbarHostState() }
 
   LaunchedEffect(uiState.errorMsg) {
     uiState.errorMsg?.let {
@@ -55,10 +56,11 @@ fun OrganizationListScreen(
         FloatingButton(onClick = onAddOrganizationClicked, icon = Icons.Default.Add)
       },
       snackbarHost = { SnackbarHost(hostState = snackBarHostState) }) { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding)) {
+        Column(modifier = Modifier.padding(innerPadding).padding(PaddingMedium)) {
           if (uiState.isLoading) {
             Loading(label = stringResource(R.string.organization_loading))
           } else {
+            Spacer(modifier = Modifier.height(SpacingMedium))
             OrganizationList(
                 organizations = uiState.organizations,
                 onOrganizationSelected = { organization ->

@@ -17,6 +17,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
@@ -28,6 +29,13 @@ import com.android.sample.ui.common.MainPageButton
 import com.android.sample.ui.common.MainPageTopBar
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.SpacingMedium
+
+object OrganizationListScreenTestTags {
+  const val ROOT = "organizationListScreenRoot"
+  const val ORGANIZATION_LIST = "organizationList"
+  const val ORGANIZATION_ITEM = "organizationItem"
+  const val LOADING_INDICATOR = "loadingIndicator"
+}
 
 @Composable
 fun OrganizationListScreen(
@@ -55,34 +63,44 @@ fun OrganizationListScreen(
       floatingActionButton = {
         FloatingButton(onClick = onAddOrganizationClicked, icon = Icons.Default.Add)
       },
+      modifier = Modifier.testTag(OrganizationListScreenTestTags.ROOT),
       snackbarHost = { SnackbarHost(hostState = snackBarHostState) }) { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding).padding(PaddingMedium)) {
-          if (uiState.isLoading) {
-            Loading(label = stringResource(R.string.organization_loading))
-          } else {
-            Spacer(modifier = Modifier.height(SpacingMedium))
-            OrganizationList(
-                organizations = uiState.organizations,
-                onOrganizationSelected = { organization ->
-                  // Update selected organization in ViewModel
-                  organizationViewModel.selectOrganization(organization)
-                  // Invoke given callback after selection
-                  onOrganizationSelected()
-                })
-          }
-        }
+        Column(
+            modifier =
+                Modifier.padding(innerPadding)
+                    .padding(PaddingMedium)
+                    .testTag(OrganizationListScreenTestTags.ORGANIZATION_LIST)) {
+              if (uiState.isLoading) {
+                Loading(
+                    label = stringResource(R.string.organization_loading),
+                    modifier = Modifier.testTag(OrganizationListScreenTestTags.LOADING_INDICATOR))
+              } else {
+                Spacer(modifier = Modifier.height(SpacingMedium))
+                OrganizationList(
+                    organizations = uiState.organizations,
+                    onOrganizationSelected = { organization ->
+                      // Update selected organization in ViewModel
+                      organizationViewModel.selectOrganization(organization)
+                      // Invoke given callback after selection
+                      onOrganizationSelected()
+                    })
+              }
+            }
       }
 }
 
 @Composable
 fun OrganizationList(
     organizations: List<Organization> = emptyList(),
-    onOrganizationSelected: (Organization) -> Unit = {}
+    onOrganizationSelected: (Organization) -> Unit = {},
 ) {
-  Column {
+  Column(modifier = Modifier.testTag(OrganizationListScreenTestTags.ORGANIZATION_LIST)) {
     organizations.forEach { organization ->
       val organizationItem =
-          ButtonItem(title = organization.name, icon = Icons.Default.Business, tag = "")
+          ButtonItem(
+              title = organization.name,
+              icon = Icons.Default.Business,
+              tag = OrganizationListScreenTestTags.ORGANIZATION_ITEM)
       MainPageButton(item = organizationItem, onClick = { onOrganizationSelected(organization) })
       Spacer(modifier = Modifier.height(SpacingMedium))
     }

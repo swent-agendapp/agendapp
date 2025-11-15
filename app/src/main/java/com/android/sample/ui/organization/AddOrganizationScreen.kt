@@ -10,12 +10,20 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.calendar.components.ValidatingTextField
 import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.theme.PaddingMedium
+
+object AddOrganizationScreenTestTags {
+  const val ROOT = "addOrganizationScreenRoot"
+  const val ORGANIZATION_NAME_TEXT_FIELD = "organizationNameTextField"
+  const val CREATE_BUTTON = "createButton"
+  const val BACK_BUTTON = "backButton"
+}
 
 @Composable
 fun AddOrganizationScreen(
@@ -27,7 +35,8 @@ fun AddOrganizationScreen(
 
   val uiState by addOrganizationViewModel.uiState.collectAsState()
 
-  Scaffold { innerPadding ->
+  Scaffold(modifier = Modifier.fillMaxHeight().testTag(AddOrganizationScreenTestTags.ROOT)) {
+      innerPadding ->
     Box(
         modifier = Modifier.padding(innerPadding).padding(PaddingMedium).fillMaxHeight(),
         contentAlignment = Alignment.Center) {
@@ -38,7 +47,9 @@ fun AddOrganizationScreen(
                 onValueChange = { it -> addOrganizationViewModel.updateName(name = it) },
                 label = stringResource(R.string.organization_name_label),
                 isError = !addOrganizationViewModel.isValidOrganizationName(),
-                errorMessage = stringResource(R.string.name_empty_error))
+                errorMessage = stringResource(R.string.name_empty_error),
+                testTag = AddOrganizationScreenTestTags.ORGANIZATION_NAME_TEXT_FIELD,
+            )
 
             // Bottom Navigation Buttons
             BottomNavigationButtons(
@@ -47,15 +58,15 @@ fun AddOrganizationScreen(
                   if (organizationName != null) {
                     organizationViewModel.addOrganizationFromName(organizationName)
                   }
-                  onFinish()
+                  onFinish
                 },
                 onBack = onNavigateBack,
                 canGoBack = true,
                 backButtonText = stringResource(R.string.cancel),
                 canGoNext = addOrganizationViewModel.isValidOrganizationName(),
                 nextButtonText = stringResource(R.string.create),
-                backButtonTestTag = "",
-                nextButtonTestTag = "",
+                backButtonTestTag = AddOrganizationScreenTestTags.BACK_BUTTON,
+                nextButtonTestTag = AddOrganizationScreenTestTags.CREATE_BUTTON,
             )
           }
         }

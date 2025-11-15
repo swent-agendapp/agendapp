@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -57,7 +57,7 @@ fun DescriptionSection(
 ) {
   if (descriptionText.isNotBlank()) {
     // Measured text height (px), drives the left accent bar height
-    var descHeightPx by remember { mutableStateOf(0) }
+    var descHeightPx by remember { mutableIntStateOf(0) }
     val descHeightDp = with(LocalDensity.current) { descHeightPx.toDp() }
 
     Row(modifier = Modifier.fillMaxWidth()) {

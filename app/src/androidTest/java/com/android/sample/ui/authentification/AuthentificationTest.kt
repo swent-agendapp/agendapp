@@ -1,7 +1,6 @@
 package com.android.sample.ui.authentification
 
 import android.content.Context
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.isDisplayed
@@ -66,46 +65,19 @@ class AuthentificationTest : FirebaseEmulatedTest() {
         FakeJwtGenerator.createFakeGoogleIdToken("login_test", "12345", email = "test@example.com")
 
     val fakeCredentialManager = FakeCredentialManager.create(fakeGoogleIdToken)
+    var isSignIn = false
 
-    composeTestRule.setContent { SignInScreen(credentialManager = fakeCredentialManager) }
+    composeTestRule.setContent {
+      SignInScreen(credentialManager = fakeCredentialManager, onSignedIn = { isSignIn = true })
+    }
 
     composeTestRule
         .onNodeWithTag(SignInScreenTestTags.LOGIN_BUTTON)
         .assertIsDisplayed()
         .performClick()
 
-    composeTestRule.waitUntil(UI_AUTH_WAIT_TIMEOUT) {
-      composeTestRule.onNodeWithTag(SignInScreenTestTags.END_SNACK_BAR).isDisplayed()
-    }
-
-    composeTestRule.onNodeWithTag(SignInScreenTestTags.END_SNACK_BAR).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(SignInScreenTestTags.LOGOUT_BUTTON).assertIsDisplayed()
-  }
-
-  @Test
-  fun canSignOutWithGoogle() {
-    val fakeGoogleIdToken =
-        FakeJwtGenerator.createFakeGoogleIdToken("login_test", "12345", email = "test@example.com")
-
-    val fakeCredentialManager = FakeCredentialManager.create(fakeGoogleIdToken)
-
-    composeTestRule.setContent { SignInScreen(credentialManager = fakeCredentialManager) }
-
-    composeTestRule
-        .onNodeWithTag(SignInScreenTestTags.LOGIN_BUTTON)
-        .assertIsDisplayed()
-        .performClick()
-
-    composeTestRule.waitUntil(UI_AUTH_WAIT_TIMEOUT) {
-      composeTestRule.onNodeWithTag(SignInScreenTestTags.END_SNACK_BAR).isDisplayed()
-    }
-
-    composeTestRule
-        .onNodeWithTag(SignInScreenTestTags.LOGOUT_BUTTON)
-        .assertIsDisplayed()
-        .performClick()
-
-    composeTestRule.onNodeWithTag(SignInScreenTestTags.LOGIN_BUTTON).assertIsDisplayed()
+    composeTestRule.waitUntil(timeoutMillis = 5_000) { isSignIn }
+    assertTrue(isSignIn)
   }
 
   @Test

@@ -3,8 +3,6 @@ package com.android.sample.ui.profile
 import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,6 +14,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.core.net.toUri
 import com.android.sample.R
+import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingSmall
@@ -45,17 +44,10 @@ fun AdminContactScreen(onNavigateBack: () -> Unit = {}) {
 
   Scaffold(
       topBar = {
-        TopAppBar(
-            title = { Text(stringResource(R.string.admin_contact_title)) },
-            navigationIcon = {
-              IconButton(
-                  onClick = onNavigateBack,
-                  modifier = Modifier.testTag(AdminContactScreenTestTags.BACK_BUTTON)) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.common_back))
-                  }
-            })
+        SecondaryPageTopBar(
+            title = stringResource(R.string.admin_contact_title),
+            onClick = onNavigateBack,
+            backButtonTestTags = AdminContactScreenTestTags.BACK_BUTTON)
       }) { innerPadding ->
         Column(
             modifier =

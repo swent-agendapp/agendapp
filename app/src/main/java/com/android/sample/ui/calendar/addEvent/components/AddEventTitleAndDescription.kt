@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -26,11 +27,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
-import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.calendar.components.ValidatingTextField
+import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.components.BottomNavigationButtons
+import com.android.sample.ui.map.MapScreenTestTags
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.WeightExtraHeavy
+import com.android.sample.ui.theme.WeightMedium
 
 private const val DESCRIPTION_FIELD_MIN_LINES = 12
 
@@ -43,6 +46,7 @@ private const val DESCRIPTION_FIELD_MIN_LINES = 12
  * @param onNext Triggered when validation passes and the user moves to step 2.
  * @param onCancel Triggered when the user cancels the flow entirely.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEventTitleAndDescriptionScreen(
     addEventViewModel: AddEventViewModel = viewModel(),
@@ -61,7 +65,12 @@ fun AddEventTitleAndDescriptionScreen(
   var descriptionTouched by remember { mutableStateOf(false) }
 
   Scaffold(
-      topBar = { TopTitleBar(title = stringResource(R.string.addEventTitle)) },
+      topBar = {
+        SecondaryPageTopBar(
+            modifier = Modifier.testTag(MapScreenTestTags.MAP_TITLE),
+            title = stringResource(R.string.addEventTitle),
+            canGoBack = false)
+      },
       content = { paddingValues ->
         Column(
             modifier =
@@ -71,7 +80,7 @@ fun AddEventTitleAndDescriptionScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround) {
               Box(
-                  modifier = Modifier.weight(WeightExtraHeavy).fillMaxWidth(),
+                  modifier = Modifier.weight(WeightMedium).fillMaxWidth(),
                   contentAlignment = Alignment.Center) {
                     Text(
                         stringResource(R.string.enterTitleAndDescription),

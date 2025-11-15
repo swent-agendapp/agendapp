@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -18,8 +19,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
-import com.android.sample.ui.calendar.components.TopTitleBar
+import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.components.BottomNavigationButtons
+import com.android.sample.ui.map.MapScreenTestTags
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.WeightExtraHeavy
 
@@ -29,12 +31,18 @@ import com.android.sample.ui.theme.WeightExtraHeavy
  *
  * Only shows a single "Finish" button.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEventConfirmationScreen(
     onFinish: () -> Unit = {},
 ) {
   Scaffold(
-      topBar = { TopTitleBar(title = stringResource(R.string.addEventTitle)) },
+      topBar = {
+        SecondaryPageTopBar(
+            modifier = Modifier.testTag(MapScreenTestTags.MAP_TITLE),
+            title = stringResource(R.string.addEventTitle),
+            canGoBack = false)
+      },
       content = { paddingValues ->
         Column(
             modifier =

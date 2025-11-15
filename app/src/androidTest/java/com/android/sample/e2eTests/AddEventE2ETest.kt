@@ -14,6 +14,8 @@ import com.android.sample.Agendapp
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
+import com.android.sample.ui.organization.AddOrganizationScreenTestTags
+import com.android.sample.ui.organization.OrganizationListScreenTestTags
 import com.android.sample.utils.FakeCredentialManager
 import com.android.sample.utils.FakeJwtGenerator
 import com.android.sample.utils.FirebaseEmulatedTest
@@ -75,12 +77,50 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
 
     // Wait for sign-in to complete
     composeTestRule.waitUntil(timeoutMillis = UI_AUTH_TIMEOUT) {
-      // Verify Calendar screen exists
+      // Verify that Organization screen exists
       composeTestRule
-          .onAllNodesWithTag(CalendarScreenTestTags.ROOT)
+          .onAllNodesWithTag(OrganizationListScreenTestTags.ROOT)
           .fetchSemanticsNodes()
           .isNotEmpty()
     }
+
+    // Create Organization to proceed to Calendar
+
+    // Click on Add Organization button
+    composeTestRule
+        .onNodeWithTag(OrganizationListScreenTestTags.ADD_ORGANIZATION_BUTTON)
+        .assertIsDisplayed()
+        .performClick()
+
+    // Verify Add Organization screen is displayed
+    composeTestRule.onNodeWithTag(AddOrganizationScreenTestTags.ROOT).assertIsDisplayed()
+
+    // Fill organization name
+    val organizationName = "Test Organization"
+    composeTestRule
+        .onNodeWithTag(AddOrganizationScreenTestTags.ORGANIZATION_NAME_TEXT_FIELD)
+        .performTextInput(organizationName)
+
+    // Click on Create button
+    composeTestRule
+        .onNodeWithTag(AddOrganizationScreenTestTags.CREATE_BUTTON)
+        .assertIsDisplayed()
+        .performClick()
+
+    // Verify that we are back on Organization List screen
+    composeTestRule.onNodeWithTag(OrganizationListScreenTestTags.ROOT).assertIsDisplayed()
+
+    // Click on the newly created organization to enter its Calendar
+    composeTestRule
+        .onNodeWithTag(OrganizationListScreenTestTags.organizationItemTag(organizationName))
+        .assertIsDisplayed()
+        .performClick()
+
+    // Verify Calendar screen exists
+    composeTestRule
+        .onAllNodesWithTag(CalendarScreenTestTags.ROOT)
+        .fetchSemanticsNodes()
+        .isNotEmpty()
 
     // Check that a user is signed in after sign in
     assert(FirebaseEmulator.auth.currentUser != null)

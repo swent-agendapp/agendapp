@@ -27,9 +27,23 @@ class CalendarEventOverviewTest {
   @get:Rule val composeTestRule = createComposeRule()
 
   @Test
-  fun eventOverview_showsTopBarAndRootScreen() {
-    // We set an EventOverviewScreen, composed with any event id
-    composeTestRule.setContent { EventOverviewScreen(eventId = "basic-id") }
+  fun eventOverview_showsTopBarAndRootScreen() { // Arrange: create an in-memory repository and
+                                                 // insert a single event
+    val repo = EventRepositoryProvider.repository
+
+    val event = createEvent()
+
+    runBlocking { repo.insertEvent(event) }
+
+    val viewModel = EventOverviewViewModel(repo)
+
+    // Act: compose the EventOverviewScreen with our populated ViewModel
+    composeTestRule.setContent {
+      EventOverviewScreen(
+          eventId = event.id,
+          eventOverviewViewModel = viewModel,
+      )
+    }
 
     // Check if the screen container is displayed (by checking the root)
     composeTestRule.onNodeWithTag(EventOverviewScreenTestTags.SCREEN_ROOT).assertIsDisplayed()

@@ -24,7 +24,7 @@ data class OrganizationUIState(
 class OrganizationViewModel(
     private val organizationRepository: OrganizationRepository =
         OrganizationRepositoryProvider.repository,
-    private val authRepository: AuthRepository = AuthRepositoryProvider.repository
+    authRepository: AuthRepository = AuthRepositoryProvider.repository
 ) : ViewModel() {
 
   // State holding the UI state of the organizations of the current user
@@ -44,9 +44,7 @@ class OrganizationViewModel(
   private fun loadOrganizations() {
     viewModelScope.launch {
       // Get the current authenticated user
-      val user =
-          authRepository.getCurrentUser()
-              ?: throw IllegalStateException("No authenticated user found.")
+      val user = userState.value ?: throw IllegalStateException("No authenticated user found.")
 
       // Update UI state to loading and fetch organizations
       _uiState.update { it.copy(isLoading = true) }
@@ -74,13 +72,26 @@ class OrganizationViewModel(
     _uiState.update { it.copy(selectedOrganization = organization) }
   }
 
-  // Add a new organization for the current user
-  suspend fun addOrganization(organization: Organization) {
-    organizationRepository.insertOrganization(
-        organization = organization,
-        user = _userState.value ?: throw IllegalStateException("No authenticated user found."))
+  // Add a new organization with the given name for the current user (himself as the only admin and
+  // member)
+  fun addOrganizationFromName(name: String) {
+    viewModelScope.launch {
+      val currentUser =
+          userState.value ?: throw IllegalStateException("No authenticated user found.")
 
-    // Reload organizations after adding a new one
-    loadOrganizations()
+      try {
+        // Create a new organization with the current user as the only admin and member
+        val newOrganization =
+            Organization(name = name, admins = listOf(currentUser), members = listOf(currentUser))
+        // Add the new organization to the repository
+        organizationRepository.insertOrganization(newOrganization, currentUser)
+
+        // Load organizations again to ensure consistency
+        loadOrganizations()
+      } catch (e: Exception) {
+        // Update the UI state with the error message
+        _uiState.update { it.copy(errorMsg = "Failed to add organization: ${e.localizedMessage}") }
+      }
+    }
   }
 }

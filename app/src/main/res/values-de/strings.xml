@@ -8,6 +8,7 @@
     <string name="eventTitle">Titel</string>
     <string name="eventTitlePlaceholder">Titel eingeben</string>
     <string name="title_empty_error">Titel darf nicht leer sein</string>
+    <string name="name_empty_error">Der Name darf nicht leer sein</string>
     <string name="description_empty_error">Beschreibung darf nicht leer sein</string>
     <string name="eventDescriptionPlaceholder">Ereignis beschreiben</string>
     <string name="eventDescription">Beschreibung</string>
@@ -174,5 +175,6 @@
     <!-- Organizations -->
     <string name="organization_list_title">Ihre organisationen</string>
     <string name="organization_loading">Organisationen werden geladen</string>
+    <string name="organization_name_label">Name der Organisation</string>
 
 </resources>

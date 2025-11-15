@@ -8,6 +8,7 @@
     <string name="eventTitle">Title</string>
     <string name="eventTitlePlaceholder">Enter a title</string>
     <string name="title_empty_error">Title cannot be empty</string>
+    <string name="name_empty_error">Name cannot be empty</string>
     <string name="description_empty_error">Description cannot be empty</string>
     <string name="eventDescriptionPlaceholder">Describe the event</string>
     <string name="eventDescription">Description</string>
@@ -173,6 +174,7 @@
     <!-- Organizations -->
     <string name="organization_list_title">Your organizations</string>
     <string name="organization_loading">Loading organizations</string>
+    <string name="organization_name_label">Name of organization</string>
 
 </resources>
 

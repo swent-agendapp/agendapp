@@ -16,7 +16,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -28,17 +27,15 @@ import com.android.sample.ui.common.Loading
 import com.android.sample.ui.common.MainPageButton
 import com.android.sample.ui.common.MainPageTopBar
 import com.android.sample.ui.theme.SpacingMedium
-import kotlinx.coroutines.launch
 
 @Composable
 fun OrganizationListScreen(
     organizationViewModel: OrganizationViewModel = viewModel(),
-    onOrganizationSelected: () -> Unit = {}
+    onOrganizationSelected: () -> Unit = {},
+    onAddOrganizationClicked: () -> Unit = {},
 ) {
   val uiState by organizationViewModel.uiState.collectAsState()
-  val userState by organizationViewModel.userState.collectAsState()
-  val snackBarHostState = remember { SnackbarHostState() }
-  val coroutineScope = rememberCoroutineScope()
+    val snackBarHostState = remember { SnackbarHostState() }
 
   LaunchedEffect(uiState.errorMsg) {
     uiState.errorMsg?.let {
@@ -55,13 +52,7 @@ fun OrganizationListScreen(
         )
       },
       floatingActionButton = {
-        FloatingButton(
-            onClick = {
-              val user = userState ?: return@FloatingButton
-              val newOrganization = Organization(name = "New Organization", admins = listOf(user))
-              coroutineScope.launch { organizationViewModel.addOrganization(newOrganization) }
-            },
-            icon = Icons.Default.Add)
+        FloatingButton(onClick = onAddOrganizationClicked, icon = Icons.Default.Add)
       },
       snackbarHost = { SnackbarHost(hostState = snackBarHostState) }) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {

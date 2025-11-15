@@ -34,6 +34,7 @@ import com.android.sample.ui.common.BottomBarTestTags
 import com.android.sample.ui.map.MapScreen
 import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
+import com.android.sample.ui.organization.AddOrganizationScreen
 import com.android.sample.ui.organization.OrganizationListScreen
 import com.android.sample.ui.profile.AdminContactScreen
 import com.android.sample.ui.profile.ProfileScreen
@@ -145,11 +146,28 @@ fun Agendapp(
                     onSignedIn = { navigationActions.navigateTo(Screen.Calendar) })
               }
 
-              // Organization Selection Screen
-              composable(Screen.Organizations.route) {
-                OrganizationListScreen(
-                    onOrganizationSelected = { navigationActions.navigateTo(Screen.Calendar) })
-              }
+              // Organization Selection Graph
+              navigation(
+                  startDestination = Screen.Organizations.route,
+                  route = Screen.Organizations.name) {
+                    // Organization List Screen
+                    composable(Screen.Organizations.route) {
+                      OrganizationListScreen(
+                          onOrganizationSelected = {
+                            navigationActions.navigateTo(Screen.Calendar)
+                          },
+                          onAddOrganizationClicked = {
+                            navigationActions.navigateTo(Screen.AddOrganization)
+                          })
+                    }
+
+                    // Add Organization Screen
+                    composable(Screen.AddOrganization.route) {
+                      AddOrganizationScreen(
+                          onNavigateBack = { navigationActions.navigateBack() },
+                          onFinish = { navigationActions.navigateTo(Screen.Organizations) })
+                    }
+                  }
 
               // Calendar Graph
               composable(Screen.Calendar.route) {

@@ -28,7 +28,7 @@ class CalendarEventOverviewTest {
 
   @Test
   fun eventOverview_showsTopBarAndRootScreen() { // Arrange: create an in-memory repository and
-                                                 // insert a single event
+    // insert a single event
     val repo = EventRepositoryProvider.repository
 
     val event = createEvent()

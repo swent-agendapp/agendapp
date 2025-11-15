@@ -23,6 +23,7 @@ object AddEventTestTags {
   const val END_RECURRENCE_FIELD = "end_recurrence_field"
   const val START_TIME_BUTTON = "start_time_button"
   const val END_TIME_BUTTON = "end_time_button"
+  const val CHECK_BOX_EMPLOYEE = "check_box_employee"
   const val PERSONAL_NOTE_TEXT_FIELD = "personal_note_text_field"
   const val RECURRENCE_STATUS_DROPDOWN = "recurrence_status_dropdown"
   const val NEXT_BUTTON = "next_button"
@@ -30,7 +31,6 @@ object AddEventTestTags {
   const val CANCEL_BUTTON = "cancel_button"
   const val CREATE_BUTTON = "create_button"
   const val FINISH_BUTTON = "finish_button"
-
   const val ERROR_MESSAGE = "error_message"
 
   fun recurrenceTag(status: RecurrenceStatus): String =

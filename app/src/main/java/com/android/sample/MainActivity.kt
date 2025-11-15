@@ -34,6 +34,7 @@ import com.android.sample.ui.common.BottomBarTestTags
 import com.android.sample.ui.map.MapScreen
 import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
+import com.android.sample.ui.organization.OrganizationListScreen
 import com.android.sample.ui.profile.AdminContactScreen
 import com.android.sample.ui.profile.ProfileScreen
 import com.android.sample.ui.replacement.ReplacementOverviewScreen
@@ -89,7 +90,7 @@ fun Agendapp(
   val authRepository = AuthRepositoryProvider.repository
 
   val startDestination =
-      if (authRepository.getCurrentUser() != null) Screen.Calendar.route
+      if (authRepository.getCurrentUser() != null) Screen.Organizations.route
       else Screen.Authentication.route
 
   val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
@@ -142,6 +143,12 @@ fun Agendapp(
                 SignInScreen(
                     credentialManager = credentialManager,
                     onSignedIn = { navigationActions.navigateTo(Screen.Calendar) })
+              }
+
+              // Organization Selection Screen
+              composable(Screen.Organizations.route) {
+                OrganizationListScreen(
+                    onOrganizationSelected = { navigationActions.navigateTo(Screen.Calendar) })
               }
 
               // Calendar Graph

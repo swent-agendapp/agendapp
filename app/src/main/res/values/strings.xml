@@ -197,6 +197,7 @@
     <string name="replacement_create_select_event">Select an event</string>
     <string name="replacement_create_choose_date_range">Choose a date range</string>
     <string name="common_send">Send</string>
+    <string name="event_overview_title">Event Overview</string>
 </resources>
 
 

@@ -1,5 +1,6 @@
 package com.android.sample.ui.calendar.eventOverview
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,9 +21,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.android.sample.R
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.ui.calendar.components.EventSummaryCard
@@ -54,37 +58,41 @@ fun EventOverviewScreen(
     onBackClick: () -> Unit = {},
 ) {
   val overviewUIState by eventOverviewViewModel.uiState.collectAsState()
-  var event = overviewUIState.event
-  var participantNames = overviewUIState.participantsNames
+  val event = overviewUIState.event
+  val participantNames = overviewUIState.participantsNames
+  val errorMsg = overviewUIState.errorMsg
 
   // Fetch the event and its participant display names
   LaunchedEffect(eventId) {
-    try {
-      // ================= before (with wrong ViewModel) =================
-      // event = calendarViewModel.getEventById(eventId)
+    // ================= before (with wrong ViewModel) =================
+    // event = calendarViewModel.getEventById(eventId)
 
-      // Later (when the Add flow will propose a list of User that are in the Auth repository
-      // instead of a fake name's list) :
+    // Later (when the Add flow will propose a list of User that are in the Auth repository
+    // instead of a fake name's list) :
 
-      //      participantNames = calendarViewModel.getParticipantNames(eventId)
+    //      participantNames = calendarViewModel.getParticipantNames(eventId)
 
-      // Note : we can't use it now because the AddViewModel add user ID like "Alice", "Bob" but no
-      // User with these ids exist in the Auth repo
-      // => the getParticipantName doesn't find any user with an "Alice" id, and return an empty
-      // list
+    // Note : we can't use it now because the AddViewModel add user ID like "Alice", "Bob" but no
+    // User with these ids exist in the Auth repo
+    // => the getParticipantName doesn't find any user with an "Alice" id, and return an empty
+    // list
 
-      // To still see something coherent with what we "add", we update it like so :
-      //      participantNames =
-      //          event?.participants?.toList() ?: emptyList() // in reality these are the users'
-      // ids !
+    // To still see something coherent with what we "add", we update it like so :
+    //      participantNames =
+    //          event?.participants?.toList() ?: emptyList() // in reality these are the users'
+    // ids !
 
-      // ================= now =================
-      eventOverviewViewModel.loadEvent(eventId)
-      eventOverviewViewModel.loadParticipantNames(eventId)
-    } catch (_: Exception) {
-      // If the event is not found or another error occurs, surface an empty UI state
-      event = null
-      participantNames = emptyList()
+    // ================= now =================
+    eventOverviewViewModel.loadEvent(eventId)
+    eventOverviewViewModel.loadParticipantNames()
+  }
+
+  val context = LocalContext.current
+
+  LaunchedEffect(errorMsg) {
+    if (errorMsg != null) {
+      Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show()
+      eventOverviewViewModel.clearErrorMsg()
     }
   }
 
@@ -92,14 +100,18 @@ fun EventOverviewScreen(
       topBar = {
         TopAppBar(
             modifier = modifier.testTag(EventOverviewScreenTestTags.TOP_BAR),
-            title = { Text("Event Overview", style = MaterialTheme.typography.titleLarge) },
+            title = {
+              Text(
+                  stringResource(R.string.event_overview_title),
+                  style = MaterialTheme.typography.titleLarge)
+            },
             navigationIcon = {
               IconButton(
                   onClick = onBackClick,
                   modifier = modifier.testTag(EventOverviewScreenTestTags.BACK_BUTTON)) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back")
+                        contentDescription = stringResource(R.string.goBack))
                   }
             })
       }) { innerPadding ->

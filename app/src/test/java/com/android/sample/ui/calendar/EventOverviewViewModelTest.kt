@@ -84,9 +84,12 @@ class EventOverviewViewModelTest {
 
     val state = viewModel.uiState.value
 
-    // Ignore field “locallyStoredBy“, which is automatically filled by the repository.
+    // Override fields “locallyStoredBy“ and “version“, which are automatically filled by the
+    // repository.
     val expectedEvent =
-        eventWithParticipants.copy(locallyStoredBy = state.event?.locallyStoredBy ?: emptyList())
+        eventWithParticipants.copy(
+            locallyStoredBy = state.event?.locallyStoredBy ?: emptyList(),
+            version = state.event?.version ?: 1L)
 
     assertEquals(expectedEvent, state.event)
     assertTrue(state.participantsNames.isEmpty())
@@ -150,9 +153,12 @@ class EventOverviewViewModelTest {
 
     val state = viewModel.uiState.value
 
-    // Ignore field “locallyStoredBy“, which is automatically filled by the repository.
+    // Override fields “locallyStoredBy“ and “version“, which are automatically filled by the
+    // repository.
     val expectedEvent =
-        eventWithParticipants.copy(locallyStoredBy = state.event?.locallyStoredBy ?: emptyList())
+        eventWithParticipants.copy(
+            locallyStoredBy = state.event?.locallyStoredBy ?: emptyList(),
+            version = state.event?.version ?: 1L)
 
     assertEquals(expectedEvent, state.event)
     assertEquals(eventWithParticipants.participants.toList(), state.participantsNames)

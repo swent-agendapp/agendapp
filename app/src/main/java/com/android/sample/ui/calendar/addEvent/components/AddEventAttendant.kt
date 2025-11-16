@@ -47,7 +47,7 @@ import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.PaddingSmall
 import com.android.sample.ui.theme.SpacingSmall
-import com.android.sample.ui.theme.WeightVeryHeavy
+import com.android.sample.ui.theme.WeightExtraHeavy
 
 /**
  * Third step of event creation flow: allows selecting participants for the event.
@@ -69,12 +69,32 @@ fun AddEventAttendantScreen(
 
   val allParticipants =
       listOf(
-          "Alice",
-          "Bob",
-          "Charlie",
+          "Anaïs",
+          "Ania",
+          "Benjamin",
+          "Célestin",
+          "Chiara",
+          "Coralie",
           "David",
-          "Eve",
-          "Frank") // Placeholder for all possible participants
+          "Diana",
+          "Emi",
+          "Emilien",
+          "Giada",
+          "Héloïse",
+          "Jael",
+          "Laura",
+          "Ludovic",
+          "Maé",
+          "Mara",
+          "Maud",
+          "Maxime",
+          "Maya",
+          "Miki",
+          "Roby",
+          "Solene",
+          "Yukié",
+          "Zoé") // Placeholder for all possible participants
+  // note : these temporary names are inspired from the real Stakeholder's employee's names
 
   Scaffold(
       topBar = {
@@ -92,7 +112,7 @@ fun AddEventAttendantScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround) {
               Box(
-                  modifier = Modifier.weight(WeightVeryHeavy).fillMaxWidth(),
+                  modifier = Modifier.weight(WeightExtraHeavy).fillMaxWidth(),
                   contentAlignment = Alignment.Center) {
                     Text(
                         stringResource(R.string.selectAttendants),
@@ -102,7 +122,7 @@ fun AddEventAttendantScreen(
                   }
               Card(
                   modifier =
-                      Modifier.weight(WeightVeryHeavy)
+                      Modifier.weight(WeightExtraHeavy)
                           .fillMaxWidth()
                           .padding(vertical = PaddingSmall),
                   shape = RoundedCornerShape(CornerRadiusLarge),

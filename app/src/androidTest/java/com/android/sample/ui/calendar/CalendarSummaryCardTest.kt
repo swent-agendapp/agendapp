@@ -94,16 +94,16 @@ class EventSummaryCardTest {
 
     // Then: title, date line 1 and line 2 exist; no recurrence; no description; no participants
     // list
-    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.TitleText).assertCountEquals(1)
-    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.DateLine1).assertCountEquals(1)
-    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.DateLine2).assertCountEquals(1)
-    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.Recurrence).assertCountEquals(0)
-    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.DescriptionText).assertCountEquals(0)
-    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.ParticipantsList).assertCountEquals(0)
+    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.TITLE_TEXT).assertCountEquals(1)
+    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.DATE_LINE1).assertCountEquals(1)
+    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.DATE_LINE2).assertCountEquals(1)
+    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.RECURRENCE).assertCountEquals(0)
+    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.DESCRIPTION_TEXT).assertCountEquals(0)
+    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.PARTICIPANTS_LIST).assertCountEquals(0)
 
     // Also: no "show more" buttons
-    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.ToggleTitle).assertCountEquals(0)
-    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.ToggleDescription).assertCountEquals(0)
+    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.TOGGLE_TITLE).assertCountEquals(0)
+    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.TOGGLE_DESCRIPTION).assertCountEquals(0)
   }
 
   @Test
@@ -126,13 +126,13 @@ class EventSummaryCardTest {
     }
 
     // Then: title/date/time/description exist
-    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.TitleText).assertCountEquals(1)
-    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.DateLine1).assertCountEquals(1)
-    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.DateLine2).assertCountEquals(1)
-    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.DescriptionText).assertCountEquals(1)
+    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.TITLE_TEXT).assertCountEquals(1)
+    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.DATE_LINE1).assertCountEquals(1)
+    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.DATE_LINE2).assertCountEquals(1)
+    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.DESCRIPTION_TEXT).assertCountEquals(1)
 
     // And: participants list exists and is displayed (not asserting scrollability)
-    composeTestRule.onNodeWithTag(EventSummaryCardTags.ParticipantsList).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(EventSummaryCardTags.PARTICIPANTS_LIST).assertIsDisplayed()
   }
 
   @Test
@@ -155,7 +155,7 @@ class EventSummaryCardTest {
 
     // Then: recurrence line exists and contains localized weekday in parentheses
     composeTestRule
-        .onAllNodesWithTag(EventSummaryCardTags.Recurrence)
+        .onAllNodesWithTag(EventSummaryCardTags.RECURRENCE)
         .assertCountEquals(1)
         .onFirst()
         .assertIsDisplayed()
@@ -182,7 +182,7 @@ class EventSummaryCardTest {
     }
 
     // Then
-    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.Recurrence).assertCountEquals(1)
+    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.RECURRENCE).assertCountEquals(1)
   }
 
   @Test
@@ -200,16 +200,16 @@ class EventSummaryCardTest {
     }
 
     // Then: multi-day UI present
-    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.Multi_FromLabel).assertCountEquals(1)
-    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.Multi_ToLabel).assertCountEquals(1)
-    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.Multi_StartDate).assertCountEquals(1)
-    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.Multi_EndDate).assertCountEquals(1)
-    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.Multi_StartTime).assertCountEquals(1)
-    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.Multi_EndTime).assertCountEquals(1)
+    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.MULTI_FROM_LABEL).assertCountEquals(1)
+    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.MULTI_TO_LABEL).assertCountEquals(1)
+    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.MULTI_START_DATE).assertCountEquals(1)
+    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.MULTI_END_DATE).assertCountEquals(1)
+    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.MULTI_START_TIME).assertCountEquals(1)
+    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.MULTI_END_TIME).assertCountEquals(1)
 
     // And: time labels include the "at " prefix
-    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.Multi_StartTime).assertCountEquals(1)
-    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.Multi_EndTime).assertCountEquals(1)
+    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.MULTI_START_TIME).assertCountEquals(1)
+    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.MULTI_END_TIME).assertCountEquals(1)
   }
 
   @Test
@@ -218,7 +218,7 @@ class EventSummaryCardTest {
 
     composeTestRule.setContent { EventSummaryCard(event = e, participantNames = emptyList()) }
 
-    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.ToggleTitle).assertCountEquals(0)
+    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.TOGGLE_TITLE).assertCountEquals(0)
   }
 
   @Test
@@ -230,7 +230,7 @@ class EventSummaryCardTest {
     composeTestRule.setContent { EventSummaryCard(event = e, participantNames = emptyList()) }
 
     // Button appears
-    val toggle = composeTestRule.onAllNodesWithTag(EventSummaryCardTags.ToggleTitle)
+    val toggle = composeTestRule.onAllNodesWithTag(EventSummaryCardTags.TOGGLE_TITLE)
     toggle.assertCountEquals(1)
 
     // Click -> becomes "Show less"
@@ -248,8 +248,8 @@ class EventSummaryCardTest {
 
     composeTestRule.setContent { EventSummaryCard(event = e, participantNames = emptyList()) }
 
-    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.DescriptionText).assertCountEquals(1)
-    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.ToggleDescription).assertCountEquals(0)
+    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.DESCRIPTION_TEXT).assertCountEquals(1)
+    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.TOGGLE_DESCRIPTION).assertCountEquals(0)
   }
 
   @Test
@@ -263,7 +263,7 @@ class EventSummaryCardTest {
 
     composeTestRule.setContent { EventSummaryCard(event = e, participantNames = emptyList()) }
 
-    val toggle = composeTestRule.onAllNodesWithTag(EventSummaryCardTags.ToggleDescription)
+    val toggle = composeTestRule.onAllNodesWithTag(EventSummaryCardTags.TOGGLE_DESCRIPTION)
     toggle.assertCountEquals(1)
 
     toggle.onFirst().performClick()
@@ -286,7 +286,7 @@ class EventSummaryCardTest {
     composeTestRule.setContent { EventSummaryCard(event = e, participantNames = names) }
 
     // List exists and is displayed (not asserting scrollability)
-    composeTestRule.onNodeWithTag(EventSummaryCardTags.ParticipantsList).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(EventSummaryCardTags.PARTICIPANTS_LIST).assertIsDisplayed()
   }
 
   @Test
@@ -301,7 +301,7 @@ class EventSummaryCardTest {
 
     composeTestRule.setContent { EventSummaryCard(event = e, participantNames = names) }
 
-    composeTestRule.onNodeWithTag(EventSummaryCardTags.ParticipantsList).assert(hasScrollAction())
+    composeTestRule.onNodeWithTag(EventSummaryCardTags.PARTICIPANTS_LIST).assert(hasScrollAction())
   }
 
   @Test
@@ -314,7 +314,7 @@ class EventSummaryCardTest {
 
     // Capture the sidebar bitmap and assert at least one opaque red pixel.
     val bitmap =
-        composeTestRule.onNodeWithTag(EventSummaryCardTags.SideBar).assertExists().captureToImage()
+        composeTestRule.onNodeWithTag(EventSummaryCardTags.SIDE_BAR).assertExists().captureToImage()
     val androidBitmap = bitmap.asAndroidBitmap()
     val sampled = dominantColor(androidBitmap)
     val expected = EventColor.Red.toComposeColor()

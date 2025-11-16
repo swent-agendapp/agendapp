@@ -73,7 +73,7 @@ fun DateSection(
               text = "From",
               style = MaterialTheme.typography.bodyMedium,
               color = MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaHigh),
-              modifier = Modifier.testTag(EventSummaryCardTags.Multi_FromLabel))
+              modifier = Modifier.testTag(EventSummaryCardTags.MULTI_FROM_LABEL))
         }
         Spacer(Modifier.height(SpacingSmall))
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -82,7 +82,7 @@ fun DateSection(
               text = "To",
               style = MaterialTheme.typography.bodyMedium,
               color = MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaHigh),
-              modifier = Modifier.testTag(EventSummaryCardTags.Multi_ToLabel))
+              modifier = Modifier.testTag(EventSummaryCardTags.MULTI_TO_LABEL))
         }
       }
 
@@ -92,13 +92,13 @@ fun DateSection(
             text = model.startDateShort,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaHigh),
-            modifier = Modifier.testTag(EventSummaryCardTags.Multi_StartDate))
+            modifier = Modifier.testTag(EventSummaryCardTags.MULTI_START_DATE))
         Spacer(Modifier.height(SpacingSmall))
         Text(
             text = model.endDateShort,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaHigh),
-            modifier = Modifier.testTag(EventSummaryCardTags.Multi_EndDate))
+            modifier = Modifier.testTag(EventSummaryCardTags.MULTI_END_DATE))
       }
 
       // Times are prefixed with "at " to read naturally next to the dates
@@ -109,7 +109,7 @@ fun DateSection(
               text = "at " + model.startTimeStr,
               style = MaterialTheme.typography.bodyMedium,
               color = MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaHigh),
-              modifier = Modifier.testTag(EventSummaryCardTags.Multi_StartTime))
+              modifier = Modifier.testTag(EventSummaryCardTags.MULTI_START_TIME))
         }
         Spacer(Modifier.height(SpacingSmall))
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -118,7 +118,7 @@ fun DateSection(
               text = "at " + model.endTimeStr,
               style = MaterialTheme.typography.bodyMedium,
               color = MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaHigh),
-              modifier = Modifier.testTag(EventSummaryCardTags.Multi_EndTime))
+              modifier = Modifier.testTag(EventSummaryCardTags.MULTI_END_TIME))
         }
       }
     }
@@ -137,7 +137,7 @@ fun DateSection(
             text = model.dateLine1,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaHigh),
-            modifier = Modifier.testTag(EventSummaryCardTags.DateLine1))
+            modifier = Modifier.testTag(EventSummaryCardTags.DATE_LINE1))
       }
       Spacer(Modifier.height(SpacingSmall))
       // Row 2: Time
@@ -152,7 +152,7 @@ fun DateSection(
             text = model.dateLine2,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaHigh),
-            modifier = Modifier.testTag(EventSummaryCardTags.DateLine2))
+            modifier = Modifier.testTag(EventSummaryCardTags.DATE_LINE2))
       }
     }
   }

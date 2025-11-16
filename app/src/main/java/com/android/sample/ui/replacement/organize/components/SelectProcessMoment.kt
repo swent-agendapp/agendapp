@@ -25,7 +25,7 @@ import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.PaddingLarge
 import com.android.sample.ui.theme.PaddingMedium
-import com.android.sample.ui.theme.WeightVeryHeavy
+import com.android.sample.ui.theme.WeightExtraHeavy
 
 // Assisted by AI
 
@@ -65,7 +65,7 @@ fun SelectProcessMomentScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround) {
               Box(
-                  modifier = Modifier.weight(WeightVeryHeavy).fillMaxWidth(),
+                  modifier = Modifier.weight(WeightExtraHeavy).fillMaxWidth(),
                   contentAlignment = Alignment.Center) {
                     Text(
                         text = stringResource(R.string.select_process_moment),
@@ -75,7 +75,7 @@ fun SelectProcessMomentScreen(
                   }
 
               Column(
-                  modifier = Modifier.weight(WeightVeryHeavy).padding(vertical = PaddingLarge),
+                  modifier = Modifier.weight(WeightExtraHeavy).padding(vertical = PaddingLarge),
                   verticalArrangement = Arrangement.spacedBy(PaddingMedium),
                   horizontalAlignment = Alignment.CenterHorizontally) {
                     OutlinedButton(

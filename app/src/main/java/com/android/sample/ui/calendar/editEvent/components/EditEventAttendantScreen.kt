@@ -23,7 +23,7 @@ import com.android.sample.ui.theme.ElevationLow
 import com.android.sample.ui.theme.PaddingHuge
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.PaddingSmall
-import com.android.sample.ui.theme.WeightVeryHeavy
+import com.android.sample.ui.theme.WeightExtraHeavy
 
 // Assisted by AI
 /**
@@ -61,7 +61,7 @@ fun EditEventAttendantScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround) {
               Box(
-                  modifier = Modifier.weight(WeightVeryHeavy).fillMaxWidth(),
+                  modifier = Modifier.weight(WeightExtraHeavy).fillMaxWidth(),
                   contentAlignment = Alignment.Center) {
                     Text(
                         stringResource(R.string.edit_event_select_participants_text),
@@ -70,7 +70,7 @@ fun EditEventAttendantScreen(
 
               Card(
                   modifier =
-                      Modifier.weight(WeightVeryHeavy)
+                      Modifier.weight(WeightExtraHeavy)
                           .fillMaxWidth()
                           .padding(vertical = PaddingSmall),
                   shape = RoundedCornerShape(CornerRadiusLarge),

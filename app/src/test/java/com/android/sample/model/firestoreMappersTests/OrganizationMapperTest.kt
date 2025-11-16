@@ -6,7 +6,7 @@ import com.android.sample.model.firestoreMappers.OrganizationMapper
 import com.android.sample.model.map.Area
 import com.android.sample.model.map.Location
 import com.android.sample.model.map.Marker
-import com.android.sample.model.organizations.Organization
+import com.android.sample.model.organization.Organization
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot

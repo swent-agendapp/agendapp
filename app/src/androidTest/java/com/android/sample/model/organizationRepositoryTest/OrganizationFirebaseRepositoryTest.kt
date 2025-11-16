@@ -2,8 +2,8 @@ package com.android.sample.model.organizationRepositoryTest
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.authentication.User
-import com.android.sample.model.organizations.Organization
-import com.android.sample.model.organizations.OrganizationRepository
+import com.android.sample.model.organization.Organization
+import com.android.sample.model.organization.OrganizationRepository
 import com.android.sample.utils.FirebaseEmulatedTest
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*

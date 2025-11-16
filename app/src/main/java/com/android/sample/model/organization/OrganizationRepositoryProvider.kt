@@ -1,4 +1,4 @@
-package com.android.sample.model.organizations
+package com.android.sample.model.organization
 
 /**
  * Provides a single instance of the repository in the app. `repository` is mutable for testing

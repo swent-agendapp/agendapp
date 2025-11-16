@@ -81,6 +81,9 @@ class ProfileFlowE2ETest : FirebaseEmulatedTest() {
           .isNotEmpty()
     }
 
+    // Check that a user is signed in after sign in
+    assert(FirebaseEmulator.auth.currentUser != null)
+
     // Create Organization to proceed to Calendar
 
     // Click on Add Organization button
@@ -118,9 +121,6 @@ class ProfileFlowE2ETest : FirebaseEmulatedTest() {
         .onAllNodesWithTag(CalendarScreenTestTags.ROOT)
         .fetchSemanticsNodes()
         .isNotEmpty()
-
-    // Check that a user is signed in after sign in
-    assert(FirebaseEmulator.auth.currentUser != null)
 
     // Verify Calendar screen is displayed
     composeTestRule.onNodeWithTag(CalendarScreenTestTags.ROOT).assertIsDisplayed()

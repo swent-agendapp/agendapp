@@ -21,7 +21,7 @@ data class OrganizationUIState(
 )
 
 // ViewModel for managing organization data for the current user
-class OrganizationViewModel(
+open class OrganizationViewModel(
     private val organizationRepository: OrganizationRepository =
         OrganizationRepositoryProvider.repository,
     authRepository: AuthRepository = AuthRepositoryProvider.repository
@@ -29,7 +29,7 @@ class OrganizationViewModel(
 
   // State holding the UI state of the organizations of the current user
   private val _uiState = MutableStateFlow(OrganizationUIState())
-  val uiState: StateFlow<OrganizationUIState> = _uiState
+  open val uiState: StateFlow<OrganizationUIState> = _uiState
 
   // State holding the current user
   private val _userState = MutableStateFlow(authRepository.getCurrentUser())
@@ -55,12 +55,12 @@ class OrganizationViewModel(
   }
 
   // Clear any error message in the UI state
-  fun clearErrorMsg() {
+  open fun clearErrorMsg() {
     _uiState.update { it.copy(errorMsg = null) }
   }
 
   // Handle organization selection
-  fun selectOrganization(organization: Organization) {
+  open fun selectOrganization(organization: Organization) {
 
     // Ensure the selected organization is in the user's organization list
     if (!_uiState.value.organizations.contains(organization)) {

@@ -12,9 +12,12 @@ import com.android.sample.ui.theme.PaddingMedium
 @Composable
 fun Loading(modifier: Modifier = Modifier, label: String? = null) {
   Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-    CircularProgressIndicator(strokeWidth = BorderWidthExtraThick)
-    Text(
-        text = label ?: "",
-        modifier = Modifier.align(Alignment.BottomCenter).padding(top = PaddingMedium))
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+      CircularProgressIndicator(strokeWidth = BorderWidthExtraThick)
+      if (!label.isNullOrEmpty()) {
+        Spacer(modifier = Modifier.height(PaddingMedium))
+        Text(text = label)
+      }
+    }
   }
 }

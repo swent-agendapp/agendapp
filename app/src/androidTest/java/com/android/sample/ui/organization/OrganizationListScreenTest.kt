@@ -1,9 +1,9 @@
 package com.android.sample.ui.organization
 
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.organization.Organization
@@ -88,10 +88,10 @@ class OrganizationListScreenTest {
 
     composeTestRule.setContent { OrganizationListScreen(organizationViewModel = fakeViewModel) }
 
-    // Assert error message is displayed
-    composeTestRule.onNodeWithTag(OrganizationListScreenTestTags.SNACK_BAR).assertIsDisplayed()
-    composeTestRule
-        .onNodeWithTag(OrganizationListScreenTestTags.ROOT)
-        .assertTextContains(errorMessage)
+    // Check that the Snack bar is displayed
+    composeTestRule.onNodeWithTag(OrganizationListScreenTestTags.SNACK_BAR).assertExists()
+
+    // Check that the error message is shown
+    composeTestRule.onNodeWithText(errorMessage).assertExists().assertIsDisplayed()
   }
 }

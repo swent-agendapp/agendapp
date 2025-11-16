@@ -63,6 +63,7 @@ class EventOverviewViewModel(
    * @param eventId The unique identifier of the event to load.
    */
   fun loadEvent(eventId: String) {
+    setLoading(true)
     viewModelScope.launch {
       try {
         val event =
@@ -73,6 +74,8 @@ class EventOverviewViewModel(
       } catch (e: Exception) {
         setErrorMsg("Failed to fetch event $eventId: ${e.message}")
         throw NoSuchElementException("Event with id=$eventId not found.")
+      } finally {
+        setLoading(false)
       }
     }
   }

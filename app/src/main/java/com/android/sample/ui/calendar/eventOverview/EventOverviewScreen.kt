@@ -117,7 +117,7 @@ fun EventOverviewScreen(
 
 @Preview(showBackground = true)
 @Composable
-private fun EventOverviewScreen_Preview() {
+private fun EventOverviewScreenPreview() {
   val base = Instant.now()
   val event =
       Event(

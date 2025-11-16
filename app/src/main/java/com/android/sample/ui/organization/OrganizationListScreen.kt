@@ -27,6 +27,7 @@ import com.android.sample.ui.common.FloatingButton
 import com.android.sample.ui.common.Loading
 import com.android.sample.ui.common.MainPageButton
 import com.android.sample.ui.common.MainPageTopBar
+import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.SpacingMedium
 
 object OrganizationListScreenTestTags {
@@ -70,22 +71,22 @@ fun OrganizationListScreen(
       },
       modifier = Modifier.testTag(OrganizationListScreenTestTags.ROOT),
       snackbarHost = { SnackbarHost(hostState = snackBarHostState) }) { innerPadding ->
-        if (uiState.isLoading) {
-          Loading(
-              label = stringResource(R.string.organization_loading),
-              modifier =
-                  Modifier.padding(innerPadding)
-                      .testTag(OrganizationListScreenTestTags.LOADING_INDICATOR))
-        } else {
-          Spacer(modifier = Modifier.height(SpacingMedium))
-          OrganizationList(
-              organizations = uiState.organizations,
-              onOrganizationSelected = { organization ->
-                // Update selected organization in ViewModel
-                organizationViewModel.selectOrganization(organization)
-                // Invoke given callback after selection
-                onOrganizationSelected()
-              })
+        Column(modifier = Modifier.padding(innerPadding).padding(PaddingMedium)) {
+          if (uiState.isLoading) {
+            Loading(
+                label = stringResource(R.string.organization_loading),
+                modifier = Modifier.testTag(OrganizationListScreenTestTags.LOADING_INDICATOR))
+          } else {
+            Spacer(modifier = Modifier.height(SpacingMedium))
+            OrganizationList(
+                organizations = uiState.organizations,
+                onOrganizationSelected = { organization ->
+                  // Update selected organization in ViewModel
+                  organizationViewModel.selectOrganization(organization)
+                  // Invoke given callback after selection
+                  onOrganizationSelected()
+                })
+          }
         }
       }
 }

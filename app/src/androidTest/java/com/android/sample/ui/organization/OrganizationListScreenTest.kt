@@ -83,14 +83,15 @@ class OrganizationListScreenTest {
   @Test
   fun errorMessageIsShown() {
     // Mock error state
-    fakeViewModel.setError("Fake error occurred")
+    val errorMessage = "Fake error occurred"
+    fakeViewModel.setError(errorMessage)
 
     composeTestRule.setContent { OrganizationListScreen(organizationViewModel = fakeViewModel) }
 
     // Assert error message is displayed
-    composeTestRule.onNodeWithTag(OrganizationListScreenTestTags.ROOT).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(OrganizationListScreenTestTags.SNACK_BAR).assertIsDisplayed()
     composeTestRule
         .onNodeWithTag(OrganizationListScreenTestTags.ROOT)
-        .assertTextContains("Fake error occurred")
+        .assertTextContains(errorMessage)
   }
 }

@@ -37,7 +37,10 @@ object OrganizationListScreenTestTags {
   fun organizationItemTag(organizationName: String): String = "organizationItem_$organizationName"
 
   const val LOADING_INDICATOR = "loadingIndicator"
+
   const val ADD_ORGANIZATION_BUTTON = "addOrganizationButton"
+
+  const val SNACK_BAR = "snackBar"
 }
 
 @Composable
@@ -70,7 +73,11 @@ fun OrganizationListScreen(
             modifier = Modifier.testTag(OrganizationListScreenTestTags.ADD_ORGANIZATION_BUTTON))
       },
       modifier = Modifier.testTag(OrganizationListScreenTestTags.ROOT),
-      snackbarHost = { SnackbarHost(hostState = snackBarHostState) }) { innerPadding ->
+      snackbarHost = {
+        SnackbarHost(
+            hostState = snackBarHostState,
+            modifier = Modifier.testTag(OrganizationListScreenTestTags.SNACK_BAR))
+      }) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding).padding(PaddingMedium)) {
           if (uiState.isLoading) {
             Loading(

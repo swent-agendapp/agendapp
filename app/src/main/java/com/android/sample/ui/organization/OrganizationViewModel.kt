@@ -63,9 +63,8 @@ open class OrganizationViewModel(
   open fun selectOrganization(organization: Organization) {
 
     // Ensure the selected organization is in the user's organization list
-    if (!_uiState.value.organizations.contains(organization)) {
-      throw IllegalArgumentException(
-          "Selected organization is not in the user's organization list.")
+    require(_uiState.value.organizations.contains(organization)) {
+      "Selected organization is not in the user's organization list."
     }
 
     // Update the selected organization in the UI state

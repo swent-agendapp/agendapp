@@ -8,7 +8,6 @@ object OrganizationRepositoryProvider {
   private val _repository: OrganizationRepository by lazy {
     // Change this to switch between different implementations
     OrganizationRepositoryLocal()
-    // OrganizationRepositoryFirebase(Firebase.firestore)
   }
 
   var repository: OrganizationRepository = _repository

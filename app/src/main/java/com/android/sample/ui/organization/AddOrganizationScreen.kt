@@ -49,7 +49,7 @@ fun AddOrganizationScreen(
             // Organization Name Text Field
             ValidatingTextField(
                 value = uiState.name.orEmpty(),
-                onValueChange = { it -> addOrganizationViewModel.updateName(name = it) },
+                onValueChange = { newName -> addOrganizationViewModel.updateName(name = newName) },
                 label = stringResource(R.string.organization_name_label),
                 isError = !addOrganizationViewModel.isValidOrganizationName() && nameTouched,
                 errorMessage = stringResource(R.string.name_empty_error),

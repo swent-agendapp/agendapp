@@ -378,6 +378,137 @@ class EventsOverlapTests : BaseEventsTest() {
     val nodes = compose.onAllNodesWithTag(eventTag("Multi-day 3+")).fetchSemanticsNodes()
     assertTrue("Expected at least one visible segment for multi-day event", nodes.isNotEmpty())
   }
+
+  /**
+   * Verifies that two non-overlapping events on the same day are laid out with the same horizontal
+   * position and width (i.e., they use the full column width).
+   */
+  @Test
+  fun calendarGridContent_nonOverlappingEvents_shareSameHorizontalPositionAndWidth() {
+    val monday = LocalDate.now().with(DayOfWeek.MONDAY)
+    val events =
+        listOf(
+            // Event on Monday [9:00 - 10:00]
+            ev("First non-overlapping", monday, LocalTime.of(9, 0), Duration.ofHours(1)),
+            // Event on Monday [11:00 - 12:00]
+            ev("Second non-overlapping", monday, LocalTime.of(11, 0), Duration.ofHours(1)),
+        )
+
+    compose.setContent { CalendarGridContent(events = events) }
+
+    val firstTag = eventTag("First non-overlapping")
+    val secondTag = eventTag("Second non-overlapping")
+
+    // Ensure both events are visible in the viewport before checking bounds.
+    scrollUntilVisible(firstTag)
+    scrollUntilVisible(secondTag)
+
+    val firstBounds = compose.onNodeWithTag(firstTag).fetchSemanticsNode().boundsInRoot
+    val secondBounds = compose.onNodeWithTag(secondTag).fetchSemanticsNode().boundsInRoot
+
+    val firstWidth = firstBounds.right - firstBounds.left
+    val secondWidth = secondBounds.right - secondBounds.left
+
+    // Same horizontal position (allowing a small tolerance due to rendering).
+    assertTrue(kotlin.math.abs(firstBounds.left - secondBounds.left) < 1f)
+    assertTrue(kotlin.math.abs(firstBounds.right - secondBounds.right) < 1f)
+
+    // Same width (full column width).
+    assertTrue(kotlin.math.abs(firstWidth - secondWidth) < 1f)
+  }
+
+  /**
+   * Verifies that when two events overlap in time, they are rendered side-by-side with reduced
+   * width compared to a non-overlapping event in the same column.
+   */
+  @Test
+  fun calendarGridContent_overlappingEvents_shareColumnWidthAndShiftHorizontally() {
+    val monday = LocalDate.now().with(DayOfWeek.MONDAY)
+    val events =
+        listOf(
+            // Solo event on Monday [8:00 - 9:00] — no overlap
+            ev("Solo Event", monday, LocalTime.of(8, 0), Duration.ofHours(1)),
+            // Overlapping group on Monday [10:00 - 12:00] and [11:00 - 13:00]
+            ev("Overlap 1", monday, LocalTime.of(10, 0), Duration.ofHours(2)),
+            ev("Overlap 2", monday, LocalTime.of(11, 0), Duration.ofHours(2)),
+        )
+
+    compose.setContent { CalendarGridContent(events = events) }
+
+    val soloTag = eventTag("Solo Event")
+    val overlap1Tag = eventTag("Overlap 1")
+    val overlap2Tag = eventTag("Overlap 2")
+
+    scrollUntilVisible(soloTag)
+    scrollUntilVisible(overlap1Tag)
+    scrollUntilVisible(overlap2Tag)
+
+    val soloBounds = compose.onNodeWithTag(soloTag).fetchSemanticsNode().boundsInRoot
+    val overlap1Bounds = compose.onNodeWithTag(overlap1Tag).fetchSemanticsNode().boundsInRoot
+    val overlap2Bounds = compose.onNodeWithTag(overlap2Tag).fetchSemanticsNode().boundsInRoot
+
+    val soloWidth = soloBounds.right - soloBounds.left
+    val overlap1Width = overlap1Bounds.right - overlap1Bounds.left
+    val overlap2Width = overlap2Bounds.right - overlap2Bounds.left
+
+    // Overlapping events should be narrower than the solo event (they share the column width).
+    assertTrue(overlap1Width < soloWidth)
+    assertTrue(overlap2Width < soloWidth)
+
+    // Overlapping events should have (approximately) the same width.
+    assertTrue(kotlin.math.abs(overlap1Width - overlap2Width) < 1f)
+
+    // They should be placed side-by-side: different left positions, non-overlapping horizontally.
+    assertTrue(kotlin.math.abs(overlap1Bounds.left - overlap2Bounds.left) > 1f)
+    val leftEvent =
+        if (overlap1Bounds.left < overlap2Bounds.left) overlap1Bounds else overlap2Bounds
+    val rightEvent =
+        if (overlap1Bounds.left < overlap2Bounds.left) overlap2Bounds else overlap1Bounds
+    assertTrue(leftEvent.right <= rightEvent.left + 1f)
+  }
+
+  /**
+   * Verifies that three events in the exact same time slot are rendered as three distinct columns
+   * side-by-side within the same day.
+   */
+  @Test
+  fun calendarGridContent_threeEventsSameSlot_areRenderedSideBySide() {
+    val tuesday = LocalDate.now().with(DayOfWeek.TUESDAY)
+    val events =
+        listOf(
+            ev("Triple A", tuesday, LocalTime.of(10, 0), Duration.ofHours(1)),
+            ev("Triple B", tuesday, LocalTime.of(10, 0), Duration.ofHours(1)),
+            ev("Triple C", tuesday, LocalTime.of(10, 0), Duration.ofHours(1)),
+        )
+
+    compose.setContent { CalendarGridContent(events = events) }
+
+    val tagA = eventTag("Triple A")
+    val tagB = eventTag("Triple B")
+    val tagC = eventTag("Triple C")
+
+    scrollUntilVisible(tagA)
+    scrollUntilVisible(tagB)
+    scrollUntilVisible(tagC)
+
+    val boundsA = compose.onNodeWithTag(tagA).fetchSemanticsNode().boundsInRoot
+    val boundsB = compose.onNodeWithTag(tagB).fetchSemanticsNode().boundsInRoot
+    val boundsC = compose.onNodeWithTag(tagC).fetchSemanticsNode().boundsInRoot
+
+    val widthA = boundsA.right - boundsA.left
+    val widthB = boundsB.right - boundsB.left
+    val widthC = boundsC.right - boundsC.left
+
+    // All three should have approximately the same width.
+    assertTrue(kotlin.math.abs(widthA - widthB) < 1f)
+    assertTrue(kotlin.math.abs(widthB - widthC) < 1f)
+
+    // Their horizontal positions (left) should all be distinct (side-by-side columns).
+    val lefts = listOf(boundsA.left, boundsB.left, boundsC.left)
+    val distinctLefts = lefts.toSet()
+    assertTrue(
+        "Expected three distinct horizontal positions for triple overlap", distinctLefts.size == 3)
+  }
 }
 
 /** Validation/guard-rail tests. */

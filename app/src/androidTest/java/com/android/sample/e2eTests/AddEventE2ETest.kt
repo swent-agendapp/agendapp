@@ -12,6 +12,8 @@ import androidx.compose.ui.test.swipeDown
 import androidx.compose.ui.test.swipeUp
 import com.android.sample.Agendapp
 import com.android.sample.model.calendar.RecurrenceStatus
+import com.android.sample.model.organization.OrganizationRepositoryFirebase
+import com.android.sample.model.organization.OrganizationRepositoryProvider
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.organization.AddOrganizationScreenTestTags
@@ -45,6 +47,12 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
 
   // Create a FakeCredentialManager with the fake token
   val fakeCredentialManager = FakeCredentialManager.create(fakeGoogleIdToken)
+
+  // Set the OrganizationRepository to use the Firebase emulator
+  init {
+    OrganizationRepositoryProvider.repository =
+        OrganizationRepositoryFirebase(FirebaseEmulator.firestore)
+  }
 
   @get:Rule val composeTestRule = createComposeRule()
 

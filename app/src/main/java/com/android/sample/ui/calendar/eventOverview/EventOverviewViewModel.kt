@@ -63,8 +63,8 @@ class EventOverviewViewModel(
    * @param eventId The unique identifier of the event to load.
    */
   fun loadEvent(eventId: String) {
-    setLoading(true)
     viewModelScope.launch {
+      setLoading(true)
       try {
         val event =
             eventRepository.getEventById(eventId)

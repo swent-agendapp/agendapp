@@ -111,7 +111,7 @@ fun DayHeaderRow(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             color = color,
-            fontSize = 13.sp,
+            fontSize = 16.sp,
             fontWeight = weight,
             textAlign = TextAlign.Center,
             lineHeight = 22.sp,

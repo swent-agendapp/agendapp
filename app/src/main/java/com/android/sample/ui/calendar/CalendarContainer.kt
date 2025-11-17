@@ -77,6 +77,20 @@ fun CalendarContainer(
   Box(modifier = modifier) {
     // When the mode is not MONTH, we show the week/day grid.
     if (currentMode != ViewMode.MONTH) {
+
+      // Header shows the same range as the grid, except in ONE_DAY mode.
+      // In ONE_DAY mode, the header shows the full week that contains the visible day.
+      val headerDateRange =
+          if (currentMode == ViewMode.ONE_DAY) {
+            weekRangeContaining(currentDateRange.start, days = 7)
+          } else {
+            currentDateRange
+          }
+
+      // In ONE_DAY mode, this is the day currently displayed in the grid.
+      // It will be highlighted as "selected" in the header.
+      val selectedDate = if (currentMode == ViewMode.ONE_DAY) currentDateRange.start else null
+
       CalendarGridContent(
           modifier =
               Modifier.fillMaxSize().pointerInput(currentDateRange, currentMode) {
@@ -112,7 +126,21 @@ fun CalendarContainer(
                     onDragCancel = { totalDx = 0f })
               },
           dateRange = currentDateRange,
+          headerDateRange = headerDateRange,
           events = events,
+          today = today,
+          selectedDate = selectedDate,
+          // Header is clickable only in ONE_DAY mode.
+          onHeaderDayClick =
+              if (currentMode == ViewMode.ONE_DAY) {
+                { clickedDate ->
+                  // When the user clicks a day in the header while in ONE_DAY mode,
+                  // we update the visible range to show that single day.
+                  currentDateRange = LocalDateRange(clickedDate, clickedDate)
+                }
+              } else {
+                null
+              },
           onEventClick = onEventClick)
     }
 
@@ -157,7 +185,14 @@ fun CalendarContainer(
                 }
 
             if (selectedDate != null) {
-              val targetMode = previousNonMonthMode
+              val targetMode =
+                  // The previous ViewMode was 5-days but the selected date is a weekend day.
+                  if (previousNonMonthMode == ViewMode.FIVE_DAYS &&
+                      selectedDate.dayOfWeek.ordinal >= 5) {
+                    ViewMode.SEVEN_DAYS
+                  } else {
+                    previousNonMonthMode
+                  }
               currentMode = targetMode
               currentDateRange =
                   when (targetMode) {

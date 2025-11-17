@@ -3,6 +3,7 @@ package com.android.sample.ui.calendar
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -10,13 +11,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.model.calendar.Event
+import com.android.sample.ui.calendar.components.ViewModeSelector
 import com.android.sample.ui.calendar.data.LocalDateRange
 import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.utils.DateTimeUtils.localDateTimeToInstant
+import com.android.sample.ui.theme.PaddingExtraSmall
 import java.time.LocalTime
 
 /**
@@ -81,6 +85,11 @@ fun CalendarContainer(
         dateRange = currentDateRange,
         events = events,
         onEventClick = onEventClick)
+
+    ViewModeSelector(
+        modifier =
+            Modifier.align(Alignment.TopStart)
+                .padding(start = PaddingExtraSmall, top = PaddingExtraSmall))
   }
 }
 

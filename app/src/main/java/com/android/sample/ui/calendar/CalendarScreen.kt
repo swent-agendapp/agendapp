@@ -1,5 +1,6 @@
 package com.android.sample.ui.calendar
 
+import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -12,6 +13,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -45,7 +47,10 @@ fun CalendarScreen(
   val context = LocalContext.current
   val uiState by calendarViewModel.uiState.collectAsState()
 
-  // Show error message if fetching events fails
+    val configuration = LocalConfiguration.current
+    val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+
+    // Show error message if fetching events fails
   LaunchedEffect(uiState.errorMsg) {
     uiState.errorMsg?.let { message ->
       Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
@@ -55,9 +60,11 @@ fun CalendarScreen(
 
   Scaffold(
       topBar = {
-        MainPageTopBar(
-            title = stringResource(R.string.calendar_screen_title),
-            modifier = Modifier.testTag(CalendarScreenTestTags.TOP_BAR_TITLE))
+          if (isPortrait) {
+            MainPageTopBar(
+                title = stringResource(R.string.calendar_screen_title),
+                modifier = Modifier.testTag(CalendarScreenTestTags.TOP_BAR_TITLE))
+          }
       },
       floatingActionButton = {
         FloatingButton(

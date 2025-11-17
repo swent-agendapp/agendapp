@@ -59,7 +59,6 @@ internal fun TimeAxisColumn(
             modifier = Modifier.size(leftOffsetDp, rowHeightDp),
             contentAlignment = Alignment.TopCenter) {
               Text(
-                  modifier = Modifier, // .padding(horizontal = 4.dp),
                   text = timeLabel.format(DateTimeFormatter.ofPattern("HH:mm")),
                   style = TextStyle(fontSize = 14.sp, color = style.colors.timeLabelTextColor),
               )

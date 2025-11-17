@@ -16,24 +16,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.model.calendar.Event
+import com.android.sample.ui.calendar.components.DatePickerModal
+import com.android.sample.ui.calendar.components.ViewMode
 import com.android.sample.ui.calendar.components.ViewModeSelector
 import com.android.sample.ui.calendar.data.LocalDateRange
 import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.utils.DateTimeUtils.localDateTimeToInstant
 import com.android.sample.ui.theme.PaddingExtraSmall
+import java.time.DayOfWeek
+import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalTime
+import java.time.ZoneId
 
 /**
  * High-level container for the calendar screen. It hosts the grid background, the events layer, and
- * (later) swipe/zoom behaviors. Use this as the entry point to render a week view.
+ * view mode selection.
  *
- * This composable owns the visible [LocalDateRange], handles week-to-week navigation on horizontal
+ * This composable owns the visible [LocalDateRange], handles week / day navigation on horizontal
  * swipes, and triggers loading of events from [CalendarViewModel] whenever the range changes.
  *
  * @param modifier [Modifier] applied to the root container.
  * @param calendarViewModel ViewModel used to fetch events for the visible date range.
  * @param onEventClick Callback invoked when the user taps on an [Event].
- * @return Unit. This is a composable that renders UI side-effects only.
  */
 @Composable
 fun CalendarContainer(
@@ -41,55 +46,140 @@ fun CalendarContainer(
     calendarViewModel: CalendarViewModel = viewModel(),
     onEventClick: (Event) -> Unit = {}
 ) {
-  // Later : create here a variable transformableState for zoom changes
-  // Later : handle here variables for animation of swiping (transparent box)
+  // "Today" is used to compute the initial view mode and initial date range.
+  val today = remember { LocalDate.now() }
 
-  // Initialize the week from Monday to Friday
-  var currentDateRange by remember { mutableStateOf(CalendarDefaults.DefaultDateRange) }
+  // Default mode: 5 days if today is Monday–Friday, otherwise 7 days (Saturday / Sunday).
+  val defaultViewMode = remember { computeDefaultViewMode(today) }
 
-  // Observe events from the view model
+  // Current mode currently displayed.
+  var currentMode by remember { mutableStateOf(defaultViewMode) }
+
+  // Last non-month mode (ONE_DAY, FIVE_DAYS, or SEVEN_DAYS).
+  // This is used when returning from the MONTH mode.
+  var previousNonMonthMode by remember { mutableStateOf(defaultViewMode) }
+
+  // Visible date range in the grid (day / week).
+  var currentDateRange by remember {
+    mutableStateOf(computeInitialDateRange(today, defaultViewMode))
+  }
+
+  // Controls whether the month picker dialog is visible.
+  var showMonthPicker by remember { mutableStateOf(false) }
+
+  // Observe events from the view model.
   val uiState by calendarViewModel.uiState.collectAsState()
   val events = uiState.events
 
-  // Fetch events whenever the visible date range changes
+  // Fetch events whenever the visible date range changes.
   LaunchedEffect(currentDateRange) { loadEventsForDateRange(calendarViewModel, currentDateRange) }
 
   Box(modifier = modifier) {
-    CalendarGridContent(
-        modifier =
-            Modifier.fillMaxSize().pointerInput(currentDateRange) {
-              var totalDx = 0f
+    // When the mode is not MONTH, we show the week/day grid.
+    if (currentMode != ViewMode.MONTH) {
+      CalendarGridContent(
+          modifier =
+              Modifier.fillMaxSize().pointerInput(currentDateRange, currentMode) {
+                var totalDx = 0f
 
-              detectDragGestures(
-                  onDrag = { _, dragAmount -> totalDx += dragAmount.x },
-                  onDragEnd = {
-                    val threshold = CalendarDefaults.DefaultSwipeThreshold
-                    when {
-                      // Swipe right: go to previous week
-                      totalDx > threshold -> {
-                        val nextStart = currentDateRange.start.minusWeeks(1)
-                        val nextEnd = currentDateRange.endInclusive.minusWeeks(1)
-                        currentDateRange = LocalDateRange(nextStart, nextEnd)
+                // Handle horizontal swipes to navigate between days/weeks.
+                detectDragGestures(
+                    onDrag = { _, dragAmount -> totalDx += dragAmount.x },
+                    onDragEnd = {
+                      val threshold = CalendarDefaults.DefaultSwipeThreshold
+                      when {
+                        // Swipe right: go to previous day/week.
+                        totalDx > threshold -> {
+                          currentDateRange =
+                              updateDateRangeForSwipe(
+                                  currentRange = currentDateRange,
+                                  currentMode = currentMode,
+                                  moveToPrevious = true,
+                              )
+                        }
+                        // Swipe left: go to next day/week.
+                        totalDx < -threshold -> {
+                          currentDateRange =
+                              updateDateRangeForSwipe(
+                                  currentRange = currentDateRange,
+                                  currentMode = currentMode,
+                                  moveToPrevious = false,
+                              )
+                        }
                       }
-                      // Swipe left: go to next week
-                      totalDx < -threshold -> {
-                        val nextStart = currentDateRange.start.plusWeeks(1)
-                        val nextEnd = currentDateRange.endInclusive.plusWeeks(1)
-                        currentDateRange = LocalDateRange(nextStart, nextEnd)
-                      }
-                    }
-                    totalDx = 0f
-                  },
-                  onDragCancel = { totalDx = 0f })
-            },
-        dateRange = currentDateRange,
-        events = events,
-        onEventClick = onEventClick)
+                      totalDx = 0f
+                    },
+                    onDragCancel = { totalDx = 0f })
+              },
+          dateRange = currentDateRange,
+          events = events,
+          onEventClick = onEventClick)
+    }
 
+    // Floating button to change the view mode.
     ViewModeSelector(
         modifier =
             Modifier.align(Alignment.TopStart)
-                .padding(start = PaddingExtraSmall, top = PaddingExtraSmall))
+                .padding(start = PaddingExtraSmall, top = PaddingExtraSmall),
+        currentMode = currentMode,
+        onModeSelected = { newMode ->
+          when (newMode) {
+            ViewMode.MONTH -> {
+              // Enter MONTH mode and show the month picker dialog.
+              currentMode = ViewMode.MONTH
+              showMonthPicker = true
+            }
+            else -> {
+              // For non-month modes we remember this as the "last used" mode.
+              val updatedRange =
+                  updateDateRangeForModeChange(
+                      previousMode = currentMode,
+                      newMode = newMode,
+                      currentRange = currentDateRange,
+                      today = today,
+                  )
+              previousNonMonthMode = newMode
+              currentMode = newMode
+              currentDateRange = updatedRange
+            }
+          }
+        })
+
+    // MONTH mode: show the DatePickerModal instead of the grid.
+    if (currentMode == ViewMode.MONTH && showMonthPicker) {
+      DatePickerModal(
+          onDateSelected = { selectedMillis ->
+            // When a date is chosen, we reopen the corresponding day/week according to
+            // the previously used non-month mode.
+            val selectedDate =
+                selectedMillis?.let {
+                  Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
+                }
+
+            if (selectedDate != null) {
+              val targetMode = previousNonMonthMode
+              currentMode = targetMode
+              currentDateRange =
+                  when (targetMode) {
+                    ViewMode.ONE_DAY -> LocalDateRange(selectedDate, selectedDate)
+                    ViewMode.FIVE_DAYS -> weekRangeContaining(selectedDate, days = 5)
+                    ViewMode.SEVEN_DAYS -> weekRangeContaining(selectedDate, days = 7)
+                    ViewMode.MONTH -> weekRangeContaining(selectedDate, days = 7) // Fallback.
+                  }
+            } else {
+              // No date selected: simply go back to the previous non-month mode.
+              currentMode = previousNonMonthMode
+            }
+
+            showMonthPicker = false
+          },
+          onDismiss = {
+            // If the dialog is dismissed, we return to the last non-month mode and keep the
+            // previous date range.
+            currentMode = previousNonMonthMode
+            showMonthPicker = false
+          })
+    }
   }
 }
 
@@ -106,4 +196,115 @@ private fun loadEventsForDateRange(
   calendarViewModel.loadEventsBetween(
       localDateTimeToInstant(dateRange.start, LocalTime.MIDNIGHT),
       localDateTimeToInstant(dateRange.endInclusive, LocalTime.MAX))
+}
+
+/**
+ * Returns the default view mode:
+ * - FIVE_DAYS if today is Monday–Friday
+ * - SEVEN_DAYS if today is Saturday or Sunday
+ */
+private fun computeDefaultViewMode(today: LocalDate): ViewMode {
+  return if (today.dayOfWeek.value in DayOfWeek.MONDAY.value..DayOfWeek.FRIDAY.value) {
+    ViewMode.FIVE_DAYS
+  } else {
+    ViewMode.SEVEN_DAYS
+  }
+}
+
+/**
+ * Computes the initial date range for the given mode based on "today".
+ * - FIVE_DAYS: Monday–Friday of the week containing today
+ * - SEVEN_DAYS: Monday–Sunday of the week containing today
+ */
+private fun computeInitialDateRange(today: LocalDate, mode: ViewMode): LocalDateRange {
+  return when (mode) {
+    ViewMode.FIVE_DAYS -> weekRangeContaining(today, days = 5)
+    ViewMode.SEVEN_DAYS -> weekRangeContaining(today, days = 7)
+    ViewMode.ONE_DAY -> LocalDateRange(today, today)
+    ViewMode.MONTH -> weekRangeContaining(today, days = 7) // Not used directly in MONTH mode.
+  }
+}
+
+/**
+ * Builds a week range starting on Monday for the week containing [date].
+ *
+ * @param date Any date inside the desired week.
+ * @param days Number of visible days (5 or 7).
+ */
+private fun weekRangeContaining(date: LocalDate, days: Int): LocalDateRange {
+  val monday = date.with(DayOfWeek.MONDAY)
+  val end = monday.plusDays((days - 1).toLong())
+  return LocalDateRange(monday, end)
+}
+
+/**
+ * Updates the date range when the user swipes horizontally.
+ * - In ONE_DAY mode: moves by 1 day forward/backward.
+ * - In FIVE_DAYS or SEVEN_DAYS: moves by one whole week forward/backward (starting on Monday).
+ */
+private fun updateDateRangeForSwipe(
+    currentRange: LocalDateRange,
+    currentMode: ViewMode,
+    moveToPrevious: Boolean,
+): LocalDateRange {
+  val sign = if (moveToPrevious) -1L else 1L
+
+  return when (currentMode) {
+    ViewMode.ONE_DAY -> {
+      val newDay = currentRange.start.plusDays(sign)
+      LocalDateRange(newDay, newDay)
+    }
+    ViewMode.FIVE_DAYS -> {
+      val anchor = currentRange.start.plusWeeks(sign)
+      weekRangeContaining(anchor, days = 5)
+    }
+    ViewMode.SEVEN_DAYS,
+    ViewMode.MONTH -> {
+      // MONTH should not normally be swipable, but we fallback to a 7-day week logic.
+      val anchor = currentRange.start.plusWeeks(sign)
+      weekRangeContaining(anchor, days = 7)
+    }
+  }
+}
+
+/**
+ * Updates the date range when the user changes the view mode via [ViewModeSelector].
+ *
+ * Rules:
+ * - When switching from FIVE_DAYS or SEVEN_DAYS to ONE_DAY:
+ *     - If "today" is inside the current range, show today.
+ *     - Otherwise, show Monday of the current range.
+ * - When switching to FIVE_DAYS or SEVEN_DAYS, we show the week (starting Monday) containing the
+ *   current start date.
+ * - When switching to MONTH, the range is kept as-is; the real update comes from the date selected
+ *   in the [DatePickerModal].
+ */
+private fun updateDateRangeForModeChange(
+    previousMode: ViewMode,
+    newMode: ViewMode,
+    currentRange: LocalDateRange,
+    today: LocalDate,
+): LocalDateRange {
+  return when (newMode) {
+    ViewMode.ONE_DAY -> {
+      if (previousMode == ViewMode.FIVE_DAYS || previousMode == ViewMode.SEVEN_DAYS) {
+        val todayInRange =
+            !today.isBefore(currentRange.start) && !today.isAfter(currentRange.endInclusive)
+        val targetDay =
+            if (todayInRange) {
+              today
+            } else {
+              // If today is not in the current range, fall back to Monday.
+              currentRange.start.with(DayOfWeek.MONDAY)
+            }
+        LocalDateRange(targetDay, targetDay)
+      } else {
+        // From ONE_DAY or MONTH to ONE_DAY: keep the current start day as the focused day.
+        LocalDateRange(currentRange.start, currentRange.start)
+      }
+    }
+    ViewMode.FIVE_DAYS -> weekRangeContaining(currentRange.start, days = 5)
+    ViewMode.SEVEN_DAYS -> weekRangeContaining(currentRange.start, days = 7)
+    ViewMode.MONTH -> currentRange
+  }
 }

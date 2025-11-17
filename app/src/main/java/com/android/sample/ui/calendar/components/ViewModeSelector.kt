@@ -32,7 +32,8 @@ enum class ViewMode {
  * A compact floating action button that opens a dropdown menu to select the calendar view mode (1
  * day, 5 days, 7 days, or 1 month).
  *
- * The icon of the button always reflects the currently selected option.
+ * This composable is controlled by the parent through [currentMode]. The icon of the button always
+ * reflects the mode currently selected in the parent.
  */
 @Composable
 fun ViewModeSelector(
@@ -40,11 +41,8 @@ fun ViewModeSelector(
     currentMode: ViewMode = ViewMode.SEVEN_DAYS,
     onModeSelected: (ViewMode) -> Unit = {},
 ) {
+  // Local state only controls whether the menu is open or closed.
   var expanded by remember { mutableStateOf(false) }
-
-  // Local state used to drive the selected icon and label in this component.
-  // It is initialized from the external currentMode.
-  var selectedMode by remember { mutableStateOf(currentMode) }
 
   // Icons
   val oneDayIcon = Icons.Filled.CalendarToday
@@ -60,8 +58,8 @@ fun ViewModeSelector(
           Triple(ViewMode.MONTH, "Month", monthIcon),
       )
 
-  // The icon of the FAB is directly taken from the currently selected item.
-  val iconToShow = items.first { it.first == selectedMode }.third
+  // The icon of the FAB is directly taken from the currently selected mode.
+  val iconToShow = items.first { it.first == currentMode }.third
 
   Box(modifier = modifier.semantics { contentDescription = "Change calendar view mode" }) {
     SmallFloatingActionButton(
@@ -85,9 +83,7 @@ fun ViewModeSelector(
             text = { Text(label) },
             leadingIcon = { Icon(imageVector = icon, contentDescription = null) },
             onClick = {
-              // Update local selection so the FAB icon changes
-              selectedMode = mode
-              // Let the caller know which mode was selected
+              // Delegate the new mode to the parent. The parent updates currentMode.
               onModeSelected(mode)
               expanded = false
             },

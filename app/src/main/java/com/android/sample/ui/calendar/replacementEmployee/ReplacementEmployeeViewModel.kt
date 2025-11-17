@@ -292,7 +292,10 @@ class ReplacementEmployeeViewModel(
 
     viewModelScope.launch {
       try {
-        val eventsInRange = findEventsInRange(start, end)
+        val startInstant = start.atStartOfDay(ZoneId.systemDefault()).toInstant()
+        val endInstant = end.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant()
+
+        val eventsInRange = eventRepository.getEventsBetweenDates(startInstant, endInstant)
 
         val created =
             eventsInRange.map { event ->
@@ -320,25 +323,5 @@ class ReplacementEmployeeViewModel(
             _uiState.value.copy(errorMessage = "Could not create replacements: ${e.message}")
       }
     }
-  }
-
-  /**
-   * Finds events in the given [startDate, endDate] range.
-   *
-   * TODO: Replace this stub with a real implementation using [eventRepository], once the API
-   *   exposes a way to query events by date range.
-   */
-  private suspend fun findEventsInRange(startDate: LocalDate, endDate: LocalDate): List<Event> {
-    // --- Placeholder implementation ---
-    // You can later implement something like:
-    // eventRepository.getEventsBetween(startInstant, endInstant)
-    val startInstant = startDate.atStartOfDay(ZoneId.systemDefault()).toInstant()
-    val endInstant = endDate.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant()
-
-    Log.d(
-        "ReplacementEmployeeVM",
-        "findEventsInRange() called for $startInstant - $endInstant (stub implementation)")
-
-    return emptyList()
   }
 }

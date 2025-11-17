@@ -1,10 +1,13 @@
 package com.android.sample.ui.calendar.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,6 +24,7 @@ import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.style.GridContentStyle
 import com.android.sample.ui.calendar.style.defaultGridContentDimensions
 import com.android.sample.ui.calendar.style.defaultGridContentStyle
+import com.android.sample.ui.theme.SpacingExtraSmall
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -66,28 +70,31 @@ fun DayHeaderRow(
       val shortDate = date.format(DateTimeFormatter.ofPattern("dd.MM"))
 
       Column(
-          modifier = Modifier.size(columnWidth, topOffsetDp).background(bg),
-          horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = dayName,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                color = color,
-                fontSize = 13.sp,
-                fontWeight = weight,
-                textAlign = TextAlign.Center,
-                lineHeight = 22.sp,
-                modifier = Modifier.fillMaxWidth())
-            Text(
-                text = shortDate,
-                maxLines = 1,
-                color = color,
-                fontSize = 13.sp,
-                fontWeight = weight,
-                textAlign = TextAlign.Center,
-                lineHeight = 8.sp,
-                modifier = Modifier.fillMaxWidth())
-          }
+          modifier = Modifier.size(width = columnWidth, height = topOffsetDp).background(bg),
+          horizontalAlignment = Alignment.CenterHorizontally,
+          verticalArrangement = Arrangement.Center,
+      ) {
+        Text(
+            text = dayName,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            color = color,
+            fontSize = 13.sp,
+            fontWeight = weight,
+            textAlign = TextAlign.Center,
+            lineHeight = 22.sp,
+            modifier = Modifier.fillMaxWidth())
+        Spacer(modifier = Modifier.height(SpacingExtraSmall))
+        Text(
+            text = shortDate,
+            maxLines = 1,
+            color = color,
+            fontSize = 13.sp,
+            fontWeight = weight,
+            textAlign = TextAlign.Center,
+            lineHeight = 8.sp,
+            modifier = Modifier.fillMaxWidth())
+      }
     }
   }
 }

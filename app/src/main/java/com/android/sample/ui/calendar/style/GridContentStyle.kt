@@ -78,8 +78,8 @@ data class GridContentDimensions(
  */
 @Composable
 fun defaultGridContentDimensions(
-    leftOffsetDp: Dp = 48.dp,
-    topOffsetDp: Dp = 42.dp,
+    leftOffsetDp: Dp = 58.dp,
+    topOffsetDp: Dp = 58.dp,
     defaultColumnWidthDp: Dp = 64.dp,
     rowHeightDp: Dp = 60.dp,
 ): GridContentDimensions =

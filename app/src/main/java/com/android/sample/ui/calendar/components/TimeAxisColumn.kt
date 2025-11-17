@@ -4,18 +4,17 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.style.GridContentStyle
@@ -53,16 +52,19 @@ internal fun TimeAxisColumn(
     // Regular time labels (hours)
     Column(
         modifier =
-            Modifier.verticalScroll(scrollState).testTag(CalendarScreenTestTags.TIME_AXIS_COLUMN)) {
-          timeLabels.forEach { timeLabel ->
-            Box(modifier = Modifier.size(leftOffsetDp, rowHeightDp)) {
+            Modifier.verticalScroll(scrollState).testTag(CalendarScreenTestTags.TIME_AXIS_COLUMN),
+    ) {
+      timeLabels.forEach { timeLabel ->
+        Box(
+            modifier = Modifier.size(leftOffsetDp, rowHeightDp),
+            contentAlignment = Alignment.TopCenter) {
               Text(
-                  modifier = Modifier.padding(horizontal = 4.dp),
+                  modifier = Modifier, // .padding(horizontal = 4.dp),
                   text = timeLabel.format(DateTimeFormatter.ofPattern("HH:mm")),
-                  style = TextStyle(fontSize = 12.sp, color = style.colors.timeLabelTextColor),
+                  style = TextStyle(fontSize = 14.sp, color = style.colors.timeLabelTextColor),
               )
             }
-          }
-        }
+      }
+    }
   }
 }

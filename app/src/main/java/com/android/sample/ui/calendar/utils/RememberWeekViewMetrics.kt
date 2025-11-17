@@ -60,8 +60,8 @@ internal fun rememberWeekViewMetrics(
     val startTime = LocalTime.MIDNIGHT
     val endTime = LocalTime.MAX
     val rowHeightDp = 60.dp
-    val leftOffsetDp = 48.dp
-    val topOffsetDp = 42.dp
+    val leftOffsetDp = 58.dp
+    val topOffsetDp = 58.dp
 
     val totalHours = 24
     val gridHeightDp = rowHeightDp * totalHours

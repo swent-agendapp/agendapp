@@ -95,8 +95,8 @@ fun DrawEventSummaryCard(
                       showToggle = showTitleToggle,
                       toggleLabels = textConfig.toggleLabels,
                       toggleTypography = MaterialTheme.typography.labelMedium,
-                      modifier = Modifier.testTag(EventSummaryCardTags.TitleText),
-                      toggleTestTag = EventSummaryCardTags.ToggleTitle)
+                      modifier = Modifier.testTag(EventSummaryCardTags.TITLE_TEXT),
+                      toggleTestTag = EventSummaryCardTags.TOGGLE_TITLE)
                   // Preserve spacing when the toggle is absent
                   if (!showTitleToggle) Spacer(Modifier.height(style.titleSpacer))
 

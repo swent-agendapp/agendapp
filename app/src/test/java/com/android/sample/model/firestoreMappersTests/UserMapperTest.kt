@@ -120,9 +120,10 @@ class UserMapperTest {
   @Test
   fun toMap_returnsCorrectMap() {
     val map = UserMapper.toMap(sampleUser)
-    assertEquals(3, map.size)
+    assertEquals(4, map.size)
     assertEquals(sampleUser.id, map["id"])
     assertEquals(sampleUser.displayName, map["displayName"])
     assertEquals(sampleUser.email, map["email"])
+    assertEquals(sampleUser.phoneNumber, map["phoneNumber"])
   }
 }

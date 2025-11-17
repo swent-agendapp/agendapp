@@ -18,6 +18,11 @@ class NavigationActions(val navController: NavHostController) {
     navController.navigate(Screen.EditEvent.createRoute(eventId))
   }
 
+  /** Navigate to EventOverview screen with eventId parameter. */
+  fun navigateToEventOverview(eventId: String) {
+    navController.navigate(Screen.EventOverview.createRoute(eventId))
+  }
+
   /** Navigate back to previous screen. */
   fun navigateBack() {
     navController.popBackStack()

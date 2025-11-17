@@ -176,6 +176,8 @@
     <string name="organization_loading">Loading organizations</string>
     <string name="organization_name_label">Name of organization</string>
 
+    <!-- Event Overview -->
+    <string name="event_overview_title">Event Overview</string>
 </resources>
 
 

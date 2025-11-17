@@ -47,7 +47,7 @@ import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.PaddingLarge
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.Violet
-import com.android.sample.ui.theme.WeightVeryHeavy
+import com.android.sample.ui.theme.WeightExtraHeavy
 
 // Assisted by AI
 
@@ -128,7 +128,7 @@ fun SelectSubstitutedScreen(
 
               /** Scrollable selectable list * */
               Card(
-                  modifier = Modifier.fillMaxWidth().weight(WeightVeryHeavy),
+                  modifier = Modifier.fillMaxWidth().weight(WeightExtraHeavy),
                   elevation = CardDefaults.cardElevation(defaultElevation = DefaultCardElevation),
                   shape = RoundedCornerShape(CornerRadiusLarge)) {
                     Column(Modifier.fillMaxSize()) {
@@ -153,7 +153,7 @@ fun SelectSubstitutedScreen(
                       /** Scrollable list * */
                       LazyColumn(
                           modifier =
-                              Modifier.weight(WeightVeryHeavy)
+                              Modifier.weight(WeightExtraHeavy)
                                   .fillMaxWidth()
                                   .testTag(ReplacementOrganizeTestTags.MEMBER_LIST),
                           verticalArrangement = Arrangement.Top) {

@@ -50,8 +50,8 @@ import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingSmall
+import com.android.sample.ui.theme.WeightExtraHeavy
 import com.android.sample.ui.theme.WeightMedium
-import com.android.sample.ui.theme.WeightVeryHeavy
 
 /**
  * Second step of event creation flow: select start/end date and time, plus optional recurrence
@@ -105,7 +105,7 @@ fun AddEventTimeAndRecurrenceScreen(
                         modifier = Modifier.testTag(AddEventTestTags.INSTRUCTION_TEXT))
                   }
 
-              Column(modifier = Modifier.weight(WeightVeryHeavy)) {
+              Column(modifier = Modifier.weight(WeightExtraHeavy)) {
                 if (recurrenceOptions.isNotEmpty()) {
                   ExposedDropdownMenuBox(
                       expanded = expanded, onExpandedChange = { expanded = !expanded }) {
@@ -169,12 +169,12 @@ fun AddEventTimeAndRecurrenceScreen(
                     verticalAlignment = Alignment.CenterVertically) {
                       Text(
                           text = stringResource(R.string.startTime),
-                          modifier = Modifier.weight(WeightVeryHeavy),
+                          modifier = Modifier.weight(WeightExtraHeavy),
                           textAlign = TextAlign.Center)
                       OutlinedButton(
                           onClick = { showStartTimePicker = true },
                           modifier =
-                              Modifier.weight(WeightVeryHeavy)
+                              Modifier.weight(WeightExtraHeavy)
                                   .testTag(AddEventTestTags.START_TIME_BUTTON)) {
                             Text(
                                 text =
@@ -188,12 +188,12 @@ fun AddEventTimeAndRecurrenceScreen(
                     verticalAlignment = Alignment.CenterVertically) {
                       Text(
                           text = stringResource(R.string.endTime),
-                          modifier = Modifier.weight(WeightVeryHeavy),
+                          modifier = Modifier.weight(WeightExtraHeavy),
                           textAlign = TextAlign.Center)
                       OutlinedButton(
                           onClick = { showEndTimePicker = true },
                           modifier =
-                              Modifier.weight(WeightVeryHeavy)
+                              Modifier.weight(WeightExtraHeavy)
                                   .testTag(AddEventTestTags.END_TIME_BUTTON)) {
                             Text(
                                 text =

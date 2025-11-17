@@ -1,5 +1,6 @@
 package com.android.sample.ui.calendar
 
+import com.android.sample.model.authentication.FakeAuthRepository
 import com.android.sample.model.calendar.*
 import java.time.Instant
 import kotlinx.coroutines.Dispatchers
@@ -36,7 +37,8 @@ class CalendarViewModelTest {
     Dispatchers.setMain(testDispatcher)
 
     repository = EventRepositoryLocal()
-    viewModel = CalendarViewModel(eventRepository = repository)
+    viewModel =
+        CalendarViewModel(eventRepository = repository, authRepository = FakeAuthRepository())
 
     // Create two sample events for testing.
     event1 =

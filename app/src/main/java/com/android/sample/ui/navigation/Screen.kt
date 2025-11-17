@@ -14,6 +14,10 @@ sealed class Screen(val route: String, val name: String) {
 
   data object Calendar : Screen(route = "calendar", name = "Calendar")
 
+  data object EventOverview : Screen(route = "event_overview/{eventId}", name = "Event Overview") {
+    fun createRoute(eventId: String) = "event_overview/$eventId"
+  }
+
   data object Map : Screen(route = "map", name = "Map")
 
   data object Settings : Screen(route = "settings", name = "Settings")

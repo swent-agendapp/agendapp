@@ -31,7 +31,7 @@ data class GridContentColors(
  */
 @Composable
 fun defaultGridContentColors(
-    todayHighlight: Color = MaterialTheme.colorScheme.primary.copy(alpha = 0.08f),
+    todayHighlight: Color = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f),
     gridLineColor: Color = Color.LightGray,
     nowIndicator: Color = MaterialTheme.colorScheme.error,
     timeLabelTextColor: Color = Color.Gray,

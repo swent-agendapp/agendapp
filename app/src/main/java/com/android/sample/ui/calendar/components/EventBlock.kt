@@ -92,7 +92,7 @@ fun EventBlock(
     startTime: LocalTime = CalendarDefaults.DefaultStartTime,
     endTime: LocalTime = CalendarDefaults.DefaultEndTime,
     columnWidthDp: Dp = defaultGridContentDimensions().defaultColumnWidthDp,
-    onEventClick: (Event) -> Unit = {},
+    onEventClick: (Event) -> Unit = {}
 ) {
   // Filter events for the current day and time range using the helper
   val visibleEvents = filterVisibleEvents(events, currentDate, startTime, endTime)

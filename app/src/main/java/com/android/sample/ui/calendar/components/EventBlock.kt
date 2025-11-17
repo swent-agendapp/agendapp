@@ -1,6 +1,7 @@
 package com.android.sample.ui.calendar.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
@@ -32,7 +34,12 @@ import com.android.sample.ui.calendar.style.defaultGridContentDimensions
 import com.android.sample.ui.calendar.utils.DateTimeUtils
 import com.android.sample.ui.calendar.utils.EventOverlapCalculator
 import com.android.sample.ui.calendar.utils.EventPositionUtil
+import com.android.sample.ui.theme.AlphaExtraLow
+import com.android.sample.ui.theme.AlphaHigh
+import com.android.sample.ui.theme.AlphaLow
+import com.android.sample.ui.theme.BorderWidthThin
 import com.android.sample.ui.theme.CornerRadiusSmall
+import com.android.sample.ui.theme.ElevationExtraLow
 import com.android.sample.ui.theme.PaddingExtraSmall
 import com.android.sample.ui.theme.widthLarge
 import java.time.Instant
@@ -175,21 +182,26 @@ private fun DrawEventBlock(
                   width = eventWidthDp,
                   height = eventHeight,
               )
+              .shadow(
+                  elevation = ElevationExtraLow,
+                  shape = RoundedCornerShape(CornerRadiusSmall),
+                  clip = true
+              )
               .clip(RoundedCornerShape(CornerRadiusSmall))
               .background(backgroundColor)
-              .padding(
-                  start = PaddingExtraSmall,
-                  top = PaddingExtraSmall,
-                  end = PaddingExtraSmall,
+              .padding(start = PaddingExtraSmall, top = PaddingExtraSmall, end = PaddingExtraSmall)
+              .border(
+                  width = BorderWidthThin,
+                  color = Color.Black.copy(alpha = AlphaExtraLow),
+                  shape = RoundedCornerShape(CornerRadiusSmall)
               )
               .clickable(onClick = { onEventClick(event) })
               .testTag("${CalendarScreenTestTags.EVENT_BLOCK}_${event.title}"),
       // Later : handle onTap and onLongPress
   ) {
     Column(
-        modifier = Modifier.fillMaxSize(),
-        // Later for testing : .testTag("EventViewInner_${event.id}"),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxSize().padding(start = PaddingExtraSmall),
+        horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top,
     ) {
       // Main title
@@ -198,34 +210,40 @@ private fun DrawEventBlock(
           color = textColor,
           fontSize = 12.sp,
           fontWeight = FontWeight.Medium,
-          maxLines = 1,
+          maxLines = 2,
           overflow = TextOverflow.Ellipsis,
       )
 
-      // Participants (if any)
+        // later : when 1-day view : Spacer(modifier.height(SpacingExtraSmall))
+
+        // Time information
+        val timeText =
+            "${DateTimeUtils.formatInstantToTime(event.startDate)} — " +
+                    DateTimeUtils.formatInstantToTime(event.endDate)
+
+        Text(
+            text = timeText,
+            color = textColor.copy(alpha = AlphaHigh),
+            fontSize = 9.sp,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+        )
+
+        // later : when 1-day view : Spacer(modifier.height(SpacingExtraSmall))
+
+        // Participants (if any)
       if (event.participants.isNotEmpty()) {
         val participantsText = event.participants.joinToString(", ")
         Text(
             text = participantsText,
-            color = textColor.copy(alpha = 0.8f),
+            color = textColor.copy(alpha = AlphaLow),
             fontSize = 10.sp,
-            maxLines = 1,
+            maxLines = 2,
             overflow = TextOverflow.Ellipsis,
         )
       }
 
-      // Time information
-      val timeText =
-          "${DateTimeUtils.formatInstantToTime(event.startDate)} - " +
-              DateTimeUtils.formatInstantToTime(event.endDate)
 
-      Text(
-          text = timeText,
-          color = textColor.copy(alpha = 0.7f),
-          fontSize = 9.sp,
-          maxLines = 1,
-          overflow = TextOverflow.Ellipsis,
-      )
 
       // Later if needed : upperText and/or lowerText
     }

@@ -18,6 +18,7 @@ val CornerRadiusExtraLarge = 16.dp
 val CornerRadiusHuge = 24.dp
 
 // Spacing
+val SpacingExtraSmall = 4.dp
 val SpacingSmall = 8.dp
 val SpacingMedium = 12.dp
 val SpacingLarge = 16.dp

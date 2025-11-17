@@ -17,8 +17,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import com.android.sample.R
 
 /** Represents the different calendar view modes available in the UI. */
 enum class ViewMode {
@@ -52,10 +54,10 @@ fun ViewModeSelector(
   // List of options
   val items =
       listOf(
-          Triple(ViewMode.ONE_DAY, "1 day", oneDayIcon),
-          Triple(ViewMode.FIVE_DAYS, "5 days", multiDayIcon),
-          Triple(ViewMode.SEVEN_DAYS, "7 days", multiDayIcon),
-          Triple(ViewMode.MONTH, "Month", monthIcon),
+          Triple(ViewMode.ONE_DAY, stringResource(R.string.view_mode_1day), oneDayIcon),
+          Triple(ViewMode.FIVE_DAYS, stringResource(R.string.view_mode_5days), multiDayIcon),
+          Triple(ViewMode.SEVEN_DAYS, stringResource(R.string.view_mode_7days), multiDayIcon),
+          Triple(ViewMode.MONTH, stringResource(R.string.view_mode_month), monthIcon),
       )
 
   // The icon of the FAB is directly taken from the currently selected mode.

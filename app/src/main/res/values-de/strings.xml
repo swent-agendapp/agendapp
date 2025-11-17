@@ -171,6 +171,10 @@
     <string name="replacement_create_select_event">Ereignis auswählen</string>
     <string name="replacement_create_choose_date_range">Datumsbereich auswählen</string>
     <string name="event_overview_title">Ereignisübersicht</string>
+    <string name="view_mode_1day">1 Tag</string>
+    <string name="view_mode_5days">5 Tage</string>
+    <string name="view_mode_7days">7 Tage</string>
+    <string name="view_mode_month">Monat</string>
 
 
 </resources>

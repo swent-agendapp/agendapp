@@ -170,6 +170,10 @@
     <string name="replacement_create_select_event">Select an event</string>
     <string name="replacement_create_choose_date_range">Choose a date range</string>
     <string name="event_overview_title">Event Overview</string>
+    <string name="view_mode_1day">1 day</string>
+    <string name="view_mode_5days">5 days</string>
+    <string name="view_mode_7days">7 days</string>
+    <string name="view_mode_month">Month</string>
 </resources>
 
 

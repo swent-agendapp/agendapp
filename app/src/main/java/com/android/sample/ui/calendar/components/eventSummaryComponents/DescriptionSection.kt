@@ -82,7 +82,7 @@ fun DescriptionSection(
           onOverflowChange = onOverflowChange,
           showToggle =
               false, // The toggle row is rendered manually below the description (to handle left
-                     // bar correctly).
+          // bar correctly).
           toggleLabels = textConfig.toggleLabels,
           toggleTypography = MaterialTheme.typography.labelMedium,
           onTextHeightChange = {}, // Text height is not needed to size the bar.

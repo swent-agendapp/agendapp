@@ -47,10 +47,10 @@ fun CalendarScreen(
   val context = LocalContext.current
   val uiState by calendarViewModel.uiState.collectAsState()
 
-    val configuration = LocalConfiguration.current
-    val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+  val configuration = LocalConfiguration.current
+  val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
-    // Show error message if fetching events fails
+  // Show error message if fetching events fails
   LaunchedEffect(uiState.errorMsg) {
     uiState.errorMsg?.let { message ->
       Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
@@ -60,11 +60,11 @@ fun CalendarScreen(
 
   Scaffold(
       topBar = {
-          if (isPortrait) {
-            MainPageTopBar(
-                title = stringResource(R.string.calendar_screen_title),
-                modifier = Modifier.testTag(CalendarScreenTestTags.TOP_BAR_TITLE))
-          }
+        if (isPortrait) {
+          MainPageTopBar(
+              title = stringResource(R.string.calendar_screen_title),
+              modifier = Modifier.testTag(CalendarScreenTestTags.TOP_BAR_TITLE))
+        }
       },
       floatingActionButton = {
         FloatingButton(

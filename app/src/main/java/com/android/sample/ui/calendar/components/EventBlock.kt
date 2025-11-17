@@ -87,7 +87,8 @@ private fun filterVisibleEvents(
 fun EventBlock(
     modifier: Modifier = Modifier,
     events: List<Event> = emptyList(),
-    currentDate: LocalDate,
+    currentDate:
+        LocalDate, // used to compute the visible portion of events that may span multiple days
     startTime: LocalTime = CalendarDefaults.DefaultStartTime,
     endTime: LocalTime = CalendarDefaults.DefaultEndTime,
     columnWidthDp: Dp = defaultGridContentDimensions().defaultColumnWidthDp,
@@ -185,15 +186,13 @@ private fun DrawEventBlock(
               .shadow(
                   elevation = ElevationExtraLow,
                   shape = RoundedCornerShape(CornerRadiusSmall),
-                  clip = true
-              )
+                  clip = true)
               .clip(RoundedCornerShape(CornerRadiusSmall))
               .background(backgroundColor)
               .border(
                   width = BorderWidthThin,
                   color = Color.Black.copy(alpha = AlphaExtraLow),
-                  shape = RoundedCornerShape(CornerRadiusSmall)
-              )
+                  shape = RoundedCornerShape(CornerRadiusSmall))
               .padding(start = PaddingExtraSmall, top = PaddingExtraSmall, end = PaddingExtraSmall)
               .clickable(onClick = { onEventClick(event) })
               .testTag("${CalendarScreenTestTags.EVENT_BLOCK}_${event.title}"),
@@ -214,24 +213,24 @@ private fun DrawEventBlock(
           overflow = TextOverflow.Ellipsis,
       )
 
-        // later : when 1-day view : Spacer(modifier.height(SpacingExtraSmall))
+      // later : when 1-day view : Spacer(modifier.height(SpacingExtraSmall))
 
-        // Time information
-        val timeText =
-            "${DateTimeUtils.formatInstantToTime(event.startDate)} — " +
-                    DateTimeUtils.formatInstantToTime(event.endDate)
+      // Time information
+      val timeText =
+          "${DateTimeUtils.formatInstantToTime(event.startDate)} — " +
+              DateTimeUtils.formatInstantToTime(event.endDate)
 
-        Text(
-            text = timeText,
-            color = textColor.copy(alpha = AlphaHigh),
-            fontSize = 9.sp,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-        )
+      Text(
+          text = timeText,
+          color = textColor.copy(alpha = AlphaHigh),
+          fontSize = 9.sp,
+          maxLines = 2,
+          overflow = TextOverflow.Ellipsis,
+      )
 
-        // later : when 1-day view : Spacer(modifier.height(SpacingExtraSmall))
+      // later : when 1-day view : Spacer(modifier.height(SpacingExtraSmall))
 
-        // Participants (if any)
+      // Participants (if any)
       if (event.participants.isNotEmpty()) {
         val participantsText = event.participants.joinToString(", ")
         Text(
@@ -242,8 +241,6 @@ private fun DrawEventBlock(
             overflow = TextOverflow.Ellipsis,
         )
       }
-
-
 
       // Later if needed : upperText and/or lowerText
     }

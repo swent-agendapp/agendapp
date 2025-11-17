@@ -189,12 +189,12 @@ private fun DrawEventBlock(
               )
               .clip(RoundedCornerShape(CornerRadiusSmall))
               .background(backgroundColor)
-              .padding(start = PaddingExtraSmall, top = PaddingExtraSmall, end = PaddingExtraSmall)
               .border(
                   width = BorderWidthThin,
                   color = Color.Black.copy(alpha = AlphaExtraLow),
                   shape = RoundedCornerShape(CornerRadiusSmall)
               )
+              .padding(start = PaddingExtraSmall, top = PaddingExtraSmall, end = PaddingExtraSmall)
               .clickable(onClick = { onEventClick(event) })
               .testTag("${CalendarScreenTestTags.EVENT_BLOCK}_${event.title}"),
       // Later : handle onTap and onLongPress

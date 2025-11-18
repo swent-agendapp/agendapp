@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.sample.R
 import com.android.sample.model.authentication.AuthRepository
-import com.android.sample.model.authentication.AuthRepositoryFirebase
+import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authorization.AuthorizationService
 import com.android.sample.model.organization.Role
@@ -42,8 +42,8 @@ data class AuthUIState(
  * @property repository The repository used to perform authentication operations.
  */
 class SignInViewModel(
-    private val repository: AuthRepository = AuthRepositoryFirebase(),
-    private val authz: AuthorizationService = AuthorizationService()
+    private val repository: AuthRepository = AuthRepositoryProvider.repository,
+    private val authServ: AuthorizationService = AuthorizationService()
 ) : ViewModel() {
 
   private val _uiState = MutableStateFlow(AuthUIState())
@@ -64,7 +64,7 @@ class SignInViewModel(
     _uiState.update { it.copy(user = user, signedOut = false, isLoading = false) }
 
     viewModelScope.launch {
-      val role = runCatching { authz.getMyRole() }.getOrNull()
+      val role = runCatching { authServ.getMyRole() }.getOrNull()
       _uiState.update { it.copy(role = role) }
     }
   }
@@ -109,7 +109,7 @@ class SignInViewModel(
                 { user ->
                   _uiState.update { it.copy(isLoading = false, user = user, signedOut = false) }
                   viewModelScope.launch {
-                    val role = runCatching { authz.getMyRole() }.getOrNull()
+                    val role = runCatching { authServ.getMyRole() }.getOrNull()
                     _uiState.update { it.copy(role = role) }
                   }
                 },
@@ -118,7 +118,7 @@ class SignInViewModel(
                     it.copy(isLoading = false, errorMsg = failure.message, signedOut = true)
                   }
                 })
-      } catch (e: GetCredentialCancellationException) {
+      } catch (_: GetCredentialCancellationException) {
         // User cancelled the sign-in flow
         _uiState.update {
           it.copy(
@@ -152,7 +152,7 @@ class SignInViewModel(
   }
 
   /** Initiates sign-out and updates the UI state on success or failure. */
-  fun signOut(credentialManager: CredentialManager): Unit {
+  fun signOut(credentialManager: CredentialManager) {
     viewModelScope.launch {
       repository
           .signOut()

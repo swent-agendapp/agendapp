@@ -56,13 +56,13 @@ fun SignInScreen(
 
   val context = LocalContext.current
   val uiState by authViewModel.uiState.collectAsState()
-  val snackbarHostState = remember { SnackbarHostState() }
+  val snackBarHostState = remember { SnackbarHostState() }
 
   LaunchedEffect(uiState.user) { uiState.user?.let { onSignedIn() } }
 
   LaunchedEffect(uiState.errorMsg) {
     uiState.errorMsg?.let {
-      snackbarHostState.showSnackbar(uiState.errorMsg.toString(), duration = SnackbarDuration.Long)
+      snackBarHostState.showSnackbar(uiState.errorMsg.toString(), duration = SnackbarDuration.Long)
       authViewModel.clearErrorMsg()
     }
   }
@@ -72,7 +72,7 @@ fun SignInScreen(
   Scaffold(
       modifier = Modifier.fillMaxSize(),
       snackbarHost = {
-        SnackbarHost(snackbarHostState, modifier = Modifier.testTag(END_SNACK_BAR))
+        SnackbarHost(snackBarHostState, modifier = Modifier.testTag(END_SNACK_BAR))
       },
       content = { padding ->
         Column(

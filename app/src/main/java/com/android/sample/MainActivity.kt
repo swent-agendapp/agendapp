@@ -203,28 +203,29 @@ fun Agendapp(
                     composable(Screen.ReplacementPending.route) {
                       ReplacementPendingListScreen(
                           onProcessReplacement = { replacement ->
-                              navigationActions.navigateToReplacementProcess(replacement.id)
+                            navigationActions.navigateToReplacementProcess(replacement.id)
                           },
                           onNavigateBack = { navigationActions.navigateBack() })
                     }
-                  composable(Screen.ReplacementProcess.route) { navBackStackEntry ->
+                    composable(Screen.ReplacementProcess.route) { navBackStackEntry ->
                       val replacementId = navBackStackEntry.arguments?.getString("replacementId")
 
                       replacementId?.let {
-                          ProcessReplacementScreen(
-                              replacementId = it,
-                              onSendRequests = { selectedMembers ->
-                                  // Later: the requests have to be send, now it just goes back
-                                  navigationActions.navigateBack()
-                              },
-                              onBack = { navigationActions.navigateBack() },
-                          )
-                      } ?: run {
-                          Log.e("ProcessReplacementScreen", "replacementId is null")
-                          navigationActions.navigateBack()
+                        ProcessReplacementScreen(
+                            replacementId = it,
+                            onSendRequests = { selectedMembers ->
+                              // Later: the requests have to be send, now it just goes back
+                              navigationActions.navigateBack()
+                            },
+                            onBack = { navigationActions.navigateBack() },
+                        )
                       }
+                          ?: run {
+                            Log.e("ProcessReplacementScreen", "replacementId is null")
+                            navigationActions.navigateBack()
+                          }
+                    }
                   }
-              }
 
               // Settings Graph
               navigation(startDestination = Screen.Settings.route, route = Screen.Settings.name) {

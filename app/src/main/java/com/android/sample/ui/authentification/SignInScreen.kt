@@ -35,7 +35,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.authentification.SignInScreenTestTags.END_SNACK_BAR
 import com.android.sample.ui.common.PrimaryButton
-import com.android.sample.ui.theme.Salmon
+import com.android.sample.ui.theme.GeneralPalette
 
 object SignInScreenTestTags {
   const val APP_LOGO = "appLogo"
@@ -91,7 +91,7 @@ fun SignInScreen(
               text = stringResource(R.string.sign_in_app_title),
               style =
                   MaterialTheme.typography.headlineLarge.copy(
-                      fontSize = 57.sp, lineHeight = 50.sp, color = Salmon),
+                      fontSize = 57.sp, lineHeight = 50.sp, color = GeneralPalette.Primary),
               fontWeight = FontWeight.Bold,
               // center the text
               textAlign = TextAlign.Center)
@@ -100,7 +100,7 @@ fun SignInScreen(
               text = stringResource(R.string.sign_in_message),
               style =
                   MaterialTheme.typography.headlineLarge.copy(
-                      fontSize = 20.sp, lineHeight = 24.sp, color = Salmon),
+                      fontSize = 20.sp, lineHeight = 24.sp, color = GeneralPalette.Primary),
               fontWeight = FontWeight.Bold,
               // center the text
               textAlign = TextAlign.Center)

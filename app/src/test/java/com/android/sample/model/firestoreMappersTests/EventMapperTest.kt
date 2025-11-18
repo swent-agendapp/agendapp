@@ -4,7 +4,7 @@ import com.android.sample.model.calendar.CloudStorageStatus
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.firestoreMappers.EventMapper
-import com.android.sample.utils.EventColor
+import com.android.sample.ui.theme.EventPalette
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
@@ -30,7 +30,7 @@ class EventMapperTest {
           participants = setOf("participant1", "participant2"),
           version = 5L,
           recurrenceStatus = RecurrenceStatus.OneTime,
-          color = EventColor(0xFF0000))
+          color = EventPalette.Black)
 
   private val sampleMap: Map<String, Any?> =
       mapOf(

@@ -5,7 +5,7 @@ import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementRepositoryLocal
 import com.android.sample.model.replacement.ReplacementStatus
-import com.android.sample.utils.EventColor
+import com.android.sample.ui.theme.EventPalette
 import java.time.Instant
 import java.util.UUID
 import kotlinx.coroutines.runBlocking
@@ -38,7 +38,7 @@ class ReplacementRepositoryLocalTest {
             participants = setOf("Alice", "Bob"),
             recurrenceStatus = RecurrenceStatus.OneTime,
             hasBeenDeleted = false,
-            color = EventColor.Blue,
+            color = EventPalette.Blue,
             version = System.currentTimeMillis(),
             locallyStoredBy = listOf("LOCAL_USER"),
             cloudStorageStatuses = emptySet(),

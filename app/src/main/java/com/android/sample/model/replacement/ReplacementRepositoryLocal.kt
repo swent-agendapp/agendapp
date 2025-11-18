@@ -1,6 +1,7 @@
 package com.android.sample.model.replacement
 
 import com.android.sample.model.calendar.Event
+import com.android.sample.ui.theme.EventPalette
 import java.util.UUID
 
 // Assisted by AI
@@ -66,7 +67,7 @@ class ReplacementRepositoryLocal(preloadSampleData: Boolean = false) : Replaceme
             participants = setOf("Alice", "Bob"),
             recurrenceStatus = com.android.sample.model.calendar.RecurrenceStatus.OneTime,
             hasBeenDeleted = false,
-            color = com.android.sample.utils.EventColor.Blue,
+            color = EventPalette.Blue,
             version = System.currentTimeMillis(),
             locallyStoredBy = listOf("LOCAL_USER"),
             cloudStorageStatuses = emptySet(),

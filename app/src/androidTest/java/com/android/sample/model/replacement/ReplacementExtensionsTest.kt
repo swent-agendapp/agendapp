@@ -2,7 +2,7 @@ package com.android.sample.model.replacement
 
 import com.android.sample.model.calendar.CloudStorageStatus
 import com.android.sample.model.calendar.createEvent
-import com.android.sample.utils.EventColor
+import com.android.sample.ui.theme.EventPalette
 import com.google.common.truth.Truth
 import java.time.Instant
 import org.junit.Test
@@ -17,7 +17,7 @@ class ReplacementExtensionsTest {
             startDate = Instant.parse("2025-01-01T08:00:00Z"),
             endDate = Instant.parse("2025-01-01T10:00:00Z"),
             cloudStorageStatuses = setOf(CloudStorageStatus.FIRESTORE),
-            color = EventColor.Companion.Blue)
+            color = EventPalette.Blue)
 
     val pending =
         Replacement(
@@ -56,7 +56,7 @@ class ReplacementExtensionsTest {
             startDate = Instant.parse("2025-01-01T08:00:00Z"),
             endDate = Instant.parse("2025-01-01T10:00:00Z"),
             cloudStorageStatuses = setOf(CloudStorageStatus.FIRESTORE),
-            color = EventColor.Blue)
+            color = EventPalette.Blue)
 
     val waiting =
         Replacement(

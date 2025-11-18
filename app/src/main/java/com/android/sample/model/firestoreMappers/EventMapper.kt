@@ -1,9 +1,11 @@
 package com.android.sample.model.firestoreMappers
 
+import androidx.compose.ui.graphics.toArgb
 import com.android.sample.model.calendar.CloudStorageStatus
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
-import com.android.sample.utils.EventColor
+import com.android.sample.ui.theme.EventPalette
+import com.android.sample.ui.theme.Palette
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import java.time.Instant
@@ -35,7 +37,8 @@ object EventMapper : FirestoreMapper<Event> {
             .getOrDefault(RecurrenceStatus.OneTime)
 
     val version = document.getLong("version") ?: 0L
-    val colorLong = document.getLong("eventColor") ?: EventColor.Blue.value
+    val colorLong = document.getLong("eventColor") ?: EventPalette.Blue.toArgb().toLong()
+    val color = Palette.fromLong(colorLong)
 
     return Event(
         id = id,
@@ -48,7 +51,7 @@ object EventMapper : FirestoreMapper<Event> {
         participants = participants,
         version = version,
         recurrenceStatus = recurrenceStatus,
-        color = EventColor(colorLong))
+        color = color)
   }
 
   override fun fromMap(data: Map<String, Any?>): Event? {
@@ -82,7 +85,8 @@ object EventMapper : FirestoreMapper<Event> {
             .getOrDefault(RecurrenceStatus.OneTime)
 
     val version = (data["version"] as? Number)?.toLong() ?: 0L
-    val colorLong = (data["eventColor"] as? Number)?.toLong() ?: EventColor.Blue.value
+    val colorLong = (data["eventColor"] as? Number)?.toLong() ?: EventPalette.Blue.toArgb().toLong()
+    val color = Palette.fromLong(colorLong)
 
     return Event(
         id = id,
@@ -95,7 +99,7 @@ object EventMapper : FirestoreMapper<Event> {
         participants = participants,
         version = version,
         recurrenceStatus = recurrenceStatus,
-        color = EventColor(value = colorLong))
+        color = color)
   }
 
   override fun toMap(model: Event): Map<String, Any?> {

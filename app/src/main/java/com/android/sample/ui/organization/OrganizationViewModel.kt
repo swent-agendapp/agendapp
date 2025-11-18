@@ -24,7 +24,7 @@ data class OrganizationUIState(
 open class OrganizationViewModel(
     private val organizationRepository: OrganizationRepository =
         OrganizationRepositoryProvider.repository,
-    authRepository: AuthRepository = AuthRepositoryProvider.repository
+    private val authRepository: AuthRepository = AuthRepositoryProvider.repository
 ) : ViewModel() {
 
   // State holding the UI state of the organizations of the current user

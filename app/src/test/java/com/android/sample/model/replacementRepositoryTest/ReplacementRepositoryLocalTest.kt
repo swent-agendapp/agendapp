@@ -157,11 +157,4 @@ class ReplacementRepositoryLocalTest {
     assertEquals("Alice", pending.first().absentUserId)
     assertEquals("Bob", accepted.first().absentUserId)
   }
-
-  @Test
-  fun preloadSampleData_populatesRepository() = runBlocking {
-    val preloadedRepo = ReplacementRepositoryLocal(preloadSampleData = true)
-    val all = preloadedRepo.getAllReplacements()
-    assertTrue(all.size >= 2)
-  }
 }

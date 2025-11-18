@@ -18,7 +18,7 @@ import com.android.sample.utils.FakeCredentialManager
 import com.android.sample.utils.FakeJwtGenerator
 import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.FirebaseEmulator
-import com.github.se.bootcamp.ui.authentication.SignInScreenTestTags
+import com.android.sample.ui.authentification.SignInScreenTestTags
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

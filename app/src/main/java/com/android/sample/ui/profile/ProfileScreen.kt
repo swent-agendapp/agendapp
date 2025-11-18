@@ -32,7 +32,7 @@ import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.SpacingExtraLarge
 import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingSmall
-import com.github.se.bootcamp.ui.authentication.SignInViewModel
+import com.android.sample.ui.authentification.SignInViewModel
 
 object ProfileScreenTestTags {
   const val PROFILE_SCREEN = "profile_screen"

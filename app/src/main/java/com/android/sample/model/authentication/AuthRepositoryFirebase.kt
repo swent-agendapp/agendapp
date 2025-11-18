@@ -1,8 +1,7 @@
-package com.github.se.bootcamp.model.authentication
+package com.android.sample.model.authentication
 
 import androidx.credentials.Credential
 import androidx.credentials.CustomCredential
-import com.android.sample.model.authentication.User
 import com.android.sample.model.constants.FirestoreConstants.COLLECTION_USERS
 import com.android.sample.model.firestoreMappers.UserMapper
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption

@@ -43,8 +43,8 @@ import com.android.sample.ui.replacement.ReplacementPendingListScreen
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeScreen
 import com.android.sample.ui.settings.SettingsScreen
 import com.android.sample.ui.theme.SampleAppTheme
-import com.github.se.bootcamp.model.authentication.AuthRepositoryFirebase
-import com.github.se.bootcamp.ui.authentication.SignInScreen
+import com.android.sample.model.authentication.AuthRepositoryFirebase
+import com.android.sample.ui.authentification.SignInScreen
 import com.google.firebase.firestore.FirebaseFirestore
 
 object MainActivityTestTags {
@@ -84,7 +84,7 @@ class MainActivity : ComponentActivity() {
 fun Agendapp(
     modifier: Modifier = Modifier,
     credentialManager: CredentialManager = CredentialManager.create(LocalContext.current),
-) {
+) {    
   val navController = rememberNavController()
   val navigationActions = NavigationActions(navController)
 

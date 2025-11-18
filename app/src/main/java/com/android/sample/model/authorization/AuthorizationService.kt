@@ -3,7 +3,7 @@ package com.android.sample.model.authorization
 import com.android.sample.model.organization.EmployeeRepository
 import com.android.sample.model.organization.EmployeeRepositoryFirebase
 import com.android.sample.model.organization.Role
-import com.github.se.bootcamp.model.authentication.AuthRepositoryFirebase
+import com.android.sample.model.authentication.AuthRepositoryFirebase
 import com.google.firebase.firestore.FirebaseFirestore
 
 /** Simple authorization helper */

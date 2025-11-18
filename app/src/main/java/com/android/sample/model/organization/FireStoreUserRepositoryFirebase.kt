@@ -1,7 +1,7 @@
 package com.android.sample.model.organization
 
 import com.android.sample.model.firestoreMappers.EmployeeMapper
-import com.github.se.bootcamp.model.authentication.AuthRepository
+import com.android.sample.model.authentication.AuthRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 

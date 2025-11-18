@@ -1,4 +1,4 @@
-package com.github.se.bootcamp.ui.authentication
+package com.android.sample.ui.authentification
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -35,7 +35,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.theme.Salmon
-import com.github.se.bootcamp.ui.authentication.SignInScreenTestTags.END_SNACK_BAR
+import com.android.sample.ui.authentification.SignInScreenTestTags.END_SNACK_BAR
 
 object SignInScreenTestTags {
   const val APP_LOGO = "appLogo"

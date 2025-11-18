@@ -6,8 +6,6 @@ import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import com.android.sample.utils.FirebaseEmulator
-import com.github.se.bootcamp.ui.authentication.SignInScreen
-import com.github.se.bootcamp.ui.authentication.SignInScreenTestTags
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

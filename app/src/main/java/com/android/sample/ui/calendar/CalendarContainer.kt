@@ -39,7 +39,7 @@ fun CalendarContainer(
               detectDragGestures(
                   onDrag = { _, dragAmount -> totalDx += dragAmount.x },
                   onDragEnd = {
-                    val threshold = CalendarDefaults.DefaultSwipeThreshold
+                    val threshold = CalendarDefaults.DEFAULT_SWIPE_THRESHOLD
                     when {
                       totalDx > threshold -> onSwipeRight.invoke()
                       totalDx < -threshold -> onSwipeLeft.invoke()

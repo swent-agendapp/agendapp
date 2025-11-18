@@ -7,6 +7,7 @@ import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.android.sample.Agendapp
+import com.android.sample.ui.authentification.SignInScreenTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.common.BottomBarTestTags
 import com.android.sample.ui.profile.AdminContactScreenTestTags
@@ -16,7 +17,6 @@ import com.android.sample.utils.FakeCredentialManager
 import com.android.sample.utils.FakeJwtGenerator
 import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.FirebaseEmulator
-import com.android.sample.ui.authentification.SignInScreenTestTags
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

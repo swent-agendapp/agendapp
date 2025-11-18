@@ -33,9 +33,9 @@ import androidx.compose.ui.unit.sp
 import androidx.credentials.CredentialManager
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
+import com.android.sample.ui.authentification.SignInScreenTestTags.END_SNACK_BAR
 import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.theme.Salmon
-import com.android.sample.ui.authentification.SignInScreenTestTags.END_SNACK_BAR
 
 object SignInScreenTestTags {
   const val APP_LOGO = "appLogo"

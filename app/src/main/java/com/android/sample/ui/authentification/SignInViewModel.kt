@@ -9,11 +9,11 @@ import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.sample.R
+import com.android.sample.model.authentication.AuthRepository
+import com.android.sample.model.authentication.AuthRepositoryFirebase
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authorization.AuthorizationService
 import com.android.sample.model.organization.Role
-import com.android.sample.model.authentication.AuthRepository
-import com.android.sample.model.authentication.AuthRepositoryFirebase
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

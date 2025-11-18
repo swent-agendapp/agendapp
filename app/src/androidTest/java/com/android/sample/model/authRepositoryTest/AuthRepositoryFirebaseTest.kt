@@ -1,9 +1,9 @@
 package com.android.sample.model.authRepositoryTest
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.model.authentication.AuthRepository
 import com.android.sample.model.authentication.AuthRepositoryFirebase
+import com.android.sample.utils.FirebaseEmulatedTest
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.runBlocking

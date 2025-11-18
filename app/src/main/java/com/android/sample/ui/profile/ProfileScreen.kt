@@ -25,6 +25,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.credentials.CredentialManager
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
+import com.android.sample.ui.authentification.SignInViewModel
 import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.theme.AlphaExtraLow
 import com.android.sample.ui.theme.CornerRadiusExtraLarge
@@ -32,7 +33,6 @@ import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.SpacingExtraLarge
 import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingSmall
-import com.android.sample.ui.authentification.SignInViewModel
 
 object ProfileScreenTestTags {
   const val PROFILE_SCREEN = "profile_screen"

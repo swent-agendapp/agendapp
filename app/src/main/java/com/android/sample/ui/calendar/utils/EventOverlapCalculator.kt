@@ -32,17 +32,30 @@ object EventOverlapCalculator {
    * @return Map from Event to its layout information.
    */
   fun calculateEventLayouts(events: List<Event>): Map<Event, EventLayout> {
-    val layoutMap = mutableMapOf<Event, EventLayout>()
-    if (events.isEmpty()) return layoutMap
+    if (events.isEmpty()) return emptyMap()
 
     // Sort events by start time for consistent processing
     val sortedEvents = events.sortedBy { it.startDate }
-    val eventCount = sortedEvents.size
-    val visited = BooleanArray(eventCount)
-    var groupIndex = 0
 
-    // Build overlap graph (adjacency list)
+    // Build overlap graph (adjacency list) between events
+    val adjacency = buildOverlapGraph(sortedEvents)
+
+    // Find connected components (overlap groups) in the overlap graph
+    val overlapGroups = findOverlapGroups(adjacency)
+
+    // Assign layout information (width and horizontal offset) for each event
+    return buildLayoutMap(sortedEvents, overlapGroups)
+  }
+
+  /**
+   * Builds an adjacency list representing overlaps between events.
+   *
+   * Each index corresponds to an event in [sortedEvents], and edges connect overlapping events.
+   */
+  private fun buildOverlapGraph(sortedEvents: List<Event>): Array<MutableList<Int>> {
+    val eventCount = sortedEvents.size
     val adjacency = Array(eventCount) { mutableListOf<Int>() }
+
     for (i in 0 until eventCount) {
       for (j in i + 1 until eventCount) {
         if (eventsOverlap(sortedEvents[i], sortedEvents[j])) {
@@ -52,18 +65,32 @@ object EventOverlapCalculator {
       }
     }
 
-    // Find connected components (overlap groups) and assign layout
-    for (i in 0 until eventCount) {
-      if (visited[i]) continue
+    return adjacency
+  }
+
+  /**
+   * Computes connected components of the overlap graph, where each component is a group of mutually
+   * overlapping events (directly or indirectly).
+   *
+   * @return A list of groups, where each group is a list of indices into the original event list.
+   */
+  private fun findOverlapGroups(adjacency: Array<MutableList<Int>>): List<List<Int>> {
+    val eventCount = adjacency.size
+    val visited = BooleanArray(eventCount)
+    val groups = mutableListOf<List<Int>>()
+
+    for (startIndex in 0 until eventCount) {
+      if (visited[startIndex]) continue
 
       val group = mutableListOf<Int>()
       val queue = ArrayDeque<Int>()
-      visited[i] = true
-      queue.add(i)
+      visited[startIndex] = true
+      queue.add(startIndex)
 
       while (queue.isNotEmpty()) {
         val current = queue.removeFirst()
         group.add(current)
+
         for (neighbor in adjacency[current]) {
           if (!visited[neighbor]) {
             visited[neighbor] = true
@@ -72,8 +99,27 @@ object EventOverlapCalculator {
         }
       }
 
-      if (group.isEmpty()) continue
+      if (group.isNotEmpty()) {
+        groups.add(group)
+      }
+    }
 
+    return groups
+  }
+
+  /**
+   * Builds the final map of layout information for each event based on its overlap group.
+   *
+   * Events in the same group share the column width equally and are ordered horizontally by start
+   * time for a stable layout.
+   */
+  private fun buildLayoutMap(
+      sortedEvents: List<Event>,
+      overlapGroups: List<List<Int>>,
+  ): Map<Event, EventLayout> {
+    val layoutMap = mutableMapOf<Event, EventLayout>()
+
+    overlapGroups.forEachIndexed { groupIndex, group ->
       val widthPerEvent = 1.0f / group.size
 
       // Order events inside the group by start time for a stable horizontal ordering
@@ -88,8 +134,6 @@ object EventOverlapCalculator {
                 overlapGroup = groupIndex,
             )
       }
-
-      groupIndex++
     }
 
     return layoutMap

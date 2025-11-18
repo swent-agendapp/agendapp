@@ -100,6 +100,9 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
         .assertIsDisplayed()
         .performClick()
 
+    // Wait for Add Organization screen to load
+    composeTestRule.waitForIdle()
+
     // Verify Add Organization screen is displayed
     composeTestRule.onNodeWithTag(AddOrganizationScreenTestTags.ROOT).assertIsDisplayed()
 
@@ -115,6 +118,9 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
         .assertIsDisplayed()
         .performClick()
 
+    // Wait for navigation back to Organization List screen
+    composeTestRule.waitForIdle()
+
     // Verify that we are back on Organization List screen
     composeTestRule.onNodeWithTag(OrganizationListScreenTestTags.ROOT).assertIsDisplayed()
 
@@ -123,6 +129,9 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
         .onNodeWithTag(OrganizationListScreenTestTags.organizationItemTag(organizationName))
         .assertIsDisplayed()
         .performClick()
+
+    // Wait for Calendar screen to load
+    composeTestRule.waitForIdle()
 
     // Verify Calendar screen exists
     composeTestRule
@@ -142,28 +151,40 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
         .assertIsDisplayed()
         .performClick()
 
+    // Wait for Add Event screen to load
+    composeTestRule.waitForIdle()
+
     // Fill First Form
     composeTestRule.onNodeWithTag(AddEventTestTags.TITLE_TEXT_FIELD).performTextInput(eventTitle)
+
+    // Wait for text input to be processed
+    composeTestRule.waitForIdle()
 
     composeTestRule
         .onNodeWithTag(AddEventTestTags.DESCRIPTION_TEXT_FIELD)
         .performTextInput(eventDescription)
 
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).performClick()
+    composeTestRule.waitForIdle()
 
     composeTestRule.onNodeWithTag(AddEventTestTags.RECURRENCE_STATUS_DROPDOWN).performClick()
+    composeTestRule.waitForIdle()
 
     composeTestRule
         .onNodeWithTag(AddEventTestTags.recurrenceTag(RecurrenceStatus.Weekly))
         .performClick()
 
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).performClick()
+    composeTestRule.waitForIdle()
 
     composeTestRule.onAllNodesWithTag(AddEventTestTags.CHECK_BOX_EMPLOYEE)[0].performClick()
+    composeTestRule.waitForIdle()
 
     composeTestRule.onNodeWithTag(AddEventTestTags.CREATE_BUTTON).performClick()
+    composeTestRule.waitForIdle()
 
     composeTestRule.onNodeWithTag(AddEventTestTags.FINISH_BUTTON).performClick()
+    composeTestRule.waitForIdle()
 
     composeTestRule.scrollCalendarUntilEventVisible(
         calendarTag = CalendarScreenTestTags.SCROLL_AREA,

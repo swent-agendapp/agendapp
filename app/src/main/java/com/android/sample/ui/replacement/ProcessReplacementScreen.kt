@@ -1,0 +1,233 @@
+package com.android.sample.ui.replacement
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import com.android.sample.R
+import com.android.sample.model.replacement.mockData.getMockReplacements
+import com.android.sample.ui.calendar.utils.DateTimeUtils.DATE_FORMAT_PATTERN
+import com.android.sample.ui.common.PrimaryButton
+import com.android.sample.ui.common.SecondaryPageTopBar
+import com.android.sample.ui.theme.CornerRadiusLarge
+import com.android.sample.ui.theme.DefaultCardElevation
+import com.android.sample.ui.theme.PaddingExtraLarge
+import com.android.sample.ui.theme.PaddingMedium
+import com.android.sample.ui.theme.Salmon
+import com.android.sample.ui.theme.SpacingMedium
+import com.android.sample.ui.theme.SpacingSmall
+import com.android.sample.ui.theme.WeightVeryHeavy
+import java.time.format.DateTimeFormatter
+
+object ProcessReplacementTestTags {
+  const val ROOT = "process_replacement_root"
+  const val SEARCH_BAR = "process_replacement_search_bar"
+  const val MEMBER_LIST = "process_replacement_member_list"
+  const val SELECTED_SUMMARY = "process_replacement_selected_summary"
+  const val SEND_BUTTON = "process_replacement_send_button"
+  private const val MEMBER_PREFIX = "process_replacement_member_"
+
+  fun memberTag(name: String): String = MEMBER_PREFIX + name
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ProcessReplacementScreen(
+    replacementId: String,
+    onSendRequests: (List<String>) -> Unit = {},
+    onBack: () -> Unit = {},
+) {
+  val replacement =
+      remember(replacementId) { getMockReplacements().first { it.id == replacementId } }
+
+  val candidates = listOf("Emilien", "Haobin", "Noa", "Weifang", "Timael", "Méline", "Nathan")
+
+  var selectedMembers by remember { mutableStateOf(setOf<String>()) }
+  var searchQuery by remember { mutableStateOf("") }
+
+  val filteredCandidates =
+      remember(searchQuery, candidates) {
+        candidates.filter { it.contains(searchQuery, ignoreCase = true) }
+      }
+
+  val dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)
+  val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+
+  val dateText = replacement.event.startLocalDate.format(dateFormatter)
+  val timeText =
+      "${replacement.event.startLocalTime.format(timeFormatter)} - " +
+          replacement.event.endLocalTime.format(timeFormatter)
+
+  Scaffold(
+      topBar = {
+        SecondaryPageTopBar(
+            title = stringResource(R.string.replacement_process_title),
+            onClick = onBack,
+        )
+      }) { paddingValues ->
+        Column(
+            modifier =
+                Modifier.fillMaxSize()
+                    .padding(horizontal = PaddingExtraLarge)
+                    .padding(paddingValues)
+                    .testTag(ProcessReplacementTestTags.ROOT),
+            horizontalAlignment = Alignment.CenterHorizontally) {
+              Card(
+                  modifier = Modifier.fillMaxWidth(),
+                  elevation = CardDefaults.cardElevation(defaultElevation = DefaultCardElevation),
+                  shape = RoundedCornerShape(CornerRadiusLarge)) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth().padding(PaddingMedium),
+                    ) {
+                      Text(
+                          text = replacement.event.title,
+                          style =
+                              MaterialTheme.typography.bodyLarge.copy(
+                                  fontWeight = FontWeight.SemiBold),
+                          maxLines = 1,
+                          overflow = TextOverflow.Ellipsis)
+                      Spacer(modifier = Modifier.height(SpacingSmall))
+                      Text(
+                          text = "$dateText • $timeText",
+                          style = MaterialTheme.typography.bodyMedium)
+                      Spacer(modifier = Modifier.height(SpacingSmall))
+                      Text(
+                          text =
+                              stringResource(
+                                  id = R.string.replacement_substituted_label,
+                                  replacement.absentUserId),
+                          style = MaterialTheme.typography.bodySmall)
+                    }
+                  }
+
+              Spacer(modifier = Modifier.height(SpacingMedium))
+
+              Card(
+                  modifier = Modifier.fillMaxWidth().weight(WeightVeryHeavy),
+                  elevation = CardDefaults.cardElevation(defaultElevation = DefaultCardElevation),
+                  shape = RoundedCornerShape(CornerRadiusLarge)) {
+                    Column(Modifier.fillMaxSize()) {
+                      TextField(
+                          value = searchQuery,
+                          onValueChange = { searchQuery = it },
+                          placeholder = { Text(text = stringResource(R.string.search_member)) },
+                          modifier =
+                              Modifier.fillMaxWidth()
+                                  .testTag(ProcessReplacementTestTags.SEARCH_BAR),
+                          singleLine = true,
+                          trailingIcon = {
+                            Icon(imageVector = Icons.Default.Search, contentDescription = null)
+                          },
+                          shape = RoundedCornerShape(CornerRadiusLarge))
+
+                      LazyColumn(
+                          modifier =
+                              Modifier.weight(WeightVeryHeavy)
+                                  .fillMaxWidth()
+                                  .testTag(ProcessReplacementTestTags.MEMBER_LIST),
+                          verticalArrangement = Arrangement.Top) {
+                            items(filteredCandidates) { member ->
+                              val isSelected = member in selectedMembers
+
+                              Box(
+                                  modifier =
+                                      Modifier.fillMaxWidth()
+                                          .background(
+                                              if (isSelected) Salmon.copy(alpha = 0.9f)
+                                              else Color.White)
+                                          .clickable {
+                                            selectedMembers =
+                                                if (isSelected) {
+                                                  selectedMembers - member
+                                                } else {
+                                                  selectedMembers + member
+                                                }
+                                          }
+                                          .padding(vertical = PaddingMedium)
+                                          .testTag(ProcessReplacementTestTags.memberTag(member)),
+                                  contentAlignment = Alignment.Center) {
+                                    Text(text = member)
+                                  }
+
+                              HorizontalDivider(
+                                  thickness = DividerDefaults.Thickness,
+                                  color = DividerDefaults.color)
+                            }
+                          }
+
+                      val selectedMembersText =
+                          if (selectedMembers.isEmpty()) {
+                            stringResource(R.string.replacement_selected_members_none)
+                          } else {
+                            stringResource(
+                                R.string.replacement_selected_members,
+                                selectedMembers.joinToString(", "))
+                          }
+
+                      OutlinedTextField(
+                          value = selectedMembersText,
+                          onValueChange = {},
+                          modifier =
+                              Modifier.fillMaxWidth()
+                                  .testTag(ProcessReplacementTestTags.SELECTED_SUMMARY),
+                          singleLine = true,
+                          shape = RoundedCornerShape(CornerRadiusLarge),
+                          readOnly = true,
+                          colors =
+                              OutlinedTextFieldDefaults.colors(
+                                  focusedBorderColor = Color.Transparent,
+                                  unfocusedBorderColor = Color.Transparent,
+                                  disabledBorderColor = Color.Transparent,
+                              ),
+                      )
+                    }
+                  }
+
+              Spacer(modifier = Modifier.height(SpacingMedium))
+
+              PrimaryButton(
+                  onClick = { onSendRequests(selectedMembers.toList()) },
+                  enabled = selectedMembers.isNotEmpty(),
+                  text =
+                      stringResource(
+                          R.string.replacement_send_requests_button, selectedMembers.size),
+                  modifier =
+                      Modifier.fillMaxWidth().testTag(ProcessReplacementTestTags.SEND_BUTTON))
+            }
+      }
+}

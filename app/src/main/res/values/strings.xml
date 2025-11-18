@@ -88,6 +88,16 @@
     <string name="select_date_range">Select date range</string>
     <string name="search_icon_content_description">Search icon</string>
 
+    <string name="replacement_process_title">Organize a replacement</string>
+    <string name="replacement_send_requests_button">Send %1$d request(s)</string>
+    <string name="replacement_selected_members">
+    Selected member(s): %1$s
+</string>
+    <string name="replacement_selected_members_none">
+    No member selected
+</string>
+
+
     <!-- Settings Screen -->
     <string name="settings_screen_title">Settings</string>
     <string name="settings_profile_button">Profile</string>

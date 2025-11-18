@@ -38,6 +38,7 @@ import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
 import com.android.sample.ui.profile.AdminContactScreen
 import com.android.sample.ui.profile.ProfileScreen
+import com.android.sample.ui.replacement.ProcessReplacementScreen
 import com.android.sample.ui.replacement.ReplacementOverviewScreen
 import com.android.sample.ui.replacement.ReplacementPendingListScreen
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeScreen
@@ -201,9 +202,29 @@ fun Agendapp(
                     // Pending Replacement Screen
                     composable(Screen.ReplacementPending.route) {
                       ReplacementPendingListScreen(
+                          onProcessReplacement = { replacement ->
+                              navigationActions.navigateToReplacementProcess(replacement.id)
+                          },
                           onNavigateBack = { navigationActions.navigateBack() })
                     }
+                  composable(Screen.ReplacementProcess.route) { navBackStackEntry ->
+                      val replacementId = navBackStackEntry.arguments?.getString("replacementId")
+
+                      replacementId?.let {
+                          ProcessReplacementScreen(
+                              replacementId = it,
+                              onSendRequests = { selectedMembers ->
+                                  // Later: the requests have to be send, now it just goes back
+                                  navigationActions.navigateBack()
+                              },
+                              onBack = { navigationActions.navigateBack() },
+                          )
+                      } ?: run {
+                          Log.e("ProcessReplacementScreen", "replacementId is null")
+                          navigationActions.navigateBack()
+                      }
                   }
+              }
 
               // Settings Graph
               navigation(startDestination = Screen.Settings.route, route = Screen.Settings.name) {

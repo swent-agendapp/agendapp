@@ -172,6 +172,10 @@
     <string name="replacement_create_select_event">Ereignis auswählen</string>
     <string name="replacement_create_choose_date_range">Datumsbereich auswählen</string>
     <string name="event_overview_title">Ereignisübersicht</string>
+    <string name="delete">Löschen</string>
+    <string name="modify">Bearbeiten</string>
+    <string name="delete_event_title">Ereignis löschen</string>
+    <string name="delete_event_message">Sind Sie sicher, dass Sie dieses Ereignis löschen möchten?</string>
 
     <!-- Organizations -->
     <string name="organization_list_title">Ihre organisationen</string>

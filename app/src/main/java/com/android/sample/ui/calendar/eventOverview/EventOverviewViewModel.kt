@@ -52,6 +52,24 @@ class EventOverviewViewModel(
   private fun setLoading(isLoading: Boolean) {
     _uiState.value = _uiState.value.copy(isLoading = isLoading)
   }
+  /**
+   * Deletes the event with the given [eventId] from the [EventRepository].
+   *
+   * @param eventId The unique identifier of the event to delete.
+   * @param onSuccess A callback function to be invoked upon successful deletion.
+   * @param onError A callback function to be invoked if an error occurs during deletion, receiving
+   *   an error message as a parameter.
+   */
+  fun deleteEvent(eventId: String, onSuccess: () -> Unit = {}, onError: (String) -> Unit = {}) {
+    viewModelScope.launch {
+      try {
+        eventRepository.deleteEvent(eventId)
+        onSuccess()
+      } catch (e: Exception) {
+        onError("Failed to delete event")
+      }
+    }
+  }
 
   /**
    * Loads the event corresponding to the given [eventId] from the [EventRepository].

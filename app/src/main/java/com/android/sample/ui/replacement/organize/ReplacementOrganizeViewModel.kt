@@ -105,28 +105,45 @@ class ReplacementOrganizeViewModel(
   }
 
   /**
-   * Creates replacements for the selected absent member.
+   * Builds replacement entries from the current UI state and delegates persistence.
    *
    * Event selection logic:
-   * - If the user manually selected events → use them.
-   * - If no manual selection → fetch events in the selected date range.
+   * - If the user manually selected events → those events are used.
+   * - If no manual selection → events are fetched from the selected date range.
    *
    * Validation:
-   * - Absent member must be selected
-   * - Date range must be valid when auto-selecting events
+   * - An absent member must be selected.
+   * - The date range must be valid when auto-selecting events.
+   * - The user must have permission to organize replacements.
    *
    * For each event, a [Replacement] object is constructed and passed to
-   * [addReplacementToRepository].
+   * [addReplacementToRepository] for insertion.
    */
   fun addReplacement() {
-    val state = uiState.value
-    val absentMember = state.selectedMember
-
-    if (absentMember == null) {
-      _uiState.value = state.copy(errorMsg = "No absent member selected.")
-      return
-    }
     viewModelScope.launch {
+      val state = uiState.value
+      // For now, we throw an exception if unauthorized, because requireAdmin() disabled
+      // temporarily and does nothing
+      val allowed = runCatching { authz.requireAdmin() }.isSuccess
+      // Start of temporary code
+      if (!authz.canEditCourses()) {
+        _uiState.value = state.copy(errorMsg = "You are not allowed to organize replacements !")
+        return@launch
+      }
+      // End of temporary code
+      if (!allowed) {
+        _uiState.value =
+            _uiState.value.copy(errorMsg = "You are not allowed to organize replacements !")
+        return@launch
+      }
+
+      val absentMember = state.selectedMember
+
+      if (absentMember == null) {
+        _uiState.value = state.copy(errorMsg = "No absent member selected.")
+        return@launch
+      }
+
       val selectedEvents = state.selectedEvents
       val events: List<Event> =
           selectedEvents.ifEmpty {
@@ -157,37 +174,20 @@ class ReplacementOrganizeViewModel(
   }
 
   /**
-   * Persists a replacement into the repository after validating authorization.
-   * - Ensures the caller has admin privileges.
-   * - On failure, produces an error message instead of throwing.
-   * - Catches unexpected exceptions and surfaces them to the UI.
+   * Inserts a single replacement into the repository.
    *
-   * @param replacement The replacement entry to insert.
+   * Authorization is validated in [addReplacement], so this method only performs the persistence
+   * operation.
+   *
+   * @param replacement The replacement entry to persist.
    */
-  fun addReplacementToRepository(replacement: Replacement) {
-    viewModelScope.launch {
-      try {
-        val allowed = runCatching { authz.requireAdmin() }.isSuccess
-        // For now, we throw an exception if unauthorized, because requireAdmin() disabled
-        // temporarily and does nothing
-        if (!authz.canEditCourses()) {
-          _uiState.value =
-              _uiState.value.copy(errorMsg = "You are not allowed to organize replacements !")
-          return@launch
-        }
-        // End of temporary code
-        if (!allowed) {
-          _uiState.value =
-              _uiState.value.copy(errorMsg = "You are not allowed to organize replacements !")
-          return@launch
-        }
-
-        replacementRepository.insertReplacement(replacement)
-      } catch (e: Exception) {
-        Log.e("ReplacementOrganizeVM", "Error adding replacement: ${e.message}")
-        _uiState.value =
-            _uiState.value.copy(errorMsg = "Unexpected error while creating the replacement")
-      }
+  private suspend fun addReplacementToRepository(replacement: Replacement) {
+    try {
+      replacementRepository.insertReplacement(replacement)
+    } catch (e: Exception) {
+      Log.e("ReplacementOrganizeVM", "Error adding replacement: ${e.message}")
+      _uiState.value =
+          _uiState.value.copy(errorMsg = "Unexpected error while creating the replacement")
     }
   }
 

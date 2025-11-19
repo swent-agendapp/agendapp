@@ -12,8 +12,12 @@ import androidx.compose.ui.test.swipeDown
 import androidx.compose.ui.test.swipeUp
 import com.android.sample.Agendapp
 import com.android.sample.model.calendar.RecurrenceStatus
+import com.android.sample.model.organization.OrganizationRepositoryFirebase
+import com.android.sample.model.organization.OrganizationRepositoryProvider
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
+import com.android.sample.ui.organization.AddOrganizationScreenTestTags
+import com.android.sample.ui.organization.OrganizationListScreenTestTags
 import com.android.sample.utils.FakeCredentialManager
 import com.android.sample.utils.FakeJwtGenerator
 import com.android.sample.utils.FirebaseEmulatedTest
@@ -43,6 +47,12 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
 
   // Create a FakeCredentialManager with the fake token
   val fakeCredentialManager = FakeCredentialManager.create(fakeGoogleIdToken)
+
+  // Set the OrganizationRepository to use the Firebase emulator
+  init {
+    OrganizationRepositoryProvider.repository =
+        OrganizationRepositoryFirebase(FirebaseEmulator.firestore)
+  }
 
   @get:Rule val composeTestRule = createComposeRule()
 
@@ -75,12 +85,59 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
 
     // Wait for sign-in to complete
     composeTestRule.waitUntil(timeoutMillis = UI_AUTH_TIMEOUT) {
-      // Verify Calendar screen exists
+      // Verify that Organization screen exists
       composeTestRule
-          .onAllNodesWithTag(CalendarScreenTestTags.ROOT)
+          .onAllNodesWithTag(OrganizationListScreenTestTags.ROOT)
           .fetchSemanticsNodes()
           .isNotEmpty()
     }
+
+    // Create Organization to proceed to Calendar
+
+    // Click on Add Organization button
+    composeTestRule
+        .onNodeWithTag(OrganizationListScreenTestTags.ADD_ORGANIZATION_BUTTON)
+        .assertIsDisplayed()
+        .performClick()
+
+    // Wait for Add Organization screen to load
+    composeTestRule.waitForIdle()
+
+    // Verify Add Organization screen is displayed
+    composeTestRule.onNodeWithTag(AddOrganizationScreenTestTags.ROOT).assertIsDisplayed()
+
+    // Fill organization name
+    val organizationName = "Test Organization"
+    composeTestRule
+        .onNodeWithTag(AddOrganizationScreenTestTags.ORGANIZATION_NAME_TEXT_FIELD)
+        .performTextInput(organizationName)
+
+    // Click on Create button
+    composeTestRule
+        .onNodeWithTag(AddOrganizationScreenTestTags.CREATE_BUTTON)
+        .assertIsDisplayed()
+        .performClick()
+
+    // Wait for navigation back to Organization List screen
+    composeTestRule.waitForIdle()
+
+    // Verify that we are back on Organization List screen
+    composeTestRule.onNodeWithTag(OrganizationListScreenTestTags.ROOT).assertIsDisplayed()
+
+    // Click on the newly created organization to enter its Calendar
+    composeTestRule
+        .onNodeWithTag(OrganizationListScreenTestTags.organizationItemTag(organizationName))
+        .assertIsDisplayed()
+        .performClick()
+
+    // Wait for Calendar screen to load
+    composeTestRule.waitForIdle()
+
+    // Verify Calendar screen exists
+    composeTestRule
+        .onAllNodesWithTag(CalendarScreenTestTags.ROOT)
+        .fetchSemanticsNodes()
+        .isNotEmpty()
 
     // Check that a user is signed in after sign in
     assert(FirebaseEmulator.auth.currentUser != null)
@@ -94,28 +151,40 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
         .assertIsDisplayed()
         .performClick()
 
+    // Wait for Add Event screen to load
+    composeTestRule.waitForIdle()
+
     // Fill First Form
     composeTestRule.onNodeWithTag(AddEventTestTags.TITLE_TEXT_FIELD).performTextInput(eventTitle)
+
+    // Wait for text input to be processed
+    composeTestRule.waitForIdle()
 
     composeTestRule
         .onNodeWithTag(AddEventTestTags.DESCRIPTION_TEXT_FIELD)
         .performTextInput(eventDescription)
 
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).performClick()
+    composeTestRule.waitForIdle()
 
     composeTestRule.onNodeWithTag(AddEventTestTags.RECURRENCE_STATUS_DROPDOWN).performClick()
+    composeTestRule.waitForIdle()
 
     composeTestRule
         .onNodeWithTag(AddEventTestTags.recurrenceTag(RecurrenceStatus.Weekly))
         .performClick()
 
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).performClick()
+    composeTestRule.waitForIdle()
 
     composeTestRule.onAllNodesWithTag(AddEventTestTags.CHECK_BOX_EMPLOYEE)[0].performClick()
+    composeTestRule.waitForIdle()
 
     composeTestRule.onNodeWithTag(AddEventTestTags.CREATE_BUTTON).performClick()
+    composeTestRule.waitForIdle()
 
     composeTestRule.onNodeWithTag(AddEventTestTags.FINISH_BUTTON).performClick()
+    composeTestRule.waitForIdle()
 
     composeTestRule.scrollCalendarUntilEventVisible(
         calendarTag = CalendarScreenTestTags.SCROLL_AREA,

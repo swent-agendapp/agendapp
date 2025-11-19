@@ -2,9 +2,11 @@ package com.android.sample.ui.calendar
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
+import com.github.se.bootcamp.model.authentication.AuthRepository
 import java.time.Instant
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,9 +34,13 @@ data class CalendarUIState(
  * [EventRepository].
  *
  * @property eventRepository The repository used to fetch and manage Event items.
+ * @property authRepository The repository used to fetch user data, here the participant names.
  */
 class CalendarViewModel(
-    private val eventRepository: EventRepository = EventRepositoryProvider.repository
+    // used to get Events
+    private val eventRepository: EventRepository = EventRepositoryProvider.repository,
+    // used to get the name of the participants (the event only contains user id, not name)
+    private val authRepository: AuthRepository = AuthRepositoryProvider.repository
 ) : ViewModel() {
   private val _uiState = MutableStateFlow(CalendarUIState())
   // Publicly exposed immutable UI state

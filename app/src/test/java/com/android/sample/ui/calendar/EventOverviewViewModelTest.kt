@@ -1,0 +1,199 @@
+package com.android.sample.ui.calendar
+
+import com.android.sample.model.authentication.FakeAuthRepository
+import com.android.sample.model.calendar.Event
+import com.android.sample.model.calendar.EventRepository
+import com.android.sample.model.calendar.EventRepositoryLocal
+import com.android.sample.model.calendar.createEvent
+import com.android.sample.ui.calendar.eventOverview.EventOverviewViewModel
+import java.time.Instant
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
+import org.junit.Before
+import org.junit.Test
+
+@OptIn(ExperimentalCoroutinesApi::class)
+/**
+ * Unit tests for EventOverviewViewModel.
+ *
+ * Uses a test dispatcher to control coroutine execution for deterministic testing.
+ */
+class EventOverviewViewModelTest {
+
+  // StandardTestDispatcher allows manual control over coroutine execution in tests.
+  private val testDispatcher = StandardTestDispatcher()
+  private lateinit var repository: EventRepository
+  private lateinit var viewModel: EventOverviewViewModel
+
+  private lateinit var eventWithoutParticipants: Event
+  private lateinit var eventWithParticipants: Event
+
+  @Before
+  fun setUp() {
+    // Set the main dispatcher to the test dispatcher before each test.
+    Dispatchers.setMain(testDispatcher)
+
+    repository = EventRepositoryLocal()
+    viewModel =
+        EventOverviewViewModel(eventRepository = repository, authRepository = FakeAuthRepository())
+
+    // Create sample events for testing.
+    eventWithoutParticipants =
+        createEvent(
+            title = "Event without participants",
+            description = "No participants",
+            startDate = Instant.parse("2025-01-10T10:00:00Z"),
+            endDate = Instant.parse("2025-01-10T11:00:00Z"),
+            participants = emptySet())
+
+    eventWithParticipants =
+        createEvent(
+            title = "Event with participants",
+            description = "Some participants",
+            startDate = Instant.parse("2025-02-01T09:00:00Z"),
+            endDate = Instant.parse("2025-02-01T10:00:00Z"),
+            participants = setOf("Alice", "Bob"))
+
+    // Insert the sample events into the repository before each test.
+    runTest {
+      repository.insertEvent(eventWithoutParticipants)
+      repository.insertEvent(eventWithParticipants)
+    }
+  }
+
+  @After
+  fun tearDown() {
+    // Reset the main dispatcher to the original Main dispatcher after each test.
+    Dispatchers.resetMain()
+  }
+
+  @Test
+  fun loadEvent_WithValidId_ShouldUpdateUiStateWithEvent() = runTest {
+    // When we load a known event id, the state should contain this event and no error.
+    viewModel.loadEvent(eventWithParticipants.id)
+    testDispatcher.scheduler.advanceUntilIdle()
+
+    val state = viewModel.uiState.value
+
+    // Override fields “locallyStoredBy“ and “version“, which are automatically filled by the
+    // repository.
+    val expectedEvent =
+        eventWithParticipants.copy(
+            locallyStoredBy = state.event?.locallyStoredBy ?: emptyList(),
+            version = state.event?.version ?: 1L)
+
+    assertEquals(expectedEvent, state.event)
+    assertTrue(state.participantsNames.isEmpty())
+    assertFalse(state.isLoading)
+    assertNull(state.errorMsg)
+  }
+
+  @Test(expected = NoSuchElementException::class)
+  fun loadEvent_WithUnknownId_ShouldThrowException() = runTest {
+    // When the event does not exist, the ViewModel rethrows a NoSuchElementException.
+    // Because the exception is thrown from a coroutine managed by runTest,
+    // it will escape this test method and satisfy the expected exception.
+    viewModel.loadEvent("unknown-id")
+    testDispatcher.scheduler.advanceUntilIdle()
+  }
+
+  @Test
+  fun loadParticipantNames_WithNoEvent_ShouldKeepStateUnchanged() = runTest {
+    // When there is no event in the state, calling loadParticipantNames should be a no-op.
+    val initialState = viewModel.uiState.value
+
+    viewModel.loadParticipantNames()
+    testDispatcher.scheduler.advanceUntilIdle()
+
+    val state = viewModel.uiState.value
+    assertEquals(initialState, state)
+  }
+
+  @Test
+  fun loadParticipantNames_WithEmptyParticipants_ShouldKeepEmptyList() = runTest {
+    // When the event has an empty participants list, the UI should keep an empty list.
+    viewModel.loadEvent(eventWithoutParticipants.id)
+    testDispatcher.scheduler.advanceUntilIdle()
+
+    viewModel.loadParticipantNames()
+    testDispatcher.scheduler.advanceUntilIdle()
+
+    val state = viewModel.uiState.value
+
+    // Override fields “locallyStoredBy“ and “version“, which are automatically filled by the
+    // repository.
+    val expectedEvent =
+        eventWithoutParticipants.copy(
+            locallyStoredBy = state.event?.locallyStoredBy ?: emptyList(),
+            version = state.event?.version ?: 1L)
+
+    assertEquals(expectedEvent, state.event)
+    assertTrue(state.participantsNames.isEmpty())
+    assertFalse(state.isLoading)
+    assertNull(state.errorMsg)
+  }
+
+  @Test
+  fun loadParticipantNames_WithParticipants_ShouldCopyIdsAsNames() = runTest {
+    // When the event has participants, their ids should be copied as display names.
+    viewModel.loadEvent(eventWithParticipants.id)
+    testDispatcher.scheduler.advanceUntilIdle()
+
+    viewModel.loadParticipantNames()
+    testDispatcher.scheduler.advanceUntilIdle()
+
+    val state = viewModel.uiState.value
+
+    // Override fields “locallyStoredBy“ and “version“, which are automatically filled by the
+    // repository.
+    val expectedEvent =
+        eventWithParticipants.copy(
+            locallyStoredBy = state.event?.locallyStoredBy ?: emptyList(),
+            version = state.event?.version ?: 1L)
+
+    assertEquals(expectedEvent, state.event)
+    assertEquals(eventWithParticipants.participants.toList(), state.participantsNames)
+    assertFalse(state.isLoading)
+    assertNull(state.errorMsg)
+  }
+
+  @Test
+  fun loadEvent_WhenEventChangesInRepository_ShouldLoadUpdatedEvent() = runTest {
+    // First load the event to populate the UI state with the initial version.
+    viewModel.loadEvent(eventWithParticipants.id)
+    testDispatcher.scheduler.advanceUntilIdle()
+    val initialState = viewModel.uiState.value
+
+    // Check that we loaded the expected event the first time (by id and title).
+    assertEquals(eventWithParticipants.id, initialState.event?.id)
+    assertEquals("Event with participants", initialState.event?.title)
+
+    // Update the event in the repository (same id, different title).
+    val updatedEvent = eventWithParticipants.copy(title = "Updated title")
+    repository.updateEvent(eventWithParticipants.id, updatedEvent)
+
+    // Load the same event again and ensure we get the new version from the repository.
+    viewModel.loadEvent(eventWithParticipants.id)
+    testDispatcher.scheduler.advanceUntilIdle()
+
+    val updatedState = viewModel.uiState.value
+
+    // Same id -> we are still looking at the same logical event.
+    assertEquals(eventWithParticipants.id, updatedState.event?.id)
+    // Different title -> the ViewModel did not use an old cached version.
+    assertEquals("Updated title", updatedState.event?.title)
+
+    assertTrue(updatedState.participantsNames.isEmpty())
+    assertFalse(updatedState.isLoading)
+    assertNull(updatedState.errorMsg)
+  }
+}

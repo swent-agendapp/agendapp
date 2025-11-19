@@ -1,4 +1,4 @@
-package com.android.sample.model.organizations
+package com.android.sample.model.organization
 
 import com.android.sample.model.authentication.User
 import com.android.sample.model.constants.FirestoreConstants

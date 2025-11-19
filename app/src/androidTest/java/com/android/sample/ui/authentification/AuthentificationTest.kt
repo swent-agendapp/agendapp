@@ -1,7 +1,6 @@
 package com.android.sample.ui.authentification
 
 import android.content.Context
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.isDisplayed

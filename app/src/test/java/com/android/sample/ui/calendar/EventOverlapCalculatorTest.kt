@@ -1,11 +1,8 @@
 package com.android.sample.ui.calendar
 
 import com.android.sample.model.calendar.Event
-import com.android.sample.model.calendar.createEvent
-import com.android.sample.ui.calendar.utils.DateTimeUtils
+import com.android.sample.model.calendar.createEventForTimes
 import com.android.sample.ui.calendar.utils.EventOverlapCalculator
-import java.time.LocalDate
-import java.time.LocalTime
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -23,34 +20,6 @@ import org.junit.Test
  * - The fact that the result does not depend on the input order.
  */
 class EventOverlapCalculatorTest {
-
-  private val baseDate: LocalDate = LocalDate.of(2024, 1, 1)
-
-  /**
-   * Helper to create an [Event] on [baseDate] between the given times using [DateTimeUtils] and the
-   * real [createEvent] factory.
-   *
-   * This ensures we rely on the same time conversion utilities as the production code.
-   */
-  private fun createEventForTimes(
-      title: String,
-      startHour: Int,
-      startMinute: Int,
-      endHour: Int,
-      endMinute: Int,
-  ): Event {
-    val startTime = LocalTime.of(startHour, startMinute)
-    val endTime = LocalTime.of(endHour, endMinute)
-    val startInstant = DateTimeUtils.localDateTimeToInstant(baseDate, startTime)
-    val endInstant = DateTimeUtils.localDateTimeToInstant(baseDate, endTime)
-
-    return createEvent(
-        title = title,
-        startDate = startInstant,
-        endDate = endInstant,
-    )
-  }
-
   /** Verifies that providing an empty event list results in an empty layout map. */
   @Test
   fun calculateEventLayouts_withEmptyList_returnsEmptyMap() {

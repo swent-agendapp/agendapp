@@ -71,7 +71,9 @@ fun ReplacementOrganizeScreen(
             },
             title = stringResource(R.string.organize_replacement),
             instruction =
-                stringResource(R.string.select_replacement_events, uiState.selectedMember!!.id),
+                stringResource(
+                    R.string.select_replacement_events,
+                    uiState.selectedMember!!.email ?: uiState.selectedMember!!.id),
             onEventClick = { replacementOrganizeViewModel.toggleSelectedEvent(event = it) },
             canGoNext = uiState.selectedEvents.isNotEmpty())
     ReplacementOrganizeStep.SelectDateRange ->
@@ -94,7 +96,9 @@ fun ReplacementOrganizeScreen(
             },
             title = stringResource(R.string.organize_replacement),
             instruction =
-                stringResource(R.string.select_replacement_date_range, uiState.selectedMember!!.id),
+                stringResource(
+                    R.string.select_replacement_date_range,
+                    uiState.selectedMember!!.email ?: uiState.selectedMember!!.id),
             errorMessage = stringResource(R.string.invalidDateRangeMessage),
             canGoNext = replacementOrganizeViewModel.dateRangeValid())
     ReplacementOrganizeStep.SelectProcessMoment ->

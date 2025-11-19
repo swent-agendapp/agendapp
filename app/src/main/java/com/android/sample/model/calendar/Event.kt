@@ -3,8 +3,8 @@ package com.android.sample.model.calendar
 import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.Color
 import com.android.sample.R
-import com.android.sample.ui.theme.EventPalette
 import com.android.sample.ui.calendar.utils.DateTimeUtils
+import com.android.sample.ui.theme.EventPalette
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime

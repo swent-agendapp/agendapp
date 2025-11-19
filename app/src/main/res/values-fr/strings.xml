@@ -8,6 +8,7 @@
     <string name="eventTitle">Titre</string>
     <string name="eventTitlePlaceholder">Entrez un titre</string>
     <string name="title_empty_error">Le titre ne peut pas être vide</string>
+    <string name="name_empty_error">Le nom ne peut pas être vide</string>
     <string name="description_empty_error">La description ne peut pas être vide</string>
     <string name="eventDescriptionPlaceholder">Décrivez l’événement</string>
     <string name="eventDescription">Description</string>
@@ -170,6 +171,11 @@
     <string name="replacement_create_title">Étape précédente</string>
     <string name="replacement_create_select_event">Sélectionner un événement</string>
     <string name="replacement_create_choose_date_range">Choisir une plage de dates</string>
+    <string name="event_overview_title">Aperçu de l\'événement</string>
 
+    <!-- Organizations -->
+    <string name="organization_list_title">Vos organisations</string>
+    <string name="organization_loading">Chergement des organisations</string>
+    <string name="organization_name_label">Nom de l’organisation</string>
 
 </resources>

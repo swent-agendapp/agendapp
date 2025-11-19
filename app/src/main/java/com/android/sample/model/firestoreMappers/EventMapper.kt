@@ -114,6 +114,6 @@ object EventMapper : FirestoreMapper<Event> {
         "participants" to model.participants.toList(),
         "version" to model.version,
         "recurrenceStatus" to model.recurrenceStatus.name,
-        "eventColor" to model.color.value.toLong())
+        "eventColor" to model.color.toArgb().toLong())
   }
 }

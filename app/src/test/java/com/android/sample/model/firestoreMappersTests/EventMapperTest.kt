@@ -148,6 +148,6 @@ class EventMapperTest {
     assertThat(map["participants"]).isEqualTo(listOf("participant1", "participant2"))
     assertThat(map["version"]).isEqualTo(sampleEvent.version)
     assertThat(map["recurrenceStatus"]).isEqualTo(sampleEvent.recurrenceStatus.name)
-    assertThat(map["eventColor"]).isEqualTo(sampleEvent.color.value)
+    assertThat(map["eventColor"]).isEqualTo(sampleEvent.color.toArgb().toLong())
   }
 }

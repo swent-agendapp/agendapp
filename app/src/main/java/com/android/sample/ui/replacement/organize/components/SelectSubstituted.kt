@@ -87,8 +87,11 @@ fun SelectSubstitutedScreen(
 
   // Filter the list when search changes
   val filteredMembers =
-      uiState.memberList.filter { it.id.contains(uiState.memberSearchQuery, ignoreCase = true) }
-
+      uiState.memberList.filter { member ->
+        (member.displayName?.contains(uiState.memberSearchQuery, ignoreCase = true) == true) ||
+            (member.email?.contains(uiState.memberSearchQuery, ignoreCase = true) == true) ||
+            (member.id.contains(uiState.memberSearchQuery, ignoreCase = true))
+      }
   Scaffold(
       topBar = {
         SecondaryPageTopBar(
@@ -157,7 +160,9 @@ fun SelectSubstitutedScreen(
                                           }
                                           .padding(vertical = PaddingMedium),
                                   contentAlignment = Alignment.Center) {
-                                    Text(text = member.id, textAlign = TextAlign.Center)
+                                    Text(
+                                        text = member.email ?: member.id,
+                                        textAlign = TextAlign.Center)
                                   }
 
                               HorizontalDivider(
@@ -170,7 +175,7 @@ fun SelectSubstitutedScreen(
                       OutlinedTextField(
                           value =
                               stringResource(
-                                  R.string.selected_member, uiState.selectedMember?.id ?: ""),
+                                  R.string.selected_member, uiState.selectedMember?.email ?: ""),
                           onValueChange = {}, // ignored because readOnly
                           modifier =
                               Modifier.fillMaxWidth()

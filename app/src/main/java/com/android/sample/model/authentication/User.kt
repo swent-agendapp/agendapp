@@ -9,6 +9,10 @@ import java.util.UUID
  * @property displayName Name to display for User Profile.
  * @property email Email address of the User.
  * @property phoneNumber Phone number of the User.
+ *
+ * Note : `User.id` uses `UUID.randomUUID()` as a default value, so each time a User object is
+ * created without specifying an id, it will have a unique identifier. Hence Equality between two
+ * newly created `User` instances is not expected or relied upon in the app.
  */
 data class User(
     val id: String = UUID.randomUUID().toString(),

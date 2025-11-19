@@ -18,6 +18,7 @@ import java.time.LocalTime
 import java.time.ZoneId
 import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -30,6 +31,13 @@ import org.junit.Test
 abstract class BaseEventsTest {
 
   @get:Rule val compose = createComposeRule()
+
+  protected lateinit var monday: LocalDate
+
+  @Before
+  fun setupMonday() {
+    monday = LocalDate.now().with(DayOfWeek.MONDAY)
+  }
 
   /** Converts a (LocalDate, LocalTime) to an Instant in the system zone for concise test setup. */
   protected fun at(date: LocalDate, time: LocalTime) =
@@ -217,8 +225,6 @@ class EventsVisibilityTests : BaseEventsTest() {
 
   @Test
   fun calendarGridContent_doesNotShowsEventBlocks_whenEventsRightNextToDateRange() {
-    val monday = LocalDate.now().with(DayOfWeek.MONDAY)
-
     val events =
         listOf(
             // Event on previous Sunday [9:00 - 10:00] — adjacent day before visible range
@@ -385,7 +391,6 @@ class EventsOverlapTests : BaseEventsTest() {
    */
   @Test
   fun calendarGridContent_nonOverlappingEvents_shareSameHorizontalPositionAndWidth() {
-    val monday = LocalDate.now().with(DayOfWeek.MONDAY)
     val events =
         listOf(
             // Event on Monday [9:00 - 10:00]
@@ -423,7 +428,6 @@ class EventsOverlapTests : BaseEventsTest() {
    */
   @Test
   fun calendarGridContent_overlappingEvents_shareColumnWidthAndShiftHorizontally() {
-    val monday = LocalDate.now().with(DayOfWeek.MONDAY)
     val events =
         listOf(
             // Solo event on Monday [8:00 - 9:00] — no overlap
@@ -516,7 +520,6 @@ class EventsValidationTests : BaseEventsTest() {
 
   @Test
   fun calendarGridContent_doesNotShowEvent_whenZeroDuration() {
-    val monday = LocalDate.now().with(DayOfWeek.MONDAY)
     val start = at(monday, LocalTime.of(10, 0))
 
     val events =
@@ -539,7 +542,6 @@ class EventsValidationTests : BaseEventsTest() {
 
   @Test
   fun calendarGridContent_doesNotShowEvent_whenNegativeDuration() {
-    val monday = LocalDate.now().with(DayOfWeek.MONDAY)
     val end = at(monday, LocalTime.of(10, 0))
     val start = at(monday, LocalTime.of(11, 0)) // start after end => negative duration
 
@@ -569,7 +571,6 @@ class EventsWeekBoundaryTests : BaseEventsTest() {
     // Event starting Sunday (previous week) and ending Monday (current week) should show on Monday
     // column (the portion intersecting the current visible week). This ensures boundary clipping
     // is applied correctly at week transitions.
-    val monday = LocalDate.now().with(DayOfWeek.MONDAY)
     val previousSunday = monday.minusDays(1)
 
     val events =

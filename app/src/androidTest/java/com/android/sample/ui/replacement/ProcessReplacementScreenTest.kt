@@ -107,7 +107,11 @@ class ProcessReplacementScreenTest {
         .performClick()
         .performTextInput("Noa")
 
-    composeTestRule.onNodeWithText("Noa").assertIsDisplayed()
-    composeTestRule.onNodeWithText("Emilien").assertDoesNotExist()
+    composeTestRule
+        .onNodeWithTag(ProcessReplacementTestTags.memberTag("Noa"), useUnmergedTree = true)
+        .assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag(ProcessReplacementTestTags.memberTag("Emilien"), useUnmergedTree = true)
+        .assertDoesNotExist()
   }
 }

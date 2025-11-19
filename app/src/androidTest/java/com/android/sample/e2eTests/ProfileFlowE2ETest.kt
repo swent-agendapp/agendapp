@@ -10,7 +10,7 @@ import androidx.compose.ui.test.performTextInput
 import com.android.sample.Agendapp
 import com.android.sample.model.organization.OrganizationRepositoryFirebase
 import com.android.sample.model.organization.OrganizationRepositoryProvider
-import com.android.sample.ui.authentification.SignInScreenTestTags
+import com.android.sample.ui.authentication.SignInScreenTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.common.BottomBarTestTags
 import com.android.sample.ui.organization.AddOrganizationScreenTestTags

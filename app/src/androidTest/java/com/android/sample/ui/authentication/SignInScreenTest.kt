@@ -1,4 +1,4 @@
-package com.android.sample.ui.authentification
+package com.android.sample.ui.authentication
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed

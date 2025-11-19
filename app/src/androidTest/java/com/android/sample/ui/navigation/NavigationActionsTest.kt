@@ -14,7 +14,7 @@ import com.android.sample.Agendapp
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.organization.OrganizationRepositoryFirebase
 import com.android.sample.model.organization.OrganizationRepositoryProvider
-import com.android.sample.ui.authentification.SignInScreenTestTags
+import com.android.sample.ui.authentication.SignInScreenTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags

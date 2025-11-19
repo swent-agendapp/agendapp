@@ -28,7 +28,7 @@ import com.android.sample.model.authentication.AuthRepositoryFirebase
 import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.organization.EmployeeRepositoryFirebase
 import com.android.sample.model.organization.EmployeeRepositoryProvider
-import com.android.sample.ui.authentification.SignInScreen
+import com.android.sample.ui.authentication.SignInScreen
 import com.android.sample.ui.calendar.CalendarScreen
 import com.android.sample.ui.calendar.addEvent.AddEventScreen
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreen

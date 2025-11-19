@@ -1,6 +1,7 @@
 package com.android.sample.ui.theme
 
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 // Padding
 val PaddingExtraSmall = 4.dp
@@ -26,6 +27,8 @@ val SpacingMedium = 12.dp
 val SpacingLarge = 16.dp
 val SpacingExtraLarge = 24.dp
 val SpacingHuge = 32.dp
+val SpacingExtraHuge = 40.dp
+val SpacingMassive = 48.dp
 
 // Weights
 const val WeightVeryLight = 0.1f
@@ -60,6 +63,26 @@ val BarWidthMedium = 18.dp
 val RowHeightMedium = 32.dp
 val IconSizeMedium = 16.dp
 val IconSizeExtraLarge = 30.dp
+
+// Size
+val SizeExtraSmall = 8.dp
+val SizeSmall = 16.dp
+val SizeMedium = 24.dp
+val SizeLarge = 32.dp
+val SizeExtraLarge = 48.dp
+val SizeHuge = 64.dp
+val SizeExtraHuge = 80.dp
+val SizeMassive = 96.dp
+
+// Font size
+val FontSizeExtraSmall = 10.sp
+val FontSizeSmall = 12.sp
+val FontSizeMedium = 16.sp
+val FontSizeLarge = 20.sp
+val FontSizeExtraLarge = 24.sp
+val FontSizeHuge = 32.sp
+val FontSizeExtraHuge = 40.sp
+val FontSizeMassive = 48.sp
 
 // Border
 val BorderWidthThin = 1.dp

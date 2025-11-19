@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -28,14 +27,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.credentials.CredentialManager
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.authentication.SignInScreenTestTags.END_SNACK_BAR
+import com.android.sample.ui.common.Loading
 import com.android.sample.ui.common.PrimaryButton
+import com.android.sample.ui.theme.FontSizeExtraHuge
+import com.android.sample.ui.theme.FontSizeLarge
+import com.android.sample.ui.theme.FontSizeMassive
 import com.android.sample.ui.theme.GeneralPalette
+import com.android.sample.ui.theme.SizeExtraLarge
+import com.android.sample.ui.theme.SizeMassive
+import com.android.sample.ui.theme.SpacingMassive
 
 object SignInScreenTestTags {
   const val APP_LOGO = "appLogo"
@@ -84,14 +88,14 @@ fun SignInScreen(
           Image(
               painter = painterResource(id = R.drawable.app_logo), // Ensure this drawable exists
               contentDescription = stringResource(R.string.sign_in_logo_content_description),
-              modifier = Modifier.size(250.dp).testTag(SignInScreenTestTags.APP_LOGO))
+              modifier = Modifier.size(SizeMassive).testTag(SignInScreenTestTags.APP_LOGO))
 
           Text(
               modifier = Modifier.testTag(SignInScreenTestTags.LOGIN_TITLE),
               text = stringResource(R.string.sign_in_app_title),
               style =
                   MaterialTheme.typography.headlineLarge.copy(
-                      fontSize = 57.sp, lineHeight = 50.sp, color = GeneralPalette.Primary),
+                      fontSize = FontSizeExtraHuge, color = GeneralPalette.Primary),
               fontWeight = FontWeight.Bold,
               // center the text
               textAlign = TextAlign.Center)
@@ -100,28 +104,27 @@ fun SignInScreen(
               text = stringResource(R.string.sign_in_message),
               style =
                   MaterialTheme.typography.headlineLarge.copy(
-                      fontSize = 20.sp, lineHeight = 24.sp, color = GeneralPalette.Primary),
+                      fontSize = FontSizeLarge, color = GeneralPalette.Primary),
               fontWeight = FontWeight.Bold,
               // center the text
               textAlign = TextAlign.Center)
 
-          Spacer(modifier = Modifier.height(48.dp))
+          Spacer(modifier = Modifier.height(SpacingMassive))
 
           // Welcome Text
           Text(
               modifier = Modifier.testTag(SignInScreenTestTags.LOGIN_WELCOME),
               text = stringResource(R.string.sign_in_welcome),
-              style =
-                  MaterialTheme.typography.headlineLarge.copy(fontSize = 57.sp, lineHeight = 64.sp),
+              style = MaterialTheme.typography.headlineLarge.copy(fontSize = FontSizeMassive),
               fontWeight = FontWeight.Bold,
               // center the text
               textAlign = TextAlign.Center)
 
-          Spacer(modifier = Modifier.height(48.dp))
+          Spacer(modifier = Modifier.height(SpacingMassive))
 
           // Authenticate With Google Button
           if (uiState.isLoading) {
-            CircularProgressIndicator(modifier = Modifier.size(48.dp))
+            Loading(modifier = Modifier.size(SizeExtraLarge))
           } else if (uiState.signedOut) {
             GoogleSignInButton(onSignInClick = { authViewModel.signIn(context, credentialManager) })
           }

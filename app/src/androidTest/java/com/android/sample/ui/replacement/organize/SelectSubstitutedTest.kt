@@ -60,7 +60,7 @@ class SelectSubstitutedScreenTest {
 
   @Test
   fun memberSelection_enablesButtons() {
-    // Click on U3
+    // Click on charlie's email
     composeTestRule.onNodeWithText("charlie@example.com").performClick()
 
     // Verify selected member

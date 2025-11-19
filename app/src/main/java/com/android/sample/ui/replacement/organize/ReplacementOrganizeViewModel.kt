@@ -90,16 +90,6 @@ class ReplacementOrganizeViewModel(
     viewModelScope.launch {
       val currentOrganization = getMockOrganizations().last()
       // Later replace with actual user and organization
-      //    val currentUser =
-      //        authRepository.getCurrentUser()
-      //            ?: throw IllegalStateException(
-      //                "There must be a logged in user to load organization members")
-      //          val members =
-      //              organizationRepository.getMembersOfOrganization(
-      //                  organizationId = currentOrganization.id,
-      //                  user = currentUser
-      //              )
-
       _uiState.value = _uiState.value.copy(memberList = currentOrganization.members)
     }
   }

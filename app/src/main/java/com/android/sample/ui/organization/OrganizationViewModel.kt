@@ -2,12 +2,12 @@ package com.android.sample.ui.organization
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.sample.model.authentication.AuthRepository
 import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.authentication.User
 import com.android.sample.model.organization.Organization
 import com.android.sample.model.organization.OrganizationRepository
 import com.android.sample.model.organization.OrganizationRepositoryProvider
-import com.github.se.bootcamp.model.authentication.AuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update

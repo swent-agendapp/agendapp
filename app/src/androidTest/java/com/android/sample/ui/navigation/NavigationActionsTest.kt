@@ -12,10 +12,14 @@ import androidx.test.filters.MediumTest
 import androidx.test.rule.GrantPermissionRule
 import com.android.sample.Agendapp
 import com.android.sample.model.calendar.RecurrenceStatus
+import com.android.sample.model.organization.OrganizationRepositoryFirebase
+import com.android.sample.model.organization.OrganizationRepositoryProvider
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.common.BottomBarTestTags
+import com.android.sample.ui.organization.AddOrganizationScreenTestTags
+import com.android.sample.ui.organization.OrganizationListScreenTestTags
 import com.android.sample.ui.replacement.ReplacementOverviewTestTags
 import com.android.sample.ui.settings.SettingsScreenTestTags
 import com.android.sample.utils.FakeCredentialManager
@@ -44,6 +48,12 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
 
   // Create a FakeCredentialManager with the fake token
   val fakeCredentialManager = FakeCredentialManager.create(fakeGoogleIdToken)
+
+  // Set the OrganizationRepository to use the Firebase emulator
+  init {
+    OrganizationRepositoryProvider.repository =
+        OrganizationRepositoryFirebase(FirebaseEmulator.firestore)
+  }
 
   @get:Rule
   val permissionRule: GrantPermissionRule =
@@ -75,18 +85,21 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
   }
 
   @Test
-  fun ensure_calendar_if_signed_in() = runTest {
+  fun ensure_organization_list_if_signed_in() = runTest {
 
     // Launch app with user already signed in
     composeTestRule.setContent { Agendapp() }
 
-    // Verify Calendar screen is displayed (user remains signed in)
-    composeTestRule.onNodeWithTag(CalendarScreenTestTags.ROOT).assertIsDisplayed()
+    // Verify Organization list screen is displayed (user remains signed in)
+    composeTestRule.onNodeWithTag(OrganizationListScreenTestTags.ROOT).assertIsDisplayed()
   }
 
   @Test
   fun navigate_to_replacement() {
     composeTestRule.setContent { Agendapp() }
+
+    // Create organization and navigate to calendar
+    createOrganizationAndNavigateToCalendar()
 
     // Go to replacement
     composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_REPLACEMENT).assertExists().performClick()
@@ -98,6 +111,9 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
   @Test
   fun addEventAndResetsTheFieldsTheNextTime() {
     composeTestRule.setContent { Agendapp() }
+
+    // Create organization and navigate to calendar
+    createOrganizationAndNavigateToCalendar()
 
     // Go to add event screen
     composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertExists().performClick()
@@ -150,6 +166,9 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
   fun goBottomBarIcons() {
     composeTestRule.setContent { Agendapp() }
 
+    // Create organization and navigate to calendar
+    createOrganizationAndNavigateToCalendar()
+
     // Assert the Bottom Bar is displayed
     composeTestRule.onNodeWithTag(BottomBarTestTags.BOTTOM_BAR).assertIsDisplayed()
 
@@ -169,5 +188,31 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
     // Navigate back to Calendar screen
     composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_CALENDAR).performClick()
     composeTestRule.onNodeWithTag(CalendarScreenTestTags.ROOT).assertIsDisplayed()
+  }
+
+  // Helper function to create an organization and navigate to its calendar
+  private fun createOrganizationAndNavigateToCalendar() {
+    val organizationName = "Test Organization"
+    composeTestRule
+        .onNodeWithTag(OrganizationListScreenTestTags.ADD_ORGANIZATION_BUTTON)
+        .assertIsDisplayed()
+        .performClick()
+    // Fill Organization Name
+    composeTestRule
+        .onNodeWithTag(AddOrganizationScreenTestTags.ORGANIZATION_NAME_TEXT_FIELD)
+        .assertIsDisplayed()
+        .performTextInput(organizationName)
+
+    // Click on Create button
+    composeTestRule
+        .onNodeWithTag(AddOrganizationScreenTestTags.CREATE_BUTTON)
+        .assertIsDisplayed()
+        .performClick()
+
+    // Click on the newly created organization to enter its Calendar
+    composeTestRule
+        .onNodeWithTag(OrganizationListScreenTestTags.organizationItemTag(organizationName))
+        .assertIsDisplayed()
+        .performClick()
   }
 }

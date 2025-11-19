@@ -8,6 +8,10 @@ sealed class Screen(val route: String, val name: String) {
 
   data object Authentication : Screen(route = "authentication", name = "Authentication")
 
+  data object Organizations : Screen(route = "organizations", name = "Organizations")
+
+  data object AddOrganization : Screen(route = "add_organization", name = "Add Organization")
+
   data object Calendar : Screen(route = "calendar", name = "Calendar")
 
   data object EventOverview : Screen(route = "event_overview/{eventId}", name = "Event Overview") {

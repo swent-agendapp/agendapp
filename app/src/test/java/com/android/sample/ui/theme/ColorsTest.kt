@@ -36,7 +36,7 @@ class ColorsTest {
 
   @Test
   fun `fromLong works with colors in a palette`() {
-    val expectedColor = Palette.CadmiumBlue_80
+    val expectedColor = Palette.CadmiumBlue_50
     val fromLongColor = Palette.fromLong(expectedColor.toArgb().toLong())
 
     assertThat(fromLongColor).isEqualTo(expectedColor)

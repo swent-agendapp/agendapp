@@ -12,13 +12,13 @@ import com.android.sample.ui.theme.Palette.Black
  * combines standard CSS/X11 names and descriptive artistic names. Colors without exact matches are
  * assigned the nearest name using RGB/Lab distance. for easier identification and consistency.
  *
- * If a color constant includes a suffix after an underscore (e.g. `_80`), that suffix represents a
+ * If a color constant includes a suffix after an underscore (e.g. `_50`), that suffix represents a
  * custom alpha value applied to the same base color. The suffix is always written as a two-digit
- * hexadecimal value corresponding to the ARGB alpha component.
+ * percentage value corresponding to the ARGB alpha component.
  *
  * Example:
  * - `CadmiumBlue` → 0xFF09099D (opaque)
- * - `CadmiumBlue_80` → 0x8009099D (50% opacity)
+ * - `CadmiumBlue_50` → 0x8009099D (50% opacity)
  */
 object Palette {
 
@@ -50,7 +50,7 @@ object Palette {
   // Blues
   // ----------------------------------------
   val CadmiumBlue = Color(color = 0xFF09099D)
-  val CadmiumBlue_80 = Color(color = 0x8009099D)
+  val CadmiumBlue_50 = Color(color = 0x8009099D)
   val BlueJeans = Color(color = 0xFF64B5F6)
 
   // ----------------------------------------
@@ -95,7 +95,7 @@ object TopBarPalette {
 // Map Color Scheme
 object MapPalette {
   val Stroke = Palette.CadmiumBlue
-  val Fill = Palette.CadmiumBlue_80
+  val Fill = Palette.CadmiumBlue_50
 }
 
 // Event Color Scheme

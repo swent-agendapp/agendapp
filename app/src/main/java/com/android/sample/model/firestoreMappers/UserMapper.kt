@@ -11,8 +11,10 @@ object UserMapper : FirestoreMapper<User> {
     val displayName = document.getString("displayName")
     val email = document.getString("email")
     val phoneNumber = document.getString("phoneNumber")
+    val version = document.getLong("version") ?: 0L
 
-    return User(id = id, displayName = displayName, email = email, phoneNumber = phoneNumber)
+    return User(
+        id = id, displayName = displayName, email = email, phoneNumber = phoneNumber, version = version)
   }
 
   override fun fromMap(data: Map<String, Any?>): User? {
@@ -20,8 +22,10 @@ object UserMapper : FirestoreMapper<User> {
     val displayName = data["displayName"] as? String
     val email = data["email"] as? String
     val phoneNumber = data["phoneNumber"] as? String
+    val version = (data["version"] as? Number)?.toLong() ?: 0L
 
-    return User(id = id, displayName = displayName, email = email, phoneNumber = phoneNumber)
+    return User(
+        id = id, displayName = displayName, email = email, phoneNumber = phoneNumber, version = version)
   }
 
   override fun toMap(model: User): Map<String, Any?> {
@@ -30,6 +34,7 @@ object UserMapper : FirestoreMapper<User> {
         "displayName" to model.displayName,
         "email" to model.email,
         "phoneNumber" to model.phoneNumber,
+        "version" to model.version,
     )
   }
 }

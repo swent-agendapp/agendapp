@@ -1,6 +1,7 @@
 package com.android.sample.model.organization
 
 import com.android.sample.model.firestoreMappers.EmployeeMapper
+import com.android.sample.model.versioning.withUpdatedVersion
 import com.github.se.bootcamp.model.authentication.AuthRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -25,7 +26,8 @@ class EmployeeRepositoryFirebase(
 
   override suspend fun newEmployee(employee: Employee) {
     require(employee.user.id.isNotBlank()) { "userId is required" }
-    val data = EmployeeMapper.toMap(employee)
+    val updatedEmployee = employee.withUpdatedVersion()
+    val data = EmployeeMapper.toMap(updatedEmployee)
     employeesCol().document(employee.user.id).set(data).await()
   }
 

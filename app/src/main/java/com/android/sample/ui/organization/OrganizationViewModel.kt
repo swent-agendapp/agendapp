@@ -7,6 +7,7 @@ import com.android.sample.model.authentication.User
 import com.android.sample.model.organization.Organization
 import com.android.sample.model.organization.OrganizationRepository
 import com.android.sample.model.organization.OrganizationRepositoryProvider
+import com.android.sample.model.versioning.withUpdatedVersion
 import com.github.se.bootcamp.model.authentication.AuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -82,6 +83,7 @@ open class OrganizationViewModel(
         // Create a new organization with the current user as the only admin and member
         val newOrganization =
             Organization(name = name, admins = listOf(currentUser), members = listOf(currentUser))
+                .withUpdatedVersion()
         // Add the new organization to the repository
         organizationRepository.insertOrganization(newOrganization, currentUser)
 

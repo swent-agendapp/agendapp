@@ -3,6 +3,7 @@ package com.android.sample.model.organizationRepositoryTest
 import com.android.sample.model.authentication.User
 import com.android.sample.model.organization.Organization
 import com.android.sample.model.organization.OrganizationRepositoryLocal
+import com.android.sample.model.versioning.withUpdatedVersion
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Before
@@ -114,7 +115,7 @@ class OrganizationRepositoryLocalTest {
   @Test
   fun updateOrganization_asAdmin_shouldModifyIt() = runBlocking {
     repository.insertOrganization(orgA, adminA)
-    val updated = orgA.copy(name = "Org A Updated")
+    val updated = orgA.copy(name = "Org A Updated").withUpdatedVersion()
 
     repository.updateOrganization(orgA.id, updated, adminA)
     val fetched = repository.getOrganizationById(orgA.id, adminA)
@@ -125,7 +126,7 @@ class OrganizationRepositoryLocalTest {
   @Test(expected = IllegalArgumentException::class)
   fun updateOrganization_asNonAdmin_shouldThrow() = runBlocking {
     repository.insertOrganization(orgA, adminA)
-    val updated = orgA.copy(name = "Invalid Update")
+    val updated = orgA.copy(name = "Invalid Update").withUpdatedVersion()
     repository.updateOrganization(orgA.id, updated, memberA)
   }
 
@@ -166,7 +167,7 @@ class OrganizationRepositoryLocalTest {
     repository.insertOrganization(orgC, adminA)
 
     // Admin A updates orgC
-    val updatedC = orgC.copy(name = "Org C Updated", geoCheckEnabled = true)
+    val updatedC = orgC.copy(name = "Org C Updated", geoCheckEnabled = true).withUpdatedVersion()
     repository.updateOrganization(orgC.id, updatedC, adminA)
 
     // Member B can still see updated orgC

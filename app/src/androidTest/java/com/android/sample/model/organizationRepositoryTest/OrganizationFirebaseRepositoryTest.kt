@@ -4,6 +4,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.authentication.User
 import com.android.sample.model.organization.Organization
 import com.android.sample.model.organization.OrganizationRepository
+import com.android.sample.model.versioning.withUpdatedVersion
 import com.android.sample.utils.FirebaseEmulatedTest
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
@@ -111,7 +112,7 @@ class OrganizationFirebaseRepositoryTest : FirebaseEmulatedTest() {
   @Test
   fun updateOrganization_asAdmin_shouldModifyIt() = runBlocking {
     repository.insertOrganization(orgA, adminA)
-    val updated = orgA.copy(name = "Org A Updated", geoCheckEnabled = true)
+    val updated = orgA.copy(name = "Org A Updated", geoCheckEnabled = true).withUpdatedVersion()
     repository.updateOrganization(orgA.id, updated, adminA)
 
     val fetched = repository.getOrganizationById("orgA", adminA)
@@ -122,7 +123,7 @@ class OrganizationFirebaseRepositoryTest : FirebaseEmulatedTest() {
   @Test
   fun updateOrganization_asNonAdmin_shouldThrow() = runBlocking {
     repository.insertOrganization(orgA, adminA)
-    val updated = orgA.copy(name = "Illegal Update")
+    val updated = orgA.copy(name = "Illegal Update").withUpdatedVersion()
     try {
       repository.updateOrganization(orgA.id, updated, memberA)
       fail("Expected IllegalArgumentException")
@@ -156,7 +157,7 @@ class OrganizationFirebaseRepositoryTest : FirebaseEmulatedTest() {
     repository.insertOrganization(orgB, adminB)
     repository.insertOrganization(orgC, adminA)
 
-    val updatedC = orgC.copy(name = "Org C Updated", geoCheckEnabled = true)
+    val updatedC = orgC.copy(name = "Org C Updated", geoCheckEnabled = true).withUpdatedVersion()
     repository.updateOrganization("orgC", updatedC, adminB)
 
     val organizationsForMemberA = repository.getAllOrganizations(memberA)

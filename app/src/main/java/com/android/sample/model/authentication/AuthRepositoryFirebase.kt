@@ -5,6 +5,7 @@ import androidx.credentials.CustomCredential
 import com.android.sample.model.authentication.User
 import com.android.sample.model.constants.FirestoreConstants.COLLECTION_USERS
 import com.android.sample.model.firestoreMappers.UserMapper
+import com.android.sample.model.versioning.withUpdatedVersion
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
 import com.google.firebase.Firebase
@@ -39,7 +40,8 @@ class AuthRepositoryFirebase(
       GetSignInWithGoogleOption.Builder(serverClientId = serverClientId).build()
 
   /** Maps a [FirebaseUser] to our domain [User] model. */
-  private fun FirebaseUser.toDomainUser() = User(id = uid, displayName = displayName, email = email)
+  private fun FirebaseUser.toDomainUser() =
+      User(id = uid, displayName = displayName, email = email).withUpdatedVersion()
 
   override suspend fun signInWithGoogle(credential: Credential): Result<User> {
     return try {

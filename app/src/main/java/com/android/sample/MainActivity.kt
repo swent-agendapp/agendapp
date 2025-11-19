@@ -27,6 +27,10 @@ import androidx.navigation.navigation
 import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.organization.EmployeeRepositoryFirebase
 import com.android.sample.model.organization.EmployeeRepositoryProvider
+import com.android.sample.model.organization.OrganizationRepositoryFirebase
+import com.android.sample.model.organization.OrganizationRepositoryProvider
+import com.android.sample.model.versioning.VersionSyncViewModel
+import com.android.sample.model.versioning.VersionSyncViewModelProvider
 import com.android.sample.ui.calendar.CalendarScreen
 import com.android.sample.ui.calendar.addEvent.AddEventScreen
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreen
@@ -60,9 +64,14 @@ class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
+    val firestore = FirebaseFirestore.getInstance()
     EmployeeRepositoryProvider.init(
-        EmployeeRepositoryFirebase(
-            db = FirebaseFirestore.getInstance(), authRepository = AuthRepositoryFirebase()))
+        EmployeeRepositoryFirebase(db = firestore, authRepository = AuthRepositoryFirebase()))
+    VersionSyncViewModelProvider.init(
+        VersionSyncViewModel(
+            localOrganizationRepository = OrganizationRepositoryProvider.repository,
+            remoteOrganizationRepository = OrganizationRepositoryFirebase(db = firestore),
+            authRepository = AuthRepositoryProvider.repository))
     setContent {
       SampleAppTheme {
         Surface(

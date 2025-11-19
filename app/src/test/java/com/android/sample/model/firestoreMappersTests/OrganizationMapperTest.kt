@@ -84,6 +84,7 @@ class OrganizationMapperTest {
     `when`(orgDoc.id).thenReturn("org123")
     `when`(orgDoc.getString("name")).thenReturn("My Organization")
     `when`(orgDoc.getBoolean("geoCheckEnabled")).thenReturn(true)
+    `when`(orgDoc.getLong("version")).thenReturn(100L)
     `when`(orgDoc["admins"]).thenReturn(listOf(adminDoc))
     `when`(orgDoc["members"]).thenReturn(listOf(memberDoc))
     `when`(orgDoc["areas"]).thenReturn(listOf(areaDoc))
@@ -96,6 +97,7 @@ class OrganizationMapperTest {
     assertThat(organization.id).isEqualTo("org123")
     assertThat(organization.name).isEqualTo("My Organization")
     assertThat(organization.geoCheckEnabled).isTrue()
+    assertThat(organization.version).isEqualTo(100L)
 
     assertThat(organization.admins).hasSize(1)
     assertThat(organization.admins[0].displayName).isEqualTo("Admin One")
@@ -169,7 +171,8 @@ class OrganizationMapperTest {
             "admins" to admins,
             "members" to members,
             "areas" to areas,
-            "events" to events)
+            "events" to events,
+            "version" to 200L)
 
     val organization = OrganizationMapper.fromMap(data)
 
@@ -190,6 +193,7 @@ class OrganizationMapperTest {
         .containsExactly("Marker 1", "Marker 2", "Marker 3")
     assertThat(organization.events).hasSize(1)
     assertThat(organization.events[0].title).isEqualTo("Meeting")
+    assertThat(organization.version).isEqualTo(200L)
   }
 
   @Test
@@ -201,7 +205,7 @@ class OrganizationMapperTest {
             Marker("m1", Location(10.0, 20.0), "Marker 1"),
             Marker("m2", Location(15.0, 25.0), "Marker 2"),
             Marker("m3", Location(12.0, 22.0), "Marker 3"))
-    val areas = listOf(Area("area1", "Main Area", markers))
+    val areas = listOf(Area("area1", "Main Area", markers, version = 30L))
     val events =
         listOf(
             createEvent(
@@ -217,7 +221,8 @@ class OrganizationMapperTest {
             members = members,
             events = events,
             areas = areas,
-            geoCheckEnabled = true)
+            geoCheckEnabled = true,
+            version = 400L)
 
     val map = OrganizationMapper.toMap(organization)
 
@@ -234,5 +239,6 @@ class OrganizationMapperTest {
     assertThat(areasList!![0]["label"]).isEqualTo("Main Area")
     assertThat(eventsList!![0]["title"]).isEqualTo("Meeting")
     assertThat(eventsList[0]["description"]).isEqualTo("Team meeting")
+    assertThat(map["version"]).isEqualTo(400L)
   }
 }

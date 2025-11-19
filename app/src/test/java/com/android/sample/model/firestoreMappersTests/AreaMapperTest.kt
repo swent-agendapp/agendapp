@@ -11,6 +11,8 @@ import org.mockito.Mockito.*
 
 class AreaMapperTest {
 
+  private val sampleVersion = 42L
+
   @Test
   fun fromDocument_withValidDocument_returnsArea() {
     val markers = createMockMarkers()
@@ -18,6 +20,7 @@ class AreaMapperTest {
     `when`(doc.getString("id")).thenReturn("area123")
     `when`(doc.getString("label")).thenReturn("My Area")
     `when`(doc.get("markers")).thenReturn(markers)
+    `when`(doc.getLong("version")).thenReturn(sampleVersion)
 
     val area = AreaMapper.fromDocument(doc)
     assertValidArea(area)
@@ -43,7 +46,8 @@ class AreaMapperTest {
                       "label" to marker.location.label))
         }
 
-    val data = mapOf("id" to "area123", "label" to "My Area", "markers" to markersData)
+    val data =
+        mapOf("id" to "area123", "label" to "My Area", "markers" to markersData, "version" to sampleVersion)
 
     val area = AreaMapper.fromMap(data)
     assertValidArea(area)
@@ -76,11 +80,12 @@ class AreaMapperTest {
             Marker(id = "m2", location = Location(15.0, 25.0), label = "Marker 2"),
             Marker(id = "m3", location = Location(12.0, 22.0), label = "Marker 3"))
 
-    val area = Area(id = "area123", label = "My Area", markers = markers)
+    val area = Area(id = "area123", label = "My Area", markers = markers, version = sampleVersion)
     val map = AreaMapper.toMap(area)
 
     assertThat(map["id"]).isEqualTo("area123")
     assertThat(map["label"]).isEqualTo("My Area")
+    assertThat(map["version"]).isEqualTo(sampleVersion)
     val markersList =
         (map["markers"] as? List<*>)?.filterIsInstance<Map<String, Any?>>() ?: emptyList()
     assertThat(markersList.size).isEqualTo(3)
@@ -134,5 +139,6 @@ class AreaMapperTest {
     assertThat(area.getSortedMarkers().size).isEqualTo(3)
     assertThat(area.getSortedMarkers().map { it.label })
         .containsExactly("Marker 1", "Marker 2", "Marker 3")
+    assertThat(area.version).isEqualTo(sampleVersion)
   }
 }

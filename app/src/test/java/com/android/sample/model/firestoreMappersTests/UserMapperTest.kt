@@ -9,9 +9,13 @@ import org.mockito.Mockito.*
 
 class UserMapperTest {
 
-  private val sampleUser = User("user123", "John Doe", "john@example.com")
+  private val sampleUser = User("user123", "John Doe", "john@example.com", version = 55L)
   private val sampleMap =
-      mapOf("id" to "user123", "displayName" to "John Doe", "email" to "john@example.com")
+      mapOf(
+          "id" to "user123",
+          "displayName" to "John Doe",
+          "email" to "john@example.com",
+          "version" to sampleUser.version)
 
   // --- fromDocument tests ---
   @Test
@@ -20,6 +24,7 @@ class UserMapperTest {
     `when`(doc.getString("id")).thenReturn(sampleUser.id)
     `when`(doc.getString("displayName")).thenReturn(sampleUser.displayName)
     `when`(doc.getString("email")).thenReturn(sampleUser.email)
+    `when`(doc.getLong("version")).thenReturn(sampleUser.version)
     `when`(doc.id).thenReturn("fallbackId")
 
     val user = UserMapper.fromDocument(doc)
@@ -27,6 +32,7 @@ class UserMapperTest {
     assertEquals(sampleUser.id, user!!.id)
     assertEquals(sampleUser.displayName, user.displayName)
     assertEquals(sampleUser.email, user.email)
+    assertEquals(sampleUser.version, user.version)
   }
 
   @Test
@@ -35,6 +41,7 @@ class UserMapperTest {
     `when`(doc.getString("id")).thenReturn(sampleUser.id)
     `when`(doc.getString("displayName")).thenReturn(null)
     `when`(doc.getString("email")).thenReturn(sampleUser.email)
+    `when`(doc.getLong("version")).thenReturn(sampleUser.version)
     `when`(doc.id).thenReturn("fallbackId")
 
     val user = UserMapper.fromDocument(doc)
@@ -51,6 +58,7 @@ class UserMapperTest {
     `when`(doc.getString("id")).thenReturn(sampleUser.id)
     `when`(doc.getString("displayName")).thenReturn(sampleUser.displayName)
     `when`(doc.getString("email")).thenReturn(null)
+    `when`(doc.getLong("version")).thenReturn(sampleUser.version)
     `when`(doc.id).thenReturn("fallbackId")
 
     val user = UserMapper.fromDocument(doc)
@@ -67,6 +75,7 @@ class UserMapperTest {
     `when`(doc.getString("id")).thenReturn(null)
     `when`(doc.getString("displayName")).thenReturn(sampleUser.displayName)
     `when`(doc.getString("email")).thenReturn(sampleUser.email)
+    `when`(doc.getLong("version")).thenReturn(sampleUser.version)
     `when`(doc.id).thenReturn("fallbackId")
 
     val user = UserMapper.fromDocument(doc)
@@ -97,6 +106,7 @@ class UserMapperTest {
     `when`(doc.getString("displayName")).thenReturn(sampleUser.displayName)
     `when`(doc.getString("email")).thenReturn(sampleUser.email)
     `when`(doc.id).thenReturn("fallbackId")
+    `when`(doc.getLong("version")).thenReturn(sampleUser.version)
 
     val user = UserMapper.fromAny(doc)
     assertNotNull(user)
@@ -120,10 +130,11 @@ class UserMapperTest {
   @Test
   fun toMap_returnsCorrectMap() {
     val map = UserMapper.toMap(sampleUser)
-    assertEquals(4, map.size)
+    assertEquals(5, map.size)
     assertEquals(sampleUser.id, map["id"])
     assertEquals(sampleUser.displayName, map["displayName"])
     assertEquals(sampleUser.email, map["email"])
     assertEquals(sampleUser.phoneNumber, map["phoneNumber"])
+    assertEquals(sampleUser.version, map["version"])
   }
 }

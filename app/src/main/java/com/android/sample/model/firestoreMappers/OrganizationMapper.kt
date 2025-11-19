@@ -10,6 +10,7 @@ object OrganizationMapper : FirestoreMapper<Organization> {
     val id = document.id
     val name = document.getString("name") ?: return null
     val geoCheckEnabled = document.getBoolean("geoCheckEnabled") ?: false
+    val version = document.getLong("version") ?: 0L
 
     val adminsData = document["admins"] as? List<*> ?: emptyList<Any>()
     val membersData = document["members"] as? List<*> ?: emptyList<Any>()
@@ -28,13 +29,15 @@ object OrganizationMapper : FirestoreMapper<Organization> {
         members = members,
         events = events,
         areas = areas,
-        geoCheckEnabled = geoCheckEnabled)
+        geoCheckEnabled = geoCheckEnabled,
+        version = version)
   }
 
   override fun fromMap(data: Map<String, Any?>): Organization? {
     val id = data["id"] as? String ?: return null
     val name = data["name"] as? String ?: return null
     val geoCheckEnabled = data["geoCheckEnabled"] as? Boolean ?: false
+    val version = (data["version"] as? Number)?.toLong() ?: 0L
 
     val adminsData = data["admins"] as? List<*> ?: emptyList<Any>()
     val membersData = data["members"] as? List<*> ?: emptyList<Any>()
@@ -53,7 +56,8 @@ object OrganizationMapper : FirestoreMapper<Organization> {
         members = members,
         events = events,
         areas = areas,
-        geoCheckEnabled = geoCheckEnabled)
+        geoCheckEnabled = geoCheckEnabled,
+        version = version)
   }
 
   override fun toMap(model: Organization): Map<String, Any?> {
@@ -63,6 +67,7 @@ object OrganizationMapper : FirestoreMapper<Organization> {
         "members" to model.members.map { UserMapper.toMap(it) },
         "events" to model.events.map { EventMapper.toMap(it) },
         "areas" to model.areas.map { AreaMapper.toMap(it) },
-        "geoCheckEnabled" to model.geoCheckEnabled)
+        "geoCheckEnabled" to model.geoCheckEnabled,
+        "version" to model.version)
   }
 }

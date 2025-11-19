@@ -122,11 +122,11 @@ fun createEvent(
  * This ensures we rely on the same time conversion utilities as the production code.
  */
 fun createEventForTimes(
-    title: String,
-    startHour: Int,
-    startMinute: Int,
-    endHour: Int,
-    endMinute: Int,
+    title: String = "Untitled",
+    startHour: Int = 8,
+    startMinute: Int = 0,
+    endHour: Int = 12,
+    endMinute: Int = 0,
 ): Event {
   val baseDate = LocalDate.of(2025, 1, 1)
 

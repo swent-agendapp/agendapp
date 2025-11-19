@@ -25,15 +25,32 @@ import com.android.sample.ui.common.FloatingButton
 import com.android.sample.ui.common.MainPageTopBar
 
 object CalendarScreenTestTags {
+  // Top-level calendar screen tags
   const val TOP_BAR_TITLE = "CalendarTopBarTitle"
   const val SCREEN_ROOT = "CalendarScreenRoot"
+
+  // Grid & content tags
   const val SCROLL_AREA = "CalendarGridScrollArea"
   const val ROOT = "CalendarGridRoot"
   const val EVENT_GRID = "CalendarEventGrid"
   const val TIME_AXIS_COLUMN = "TimeAxisColumn"
   const val NOW_INDICATOR = "NowIndicator"
   const val EVENT_BLOCK = "CalendarEventBlock"
+
+  // Day header / row tags
   const val DAY_ROW = "CalendarDayRow"
+  const val DAY_HEADER_DAY_PREFIX = "CalendarContainer_DayHeaderDay_" // + index or date
+
+  // Calendar container tags
+  const val CALENDAR_GRID = "CalendarContainer_Grid"
+  const val DATE_PICKER_MODAL = "CalendarContainer_DatePickerModal"
+
+  // View mode selector tags (moved from ViewModeSelectorTags)
+  const val VIEW_MODE_SELECTOR_BOX = "ViewModeSelector_Box"
+  const val VIEW_MODE_SELECTOR_FAB_PREFIX = "ViewModeSelector_Fab_" // + currentMode.name
+  const val VIEW_MODE_SELECTOR_ITEM_PREFIX = "ViewModeSelector_Item_" // + mode.name
+
+  // FAB / actions
   const val ADD_EVENT_BUTTON = "AddEventButton"
 }
 

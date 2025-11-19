@@ -61,7 +61,7 @@ fun DayHeaderRow(
   Row(modifier = Modifier.testTag(CalendarScreenTestTags.DAY_ROW)) {
     Box(modifier = Modifier.size(leftOffsetDp, topOffsetDp))
 
-    days.forEach { date ->
+    days.forEachIndexed { index, date ->
       val isToday = date == today
       val isSelected = selectedDate != null && selectedDate == date
 
@@ -92,7 +92,7 @@ fun DayHeaderRow(
       val shortDate = date.format(DateTimeFormatter.ofPattern("dd.MM"))
 
       // If onDayClick is not null, the header cell is clickable.
-      val cellModifier =
+      val baseModifier =
           if (onDayClick != null) {
             Modifier.size(width = columnWidth, height = topOffsetDp).background(bg).clickable {
               onDayClick(date)
@@ -100,6 +100,8 @@ fun DayHeaderRow(
           } else {
             Modifier.size(width = columnWidth, height = topOffsetDp).background(bg)
           }
+
+      val cellModifier = baseModifier.testTag(CalendarScreenTestTags.DAY_HEADER_DAY_PREFIX + index)
 
       Column(
           modifier = cellModifier,

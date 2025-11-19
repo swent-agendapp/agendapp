@@ -14,6 +14,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.testTag
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.model.calendar.Event
 import com.android.sample.ui.calendar.components.DatePickerModal
@@ -93,38 +94,39 @@ fun CalendarContainer(
 
       CalendarGridContent(
           modifier =
-              Modifier.fillMaxSize().pointerInput(currentDateRange, currentMode) {
-                var totalDx = 0f
+              Modifier.fillMaxSize().testTag(CalendarScreenTestTags.CALENDAR_GRID).pointerInput(
+                  currentDateRange, currentMode) {
+                    var totalDx = 0f
 
-                // Handle horizontal swipes to navigate between days/weeks.
-                detectDragGestures(
-                    onDrag = { _, dragAmount -> totalDx += dragAmount.x },
-                    onDragEnd = {
-                      val threshold = CalendarDefaults.DefaultSwipeThreshold
-                      when {
-                        // Swipe right: go to previous day/week.
-                        totalDx > threshold -> {
-                          currentDateRange =
-                              updateDateRangeForSwipe(
-                                  currentRange = currentDateRange,
-                                  currentMode = currentMode,
-                                  moveToPrevious = true,
-                              )
-                        }
-                        // Swipe left: go to next day/week.
-                        totalDx < -threshold -> {
-                          currentDateRange =
-                              updateDateRangeForSwipe(
-                                  currentRange = currentDateRange,
-                                  currentMode = currentMode,
-                                  moveToPrevious = false,
-                              )
-                        }
-                      }
-                      totalDx = 0f
-                    },
-                    onDragCancel = { totalDx = 0f })
-              },
+                    // Handle horizontal swipes to navigate between days/weeks.
+                    detectDragGestures(
+                        onDrag = { _, dragAmount -> totalDx += dragAmount.x },
+                        onDragEnd = {
+                          val threshold = CalendarDefaults.DefaultSwipeThreshold
+                          when {
+                            // Swipe right: go to previous day/week.
+                            totalDx > threshold -> {
+                              currentDateRange =
+                                  updateDateRangeForSwipe(
+                                      currentRange = currentDateRange,
+                                      currentMode = currentMode,
+                                      moveToPrevious = true,
+                                  )
+                            }
+                            // Swipe left: go to next day/week.
+                            totalDx < -threshold -> {
+                              currentDateRange =
+                                  updateDateRangeForSwipe(
+                                      currentRange = currentDateRange,
+                                      currentMode = currentMode,
+                                      moveToPrevious = false,
+                                  )
+                            }
+                          }
+                          totalDx = 0f
+                        },
+                        onDragCancel = { totalDx = 0f })
+                  },
           dateRange = currentDateRange,
           headerDateRange = headerDateRange,
           events = events,
@@ -175,45 +177,47 @@ fun CalendarContainer(
 
     // MONTH mode: show the DatePickerModal instead of the grid.
     if (currentMode == ViewMode.MONTH && showMonthPicker) {
-      DatePickerModal(
-          onDateSelected = { selectedMillis ->
-            // When a date is chosen, we reopen the corresponding day/week according to
-            // the previously used non-month mode.
-            val selectedDate =
-                selectedMillis?.let {
-                  Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
-                }
+      Box(modifier = Modifier.testTag(CalendarScreenTestTags.DATE_PICKER_MODAL)) {
+        DatePickerModal(
+            onDateSelected = { selectedMillis ->
+              // When a date is chosen, we reopen the corresponding day/week according to
+              // the previously used non-month mode.
+              val selectedDate =
+                  selectedMillis?.let {
+                    Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
+                  }
 
-            if (selectedDate != null) {
-              val targetMode =
-                  // The previous ViewMode was 5-days but the selected date is a weekend day.
-                  if (previousNonMonthMode == ViewMode.FIVE_DAYS &&
-                      selectedDate.dayOfWeek.ordinal >= 5) {
-                    ViewMode.SEVEN_DAYS
-                  } else {
-                    previousNonMonthMode
-                  }
-              currentMode = targetMode
-              currentDateRange =
-                  when (targetMode) {
-                    ViewMode.ONE_DAY -> LocalDateRange(selectedDate, selectedDate)
-                    ViewMode.FIVE_DAYS -> weekRangeContaining(selectedDate, days = 5)
-                    ViewMode.SEVEN_DAYS -> weekRangeContaining(selectedDate, days = 7)
-                    ViewMode.MONTH -> weekRangeContaining(selectedDate, days = 7) // Fallback.
-                  }
-            } else {
-              // No date selected: simply go back to the previous non-month mode.
+              if (selectedDate != null) {
+                val targetMode =
+                    // The previous ViewMode was 5-days but the selected date is a weekend day.
+                    if (previousNonMonthMode == ViewMode.FIVE_DAYS &&
+                        selectedDate.dayOfWeek.ordinal >= 5) {
+                      ViewMode.SEVEN_DAYS
+                    } else {
+                      previousNonMonthMode
+                    }
+                currentMode = targetMode
+                currentDateRange =
+                    when (targetMode) {
+                      ViewMode.ONE_DAY -> LocalDateRange(selectedDate, selectedDate)
+                      ViewMode.FIVE_DAYS -> weekRangeContaining(selectedDate, days = 5)
+                      ViewMode.SEVEN_DAYS -> weekRangeContaining(selectedDate, days = 7)
+                      ViewMode.MONTH -> weekRangeContaining(selectedDate, days = 7) // Fallback.
+                    }
+              } else {
+                // No date selected: simply go back to the previous non-month mode.
+                currentMode = previousNonMonthMode
+              }
+
+              showMonthPicker = false
+            },
+            onDismiss = {
+              // If the dialog is dismissed, we return to the last non-month mode and keep the
+              // previous date range.
               currentMode = previousNonMonthMode
-            }
-
-            showMonthPicker = false
-          },
-          onDismiss = {
-            // If the dialog is dismissed, we return to the last non-month mode and keep the
-            // previous date range.
-            currentMode = previousNonMonthMode
-            showMonthPicker = false
-          })
+              showMonthPicker = false
+            })
+      }
     }
   }
 }

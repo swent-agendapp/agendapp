@@ -10,7 +10,7 @@ import com.android.sample.ui.theme.Palette.Black
  *
  * The color names match the closest corresponding names from the "color-name.com" database, which
  * combines standard CSS/X11 names and descriptive artistic names. Colors without exact matches are
- * assigned the nearest name using RGB/Lab distance. for easier identification and consistency.
+ * assigned the nearest name using RGB/Lab distance for easier identification and consistency.
  *
  * If a color constant includes a suffix after an underscore (e.g. `_50`), that suffix represents a
  * custom alpha value applied to the same base color. The suffix is always written as a two-digit

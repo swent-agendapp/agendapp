@@ -6,7 +6,8 @@ import java.util.UUID
  * Data class representing a User.
  *
  * @property id Unique identifier for the User, generated as a UUID string by default.
- * @property displayName Name to display for User Profile.
+ * @property displayName Name to display for User Profile, filled using a random animal name
+ *   generator by default.
  * @property email Email address of the User.
  * @property phoneNumber Phone number of the User.
  *
@@ -16,7 +17,7 @@ import java.util.UUID
  */
 data class User(
     val id: String = UUID.randomUUID().toString(),
-    val displayName: String?,
-    val email: String?,
+    val displayName: String? = UsernameGenerator.generate(),
+    val email: String? = null,
     val phoneNumber: String? = null,
 )

@@ -22,6 +22,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+private const val POSITION_TOLERANCE = 1f
+
 /**
  * Base class exposing shared helpers and setup for the Calendar *events* tests only.
  *
@@ -415,11 +417,11 @@ class EventsOverlapTests : BaseEventsTest() {
     val secondWidth = secondBounds.right - secondBounds.left
 
     // Same horizontal position (allowing a small tolerance due to rendering).
-    assertTrue(kotlin.math.abs(firstBounds.left - secondBounds.left) < 1f)
-    assertTrue(kotlin.math.abs(firstBounds.right - secondBounds.right) < 1f)
+    assertTrue(kotlin.math.abs(firstBounds.left - secondBounds.left) < POSITION_TOLERANCE)
+    assertTrue(kotlin.math.abs(firstBounds.right - secondBounds.right) < POSITION_TOLERANCE)
 
     // Same width (full column width).
-    assertTrue(kotlin.math.abs(firstWidth - secondWidth) < 1f)
+    assertTrue(kotlin.math.abs(firstWidth - secondWidth) < POSITION_TOLERANCE)
   }
 
   /**
@@ -460,15 +462,15 @@ class EventsOverlapTests : BaseEventsTest() {
     assertTrue(overlap2Width < soloWidth)
 
     // Overlapping events should have (approximately) the same width.
-    assertTrue(kotlin.math.abs(overlap1Width - overlap2Width) < 1f)
+    assertTrue(kotlin.math.abs(overlap1Width - overlap2Width) < POSITION_TOLERANCE)
 
     // They should be placed side-by-side: different left positions, non-overlapping horizontally.
-    assertTrue(kotlin.math.abs(overlap1Bounds.left - overlap2Bounds.left) > 1f)
+    assertTrue(kotlin.math.abs(overlap1Bounds.left - overlap2Bounds.left) > POSITION_TOLERANCE)
     val leftEvent =
         if (overlap1Bounds.left < overlap2Bounds.left) overlap1Bounds else overlap2Bounds
     val rightEvent =
         if (overlap1Bounds.left < overlap2Bounds.left) overlap2Bounds else overlap1Bounds
-    assertTrue(leftEvent.right <= rightEvent.left + 1f)
+    assertTrue(leftEvent.right <= rightEvent.left + POSITION_TOLERANCE)
   }
 
   /**
@@ -504,8 +506,8 @@ class EventsOverlapTests : BaseEventsTest() {
     val widthC = boundsC.right - boundsC.left
 
     // All three should have approximately the same width.
-    assertTrue(kotlin.math.abs(widthA - widthB) < 1f)
-    assertTrue(kotlin.math.abs(widthB - widthC) < 1f)
+    assertTrue(kotlin.math.abs(widthA - widthB) < POSITION_TOLERANCE)
+    assertTrue(kotlin.math.abs(widthB - widthC) < POSITION_TOLERANCE)
 
     // Their horizontal positions (left) should all be distinct (side-by-side columns).
     val lefts = listOf(boundsA.left, boundsB.left, boundsC.left)

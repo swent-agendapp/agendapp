@@ -1,7 +1,7 @@
 package com.android.sample.model.organizations.mockOrganizations
 
 import com.android.sample.model.authentication.User
-import com.android.sample.model.organizations.Organization
+import com.android.sample.model.organization.Organization
 
 // Written by AI
 

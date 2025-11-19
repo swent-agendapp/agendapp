@@ -8,8 +8,8 @@ import com.android.sample.model.authorization.AuthorizationService
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
-import com.android.sample.model.organizations.OrganizationRepository
-import com.android.sample.model.organizations.OrganizationRepositoryProvider
+import com.android.sample.model.organization.OrganizationRepository
+import com.android.sample.model.organization.OrganizationRepositoryProvider
 import com.android.sample.model.organizations.mockOrganizations.getMockOrganizations
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementRepository

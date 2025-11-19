@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
@@ -66,13 +67,21 @@ fun EventOverviewScreen(
     eventOverviewViewModel: EventOverviewViewModel = viewModel(),
     onBackClick: () -> Unit = {},
     onEditClick: (String) -> Unit = {},
-    onDeleteClick: (String) -> Unit = {},
+    onDeleteClick: () -> Unit = {},
 ) {
   val overviewUIState by eventOverviewViewModel.uiState.collectAsState()
   val event = overviewUIState.event
   val participantNames = overviewUIState.participantsNames
   val errorMsg = overviewUIState.errorMsg
   val showDeleteDialog = remember { mutableStateOf(false) }
+  val isDeleteSuccessful = overviewUIState.isDeleteSuccessful
+
+  // Navigate back when deletion is successful
+  LaunchedEffect(isDeleteSuccessful) {
+    if (isDeleteSuccessful) {
+      onDeleteClick()
+    }
+  }
 
   // Fetch the event and its participant display names
   LaunchedEffect(eventId) {
@@ -89,15 +98,13 @@ fun EventOverviewScreen(
     }
   }
 
-  // DELETE DIALOG SHOULD BE HERE (TOP LEVEL)
-  if (showDeleteDialog.value) {
+  // Delete confirmation dialog
+  if (showDeleteDialog.value && event != null) {
     DeleteEventConfirmationDialog(
+        eventTitle = event.title,
         onConfirm = {
           showDeleteDialog.value = false
-          eventOverviewViewModel.deleteEvent(
-              eventId,
-              onSuccess = { onDeleteClick(eventId) },
-              onError = { msg -> Toast.makeText(context, msg, Toast.LENGTH_SHORT).show() })
+          eventOverviewViewModel.deleteEvent(eventId)
         },
         onDismiss = { showDeleteDialog.value = false })
   }
@@ -154,14 +161,21 @@ fun EventOverviewScreen(
 
 /** DeleteEventConfirmationDialog */
 @Composable
-fun DeleteEventConfirmationDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
+fun DeleteEventConfirmationDialog(
+    eventTitle: String,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
   AlertDialog(
       onDismissRequest = onDismiss,
       confirmButton = {
         TextButton(
             onClick = onConfirm,
             modifier = Modifier.testTag(EventOverviewScreenTestTags.DIALOG_DELETE_BUTTON)) {
-              Text(stringResource(R.string.delete))
+              Text(
+                  text = stringResource(R.string.delete),
+                  color = MaterialTheme.colorScheme.error,
+                  fontWeight = FontWeight.Bold)
             }
       },
       dismissButton = {
@@ -171,7 +185,7 @@ fun DeleteEventConfirmationDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) 
               Text(stringResource(R.string.cancel))
             }
       },
-      title = { Text(stringResource(R.string.delete_event_title)) },
+      title = { Text("${stringResource(R.string.delete)} $eventTitle") },
       text = { Text(stringResource(R.string.delete_event_message)) })
 }
 

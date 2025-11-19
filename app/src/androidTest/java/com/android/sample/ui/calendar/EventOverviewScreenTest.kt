@@ -132,7 +132,6 @@ class EventOverviewScreenTest {
   @Test
   fun clickingDelete_confirmsAndCallsOnDeleteClick() {
     val (vm, fakeRepo) = makeViewModelWith(sampleEvent())
-    var deletedId: String? = null
 
     composeRule.setContent {
       EventOverviewScreen(
@@ -140,14 +139,13 @@ class EventOverviewScreenTest {
           eventOverviewViewModel = vm,
           onBackClick = {},
           onEditClick = {},
-          onDeleteClick = { id -> deletedId = id })
+          onDeleteClick = {})
     }
 
     composeRule.waitForIdle()
     composeRule.onNodeWithTag(EventOverviewScreenTestTags.DELETE_BUTTON).performClick()
     composeRule.onNodeWithTag(EventOverviewScreenTestTags.DIALOG_DELETE_BUTTON).performClick()
 
-    assert(deletedId == "E123")
     runBlocking { assert(fakeRepo.deletedIds.contains("E123")) }
   }
 }

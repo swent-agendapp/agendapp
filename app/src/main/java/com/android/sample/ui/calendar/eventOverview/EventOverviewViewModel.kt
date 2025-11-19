@@ -16,7 +16,8 @@ data class OverviewUIState(
     val event: Event? = null,
     val participantsNames: List<String> = emptyList(),
     val errorMsg: String? = null,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val isDeleteSuccessful: Boolean = false
 )
 
 /**
@@ -56,17 +57,14 @@ class EventOverviewViewModel(
    * Deletes the event with the given [eventId] from the [EventRepository].
    *
    * @param eventId The unique identifier of the event to delete.
-   * @param onSuccess A callback function to be invoked upon successful deletion.
-   * @param onError A callback function to be invoked if an error occurs during deletion, receiving
-   *   an error message as a parameter.
    */
-  fun deleteEvent(eventId: String, onSuccess: () -> Unit = {}, onError: (String) -> Unit = {}) {
+  fun deleteEvent(eventId: String) {
     viewModelScope.launch {
       try {
         eventRepository.deleteEvent(eventId)
-        onSuccess()
+        _uiState.value = _uiState.value.copy(isDeleteSuccessful = true)
       } catch (e: Exception) {
-        onError("Failed to delete event")
+        _uiState.value = _uiState.value.copy(errorMsg = "Failed to delete event")
       }
     }
   }

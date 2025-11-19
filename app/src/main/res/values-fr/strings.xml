@@ -174,7 +174,7 @@
     <string name="event_overview_title">Aperçu de l\'événement</string>
     <string name="delete">Supprimer</string>
     <string name="modify">Modifier</string>
-    <string name="delete_event_title">Supprimer l’événement</string>
+    <string name="delete_event_title">Supprimer l’événement:</string>
     <string name="delete_event_message">Êtes-vous sûr de vouloir supprimer cet événement?</string>
 
     <!-- Organizations -->

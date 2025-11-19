@@ -200,20 +200,22 @@ fun Agendapp(
                 }
               }
 
-              // Edit Event Screen Flow
-              composable(
-                  route = Screen.EditEvent.route,
-                  arguments = listOf(navArgument("eventId") { type = NavType.StringType })) {
-                      navBackStackEntry ->
-                    val eventId = navBackStackEntry.arguments?.getString("eventId")
+              // Edit Event Graph
+              navigation(startDestination = Screen.EditEvent.route, route = Screen.EditEvent.name) {
+                composable(
+                    route = Screen.EditEvent.route,
+                    arguments = listOf(navArgument("eventId") { type = NavType.StringType })) {
+                        navBackStackEntry ->
+                      val eventId = navBackStackEntry.arguments?.getString("eventId")
 
-                    eventId?.let {
-                      EditEventFlow(
-                          eventId = it,
-                          onCancel = { navigationActions.navigateBack() },
-                          onFinish = { navigationActions.navigateBack() })
-                    } ?: run { Log.e("EditEventScreen", "Event id is null") }
-                  }
+                      eventId?.let {
+                        EditEventFlow(
+                            eventId = it,
+                            onCancel = { navigationActions.navigateBack() },
+                            onFinish = { navigationActions.navigateBack() })
+                      } ?: run { Log.e("EditEventScreen", "Event id is null") }
+                    }
+              }
 
               // Add Event Screen Flow
               navigation(startDestination = Screen.AddEvent.route, route = "Add Event") {

@@ -2,6 +2,7 @@ package com.android.sample.model.calendar
 
 import androidx.annotation.StringRes
 import com.android.sample.R
+import com.android.sample.ui.calendar.utils.DateTimeUtils
 import com.android.sample.utils.EventColor
 import java.time.Instant
 import java.time.LocalDate
@@ -111,6 +112,33 @@ fun createEvent(
       color = color
       // notifications = notifications
       )
+}
+
+/**
+ * Helper to create an [Event] the given times using [DateTimeUtils] and the real [createEvent]
+ * factory.
+ *
+ * This ensures we rely on the same time conversion utilities as the production code.
+ */
+fun createEventForTimes(
+    title: String = "Untitled",
+    startHour: Int = 8,
+    startMinute: Int = 0,
+    endHour: Int = 12,
+    endMinute: Int = 0,
+): Event {
+  val baseDate = LocalDate.of(2025, 1, 1)
+
+  val startTime = LocalTime.of(startHour, startMinute)
+  val endTime = LocalTime.of(endHour, endMinute)
+  val startInstant = DateTimeUtils.localDateTimeToInstant(baseDate, startTime)
+  val endInstant = DateTimeUtils.localDateTimeToInstant(baseDate, endTime)
+
+  return createEvent(
+      title = title,
+      startDate = startInstant,
+      endDate = endInstant,
+  )
 }
 
 @StringRes

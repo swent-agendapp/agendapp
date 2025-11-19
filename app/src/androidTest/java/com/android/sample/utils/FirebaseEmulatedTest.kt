@@ -3,8 +3,8 @@ package com.android.sample.utils
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryFirebase
 import com.android.sample.model.constants.FirestoreConstants
-import com.android.sample.model.organizations.OrganizationRepository
-import com.android.sample.model.organizations.OrganizationRepositoryFirebase
+import com.android.sample.model.organization.OrganizationRepository
+import com.android.sample.model.organization.OrganizationRepositoryFirebase
 import com.android.sample.model.replacement.ReplacementRepositoryFirebase
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.test.runTest

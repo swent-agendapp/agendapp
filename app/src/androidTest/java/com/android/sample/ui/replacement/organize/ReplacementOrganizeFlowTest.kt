@@ -32,7 +32,7 @@ class ReplacementOrganizeFlowTest {
   fun fullFlow_displaysCorrectScreensAndNavigates() {
     // STEP 1: SelectSubstitute
     composeTestRule.onNodeWithTag(ReplacementOrganizeTestTags.MEMBER_LIST).assertIsDisplayed()
-    composeTestRule.onNodeWithText("U1").performClick()
+    composeTestRule.onNodeWithText("alice@example.com").performClick()
 
     // Buttons should be enabled
     composeTestRule.onNodeWithTag(ReplacementOrganizeTestTags.SELECT_EVENT_BUTTON).assertIsEnabled()
@@ -43,7 +43,7 @@ class ReplacementOrganizeFlowTest {
     // Navigate to SelectEvents
     composeTestRule.onNodeWithTag(ReplacementOrganizeTestTags.SELECT_EVENT_BUTTON).performClick()
     composeTestRule
-        .onNodeWithText("Select the events for which U1 needs a replacement")
+        .onNodeWithText("Select the events for which alice@example.com needs a replacement")
         .assertIsDisplayed()
 
     // Navigate back to SelectSubstitute
@@ -55,7 +55,7 @@ class ReplacementOrganizeFlowTest {
         .onNodeWithTag(ReplacementOrganizeTestTags.SELECT_DATE_RANGE_BUTTON)
         .performClick()
     composeTestRule
-        .onNodeWithText("Select the date range for which U1 needs a replacement")
+        .onNodeWithText("Select the date range for which alice@example.com needs a replacement")
         .assertIsDisplayed()
 
     // Navigate to SelectProcessMoment

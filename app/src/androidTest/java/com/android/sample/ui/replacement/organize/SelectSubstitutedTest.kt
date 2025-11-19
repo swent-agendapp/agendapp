@@ -61,10 +61,10 @@ class SelectSubstitutedScreenTest {
   @Test
   fun memberSelection_enablesButtons() {
     // Click on U3
-    composeTestRule.onNodeWithText("U3").performClick()
+    composeTestRule.onNodeWithText("charlie@example.com").performClick()
 
     // Verify selected member
-    assert(fakeViewModel.uiState.value.selectedMember?.id == "U3")
+    assert(fakeViewModel.uiState.value.selectedMember?.email == "charlie@example.com")
 
     // Buttons should be enabled
     composeTestRule.onNodeWithTag(ReplacementOrganizeTestTags.SELECT_EVENT_BUTTON).assertIsEnabled()
@@ -74,16 +74,77 @@ class SelectSubstitutedScreenTest {
   }
 
   @Test
-  fun searchFilter_filtersList() {
-    // Type "Ali" in search bar
+  fun searchFilter_filtersList_with_email() {
+    composeTestRule.onNodeWithText("alice@example.com").assertIsDisplayed()
+    composeTestRule.onNodeWithText("bob@example.com").assertIsDisplayed()
+    composeTestRule.onNodeWithText("charlie@example.com").assertIsDisplayed()
+    composeTestRule.onNodeWithText("dana@example.com").assertIsDisplayed()
+
+    // Type "ali" in search bar
     composeTestRule
         .onNodeWithTag(ReplacementOrganizeTestTags.SEARCH_BAR)
         .performClick()
-        .performTextInput("2")
+        .performTextInput("ali")
 
-    composeTestRule.onNodeWithText("U2").assertIsDisplayed()
-    composeTestRule.onNodeWithText("U1").assertDoesNotExist()
-    composeTestRule.onNodeWithText("U3").assertDoesNotExist()
-    composeTestRule.onNodeWithText("U4").assertDoesNotExist()
+    composeTestRule.onNodeWithText("alice@example.com").assertIsDisplayed()
+    composeTestRule.onNodeWithText("bob@example.com").assertDoesNotExist()
+    composeTestRule.onNodeWithText("charlie@example.com").assertDoesNotExist()
+    composeTestRule.onNodeWithText("dana@example.com").assertDoesNotExist()
+  }
+
+  @Test
+  fun searchFilter_filtersList_with_id() {
+    composeTestRule.onNodeWithText("alice@example.com").assertIsDisplayed()
+    composeTestRule.onNodeWithText("bob@example.com").assertIsDisplayed()
+    composeTestRule.onNodeWithText("charlie@example.com").assertIsDisplayed()
+    composeTestRule.onNodeWithText("dana@example.com").assertIsDisplayed()
+
+    // Type "U4" in search bar
+    composeTestRule
+        .onNodeWithTag(ReplacementOrganizeTestTags.SEARCH_BAR)
+        .performClick()
+        .performTextInput("U4")
+
+    composeTestRule.onNodeWithText("alice@example.com").assertDoesNotExist()
+    composeTestRule.onNodeWithText("bob@example.com").assertDoesNotExist()
+    composeTestRule.onNodeWithText("charlie@example.com").assertDoesNotExist()
+    composeTestRule.onNodeWithText("dana@example.com").assertIsDisplayed()
+  }
+
+  @Test
+  fun searchFilter_filterList_with_displayName() {
+    composeTestRule.onNodeWithText("alice@example.com").assertIsDisplayed()
+    composeTestRule.onNodeWithText("bob@example.com").assertIsDisplayed()
+    composeTestRule.onNodeWithText("charlie@example.com").assertIsDisplayed()
+    composeTestRule.onNodeWithText("dana@example.com").assertIsDisplayed()
+
+    // Type "bob boss" in search bar
+    composeTestRule
+        .onNodeWithTag(ReplacementOrganizeTestTags.SEARCH_BAR)
+        .performClick()
+        .performTextInput("bob boss")
+
+    composeTestRule.onNodeWithText("alice@example.com").assertDoesNotExist()
+    composeTestRule.onNodeWithText("bob@example.com").assertIsDisplayed()
+    composeTestRule.onNodeWithText("charlie@example.com").assertDoesNotExist()
+    composeTestRule.onNodeWithText("dana@example.com").assertDoesNotExist()
+  }
+
+  @Test
+  fun searchFilter_filtersList_noMatch() {
+    composeTestRule.onNodeWithText("alice@example.com").assertIsDisplayed()
+    composeTestRule.onNodeWithText("bob@example.com").assertIsDisplayed()
+    composeTestRule.onNodeWithText("charlie@example.com").assertIsDisplayed()
+    composeTestRule.onNodeWithText("dana@example.com").assertIsDisplayed()
+
+    composeTestRule
+        .onNodeWithTag(ReplacementOrganizeTestTags.SEARCH_BAR)
+        .performClick()
+        .performTextInput("unknown user")
+
+    composeTestRule.onNodeWithText("dana@example.com").assertDoesNotExist()
+    composeTestRule.onNodeWithText("alice@example.com").assertDoesNotExist()
+    composeTestRule.onNodeWithText("bob@example.com").assertDoesNotExist()
+    composeTestRule.onNodeWithText("charlie@example.com").assertDoesNotExist()
   }
 }

@@ -7,6 +7,8 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
+private const val DELTA = 0.0001f
+
 /**
  * Unit tests for [EventOverlapCalculator].
  *
@@ -62,11 +64,11 @@ class EventOverlapCalculatorTest {
     val layout2 = layouts[event2]!!
 
     // Each event should occupy the full column width with no offset.
-    assertEquals(1.0f, layout1.widthFraction, 0.0001f)
-    assertEquals(0.0f, layout1.offsetFraction, 0.0001f)
+    assertEquals(1.0f, layout1.widthFraction, DELTA)
+    assertEquals(0.0f, layout1.offsetFraction, DELTA)
 
-    assertEquals(1.0f, layout2.widthFraction, 0.0001f)
-    assertEquals(0.0f, layout2.offsetFraction, 0.0001f)
+    assertEquals(1.0f, layout2.widthFraction, DELTA)
+    assertEquals(0.0f, layout2.offsetFraction, DELTA)
 
     // They should belong to different overlap groups (different clusters).
     assertTrue(layout1.overlapGroup != layout2.overlapGroup)
@@ -105,11 +107,11 @@ class EventOverlapCalculatorTest {
     val layout2 = layouts[event2]!!
 
     // They should each occupy full width with no horizontal offset.
-    assertEquals(1.0f, layout1.widthFraction, 0.0001f)
-    assertEquals(0.0f, layout1.offsetFraction, 0.0001f)
+    assertEquals(1.0f, layout1.widthFraction, DELTA)
+    assertEquals(0.0f, layout1.offsetFraction, DELTA)
 
-    assertEquals(1.0f, layout2.widthFraction, 0.0001f)
-    assertEquals(0.0f, layout2.offsetFraction, 0.0001f)
+    assertEquals(1.0f, layout2.widthFraction, DELTA)
+    assertEquals(0.0f, layout2.offsetFraction, DELTA)
 
     // They should be in different overlap groups because they are in different clusters.
     assertTrue(layout1.overlapGroup != layout2.overlapGroup)
@@ -143,14 +145,14 @@ class EventOverlapCalculatorTest {
     val layout2 = layouts[event2]!!
 
     // They should share the width equally (1/2 each).
-    assertEquals(0.5f, layout1.widthFraction, 0.0001f)
-    assertEquals(0.5f, layout2.widthFraction, 0.0001f)
+    assertEquals(0.5f, layout1.widthFraction, DELTA)
+    assertEquals(0.5f, layout2.widthFraction, DELTA)
 
     // They should have different horizontal offsets: one at 0.0, the other at 0.5.
     assertTrue(layout1.offsetFraction != layout2.offsetFraction)
     val offsets = listOf(layout1.offsetFraction, layout2.offsetFraction).sorted()
-    assertEquals(0.0f, offsets[0], 0.0001f)
-    assertEquals(0.5f, offsets[1], 0.0001f)
+    assertEquals(0.0f, offsets[0], DELTA)
+    assertEquals(0.5f, offsets[1], DELTA)
 
     // They should belong to the same overlap group (same cluster).
     assertEquals(layout1.overlapGroup, layout2.overlapGroup)
@@ -206,16 +208,16 @@ class EventOverlapCalculatorTest {
     assertEquals(layoutB.overlapGroup, layoutC.overlapGroup)
 
     // At most two events are active at the same time, so each event uses half of the width.
-    assertEquals(0.5f, layoutA.widthFraction, 0.0001f)
-    assertEquals(0.5f, layoutB.widthFraction, 0.0001f)
-    assertEquals(0.5f, layoutC.widthFraction, 0.0001f)
+    assertEquals(0.5f, layoutA.widthFraction, DELTA)
+    assertEquals(0.5f, layoutB.widthFraction, DELTA)
+    assertEquals(0.5f, layoutC.widthFraction, DELTA)
 
     // There should be exactly two distinct offsets: 0.0 and 0.5.
     val offsets = listOf(layoutA.offsetFraction, layoutB.offsetFraction, layoutC.offsetFraction)
     val distinctOffsets = offsets.toSet().sorted()
     assertEquals(2, distinctOffsets.size)
-    assertEquals(0.0f, distinctOffsets[0], 0.0001f)
-    assertEquals(0.5f, distinctOffsets[1], 0.0001f)
+    assertEquals(0.0f, distinctOffsets[0], DELTA)
+    assertEquals(0.5f, distinctOffsets[1], DELTA)
   }
 
   /**
@@ -263,17 +265,17 @@ class EventOverlapCalculatorTest {
 
     // Three events overlap, so each one uses one third of the width.
     val third = 1.0f / 3.0f
-    assertEquals(third, layout1.widthFraction, 0.0001f)
-    assertEquals(third, layout2.widthFraction, 0.0001f)
-    assertEquals(third, layout3.widthFraction, 0.0001f)
+    assertEquals(third, layout1.widthFraction, DELTA)
+    assertEquals(third, layout2.widthFraction, DELTA)
+    assertEquals(third, layout3.widthFraction, DELTA)
 
     // Offsets should be three distinct values within [0, 1).
     val offsets =
         listOf(layout1.offsetFraction, layout2.offsetFraction, layout3.offsetFraction).sorted()
     assertEquals(3, offsets.toSet().size)
-    assertEquals(0.0f, offsets[0], 0.0001f)
-    assertEquals(third, offsets[1], 0.0001f)
-    assertEquals(2 * third, offsets[2], 0.0001f)
+    assertEquals(0.0f, offsets[0], DELTA)
+    assertEquals(third, offsets[1], DELTA)
+    assertEquals(2 * third, offsets[2], DELTA)
   }
 
   /**
@@ -337,11 +339,11 @@ class EventOverlapCalculatorTest {
     assertTrue(morningLayout1.overlapGroup != afternoonLayout1.overlapGroup)
 
     // Inside each cluster, the two events should share the width equally.
-    assertEquals(0.5f, morningLayout1.widthFraction, 0.0001f)
-    assertEquals(0.5f, morningLayout2.widthFraction, 0.0001f)
+    assertEquals(0.5f, morningLayout1.widthFraction, DELTA)
+    assertEquals(0.5f, morningLayout2.widthFraction, DELTA)
 
-    assertEquals(0.5f, afternoonLayout1.widthFraction, 0.0001f)
-    assertEquals(0.5f, afternoonLayout2.widthFraction, 0.0001f)
+    assertEquals(0.5f, afternoonLayout1.widthFraction, DELTA)
+    assertEquals(0.5f, afternoonLayout2.widthFraction, DELTA)
   }
 
   /**
@@ -387,8 +389,8 @@ class EventOverlapCalculatorTest {
       val layoutA = layouts1[event]!!
       val layoutB = layouts2[event]!!
 
-      assertEquals(layoutA.widthFraction, layoutB.widthFraction, 0.0001f)
-      assertEquals(layoutA.offsetFraction, layoutB.offsetFraction, 0.0001f)
+      assertEquals(layoutA.widthFraction, layoutB.widthFraction, DELTA)
+      assertEquals(layoutA.offsetFraction, layoutB.offsetFraction, DELTA)
       assertEquals(layoutA.overlapGroup, layoutB.overlapGroup)
     }
   }

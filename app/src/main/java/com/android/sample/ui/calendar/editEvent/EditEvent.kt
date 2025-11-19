@@ -8,6 +8,7 @@ import com.android.sample.ui.calendar.editEvent.components.EditEventScreen
 
 // Assisted by AI
 object EditEventTestTags {
+  const val ROOT = "edit_event_screen"
   const val TITLE_FIELD = "edit_title_field"
   const val DESCRIPTION_FIELD = "edit_description_field"
   const val START_DATE_FIELD = "edit_start_date"

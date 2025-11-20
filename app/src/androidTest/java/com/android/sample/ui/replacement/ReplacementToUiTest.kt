@@ -6,6 +6,7 @@ import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementStatus
 import com.android.sample.ui.calendar.replacementEmployee.components.ReplacementRequestUi
 import com.android.sample.ui.calendar.replacementEmployee.toUi
+import com.android.sample.ui.theme.EventPalette
 import java.time.Instant
 import java.time.ZoneId
 import org.junit.Assert.assertEquals
@@ -29,7 +30,7 @@ class ReplacementToUiTest {
             participants = setOf("A", "B"),
             recurrenceStatus = RecurrenceStatus.OneTime,
             hasBeenDeleted = false,
-            color = com.android.sample.utils.EventColor.Blue,
+            color = EventPalette.Blue,
             version = 1L,
             locallyStoredBy = emptyList(),
             cloudStorageStatuses = emptySet(),

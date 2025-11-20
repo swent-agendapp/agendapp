@@ -176,7 +176,6 @@
     <string name="replacement_list_title">Ereignis auswählen</string>
     <string name="replacement_list_instruction">Wählen Sie ein Ereignis aus, für das Sie eine Vertretung benötigen</string>
     <string name="select_date_range_instruction">Wählen Sie den Datumsbereich aus, für den Sie eine Vertretung benötigen.</string>
-    <string name="event_overview_title">Ereignisübersicht</string>
 
     <!-- Organizations -->
     <string name="organization_list_title">Ihre organisationen</string>

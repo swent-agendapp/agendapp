@@ -5,6 +5,7 @@ import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.replacement.*
 import com.android.sample.ui.calendar.replacementEmployee.ReplacementEmployeeViewModel
+import com.android.sample.ui.theme.EventPalette
 import java.time.Instant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -191,7 +192,7 @@ class ReplacementEmployeeViewModelTest {
           participants = emptySet(),
           recurrenceStatus = RecurrenceStatus.OneTime,
           hasBeenDeleted = false,
-          color = com.android.sample.utils.EventColor.Blue,
+          color = EventPalette.Blue,
           version = 1L,
           locallyStoredBy = emptyList(),
           cloudStorageStatuses = emptySet(),

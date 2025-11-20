@@ -98,7 +98,7 @@ fun createEvent(
     cloudStorageStatuses: Set<CloudStorageStatus> = emptySet(),
     personalNotes: String? = null,
     participants: Set<String> = emptySet(),
-    color: EventColor = EventColor.Blue,
+    color: Color = EventPalette.Blue,
     recurrence: RecurrenceStatus = RecurrenceStatus.OneTime,
     endRecurrence: Instant? = null,
 ): List<Event> {

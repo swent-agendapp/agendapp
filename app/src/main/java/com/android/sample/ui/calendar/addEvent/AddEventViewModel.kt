@@ -137,9 +137,8 @@ class AddEventViewModel(
 
   /** @return `true` if start time is strictly after end recurrence time (invalid state). */
   fun startTimeIsAfterEndRecurrenceTime() =
-      if (_uiState.value.recurrenceMode != RecurrenceStatus.OneTime)
+      _uiState.value.recurrenceMode != RecurrenceStatus.OneTime &&
           _uiState.value.startInstant.isAfter(_uiState.value.recurrenceEndInstant)
-      else false
 
   /**
    * @return `true` only when all event fields are valid.

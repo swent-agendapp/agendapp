@@ -163,7 +163,7 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
     composeTestRule.waitForIdle()
 
     composeTestRule
-        .onNodeWithTag(AddEventTestTags.recurrenceTag(RecurrenceStatus.OneTime))
+        .onNodeWithTag(AddEventTestTags.recurrenceTag(RecurrenceStatus.Weekly))
         .performClick()
 
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).performClick()

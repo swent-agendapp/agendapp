@@ -40,9 +40,10 @@ class OrganizationRepositoryLocal : OrganizationRepository {
 
     val index = organizations.indexOfFirst { it.id == organizationId }
     require(index != -1) { "Organization with id $organizationId does not exist." }
-    organizations[index] = organization
+    organizations[index] = organization.copy(version = System.currentTimeMillis())
   }
 
+    //Later : do not delete the organization, but mark it as deleted with a flag.
   override suspend fun deleteOrganization(organizationId: String, user: User) {
     val organization = organizations.find { it.id == organizationId }
     require(organization != null) { "Organization with id $organizationId does not exist." }

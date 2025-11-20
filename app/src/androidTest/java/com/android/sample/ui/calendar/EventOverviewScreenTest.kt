@@ -53,6 +53,7 @@ class EventOverviewScreenTest {
   private class FakeEventRepository(private val event: Event) : EventRepository {
 
     var deletedIds = mutableListOf<String>()
+    var shouldFailDelete = false
 
     override suspend fun getAllEvents(): List<Event> = listOf(event)
 
@@ -61,6 +62,7 @@ class EventOverviewScreenTest {
     override suspend fun updateEvent(itemId: String, item: Event) {}
 
     override suspend fun deleteEvent(itemId: String) {
+      if (shouldFailDelete) throw RuntimeException("delete failed")
       deletedIds.add(itemId)
     }
 
@@ -147,5 +149,31 @@ class EventOverviewScreenTest {
     composeRule.onNodeWithTag(EventOverviewScreenTestTags.DIALOG_DELETE_BUTTON).performClick()
 
     runBlocking { assert(fakeRepo.deletedIds.contains("E123")) }
+  }
+
+  /**
+   * Verifies that when the repository fails to delete an event, the ViewModel's errorMsg is set
+   * appropriately.
+   */
+  @Test
+  fun clickingDelete_whenRepositoryFails_setsErrorMsg() {
+    val (vm, fakeRepo) = makeViewModelWith(sampleEvent())
+    fakeRepo.shouldFailDelete = true
+
+    composeRule.setContent {
+      EventOverviewScreen(
+          eventId = "E123",
+          eventOverviewViewModel = vm,
+          onBackClick = {},
+          onEditClick = {},
+          onDeleteClick = {})
+    }
+
+    composeRule.waitForIdle()
+
+    composeRule.onNodeWithTag(EventOverviewScreenTestTags.DELETE_BUTTON).performClick()
+    composeRule.onNodeWithTag(EventOverviewScreenTestTags.DIALOG_DELETE_BUTTON).performClick()
+    // Allow some time for the coroutine to process
+    assert(vm.uiState.value.errorMsg == "Failed to delete event")
   }
 }

@@ -101,9 +101,6 @@
     <string name="recurrence_monthly">Monatlich</string>
     <string name="recurrence_yearly">Jährlich</string>
 
-    <!-- Edit Event -->
-    <string name="edit_event_id">Ereignis-ID bearbeiten: %1$s</string>
-
     <!-- Sign In -->
     <string name="sign_in_app_title">Agendapp</string>
     <string name="sign_in_message">Planen, verfolgen und verwalten</string>
@@ -174,7 +171,6 @@
     <string name="event_overview_title">Ereignisübersicht</string>
     <string name="delete">Löschen</string>
     <string name="modify">Bearbeiten</string>
-    <string name="delete_event_title">Ereignis löschen:</string>
     <string name="delete_event_message">Sind Sie sicher, dass Sie dieses Ereignis löschen möchten?</string>
 
     <!-- Organizations -->

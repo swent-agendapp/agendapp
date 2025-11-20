@@ -26,10 +26,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,10 +35,12 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.common.SecondaryButton
 import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeTestTags
+import com.android.sample.ui.replacement.organize.ReplacementOrganizeViewModel
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.DefaultCardElevation
 import com.android.sample.ui.theme.GeneralPalette
@@ -69,8 +69,6 @@ import com.android.sample.ui.theme.WeightExtraHeavy
  * - Pressing **Select a date range** triggers `onSelectDateRange()`.
  * - The top bar back button triggers `onBack()`.
  *
- * @param onMemberSelected Callback invoked when a member is selected from the list. The selected
- *   member name is passed as a parameter.
  * @param onSelectEvents Called when the user confirms the member and wants to choose affected
  *   events.
  * @param onSelectDateRange Called when the user chooses to specify a time range first.
@@ -79,28 +77,20 @@ import com.android.sample.ui.theme.WeightExtraHeavy
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectSubstitutedScreen(
-    onMemberSelected: (String) -> Unit = {},
     onSelectEvents: () -> Unit = {},
     onSelectDateRange: () -> Unit = {},
     onBack: () -> Unit = {},
+    replacementOrganizeViewModel: ReplacementOrganizeViewModel = viewModel()
 ) {
-  var selectedMember by remember { mutableStateOf("") }
-  val members =
-      listOf(
-          "Alice",
-          "Bob",
-          "Charlie",
-          "David",
-          "Eve",
-          "Frank") // Placeholder for all possible participants
-
-  // Search UI state
-  var searchQuery by remember { mutableStateOf("") }
+  val uiState by replacementOrganizeViewModel.uiState.collectAsState()
 
   // Filter the list when search changes
   val filteredMembers =
-      remember(searchQuery) { members.filter { it.contains(searchQuery, ignoreCase = true) } }
-
+      uiState.memberList.filter { member ->
+        (member.displayName?.contains(uiState.memberSearchQuery, ignoreCase = true) == true) ||
+            (member.email?.contains(uiState.memberSearchQuery, ignoreCase = true) == true) ||
+            (member.id.contains(uiState.memberSearchQuery, ignoreCase = true))
+      }
   Scaffold(
       topBar = {
         SecondaryPageTopBar(
@@ -135,8 +125,8 @@ fun SelectSubstitutedScreen(
 
                       /** Search bar * */
                       TextField(
-                          value = searchQuery,
-                          onValueChange = { searchQuery = it },
+                          value = uiState.memberSearchQuery,
+                          onValueChange = { replacementOrganizeViewModel.setMemberSearchQuery(it) },
                           placeholder = { Text(text = stringResource(R.string.search_member)) },
                           modifier =
                               Modifier.fillMaxWidth()
@@ -158,7 +148,7 @@ fun SelectSubstitutedScreen(
                                   .testTag(ReplacementOrganizeTestTags.MEMBER_LIST),
                           verticalArrangement = Arrangement.Top) {
                             items(filteredMembers) { member ->
-                              val isSelected = member == selectedMember
+                              val isSelected = member == uiState.selectedMember
 
                               Box(
                                   modifier =
@@ -167,12 +157,13 @@ fun SelectSubstitutedScreen(
                                               if (isSelected) GeneralPalette.Secondary
                                               else Color.White)
                                           .clickable {
-                                            onMemberSelected(member)
-                                            selectedMember = member
+                                            replacementOrganizeViewModel.setSelectedMember(member)
                                           }
                                           .padding(vertical = PaddingMedium),
                                   contentAlignment = Alignment.Center) {
-                                    Text(text = member, textAlign = TextAlign.Center)
+                                    Text(
+                                        text = member.email ?: member.id,
+                                        textAlign = TextAlign.Center)
                                   }
 
                               HorizontalDivider(
@@ -183,7 +174,9 @@ fun SelectSubstitutedScreen(
 
                       /** Read-only selected member field * */
                       OutlinedTextField(
-                          value = stringResource(R.string.selected_member, selectedMember),
+                          value =
+                              stringResource(
+                                  R.string.selected_member, uiState.selectedMember?.email ?: ""),
                           onValueChange = {}, // ignored because readOnly
                           modifier =
                               Modifier.fillMaxWidth()
@@ -206,16 +199,14 @@ fun SelectSubstitutedScreen(
                   verticalArrangement = Arrangement.spacedBy(PaddingMedium),
                   horizontalAlignment = Alignment.CenterHorizontally) {
                     SecondaryButton(
-                        modifier =
-                            Modifier.testTag(ReplacementOrganizeTestTags.SELECT_EVENT_BUTTON),
+                        Modifier.testTag(ReplacementOrganizeTestTags.SELECT_EVENT_BUTTON),
                         text = stringResource(R.string.select_events),
-                        enabled = selectedMember.isNotEmpty(),
+                        enabled = uiState.selectedMember != null,
                         onClick = onSelectEvents)
                     SecondaryButton(
-                        modifier =
-                            Modifier.testTag(ReplacementOrganizeTestTags.SELECT_DATE_RANGE_BUTTON),
+                        Modifier.testTag(ReplacementOrganizeTestTags.SELECT_DATE_RANGE_BUTTON),
                         text = stringResource(R.string.select_date_range),
-                        enabled = selectedMember.isNotEmpty(),
+                        enabled = uiState.selectedMember != null,
                         onClick = onSelectDateRange)
                   }
             }

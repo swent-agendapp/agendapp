@@ -1,5 +1,6 @@
 package com.android.sample.ui.calendar.eventOverview
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.sample.model.authentication.AuthRepository
@@ -16,7 +17,8 @@ data class OverviewUIState(
     val event: Event? = null,
     val participantsNames: List<String> = emptyList(),
     val errorMsg: String? = null,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val isDeleteSuccessful: Boolean = false
 )
 
 /**
@@ -51,6 +53,22 @@ class EventOverviewViewModel(
   /** Sets the loading state in the UI state. */
   private fun setLoading(isLoading: Boolean) {
     _uiState.value = _uiState.value.copy(isLoading = isLoading)
+  }
+  /**
+   * Deletes the event with the given [eventId] from the [EventRepository].
+   *
+   * @param eventId The unique identifier of the event to delete.
+   */
+  fun deleteEvent(eventId: String) {
+    viewModelScope.launch {
+      try {
+        eventRepository.deleteEvent(eventId)
+        _uiState.value = _uiState.value.copy(isDeleteSuccessful = true)
+      } catch (e: Exception) {
+        Log.e("EventOverviewViewModel", "Failed to delete event $eventId: ${e.message}")
+        _uiState.value = _uiState.value.copy(errorMsg = "Failed to delete event")
+      }
+    }
   }
 
   /**

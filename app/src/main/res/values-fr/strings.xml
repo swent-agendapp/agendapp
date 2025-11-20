@@ -102,9 +102,6 @@
     <string name="recurrence_monthly">Mensuel</string>
     <string name="recurrence_yearly">Annuel</string>
 
-    <!-- Edit Event -->
-    <string name="edit_event_id">Modification de l’événement ID : %1$s</string>
-
     <!-- Sign In -->
     <string name="sign_in_app_title">Agendapp</string>
     <string name="sign_in_message">Planifiez, suivez et gérez</string>
@@ -176,6 +173,9 @@
     <string name="view_mode_5days">5 jours</string>
     <string name="view_mode_7days">7 jours</string>
     <string name="view_mode_month">Mois</string>
+    <string name="delete">Supprimer</string>
+    <string name="modify">Modifier</string>
+    <string name="delete_event_message">Êtes-vous sûr de vouloir supprimer cet événement?</string>
 
     <!-- Organizations -->
     <string name="organization_list_title">Vos organisations</string>

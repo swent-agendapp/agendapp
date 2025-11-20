@@ -21,13 +21,14 @@ class OrganizationRepositoryFirebase(private val db: FirebaseFirestore) : Organi
 
     val organizations = snapshot.mapNotNull { OrganizationMapper.fromDocument(document = it) }
 
-    if (organizations.isNotEmpty()) {
+    /*if (organizations.isNotEmpty()) {
       return organizations.filter { organization ->
         organization.admins.any { it.id == user.id } ||
             organization.members.any { it.id == user.id }
       }
-    }
-    return emptyList()
+    }*/
+    return organizations
+    // return emptyList()
   }
 
   override suspend fun insertOrganization(organization: Organization, user: User) {

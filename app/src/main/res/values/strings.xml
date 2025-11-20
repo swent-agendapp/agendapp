@@ -126,9 +126,6 @@
     <string name="recurrence_monthly">Monthly</string>
     <string name="recurrence_yearly">Yearly</string>
 
-    <!-- Edit Event -->
-    <string name="edit_event_id">Editing event ID: %1$s</string>
-
     <!-- Sign In -->
     <string name="sign_in_app_title">Agendapp</string>
     <string name="sign_in_message">Plan, track and manage</string>
@@ -182,6 +179,9 @@
     <string name="view_mode_5days">5 days</string>
     <string name="view_mode_7days">7 days</string>
     <string name="view_mode_month">Month</string>
+    <string name="delete">Delete</string>
+    <string name="modify">Modify</string>
+    <string name="delete_event_message">Are you sure you want to delete this event?</string>
 </resources>
 
 

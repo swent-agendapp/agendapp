@@ -16,7 +16,6 @@ import kotlinx.coroutines.launch
 data class OrganizationUIState(
     val isLoading: Boolean = true,
     val organizations: List<Organization> = emptyList(),
-    val selectedOrganization: Organization? = null,
     val errorMsg: String? = null
 )
 
@@ -24,7 +23,7 @@ data class OrganizationUIState(
 open class OrganizationViewModel(
     private val organizationRepository: OrganizationRepository =
         OrganizationRepositoryProvider.repository,
-    private val authRepository: AuthRepository = AuthRepositoryProvider.repository
+    private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
 ) : ViewModel() {
 
   // State holding the UI state of the organizations of the current user
@@ -57,18 +56,6 @@ open class OrganizationViewModel(
   // Clear any error message in the UI state
   open fun clearErrorMsg() {
     _uiState.update { it.copy(errorMsg = null) }
-  }
-
-  // Handle organization selection
-  open fun selectOrganization(organization: Organization) {
-
-    // Ensure the selected organization is in the user's organization list
-    require(_uiState.value.organizations.contains(organization)) {
-      "Selected organization is not in the user's organization list."
-    }
-
-    // Update the selected organization in the UI state
-    _uiState.update { it.copy(selectedOrganization = organization) }
   }
 
   // Add a new organization with the given name for the current user (himself as the only admin and

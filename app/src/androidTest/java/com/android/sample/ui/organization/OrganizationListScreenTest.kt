@@ -18,6 +18,7 @@ class OrganizationListScreenTest {
   @get:Rule val composeTestRule = createComposeRule()
 
   private lateinit var fakeViewModel: FakeOrganizationViewModel
+  private lateinit var selectedOrgViewModel: SelectedOrganizationViewModel
 
   private val organizations =
       listOf(
@@ -27,6 +28,7 @@ class OrganizationListScreenTest {
   @Before
   fun setUp() {
     fakeViewModel = FakeOrganizationViewModel()
+    selectedOrgViewModel = SelectedOrganizationViewModel()
   }
 
   @Test
@@ -62,13 +64,10 @@ class OrganizationListScreenTest {
     // Mock organizations loaded state
     fakeViewModel.setOrganizations(organizations)
 
-    var selected = ""
     composeTestRule.setContent {
       OrganizationListScreen(
           organizationViewModel = fakeViewModel,
-          onOrganizationSelected = {
-            selected = fakeViewModel.uiState.value.selectedOrganization?.name ?: ""
-          })
+          selectedOrganizationViewModel = selectedOrgViewModel)
     }
 
     // Perform click on the second organization
@@ -77,7 +76,7 @@ class OrganizationListScreenTest {
         .performClick()
 
     // Assert Org 2 is selected
-    assert(selected == "Org 2")
+    assert(selectedOrgViewModel.selectedOrganization.value?.name == "Org 2")
   }
 
   @Test

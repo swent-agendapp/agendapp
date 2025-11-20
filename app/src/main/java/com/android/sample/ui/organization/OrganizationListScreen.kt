@@ -46,6 +46,7 @@ object OrganizationListScreenTestTags {
 @Composable
 fun OrganizationListScreen(
     organizationViewModel: OrganizationViewModel = viewModel(),
+    selectedOrganizationViewModel: SelectedOrganizationViewModel = viewModel(),
     onOrganizationSelected: () -> Unit = {},
     onAddOrganizationClicked: () -> Unit = {},
 ) {
@@ -89,7 +90,7 @@ fun OrganizationListScreen(
                 organizations = uiState.organizations,
                 onOrganizationSelected = { organization ->
                   // Update selected organization in ViewModel
-                  organizationViewModel.selectOrganization(organization)
+                  selectedOrganizationViewModel.selectOrganization(organization)
                   // Invoke given callback after selection
                   onOrganizationSelected()
                 })

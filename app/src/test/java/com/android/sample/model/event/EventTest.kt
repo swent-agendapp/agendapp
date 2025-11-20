@@ -26,7 +26,7 @@ class EventTest {
             description = "Team sync",
             startDate = startLocal.atZone(ZoneId.systemDefault()).toInstant(),
             endDate = endLocal.atZone(ZoneId.systemDefault()).toInstant(),
-            color = EventPalette.Green)
+            color = EventPalette.Green)[0]
   }
 
   @Test
@@ -55,7 +55,7 @@ class EventTest {
 
   @Test
   fun defaultColor_shouldBeUsedWhenNotSpecified() {
-    val defaultEvent = createEvent()
+    val defaultEvent = createEvent()[0]
     assertEquals(EventPalette.Blue, defaultEvent.color)
   }
 

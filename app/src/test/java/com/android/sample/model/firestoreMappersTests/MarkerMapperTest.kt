@@ -10,15 +10,13 @@ import org.mockito.Mockito.*
 
 class MarkerMapperTest {
 
-  private val sampleLocation = Location(latitude = 10.0, longitude = 20.0, label = "Loc Label")
-  private val sampleMapLocation =
-      mapOf("latitude" to 10.0, "longitude" to 20.0, "label" to "Loc Label")
+  private val sampleLocation = Location(latitude = 10.0, longitude = 20.0)
+  private val sampleMapLocation = mapOf("latitude" to 10.0, "longitude" to 20.0)
 
-  private val sampleMarker =
-      Marker(id = "marker123", label = "Marker Label", location = sampleLocation)
+  private val sampleMarker = Marker(id = "marker123", location = sampleLocation)
 
   private val sampleMap: Map<String, Any?> =
-      mapOf("id" to "marker123", "label" to "Marker Label", "location" to sampleMapLocation)
+      mapOf("id" to "marker123", "location" to sampleMapLocation)
 
   // --- fromDocument tests ---
   @Test
@@ -26,11 +24,9 @@ class MarkerMapperTest {
     val locationDoc = mock(DocumentSnapshot::class.java)
     `when`(locationDoc.getDouble("latitude")).thenReturn(10.0)
     `when`(locationDoc.getDouble("longitude")).thenReturn(20.0)
-    `when`(locationDoc.getString("label")).thenReturn("Loc Label")
 
     val doc = mock(DocumentSnapshot::class.java)
     `when`(doc.getString("id")).thenReturn("marker123")
-    `when`(doc.getString("label")).thenReturn("Marker Label")
     `when`(doc.get("location")).thenReturn(locationDoc)
     `when`(doc.id).thenReturn("fallbackId")
 
@@ -43,7 +39,6 @@ class MarkerMapperTest {
   fun fromDocument_missingLocation_returnsNull() {
     val doc = mock(DocumentSnapshot::class.java)
     `when`(doc.getString("id")).thenReturn("marker123")
-    `when`(doc.getString("label")).thenReturn("Marker Label")
     `when`(doc.get("location")).thenReturn(null)
     `when`(doc.id).thenReturn("fallbackId")
 
@@ -124,11 +119,9 @@ class MarkerMapperTest {
   fun toMap_returnsCorrectMap() {
     val map = MarkerMapper.toMap(sampleMarker)
     assertThat(map["id"]).isEqualTo(sampleMarker.id)
-    assertThat(map["label"]).isEqualTo(sampleMarker.label)
 
     val locationMap = map["location"] as Map<*, *>
     assertThat(locationMap["latitude"]).isEqualTo(sampleLocation.latitude)
     assertThat(locationMap["longitude"]).isEqualTo(sampleLocation.longitude)
-    assertThat(locationMap["label"]).isEqualTo(sampleLocation.label)
   }
 }

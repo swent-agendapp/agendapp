@@ -47,7 +47,7 @@ class CalendarViewModelTest {
             description = "Team sync",
             startDate = Instant.parse("2025-01-10T10:00:00Z"),
             endDate = Instant.parse("2025-01-10T11:00:00Z"),
-            personalNotes = "Bring laptop")
+            personalNotes = "Bring laptop")[0]
 
     event2 =
         createEvent(
@@ -55,7 +55,7 @@ class CalendarViewModelTest {
             description = "Tech event",
             startDate = Instant.parse("2025-02-01T09:00:00Z"),
             endDate = Instant.parse("2025-02-03T18:00:00Z"),
-        )
+        )[0]
 
     // Insert the sample events into the repository before each test.
     runTest {

@@ -50,9 +50,8 @@ data class MapUiState(
 
 class MapViewModel(
     app: Application,
+    private val mapRepository: MapRepository = MapRepositoryProvider.repository
 ) : AndroidViewModel(app) {
-
-  private val mapRepository: MapRepository = MapRepositoryProvider.repository
 
   /** Provider for android GPS */
   private val fusedClient = LocationServices.getFusedLocationProviderClient(app)

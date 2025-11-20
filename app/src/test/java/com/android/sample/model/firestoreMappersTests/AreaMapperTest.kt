@@ -27,20 +27,18 @@ class AreaMapperTest {
   fun fromMap_withValidData_returnsArea() {
     val markers =
         listOf(
-            Marker("marker1", Location(10.0, 20.0, "Loc 1"), "Marker 1"),
-            Marker("marker2", Location(15.0, 25.0, "Loc 2"), "Marker 2"),
-            Marker("marker3", Location(12.0, 22.0, "Loc 3"), "Marker 3"))
+            Marker("marker1", Location(10.0, 20.0)),
+            Marker("marker2", Location(15.0, 25.0)),
+            Marker("marker3", Location(12.0, 22.0)))
 
     val markersData =
         markers.map { marker ->
           mapOf(
               "id" to marker.id,
-              "label" to marker.label,
               "location" to
                   mapOf(
                       "latitude" to marker.location.latitude,
-                      "longitude" to marker.location.longitude,
-                      "label" to marker.location.label))
+                      "longitude" to marker.location.longitude))
         }
 
     val data = mapOf("id" to "area123", "label" to "My Area", "markers" to markersData)
@@ -72,19 +70,17 @@ class AreaMapperTest {
   fun toMap_returnsCorrectMap() {
     val markers =
         listOf(
-            Marker(id = "m1", location = Location(10.0, 20.0), label = "Marker 1"),
-            Marker(id = "m2", location = Location(15.0, 25.0), label = "Marker 2"),
-            Marker(id = "m3", location = Location(12.0, 22.0), label = "Marker 3"))
+            Marker(id = "m1", location = Location(10.0, 20.0)),
+            Marker(id = "m2", location = Location(15.0, 25.0)),
+            Marker(id = "m3", location = Location(12.0, 22.0)))
 
     val area = Area(id = "area123", label = "My Area", markers = markers)
     val map = AreaMapper.toMap(area)
 
     assertThat(map["id"]).isEqualTo("area123")
-    assertThat(map["label"]).isEqualTo("My Area")
     val markersList =
         (map["markers"] as? List<*>)?.filterIsInstance<Map<String, Any?>>() ?: emptyList()
     assertThat(markersList.size).isEqualTo(3)
-    assertThat(markersList.map { it["label"] }).containsExactly("Marker 1", "Marker 2", "Marker 3")
   }
 
   // --- Helpers ---
@@ -132,7 +128,5 @@ class AreaMapperTest {
     assertThat(area.id).isEqualTo("area123")
     assertThat(area.label).isEqualTo("My Area")
     assertThat(area.getSortedMarkers().size).isEqualTo(3)
-    assertThat(area.getSortedMarkers().map { it.label })
-        .containsExactly("Marker 1", "Marker 2", "Marker 3")
   }
 }

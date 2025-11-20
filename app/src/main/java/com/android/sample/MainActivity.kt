@@ -19,12 +19,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.credentials.CredentialManager
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.android.sample.model.authentication.AuthRepositoryFirebase
 import com.android.sample.model.authentication.AuthRepositoryProvider
@@ -202,19 +200,15 @@ fun Agendapp(
 
               // Edit Event Graph
               navigation(startDestination = Screen.EditEvent.route, route = Screen.EditEvent.name) {
-                composable(
-                    route = Screen.EditEvent.route,
-                    arguments = listOf(navArgument("eventId") { type = NavType.StringType })) {
-                        navBackStackEntry ->
-                      val eventId = navBackStackEntry.arguments?.getString("eventId")
-
-                      eventId?.let {
-                        EditEventFlow(
-                            eventId = it,
-                            onCancel = { navigationActions.navigateBack() },
-                            onFinish = { navigationActions.navigateBack() })
-                      } ?: run { Log.e("EditEventScreen", "Event id is null") }
-                    }
+                composable(Screen.EditEvent.route) { navBackStackEntry ->
+                  val eventId = navBackStackEntry.arguments?.getString("eventId")
+                  eventId?.let {
+                    EditEventFlow(
+                        eventId = it,
+                        onCancel = { navigationActions.navigateBack() },
+                        onFinish = { navigationActions.navigateBack() })
+                  } ?: run { Log.e("EditEventScreen", "Event id is null") }
+                }
               }
 
               // Add Event Screen Flow

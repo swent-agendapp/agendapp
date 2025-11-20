@@ -1,5 +1,6 @@
 package com.android.sample.ui.calendar.eventOverview
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.sample.model.authentication.AuthRepository
@@ -64,6 +65,7 @@ class EventOverviewViewModel(
         eventRepository.deleteEvent(eventId)
         _uiState.value = _uiState.value.copy(isDeleteSuccessful = true)
       } catch (e: Exception) {
+        Log.e("EventOverviewViewModel", "Failed to delete event $eventId: ${e.message}")
         _uiState.value = _uiState.value.copy(errorMsg = "Failed to delete event")
       }
     }

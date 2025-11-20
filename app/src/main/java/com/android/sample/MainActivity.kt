@@ -42,6 +42,7 @@ import com.android.sample.ui.profile.AdminContactScreen
 import com.android.sample.ui.profile.ProfileScreen
 import com.android.sample.ui.replacement.ReplacementOverviewScreen
 import com.android.sample.ui.replacement.ReplacementPendingListScreen
+import com.android.sample.ui.replacement.ReplacementUpcomingListScreen
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeScreen
 import com.android.sample.ui.settings.SettingsScreen
 import com.android.sample.ui.theme.SampleAppTheme
@@ -213,6 +214,9 @@ fun Agendapp(
                           },
                           onWaitingConfirmationClick = {
                             navigationActions.navigateTo(Screen.ReplacementPending)
+                          },
+                          onConfirmedClick = {
+                              navigationActions.navigateTo(Screen.ReplacementUpcoming)
                           })
                     }
                     composable(Screen.ReplacementOrganize.route) {
@@ -226,6 +230,11 @@ fun Agendapp(
                     // Pending Replacement Screen
                     composable(Screen.ReplacementPending.route) {
                       ReplacementPendingListScreen(
+                          onNavigateBack = { navigationActions.navigateBack() })
+                    }
+                  // accepted replacement screen
+                    composable(Screen.ReplacementUpcoming.route) {
+                      ReplacementUpcomingListScreen(
                           onNavigateBack = { navigationActions.navigateBack() })
                     }
                   }

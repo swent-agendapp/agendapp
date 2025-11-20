@@ -11,9 +11,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import com.android.sample.ui.theme.ButtonElevationMedium
 import com.android.sample.ui.theme.CornerRadiusLarge
+import com.android.sample.ui.theme.GeneralPalette
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.PaddingSmall
-import com.android.sample.ui.theme.Salmon
 import com.android.sample.ui.theme.WeightLight
 import com.android.sample.ui.theme.WeightMedium
 
@@ -43,9 +43,9 @@ fun PrimaryButton(
       enabled = enabled,
       colors =
           ButtonDefaults.buttonColors(
-              containerColor = Salmon,
+              containerColor = GeneralPalette.Primary,
               contentColor = Color.White,
-              disabledContainerColor = Salmon.copy(alpha = WeightLight),
+              disabledContainerColor = GeneralPalette.Primary.copy(alpha = WeightLight),
               disabledContentColor = Color.White.copy(alpha = WeightMedium))) {
         Text(text = text, modifier = Modifier.padding(innerPadding))
       }

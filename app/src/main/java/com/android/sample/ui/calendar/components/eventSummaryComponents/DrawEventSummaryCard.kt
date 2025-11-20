@@ -27,7 +27,7 @@ import com.android.sample.ui.calendar.utils.NO_DATA_DEFAULT_VALUE
 import com.android.sample.ui.theme.AlphaExtraLow
 import com.android.sample.ui.theme.AlphaLow
 import com.android.sample.ui.theme.ElevationExtraLow
-import com.android.sample.utils.EventColor
+import com.android.sample.ui.theme.EventPalette
 import java.time.ZonedDateTime
 
 @Composable
@@ -35,7 +35,7 @@ fun DrawEventSummaryCard(
     modifier: Modifier = Modifier,
     style: EventSummaryCardStyle = EventSummaryCardDefaults.style,
     textConfig: EventSummaryTextConfig = EventSummaryCardDefaults.texts,
-    sideColor: Color = EventColor.Blue.toComposeColor(),
+    sideColor: Color = EventPalette.Blue,
     shape: RoundedCornerShape = RoundedCornerShape(style.cornerRadiusDp),
     // Title
     titleText: String = "No title provided...",

@@ -31,11 +31,11 @@ import com.android.sample.ui.calendar.style.EventSummaryCardStyle
 import com.android.sample.ui.theme.AlphaHigh
 import com.android.sample.ui.theme.BorderWidthThin
 import com.android.sample.ui.theme.CornerRadiusLarge
+import com.android.sample.ui.theme.EventPalette
 import com.android.sample.ui.theme.IconSizeMedium
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.RowHeightMedium
 import com.android.sample.ui.theme.SpacingSmall
-import com.android.sample.utils.EventColor
 
 /**
  * Displays a participant list with gentle zebra striping and optional fixed-height scrolling.
@@ -53,7 +53,7 @@ fun ParticipantsSection(
     participantNames: List<String> = emptyList(),
     rowHeight: Dp = RowHeightMedium,
     visibleRows: Int = EventSummaryCardStyle().participantsVisibleRows,
-    borderColor: Color = EventColor.Blue.toComposeColor(),
+    borderColor: Color = EventPalette.Blue,
 ) {
   if (participantNames.isNotEmpty()) {
     // Section header with "Participants" label and people icon

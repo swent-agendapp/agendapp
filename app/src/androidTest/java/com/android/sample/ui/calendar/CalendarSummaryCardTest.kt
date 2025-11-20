@@ -19,7 +19,7 @@ import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.ui.calendar.components.EventSummaryCard
 import com.android.sample.ui.calendar.components.EventSummaryCardTags
-import com.android.sample.utils.EventColor
+import com.android.sample.ui.theme.EventPalette
 import java.time.Duration
 import java.time.Instant
 import java.time.ZoneId
@@ -51,7 +51,7 @@ class EventSummaryCardTest {
       end: Instant,
       recurrence: RecurrenceStatus = RecurrenceStatus.OneTime,
       participants: Set<String> = emptySet(),
-      color: EventColor = EventColor.Green
+      color: Color = EventPalette.Green
   ) =
       Event(
           id = "e-test",
@@ -308,7 +308,7 @@ class EventSummaryCardTest {
   fun leftColoredBar_matchesEventColor() {
     // We pick a strong color to assert (Red)
     val e =
-        event(title = "Color", start = base, end = base.plusSeconds(3600), color = EventColor.Red)
+        event(title = "Color", start = base, end = base.plusSeconds(3600), color = EventPalette.Red)
 
     composeTestRule.setContent { EventSummaryCard(event = e, participantNames = emptyList()) }
 
@@ -317,7 +317,7 @@ class EventSummaryCardTest {
         composeTestRule.onNodeWithTag(EventSummaryCardTags.SIDE_BAR).assertExists().captureToImage()
     val androidBitmap = bitmap.asAndroidBitmap()
     val sampled = dominantColor(androidBitmap)
-    val expected = EventColor.Red.toComposeColor()
+    val expected = EventPalette.Red
     assertTrue(
         "Sidebar color $sampled should be close to $expected",
         colorsAreClose(sampled, expected, eps = 0.06f))

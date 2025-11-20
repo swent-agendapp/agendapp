@@ -7,7 +7,7 @@ import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.calendar.RecurrenceStatus
-import com.android.sample.utils.EventColor
+import com.android.sample.ui.theme.EventPalette
 import java.time.Duration
 import java.time.Instant
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -103,7 +103,7 @@ class EditEventViewModel(
                 version = System.currentTimeMillis(),
                 recurrenceStatus = state.recurrenceMode,
                 hasBeenDeleted = false,
-                color = EventColor.Blue)
+                color = EventPalette.Blue)
         repository.updateEvent(updated.id, updated)
       } catch (e: Exception) {
         Log.e("EditEventViewModel", "Error saving event changes: ${e.message}")

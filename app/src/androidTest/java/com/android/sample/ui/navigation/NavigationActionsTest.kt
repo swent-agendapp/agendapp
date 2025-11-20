@@ -49,12 +49,6 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
   // Create a FakeCredentialManager with the fake token
   val fakeCredentialManager = FakeCredentialManager.create(fakeGoogleIdToken)
 
-  // Set the OrganizationRepository to use the Firebase emulator
-  init {
-    OrganizationRepositoryProvider.repository =
-        OrganizationRepositoryFirebase(FirebaseEmulator.firestore)
-  }
-
   @get:Rule
   val permissionRule: GrantPermissionRule =
       GrantPermissionRule.grant(

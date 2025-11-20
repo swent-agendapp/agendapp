@@ -78,11 +78,11 @@ open class FirebaseEmulatedTest {
    */
   @Before
   open fun setUp() {
+    MapRepositoryProvider.repository = createInitializedMapRepository()
+    OrganizationRepositoryProvider.repository = createInitializedOrganizationRepository()
+    EventRepositoryProvider.repository = createInitializedEventRepository()
+    ReplacementRepositoryProvider.repository = createInitializedReplacementRepository()
     runTest {
-      MapRepositoryProvider.repository = createInitializedMapRepository()
-      OrganizationRepositoryProvider.repository = createInitializedOrganizationRepository()
-      EventRepositoryProvider.repository = createInitializedEventRepository()
-      ReplacementRepositoryProvider.repository = createInitializedReplacementRepository()
       clearAllCollections()
       assertAllCollectionsEmpty()
     }

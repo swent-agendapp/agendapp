@@ -1,32 +1,18 @@
 package com.android.sample.ui.replacement
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,7 +20,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -45,11 +30,11 @@ import com.android.sample.model.replacement.mockData.getMockReplacements
 import com.android.sample.ui.calendar.utils.DateTimeUtils.DATE_FORMAT_PATTERN
 import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.common.SecondaryPageTopBar
+import com.android.sample.ui.components.MemberSelectionList
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.DefaultCardElevation
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.PaddingMedium
-import com.android.sample.ui.theme.Salmon
 import com.android.sample.ui.theme.SpacingMedium
 import com.android.sample.ui.theme.SpacingSmall
 import com.android.sample.ui.theme.WeightVeryHeavy
@@ -76,7 +61,7 @@ fun ProcessReplacementScreen(
   val replacement =
       remember(replacementId) { getMockReplacements().first { it.id == replacementId } }
 
-  val candidates = listOf("Emilien", "Haobin", "Noa", "Weifang", "Timael", "Méline", "Nathan")
+  val candidates = listOf("Emilien", "Haobin", "Noa", "Weifeng", "Timael", "Méline", "Nathan")
 
   var selectedMembers by remember { mutableStateOf(setOf<String>()) }
   var searchQuery by remember { mutableStateOf("") }
@@ -142,86 +127,15 @@ fun ProcessReplacementScreen(
                   modifier = Modifier.fillMaxWidth().weight(WeightVeryHeavy),
                   elevation = CardDefaults.cardElevation(defaultElevation = DefaultCardElevation),
                   shape = RoundedCornerShape(CornerRadiusLarge)) {
-                    Column(Modifier.fillMaxSize()) {
-                      TextField(
-                          value = searchQuery,
-                          onValueChange = { searchQuery = it },
-                          placeholder = { Text(text = stringResource(R.string.search_member)) },
-                          modifier =
-                              Modifier.fillMaxWidth()
-                                  .testTag(ProcessReplacementTestTags.SEARCH_BAR),
-                          singleLine = true,
-                          trailingIcon = {
-                            Icon(imageVector = Icons.Default.Search, contentDescription = null)
-                          },
-                          shape = RoundedCornerShape(CornerRadiusLarge))
-
-                      LazyColumn(
-                          modifier =
-                              Modifier.weight(WeightVeryHeavy)
-                                  .fillMaxWidth()
-                                  .testTag(ProcessReplacementTestTags.MEMBER_LIST),
-                          verticalArrangement = Arrangement.Top) {
-                            items(filteredCandidates) { member ->
-                              val isSelected = member in selectedMembers
-
-                              Box(
-                                  modifier =
-                                      Modifier.fillMaxWidth()
-                                          .background(
-                                              if (isSelected) Salmon.copy(alpha = 0.9f)
-                                              else Color.White)
-                                          .clickable {
-                                            selectedMembers =
-                                                if (isSelected) {
-                                                  selectedMembers - member
-                                                } else {
-                                                  selectedMembers + member
-                                                }
-                                          }
-                                          .padding(vertical = PaddingMedium)
-                                          .testTag(ProcessReplacementTestTags.memberTag(member)),
-                                  contentAlignment = Alignment.Center) {
-                                    Text(text = member)
-                                  }
-
-                              HorizontalDivider(
-                                  thickness = DividerDefaults.Thickness,
-                                  color = DividerDefaults.color)
-                            }
-                          }
-
-                      val selectedMembersText =
-                          if (selectedMembers.isEmpty()) {
-                            stringResource(R.string.replacement_selected_members_none)
-                          } else {
-                            val count = selectedMembers.size
-                            val label = selectedMembers.joinToString(",")
-                            pluralStringResource(
-                                R.plurals.replacement_selected_members,
-                                count,
-                                count,
-                                label,
-                            )
-                          }
-
-                      OutlinedTextField(
-                          value = selectedMembersText,
-                          onValueChange = {},
-                          modifier =
-                              Modifier.fillMaxWidth()
-                                  .testTag(ProcessReplacementTestTags.SELECTED_SUMMARY),
-                          singleLine = true,
-                          shape = RoundedCornerShape(CornerRadiusLarge),
-                          readOnly = true,
-                          colors =
-                              OutlinedTextFieldDefaults.colors(
-                                  focusedBorderColor = Color.Transparent,
-                                  unfocusedBorderColor = Color.Transparent,
-                                  disabledBorderColor = Color.Transparent,
-                              ),
-                      )
-                    }
+                    MemberSelectionList(
+                        members = candidates,
+                        selectedMembers = selectedMembers,
+                        onSelectionChanged = { selectedMembers = it },
+                        searchTestTag = ProcessReplacementTestTags.SEARCH_BAR,
+                        listTestTag = ProcessReplacementTestTags.MEMBER_LIST,
+                        summaryTestTag = ProcessReplacementTestTags.SELECTED_SUMMARY,
+                        isSingleSelection = false,
+                    )
                   }
 
               Spacer(modifier = Modifier.height(SpacingMedium))

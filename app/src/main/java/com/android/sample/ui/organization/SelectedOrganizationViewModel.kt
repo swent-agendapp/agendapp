@@ -5,16 +5,19 @@ import com.android.sample.model.organization.Organization
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
+/** ViewModel to manage the selected organization state across the app. */
 class SelectedOrganizationViewModel : ViewModel() {
 
-  private val _selectedOrganization = MutableStateFlow<Organization?>(null)
-  val selectedOrganization: StateFlow<Organization?> = _selectedOrganization
+  private val _selectedOrganizationId = MutableStateFlow<String?>(null)
+  val selectedOrganizationId: StateFlow<String?> = _selectedOrganizationId
 
-  fun selectOrganization(org: Organization) {
-    _selectedOrganization.value = org
+  // Select an organization by its instance
+  fun changeSelectedOrganization(org: Organization) {
+    _selectedOrganizationId.value = org.id
   }
 
+  // Clear the selected organization
   fun clearSelection() {
-    _selectedOrganization.value = null
+    _selectedOrganizationId.value = null
   }
 }

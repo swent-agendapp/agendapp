@@ -14,6 +14,7 @@ import java.time.ZoneId
  * Data class representing a calendar event.
  *
  * @property id Unique identifier for the event.
+ * @property organizationId Identifier for the organization the event belongs to.
  * @property title Title of the event.
  * @property description Description of the event.
  * @property startDate Start date and time of the event.
@@ -30,6 +31,7 @@ import java.time.ZoneId
  */
 data class Event(
     val id: String,
+    val organizationId: String,
     val title: String,
     val description: String,
     val startDate: Instant,
@@ -76,6 +78,7 @@ enum class CloudStorageStatus {
 /**
  * Factory function to create a new Event instance with a generated unique ID and default values.
  *
+ * @param organizationId Identifier for the organization the event belongs to.
  * @param title Title of the event.
  * @param description Description of the event.
  * @param startDate Start date and time of the event.
@@ -87,6 +90,7 @@ enum class CloudStorageStatus {
  * @return A new Event instance.
  */
 fun createEvent(
+    organizationId: String,
     title: String = "Untitled",
     description: String = "",
     startDate: Instant = Instant.now(),
@@ -101,6 +105,7 @@ fun createEvent(
   require(!endDate.isBefore(startDate)) { "End date cannot be before start date" }
   return Event(
       id = java.util.UUID.randomUUID().toString(), // Generate a unique ID for the event
+      organizationId = organizationId,
       title = title,
       description = description,
       startDate = startDate,
@@ -120,8 +125,17 @@ fun createEvent(
  * factory.
  *
  * This ensures we rely on the same time conversion utilities as the production code.
+ *
+ * @param organizationId Identifier for the organization the event belongs to.
+ * @param title Title of the event.
+ * @param startHour Start hour of the event.
+ * @param startMinute Start minute of the event.
+ * @param endHour End hour of the event.
+ * @param endMinute End minute of the event.
+ * @return A new Event instance.
  */
 fun createEventForTimes(
+    organizationId: String,
     title: String = "Untitled",
     startHour: Int = 8,
     startMinute: Int = 0,
@@ -136,6 +150,7 @@ fun createEventForTimes(
   val endInstant = DateTimeUtils.localDateTimeToInstant(baseDate, endTime)
 
   return createEvent(
+      organizationId = organizationId,
       title = title,
       startDate = startInstant,
       endDate = endInstant,

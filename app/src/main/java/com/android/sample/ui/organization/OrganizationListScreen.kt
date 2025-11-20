@@ -90,7 +90,7 @@ fun OrganizationListScreen(
                 organizations = uiState.organizations,
                 onOrganizationSelected = { organization ->
                   // Update selected organization in ViewModel
-                  selectedOrganizationViewModel.selectOrganization(organization)
+                  selectedOrganizationViewModel.changeSelectedOrganization(organization)
                   // Invoke given callback after selection
                   onOrganizationSelected()
                 })

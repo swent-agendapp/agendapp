@@ -24,11 +24,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
+import com.android.sample.model.authentication.AuthRepositoryFirebase
 import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.organization.EmployeeRepositoryFirebase
 import com.android.sample.model.organization.EmployeeRepositoryProvider
+import com.android.sample.ui.authentication.SignInScreen
 import com.android.sample.ui.calendar.CalendarScreen
 import com.android.sample.ui.calendar.addEvent.AddEventScreen
+import com.android.sample.ui.calendar.editEvent.EditEventFlow
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreen
 import com.android.sample.ui.common.BottomBar
 import com.android.sample.ui.common.BottomBarItem
@@ -45,8 +48,6 @@ import com.android.sample.ui.replacement.ReplacementPendingListScreen
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeScreen
 import com.android.sample.ui.settings.SettingsScreen
 import com.android.sample.ui.theme.SampleAppTheme
-import com.github.se.bootcamp.model.authentication.AuthRepositoryFirebase
-import com.github.se.bootcamp.ui.authentication.SignInScreen
 import com.google.firebase.firestore.FirebaseFirestore
 
 object MainActivityTestTags {
@@ -189,8 +190,24 @@ fun Agendapp(
                   // Create the Overview screen with the Event id
                   eventId?.let {
                     EventOverviewScreen(
-                        eventId = eventId, onBackClick = { navigationActions.navigateBack() })
+                        eventId = eventId,
+                        onBackClick = { navigationActions.navigateBack() },
+                        onEditClick = { id -> navigationActions.navigateToEditEvent(id) },
+                        onDeleteClick = { navigationActions.navigateBack() })
                   } ?: run { Log.e("EventOverviewScreen", "Event id is null") }
+                }
+              }
+
+              // Edit Event Graph
+              navigation(startDestination = Screen.EditEvent.route, route = Screen.EditEvent.name) {
+                composable(Screen.EditEvent.route) { navBackStackEntry ->
+                  val eventId = navBackStackEntry.arguments?.getString("eventId")
+                  eventId?.let {
+                    EditEventFlow(
+                        eventId = it,
+                        onCancel = { navigationActions.navigateBack() },
+                        onFinish = { navigationActions.navigateBack() })
+                  } ?: run { Log.e("EditEventScreen", "Event id is null") }
                 }
               }
 

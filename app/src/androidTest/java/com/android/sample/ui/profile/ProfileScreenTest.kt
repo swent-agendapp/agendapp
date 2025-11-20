@@ -10,9 +10,9 @@ import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.platform.app.InstrumentationRegistry
+import com.android.sample.model.authentication.AuthRepository
 import com.android.sample.model.authentication.FakeAuthRepository
 import com.android.sample.model.authentication.User
-import com.github.se.bootcamp.model.authentication.AuthRepository
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule

@@ -8,8 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import com.android.sample.R
-import com.android.sample.ui.theme.SecondTopBarBackgroundColor
-import com.android.sample.ui.theme.TopBarTextColor
+import com.android.sample.ui.theme.TopBarPalette
 
 /**
  * Composable function to create a top bar.
@@ -39,7 +38,7 @@ fun SecondaryPageTopBar(
       },
       colors =
           TopAppBarDefaults.topAppBarColors(
-              containerColor = SecondTopBarBackgroundColor,
-              titleContentColor = TopBarTextColor,
+              containerColor = TopBarPalette.Background,
+              titleContentColor = TopBarPalette.Font,
           ))
 }

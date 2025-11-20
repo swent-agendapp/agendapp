@@ -1,10 +1,11 @@
 package com.android.sample.model.firestoreMappersTests
 
+import androidx.compose.ui.graphics.toArgb
 import com.android.sample.model.calendar.CloudStorageStatus
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.firestoreMappers.EventMapper
-import com.android.sample.utils.EventColor
+import com.android.sample.ui.theme.EventPalette
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
@@ -17,6 +18,7 @@ class EventMapperTest {
 
   private val start = Instant.parse("2025-10-29T10:00:00Z")
   private val end = Instant.parse("2025-10-29T12:00:00Z")
+  private val eventColor = EventPalette.Black
 
   private val sampleEvent =
       Event(
@@ -30,7 +32,7 @@ class EventMapperTest {
           participants = setOf("participant1", "participant2"),
           version = 5L,
           recurrenceStatus = RecurrenceStatus.OneTime,
-          color = EventColor(0xFF0000))
+          color = eventColor)
 
   private val sampleMap: Map<String, Any?> =
       mapOf(
@@ -44,7 +46,7 @@ class EventMapperTest {
           "participants" to listOf("participant1", "participant2"),
           "version" to 5L,
           "recurrenceStatus" to "OneTime",
-          "eventColor" to 0xFF0000)
+          "eventColor" to eventColor.toArgb().toLong())
 
   // --- fromDocument tests ---
   @Test
@@ -60,7 +62,7 @@ class EventMapperTest {
     `when`(doc.get("storageStatus")).thenReturn(listOf("FIRESTORE"))
     `when`(doc.getString("recurrenceStatus")).thenReturn("OneTime")
     `when`(doc.getLong("version")).thenReturn(5L)
-    `when`(doc.getLong("eventColor")).thenReturn(0xFF0000)
+    `when`(doc.getLong("eventColor")).thenReturn(eventColor.toArgb().toLong())
 
     val event = EventMapper.fromDocument(doc)
     assertThat(event).isNotNull()
@@ -146,6 +148,6 @@ class EventMapperTest {
     assertThat(map["participants"]).isEqualTo(listOf("participant1", "participant2"))
     assertThat(map["version"]).isEqualTo(sampleEvent.version)
     assertThat(map["recurrenceStatus"]).isEqualTo(sampleEvent.recurrenceStatus.name)
-    assertThat(map["eventColor"]).isEqualTo(sampleEvent.color.value)
+    assertThat(map["eventColor"]).isEqualTo(sampleEvent.color.toArgb().toLong())
   }
 }

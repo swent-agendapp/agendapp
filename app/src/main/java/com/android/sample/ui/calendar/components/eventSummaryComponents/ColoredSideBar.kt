@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.android.sample.ui.calendar.components.EventSummaryCardTags
 import com.android.sample.ui.calendar.style.EventSummaryCardStyle
 import com.android.sample.ui.theme.BarWidthMedium
-import com.android.sample.utils.EventColor
+import com.android.sample.ui.theme.EventPalette
 
 /**
  * Vertical colored sidebar used as a visual accent on the left of the card.
@@ -30,7 +30,7 @@ import com.android.sample.utils.EventColor
 @Composable
 fun ColoredSideBar(
     width: Dp = BarWidthMedium,
-    color: Color = EventColor.Blue.toComposeColor(),
+    color: Color = EventPalette.Blue,
     shape: RoundedCornerShape = RoundedCornerShape(EventSummaryCardStyle().cornerRadiusDp)
 ) {
   Box(

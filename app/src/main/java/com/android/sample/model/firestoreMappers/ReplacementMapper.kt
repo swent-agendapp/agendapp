@@ -25,7 +25,7 @@ object ReplacementMapper : FirestoreMapper<Replacement> {
         runCatching { ReplacementStatus.valueOf(statusString) }
             .getOrElse {
               Log.e(
-                  "ReplacementMapper", "Unknown status \"$statusString\", defaulting to ToProcess")
+                  "ReplacementMapper", "Unknown status \"$statusString\". By default : ToProcess.")
               ReplacementStatus.ToProcess
             }
 
@@ -54,7 +54,7 @@ object ReplacementMapper : FirestoreMapper<Replacement> {
         runCatching { ReplacementStatus.valueOf(statusString) }
             .getOrElse {
               Log.e(
-                  "ReplacementMapper", "Unknown status \"$statusString\", defaulting to ToProcess")
+                  "ReplacementMapper", "Unknown status \"$statusString\". By default : ToProcess.")
               ReplacementStatus.ToProcess
             }
 

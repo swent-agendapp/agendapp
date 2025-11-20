@@ -214,7 +214,6 @@ fun MapScreen(
                             MarkerState(
                                 position =
                                     LatLng(marker.location.latitude, marker.location.longitude)),
-                        title = marker.label,
                         draggable = false,
                         onClick = { _ ->
                           showBottomSheet = BottomSheetState.DELETE_MARKER

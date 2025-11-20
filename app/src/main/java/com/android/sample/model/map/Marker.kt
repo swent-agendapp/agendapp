@@ -13,8 +13,7 @@ import java.util.UUID
  */
 data class Marker(
     val id: String = UUID.randomUUID().toString(),
-    val location: Location,
-    val label: String? = null
+    val location: Location
 ) {
   /**
    * Secondary constructor allowing to create a Marker directly from latitude and longitude without
@@ -23,7 +22,6 @@ data class Marker(
   constructor(
       id: String = UUID.randomUUID().toString(),
       latitude: Double,
-      longitude: Double,
-      label: String? = null
-  ) : this(id = id, location = Location(latitude, longitude), label = label)
+      longitude: Double
+  ) : this(id = id, location = Location(latitude, longitude))
 }

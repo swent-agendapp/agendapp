@@ -61,14 +61,14 @@ interface MapRepository {
    * @param markerIds List of marker ids to include in the area. Defaults to all markers currently
    *   stored.
    */
-  fun createArea(label: String? = null, markerIds: List<String> = getAllMarkersIds())
+  suspend fun createArea(label: String? = null, markerIds: List<String> = getAllMarkersIds())
 
   /**
    * Return all areas currently stored.
    *
    * A snapshot list is returned to avoid exposing internal mutable collection.
    */
-  fun getAllAreas(): List<Area>
+  suspend fun getAllAreas(): List<Area>
 
   /** Return the ids of all stored areas. */
   fun getAllAreasIds(): List<String>

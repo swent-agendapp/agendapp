@@ -6,4 +6,5 @@ object FirestoreConstants {
   const val ORGANIZATIONS_COLLECTION_PATH = "organizations"
   const val COLLECTION_USERS = "users"
   const val REPLACEMENTS_COLLECTION_PATH = "replacements"
+  const val MAP_COLLECTION_PATH = "maps"
 }

@@ -9,7 +9,6 @@ import java.util.Date
 import kotlinx.coroutines.tasks.await
 
 class EventRepositoryFirebase(private val db: FirebaseFirestore) : EventRepository {
-
   override suspend fun getAllEvents(): List<Event> {
     val snapshot = db.collection(EVENTS_COLLECTION_PATH).get().await()
     return snapshot.mapNotNull { EventMapper.fromDocument(document = it) }

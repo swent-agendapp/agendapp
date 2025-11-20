@@ -209,11 +209,13 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
 
     repeat(maxDownScrolls) {
       calendarNode.performTouchInput { swipeUp() }
+      waitForIdle()
       if (isTagDisplayed(eventTag)) return
     }
 
     repeat(maxUpScrolls) {
       calendarNode.performTouchInput { swipeDown() }
+      waitForIdle()
       if (isTagDisplayed(eventTag)) return
     }
 

@@ -1,6 +1,7 @@
 package com.android.sample.ui.map
 
 import android.Manifest
+import android.app.Application
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -44,7 +45,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.common.FloatingButton
 import com.android.sample.ui.common.PrimaryButton
@@ -96,7 +96,8 @@ enum class BottomSheetState {
 @OptIn(MapsExperimentalFeature::class, ExperimentalMaterial3Api::class)
 @Composable
 fun MapScreen(
-    mapViewModel: MapViewModel = viewModel(),
+    mapViewModel: MapViewModel =
+        MapViewModel(app = LocalContext.current.applicationContext as Application),
     onGoBack: () -> Unit = {},
 ) {
   val uiState by mapViewModel.state.collectAsState()

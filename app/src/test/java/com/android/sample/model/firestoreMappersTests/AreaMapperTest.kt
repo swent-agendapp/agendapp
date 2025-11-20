@@ -71,9 +71,9 @@ class AreaMapperTest {
   fun toMap_returnsCorrectMap() {
     val markers =
         listOf(
-            Marker(id = "m1", location = Location(10.0, 20.0)),
-            Marker(id = "m2", location = Location(15.0, 25.0)),
-            Marker(id = "m3", location = Location(12.0, 22.0)))
+            Marker(id = "m1", location = Location(10.0, 20.0), label = "Marker 1"),
+            Marker(id = "m2", location = Location(15.0, 25.0), label = "Marker 2"),
+            Marker(id = "m3", location = Location(12.0, 22.0), label = "Marker 3"))
 
     val area = Area(id = "area123", label = "My Area", markers = markers)
     val map = AreaMapper.toMap(area)

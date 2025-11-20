@@ -17,7 +17,7 @@ import java.util.UUID
  *   geofencing/geo checks).
  * @property geoCheckEnabled Flag indicating whether geographic checks (e.g., entrance/exit
  *   detection) are enabled for this organization.
- *   @property version Timestamp of the last modification to the organization, used for conflict
+ *     @property version Timestamp of the last modification to the organization, used for conflict
  */
 data class Organization(
     val id: String = UUID.randomUUID().toString(),
@@ -27,5 +27,5 @@ data class Organization(
     val events: List<Event> = emptyList(),
     val areas: List<Area> = emptyList(),
     val geoCheckEnabled: Boolean = false,
-    val version : Long =  System.currentTimeMillis(),
+    val version: Long = System.currentTimeMillis(),
 )

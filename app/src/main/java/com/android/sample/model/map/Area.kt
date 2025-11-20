@@ -14,8 +14,8 @@ import java.util.UUID
  *   constructor guarantees that the markers are sorted in a consistent order around the polygon, so
  *   the user does not need to provide them in a specific order.
  * @property version Timestamp of the last modification to the area, used for conflict resolution.
- * Note: The class enforces that an area must have at least three different markers to form a valid
- * polygon.
+ *   Note: The class enforces that an area must have at least three different markers to form a
+ *   valid polygon.
  */
 data class Area(
     val id: String = UUID.randomUUID().toString(),

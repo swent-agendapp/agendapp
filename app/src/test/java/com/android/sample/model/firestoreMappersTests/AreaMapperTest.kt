@@ -62,7 +62,12 @@ class AreaMapperTest {
 
   @Test
   fun fromMap_withInvalidMarkers_returnsNull() {
-    val data = mapOf("id" to "area123", "label" to "My Area", "markers" to listOf("invalid marker"))
+    val data =
+        mapOf(
+            "id" to "area123",
+            "label" to "My Area",
+            "markers" to listOf("invalid marker"),
+            "version" to 123L)
 
     val area = AreaMapper.fromMap(data)
     assertThat(area).isNull()

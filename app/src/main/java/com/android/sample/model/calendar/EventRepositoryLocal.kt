@@ -68,7 +68,9 @@ class EventRepositoryLocal(preloadSampleData: Boolean = false) : EventRepository
 
   override suspend fun getEventsBetweenDates(startDate: Instant, endDate: Instant): List<Event> {
     require(startDate <= endDate) { "start date must be before or equal to end date" }
-    return events.filter { it.startDate <= endDate && it.endDate >= startDate }
+    return events.filter {
+      it.startDate <= endDate && it.endDate >= startDate && !it.hasBeenDeleted
+    }
   }
 
   // ---------------------------------------------------------------------------------

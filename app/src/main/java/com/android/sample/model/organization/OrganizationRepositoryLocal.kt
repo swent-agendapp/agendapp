@@ -43,7 +43,7 @@ class OrganizationRepositoryLocal : OrganizationRepository {
     organizations[index] = organization.copy(version = System.currentTimeMillis())
   }
 
-    //Later : do not delete the organization, but mark it as deleted with a flag.
+  // Later : do not delete the organization, but mark it as deleted with a flag.
   override suspend fun deleteOrganization(organizationId: String, user: User) {
     val organization = organizations.find { it.id == organizationId }
     require(organization != null) { "Organization with id $organizationId does not exist." }

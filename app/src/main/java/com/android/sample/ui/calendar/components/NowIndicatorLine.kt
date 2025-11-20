@@ -37,7 +37,7 @@ import kotlin.ranges.until
 @Composable
 fun NowIndicatorLine(
     modifier: Modifier = Modifier,
-    columnCount: Int = CalendarDefaults.DefaultDaysInWeek,
+    columnCount: Int = CalendarDefaults.DEFAULT_DAYS_IN_WEEK,
     rowHeightDp: Dp = defaultGridContentStyle().dimensions.rowHeightDp,
     days: List<LocalDate> = workWeekDays(),
     now: LocalTime = LocalTime.now(),

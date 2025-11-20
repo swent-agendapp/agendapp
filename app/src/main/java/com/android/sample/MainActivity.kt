@@ -24,9 +24,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
+import com.android.sample.model.authentication.AuthRepositoryFirebase
 import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.organization.EmployeeRepositoryFirebase
 import com.android.sample.model.organization.EmployeeRepositoryProvider
+import com.android.sample.ui.authentication.SignInScreen
 import com.android.sample.ui.calendar.CalendarScreen
 import com.android.sample.ui.calendar.addEvent.AddEventScreen
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreen
@@ -36,6 +38,8 @@ import com.android.sample.ui.common.BottomBarTestTags
 import com.android.sample.ui.map.MapScreen
 import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
+import com.android.sample.ui.organization.AddOrganizationScreen
+import com.android.sample.ui.organization.OrganizationListScreen
 import com.android.sample.ui.profile.AdminContactScreen
 import com.android.sample.ui.profile.ProfileScreen
 import com.android.sample.ui.replacement.ProcessReplacementScreen
@@ -44,8 +48,6 @@ import com.android.sample.ui.replacement.ReplacementPendingListScreen
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeScreen
 import com.android.sample.ui.settings.SettingsScreen
 import com.android.sample.ui.theme.SampleAppTheme
-import com.github.se.bootcamp.model.authentication.AuthRepositoryFirebase
-import com.github.se.bootcamp.ui.authentication.SignInScreen
 import com.google.firebase.firestore.FirebaseFirestore
 
 object MainActivityTestTags {
@@ -92,7 +94,7 @@ fun Agendapp(
   val authRepository = AuthRepositoryProvider.repository
 
   val startDestination =
-      if (authRepository.getCurrentUser() != null) Screen.Calendar.route
+      if (authRepository.getCurrentUser() != null) Screen.Organizations.route
       else Screen.Authentication.route
 
   val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
@@ -146,6 +148,29 @@ fun Agendapp(
                     credentialManager = credentialManager,
                     onSignedIn = { navigationActions.navigateTo(Screen.Calendar) })
               }
+
+              // Organization Selection Graph
+              navigation(
+                  startDestination = Screen.Organizations.route,
+                  route = Screen.Organizations.name) {
+                    // Organization List Screen
+                    composable(Screen.Organizations.route) {
+                      OrganizationListScreen(
+                          onOrganizationSelected = {
+                            navigationActions.navigateTo(Screen.Calendar)
+                          },
+                          onAddOrganizationClicked = {
+                            navigationActions.navigateTo(Screen.AddOrganization)
+                          })
+                    }
+
+                    // Add Organization Screen
+                    composable(Screen.AddOrganization.route) {
+                      AddOrganizationScreen(
+                          onNavigateBack = { navigationActions.navigateBack() },
+                          onFinish = { navigationActions.navigateTo(Screen.Organizations) })
+                    }
+                  }
 
               // Calendar Graph
               navigation(startDestination = Screen.Calendar.route, route = Screen.Calendar.name) {

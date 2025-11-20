@@ -6,9 +6,15 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextInput
 import com.android.sample.Agendapp
+import com.android.sample.model.organization.OrganizationRepositoryFirebase
+import com.android.sample.model.organization.OrganizationRepositoryProvider
+import com.android.sample.ui.authentication.SignInScreenTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.common.BottomBarTestTags
+import com.android.sample.ui.organization.AddOrganizationScreenTestTags
+import com.android.sample.ui.organization.OrganizationListScreenTestTags
 import com.android.sample.ui.profile.AdminContactScreenTestTags
 import com.android.sample.ui.profile.ProfileScreenTestTags
 import com.android.sample.ui.settings.SettingsScreenTestTags
@@ -16,7 +22,6 @@ import com.android.sample.utils.FakeCredentialManager
 import com.android.sample.utils.FakeJwtGenerator
 import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.FirebaseEmulator
-import com.github.se.bootcamp.ui.authentication.SignInScreenTestTags
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -39,6 +44,12 @@ class ProfileFlowE2ETest : FirebaseEmulatedTest() {
 
   // Create a FakeCredentialManager with the fake token
   val fakeCredentialManager = FakeCredentialManager.create(fakeGoogleIdToken)
+
+  // Set the OrganizationRepository to use the Firebase emulator
+  init {
+    OrganizationRepositoryProvider.repository =
+        OrganizationRepositoryFirebase(FirebaseEmulator.firestore)
+  }
 
   @get:Rule val composeTestRule = createComposeRule()
 
@@ -71,15 +82,53 @@ class ProfileFlowE2ETest : FirebaseEmulatedTest() {
 
     // Wait for sign-in to complete
     composeTestRule.waitUntil(timeoutMillis = UI_AUTH_TIMEOUT) {
-      // Verify Calendar screen exists
+      // Verify that Organization screen exists
       composeTestRule
-          .onAllNodesWithTag(CalendarScreenTestTags.ROOT)
+          .onAllNodesWithTag(OrganizationListScreenTestTags.ROOT)
           .fetchSemanticsNodes()
           .isNotEmpty()
     }
 
     // Check that a user is signed in after sign in
     assert(FirebaseEmulator.auth.currentUser != null)
+
+    // Create Organization to proceed to Calendar
+
+    // Click on Add Organization button
+    composeTestRule
+        .onNodeWithTag(OrganizationListScreenTestTags.ADD_ORGANIZATION_BUTTON)
+        .assertIsDisplayed()
+        .performClick()
+
+    // Verify Add Organization screen is displayed
+    composeTestRule.onNodeWithTag(AddOrganizationScreenTestTags.ROOT).assertIsDisplayed()
+
+    // Fill organization name
+    val organizationName = "Test Organization"
+    composeTestRule
+        .onNodeWithTag(AddOrganizationScreenTestTags.ORGANIZATION_NAME_TEXT_FIELD)
+        .performTextInput(organizationName)
+
+    // Click on Create button
+    composeTestRule
+        .onNodeWithTag(AddOrganizationScreenTestTags.CREATE_BUTTON)
+        .assertIsDisplayed()
+        .performClick()
+
+    // Verify that we are back on Organization List screen
+    composeTestRule.onNodeWithTag(OrganizationListScreenTestTags.ROOT).assertIsDisplayed()
+
+    // Click on the newly created organization to enter its Calendar
+    composeTestRule
+        .onNodeWithTag(OrganizationListScreenTestTags.organizationItemTag(organizationName))
+        .assertIsDisplayed()
+        .performClick()
+
+    // Verify Calendar screen exists
+    composeTestRule
+        .onAllNodesWithTag(CalendarScreenTestTags.ROOT)
+        .fetchSemanticsNodes()
+        .isNotEmpty()
 
     // Verify Calendar screen is displayed
     composeTestRule.onNodeWithTag(CalendarScreenTestTags.ROOT).assertIsDisplayed()

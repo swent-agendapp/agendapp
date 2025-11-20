@@ -24,7 +24,7 @@ import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryLocal
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.ui.calendar.style.CalendarDefaults
-import com.android.sample.ui.calendar.style.CalendarDefaults.DefaultSwipeThreshold
+import com.android.sample.ui.calendar.style.CalendarDefaults.DEFAULT_SWIPE_THRESHOLD
 import com.android.sample.ui.calendar.utils.DateTimeUtils
 import java.time.DayOfWeek
 import java.time.Duration
@@ -173,9 +173,9 @@ abstract class BaseCalendarScreenTest {
   }
 
   /** Convenience helpers for common navigation gestures. */
-  protected fun swipeLeft() = swipeEventGrid(-2 * DefaultSwipeThreshold)
+  protected fun swipeLeft() = swipeEventGrid(-2 * DEFAULT_SWIPE_THRESHOLD)
 
-  protected fun swipeRight() = swipeEventGrid(2 * DefaultSwipeThreshold)
+  protected fun swipeRight() = swipeEventGrid(2 * DEFAULT_SWIPE_THRESHOLD)
 
   /** Builds a deterministic set of events spanning previous, current, and next weeks. */
   protected fun buildTestEvents(): List<Event> {
@@ -389,13 +389,13 @@ class CalendarInitialScrollTests : BaseCalendarScreenTest() {
 
     val defaultStartingHourMinusOneInstant =
         DateTimeUtils.localDateTimeToInstant(
-            baseDate, LocalTime.of(CalendarDefaults.DefaultInitialHour - 1, 0))
+            baseDate, LocalTime.of(CalendarDefaults.DEFAULT_INITIAL_HOUR - 1, 0))
     val defaultStartingHourMinusOne =
         DateTimeUtils.formatInstantToTime(defaultStartingHourMinusOneInstant)
 
     val defaultStartingHourInstant =
         DateTimeUtils.localDateTimeToInstant(
-            baseDate, LocalTime.of(CalendarDefaults.DefaultInitialHour, 0))
+            baseDate, LocalTime.of(CalendarDefaults.DEFAULT_INITIAL_HOUR, 0))
     val defaultStartingHour = DateTimeUtils.formatInstantToTime(defaultStartingHourInstant)
     // The default initial hour should be visible at the top after the initial scroll
     composeTestRule.onNodeWithText(defaultStartingHour, substring = false).assertIsDisplayed()
@@ -523,7 +523,7 @@ class CalendarSwipeTests : BaseCalendarScreenTest() {
     assertEventVisible("First Event")
     assertEventAbsent("Next Event")
 
-    swipeEventGrid(-(DefaultSwipeThreshold - 1f))
+    swipeEventGrid(-(DEFAULT_SWIPE_THRESHOLD - 1f))
 
     // Still current week
     assertEventVisible("First Event")
@@ -534,7 +534,7 @@ class CalendarSwipeTests : BaseCalendarScreenTest() {
   fun whenSwipeExactlyAtThreshold_doesNotChangeWeekUnlessInclusive() {
     setContentWithLocalRepo()
 
-    swipeEventGrid(-DefaultSwipeThreshold)
+    swipeEventGrid(-DEFAULT_SWIPE_THRESHOLD)
 
     // Require strictly greater than threshold -> remain on current
     assertEventVisible("First Event")
@@ -546,11 +546,11 @@ class CalendarSwipeTests : BaseCalendarScreenTest() {
     setContentWithLocalRepo()
 
     // Fast swipe left -> next week
-    swipeEventGridFast(-2 * DefaultSwipeThreshold)
+    swipeEventGridFast(-2 * DEFAULT_SWIPE_THRESHOLD)
     assertEventVisible("Next Event")
 
     // Slow cumulative swipe right -> back to current week
-    swipeEventGridSlow(2 * DefaultSwipeThreshold)
+    swipeEventGridSlow(2 * DEFAULT_SWIPE_THRESHOLD)
     assertEventVisible("First Event")
   }
 
@@ -563,10 +563,10 @@ class CalendarSwipeTests : BaseCalendarScreenTest() {
     assertEventAbsent("Next Event")
 
     // Vertical only
-    swipeEventGridVertical(3 * DefaultSwipeThreshold)
+    swipeEventGridVertical(3 * DEFAULT_SWIPE_THRESHOLD)
 
     // Diagonal: small X below threshold, large Y
-    swipeEventGridDiagonal(-(DefaultSwipeThreshold - 1f), 3 * DefaultSwipeThreshold)
+    swipeEventGridDiagonal(-(DEFAULT_SWIPE_THRESHOLD - 1f), 3 * DEFAULT_SWIPE_THRESHOLD)
 
     // Still current week
     assertEventVisible("First Event")

@@ -2,7 +2,7 @@ package com.android.sample.model.event
 
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.createEvent
-import com.android.sample.utils.EventColor
+import com.android.sample.ui.theme.EventPalette
 import java.time.*
 import org.junit.Assert.*
 import org.junit.Before
@@ -26,7 +26,7 @@ class EventTest {
             description = "Team sync",
             startDate = startLocal.atZone(ZoneId.systemDefault()).toInstant(),
             endDate = endLocal.atZone(ZoneId.systemDefault()).toInstant(),
-            color = EventColor.Green)
+            color = EventPalette.Green)
   }
 
   @Test
@@ -56,12 +56,12 @@ class EventTest {
   @Test
   fun defaultColor_shouldBeUsedWhenNotSpecified() {
     val defaultEvent = createEvent()
-    assertEquals(EventColor.Blue, defaultEvent.color)
+    assertEquals(EventPalette.Blue, defaultEvent.color)
   }
 
   @Test
   fun customColor_shouldBeUsedWhenSpecified() {
-    assertEquals(EventColor.Green, event.color)
+    assertEquals(EventPalette.Green, event.color)
   }
 
   @Test

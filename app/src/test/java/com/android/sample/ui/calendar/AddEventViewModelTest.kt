@@ -31,7 +31,6 @@ class AddEventViewModelTest {
 
   private val testDispatcher = StandardTestDispatcher()
   private lateinit var repository: EventRepository
-  private lateinit var viewModel: AddEventViewModel
 
   @Before
   fun setUp() {
@@ -194,7 +193,7 @@ class AddEventViewModelTest {
 
   /* Helper functions */
   private fun makeAdminVm(): AddEventViewModel {
-    val adminAuthz =
+    val adminAuthServ =
         AuthorizationService(
             repo =
                 object : EmployeeRepository {
@@ -206,11 +205,11 @@ class AddEventViewModelTest {
 
                   override suspend fun getMyRole(): Role? = Role.ADMIN
                 })
-    return AddEventViewModel(repository, authz = adminAuthz)
+    return AddEventViewModel(repository, authServ = adminAuthServ)
   }
 
   private fun makeEmployeeVm(): AddEventViewModel {
-    val employeeAuthz =
+    val employeeAuthServ =
         AuthorizationService(
             repo =
                 object : EmployeeRepository {
@@ -222,6 +221,6 @@ class AddEventViewModelTest {
 
                   override suspend fun getMyRole(): Role? = Role.EMPLOYEE
                 })
-    return AddEventViewModel(repository, authz = employeeAuthz)
+    return AddEventViewModel(repository, authServ = employeeAuthServ)
   }
 }

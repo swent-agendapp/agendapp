@@ -1,8 +1,10 @@
 package com.android.sample.model.calendar
 
 import androidx.annotation.StringRes
+import androidx.compose.ui.graphics.Color
 import com.android.sample.R
-import com.android.sample.utils.EventColor
+import com.android.sample.ui.calendar.utils.DateTimeUtils
+import com.android.sample.ui.theme.EventPalette
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
@@ -39,7 +41,7 @@ data class Event(
     val version: Long,
     val recurrenceStatus: RecurrenceStatus,
     val hasBeenDeleted: Boolean = false,
-    val color: EventColor
+    val color: Color
 ) {
   // Returns the start date as a LocalDate in the system's default time zone
   val startLocalDate: LocalDate
@@ -92,7 +94,7 @@ fun createEvent(
     cloudStorageStatuses: Set<CloudStorageStatus> = emptySet(),
     personalNotes: String? = null,
     participants: Set<String> = emptySet(),
-    color: EventColor = EventColor.Blue
+    color: Color = EventPalette.Blue
     // notifications: List<String> = emptyList()
 ): Event {
   // Ensure the end date is not before the start date
@@ -111,6 +113,33 @@ fun createEvent(
       color = color
       // notifications = notifications
       )
+}
+
+/**
+ * Helper to create an [Event] the given times using [DateTimeUtils] and the real [createEvent]
+ * factory.
+ *
+ * This ensures we rely on the same time conversion utilities as the production code.
+ */
+fun createEventForTimes(
+    title: String = "Untitled",
+    startHour: Int = 8,
+    startMinute: Int = 0,
+    endHour: Int = 12,
+    endMinute: Int = 0,
+): Event {
+  val baseDate = LocalDate.of(2025, 1, 1)
+
+  val startTime = LocalTime.of(startHour, startMinute)
+  val endTime = LocalTime.of(endHour, endMinute)
+  val startInstant = DateTimeUtils.localDateTimeToInstant(baseDate, startTime)
+  val endInstant = DateTimeUtils.localDateTimeToInstant(baseDate, endTime)
+
+  return createEvent(
+      title = title,
+      startDate = startInstant,
+      endDate = endInstant,
+  )
 }
 
 @StringRes

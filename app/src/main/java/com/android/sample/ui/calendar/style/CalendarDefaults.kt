@@ -22,22 +22,25 @@ data object CalendarDefaults {
     LocalDateRange(initialStartOfWeek, initialEndOfWeek)
   }
 
-  /** Default number of days in the work-week grid. */
-  const val DefaultDaysInWeek: Int =
-      7 // for now, later the default will be 5, except when today is on the weekend
+  /**
+   * Default number of days in the work-week grid.
+   *
+   * For now, later the default will be 5, except when today is on the weekend
+   */
+  const val DEFAULT_DAYS_IN_WEEK: Int = 7
 
   /** Derived total hours between start and end times. */
   val DefaultTotalHour = Duration.between(DefaultStartTime, DefaultEndTime).toHours().toInt()
 
   /** Default stroke width (in pixels) for grid lines. */
-  val strokeWidthDefault = 2f
+  const val STROKE_WIDTH_DEFAULT = 2f
 
   /** Default threshold distance (in pixels) for detecting swipe gestures. */
-  const val DefaultSwipeThreshold = 64f
+  const val DEFAULT_SWIPE_THRESHOLD = 64f
 
   /**
    * Default initial hour of the visible grid. Represents the hour shown at the top of the calendar
    * on launch, to center the view on the most relevant hours of the day.
    */
-  const val DefaultInitialHour: Int = 8
+  const val DEFAULT_INITIAL_HOUR: Int = 8
 }

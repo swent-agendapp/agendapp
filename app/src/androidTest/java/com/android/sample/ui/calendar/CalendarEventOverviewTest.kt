@@ -10,6 +10,7 @@ import com.android.sample.ui.calendar.components.EventSummaryCardTags
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreen
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreenTestTags
 import com.android.sample.ui.calendar.eventOverview.EventOverviewViewModel
+import com.android.sample.utils.FirebaseEmulatedTest
 import java.time.Instant
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -22,7 +23,7 @@ import org.junit.Test
  * These tests focus on verifying that the screen shows its main structure (top bar and content
  * container) and that the back button correctly triggers the provided callback.
  */
-class CalendarEventOverviewTest {
+class CalendarEventOverviewTest : FirebaseEmulatedTest() {
 
   @get:Rule val composeTestRule = createComposeRule()
 

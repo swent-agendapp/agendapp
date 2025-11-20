@@ -39,13 +39,13 @@ class MapRepositoryFirebase(private val db: FirebaseFirestore) : MapRepository {
   override fun getAreaById(id: String): Area? = throw NotImplementedError()
 
   override suspend fun getAllAreas(): List<Area> {
-    val snapshot = db.collection(EVENTS_COLLECTION_PATH).get().await()
+    val snapshot = db.collection(MAP_COLLECTION_PATH).get().await()
     return snapshot.mapNotNull { AreaMapper.fromDocument(document = it) }
   }
 
   override suspend fun createArea(label: String?, markerIds: List<String>) {
     val uid = getNewUid()
-    db.collection(EVENTS_COLLECTION_PATH)
+    db.collection(MAP_COLLECTION_PATH)
       .document(uid)
       .set(AreaMapper.toMap(model = Area(uid, label, markerIds.mapNotNull { getMarkerById(it) })))
       .await()

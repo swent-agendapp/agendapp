@@ -22,9 +22,7 @@ class EventFirebaseRepositoryTest : FirebaseEmulatedTest() {
 
   @Before
   override fun setUp() {
-
     super.setUp()
-    repository = createInitializedEventRepository()
 
     event1 =
         createEvent(
@@ -33,7 +31,7 @@ class EventFirebaseRepositoryTest : FirebaseEmulatedTest() {
             startDate = Instant.parse("2025-01-10T10:00:00Z"),
             endDate = Instant.parse("2025-01-10T11:00:00Z"),
             cloudStorageStatuses = setOf(CloudStorageStatus.FIRESTORE),
-            personalNotes = "Bring laptop")
+            personalNotes = "Bring laptop")[0]
 
     event2 =
         createEvent(
@@ -41,7 +39,7 @@ class EventFirebaseRepositoryTest : FirebaseEmulatedTest() {
             description = "Tech event",
             startDate = Instant.parse("2025-02-01T09:00:00Z"),
             endDate = Instant.parse("2025-02-03T18:00:00Z"),
-            cloudStorageStatuses = setOf(CloudStorageStatus.FIRESTORE))
+            cloudStorageStatuses = setOf(CloudStorageStatus.FIRESTORE))[0]
   }
 
   @Test
@@ -233,7 +231,7 @@ class EventFirebaseRepositoryTest : FirebaseEmulatedTest() {
             startDate = Instant.parse("2025-04-10T08:00:00Z"),
             endDate = Instant.parse("2025-04-10T09:30:00Z"),
             cloudStorageStatuses = setOf(CloudStorageStatus.FIRESTORE),
-            personalNotes = "Slides in drive")
+            personalNotes = "Slides in drive")[0]
 
     // Insert the event into the repository
     repository.insertEvent(inserted)
@@ -264,7 +262,7 @@ class EventFirebaseRepositoryTest : FirebaseEmulatedTest() {
             endDate = Instant.parse("2025-01-01T11:00:00Z"),
             cloudStorageStatuses = setOf(CloudStorageStatus.FIRESTORE),
             personalNotes = "None",
-            participants = setOf("Charlie"))
+            participants = setOf("Charlie"))[0]
 
     repository.insertEvent(customEvent)
 
@@ -286,7 +284,7 @@ class EventFirebaseRepositoryTest : FirebaseEmulatedTest() {
             endDate = Instant.parse("2025-03-01T11:00:00Z"),
             cloudStorageStatuses = emptySet(),
             personalNotes = null,
-            participants = emptySet())
+            participants = emptySet())[0]
 
     repository.insertEvent(eventWithMissingOptional)
 

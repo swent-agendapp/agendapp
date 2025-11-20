@@ -184,8 +184,6 @@ abstract class BaseCalendarScreenTest {
 
     // Events that belong to the CURRENT visible week
     val current =
-        listOf(
-            // Current week
             createEvent(
                 title = "First Event",
                 startDate = at(thisWeekMonday.plusDays(1), LocalTime.of(9, 30)), // Tue 09:30–11:30
@@ -193,7 +191,7 @@ abstract class BaseCalendarScreenTest {
                     at(thisWeekMonday.plusDays(1), LocalTime.of(9, 30)).plus(Duration.ofHours(2)),
                 cloudStorageStatuses = emptySet(),
                 participants = setOf("Alice", "Bob"),
-            ),
+            ) +
             createEvent(
                 title = "Nice Event",
                 startDate = at(thisWeekMonday.plusDays(2), LocalTime.of(14, 0)), // Wed 14:00–18:00
@@ -201,7 +199,7 @@ abstract class BaseCalendarScreenTest {
                     at(thisWeekMonday.plusDays(2), LocalTime.of(14, 0)).plus(Duration.ofHours(4)),
                 cloudStorageStatuses = emptySet(),
                 participants = setOf("Charlie", "David"),
-            ),
+            ) +
             createEvent(
                 title = "Top Event",
                 startDate = at(thisWeekMonday.plusDays(3), LocalTime.of(11, 0)), // Thu 11:00–13:00
@@ -209,12 +207,10 @@ abstract class BaseCalendarScreenTest {
                     at(thisWeekMonday.plusDays(3), LocalTime.of(11, 0)).plus(Duration.ofHours(2)),
                 cloudStorageStatuses = emptySet(),
                 participants = setOf("Eve"),
-            ),
-        )
+            )
 
     // Events that belong to the NEXT week (should appear after swipe-left)
     val next =
-        listOf(
             // Next week
             createEvent(
                 title = "Next Event",
@@ -223,7 +219,7 @@ abstract class BaseCalendarScreenTest {
                     at(thisWeekMonday.plusWeeks(1), LocalTime.of(10, 0)).plus(Duration.ofHours(3)),
                 cloudStorageStatuses = emptySet(),
                 participants = setOf("Alice", "Bob"),
-            ),
+            ) +
             createEvent(
                 title = "Later Event",
                 startDate = at(thisWeekMonday.plusWeeks(1).plusDays(3), LocalTime.of(16, 0)), // Thu
@@ -232,13 +228,10 @@ abstract class BaseCalendarScreenTest {
                         .plus(Duration.ofHours(4)),
                 cloudStorageStatuses = emptySet(),
                 participants = setOf("Charlie", "David"),
-            ),
-        )
+            )
 
     // Events that belong to the PREVIOUS week (should appear after swipe-right)
     val previous =
-        listOf(
-            // Previous week
             createEvent(
                 title = "Previous Event",
                 startDate = at(thisWeekMonday.minusWeeks(1).plusDays(1), LocalTime.of(17, 0)),
@@ -247,7 +240,7 @@ abstract class BaseCalendarScreenTest {
                         .plus(Duration.ofHours(2)),
                 cloudStorageStatuses = emptySet(),
                 participants = setOf("Alice", "Bob"),
-            ),
+            ) +
             createEvent(
                 title = "Earlier Event",
                 startDate = at(thisWeekMonday.minusWeeks(1).plusDays(4), LocalTime.of(8, 0)),
@@ -256,8 +249,7 @@ abstract class BaseCalendarScreenTest {
                         .plus(Duration.ofHours(4)),
                 cloudStorageStatuses = emptySet(),
                 participants = setOf("Charlie", "David"),
-            ),
-        )
+            )
 
     // Merge in this order so tests can check visibility by title across ranges
     return previous + current + next

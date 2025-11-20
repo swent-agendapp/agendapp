@@ -31,7 +31,7 @@ class CalendarEventOverviewTest {
     // insert a single event
     val repo = EventRepositoryProvider.repository
 
-    val event = createEvent()
+    val event = createEvent()[0]
 
     runBlocking { repo.insertEvent(event) }
 
@@ -63,7 +63,7 @@ class CalendarEventOverviewTest {
             description = "This is an event used to test the summary card.",
             startDate = Instant.parse("2025-01-10T10:00:00Z"),
             endDate = Instant.parse("2025-01-10T11:00:00Z"),
-            participants = setOf("Alice", "Bob"))
+            participants = setOf("Alice", "Bob"))[0]
 
     runBlocking { repo.insertEvent(event) }
 
@@ -98,7 +98,7 @@ class CalendarEventOverviewTest {
             description = "This is an event used to test the summary card.",
             startDate = Instant.parse("2025-01-10T10:00:00Z"),
             endDate = Instant.parse("2025-01-10T11:00:00Z"),
-            participants = setOf("Alice", "Bob"))
+            participants = setOf("Alice", "Bob"))[0]
 
     runBlocking { repo.insertEvent(event) }
 

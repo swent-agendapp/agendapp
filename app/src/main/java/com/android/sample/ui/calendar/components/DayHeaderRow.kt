@@ -26,7 +26,7 @@ import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.style.GridContentStyle
 import com.android.sample.ui.calendar.style.defaultGridContentDimensions
 import com.android.sample.ui.calendar.style.defaultGridContentStyle
-import com.android.sample.ui.theme.Salmon
+import com.android.sample.ui.theme.GeneralPalette
 import com.android.sample.ui.theme.SpacingExtraSmall
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -80,7 +80,7 @@ fun DayHeaderRow(
       // - Other days use the default header text color.
       val color =
           if (isToday) {
-            Salmon
+            GeneralPalette.Primary
           } else {
             style.colors.dayHeaderText
           }

@@ -34,9 +34,9 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.android.sample.R
+import com.android.sample.ui.theme.CircusPalette
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingMedium
-import com.android.sample.ui.theme.Salmon
 import com.android.sample.ui.theme.WeightVeryHeavy
 
 // Kdoc writen with the help of AI
@@ -64,7 +64,7 @@ fun MemberSelectionList(
     onSelectionChanged: (Set<String>) -> Unit,
     modifier: Modifier = Modifier,
     isSingleSelection: Boolean = false,
-    highlightColor: Color = Salmon.copy(alpha = 0.9f),
+    highlightColor: Color = CircusPalette.Primary.copy(alpha = 0.9f),
     searchTestTag: String? = null,
     listTestTag: String? = null,
     summaryTestTag: String? = null,

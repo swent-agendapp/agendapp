@@ -15,6 +15,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,7 +33,6 @@ import com.android.sample.ui.replacement.organize.ReplacementOrganizeTestTags
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeViewModel
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.DefaultCardElevation
-import com.android.sample.ui.theme.GeneralPalette
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.PaddingLarge
 import com.android.sample.ui.theme.PaddingMedium
@@ -65,11 +66,13 @@ import com.android.sample.ui.theme.WeightExtraHeavy
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectSubstitutedScreen(
+    onMemberSelected: (String) -> Unit = {},
     onSelectEvents: () -> Unit = {},
     onSelectDateRange: () -> Unit = {},
     onBack: () -> Unit = {},
     replacementOrganizeViewModel: ReplacementOrganizeViewModel = viewModel()
 ) {
+  val candidates = listOf("Emilien", "Haobin", "Noa", "Weifeng", "Timael", "Méline", "Nathan")
   val uiState by replacementOrganizeViewModel.uiState.collectAsState()
 
   // Filter the list when search changes
@@ -111,7 +114,7 @@ fun SelectSubstitutedScreen(
                   elevation = CardDefaults.cardElevation(defaultElevation = DefaultCardElevation),
                   shape = RoundedCornerShape(CornerRadiusLarge)) {
                     MemberSelectionList(
-                        members = members,
+                        members = candidates,
                         selectedMembers = selectedMembers,
                         onSelectionChanged = { newSelection ->
                           selectedMembers = newSelection

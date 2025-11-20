@@ -26,6 +26,7 @@ import com.android.sample.ui.theme.AlphaLow
 import com.android.sample.ui.theme.BarWidthSmall
 import com.android.sample.ui.theme.SpacingExtraSmall
 import com.android.sample.ui.theme.SpacingMedium
+import com.android.sample.ui.theme.WeightExtraHeavy
 
 /**
  * Renders the event description with expand/collapse and a left accent bar.
@@ -93,7 +94,7 @@ fun DescriptionSection(
       Spacer(Modifier.height(SpacingExtraSmall))
 
       Row(modifier = Modifier.fillMaxWidth()) {
-        Spacer(Modifier.weight(1f))
+        Spacer(Modifier.weight(WeightExtraHeavy))
 
         Text(
             text =

@@ -4,9 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.android.sample.ui.calendar.data.LocalDateRange
 import com.android.sample.ui.calendar.data.TimeSpan
+import com.android.sample.ui.theme.CalendarLeftOffset
+import com.android.sample.ui.theme.CalendarRowHeight
+import com.android.sample.ui.theme.CalendarTopOffset
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
@@ -59,9 +61,9 @@ internal fun rememberWeekViewMetrics(
 
     val startTime = LocalTime.MIDNIGHT
     val endTime = LocalTime.MAX
-    val rowHeightDp = 60.dp
-    val leftOffsetDp = 58.dp
-    val topOffsetDp = 58.dp
+    val rowHeightDp = CalendarRowHeight
+    val leftOffsetDp = CalendarLeftOffset
+    val topOffsetDp = CalendarTopOffset
 
     val totalHours = 24
     val gridHeightDp = rowHeightDp * totalHours

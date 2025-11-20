@@ -1,12 +1,15 @@
 package com.android.sample.ui.calendar.style
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
+import com.android.sample.ui.theme.CalendarColumnWidth
+import com.android.sample.ui.theme.CalendarLeftOffset
+import com.android.sample.ui.theme.CalendarPalette
+import com.android.sample.ui.theme.CalendarRowHeight
+import com.android.sample.ui.theme.CalendarTopOffset
 
 /** Color palette used by the grid background, labels, and the now indicator. */
 @Immutable
@@ -31,13 +34,13 @@ data class GridContentColors(
  */
 @Composable
 fun defaultGridContentColors(
-    todayHighlight: Color = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f),
-    gridLineColor: Color = Color.LightGray,
-    nowIndicator: Color = MaterialTheme.colorScheme.error,
-    timeLabelTextColor: Color = Color.Gray,
-    currentDayBackground: Color = MaterialTheme.colorScheme.primary,
-    currentDayText: Color = Color(0xFF000000),
-    dayHeaderText: Color = Color.Gray,
+    todayHighlight: Color = CalendarPalette.todayColumnHighlight,
+    gridLineColor: Color = CalendarPalette.gridLine,
+    nowIndicator: Color = CalendarPalette.nowIndicator,
+    timeLabelTextColor: Color = CalendarPalette.timeLabelText,
+    currentDayBackground: Color = CalendarPalette.currentDayBackground,
+    currentDayText: Color = CalendarPalette.currentDayText,
+    dayHeaderText: Color = CalendarPalette.dayHeaderText,
 ): GridContentColors =
     remember(
         todayHighlight,
@@ -78,10 +81,10 @@ data class GridContentDimensions(
  */
 @Composable
 fun defaultGridContentDimensions(
-    leftOffsetDp: Dp = 58.dp,
-    topOffsetDp: Dp = 58.dp,
-    defaultColumnWidthDp: Dp = 64.dp,
-    rowHeightDp: Dp = 60.dp,
+    leftOffsetDp: Dp = CalendarLeftOffset,
+    topOffsetDp: Dp = CalendarTopOffset,
+    defaultColumnWidthDp: Dp = CalendarColumnWidth,
+    rowHeightDp: Dp = CalendarRowHeight,
 ): GridContentDimensions =
     remember(rowHeightDp) {
       GridContentDimensions(

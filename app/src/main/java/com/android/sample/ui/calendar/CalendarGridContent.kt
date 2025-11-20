@@ -27,6 +27,7 @@ import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.style.GridContentStyle
 import com.android.sample.ui.calendar.style.defaultGridContentStyle
 import com.android.sample.ui.calendar.utils.rememberWeekViewMetrics
+import com.android.sample.ui.theme.WeightExtraHeavy
 import java.time.LocalDate
 import java.time.LocalTime
 import kotlinx.coroutines.delay
@@ -113,51 +114,55 @@ fun CalendarGridContent(
           selectedDate = selectedDate,
           onDayClick = onHeaderDayClick)
 
-      Row(modifier = Modifier.weight(1f).testTag(CalendarScreenTestTags.SCROLL_AREA)) {
-        TimeAxisColumn(
-            timeLabels = metrics.timeLabels,
-            rowHeightDp = metrics.rowHeightDp,
-            gridHeightDp = metrics.gridHeightDp,
-            leftOffsetDp = metrics.leftOffsetDp,
-            scrollState = scrollState,
-            style = style)
+      Row(
+          modifier =
+              Modifier.weight(WeightExtraHeavy).testTag(CalendarScreenTestTags.SCROLL_AREA)) {
+            TimeAxisColumn(
+                timeLabels = metrics.timeLabels,
+                rowHeightDp = metrics.rowHeightDp,
+                gridHeightDp = metrics.gridHeightDp,
+                leftOffsetDp = metrics.leftOffsetDp,
+                scrollState = scrollState,
+                style = style)
 
-        // Scrollable Grid Area (Canvas + Events)
-        Box(
-            modifier = Modifier.verticalScroll(scrollState).weight(1f) // later : adapt the height
-            ) {
-              // Render the grid background
-              GridCanvas(
-                  modifier = Modifier.fillMaxSize(),
-                  columnCount = metrics.columnCount,
-                  rowHeightDp = metrics.rowHeightDp,
-                  totalHours = metrics.totalHours,
-                  days = metrics.days,
-                  today = today,
-                  selectedDate = selectedDate)
+            // Scrollable Grid Area (Canvas + Events)
+            Box(
+                modifier =
+                    Modifier.verticalScroll(scrollState)
+                        .weight(WeightExtraHeavy) // later : adapt the height
+                ) {
+                  // Render the grid background
+                  GridCanvas(
+                      modifier = Modifier.fillMaxSize(),
+                      columnCount = metrics.columnCount,
+                      rowHeightDp = metrics.rowHeightDp,
+                      totalHours = metrics.totalHours,
+                      days = metrics.days,
+                      today = today,
+                      selectedDate = selectedDate)
 
-              // Render all the events blocks
-              EventsPane(
-                  days = metrics.days,
-                  events = events,
-                  columnWidthDp = gridColumnWidthDp,
-                  gridHeightDp = metrics.gridHeightDp,
-                  gridStartTime = metrics.gridStartTime,
-                  effectiveEndTime = metrics.effectiveEndTime,
-                  onEventClick = onEventClick)
+                  // Render all the events blocks
+                  EventsPane(
+                      days = metrics.days,
+                      events = events,
+                      columnWidthDp = gridColumnWidthDp,
+                      gridHeightDp = metrics.gridHeightDp,
+                      gridStartTime = metrics.gridStartTime,
+                      effectiveEndTime = metrics.effectiveEndTime,
+                      onEventClick = onEventClick)
 
-              // Render the "now" indicator line
-              NowIndicatorLine(
-                  modifier = Modifier.fillMaxSize(),
-                  columnCount = metrics.columnCount,
-                  rowHeightDp = metrics.rowHeightDp,
-                  days = metrics.days,
-                  now = now,
-                  gridStartTime = metrics.gridStartTime,
-                  effectiveEndTime = metrics.effectiveEndTime,
-                  style = style)
-            }
-      }
+                  // Render the "now" indicator line
+                  NowIndicatorLine(
+                      modifier = Modifier.fillMaxSize(),
+                      columnCount = metrics.columnCount,
+                      rowHeightDp = metrics.rowHeightDp,
+                      days = metrics.days,
+                      now = now,
+                      gridStartTime = metrics.gridStartTime,
+                      effectiveEndTime = metrics.effectiveEndTime,
+                      style = style)
+                }
+          }
     }
   }
 }

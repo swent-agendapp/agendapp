@@ -15,10 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.sp
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.style.GridContentStyle
 import com.android.sample.ui.calendar.style.defaultGridContentStyle
+import com.android.sample.ui.theme.FontSizeMediumSmall
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import kotlin.collections.forEach
@@ -60,7 +60,9 @@ internal fun TimeAxisColumn(
             contentAlignment = Alignment.TopCenter) {
               Text(
                   text = timeLabel.format(DateTimeFormatter.ofPattern("HH:mm")),
-                  style = TextStyle(fontSize = 14.sp, color = style.colors.timeLabelTextColor),
+                  style =
+                      TextStyle(
+                          fontSize = FontSizeMediumSmall, color = style.colors.timeLabelTextColor),
               )
             }
       }

@@ -21,12 +21,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.sp
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.style.GridContentStyle
 import com.android.sample.ui.calendar.style.defaultGridContentDimensions
 import com.android.sample.ui.calendar.style.defaultGridContentStyle
+import com.android.sample.ui.theme.FontSizeMedium
+import com.android.sample.ui.theme.FontSizeMediumSmall
 import com.android.sample.ui.theme.GeneralPalette
+import com.android.sample.ui.theme.LineHeightLarge
+import com.android.sample.ui.theme.LineHeightSmall
 import com.android.sample.ui.theme.SpacingExtraSmall
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -113,20 +116,20 @@ fun DayHeaderRow(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             color = color,
-            fontSize = 16.sp,
+            fontSize = FontSizeMedium,
             fontWeight = weight,
             textAlign = TextAlign.Center,
-            lineHeight = 22.sp,
+            lineHeight = LineHeightLarge,
             modifier = Modifier.fillMaxWidth())
         Spacer(modifier = Modifier.height(SpacingExtraSmall))
         Text(
             text = shortDate,
             maxLines = 1,
             color = color,
-            fontSize = 13.sp,
+            fontSize = FontSizeMediumSmall,
             fontWeight = weight,
             textAlign = TextAlign.Center,
-            lineHeight = 8.sp,
+            lineHeight = LineHeightSmall,
             modifier = Modifier.fillMaxWidth())
       }
     }

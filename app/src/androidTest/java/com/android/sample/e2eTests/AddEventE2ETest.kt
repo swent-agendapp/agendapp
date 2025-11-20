@@ -14,6 +14,7 @@ import com.android.sample.Agendapp
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.organization.OrganizationRepositoryFirebase
 import com.android.sample.model.organization.OrganizationRepositoryProvider
+import com.android.sample.ui.authentication.SignInScreenTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.organization.AddOrganizationScreenTestTags
@@ -22,7 +23,6 @@ import com.android.sample.utils.FakeCredentialManager
 import com.android.sample.utils.FakeJwtGenerator
 import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.FirebaseEmulator
-import com.github.se.bootcamp.ui.authentication.SignInScreenTestTags
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

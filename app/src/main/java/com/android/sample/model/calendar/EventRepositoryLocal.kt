@@ -1,7 +1,7 @@
 package com.android.sample.model.calendar
 
 import com.android.sample.model.constants.FirestoreConstants.MAP_COLLECTION_PATH
-import com.android.sample.utils.EventColor
+import com.android.sample.ui.theme.EventPalette
 import java.time.Duration
 import java.time.Instant
 
@@ -17,6 +17,7 @@ class EventRepositoryLocal(preloadSampleData: Boolean = false) : EventRepository
   override fun getNewUid(): String {
     return java.util.UUID.randomUUID().toString()
   }
+
   override suspend fun getAllEvents(): List<Event> {
     return events.filter { !it.hasBeenDeleted }
   }
@@ -88,7 +89,7 @@ class EventRepositoryLocal(preloadSampleData: Boolean = false) : EventRepository
             participants = setOf("Alice", "Bob", "Charlie"),
             recurrenceStatus = RecurrenceStatus.Weekly,
             hasBeenDeleted = false,
-            color = EventColor.Blue,
+            color = EventPalette.Blue,
             // notifications = listOf("30 min before"),
             version = System.currentTimeMillis(),
             locallyStoredBy = listOf("LOCAL_USER"),
@@ -105,7 +106,7 @@ class EventRepositoryLocal(preloadSampleData: Boolean = false) : EventRepository
             participants = setOf("David", "Eve"),
             recurrenceStatus = RecurrenceStatus.OneTime,
             hasBeenDeleted = false,
-            color = EventColor.Green,
+            color = EventPalette.Green,
             // notifications = listOf("1 hour before"),
             version = System.currentTimeMillis(),
             locallyStoredBy = listOf("LOCAL_USER"),

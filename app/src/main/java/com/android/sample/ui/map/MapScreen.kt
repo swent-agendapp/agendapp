@@ -53,9 +53,8 @@ import com.android.sample.ui.map.MapScreenTestTags.CREATE_AREA_FLOATING_BUTTON
 import com.android.sample.ui.map.MapScreenTestTags.DELETE_MARKER_BUTTON
 import com.android.sample.ui.map.MapScreenTestTags.DOWN_SHEET
 import com.android.sample.ui.map.MapScreenTestTags.DOWN_SHEET_FORM
-import com.android.sample.ui.theme.Blue
-import com.android.sample.ui.theme.Blue70
 import com.android.sample.ui.theme.DefaultZoom
+import com.android.sample.ui.theme.MapPalette
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingSmall
@@ -227,8 +226,8 @@ fun MapScreen(
                             area.markers.map { marker ->
                               LatLng(marker.location.latitude, marker.location.longitude)
                             },
-                        strokeColor = Blue,
-                        fillColor = Blue70)
+                        strokeColor = MapPalette.Stroke,
+                        fillColor = MapPalette.Fill)
                   }
                 }
           }

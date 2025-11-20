@@ -43,10 +43,10 @@ import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeTestTags
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.DefaultCardElevation
+import com.android.sample.ui.theme.GeneralPalette
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.PaddingLarge
 import com.android.sample.ui.theme.PaddingMedium
-import com.android.sample.ui.theme.Violet
 import com.android.sample.ui.theme.WeightExtraHeavy
 
 // Assisted by AI
@@ -163,7 +163,9 @@ fun SelectSubstitutedScreen(
                               Box(
                                   modifier =
                                       Modifier.fillMaxWidth()
-                                          .background(if (isSelected) Violet else Color.White)
+                                          .background(
+                                              if (isSelected) GeneralPalette.Secondary
+                                              else Color.White)
                                           .clickable {
                                             onMemberSelected(member)
                                             selectedMember = member

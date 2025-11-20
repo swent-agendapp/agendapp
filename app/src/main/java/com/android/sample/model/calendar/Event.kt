@@ -1,9 +1,10 @@
 package com.android.sample.model.calendar
 
 import androidx.annotation.StringRes
+import androidx.compose.ui.graphics.Color
 import com.android.sample.R
 import com.android.sample.ui.calendar.utils.DateTimeUtils
-import com.android.sample.utils.EventColor
+import com.android.sample.ui.theme.EventPalette
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
@@ -43,7 +44,7 @@ data class Event(
     val version: Long,
     val recurrenceStatus: RecurrenceStatus,
     val hasBeenDeleted: Boolean = false,
-    val color: EventColor
+    val color: Color
 ) {
   // Returns the start date as a LocalDate in the system's default time zone
   val startLocalDate: LocalDate

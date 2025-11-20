@@ -1,4 +1,4 @@
-package com.android.sample.ui.screens
+package com.android.sample.ui.calendar.editEvent
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -10,11 +10,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.unit.dp
 import com.android.sample.R
-
-object EditEventTestTags {
-  const val ROOT = "edit_event_screen"
-  const val BACK_BUTTON = "back_button"
-}
 
 /** Edit event page. */
 @Composable

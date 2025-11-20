@@ -1,6 +1,5 @@
 package com.android.sample.utils
 
-import android.util.Log
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryFirebase
 import com.android.sample.model.calendar.EventRepositoryProvider
@@ -9,6 +8,7 @@ import com.android.sample.model.constants.FirestoreConstants.ORGANIZATIONS_COLLE
 import com.android.sample.model.map.MapRepository
 import com.android.sample.model.map.MapRepositoryFirebase
 import com.android.sample.model.map.MapRepositoryProvider
+import com.android.sample.model.constants.FirestoreConstants
 import com.android.sample.model.organization.OrganizationRepository
 import com.android.sample.model.organization.OrganizationRepositoryFirebase
 import com.android.sample.model.organization.OrganizationRepositoryProvider
@@ -24,6 +24,11 @@ import org.junit.Before
  * connection to local emulators for Firestore and Auth.
  */
 open class FirebaseEmulatedTest {
+
+  // List of ALL Firestore collections used in the app (dynamic cleanup)
+  private val allCollections = FirestoreConstants.ALL_COLLECTIONS
+
+  // --- Creation methods for initialized repositories using the emulated Firestore ---
 
   fun createInitializedEventRepository(): EventRepository {
     return EventRepositoryFirebase(db = FirebaseEmulator.firestore)
@@ -41,14 +46,6 @@ open class FirebaseEmulatedTest {
     return ReplacementRepositoryFirebase(db = FirebaseEmulator.firestore)
   }
 
-  suspend fun getEventsCount(): Int {
-    return FirebaseEmulator.firestore.collection(EVENTS_COLLECTION_PATH).get().await().size()
-  }
-
-  suspend fun getOrganizationsCount(): Int {
-    return FirebaseEmulator.firestore.collection(ORGANIZATIONS_COLLECTION_PATH).get().await().size()
-  }
-
   // --- Generic collection utilities ---
   private suspend fun clearCollection(path: String) {
     val collection = FirebaseEmulator.firestore.collection(path).get().await()
@@ -62,17 +59,24 @@ open class FirebaseEmulatedTest {
     assert(remaining == 0) { "Collection $path not empty after clearing, remaining: $remaining" }
   }
 
-  // --- Specific collection helpers ---
-  suspend fun clearEventsCollection() = clearCollection(EVENTS_COLLECTION_PATH)
+  private suspend fun countDocs(path: String): Int {
+    return FirebaseEmulator.firestore.collection(path).get().await().size()
+  }
 
-  suspend fun clearOrganizationsCollection() = clearCollection(ORGANIZATIONS_COLLECTION_PATH)
+  private suspend fun clearAllCollections() {
+    allCollections.forEach { clearCollection(it) }
+  }
+
+  private suspend fun assertAllCollectionsEmpty() {
+    val nonEmpty = allCollections.filter { countDocs(it) > 0 }
+
+    assert(nonEmpty.isEmpty()) { "Some Firestore collections were not empty: $nonEmpty" }
+  }
 
   /**
    * Sets up the test environment before each test.
-   * - Checks if emulators are running
-   * - Connects Firebase to the emulators
-   * - Sets the repository to use the emulated Firestore
-   * - Ensures the test collection is empty
+   * - Clears all Firestore collections to ensure a clean state
+   * - Asserts that all collections are empty
    */
   @Before
   open fun setUp() {
@@ -81,35 +85,22 @@ open class FirebaseEmulatedTest {
       OrganizationRepositoryProvider.repository = createInitializedOrganizationRepository()
       EventRepositoryProvider.repository = createInitializedEventRepository()
       ReplacementRepositoryProvider.repository = createInitializedReplacementRepository()
-      val eventsCount = getEventsCount()
-      val organizationsCount = getOrganizationsCount()
-      if (eventsCount > 0 || organizationsCount > 0) {
-        Log.w(
-            "FirebaseEmulatedTest",
-            "Warning: Test collection is not empty at the beginning of the test, count: $eventsCount events + $organizationsCount organizations.",
-        )
-        clearEventsCollection()
-        clearOrganizationsCollection()
-      }
-      assert(value = getEventsCount() == 0 && getOrganizationsCount() == 0) {
-        "Test collection is not empty at the beginning of the test, clearing failed."
-      }
+      clearAllCollections()
+      assertAllCollectionsEmpty()
     }
   }
 
   /**
    * Cleans up the test environment after each test.
-   * - Clears the test collection
-   * - Signs out any authenticated user
-   * - Clears emulated Firestore and Auth data
+   * - Clears all collections
+   * - Resets emulator auth + Firestore state
    */
   @After
   open fun tearDown() {
-    runTest {
-      clearEventsCollection()
-      clearOrganizationsCollection()
-    }
+    runTest { clearAllCollections() }
+
     FirebaseEmulator.clearFirestoreEmulator()
+
     if (FirebaseEmulator.isRunning) {
       FirebaseEmulator.auth.signOut()
       FirebaseEmulator.clearAuthEmulator()

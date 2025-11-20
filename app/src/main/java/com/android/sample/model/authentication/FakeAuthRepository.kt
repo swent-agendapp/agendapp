@@ -1,7 +1,5 @@
 package com.android.sample.model.authentication
 
-import com.github.se.bootcamp.model.authentication.AuthRepository
-
 // --- Fake repository for testing ---
 
 class FakeAuthRepository(private val user: User? = null) : AuthRepository {

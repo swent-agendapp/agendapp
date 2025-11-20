@@ -71,7 +71,7 @@ enum class AddEventStep {
  */
 class AddEventViewModel(
     private val repository: EventRepository = EventRepositoryProvider.repository,
-    private val auth: AuthorizationService = AuthorizationService()
+    private val authServ: AuthorizationService = AuthorizationService()
 ) : ViewModel() {
   private val _uiState = MutableStateFlow(AddCalendarEventUIState())
 
@@ -113,7 +113,7 @@ class AddEventViewModel(
   fun addEventToRepository(event: Event) {
     viewModelScope.launch {
       try {
-        val allowed = runCatching { auth.requireAdmin() }.isSuccess
+        val allowed = runCatching { authServ.requireAdmin() }.isSuccess
         if (!allowed) {
           _uiState.value = _uiState.value.copy(errorMsg = "You are not allowed to create events")
           return@launch

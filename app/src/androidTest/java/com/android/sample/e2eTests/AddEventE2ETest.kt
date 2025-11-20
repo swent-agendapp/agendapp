@@ -33,7 +33,7 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
     private const val UI_AUTH_TIMEOUT = 10_000L
   }
 
-  val eventTitle = "Event Test"
+  val eventTitle = "Event_Test"
   val eventDescription = "Event Test"
   val expectedName = "John Doe"
   val expectedEmail = "john.doe@test.com"
@@ -200,8 +200,8 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
   private fun ComposeTestRule.scrollCalendarUntilEventVisible(
       calendarTag: String,
       eventTag: String,
-      maxDownScrolls: Int = 10,
-      maxUpScrolls: Int = 10
+      maxDownScrolls: Int = 30,
+      maxUpScrolls: Int = 30
   ) {
     if (isTagDisplayed(eventTag)) return
 

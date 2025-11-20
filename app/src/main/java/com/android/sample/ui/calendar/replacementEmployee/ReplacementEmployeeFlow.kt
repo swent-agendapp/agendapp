@@ -7,6 +7,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.model.replacement.Replacement
+import com.android.sample.ui.calendar.replacementEmployee.components.ReplacementCreateScreen
 import com.android.sample.ui.calendar.replacementEmployee.components.ReplacementEmployeeListScreen
 import com.android.sample.ui.calendar.replacementEmployee.components.ReplacementRequestUi
 import com.android.sample.ui.replacement.components.SelectDateRangeScreen
@@ -25,10 +26,7 @@ import java.time.ZoneId
  * - SELECT_DATE_RANGE → [SelectDateRangeScreen] (date interval)
  */
 @Composable
-fun ReplacementEmployeeFlow(
-    viewModel: ReplacementEmployeeViewModel = viewModel(),
-    onNavigateBack: () -> Unit = {} // if you want a global back action later
-) {
+fun ReplacementEmployeeFlow(viewModel: ReplacementEmployeeViewModel = viewModel()) {
   val uiState by viewModel.uiState.collectAsState()
 
   when (uiState.step) {
@@ -40,7 +38,7 @@ fun ReplacementEmployeeFlow(
           onAskToBeReplaced = { viewModel.goToCreateOptions() })
     }
     ReplacementEmployeeStep.CREATE_OPTIONS -> {
-      com.android.sample.ui.calendar.replacementEmployee.components.ReplacementCreateScreen(
+      ReplacementCreateScreen(
           onSelectEvent = { viewModel.goToSelectEvent() },
           onChooseDateRange = { viewModel.goToSelectDateRange() },
           onBack = { viewModel.backToList() })
@@ -60,7 +58,7 @@ fun ReplacementEmployeeFlow(
           onNext = { viewModel.confirmDateRangeAndCreateReplacements() },
           onBack = { viewModel.backToCreateOptions() },
           title = stringResource(R.string.replacement_create_choose_date_range),
-          instruction = stringResource(R.string.replacement_list_instruction),
+          instruction = stringResource(R.string.select_date_range_instruction),
           onStartDateSelected = { viewModel.setStartDate(it) },
           onEndDateSelected = { viewModel.setEndDate(it) })
     }
@@ -79,34 +77,13 @@ fun Replacement.toUi(): ReplacementRequestUi {
   val end = event.endDate.atZone(ZoneId.systemDefault())
 
   // Simple formatting; can be improved later
-  val weekdayAndDay = start.toLocalDate().toString()
+  val dateLabel = start.toLocalDate().toString()
   val timeRange = "${start.toLocalTime()} - ${end.toLocalTime()}"
 
   return ReplacementRequestUi(
       id = id,
-      weekdayAndDay = weekdayAndDay,
+      weekdayAndDay = dateLabel,
       timeRange = timeRange,
       title = event.title,
       description = event.description)
 }
-
-/**
- * ---------- Previews (for design purposes only, remove after VM is implemented) ----------
- *
- * @Composable private fun PreviewFlowAt(step: ReplacementEmployeeStep) { val vm =
- *   ReplacementEmployeeViewModel() vm.forceStepForPreview(step)
- *
- * ReplacementEmployeeFlow(viewModel = vm, onNavigateBack = {}) }
- *
- * @Preview(showBackground = true, name = "Employee Flow – LIST")
- * @Composable fun PreviewEmployeeFlowList() { PreviewFlowAt(ReplacementEmployeeStep.LIST) }
- * @Preview(showBackground = true, name = "Employee Flow – CREATE OPTIONS")
- * @Composable fun PreviewEmployeeFlowCreateOptions() {
- *   PreviewFlowAt(ReplacementEmployeeStep.CREATE_OPTIONS) }
- * @Preview(showBackground = true, name = "Employee Flow – SELECT EVENT")
- * @Composable fun PreviewEmployeeFlowSelectEvent() {
- *   PreviewFlowAt(ReplacementEmployeeStep.SELECT_EVENT) }
- * @Preview(showBackground = true, name = "Employee Flow – SELECT DATE RANGE")
- * @Composable fun PreviewEmployeeFlowSelectDateRange() {
- *   PreviewFlowAt(ReplacementEmployeeStep.SELECT_DATE_RANGE) }
- */

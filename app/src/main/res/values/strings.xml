@@ -181,6 +181,8 @@
     <string name="common_send">Send</string>
     <string name="replacement_list_title">Select an event</string>
     <string name="replacement_list_instruction">Select an event you need to be replaced for</string>
+    <string name="select_date_range_instruction">Select the date range for which you need a replacement.</string>
+    <string name="event_overview_title">Event Overview</string>
 </resources>
 
 

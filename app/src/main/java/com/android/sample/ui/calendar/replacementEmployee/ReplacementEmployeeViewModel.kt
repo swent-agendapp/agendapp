@@ -72,7 +72,7 @@ class ReplacementEmployeeViewModel(
     myUserId: String = "EMP001"
 ) : ViewModel() {
 
-  // TODO: replace with real authenticated user id
+  // Later: replace with real authenticated user id
   private val currentUserId: String = myUserId
 
   private val _uiState = MutableStateFlow(ReplacementEmployeeUiState())
@@ -282,7 +282,7 @@ class ReplacementEmployeeViewModel(
 
   /**
    * Confirm the selected date range:
-   * - find all events within the range (TODO: use EventRepository properly)
+   * - find all events within the range (Later: use EventRepository properly)
    * - create one [Replacement] per event where current user is the absent member
    */
   fun confirmDateRangeAndCreateReplacements() {

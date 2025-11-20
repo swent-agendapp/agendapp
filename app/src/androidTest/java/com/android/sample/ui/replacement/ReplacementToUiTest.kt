@@ -1,4 +1,4 @@
-package com.android.sample.ui.calendar
+package com.android.sample.ui.replacement
 
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus

@@ -1,7 +1,9 @@
-package com.android.sample.ui.calendar
+package com.android.sample.ui.replacement
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.test.platform.app.InstrumentationRegistry
+import com.android.sample.R
 import com.android.sample.ui.calendar.replacementEmployee.ReplacementEmployeeFlow
 import com.android.sample.ui.calendar.replacementEmployee.components.ReplacementEmployeeCreateTestTags
 import com.android.sample.ui.calendar.replacementEmployee.components.ReplacementEmployeeListTestTags
@@ -71,12 +73,14 @@ class ReplacementEmployeeFlowTest {
    */
   @Test
   fun selectEventButton_goesToSelectEventScreen() {
+    val context = InstrumentationRegistry.getInstrumentation().targetContext
+    val nextText = context.getString(R.string.next)
     compose.setContent { ReplacementEmployeeFlow() }
 
     compose.onNodeWithTag(ReplacementEmployeeListTestTags.ASK_BUTTON).performClick()
     compose.onNodeWithTag(ReplacementEmployeeCreateTestTags.SELECT_EVENT_BUTTON).performClick()
 
-    compose.onNodeWithText("Next").assertExists()
+    compose.onNodeWithText(nextText).assertExists()
   }
 
   /**
@@ -89,12 +93,14 @@ class ReplacementEmployeeFlowTest {
    */
   @Test
   fun backFromSelectEvent_returnsToCreateOptions() {
+    val context = InstrumentationRegistry.getInstrumentation().targetContext
+    val backText = context.getString(R.string.goBack)
     compose.setContent { ReplacementEmployeeFlow() }
 
     compose.onNodeWithTag(ReplacementEmployeeListTestTags.ASK_BUTTON).performClick()
     compose.onNodeWithTag(ReplacementEmployeeCreateTestTags.SELECT_EVENT_BUTTON).performClick()
 
-    compose.onNodeWithText("Go Back").performClick()
+    compose.onNodeWithText(backText).performClick()
 
     compose.onNodeWithTag(ReplacementEmployeeCreateTestTags.SELECT_EVENT_BUTTON).assertExists()
   }
@@ -108,11 +114,17 @@ class ReplacementEmployeeFlowTest {
    */
   @Test
   fun chooseDateRange_goesToDateRangeScreen() {
+    val context = InstrumentationRegistry.getInstrumentation().targetContext
+    val startDateText = context.getString(R.string.startDatePickerLabel)
+    val backText = context.getString(R.string.goBack)
     compose.setContent { ReplacementEmployeeFlow() }
 
     compose.onNodeWithTag(ReplacementEmployeeListTestTags.ASK_BUTTON).performClick()
     compose.onNodeWithTag(ReplacementEmployeeCreateTestTags.CHOOSE_DATE_RANGE_BUTTON).performClick()
 
-    compose.onNodeWithText("Start date").assertExists() // from DatePickerField
+    compose.onNodeWithText(startDateText).assertExists() // from DatePickerField
+    compose.onNodeWithText(backText).performClick()
+
+    compose.onNodeWithTag(ReplacementEmployeeCreateTestTags.CHOOSE_DATE_RANGE_BUTTON).assertExists()
   }
 }

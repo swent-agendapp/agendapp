@@ -10,7 +10,7 @@ service cloud.firestore {
       allow update, delete: if request.auth.uid in resource.data.admins;
       allow read: if request.auth.uid in resource.data.admins || if request.auth.uid in resource.data.members;
     }
-    match /users7/{id} {
+    match /users/{id} {
       allow create: true;
       allow update, delete: if request.auth.uid in resource.data.admins;
       allow read: if request.auth.uid in resource.data.admins || if request.auth.uid in resource.data.members;

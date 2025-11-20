@@ -8,6 +8,7 @@
     <string name="eventTitle">Title</string>
     <string name="eventTitlePlaceholder">Enter a title</string>
     <string name="title_empty_error">Title cannot be empty</string>
+    <string name="name_empty_error">Name cannot be empty</string>
     <string name="description_empty_error">Description cannot be empty</string>
     <string name="eventDescriptionPlaceholder">Describe the event</string>
     <string name="eventDescription">Description</string>
@@ -169,6 +170,13 @@
     <string name="replacement_create_title">Previous step</string>
     <string name="replacement_create_select_event">Select an event</string>
     <string name="replacement_create_choose_date_range">Choose a date range</string>
+
+    <!-- Organizations -->
+    <string name="organization_list_title">Your organizations</string>
+    <string name="organization_loading">Loading organizations</string>
+    <string name="organization_name_label">Name of organization</string>
+
+    <!-- Event Overview -->
     <string name="event_overview_title">Event Overview</string>
     <string name="view_mode_1day">1 day</string>
     <string name="view_mode_5days">5 days</string>

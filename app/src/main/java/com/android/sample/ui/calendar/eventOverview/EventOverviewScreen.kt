@@ -30,9 +30,9 @@ import com.android.sample.R
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.ui.calendar.components.EventSummaryCard
+import com.android.sample.ui.theme.EventPalette
 import com.android.sample.ui.theme.WeightHeavy
 import com.android.sample.ui.theme.WeightVeryHeavy
-import com.android.sample.utils.EventColor
 import java.time.Duration
 import java.time.Instant
 
@@ -133,7 +133,7 @@ private fun EventOverviewScreenPreview() {
           version = 1L,
           recurrenceStatus = RecurrenceStatus.Weekly,
           hasBeenDeleted = false,
-          color = EventColor.Green)
+          color = EventPalette.Green)
 
   EventOverviewScreen(eventId = event.id, onBackClick = {})
 }

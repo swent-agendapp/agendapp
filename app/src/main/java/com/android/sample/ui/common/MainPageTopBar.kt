@@ -3,8 +3,7 @@ package com.android.sample.ui.common
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.android.sample.ui.theme.TopBarBackgroundColor
-import com.android.sample.ui.theme.TopBarTextColor
+import com.android.sample.ui.theme.TopBarPalette
 
 /**
  * Composable function to create a top bar.
@@ -22,8 +21,8 @@ fun MainPageTopBar(
       title = { Text(text = title, modifier = modifier) },
       colors =
           TopAppBarDefaults.topAppBarColors(
-              containerColor = TopBarBackgroundColor,
-              titleContentColor = TopBarTextColor,
+              containerColor = TopBarPalette.Background,
+              titleContentColor = TopBarPalette.Font,
           ),
   )
 }

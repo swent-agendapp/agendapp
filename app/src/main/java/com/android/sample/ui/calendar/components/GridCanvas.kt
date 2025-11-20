@@ -12,9 +12,9 @@ import androidx.compose.ui.unit.Dp
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.data.LocalDateRange
 import com.android.sample.ui.calendar.data.workWeekDays
-import com.android.sample.ui.calendar.style.CalendarDefaults.DefaultDaysInWeek
+import com.android.sample.ui.calendar.style.CalendarDefaults.DEFAULT_DAYS_IN_WEEK
 import com.android.sample.ui.calendar.style.CalendarDefaults.DefaultTotalHour
-import com.android.sample.ui.calendar.style.CalendarDefaults.strokeWidthDefault
+import com.android.sample.ui.calendar.style.CalendarDefaults.STROKE_WIDTH_DEFAULT
 import com.android.sample.ui.calendar.style.GridContentStyle
 import com.android.sample.ui.calendar.style.defaultGridContentStyle
 import com.android.sample.ui.calendar.utils.rememberWeekViewMetrics
@@ -35,7 +35,7 @@ import java.time.LocalDate
 @Composable
 fun GridCanvas(
     modifier: Modifier = Modifier,
-    columnCount: Int = DefaultDaysInWeek,
+    columnCount: Int = DEFAULT_DAYS_IN_WEEK,
     rowHeightDp: Dp = defaultGridContentStyle().dimensions.rowHeightDp,
     totalHours: Int = DefaultTotalHour,
     days: List<LocalDate> = workWeekDays(),
@@ -63,7 +63,7 @@ fun GridCanvas(
               color = style.colors.gridLineColor,
               start = Offset(x, 0f),
               end = Offset(x, size.height),
-              strokeWidth = strokeWidthDefault)
+              strokeWidth = STROKE_WIDTH_DEFAULT)
         }
 
         // Horizontal lines (hours) - full width
@@ -74,7 +74,7 @@ fun GridCanvas(
               color = style.colors.gridLineColor,
               start = Offset(0f, y),
               end = Offset(size.width, y),
-              strokeWidth = strokeWidthDefault)
+              strokeWidth = STROKE_WIDTH_DEFAULT)
         }
 
         // Today highlight

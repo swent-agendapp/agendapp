@@ -72,7 +72,7 @@ fun CalendarGridContent(
   // unnecessary scrolling to reach the relevant hours of the day.
   LaunchedEffect(Unit) {
     if (scrollState.value == 0) {
-      val initialHour = CalendarDefaults.DefaultInitialHour
+      val initialHour = CalendarDefaults.DEFAULT_INITIAL_HOUR
       val offsetPx = with(density) { (metrics.rowHeightDp * initialHour).roundToPx() }
       scrollState.scrollTo(offsetPx)
     }

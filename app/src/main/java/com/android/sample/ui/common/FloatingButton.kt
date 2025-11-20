@@ -13,8 +13,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
+import com.android.sample.ui.theme.GeneralPalette
 import com.android.sample.ui.theme.PaddingSmall
-import com.android.sample.ui.theme.Salmon
 
 /**
  * Displays a single replacement option card.
@@ -30,7 +30,10 @@ fun FloatingButton(
     icon: ImageVector = Icons.Default.Add
 ) {
   FloatingActionButton(
-      modifier = modifier, onClick = onClick, containerColor = Salmon, contentColor = Color.White) {
+      modifier = modifier,
+      onClick = onClick,
+      containerColor = GeneralPalette.Primary,
+      contentColor = Color.White) {
         Row(
             modifier = Modifier.padding(horizontal = PaddingSmall),
             verticalAlignment = Alignment.CenterVertically) {

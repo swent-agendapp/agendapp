@@ -4,7 +4,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import com.android.sample.ui.screens.EditEventScreen
+import com.android.sample.ui.calendar.editEvent.EditEventScreen
 import org.junit.Rule
 import org.junit.Test
 

@@ -102,7 +102,7 @@ fun CalendarContainer(
                     detectDragGestures(
                         onDrag = { _, dragAmount -> totalDx += dragAmount.x },
                         onDragEnd = {
-                          val threshold = CalendarDefaults.DefaultSwipeThreshold
+                          val threshold = CalendarDefaults.DEFAULT_SWIPE_THRESHOLD
                           when {
                             // Swipe right: go to previous day/week.
                             totalDx > threshold -> {

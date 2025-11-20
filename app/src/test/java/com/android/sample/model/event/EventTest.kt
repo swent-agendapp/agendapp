@@ -76,7 +76,7 @@ class EventTest {
   }
 
   @Test
-  fun `create A Weekly Event For 4 Weeks Create 4 Event`() {
+  fun `create A Weekly Event For 4 Weeks Create 5 Event`() {
     val startLocal = LocalDateTime.of(2025, 10, 15, 9, 30)
     val endLocal = LocalDateTime.of(2025, 10, 15, 11, 0)
     val endRecurrenceLocal = startLocal.plusWeeks(4)
@@ -94,7 +94,7 @@ class EventTest {
   }
 
   @Test
-  fun `create A Weekly Event For 4 Weeks + 1 days Create 4 Event`() {
+  fun `create A Weekly Event For 4 Weeks + 1 days Create 5 Event`() {
     val startLocal = LocalDateTime.of(2025, 10, 15, 9, 30)
     val endLocal = LocalDateTime.of(2025, 10, 15, 11, 0)
     val endRecurrenceLocal = startLocal.plusWeeks(4).plusDays(1)
@@ -112,7 +112,7 @@ class EventTest {
   }
 
   @Test
-  fun `create A Weekly Event For 4 Weeks - 1 days Create 3 Event`() {
+  fun `create A Weekly Event For 4 Weeks - 1 days Create 4 Event`() {
     val startLocal = LocalDateTime.of(2025, 10, 15, 9, 30)
     val endLocal = LocalDateTime.of(2025, 10, 15, 11, 0)
     val endRecurrenceLocal = startLocal.plusWeeks(4).plusDays(-1)
@@ -130,7 +130,7 @@ class EventTest {
   }
 
   @Test
-  fun `create A Monthly Event For 1 Year Create 12 Event`() {
+  fun `create A Monthly Event For 1 Year Create 13 Event`() {
     val startLocal = LocalDateTime.of(2025, 10, 15, 9, 30)
     val endLocal = LocalDateTime.of(2025, 10, 15, 11, 0)
     val endRecurrenceLocal = LocalDateTime.of(2026, 10, 15, 11, 0)

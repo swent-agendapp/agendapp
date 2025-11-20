@@ -19,14 +19,15 @@ class MapRepositoryLocalTest {
     repository = MapRepositoryLocal()
 
     // Distinct markers
-    marker1 = Marker(latitude = 48.8566, longitude = 2.3522)
-    marker2 = Marker(latitude = 48.8570, longitude = 2.3530)
-    marker3 = Marker(latitude = 48.8580, longitude = 2.3540)
+    marker1 = Marker(latitude = 48.8566, longitude = 2.3522, label = "Marker1")
+    marker2 = Marker(latitude = 48.8570, longitude = 2.3530, label = "Marker2")
+    marker3 = Marker(latitude = 48.8580, longitude = 2.3540, label = "Marker3")
     markerDuplicate =
         Marker(
             latitude = marker1.location.latitude,
             longitude = marker1.location.longitude,
-        )
+            label = "Duplicate (Marker 1)" // same as marker1
+    )
 
     // Add markers to repository
     repository.addMarker(marker1)
@@ -39,6 +40,7 @@ class MapRepositoryLocalTest {
   fun addMarker_shouldStoreMarker() {
     val fetched = repository.getMarkerById(marker1.id)
     assertNotNull(fetched)
+    assertEquals(marker1.label, fetched?.label)
     assertEquals(marker1.location.latitude, fetched?.location?.latitude)
     assertEquals(marker1.location.longitude, fetched?.location?.longitude)
   }

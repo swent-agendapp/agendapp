@@ -19,16 +19,16 @@ class AreaTest {
   @Before
   fun setup() {
     // Define markers forming a square area in a counter-clockwise order
-    m1 = Marker(latitude = 48.8566, longitude = 2.3522)
-    m2 = Marker(latitude = 48.8566, longitude = 2.3622)
-    m3 = Marker(latitude = 48.8666, longitude = 2.3622)
-    m4 = Marker(latitude = 48.8666, longitude = 2.3522)
+    m1 = Marker(latitude = 48.8566, longitude = 2.3522, label = "Bottom-left")
+    m2 = Marker(latitude = 48.8566, longitude = 2.3622, label = "Bottom-right")
+    m3 = Marker(latitude = 48.8666, longitude = 2.3622, label = "Top-right")
+    m4 = Marker(latitude = 48.8666, longitude = 2.3522, label = "Top-left")
 
     area = Area(label = "Test Area", markers = listOf(m1, m2, m3, m4))
 
     // Points to test
-    insidePoint = Marker(latitude = 48.861, longitude = 2.357)
-    outsidePoint = Marker(latitude = 48.870, longitude = 2.350)
+    insidePoint = Marker(latitude = 48.861, longitude = 2.357, label = "Inside Point")
+    outsidePoint = Marker(latitude = 48.870, longitude = 2.350, label = "Outside Point")
   }
 
   @Test

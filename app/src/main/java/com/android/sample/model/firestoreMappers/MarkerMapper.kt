@@ -8,25 +8,27 @@ object MarkerMapper : FirestoreMapper<Marker> {
 
   override fun fromDocument(document: DocumentSnapshot): Marker? {
     val id = document.getString("id") ?: document.id
+    val label = document.getString("label")
 
     val locationObj = document["location"] ?: return null
     val location = LocationMapper.fromAny(locationObj) ?: return null
 
-    return Marker(id = id, location = location)
+    return Marker(id = id, location = location, label = label)
   }
 
   override fun fromMap(data: Map<String, Any?>): Marker? {
     val id = data["id"] as? String ?: return null
+    val label = data["label"] as? String
 
     val locationData = data["location"] ?: return null
     val location = LocationMapper.fromAny(locationData) ?: return null
 
-    return Marker(id = id, location = location)
+    return Marker(id = id, location = location, label = label)
   }
 
   override fun toMap(model: Marker): Map<String, Any?> {
     val locationMap = LocationMapper.toMap(model.location)
 
-    return mapOf("id" to model.id, "location" to locationMap)
+    return mapOf("id" to model.id, "label" to model.label, "location" to locationMap)
   }
 }

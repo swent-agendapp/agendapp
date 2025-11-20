@@ -13,10 +13,10 @@ class MarkerMapperTest {
   private val sampleLocation = Location(latitude = 10.0, longitude = 20.0)
   private val sampleMapLocation = mapOf("latitude" to 10.0, "longitude" to 20.0)
 
-  private val sampleMarker = Marker(id = "marker123", location = sampleLocation)
+  private val sampleMarker = Marker(id = "marker123", location = sampleLocation, label = "Marker Label")
 
   private val sampleMap: Map<String, Any?> =
-      mapOf("id" to "marker123", "location" to sampleMapLocation)
+      mapOf("id" to "marker123", "location" to sampleMapLocation, "label" to "Marker Label")
 
   // --- fromDocument tests ---
   @Test
@@ -27,6 +27,7 @@ class MarkerMapperTest {
 
     val doc = mock(DocumentSnapshot::class.java)
     `when`(doc.getString("id")).thenReturn("marker123")
+    `when`(doc.getString("label")).thenReturn("Marker Label")
     `when`(doc.get("location")).thenReturn(locationDoc)
     `when`(doc.id).thenReturn("fallbackId")
 
@@ -54,6 +55,7 @@ class MarkerMapperTest {
 
     val doc = mock(DocumentSnapshot::class.java)
     `when`(doc.getString("id")).thenReturn(null)
+    `when`(doc.getString("label")).thenReturn("Marker Label")
     `when`(doc.get("location")).thenReturn(locationDoc)
     `when`(doc.id).thenReturn("fallbackId")
 
@@ -121,6 +123,7 @@ class MarkerMapperTest {
     assertThat(map["id"]).isEqualTo(sampleMarker.id)
 
     val locationMap = map["location"] as Map<*, *>
+    assertThat(map["label"]).isEqualTo(sampleMarker.label)
     assertThat(locationMap["latitude"]).isEqualTo(sampleLocation.latitude)
     assertThat(locationMap["longitude"]).isEqualTo(sampleLocation.longitude)
   }

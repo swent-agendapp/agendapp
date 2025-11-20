@@ -1,6 +1,5 @@
 import { initializeTestEnvironment, type RulesTestEnvironment } from '@firebase/rules-unit-testing';
 import { readFile } from 'fs/promises';
-import { myToDo, notMyToDo } from './test-data.js';
 import { setLogLevel } from 'firebase/firestore';
 
 const HOST = "127.0.0.1";
@@ -35,10 +34,10 @@ export async function setupFirestore(env: RulesTestEnvironment) {
 
   await env.clearFirestore();
   await env.withSecurityRulesDisabled(async ctx => {
-    const collection = ctx.firestore().collection('todos');
+    const collection = ctx.firestore().collection('');
 
-    await collection.doc(myToDo.uid).set(myToDo);
-    await collection.doc(notMyToDo.uid).set(notMyToDo);
+    await collection.doc().set();
+    await collection.doc().set();
   });
 }
 

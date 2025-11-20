@@ -11,7 +11,6 @@ class MarkerTest {
     val longitude = 6.5668
     val label = "EPFL"
 
-
     val marker = Marker(latitude = latitude, longitude = longitude, label = label)
 
     assertEquals(latitude, marker.location.latitude, 0.0001)

@@ -27,7 +27,7 @@ class MapRepositoryLocalTest {
             latitude = marker1.location.latitude,
             longitude = marker1.location.longitude,
             label = "Duplicate (Marker 1)" // same as marker1
-    )
+            )
 
     // Add markers to repository
     repository.addMarker(marker1)

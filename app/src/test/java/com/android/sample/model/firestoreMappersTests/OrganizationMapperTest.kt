@@ -185,7 +185,7 @@ class OrganizationMapperTest {
     assertThat(area.label).isEqualTo("Main Area")
     assertThat(area.getSortedMarkers()).hasSize(3)
     assertThat(area.getSortedMarkers().map { it.label })
-      .containsExactly("Marker 1", "Marker 2", "Marker 3")
+        .containsExactly("Marker 1", "Marker 2", "Marker 3")
     assertThat(organization.events).hasSize(1)
     assertThat(organization.events[0].title).isEqualTo("Meeting")
   }

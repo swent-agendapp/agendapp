@@ -13,7 +13,8 @@ class MarkerMapperTest {
   private val sampleLocation = Location(latitude = 10.0, longitude = 20.0)
   private val sampleMapLocation = mapOf("latitude" to 10.0, "longitude" to 20.0)
 
-  private val sampleMarker = Marker(id = "marker123", location = sampleLocation, label = "Marker Label")
+  private val sampleMarker =
+      Marker(id = "marker123", location = sampleLocation, label = "Marker Label")
 
   private val sampleMap: Map<String, Any?> =
       mapOf("id" to "marker123", "location" to sampleMapLocation, "label" to "Marker Label")

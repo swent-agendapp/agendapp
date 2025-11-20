@@ -11,7 +11,11 @@ import java.util.UUID
  * The id defaults to a randomly generated UUID string when not provided, ensuring each marker can
  * be referenced uniquely (for example when storing, updating, or removing markers).
  */
-data class Marker(val id: String = UUID.randomUUID().toString(), val location: Location, val label: String? = null) {
+data class Marker(
+    val id: String = UUID.randomUUID().toString(),
+    val location: Location,
+    val label: String? = null
+) {
   /**
    * Secondary constructor allowing to create a Marker directly from latitude and longitude without
    * having to manually construct a Location object.

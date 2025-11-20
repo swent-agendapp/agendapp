@@ -34,9 +34,9 @@ class AreaMapperTest {
     val markersData =
         markers.map { marker ->
           mapOf(
-            "id" to marker.id,
-            "label" to marker.label,
-            "location" to
+              "id" to marker.id,
+              "label" to marker.label,
+              "location" to
                   mapOf(
                       "latitude" to marker.location.latitude,
                       "longitude" to marker.location.longitude))
@@ -132,6 +132,7 @@ class AreaMapperTest {
     assertThat(area.id).isEqualTo("area123")
     assertThat(area.label).isEqualTo("My Area")
     assertThat(area.getSortedMarkers().size).isEqualTo(3)
-    assertThat(area.getSortedMarkers().map { it.label }).containsExactly("Marker 1", "Marker 2", "Marker 3")
+    assertThat(area.getSortedMarkers().map { it.label })
+        .containsExactly("Marker 1", "Marker 2", "Marker 3")
   }
 }

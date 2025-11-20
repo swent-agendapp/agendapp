@@ -81,14 +81,15 @@ class EventTest {
     val endLocal = LocalDateTime.of(2025, 10, 15, 11, 0)
     val endRecurrenceLocal = startLocal.plusWeeks(4)
 
-    val events = createEvent(
-      title = "Meeting",
-      description = "Team sync",
-      startDate = startLocal.atZone(ZoneId.systemDefault()).toInstant(),
-      endDate = endLocal.atZone(ZoneId.systemDefault()).toInstant(),
-      color = EventPalette.Green,
-      endRecurrence = endRecurrenceLocal.atZone(ZoneId.systemDefault()).toInstant(),
-      recurrence = RecurrenceStatus.Weekly)
+    val events =
+        createEvent(
+            title = "Meeting",
+            description = "Team sync",
+            startDate = startLocal.atZone(ZoneId.systemDefault()).toInstant(),
+            endDate = endLocal.atZone(ZoneId.systemDefault()).toInstant(),
+            color = EventPalette.Green,
+            endRecurrence = endRecurrenceLocal.atZone(ZoneId.systemDefault()).toInstant(),
+            recurrence = RecurrenceStatus.Weekly)
     assertEquals(events.size, 5)
   }
 
@@ -98,14 +99,15 @@ class EventTest {
     val endLocal = LocalDateTime.of(2025, 10, 15, 11, 0)
     val endRecurrenceLocal = startLocal.plusWeeks(4).plusDays(1)
 
-    val events = createEvent(
-      title = "Meeting",
-      description = "Team sync",
-      startDate = startLocal.atZone(ZoneId.systemDefault()).toInstant(),
-      endDate = endLocal.atZone(ZoneId.systemDefault()).toInstant(),
-      color = EventPalette.Green,
-      endRecurrence = endRecurrenceLocal.atZone(ZoneId.systemDefault()).toInstant(),
-      recurrence = RecurrenceStatus.Weekly)
+    val events =
+        createEvent(
+            title = "Meeting",
+            description = "Team sync",
+            startDate = startLocal.atZone(ZoneId.systemDefault()).toInstant(),
+            endDate = endLocal.atZone(ZoneId.systemDefault()).toInstant(),
+            color = EventPalette.Green,
+            endRecurrence = endRecurrenceLocal.atZone(ZoneId.systemDefault()).toInstant(),
+            recurrence = RecurrenceStatus.Weekly)
     assertEquals(events.size, 5)
   }
 
@@ -115,14 +117,15 @@ class EventTest {
     val endLocal = LocalDateTime.of(2025, 10, 15, 11, 0)
     val endRecurrenceLocal = startLocal.plusWeeks(4).plusDays(-1)
 
-    val events = createEvent(
-      title = "Meeting",
-      description = "Team sync",
-      startDate = startLocal.atZone(ZoneId.systemDefault()).toInstant(),
-      endDate = endLocal.atZone(ZoneId.systemDefault()).toInstant(),
-      color = EventPalette.Green,
-      endRecurrence = endRecurrenceLocal.atZone(ZoneId.systemDefault()).toInstant(),
-      recurrence = RecurrenceStatus.Weekly)
+    val events =
+        createEvent(
+            title = "Meeting",
+            description = "Team sync",
+            startDate = startLocal.atZone(ZoneId.systemDefault()).toInstant(),
+            endDate = endLocal.atZone(ZoneId.systemDefault()).toInstant(),
+            color = EventPalette.Green,
+            endRecurrence = endRecurrenceLocal.atZone(ZoneId.systemDefault()).toInstant(),
+            recurrence = RecurrenceStatus.Weekly)
     assertEquals(events.size, 4)
   }
 
@@ -132,14 +135,15 @@ class EventTest {
     val endLocal = LocalDateTime.of(2025, 10, 15, 11, 0)
     val endRecurrenceLocal = LocalDateTime.of(2026, 10, 15, 11, 0)
 
-    val events = createEvent(
-      title = "Meeting",
-      description = "Team sync",
-      startDate = startLocal.atZone(ZoneId.systemDefault()).toInstant(),
-      endDate = endLocal.atZone(ZoneId.systemDefault()).toInstant(),
-      color = EventPalette.Green,
-      endRecurrence = endRecurrenceLocal.atZone(ZoneId.systemDefault()).toInstant(),
-      recurrence = RecurrenceStatus.Monthly)
+    val events =
+        createEvent(
+            title = "Meeting",
+            description = "Team sync",
+            startDate = startLocal.atZone(ZoneId.systemDefault()).toInstant(),
+            endDate = endLocal.atZone(ZoneId.systemDefault()).toInstant(),
+            color = EventPalette.Green,
+            endRecurrence = endRecurrenceLocal.atZone(ZoneId.systemDefault()).toInstant(),
+            recurrence = RecurrenceStatus.Monthly)
     assertEquals(events.size, 13)
   }
 
@@ -149,14 +153,15 @@ class EventTest {
     val endLocal = LocalDateTime.of(2025, 10, 15, 11, 0)
     val endRecurrenceLocal = LocalDateTime.of(2026, 12, 15, 11, 0)
 
-    val events = createEvent(
-      title = "Meeting",
-      description = "Team sync",
-      startDate = startLocal.atZone(ZoneId.systemDefault()).toInstant(),
-      endDate = endLocal.atZone(ZoneId.systemDefault()).toInstant(),
-      color = EventPalette.Green,
-      endRecurrence = endRecurrenceLocal.atZone(ZoneId.systemDefault()).toInstant(),
-      recurrence = RecurrenceStatus.Yearly)
+    val events =
+        createEvent(
+            title = "Meeting",
+            description = "Team sync",
+            startDate = startLocal.atZone(ZoneId.systemDefault()).toInstant(),
+            endDate = endLocal.atZone(ZoneId.systemDefault()).toInstant(),
+            color = EventPalette.Green,
+            endRecurrence = endRecurrenceLocal.atZone(ZoneId.systemDefault()).toInstant(),
+            recurrence = RecurrenceStatus.Yearly)
     assertEquals(events.size, 2)
   }
 

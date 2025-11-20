@@ -122,8 +122,9 @@ fun createEvent(
                 color = color))
     RecurrenceStatus.Weekly -> {
       val weeks =
-          1 + ChronoUnit.WEEKS.between(
-              startDate.atZone(ZoneOffset.UTC), endRecurrence.atZone(ZoneOffset.UTC))
+          1 +
+              ChronoUnit.WEEKS.between(
+                  startDate.atZone(ZoneOffset.UTC), endRecurrence.atZone(ZoneOffset.UTC))
       List(weeks.toInt()) { i ->
         Event(
             id = repository?.getNewUid() ?: UUID.randomUUID().toString(),
@@ -142,8 +143,9 @@ fun createEvent(
     RecurrenceStatus.Monthly -> {
 
       val months =
-          1 + ChronoUnit.MONTHS.between(
-              startDate.atZone(ZoneOffset.UTC), endRecurrence.atZone(ZoneOffset.UTC))
+          1 +
+              ChronoUnit.MONTHS.between(
+                  startDate.atZone(ZoneOffset.UTC), endRecurrence.atZone(ZoneOffset.UTC))
       List(months.toInt()) { i ->
         Event(
             id = repository?.getNewUid() ?: UUID.randomUUID().toString(),
@@ -161,8 +163,9 @@ fun createEvent(
     }
     RecurrenceStatus.Yearly -> {
       val years =
-          1 + ChronoUnit.YEARS.between(
-              startDate.atZone(ZoneOffset.UTC), endRecurrence.atZone(ZoneOffset.UTC))
+          1 +
+              ChronoUnit.YEARS.between(
+                  startDate.atZone(ZoneOffset.UTC), endRecurrence.atZone(ZoneOffset.UTC))
       List(years.toInt()) { i ->
         Event(
             id = repository?.getNewUid() ?: UUID.randomUUID().toString(),

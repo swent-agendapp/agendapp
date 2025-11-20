@@ -35,8 +35,8 @@ import com.android.sample.R
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.ui.calendar.components.EventSummaryCard
-import com.android.sample.ui.theme.EventPalette
 import com.android.sample.ui.components.BottomNavigationButtons
+import com.android.sample.ui.theme.EventPalette
 import com.android.sample.ui.theme.WeightHeavy
 import com.android.sample.ui.theme.WeightVeryHeavy
 import java.time.Duration

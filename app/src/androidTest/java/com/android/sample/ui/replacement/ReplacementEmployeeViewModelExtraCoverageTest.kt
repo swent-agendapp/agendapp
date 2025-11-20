@@ -4,6 +4,7 @@ import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.replacement.*
 import com.android.sample.ui.calendar.replacementEmployee.*
+import com.android.sample.ui.theme.EventPalette
 import java.time.Instant
 import java.time.LocalDate
 import kotlinx.coroutines.Dispatchers
@@ -188,7 +189,7 @@ class ReplacementEmployeeViewModelExtraCoverageTest {
           participants = setOf(),
           recurrenceStatus = com.android.sample.model.calendar.RecurrenceStatus.OneTime,
           hasBeenDeleted = false,
-          color = com.android.sample.utils.EventColor.Blue,
+          color = EventPalette.Blue,
           version = 1L,
           locallyStoredBy = listOf("X"),
           cloudStorageStatuses = emptySet(),

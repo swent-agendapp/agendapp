@@ -13,6 +13,7 @@ import java.time.Instant
 import org.junit.Test
 import org.mockito.Mockito.*
 
+// Assisted by AI
 class ReplacementMapperTest {
 
   private val fixedVersion = 123456789L

@@ -1,5 +1,5 @@
 rules_version = '2';
-
+// Helped by GenAI
 // Read rules can be divided into get and list rules
 // Write rules can be divided into create, update, and delete rules
 
@@ -30,14 +30,11 @@ service cloud.firestore {
         }
 
       match /areas/{areaId} {
-
-              // CREATE / UPDATE / DELETE → Admins only
               allow create, update, delete: if request.auth != null
                                             && request.auth.uid in
                                                get(/databases/$(database)/documents/organizations/$(orgId))
                                                .data.admins;
 
-              // READ → Admins or members
               allow read: if request.auth != null
                           && (
                                request.auth.uid in

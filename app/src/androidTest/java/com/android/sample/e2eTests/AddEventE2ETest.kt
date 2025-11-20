@@ -65,6 +65,7 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
 
     // Launch app
     composeTestRule.setContent { Agendapp(credentialManager = fakeCredentialManager) }
+    composeTestRule.waitForIdle()
 
     // Ensure Sign-In screen is displayed
     composeTestRule.onNodeWithTag(SignInScreenTestTags.LOGIN_TITLE).assertIsDisplayed()

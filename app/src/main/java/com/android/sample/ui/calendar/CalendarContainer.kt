@@ -94,7 +94,7 @@ fun CalendarContainer(
 
       CalendarGridContent(
           modifier =
-              Modifier.fillMaxSize().testTag(CalendarScreenTestTags.CALENDAR_GRID).pointerInput(
+              Modifier.fillMaxSize().testTag(CalendarScreenTestTags.ROOT).pointerInput(
                   currentDateRange, currentMode) {
                     var totalDx = 0f
 

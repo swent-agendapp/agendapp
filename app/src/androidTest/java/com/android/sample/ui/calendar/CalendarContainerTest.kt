@@ -88,16 +88,12 @@ class CalendarContainerTest {
 
   /** Performs a left swipe on the calendar grid (go to next day/week). */
   private fun swipeLeftOnCalendarGrid() {
-    composeRule.onNodeWithTag(CalendarScreenTestTags.CALENDAR_GRID).performTouchInput {
-      swipeLeft()
-    }
+    composeRule.onNodeWithTag(CalendarScreenTestTags.ROOT).performTouchInput { swipeLeft() }
   }
 
   /** Performs a right swipe on the calendar grid (go to previous day/week). */
   private fun swipeRightOnCalendarGrid() {
-    composeRule.onNodeWithTag(CalendarScreenTestTags.CALENDAR_GRID).performTouchInput {
-      swipeRight()
-    }
+    composeRule.onNodeWithTag(CalendarScreenTestTags.ROOT).performTouchInput { swipeRight() }
   }
 
   /**

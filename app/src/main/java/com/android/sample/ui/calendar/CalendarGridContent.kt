@@ -90,7 +90,7 @@ fun CalendarGridContent(
   // In ONE_DAY mode, this will typically be the full week containing the visible day.
   val headerDays = headerDateRange.toDateList()
 
-  BoxWithConstraints(modifier = modifier.fillMaxSize().testTag(CalendarScreenTestTags.ROOT)) {
+  BoxWithConstraints(modifier = modifier.fillMaxSize()) {
     val availableWidth = this.maxWidth - metrics.leftOffsetDp
 
     // Column width for the grid (events + background). It is based on the visible date range.

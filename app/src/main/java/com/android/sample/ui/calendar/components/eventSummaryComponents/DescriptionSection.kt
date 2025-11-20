@@ -67,9 +67,7 @@ fun DescriptionSection(
           modifier =
               Modifier.width(BarWidthSmall)
                   .fillMaxHeight()
-                  .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = AlphaLow))
-                  .testTag(EventSummaryCardTags.SIDE_BAR))
-
+                  .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = AlphaLow)))
       Spacer(Modifier.width(SpacingMedium))
 
       // Delegate expansion, overflow detection, and edge-fade to the reusable component

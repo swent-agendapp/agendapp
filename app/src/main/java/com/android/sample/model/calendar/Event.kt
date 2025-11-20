@@ -27,7 +27,7 @@ import java.time.ZoneId
  * @property recurrenceStatus Recurrence pattern of the event (e.g., one-time, weekly).
  * @property color Color used to display the event in the UI.
  * @property locallyStoredBy List of user IDs who have the event stored locally.
- */
+ */ 
 data class Event(
     val id: String,
     val title: String,

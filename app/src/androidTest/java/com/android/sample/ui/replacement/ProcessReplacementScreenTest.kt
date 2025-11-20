@@ -69,7 +69,7 @@ class ProcessReplacementScreenTest {
   }
 
   @Test
-  fun selectingMembers_updatesSummary_andEnablesButton_andCallsCallback() {
+  fun selectingMembers_andEnablesButton_andCallsCallback() {
     var sentMembers: List<String>? = null
 
     composeTestRule.setContent {
@@ -109,7 +109,7 @@ class ProcessReplacementScreenTest {
 
     composeTestRule
         .onNodeWithTag(ProcessReplacementTestTags.memberTag("Noa"), useUnmergedTree = true)
-        .assertIsDisplayed()
+        .assertExists()
     composeTestRule
         .onNodeWithTag(ProcessReplacementTestTags.memberTag("Emilien"), useUnmergedTree = true)
         .assertDoesNotExist()

@@ -135,6 +135,9 @@ fun ProcessReplacementScreen(
                         listTestTag = ProcessReplacementTestTags.MEMBER_LIST,
                         summaryTestTag = ProcessReplacementTestTags.SELECTED_SUMMARY,
                         isSingleSelection = false,
+                        memberTagBuilder = { member ->
+                          ProcessReplacementTestTags.memberTag(member)
+                        },
                     )
                   }
 

@@ -103,11 +103,6 @@ fun createEvent(
     endRecurrence: Instant? = null,
 ): List<Event> {
   require(!endDate.isBefore(startDate)) { "End date cannot be before start date" }
-  require(
-    (recurrence == RecurrenceStatus.OneTime && endRecurrence == null) ||
-            recurrence != RecurrenceStatus.OneTime && endRecurrence != null)
-  { "Invalid recurrence settings: a one-time event cannot have an end date, and a recurring event requires one." }
-
 
   when(recurrence)
   {

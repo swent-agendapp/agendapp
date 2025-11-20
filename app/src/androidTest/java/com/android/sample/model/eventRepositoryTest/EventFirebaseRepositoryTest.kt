@@ -4,6 +4,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.calendar.CloudStorageStatus
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
+import com.android.sample.model.calendar.EventRepositoryProvider.repository
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.utils.FirebaseEmulatedTest
 import java.time.Instant
@@ -16,7 +17,6 @@ import org.junit.runner.RunWith
 @RunWith(value = AndroidJUnit4::class)
 class EventFirebaseRepositoryTest : FirebaseEmulatedTest() {
 
-  private lateinit var repository: EventRepository
   private lateinit var event1: Event
   private lateinit var event2: Event
 

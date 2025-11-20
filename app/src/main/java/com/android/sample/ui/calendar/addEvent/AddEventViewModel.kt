@@ -40,7 +40,7 @@ data class AddCalendarEventUIState(
     val description: String = "",
     val startInstant: Instant = Instant.now(),
     val endInstant: Instant = Instant.now().plus(Duration.ofHours(1)),
-    val recurrenceEndInstant: Instant? = null,
+    val recurrenceEndInstant: Instant = Instant.now().plus(Duration.ofHours(1)),
     val recurrenceMode: RecurrenceStatus = RecurrenceStatus.OneTime,
     val participants: Set<String> = emptySet(),
     val errorMsg: String? = null,
@@ -135,6 +135,13 @@ class AddEventViewModel(
 
   /** @return `true` if start time is strictly after end time (invalid state). */
   fun startTimeIsAfterEndTime() = _uiState.value.startInstant.isAfter(_uiState.value.endInstant)
+
+  /** @return `true` if start time is strictly after end recurrence time (invalid state). */
+  fun startTimeIsAfterEndRecurrenceTime() =
+    if(_uiState.value.recurrenceMode != RecurrenceStatus.OneTime)
+      _uiState.value.startInstant.isAfter(_uiState.value.recurrenceEndInstant)
+    else false
+
 
   /**
    * @return `true` only when all event fields are valid.

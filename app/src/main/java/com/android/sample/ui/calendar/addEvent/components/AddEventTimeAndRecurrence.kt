@@ -71,9 +71,10 @@ fun AddEventTimeAndRecurrenceScreen(
   val context = LocalContext.current
 
   val timeIsCoherent by
-      remember(newEventUIState) { derivedStateOf {
-        !addEventViewModel.startTimeIsAfterEndTime()
-        && !addEventViewModel.startTimeIsAfterEndRecurrenceTime()
+      remember(newEventUIState) {
+        derivedStateOf {
+          !addEventViewModel.startTimeIsAfterEndTime() &&
+              !addEventViewModel.startTimeIsAfterEndRecurrenceTime()
         }
       }
 

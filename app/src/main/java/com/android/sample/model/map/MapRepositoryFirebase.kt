@@ -1,10 +1,7 @@
 package com.android.sample.model.map
 
-import com.android.sample.model.calendar.Event
-import com.android.sample.model.constants.FirestoreConstants.EVENTS_COLLECTION_PATH
 import com.android.sample.model.constants.FirestoreConstants.MAP_COLLECTION_PATH
 import com.android.sample.model.firestoreMappers.AreaMapper
-import com.android.sample.model.firestoreMappers.EventMapper
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
@@ -32,8 +29,6 @@ class MapRepositoryFirebase(private val db: FirebaseFirestore) : MapRepository {
 
   override fun getAllMarkersIds(): List<String> = markers.keys.toList()
 
-
-
   override fun getAllAreasIds(): List<String> = throw NotImplementedError()
 
   override fun getAreaById(id: String): Area? = throw NotImplementedError()
@@ -46,8 +41,8 @@ class MapRepositoryFirebase(private val db: FirebaseFirestore) : MapRepository {
   override suspend fun createArea(label: String?, markerIds: List<String>) {
     val uid = getNewUid()
     db.collection(MAP_COLLECTION_PATH)
-      .document(uid)
-      .set(AreaMapper.toMap(model = Area(uid, label, markerIds.mapNotNull { getMarkerById(it) })))
-      .await()
+        .document(uid)
+        .set(AreaMapper.toMap(model = Area(uid, label, markerIds.mapNotNull { getMarkerById(it) })))
+        .await()
   }
 }

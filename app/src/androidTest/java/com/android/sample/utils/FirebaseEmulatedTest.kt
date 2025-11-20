@@ -3,12 +3,10 @@ package com.android.sample.utils
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryFirebase
 import com.android.sample.model.calendar.EventRepositoryProvider
-import com.android.sample.model.constants.FirestoreConstants.EVENTS_COLLECTION_PATH
-import com.android.sample.model.constants.FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH
+import com.android.sample.model.constants.FirestoreConstants
 import com.android.sample.model.map.MapRepository
 import com.android.sample.model.map.MapRepositoryFirebase
 import com.android.sample.model.map.MapRepositoryProvider
-import com.android.sample.model.constants.FirestoreConstants
 import com.android.sample.model.organization.OrganizationRepository
 import com.android.sample.model.organization.OrganizationRepositoryFirebase
 import com.android.sample.model.organization.OrganizationRepositoryProvider

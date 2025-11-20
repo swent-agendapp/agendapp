@@ -58,9 +58,7 @@ fun CalendarScreen(
   val events = uiState.events
 
   // Fetch events when the screen is recomposed
-  LaunchedEffect(currentDateRange) {
-    loadEventsForDateRange(calendarViewModel, currentDateRange)
-  }
+  LaunchedEffect(currentDateRange) { loadEventsForDateRange(calendarViewModel, currentDateRange) }
 
   // Show error message if fetching events fails
   LaunchedEffect(uiState.errorMsg) {

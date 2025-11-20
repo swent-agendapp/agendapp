@@ -1,7 +1,6 @@
 package com.android.sample.model.calendar
 
 import com.android.sample.model.constants.FirestoreConstants.EVENTS_COLLECTION_PATH
-import com.android.sample.model.constants.FirestoreConstants.MAP_COLLECTION_PATH
 import com.android.sample.model.firestoreMappers.EventMapper
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
@@ -52,9 +51,10 @@ class EventRepositoryFirebase(private val db: FirebaseFirestore) : EventReposito
             .get()
             .await()
 
-    val result = snapshot
-      .mapNotNull { EventMapper.fromDocument(document = it) }
-      .filter { it.startDate <= endDate }
+    val result =
+        snapshot
+            .mapNotNull { EventMapper.fromDocument(document = it) }
+            .filter { it.startDate <= endDate }
     return result
   }
 }

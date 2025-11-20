@@ -21,7 +21,6 @@ object LocationMapper : FirestoreMapper<Location> {
   }
 
   override fun toMap(model: Location): Map<String, Any?> {
-    return mapOf(
-        "latitude" to model.latitude, "longitude" to model.longitude)
+    return mapOf("latitude" to model.latitude, "longitude" to model.longitude)
   }
 }

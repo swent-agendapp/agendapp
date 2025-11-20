@@ -10,7 +10,6 @@ import com.android.sample.BuildConfig
 import com.android.sample.model.map.Area
 import com.android.sample.model.map.Location
 import com.android.sample.model.map.MapRepository
-import com.android.sample.model.map.MapRepositoryLocal
 import com.android.sample.model.map.MapRepositoryProvider
 import com.android.sample.model.map.Marker
 import com.google.android.gms.location.LocationServices
@@ -163,11 +162,10 @@ class MapViewModel(
 
     if (!hasLocationPermission) {
       _state.value =
-        _state.value.copy(
-          errorMessage =
-            "Location permission required\nTo show your position on the map, we need access to your location. Please enable it in your device settings.",
-          hasPermission = false
-        )
+          _state.value.copy(
+              errorMessage =
+                  "Location permission required\nTo show your position on the map, we need access to your location. Please enable it in your device settings.",
+              hasPermission = false)
       return
     }
 
@@ -180,40 +178,27 @@ class MapViewModel(
                 .addOnSuccessListener { location ->
                   if (location == null) {
                     _state.value =
-                      _state.value.copy(
-                        errorMessage = "Error: Cannot fetch you location",
-                        hasPermission = true
-                      )
+                        _state.value.copy(
+                            errorMessage = "Error: Cannot fetch you location", hasPermission = true)
                   } else {
                     _state.value =
-                      _state.value.copy(
-                        currentLocation = LatLng(location.latitude, location.longitude),
-                        hasPermission = true
-                      )
+                        _state.value.copy(
+                            currentLocation = LatLng(location.latitude, location.longitude),
+                            hasPermission = true)
                   }
                 }
                 .addOnFailureListener { e ->
-                  _state.value =
-                    _state.value.copy(
-                    errorMessage = e.message,
-                    hasPermission = true
-                  )
+                  _state.value = _state.value.copy(errorMessage = e.message, hasPermission = true)
                 }
           } else {
             _state.value =
                 _state.value.copy(
-                  currentLocation = LatLng(lastLocation.latitude, lastLocation.longitude),
-                  hasPermission = true
-                )
-
+                    currentLocation = LatLng(lastLocation.latitude, lastLocation.longitude),
+                    hasPermission = true)
           }
         }
         .addOnFailureListener { e ->
-          _state.value =
-            _state.value.copy(
-              errorMessage = e.message,
-              hasPermission = true
-            )
+          _state.value = _state.value.copy(errorMessage = e.message, hasPermission = true)
         }
   }
 }

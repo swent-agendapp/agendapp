@@ -1,7 +1,6 @@
 package com.android.sample.model.organization
 
 import com.android.sample.model.authentication.AuthRepositoryProvider
-
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 

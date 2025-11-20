@@ -1,6 +1,5 @@
 package com.android.sample.model.calendar
 
-import com.android.sample.model.constants.FirestoreConstants.MAP_COLLECTION_PATH
 import com.android.sample.ui.theme.EventPalette
 import java.time.Duration
 import java.time.Instant

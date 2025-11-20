@@ -1,10 +1,8 @@
 package com.android.sample.model.calendar
 
-import com.android.sample.model.constants.FirestoreConstants.MAP_COLLECTION_PATH
 import java.time.Instant
 
 interface EventRepository {
-
 
   fun getNewUid(): String
 

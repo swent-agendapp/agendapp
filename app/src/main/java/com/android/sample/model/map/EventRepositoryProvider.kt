@@ -1,7 +1,5 @@
 package com.android.sample.model.map
 
-import com.android.sample.model.calendar.EventRepository
-import com.android.sample.model.calendar.EventRepositoryLocal
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 

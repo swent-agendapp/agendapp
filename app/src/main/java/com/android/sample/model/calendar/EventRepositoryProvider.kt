@@ -10,7 +10,7 @@ import com.google.firebase.firestore.firestore
 object EventRepositoryProvider {
   private val _repository: EventRepository by lazy {
     // Change this to switch between different implementations
-    //EventRepositoryLocal()
+    // EventRepositoryLocal()
     EventRepositoryFirebase(Firebase.firestore)
   }
 

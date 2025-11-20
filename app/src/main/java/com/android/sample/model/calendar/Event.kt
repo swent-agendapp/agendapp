@@ -104,89 +104,76 @@ fun createEvent(
 ): List<Event> {
   require(!endDate.isBefore(startDate)) { "End date cannot be before start date" }
 
-  when(recurrence)
-  {
+  when (recurrence) {
     RecurrenceStatus.OneTime ->
-      return listOf(
+        return listOf(
+            Event(
+                id = repository?.getNewUid() ?: UUID.randomUUID().toString(),
+                title = title,
+                description = description,
+                startDate = startDate,
+                endDate = endDate,
+                cloudStorageStatuses = cloudStorageStatuses,
+                personalNotes = personalNotes,
+                participants = participants,
+                version = System.currentTimeMillis(),
+                recurrenceStatus = recurrence,
+                color = color))
+    RecurrenceStatus.Weekly -> {
+      val weeks =
+          ChronoUnit.WEEKS.between(
+              startDate.atZone(ZoneOffset.UTC), endRecurrence!!.atZone(ZoneOffset.UTC))
+      return List(weeks.toInt()) { i ->
         Event(
-          id = repository?.getNewUid() ?: UUID.randomUUID().toString(),
-          title = title,
-          description = description,
-          startDate = startDate,
-          endDate = endDate,
-          cloudStorageStatuses = cloudStorageStatuses,
-          personalNotes = personalNotes,
-          participants = participants,
-          version = System.currentTimeMillis(),
-          recurrenceStatus = recurrence,
-          color = color
-        )
-      )
-    RecurrenceStatus.Weekly ->
-    {
-      val weeks = ChronoUnit.WEEKS.between(
-        startDate.atZone(ZoneOffset.UTC),
-        endRecurrence!!.atZone(ZoneOffset.UTC)
-      )
-      return List(weeks.toInt()){
-        i ->
-          Event(
             id = repository?.getNewUid() ?: UUID.randomUUID().toString(),
             title = title,
             description = description,
-            startDate = startDate.plus(i*7L, ChronoUnit.DAYS),
-            endDate = endDate.plus(i*7L, ChronoUnit.DAYS),
+            startDate = startDate.plus(i * 7L, ChronoUnit.DAYS),
+            endDate = endDate.plus(i * 7L, ChronoUnit.DAYS),
             cloudStorageStatuses = cloudStorageStatuses,
             personalNotes = personalNotes,
             participants = participants,
             version = System.currentTimeMillis(),
             recurrenceStatus = recurrence,
-            color = color
-          )
+            color = color)
       }
     }
-    RecurrenceStatus.Monthly ->
-    {
-      val weeks = ChronoUnit.MONTHS.between(
-        startDate.atZone(ZoneOffset.UTC),
-        endRecurrence!!.atZone(ZoneOffset.UTC)
-      )
-      return List(weeks.toInt()){
-          i ->
+    RecurrenceStatus.Monthly -> {
+      val weeks =
+          ChronoUnit.MONTHS.between(
+              startDate.atZone(ZoneOffset.UTC), endRecurrence!!.atZone(ZoneOffset.UTC))
+      return List(weeks.toInt()) { i ->
         Event(
-          id = repository?.getNewUid() ?: UUID.randomUUID().toString(),
-          title = title,
-          description = description,
-          startDate = startDate.plus(i*1L, ChronoUnit.MONTHS),
-          endDate = endDate.plus(i*1L, ChronoUnit.MONTHS),
-          cloudStorageStatuses = cloudStorageStatuses,
-          personalNotes = personalNotes,
-          participants = participants,
-          version = System.currentTimeMillis(),
-          recurrenceStatus = recurrence,
-          color = color
-        )
+            id = repository?.getNewUid() ?: UUID.randomUUID().toString(),
+            title = title,
+            description = description,
+            startDate = startDate.plus(i * 1L, ChronoUnit.MONTHS),
+            endDate = endDate.plus(i * 1L, ChronoUnit.MONTHS),
+            cloudStorageStatuses = cloudStorageStatuses,
+            personalNotes = personalNotes,
+            participants = participants,
+            version = System.currentTimeMillis(),
+            recurrenceStatus = recurrence,
+            color = color)
       }
     }
     RecurrenceStatus.Yearly -> {
-      val weeks = ChronoUnit.YEARS.between(
-        startDate.atZone(ZoneOffset.UTC),
-        endRecurrence!!.atZone(ZoneOffset.UTC)
-      )
+      val weeks =
+          ChronoUnit.YEARS.between(
+              startDate.atZone(ZoneOffset.UTC), endRecurrence!!.atZone(ZoneOffset.UTC))
       return List(weeks.toInt()) { i ->
         Event(
-          id = repository?.getNewUid() ?: UUID.randomUUID().toString(),
-          title = title,
-          description = description,
-          startDate = startDate.plus(i * 1L, ChronoUnit.YEARS),
-          endDate = endDate.plus(i * 1L, ChronoUnit.YEARS),
-          cloudStorageStatuses = cloudStorageStatuses,
-          personalNotes = personalNotes,
-          participants = participants,
-          version = System.currentTimeMillis(),
-          recurrenceStatus = recurrence,
-          color = color
-        )
+            id = repository?.getNewUid() ?: UUID.randomUUID().toString(),
+            title = title,
+            description = description,
+            startDate = startDate.plus(i * 1L, ChronoUnit.YEARS),
+            endDate = endDate.plus(i * 1L, ChronoUnit.YEARS),
+            cloudStorageStatuses = cloudStorageStatuses,
+            personalNotes = personalNotes,
+            participants = participants,
+            version = System.currentTimeMillis(),
+            recurrenceStatus = recurrence,
+            color = color)
       }
     }
   }

@@ -36,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -194,9 +195,14 @@ fun ProcessReplacementScreen(
                           if (selectedMembers.isEmpty()) {
                             stringResource(R.string.replacement_selected_members_none)
                           } else {
-                            stringResource(
-                                R.string.replacement_selected_members,
-                                selectedMembers.joinToString(", "))
+                            val count = selectedMembers.size
+                            val label = selectedMembers.joinToString(",")
+                            pluralStringResource(
+                                R.plurals.replacement_selected_members,
+                                count,
+                                count,
+                                label,
+                            )
                           }
 
                       OutlinedTextField(
@@ -224,8 +230,11 @@ fun ProcessReplacementScreen(
                   onClick = { onSendRequests(selectedMembers.toList()) },
                   enabled = selectedMembers.isNotEmpty(),
                   text =
-                      stringResource(
-                          R.string.replacement_send_requests_button, selectedMembers.size),
+                      pluralStringResource(
+                          R.plurals.replacement_send_requests_button,
+                          selectedMembers.size,
+                          selectedMembers.size,
+                      ),
                   modifier =
                       Modifier.fillMaxWidth().testTag(ProcessReplacementTestTags.SEND_BUTTON))
             }

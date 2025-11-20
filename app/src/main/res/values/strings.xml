@@ -89,10 +89,14 @@
     <string name="search_icon_content_description">Search icon</string>
 
     <string name="replacement_process_title">Organize a replacement</string>
-    <string name="replacement_send_requests_button">Send %1$d request(s)</string>
-    <string name="replacement_selected_members">
-    Selected member(s): %1$s
-</string>
+    <plurals name="replacement_send_requests_button">
+        <item quantity="one">Send request</item>
+        <item quantity="other">Send %d requests</item>
+    </plurals>
+    <plurals name="replacement_selected_members">
+        <item quantity="one">Selected member: %s</item>
+        <item quantity="other">Selected members: %s</item>
+    </plurals>
     <string name="replacement_selected_members_none">
     No member selected
 </string>

@@ -172,12 +172,15 @@
     <string name="replacement_create_choose_date_range">Choisir une plage de dates</string>
     <string name="event_overview_title">Aperçu de l\'événement</string>
     <string name="replacement_process_title">Organiser un remplacement</string>
-    <string name="replacement_send_requests_button">
-    Envoyer %1$d demande(s) de remplacement
-</string>
-    <string name="replacement_selected_members">
-    Membre(s) sélectionné(s) : %1$s
-</string>
+    <plurals name="replacement_send_requests_button">
+        <item quantity="one">Envoyer %d demande de remplacment</item>
+        <item quantity="other">Envoyer %d demandes de remplacement </item>
+    </plurals>
+
+    <plurals name="replacement_selected_members">
+        <item quantity="one">Personne séléctionée: %s</item>
+        <item quantity="other">Personnes séléctionées: %s</item>
+    </plurals>
     <string name="replacement_selected_members_none">
     Aucun membre sélectionné
 </string>

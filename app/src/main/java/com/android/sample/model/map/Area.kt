@@ -13,14 +13,15 @@ import java.util.UUID
  * @property markers List of Marker objects that define the vertices of the area polygon. The
  *   constructor guarantees that the markers are sorted in a consistent order around the polygon, so
  *   the user does not need to provide them in a specific order.
- *
+ * @property version Timestamp of the last modification to the area, used for conflict resolution.
  * Note: The class enforces that an area must have at least three different markers to form a valid
  * polygon.
  */
 data class Area(
     val id: String = UUID.randomUUID().toString(),
     val label: String? = null,
-    val markers: List<Marker>
+    val markers: List<Marker>,
+    val version: Long = System.currentTimeMillis(),
 ) {
   private val _sortedMarkers: List<Marker>
 

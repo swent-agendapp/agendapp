@@ -19,11 +19,14 @@ enum class ReplacementStatus {
  * @property substituteUserId ID of the member proposed as the substitute
  * @property event Event for which the replacement is requested
  * @property status Current status of the replacement request
+ * @property version Timestamp of the last modification to the replacement, used for conflict
+  resolution
  */
 data class Replacement(
     val id: String = UUID.randomUUID().toString(),
     val absentUserId: String,
     val substituteUserId: String,
     val event: Event,
-    val status: ReplacementStatus = ReplacementStatus.ToProcess
+    val status: ReplacementStatus = ReplacementStatus.ToProcess,
+    val version : Long = System.currentTimeMillis(),
 )

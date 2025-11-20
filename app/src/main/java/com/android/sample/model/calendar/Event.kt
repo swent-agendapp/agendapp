@@ -27,7 +27,7 @@ import java.time.ZoneId
  * @property recurrenceStatus Recurrence pattern of the event (e.g., one-time, weekly).
  * @property color Color used to display the event in the UI.
  * @property locallyStoredBy List of user IDs who have the event stored locally.
- */ 
+ */
 data class Event(
     val id: String,
     val title: String,
@@ -38,7 +38,7 @@ data class Event(
     val locallyStoredBy: List<String> = emptyList(),
     val personalNotes: String?,
     val participants: Set<String>,
-    val version: Long,
+    val version: Long = System.currentTimeMillis(),
     val recurrenceStatus: RecurrenceStatus,
     val hasBeenDeleted: Boolean = false,
     val color: Color
@@ -108,7 +108,6 @@ fun createEvent(
       cloudStorageStatuses = cloudStorageStatuses,
       personalNotes = personalNotes,
       participants = participants,
-      version = System.currentTimeMillis(),
       recurrenceStatus = RecurrenceStatus.OneTime,
       color = color
       // notifications = notifications

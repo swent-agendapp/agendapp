@@ -1,5 +1,6 @@
 package com.android.sample.model.calendar
 
+import com.android.sample.model.constants.FirestoreConstants.MAP_COLLECTION_PATH
 import com.android.sample.utils.EventColor
 import java.time.Duration
 import java.time.Instant
@@ -13,6 +14,9 @@ class EventRepositoryLocal(preloadSampleData: Boolean = false) : EventRepository
     }
   }
 
+  override fun getNewUid(): String {
+    return java.util.UUID.randomUUID().toString()
+  }
   override suspend fun getAllEvents(): List<Event> {
     return events.filter { !it.hasBeenDeleted }
   }

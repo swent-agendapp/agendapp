@@ -82,8 +82,7 @@ fun SelectDateRangeScreen(
   // Later handled by the viewmodel
   var startInstant by remember { mutableStateOf(Instant.now()) }
   var endInstant by remember { mutableStateOf(Instant.now()) }
-  val isRangeInvalid = !startInstant.isAfter(endInstant)
-
+  val isRangeInvalid = !startInstant.isBefore(endInstant)
   Scaffold(
       topBar = { TopTitleBar(title = title) },
       content = { paddingValues ->

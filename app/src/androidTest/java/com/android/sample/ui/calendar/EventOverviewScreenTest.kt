@@ -9,7 +9,7 @@ import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreen
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreenTestTags
 import com.android.sample.ui.calendar.eventOverview.EventOverviewViewModel
-import com.android.sample.utils.EventColor
+import com.android.sample.ui.theme.EventPalette
 import java.time.Duration
 import java.time.Instant
 import java.time.Instant.now
@@ -46,7 +46,7 @@ class EventOverviewScreenTest {
         version = 1L,
         recurrenceStatus = RecurrenceStatus.OneTime,
         hasBeenDeleted = false,
-        color = EventColor.Blue)
+        color = EventPalette.Blue)
   }
 
   /** simple FakeEventRepository only for test */

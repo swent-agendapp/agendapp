@@ -10,7 +10,7 @@ import com.android.sample.BuildConfig
 import com.android.sample.model.map.Area
 import com.android.sample.model.map.Location
 import com.android.sample.model.map.MapRepository
-import com.android.sample.model.map.MapRepositoryLocal
+import com.android.sample.model.map.MapRepositoryProvider
 import com.android.sample.model.map.Marker
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
@@ -52,7 +52,7 @@ class MapViewModel(
     app: Application,
 ) : AndroidViewModel(app) {
 
-  private val mapRepository: MapRepository = MapRepositoryLocal()
+  private val mapRepository: MapRepository = MapRepositoryProvider.repository
 
   /** Provider for android GPS */
   private val fusedClient = LocationServices.getFusedLocationProviderClient(app)

@@ -177,10 +177,7 @@ fun CalendarContainer(
  * Converts the [LocalDateRange] into corresponding [java.time.Instant] values covering the full
  * duration from start of the first day (midnight) to the end of the last day.
  */
-private fun loadEventsForDateRange(
-    calendarViewModel: CalendarViewModel,
-    dateRange: LocalDateRange
-) {
+fun loadEventsForDateRange(calendarViewModel: CalendarViewModel, dateRange: LocalDateRange) {
   calendarViewModel.loadEventsBetween(
       localDateTimeToInstant(dateRange.start, LocalTime.MIDNIGHT),
       localDateTimeToInstant(dateRange.endInclusive, LocalTime.MAX))
@@ -191,7 +188,7 @@ private fun loadEventsForDateRange(
  * - FIVE_DAYS if today is Monday–Friday
  * - SEVEN_DAYS if today is Saturday or Sunday
  */
-private fun computeDefaultViewMode(today: LocalDate): ViewMode {
+fun computeDefaultViewMode(today: LocalDate): ViewMode {
   return if (today.dayOfWeek.value in DayOfWeek.MONDAY.value..DayOfWeek.FRIDAY.value) {
     ViewMode.FIVE_DAYS
   } else {
@@ -204,7 +201,7 @@ private fun computeDefaultViewMode(today: LocalDate): ViewMode {
  * - FIVE_DAYS: Monday–Friday of the week containing today
  * - SEVEN_DAYS: Monday–Sunday of the week containing today
  */
-private fun computeInitialDateRange(today: LocalDate, mode: ViewMode): LocalDateRange {
+fun computeInitialDateRange(today: LocalDate, mode: ViewMode): LocalDateRange {
   return when (mode) {
     ViewMode.FIVE_DAYS -> weekRangeContaining(today, days = 5)
     ViewMode.SEVEN_DAYS -> weekRangeContaining(today, days = 7)
@@ -219,7 +216,7 @@ private fun computeInitialDateRange(today: LocalDate, mode: ViewMode): LocalDate
  * @param date Any date inside the desired week.
  * @param days Number of visible days (5 or 7).
  */
-private fun weekRangeContaining(date: LocalDate, days: Int): LocalDateRange {
+fun weekRangeContaining(date: LocalDate, days: Int): LocalDateRange {
   val monday = date.with(DayOfWeek.MONDAY)
   val end = monday.plusDays((days - 1).toLong())
   return LocalDateRange(monday, end)
@@ -231,7 +228,7 @@ private fun weekRangeContaining(date: LocalDate, days: Int): LocalDateRange {
  * In ONE_DAY mode, the header shows the full week containing the visible day. In other modes, the
  * header uses the same range as the grid.
  */
-private fun computeHeaderDateRange(
+fun computeHeaderDateRange(
     currentDateRange: LocalDateRange,
     currentMode: ViewMode
 ): LocalDateRange {
@@ -248,10 +245,7 @@ private fun computeHeaderDateRange(
  * In ONE_DAY mode, the selected date is the only visible day. In other modes, there is no specific
  * selected date.
  */
-private fun computeSelectedDate(
-    currentDateRange: LocalDateRange,
-    currentMode: ViewMode
-): LocalDate? {
+fun computeSelectedDate(currentDateRange: LocalDateRange, currentMode: ViewMode): LocalDate? {
   return if (currentMode == ViewMode.ONE_DAY) currentDateRange.start else null
 }
 
@@ -260,7 +254,7 @@ private fun computeSelectedDate(
  * - In ONE_DAY mode: moves by 1 day forward/backward.
  * - In FIVE_DAYS or SEVEN_DAYS: moves by one whole week forward/backward (starting on Monday).
  */
-private fun updateDateRangeForSwipe(
+fun updateDateRangeForSwipe(
     currentRange: LocalDateRange,
     currentMode: ViewMode,
     moveToPrevious: Boolean,
@@ -297,7 +291,7 @@ private fun updateDateRangeForSwipe(
  * - When switching to MONTH, the range is kept as-is; the real update comes from the date selected
  *   in the [DatePickerModal].
  */
-private fun updateDateRangeForModeChange(
+fun updateDateRangeForModeChange(
     previousMode: ViewMode,
     newMode: ViewMode,
     currentRange: LocalDateRange,
@@ -332,7 +326,7 @@ private fun updateDateRangeForModeChange(
  *
  * This groups together all state changes related to a mode change.
  */
-private data class ViewModeSelectionResult(
+data class ViewModeSelectionResult(
     val updatedMode: ViewMode,
     val updatedRange: LocalDateRange,
     val updatedPreviousNonMonthMode: ViewMode,
@@ -344,7 +338,7 @@ private data class ViewModeSelectionResult(
  *
  * This keeps the composable body simple by returning all computed values in a single object.
  */
-private fun handleViewModeSelection(
+fun handleViewModeSelection(
     newMode: ViewMode,
     today: LocalDate,
     currentMode: ViewMode,
@@ -383,7 +377,7 @@ private fun handleViewModeSelection(
  *
  * This is used both when a date is selected and when the dialog is dismissed.
  */
-private data class MonthPickerResult(
+data class MonthPickerResult(
     val updatedMode: ViewMode,
     val updatedRange: LocalDateRange,
     val shouldShowMonthPicker: Boolean,
@@ -397,7 +391,7 @@ private data class MonthPickerResult(
  *   non-month mode, with a special rule:
  *     - If the previous mode was FIVE_DAYS and the selected date is on weekend, we use SEVEN_DAYS.
  */
-private fun handleMonthDateSelected(
+fun handleMonthDateSelected(
     selectedMillis: Long?,
     previousNonMonthMode: ViewMode,
     currentRange: LocalDateRange,
@@ -442,7 +436,7 @@ private fun handleMonthDateSelected(
  *
  * We return to the last non-month mode and keep the current date range.
  */
-private fun handleMonthPickerDismiss(
+fun handleMonthPickerDismiss(
     previousNonMonthMode: ViewMode,
     currentRange: LocalDateRange,
 ): MonthPickerResult {
@@ -459,7 +453,7 @@ private fun handleMonthPickerDismiss(
  * In ONE_DAY mode, the header is clickable and updates the visible day. In other modes, the header
  * is not clickable, so we return null.
  */
-private fun buildOnHeaderDayClick(
+fun buildOnHeaderDayClick(
     currentMode: ViewMode,
     onDaySelected: (LocalDate) -> Unit,
 ): ((LocalDate) -> Unit)? {

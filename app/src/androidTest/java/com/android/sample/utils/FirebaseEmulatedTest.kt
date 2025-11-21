@@ -2,10 +2,16 @@ package com.android.sample.utils
 
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryFirebase
+import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.constants.FirestoreConstants
+import com.android.sample.model.map.MapRepository
+import com.android.sample.model.map.MapRepositoryFirebase
+import com.android.sample.model.map.MapRepositoryProvider
 import com.android.sample.model.organization.OrganizationRepository
 import com.android.sample.model.organization.OrganizationRepositoryFirebase
+import com.android.sample.model.organization.OrganizationRepositoryProvider
 import com.android.sample.model.replacement.ReplacementRepositoryFirebase
+import com.android.sample.model.replacement.ReplacementRepositoryProvider
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -24,6 +30,10 @@ open class FirebaseEmulatedTest {
 
   fun createInitializedEventRepository(): EventRepository {
     return EventRepositoryFirebase(db = FirebaseEmulator.firestore)
+  }
+
+  fun createInitializedMapRepository(): MapRepository {
+    return MapRepositoryFirebase(db = FirebaseEmulator.firestore)
   }
 
   fun createInitializedOrganizationRepository(): OrganizationRepository {
@@ -68,6 +78,10 @@ open class FirebaseEmulatedTest {
    */
   @Before
   open fun setUp() {
+    MapRepositoryProvider.repository = createInitializedMapRepository()
+    OrganizationRepositoryProvider.repository = createInitializedOrganizationRepository()
+    EventRepositoryProvider.repository = createInitializedEventRepository()
+    ReplacementRepositoryProvider.repository = createInitializedReplacementRepository()
     runTest {
       clearAllCollections()
       assertAllCollectionsEmpty()

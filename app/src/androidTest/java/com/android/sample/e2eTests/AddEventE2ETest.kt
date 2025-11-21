@@ -12,8 +12,6 @@ import androidx.compose.ui.test.swipeDown
 import androidx.compose.ui.test.swipeUp
 import com.android.sample.Agendapp
 import com.android.sample.model.calendar.RecurrenceStatus
-import com.android.sample.model.organization.OrganizationRepositoryFirebase
-import com.android.sample.model.organization.OrganizationRepositoryProvider
 import com.android.sample.ui.authentication.SignInScreenTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
@@ -35,7 +33,7 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
     private const val UI_AUTH_TIMEOUT = 10_000L
   }
 
-  val eventTitle = "Event Test"
+  val eventTitle = "Event_Test"
   val eventDescription = "Event Test"
   val expectedName = "John Doe"
   val expectedEmail = "john.doe@test.com"
@@ -47,12 +45,6 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
 
   // Create a FakeCredentialManager with the fake token
   val fakeCredentialManager = FakeCredentialManager.create(fakeGoogleIdToken)
-
-  // Set the OrganizationRepository to use the Firebase emulator
-  init {
-    OrganizationRepositoryProvider.repository =
-        OrganizationRepositoryFirebase(FirebaseEmulator.firestore)
-  }
 
   @get:Rule val composeTestRule = createComposeRule()
 
@@ -73,6 +65,7 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
 
     // Launch app
     composeTestRule.setContent { Agendapp(credentialManager = fakeCredentialManager) }
+    composeTestRule.waitForIdle()
 
     // Ensure Sign-In screen is displayed
     composeTestRule.onNodeWithTag(SignInScreenTestTags.LOGIN_TITLE).assertIsDisplayed()
@@ -207,8 +200,8 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
   private fun ComposeTestRule.scrollCalendarUntilEventVisible(
       calendarTag: String,
       eventTag: String,
-      maxDownScrolls: Int = 10,
-      maxUpScrolls: Int = 10
+      maxDownScrolls: Int = 30,
+      maxUpScrolls: Int = 60
   ) {
     if (isTagDisplayed(eventTag)) return
 
@@ -216,11 +209,13 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
 
     repeat(maxDownScrolls) {
       calendarNode.performTouchInput { swipeUp() }
+      waitForIdle()
       if (isTagDisplayed(eventTag)) return
     }
 
     repeat(maxUpScrolls) {
       calendarNode.performTouchInput { swipeDown() }
+      waitForIdle()
       if (isTagDisplayed(eventTag)) return
     }
 

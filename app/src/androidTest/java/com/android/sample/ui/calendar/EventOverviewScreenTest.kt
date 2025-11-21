@@ -55,6 +55,8 @@ class EventOverviewScreenTest {
     var deletedIds = mutableListOf<String>()
     var shouldFailDelete = false
 
+    override fun getNewUid(): String = java.util.UUID.randomUUID().toString()
+
     override suspend fun getAllEvents(): List<Event> = listOf(event)
 
     override suspend fun insertEvent(item: Event) {}

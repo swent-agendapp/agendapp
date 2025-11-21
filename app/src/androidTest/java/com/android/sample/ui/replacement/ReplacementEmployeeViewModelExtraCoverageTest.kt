@@ -164,6 +164,8 @@ class ReplacementEmployeeViewModelExtraCoverageTest {
 
     fun add(event: Event) = list.add(event)
 
+    override fun getNewUid(): String = "fake-uid"
+
     override suspend fun getAllEvents() = list
 
     override suspend fun insertEvent(item: Event) {}

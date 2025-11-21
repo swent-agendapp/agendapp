@@ -28,6 +28,8 @@ import com.android.sample.ui.calendar.style.CalendarDefaults.DefaultDateRange
 import com.android.sample.ui.calendar.utils.DateTimeUtils.localDateTimeToInstant
 import com.android.sample.ui.common.FloatingButton
 import com.android.sample.ui.common.MainPageTopBar
+import com.android.sample.ui.organization.SelectedOrganizationVMProvider
+import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import java.time.LocalTime
 
 object CalendarScreenTestTags {
@@ -47,6 +49,8 @@ object CalendarScreenTestTags {
 @Composable
 fun CalendarScreen(
     calendarViewModel: CalendarViewModel = viewModel(),
+    selectedOrganizationViewModel: SelectedOrganizationViewModel =
+        SelectedOrganizationVMProvider.viewModel,
     onCreateEvent: () -> Unit = {},
     onEventClick: (Event) -> Unit = {}
 ) {
@@ -56,9 +60,14 @@ fun CalendarScreen(
   val context = LocalContext.current
   val uiState by calendarViewModel.uiState.collectAsState()
   val events = uiState.events
+  val selectedOrgId by selectedOrganizationViewModel.selectedOrganizationId.collectAsState()
 
   // Fetch events when the screen is recomposed
-  LaunchedEffect(currentDateRange) { loadEventsForDateRange(calendarViewModel, currentDateRange) }
+  LaunchedEffect(currentDateRange, selectedOrgId) {
+    if (selectedOrgId != null) {
+      loadEventsForDateRange(calendarViewModel, currentDateRange)
+    }
+  }
 
   // Show error message if fetching events fails
   LaunchedEffect(uiState.errorMsg) {

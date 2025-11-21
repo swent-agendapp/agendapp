@@ -146,7 +146,7 @@ fun Agendapp(
               composable(Screen.Authentication.route) {
                 SignInScreen(
                     credentialManager = credentialManager,
-                    onSignedIn = { navigationActions.navigateTo(Screen.Calendar) })
+                    onSignedIn = { navigationActions.navigateTo(Screen.Organizations) })
               }
 
               // Organization Selection Graph

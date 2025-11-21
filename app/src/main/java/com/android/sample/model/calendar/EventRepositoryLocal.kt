@@ -71,8 +71,13 @@ class EventRepositoryLocal() : EventRepository {
   override suspend fun getEventById(orgId: String, itemId: String): Event? {
     val retrievedEvent = eventsByOrganization[orgId]?.find { it.id == itemId }
 
-    require(retrievedEvent?.organizationId == orgId) {
-      "Event's organizationId ${retrievedEvent?.organizationId} does not match the provided orgId $orgId."
+    // Return null if the event does not exist or has been deleted
+    if (retrievedEvent == null || retrievedEvent.hasBeenDeleted) {
+      return null
+    }
+
+    require(retrievedEvent.organizationId == orgId) {
+      "Event's organizationId ${retrievedEvent.organizationId} does not match the provided orgId $orgId."
     }
 
     return retrievedEvent

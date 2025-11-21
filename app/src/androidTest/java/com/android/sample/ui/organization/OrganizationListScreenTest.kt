@@ -70,13 +70,15 @@ class OrganizationListScreenTest {
           selectedOrganizationViewModel = selectedOrgViewModel)
     }
 
+    val org2 = organizations[1]
+
     // Perform click on the second organization
     composeTestRule
-        .onNodeWithTag(OrganizationListScreenTestTags.organizationItemTag("Org 2"))
+        .onNodeWithTag(OrganizationListScreenTestTags.organizationItemTag(org2.name))
         .performClick()
 
     // Assert Org 2 is selected
-    assert(selectedOrgViewModel.selectedOrganization.value?.name == "Org 2")
+    assert(selectedOrgViewModel.selectedOrganizationId.value == org2.id)
   }
 
   @Test

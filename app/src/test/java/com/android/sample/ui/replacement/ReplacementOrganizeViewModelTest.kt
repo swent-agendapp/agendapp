@@ -79,7 +79,7 @@ class ReplacementOrganizeViewModelTest {
         eventRepository = eventRepo,
         organizationRepository = orgRepo,
         replacementRepository = replacementRepo,
-        authz = adminAuthz)
+        authServ = adminAuthz)
   }
 
   /** Helper: employee VM */
@@ -100,7 +100,7 @@ class ReplacementOrganizeViewModelTest {
         eventRepository = eventRepo,
         organizationRepository = orgRepo,
         replacementRepository = replacementRepo,
-        authz = employeeAuthz)
+        authServ = employeeAuthz)
   }
 
   // ----------------------------------------------------------------------

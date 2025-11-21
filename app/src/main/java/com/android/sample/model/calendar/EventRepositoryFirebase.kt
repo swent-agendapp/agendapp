@@ -51,6 +51,11 @@ class EventRepositoryFirebase(private val db: FirebaseFirestore) : EventReposito
   override suspend fun getEventById(orgId: String, itemId: String): Event? {
     val document = db.collection(EVENTS_COLLECTION_PATH).document(itemId).get().await()
 
+    // Return null if the document does not exist or has been deleted
+    if (!document.exists() || document.getBoolean("hasBeenDeleted") == true) {
+      return null
+    }
+
     require(document.getString("organizationId") == orgId) {
       "Event's organizationId ${document.getString("organizationId")} does not match the provided orgId $orgId."
     }

@@ -8,6 +8,8 @@ import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
+import com.android.sample.ui.organization.SelectedOrganizationVMProvider
+import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -34,7 +36,9 @@ class EventOverviewViewModel(
     // used to get Events
     private val eventRepository: EventRepository = EventRepositoryProvider.repository,
     // used to get the name of the participants (the event only contains user id, not name)
-    private val authRepository: AuthRepository = AuthRepositoryProvider.repository
+    private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
+    private val selectedOrganizationViewModel: SelectedOrganizationViewModel =
+        SelectedOrganizationVMProvider.viewModel
 ) : ViewModel() {
   private val _uiState = MutableStateFlow(OverviewUIState())
   // Publicly exposed immutable UI state
@@ -62,7 +66,10 @@ class EventOverviewViewModel(
   fun deleteEvent(eventId: String) {
     viewModelScope.launch {
       try {
-        eventRepository.deleteEvent(eventId)
+        val orgId = selectedOrganizationViewModel.selectedOrganizationId.value
+        require(orgId != null) { "Organization must be selected to delete an event" }
+
+        eventRepository.deleteEvent(orgId = orgId, itemId = eventId)
         _uiState.value = _uiState.value.copy(isDeleteSuccessful = true)
       } catch (e: Exception) {
         Log.e("EventOverviewViewModel", "Failed to delete event $eventId: ${e.message}")
@@ -84,8 +91,11 @@ class EventOverviewViewModel(
     viewModelScope.launch {
       setLoading(true)
       try {
+        val orgId = selectedOrganizationViewModel.selectedOrganizationId.value
+        require(orgId != null) { "Organization must be selected to delete an event" }
+
         val event =
-            eventRepository.getEventById(eventId)
+            eventRepository.getEventById(orgId = orgId, itemId = eventId)
                 ?: throw NoSuchElementException("Event with id=$eventId not found.")
         _uiState.value =
             OverviewUIState(event = event, participantsNames = _uiState.value.participantsNames)

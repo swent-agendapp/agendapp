@@ -198,6 +198,7 @@ private fun EventOverviewScreenPreview() {
   val event =
       Event(
           id = "p0",
+          organizationId = "org1",
           title = "Weekly stand‑up",
           description = "Short sync about progress and blockers.",
           startDate = base.plusSeconds(Duration.ofHours(9).seconds),

@@ -1,7 +1,6 @@
 package com.android.sample.ui.organization
 
 import androidx.lifecycle.ViewModel
-import com.android.sample.model.organization.Organization
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -12,8 +11,8 @@ class SelectedOrganizationViewModel : ViewModel() {
   val selectedOrganizationId: StateFlow<String?> = _selectedOrganizationId
 
   // Select an organization by its instance
-  fun changeSelectedOrganization(org: Organization) {
-    _selectedOrganizationId.value = org.id
+  fun changeSelectedOrganization(orgId: String) {
+    _selectedOrganizationId.value = orgId
   }
 
   // Clear the selected organization

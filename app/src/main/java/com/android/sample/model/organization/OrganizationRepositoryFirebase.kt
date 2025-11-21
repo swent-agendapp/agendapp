@@ -27,7 +27,7 @@ class OrganizationRepositoryFirebase(private val db: FirebaseFirestore) : Organi
             organization.members.any { it.id == user.id }
       }
     }
-    return emptyList()
+    return organizations
   }
 
   override suspend fun insertOrganization(organization: Organization, user: User) {

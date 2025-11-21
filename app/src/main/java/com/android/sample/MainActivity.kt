@@ -1,5 +1,6 @@
 package com.android.sample
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -15,6 +16,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
@@ -86,6 +88,9 @@ fun Agendapp(
 
   val authRepository = AuthRepositoryProvider.repository
 
+  val configuration = LocalConfiguration.current
+  val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+
   val startDestination =
       if (authRepository.getCurrentUser() != null) Screen.Organizations.route
       else Screen.Authentication.route
@@ -125,7 +130,7 @@ fun Agendapp(
 
   Scaffold(
       bottomBar = {
-        if (currentRoute in bottomBarScreens) {
+        if (isPortrait && currentRoute in bottomBarScreens) {
           BottomBar(items = bottomBarItems.map { it.copy(isSelected = it.route == currentRoute) })
         }
       }) { innerPadding ->

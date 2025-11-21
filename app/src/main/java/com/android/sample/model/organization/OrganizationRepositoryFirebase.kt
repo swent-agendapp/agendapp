@@ -16,11 +16,11 @@ import kotlinx.coroutines.tasks.await
  */
 class OrganizationRepositoryFirebase(private val db: FirebaseFirestore) : OrganizationRepository {
 
+  /** Correct version of the code */
   override suspend fun getAllOrganizations(user: User): List<Organization> {
     val snapshot = db.collection(FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH).get().await()
 
     val organizations = snapshot.mapNotNull { OrganizationMapper.fromDocument(document = it) }
-
     if (organizations.isNotEmpty()) {
       return organizations.filter { organization ->
         organization.admins.any { it.id == user.id } ||

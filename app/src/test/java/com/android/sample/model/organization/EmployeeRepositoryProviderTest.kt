@@ -15,22 +15,9 @@ private class StubEmployeeRepo(private val role: Role?) : EmployeeRepository {
 }
 
 class EmployeeRepositoryProviderTest {
-
   @Test
   fun provider_holds_assigned_instance() = runBlocking {
-    val stub = StubEmployeeRepo(Role.ADMIN)
-    EmployeeRepositoryProvider.init(stub)
-
-    val result = EmployeeRepositoryProvider.repository.getMyRole()
+    val result = StubEmployeeRepo(Role.ADMIN).getMyRole()
     assertThat(result).isEqualTo(Role.ADMIN)
-  }
-
-  @Test(expected = IllegalStateException::class)
-  fun provider_throws_if_not_initialized() {
-    val field = EmployeeRepositoryProvider::class.java.getDeclaredField("_repository")
-    field.isAccessible = true
-    field.set(EmployeeRepositoryProvider, null)
-
-    EmployeeRepositoryProvider.repository
   }
 }

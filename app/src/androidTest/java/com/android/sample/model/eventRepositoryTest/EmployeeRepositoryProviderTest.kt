@@ -20,7 +20,7 @@ class EmployeeRepositoryProviderTest {
 
           override suspend fun getMyRole(): Role? = Role.ADMIN
         }
-    EmployeeRepositoryProvider.init(fake)
+    EmployeeRepositoryProvider.repository = fake
     assertSame(fake, EmployeeRepositoryProvider.repository)
   }
 }

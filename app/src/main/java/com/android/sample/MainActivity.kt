@@ -24,10 +24,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
-import com.android.sample.model.authentication.AuthRepositoryFirebase
 import com.android.sample.model.authentication.AuthRepositoryProvider
-import com.android.sample.model.organization.EmployeeRepositoryFirebase
-import com.android.sample.model.organization.EmployeeRepositoryProvider
 import com.android.sample.ui.authentication.SignInScreen
 import com.android.sample.ui.calendar.CalendarScreen
 import com.android.sample.ui.calendar.addEvent.AddEventScreen
@@ -48,7 +45,6 @@ import com.android.sample.ui.replacement.ReplacementPendingListScreen
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeScreen
 import com.android.sample.ui.settings.SettingsScreen
 import com.android.sample.ui.theme.SampleAppTheme
-import com.google.firebase.firestore.FirebaseFirestore
 
 object MainActivityTestTags {
   const val MAIN_SCREEN_CONTAINER = "main_screen_container"
@@ -61,9 +57,6 @@ class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    EmployeeRepositoryProvider.init(
-        EmployeeRepositoryFirebase(
-            db = FirebaseFirestore.getInstance(), authRepository = AuthRepositoryFirebase()))
     setContent {
       SampleAppTheme {
         Surface(
@@ -260,6 +253,7 @@ fun Agendapp(
                 composable(Screen.Profile.route) {
                   ProfileScreen(
                       onNavigateBack = { navigationActions.navigateBack() },
+                      credentialManager = credentialManager,
                       onSignOut = { navigationActions.navigateTo(Screen.Authentication) })
                 }
 

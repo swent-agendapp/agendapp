@@ -10,6 +10,10 @@ import kotlinx.coroutines.tasks.await
 
 class EventRepositoryFirebase(private val db: FirebaseFirestore) : EventRepository {
 
+  override fun getNewUid(): String {
+    return db.collection(EVENTS_COLLECTION_PATH).document().id
+  }
+
   override suspend fun getAllEvents(): List<Event> {
     val snapshot = db.collection(EVENTS_COLLECTION_PATH).get().await()
     return snapshot.mapNotNull { EventMapper.fromDocument(document = it) }
@@ -43,14 +47,14 @@ class EventRepositoryFirebase(private val db: FirebaseFirestore) : EventReposito
 
     val snapshot =
         db.collection(EVENTS_COLLECTION_PATH)
-            // get all events that end on or after the start of the range
             .whereGreaterThanOrEqualTo("endDate", Timestamp(Date.from(startDate)))
             .get()
             .await()
 
-    return snapshot
-        .mapNotNull { EventMapper.fromDocument(document = it) }
-        // keep only events whose start is on/before the queried end
-        .filter { it.startDate <= endDate }
+    val result =
+        snapshot
+            .mapNotNull { EventMapper.fromDocument(document = it) }
+            .filter { it.startDate <= endDate }
+    return result
   }
 }

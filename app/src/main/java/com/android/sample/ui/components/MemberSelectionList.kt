@@ -39,6 +39,15 @@ import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.WeightVeryHeavy
 
+data class MemberSelectionListOptions(
+    val isSingleSelection: Boolean = false,
+    val highlightColor: Color = CircusPalette.Primary.copy(alpha = 0.9f),
+    val searchTestTag: String? = null,
+    val listTestTag: String? = null,
+    val summaryTestTag: String? = null,
+    val memberTagBuilder: ((String) -> String)? = null,
+)
+
 // Kdoc writen with the help of AI
 /**
  * Reusable component for selecting one or multiple members from a searchable list.
@@ -63,12 +72,7 @@ fun MemberSelectionList(
     selectedMembers: Set<String>,
     onSelectionChanged: (Set<String>) -> Unit,
     modifier: Modifier = Modifier,
-    isSingleSelection: Boolean = false,
-    highlightColor: Color = CircusPalette.Primary.copy(alpha = 0.9f),
-    searchTestTag: String? = null,
-    listTestTag: String? = null,
-    summaryTestTag: String? = null,
-    memberTagBuilder: ((String) -> String)? = null,
+    options: MemberSelectionListOptions = MemberSelectionListOptions(),
 ) {
   var searchQuery by remember { mutableStateOf("") }
 
@@ -84,7 +88,7 @@ fun MemberSelectionList(
         placeholder = { Text(text = stringResource(R.string.search_member)) },
         modifier =
             Modifier.fillMaxWidth().let { base ->
-              if (searchTestTag != null) base.testTag(searchTestTag) else base
+              if (options.searchTestTag != null) base.testTag(options.searchTestTag) else base
             },
         singleLine = true,
         trailingIcon = { Icon(imageVector = Icons.Default.Search, contentDescription = null) },
@@ -93,7 +97,7 @@ fun MemberSelectionList(
     LazyColumn(
         modifier =
             Modifier.weight(WeightVeryHeavy).fillMaxWidth().let { base ->
-              if (listTestTag != null) base.testTag(listTestTag) else base
+              if (options.listTestTag != null) base.testTag(options.listTestTag) else base
             },
         verticalArrangement = Arrangement.Top) {
           items(filteredMembers) { member ->
@@ -102,10 +106,10 @@ fun MemberSelectionList(
             Box(
                 modifier =
                     Modifier.fillMaxWidth()
-                        .background(if (isSelected) highlightColor else Color.White)
+                        .background(if (isSelected) options.highlightColor else Color.White)
                         .clickable {
                           val newSelection =
-                              if (isSingleSelection) {
+                              if (options.isSingleSelection) {
                                 if (isSelected) emptySet() else setOf(member)
                               } else {
                                 if (isSelected) selectedMembers - member
@@ -115,8 +119,8 @@ fun MemberSelectionList(
                         }
                         .padding(vertical = PaddingMedium)
                         .let { base ->
-                          if (memberTagBuilder != null) {
-                            base.testTag(memberTagBuilder(member))
+                          if (options.memberTagBuilder != null) {
+                            base.testTag(options.memberTagBuilder.invoke(member))
                           } else {
                             base
                           }
@@ -144,7 +148,7 @@ fun MemberSelectionList(
         onValueChange = {},
         modifier =
             Modifier.fillMaxWidth().let { base ->
-              if (summaryTestTag != null) base.testTag(summaryTestTag) else base
+              if (options.summaryTestTag != null) base.testTag(options.summaryTestTag) else base
             },
         singleLine = true,
         shape = RoundedCornerShape(CornerRadiusLarge),

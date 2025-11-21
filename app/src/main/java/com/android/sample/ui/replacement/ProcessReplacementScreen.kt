@@ -31,6 +31,7 @@ import com.android.sample.ui.calendar.utils.DateTimeUtils.DATE_FORMAT_PATTERN
 import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.components.MemberSelectionList
+import com.android.sample.ui.components.MemberSelectionListOptions
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.DefaultCardElevation
 import com.android.sample.ui.theme.PaddingExtraLarge
@@ -125,14 +126,16 @@ fun ProcessReplacementScreen(
                         members = candidates,
                         selectedMembers = selectedMembers,
                         onSelectionChanged = { selectedMembers = it },
-                        searchTestTag = ProcessReplacementTestTags.SEARCH_BAR,
-                        listTestTag = ProcessReplacementTestTags.MEMBER_LIST,
-                        summaryTestTag = ProcessReplacementTestTags.SELECTED_SUMMARY,
-                        isSingleSelection = false,
-                        memberTagBuilder = { member ->
-                          ProcessReplacementTestTags.memberTag(member)
-                        },
-                    )
+                        options =
+                            MemberSelectionListOptions(
+                                searchTestTag = ProcessReplacementTestTags.SEARCH_BAR,
+                                listTestTag = ProcessReplacementTestTags.MEMBER_LIST,
+                                summaryTestTag = ProcessReplacementTestTags.SELECTED_SUMMARY,
+                                isSingleSelection = false,
+                                memberTagBuilder = { member ->
+                                  ProcessReplacementTestTags.memberTag(member)
+                                },
+                            ))
                   }
 
               Spacer(modifier = Modifier.height(SpacingMedium))

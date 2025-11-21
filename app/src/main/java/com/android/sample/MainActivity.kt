@@ -255,7 +255,7 @@ fun Agendapp(
                       replacementId?.let {
                         ProcessReplacementScreen(
                             replacementId = it,
-                            onSendRequests = { selectedMembers ->
+                            onSendRequests = { _ ->
                               // Later: the requests have to be send, now it just goes back
                               navigationActions.navigateBack()
                             },

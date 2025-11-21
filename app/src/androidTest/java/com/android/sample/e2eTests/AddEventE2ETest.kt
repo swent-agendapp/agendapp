@@ -207,8 +207,8 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
   private fun ComposeTestRule.scrollCalendarUntilEventVisible(
       calendarTag: String,
       eventTag: String,
-      maxDownScrolls: Int = 10,
-      maxUpScrolls: Int = 10
+      maxDownScrolls: Int = 30,
+      maxUpScrolls: Int = 60
   ) {
     if (isTagDisplayed(eventTag)) return
 

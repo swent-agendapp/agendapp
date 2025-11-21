@@ -39,6 +39,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.common.SecondaryButton
 import com.android.sample.ui.common.SecondaryPageTopBar
+import com.android.sample.ui.replacement.components.MemberSelectionCard
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeTestTags
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeViewModel
 import com.android.sample.ui.theme.CornerRadiusLarge
@@ -85,12 +86,7 @@ fun SelectSubstitutedScreen(
   val uiState by replacementOrganizeViewModel.uiState.collectAsState()
 
   // Filter the list when search changes
-  val filteredMembers =
-      uiState.memberList.filter { member ->
-        (member.displayName?.contains(uiState.memberSearchQuery, ignoreCase = true) == true) ||
-            (member.email?.contains(uiState.memberSearchQuery, ignoreCase = true) == true) ||
-            (member.id.contains(uiState.memberSearchQuery, ignoreCase = true))
-      }
+
   Scaffold(
       topBar = {
         SecondaryPageTopBar(
@@ -116,83 +112,19 @@ fun SelectSubstitutedScreen(
                       Modifier.padding(vertical = PaddingLarge)
                           .testTag(ReplacementOrganizeTestTags.INSTRUCTION_TEXT))
 
-              /** Scrollable selectable list * */
-              Card(
-                  modifier = Modifier.fillMaxWidth().weight(WeightExtraHeavy),
-                  elevation = CardDefaults.cardElevation(defaultElevation = DefaultCardElevation),
-                  shape = RoundedCornerShape(CornerRadiusLarge)) {
-                    Column(Modifier.fillMaxSize()) {
-
-                      /** Search bar * */
-                      TextField(
-                          value = uiState.memberSearchQuery,
-                          onValueChange = { replacementOrganizeViewModel.setMemberSearchQuery(it) },
-                          placeholder = { Text(text = stringResource(R.string.search_member)) },
-                          modifier =
-                              Modifier.fillMaxWidth()
-                                  .testTag(ReplacementOrganizeTestTags.SEARCH_BAR),
-                          singleLine = true,
-                          trailingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Search,
-                                contentDescription =
-                                    stringResource(R.string.search_icon_content_description))
-                          },
-                          shape = RoundedCornerShape(CornerRadiusLarge))
-
-                      /** Scrollable list * */
-                      LazyColumn(
-                          modifier =
-                              Modifier.weight(WeightExtraHeavy)
-                                  .fillMaxWidth()
-                                  .testTag(ReplacementOrganizeTestTags.MEMBER_LIST),
-                          verticalArrangement = Arrangement.Top) {
-                            items(filteredMembers) { member ->
-                              val isSelected = member == uiState.selectedMember
-
-                              Box(
-                                  modifier =
-                                      Modifier.fillMaxWidth()
-                                          .background(
-                                              if (isSelected) GeneralPalette.Secondary
-                                              else Color.White)
-                                          .clickable {
-                                            replacementOrganizeViewModel.setSelectedMember(member)
-                                          }
-                                          .padding(vertical = PaddingMedium),
-                                  contentAlignment = Alignment.Center) {
-                                    Text(
-                                        text = member.email ?: member.id,
-                                        textAlign = TextAlign.Center)
-                                  }
-
-                              HorizontalDivider(
-                                  thickness = DividerDefaults.Thickness,
-                                  color = DividerDefaults.color)
-                            }
-                          }
-
-                      /** Read-only selected member field * */
-                      OutlinedTextField(
-                          value =
-                              stringResource(
-                                  R.string.selected_member, uiState.selectedMember?.email ?: ""),
-                          onValueChange = {}, // ignored because readOnly
-                          modifier =
-                              Modifier.fillMaxWidth()
-                                  .testTag(ReplacementOrganizeTestTags.SELECTED_MEMBER_INFO),
-                          singleLine = true,
-                          shape = RoundedCornerShape(CornerRadiusLarge),
-                          colors =
-                              OutlinedTextFieldDefaults.colors(
-                                  focusedBorderColor = Color.Transparent,
-                                  unfocusedBorderColor = Color.Transparent,
-                                  disabledBorderColor = Color.Transparent,
-                              ),
-                          readOnly = true)
-                    }
-                  }
-
+            MemberSelectionCard(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(WeightExtraHeavy),
+                members = uiState.memberList,
+                searchQuery = uiState.memberSearchQuery,
+                onSearchQueryChange = { replacementOrganizeViewModel.setMemberSearchQuery(it) },
+                selectedMember = uiState.selectedMember,
+                onMemberSelected = { replacementOrganizeViewModel.setSelectedMember(it) },
+                memberDisplayName = { member -> member.displayName },
+                memberEmail = { member -> member.email },
+                memberId = { member -> member.id },
+            )
               /** Buttons * */
               Column(
                   modifier = Modifier.fillMaxWidth().padding(vertical = PaddingLarge),

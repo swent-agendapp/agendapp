@@ -17,6 +17,8 @@ import org.mockito.Mockito.*
 
 class OrganizationMapperTest {
 
+  private val fixedVersion = 123456789L
+
   @Test
   fun fromDocument_withValidData_returnsOrganization() {
     // Admins & members
@@ -88,6 +90,7 @@ class OrganizationMapperTest {
     `when`(orgDoc["members"]).thenReturn(listOf(memberDoc))
     `when`(orgDoc["areas"]).thenReturn(listOf(areaDoc))
     `when`(orgDoc["events"]).thenReturn(listOf(eventDoc))
+    `when`(orgDoc.getLong("version")).thenReturn(fixedVersion)
 
     val organization = OrganizationMapper.fromDocument(orgDoc)
 
@@ -96,20 +99,18 @@ class OrganizationMapperTest {
     assertThat(organization.id).isEqualTo("org123")
     assertThat(organization.name).isEqualTo("My Organization")
     assertThat(organization.geoCheckEnabled).isTrue()
+    assertThat(organization.version).isEqualTo(fixedVersion)
 
     assertThat(organization.admins).hasSize(1)
     assertThat(organization.admins[0].displayName).isEqualTo("Admin One")
-
     assertThat(organization.members).hasSize(1)
     assertThat(organization.members[0].email).isEqualTo("member1@example.com")
-
     assertThat(organization.areas).hasSize(1)
     val area = organization.areas[0]
     assertThat(area.label).isEqualTo("Main Area")
     assertThat(area.getSortedMarkers()).hasSize(3)
     assertThat(area.getSortedMarkers().map { it.label })
         .containsExactly("Marker 1", "Marker 2", "Marker 3")
-
     assertThat(organization.events).hasSize(1)
     val event = organization.events[0]
     assertThat(event.title).isEqualTo("Meeting")
@@ -169,27 +170,16 @@ class OrganizationMapperTest {
             "admins" to admins,
             "members" to members,
             "areas" to areas,
-            "events" to events)
+            "events" to events,
+            "version" to fixedVersion)
 
     val organization = OrganizationMapper.fromMap(data)
 
     assertThat(organization).isNotNull()
     organization!!
     assertThat(organization.id).isEqualTo("org123")
+    assertThat(organization.version).isEqualTo(fixedVersion)
     assertThat(organization.name).isEqualTo("My Organization")
-    assertThat(organization.geoCheckEnabled).isTrue()
-    assertThat(organization.admins).hasSize(1)
-    assertThat(organization.admins[0].displayName).isEqualTo("Admin One")
-    assertThat(organization.members).hasSize(1)
-    assertThat(organization.members[0].email).isEqualTo("member1@example.com")
-    assertThat(organization.areas).hasSize(1)
-    val area = organization.areas[0]
-    assertThat(area.label).isEqualTo("Main Area")
-    assertThat(area.getSortedMarkers()).hasSize(3)
-    assertThat(area.getSortedMarkers().map { it.label })
-        .containsExactly("Marker 1", "Marker 2", "Marker 3")
-    assertThat(organization.events).hasSize(1)
-    assertThat(organization.events[0].title).isEqualTo("Meeting")
   }
 
   @Test
@@ -209,6 +199,7 @@ class OrganizationMapperTest {
                 description = "Team meeting",
                 startDate = Instant.parse("2025-01-01T10:00:00Z"),
                 endDate = Instant.parse("2025-01-01T11:00:00Z")))
+
     val organization =
         Organization(
             id = "org123",
@@ -217,13 +208,13 @@ class OrganizationMapperTest {
             members = members,
             events = events,
             areas = areas,
-            geoCheckEnabled = true)
+            geoCheckEnabled = true,
+            version = fixedVersion)
 
     val map = OrganizationMapper.toMap(organization)
 
     assertThat(map["name"]).isEqualTo("My Organization")
     assertThat(map["geoCheckEnabled"]).isEqualTo(true)
-
     val adminsList = (map["admins"] as? List<*>)?.filterIsInstance<Map<String, Any?>>()
     val membersList = (map["members"] as? List<*>)?.filterIsInstance<Map<String, Any?>>()
     val areasList = (map["areas"] as? List<*>)?.filterIsInstance<Map<String, Any?>>()
@@ -234,5 +225,6 @@ class OrganizationMapperTest {
     assertThat(areasList!![0]["label"]).isEqualTo("Main Area")
     assertThat(eventsList!![0]["title"]).isEqualTo("Meeting")
     assertThat(eventsList[0]["description"]).isEqualTo("Team meeting")
+    assertThat(map["version"]).isEqualTo(fixedVersion)
   }
 }

@@ -14,8 +14,9 @@ import org.junit.Test
 import org.mockito.Mockito.*
 
 // Assisted by AI
-
 class ReplacementMapperTest {
+
+  private val fixedVersion = 123456789L
 
   private val sampleEvent =
       Event(
@@ -37,7 +38,8 @@ class ReplacementMapperTest {
           absentUserId = "user123",
           substituteUserId = "user456",
           event = sampleEvent,
-          status = ReplacementStatus.ToProcess)
+          status = ReplacementStatus.ToProcess,
+          version = fixedVersion)
 
   private val sampleMap: Map<String, Any?> =
       mapOf(
@@ -45,7 +47,8 @@ class ReplacementMapperTest {
           "absentUserId" to "user123",
           "substituteUserId" to "user456",
           "status" to "ToProcess",
-          "event" to EventMapper.toMap(sampleEvent))
+          "event" to EventMapper.toMap(sampleEvent),
+          "version" to fixedVersion)
 
   // --- fromDocument tests ---
   @Test
@@ -56,6 +59,7 @@ class ReplacementMapperTest {
     `when`(doc.getString("substituteUserId")).thenReturn("user456")
     `when`(doc.getString("status")).thenReturn("ToProcess")
     `when`(doc.get("event")).thenReturn(EventMapper.toMap(sampleEvent))
+    `when`(doc.getLong("version")).thenReturn(fixedVersion)
 
     val replacement = ReplacementMapper.fromDocument(doc)
     assertThat(replacement).isNotNull()
@@ -65,8 +69,9 @@ class ReplacementMapperTest {
   @Test
   fun fromDocument_missingRequiredFields_returnsNull() {
     val doc = mock(DocumentSnapshot::class.java)
-    `when`(doc.id).thenReturn("replacement1")
-    `when`(doc.getString("absentUserId")).thenReturn(null) // required field missing
+    `when`(doc.getString("id")).thenReturn("replacement1")
+    `when`(doc.getString("absentUserId")).thenReturn(null) // required
+    `when`(doc.getLong("version")).thenReturn(fixedVersion)
 
     val replacement = ReplacementMapper.fromDocument(doc)
     assertThat(replacement).isNull()
@@ -96,6 +101,13 @@ class ReplacementMapperTest {
     assertThat(replacement!!.status).isEqualTo(ReplacementStatus.ToProcess)
   }
 
+  @Test
+  fun fromMap_missingVersion_returnsNull() {
+    val invalidMap = sampleMap - "version"
+    val result = ReplacementMapper.fromMap(invalidMap)
+    assertThat(result).isNull()
+  }
+
   // --- fromAny tests ---
   @Test
   fun fromAny_withDocument_returnsReplacement() {
@@ -105,6 +117,7 @@ class ReplacementMapperTest {
     `when`(doc.getString("substituteUserId")).thenReturn("user456")
     `when`(doc.getString("status")).thenReturn("ToProcess")
     `when`(doc.get("event")).thenReturn(EventMapper.toMap(sampleEvent))
+    `when`(doc.getLong("version")).thenReturn(fixedVersion)
 
     val replacement = ReplacementMapper.fromAny(doc)
     assertThat(replacement).isNotNull()
@@ -133,6 +146,7 @@ class ReplacementMapperTest {
     assertThat(map["substituteUserId"]).isEqualTo("user456")
     assertThat(map["status"]).isEqualTo("ToProcess")
     assertThat(map["event"]).isEqualTo(EventMapper.toMap(sampleEvent))
+    assertThat(map["version"]).isEqualTo(fixedVersion)
   }
 
   @Test
@@ -142,12 +156,12 @@ class ReplacementMapperTest {
             "id" to "r1",
             "absentUserId" to "u1",
             "substituteUserId" to "u2",
-            "status" to "Pending",
-            // you don't mention "event" intentionally
-        )
+            "status" to "ToProcess",
+            "version" to fixedVersion
+            // No "event"
+            )
 
     val result = ReplacementMapper.fromMap(data)
-
     assertThat(result).isNull()
   }
 }

@@ -38,7 +38,7 @@ data class Event(
     val locallyStoredBy: List<String> = emptyList(),
     val personalNotes: String?,
     val participants: Set<String>,
-    val version: Long,
+    val version: Long = System.currentTimeMillis(),
     val recurrenceStatus: RecurrenceStatus,
     val hasBeenDeleted: Boolean = false,
     val color: Color
@@ -108,7 +108,6 @@ fun createEvent(
       cloudStorageStatuses = cloudStorageStatuses,
       personalNotes = personalNotes,
       participants = participants,
-      version = System.currentTimeMillis(),
       recurrenceStatus = RecurrenceStatus.OneTime,
       color = color
       // notifications = notifications

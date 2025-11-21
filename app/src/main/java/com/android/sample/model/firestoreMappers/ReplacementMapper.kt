@@ -5,8 +5,6 @@ import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementStatus
 import com.google.firebase.firestore.DocumentSnapshot
 
-// Assisted by AI
-
 /** Maps Firestore documents to [Replacement] objects and vice versa. */
 object ReplacementMapper : FirestoreMapper<Replacement> {
 
@@ -15,6 +13,7 @@ object ReplacementMapper : FirestoreMapper<Replacement> {
   private const val FIELD_SUBSTITUTE_USER_ID = "substituteUserId"
   private const val FIELD_STATUS = "status"
   private const val FIELD_EVENT = "event"
+  private const val FIELD_VERSION = "version"
 
   override fun fromDocument(document: DocumentSnapshot): Replacement? {
     val id = document.getString(ID_FIELD) ?: return null
@@ -30,17 +29,19 @@ object ReplacementMapper : FirestoreMapper<Replacement> {
               ReplacementStatus.ToProcess
             }
 
-    // The event is stored as a nested map inside the replacement document
-    val rawEvent = document[FIELD_EVENT] as? Map<*, *>
-    val eventMap = rawEvent?.mapKeys { it.key.toString() }
-    val event = eventMap?.let { EventMapper.fromMap(it) } ?: return null
+    // event is stored as nested map
+    val rawEvent = document[FIELD_EVENT] as? Map<*, *> ?: return null
+    val eventMap = rawEvent.mapKeys { it.key.toString() }
+    val event = EventMapper.fromMap(eventMap) ?: return null
+    val version = document.getLong(FIELD_VERSION) ?: return null
 
     return Replacement(
         id = id,
         absentUserId = absentUserId,
         substituteUserId = substituteUserId,
         event = event,
-        status = status)
+        status = status,
+        version = version)
   }
 
   override fun fromMap(data: Map<String, Any?>): Replacement? {
@@ -57,16 +58,18 @@ object ReplacementMapper : FirestoreMapper<Replacement> {
               ReplacementStatus.ToProcess
             }
 
-    val rawEvent = data[FIELD_EVENT] as? Map<*, *>
-    val eventMap = rawEvent?.mapKeys { it.key.toString() }
-    val event = eventMap?.let { EventMapper.fromMap(it) } ?: return null
+    val rawEvent = data[FIELD_EVENT] as? Map<*, *> ?: return null
+    val eventMap = rawEvent.mapKeys { it.key.toString() }
+    val event = EventMapper.fromMap(eventMap) ?: return null
+    val version = (data[FIELD_VERSION] as? Number)?.toLong() ?: return null
 
     return Replacement(
         id = id,
         absentUserId = absentUserId,
         substituteUserId = substituteUserId,
         event = event,
-        status = status)
+        status = status,
+        version = version)
   }
 
   override fun toMap(model: Replacement): Map<String, Any?> {
@@ -75,6 +78,7 @@ object ReplacementMapper : FirestoreMapper<Replacement> {
         FIELD_ABSENT_USER_ID to model.absentUserId,
         FIELD_SUBSTITUTE_USER_ID to model.substituteUserId,
         FIELD_STATUS to model.status.name,
-        FIELD_EVENT to EventMapper.toMap(model.event))
+        FIELD_EVENT to EventMapper.toMap(model.event),
+        FIELD_VERSION to model.version)
   }
 }

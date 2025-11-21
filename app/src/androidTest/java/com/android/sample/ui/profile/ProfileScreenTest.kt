@@ -12,6 +12,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.sample.model.authentication.AuthRepository
 import com.android.sample.model.authentication.FakeAuthRepository
+import com.android.sample.model.authentication.ProfileViewModel
 import com.android.sample.model.authentication.User
 import org.junit.After
 import org.junit.Before

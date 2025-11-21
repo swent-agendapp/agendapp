@@ -25,6 +25,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.credentials.CredentialManager
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
+import com.android.sample.model.authentication.ProfileUIState
+import com.android.sample.model.authentication.ProfileViewModel
 import com.android.sample.ui.authentication.SignInViewModel
 import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.theme.AlphaExtraLow

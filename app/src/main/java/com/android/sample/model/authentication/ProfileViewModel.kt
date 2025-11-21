@@ -1,4 +1,4 @@
-package com.android.sample.ui.profile
+package com.android.sample.model.authentication
 
 import android.app.Application
 import android.content.Context
@@ -9,9 +9,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.android.sample.model.authentication.AuthRepository
-import com.android.sample.model.authentication.AuthRepositoryProvider
-import com.android.sample.model.authentication.User
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update

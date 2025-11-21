@@ -39,6 +39,7 @@ import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.WeightVeryHeavy
 
+// the complexity was reduced with the help of IA
 data class MemberSelectionListOptions(
     val isSingleSelection: Boolean = false,
     val highlightColor: Color = CircusPalette.Primary.copy(alpha = 0.9f),
@@ -48,23 +49,6 @@ data class MemberSelectionListOptions(
     val memberTagBuilder: ((String) -> String)? = null,
 )
 
-// Kdoc writen with the help of AI
-/**
- * Reusable component for selecting one or multiple members from a searchable list.
- *
- * It contains:
- * - a search bar
- * - a scrollable selectable list
- * - a read-only summary field for the selection
- *
- * It is used by:
- * - [SelectSubstitutedScreen]
- * - [ProcessReplacementScreen]
- *
- * Behavior:
- * - If [isSingleSelection] is true → only one element can be selected at a time.
- * - If [isSingleSelection] is false → multiple selection (toggle behavior).
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MemberSelectionList(
@@ -82,83 +66,147 @@ fun MemberSelectionList(
       }
 
   Column(modifier = modifier.fillMaxSize()) {
-    TextField(
-        value = searchQuery,
-        onValueChange = { searchQuery = it },
-        placeholder = { Text(text = stringResource(R.string.search_member)) },
-        modifier =
-            Modifier.fillMaxWidth().let { base ->
-              if (options.searchTestTag != null) base.testTag(options.searchTestTag) else base
-            },
-        singleLine = true,
-        trailingIcon = { Icon(imageVector = Icons.Default.Search, contentDescription = null) },
-        shape = RoundedCornerShape(CornerRadiusLarge))
-
-    LazyColumn(
-        modifier =
-            Modifier.weight(WeightVeryHeavy).fillMaxWidth().let { base ->
-              if (options.listTestTag != null) base.testTag(options.listTestTag) else base
-            },
-        verticalArrangement = Arrangement.Top) {
-          items(filteredMembers) { member ->
-            val isSelected = member in selectedMembers
-
-            Box(
-                modifier =
-                    Modifier.fillMaxWidth()
-                        .background(if (isSelected) options.highlightColor else Color.White)
-                        .clickable {
-                          val newSelection =
-                              if (options.isSingleSelection) {
-                                if (isSelected) emptySet() else setOf(member)
-                              } else {
-                                if (isSelected) selectedMembers - member
-                                else selectedMembers + member
-                              }
-                          onSelectionChanged(newSelection)
-                        }
-                        .padding(vertical = PaddingMedium)
-                        .let { base ->
-                          if (options.memberTagBuilder != null) {
-                            base.testTag(options.memberTagBuilder.invoke(member))
-                          } else {
-                            base
-                          }
-                        },
-                contentAlignment = Alignment.Center) {
-                  Text(text = member, textAlign = TextAlign.Center)
-                }
-
-            HorizontalDivider(thickness = DividerDefaults.Thickness, color = DividerDefaults.color)
-          }
-        }
-
-    val selectedMembersText =
-        if (selectedMembers.isEmpty()) {
-          stringResource(R.string.replacement_selected_members_none)
-        } else {
-          pluralStringResource(
-              R.plurals.replacement_selected_members,
-              selectedMembers.size,
-              selectedMembers.joinToString(", "))
-        }
-
-    OutlinedTextField(
-        value = selectedMembersText,
-        onValueChange = {},
-        modifier =
-            Modifier.fillMaxWidth().let { base ->
-              if (options.summaryTestTag != null) base.testTag(options.summaryTestTag) else base
-            },
-        singleLine = true,
-        shape = RoundedCornerShape(CornerRadiusLarge),
-        readOnly = true,
-        colors =
-            OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent,
-                disabledBorderColor = Color.Transparent,
-            ),
+    MemberSearchBar(
+        searchQuery = searchQuery,
+        onSearchQueryChange = { searchQuery = it },
+        options = options,
     )
+
+    MemberSelectionLazyList(
+        members = filteredMembers,
+        selectedMembers = selectedMembers,
+        onSelectionChanged = onSelectionChanged,
+        options = options,
+        modifier = Modifier.weight(WeightVeryHeavy))
+
+    MemberSelectionSummary(
+        selectedMembers = selectedMembers,
+        summaryTestTag = options.summaryTestTag,
+    )
+  }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun MemberSearchBar(
+    searchQuery: String,
+    onSearchQueryChange: (String) -> Unit,
+    options: MemberSelectionListOptions,
+    modifier: Modifier = Modifier,
+) {
+  TextField(
+      value = searchQuery,
+      onValueChange = onSearchQueryChange,
+      placeholder = { Text(text = stringResource(R.string.search_member)) },
+      modifier =
+          modifier.fillMaxWidth().let { base ->
+            if (options.searchTestTag != null) base.testTag(options.searchTestTag) else base
+          },
+      singleLine = true,
+      trailingIcon = { Icon(imageVector = Icons.Default.Search, contentDescription = null) },
+      shape = RoundedCornerShape(CornerRadiusLarge),
+  )
+}
+
+@Composable
+private fun MemberSelectionLazyList(
+    members: List<String>,
+    selectedMembers: Set<String>,
+    onSelectionChanged: (Set<String>) -> Unit,
+    options: MemberSelectionListOptions,
+    modifier: Modifier = Modifier,
+) {
+  LazyColumn(
+      modifier =
+          modifier.fillMaxWidth().let { base ->
+            if (options.listTestTag != null) base.testTag(options.listTestTag) else base
+          },
+      verticalArrangement = Arrangement.Top) {
+        items(members) { member ->
+          val isSelected = member in selectedMembers
+
+          Box(
+              modifier =
+                  Modifier.fillMaxWidth()
+                      .background(
+                          if (isSelected) options.highlightColor else Color.White,
+                      )
+                      .clickable {
+                        val newSelection =
+                            calculateNewSelection(
+                                isSingleSelection = options.isSingleSelection,
+                                isSelected = isSelected,
+                                member = member,
+                                selectedMembers = selectedMembers,
+                            )
+                        onSelectionChanged(newSelection)
+                      }
+                      .padding(vertical = PaddingMedium)
+                      .let { base ->
+                        if (options.memberTagBuilder != null) {
+                          base.testTag(options.memberTagBuilder.invoke(member))
+                        } else {
+                          base
+                        }
+                      },
+              contentAlignment = Alignment.Center) {
+                Text(text = member, textAlign = TextAlign.Center)
+              }
+
+          HorizontalDivider(
+              thickness = DividerDefaults.Thickness,
+              color = DividerDefaults.color,
+          )
+        }
+      }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun MemberSelectionSummary(
+    selectedMembers: Set<String>,
+    summaryTestTag: String?,
+    modifier: Modifier = Modifier,
+) {
+  val selectedMembersText =
+      if (selectedMembers.isEmpty()) {
+        stringResource(R.string.replacement_selected_members_none)
+      } else {
+        pluralStringResource(
+            R.plurals.replacement_selected_members,
+            selectedMembers.size,
+            selectedMembers.joinToString(", "),
+        )
+      }
+
+  OutlinedTextField(
+      value = selectedMembersText,
+      onValueChange = {},
+      modifier =
+          modifier.fillMaxWidth().let { base ->
+            if (summaryTestTag != null) base.testTag(summaryTestTag) else base
+          },
+      singleLine = true,
+      shape = RoundedCornerShape(CornerRadiusLarge),
+      readOnly = true,
+      colors =
+          OutlinedTextFieldDefaults.colors(
+              focusedBorderColor = Color.Transparent,
+              unfocusedBorderColor = Color.Transparent,
+              disabledBorderColor = Color.Transparent,
+          ),
+  )
+}
+
+private fun calculateNewSelection(
+    isSingleSelection: Boolean,
+    isSelected: Boolean,
+    member: String,
+    selectedMembers: Set<String>,
+): Set<String> {
+  return if (isSingleSelection) {
+    if (isSelected) emptySet() else setOf(member)
+  } else {
+    if (isSelected) selectedMembers - member else selectedMembers + member
   }
 }

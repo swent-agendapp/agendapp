@@ -243,6 +243,8 @@ class FakeEventRepository : EventRepository {
 
   private val events = mutableListOf<Event>()
 
+  override fun getNewUid(): String = "fake-uid"
+
   override suspend fun getAllEvents(): List<Event> = events.toList()
 
   override suspend fun insertEvent(item: Event) {

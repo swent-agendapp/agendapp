@@ -1,25 +1,36 @@
 package com.android.sample.ui.replacement.organize.components
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -28,11 +39,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.common.SecondaryButton
 import com.android.sample.ui.common.SecondaryPageTopBar
-import com.android.sample.ui.components.MemberSelectionList
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeTestTags
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeViewModel
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.DefaultCardElevation
+import com.android.sample.ui.theme.GeneralPalette
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.PaddingLarge
 import com.android.sample.ui.theme.PaddingMedium
@@ -66,13 +77,11 @@ import com.android.sample.ui.theme.WeightExtraHeavy
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectSubstitutedScreen(
-    onMemberSelected: (String) -> Unit = {},
     onSelectEvents: () -> Unit = {},
     onSelectDateRange: () -> Unit = {},
     onBack: () -> Unit = {},
     replacementOrganizeViewModel: ReplacementOrganizeViewModel = viewModel()
 ) {
-  val candidates = listOf("Emilien", "Haobin", "Noa", "Weifeng", "Timael", "Méline", "Nathan")
   val uiState by replacementOrganizeViewModel.uiState.collectAsState()
 
   // Filter the list when search changes
@@ -108,23 +117,80 @@ fun SelectSubstitutedScreen(
                           .testTag(ReplacementOrganizeTestTags.INSTRUCTION_TEXT))
 
               /** Scrollable selectable list * */
-              var selectedMembers by remember { mutableStateOf(setOf<String>()) }
               Card(
                   modifier = Modifier.fillMaxWidth().weight(WeightExtraHeavy),
                   elevation = CardDefaults.cardElevation(defaultElevation = DefaultCardElevation),
                   shape = RoundedCornerShape(CornerRadiusLarge)) {
-                    MemberSelectionList(
-                        members = candidates,
-                        selectedMembers = selectedMembers,
-                        onSelectionChanged = { newSelection ->
-                          selectedMembers = newSelection
-                          newSelection.firstOrNull()?.let { onMemberSelected(it) }
-                        },
-                        searchTestTag = ReplacementOrganizeTestTags.SEARCH_BAR,
-                        listTestTag = ReplacementOrganizeTestTags.MEMBER_LIST,
-                        summaryTestTag = ReplacementOrganizeTestTags.SELECTED_MEMBER_INFO,
-                        isSingleSelection = true,
-                    )
+                    Column(Modifier.fillMaxSize()) {
+
+                      /** Search bar * */
+                      TextField(
+                          value = uiState.memberSearchQuery,
+                          onValueChange = { replacementOrganizeViewModel.setMemberSearchQuery(it) },
+                          placeholder = { Text(text = stringResource(R.string.search_member)) },
+                          modifier =
+                              Modifier.fillMaxWidth()
+                                  .testTag(ReplacementOrganizeTestTags.SEARCH_BAR),
+                          singleLine = true,
+                          trailingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription =
+                                    stringResource(R.string.search_icon_content_description))
+                          },
+                          shape = RoundedCornerShape(CornerRadiusLarge))
+
+                      /** Scrollable list * */
+                      LazyColumn(
+                          modifier =
+                              Modifier.weight(WeightExtraHeavy)
+                                  .fillMaxWidth()
+                                  .testTag(ReplacementOrganizeTestTags.MEMBER_LIST),
+                          verticalArrangement = Arrangement.Top) {
+                            items(filteredMembers) { member ->
+                              val isSelected = member == uiState.selectedMember
+
+                              Box(
+                                  modifier =
+                                      Modifier.fillMaxWidth()
+                                          .background(
+                                              if (isSelected) GeneralPalette.Secondary
+                                              else Color.White)
+                                          .clickable {
+                                            replacementOrganizeViewModel.setSelectedMember(member)
+                                          }
+                                          .padding(vertical = PaddingMedium),
+                                  contentAlignment = Alignment.Center) {
+                                    Text(
+                                        text = member.email ?: member.id,
+                                        textAlign = TextAlign.Center)
+                                  }
+
+                              HorizontalDivider(
+                                  thickness = DividerDefaults.Thickness,
+                                  color = DividerDefaults.color)
+                            }
+                          }
+
+                      /** Read-only selected member field * */
+                      OutlinedTextField(
+                          value =
+                              stringResource(
+                                  R.string.selected_member, uiState.selectedMember?.email ?: ""),
+                          onValueChange = {}, // ignored because readOnly
+                          modifier =
+                              Modifier.fillMaxWidth()
+                                  .testTag(ReplacementOrganizeTestTags.SELECTED_MEMBER_INFO),
+                          singleLine = true,
+                          shape = RoundedCornerShape(CornerRadiusLarge),
+                          colors =
+                              OutlinedTextFieldDefaults.colors(
+                                  focusedBorderColor = Color.Transparent,
+                                  unfocusedBorderColor = Color.Transparent,
+                                  disabledBorderColor = Color.Transparent,
+                              ),
+                          readOnly = true)
+                    }
                   }
 
               /** Buttons * */

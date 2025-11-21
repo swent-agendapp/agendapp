@@ -64,12 +64,6 @@ fun ProcessReplacementScreen(
   val candidates = listOf("Emilien", "Haobin", "Noa", "Weifeng", "Timael", "Méline", "Nathan")
 
   var selectedMembers by remember { mutableStateOf(setOf<String>()) }
-  var searchQuery by remember { mutableStateOf("") }
-
-  val filteredCandidates =
-      remember(searchQuery, candidates) {
-        candidates.filter { it.contains(searchQuery, ignoreCase = true) }
-      }
 
   val dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)
   val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")

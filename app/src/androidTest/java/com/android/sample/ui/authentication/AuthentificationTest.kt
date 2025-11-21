@@ -1,4 +1,4 @@
-package com.android.sample.ui.authentification
+package com.android.sample.ui.authentication
 
 import android.content.Context
 import androidx.compose.ui.test.assertIsDisplayed
@@ -13,8 +13,6 @@ import com.android.sample.utils.FakeCredentialManager
 import com.android.sample.utils.FakeJwtGenerator
 import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.FirebaseEmulator
-import com.github.se.bootcamp.ui.authentication.SignInScreen
-import com.github.se.bootcamp.ui.authentication.SignInScreenTestTags
 import org.junit.Assert.assertTrue
 import org.junit.Assume.assumeTrue
 import org.junit.Before

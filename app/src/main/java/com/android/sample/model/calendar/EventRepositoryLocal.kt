@@ -1,6 +1,6 @@
 package com.android.sample.model.calendar
 
-import com.android.sample.utils.EventColor
+import com.android.sample.ui.theme.EventPalette
 import java.time.Duration
 import java.time.Instant
 
@@ -11,6 +11,10 @@ class EventRepositoryLocal(preloadSampleData: Boolean = false) : EventRepository
     if (preloadSampleData) {
       populateSampleEvents()
     }
+  }
+
+  override fun getNewUid(): String {
+    return java.util.UUID.randomUUID().toString()
   }
 
   override suspend fun getAllEvents(): List<Event> {
@@ -64,7 +68,9 @@ class EventRepositoryLocal(preloadSampleData: Boolean = false) : EventRepository
 
   override suspend fun getEventsBetweenDates(startDate: Instant, endDate: Instant): List<Event> {
     require(startDate <= endDate) { "start date must be before or equal to end date" }
-    return events.filter { it.startDate <= endDate && it.endDate >= startDate }
+    return events.filter {
+      it.startDate <= endDate && it.endDate >= startDate && !it.hasBeenDeleted
+    }
   }
 
   // ---------------------------------------------------------------------------------
@@ -84,7 +90,7 @@ class EventRepositoryLocal(preloadSampleData: Boolean = false) : EventRepository
             participants = setOf("Alice", "Bob", "Charlie"),
             recurrenceStatus = RecurrenceStatus.Weekly,
             hasBeenDeleted = false,
-            color = EventColor.Blue,
+            color = EventPalette.Blue,
             // notifications = listOf("30 min before"),
             version = System.currentTimeMillis(),
             locallyStoredBy = listOf("LOCAL_USER"),
@@ -101,7 +107,7 @@ class EventRepositoryLocal(preloadSampleData: Boolean = false) : EventRepository
             participants = setOf("David", "Eve"),
             recurrenceStatus = RecurrenceStatus.OneTime,
             hasBeenDeleted = false,
-            color = EventColor.Green,
+            color = EventPalette.Green,
             // notifications = listOf("1 hour before"),
             version = System.currentTimeMillis(),
             locallyStoredBy = listOf("LOCAL_USER"),

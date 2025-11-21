@@ -1,6 +1,7 @@
 package com.android.sample.ui.calendar.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
@@ -30,8 +32,14 @@ import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.style.defaultGridContentDimensions
 import com.android.sample.ui.calendar.utils.DateTimeUtils
+import com.android.sample.ui.calendar.utils.EventOverlapCalculator
 import com.android.sample.ui.calendar.utils.EventPositionUtil
+import com.android.sample.ui.theme.AlphaExtraLow
+import com.android.sample.ui.theme.AlphaHigh
+import com.android.sample.ui.theme.AlphaLow
+import com.android.sample.ui.theme.BorderWidthThin
 import com.android.sample.ui.theme.CornerRadiusSmall
+import com.android.sample.ui.theme.ElevationExtraLow
 import com.android.sample.ui.theme.PaddingExtraSmall
 import com.android.sample.ui.theme.widthLarge
 import java.time.Instant
@@ -86,13 +94,15 @@ fun EventBlock(
     columnWidthDp: Dp = defaultGridContentDimensions().defaultColumnWidthDp,
     onEventClick: (Event) -> Unit = {}
 ) {
-  // Later : place this "filter" logic in "EventOverlapHandling", which will call this EventBlock
   // Filter events for the current day and time range using the helper
   val visibleEvents = filterVisibleEvents(events, currentDate, startTime, endTime)
 
   if (visibleEvents.isEmpty()) return
 
   val density = LocalDensity.current
+
+  // Calculate horizontal overlap layouts for all visible events
+  val eventLayouts = EventOverlapCalculator.calculateEventLayouts(visibleEvents)
 
   visibleEvents.forEach { event ->
     // Compute offsets for the visible segment of the event within this day's time window
@@ -105,24 +115,46 @@ fun EventBlock(
             density = density,
         )
 
+    // Retrieve layout for this event (if any). If none, fall back to full width, no offset.
+    val layout = eventLayouts[event]
+    val eventWidthDp =
+        if (layout != null) {
+          columnWidthDp * layout.widthFraction
+        } else {
+          columnWidthDp
+        }
+    val horizontalOffsetDp =
+        if (layout != null) {
+          columnWidthDp * layout.offsetFraction
+        } else {
+          0.dp
+        }
+
     DrawEventBlock(
         modifier = modifier,
         event = event,
         topOffset = topOffset,
         eventHeight = eventHeight,
-        columnWidthDp = columnWidthDp,
-        onEventClick = onEventClick)
+        eventWidthDp = eventWidthDp,
+        horizontalOffsetDp = horizontalOffsetDp,
+        onEventClick = onEventClick,
+    )
   }
 }
 
 /**
- * Draws the UI block for a single event, positioning it according to the provided offsets and
- * displaying its details within the given column width.
+ * Draws the UI block for a single event within a day column.
  *
+ * Positions the block using the given vertical and horizontal offsets, constrains it to the
+ * provided width and height, and displays the event details inside the block.
+ *
+ * @param modifier [Modifier] applied to the event container.
  * @param event The event to render.
  * @param topOffset The vertical offset from the top of the column.
  * @param eventHeight The height of the event block.
- * @param columnWidthDp The width of the day column hosting this event.
+ * @param eventWidthDp The width of the event block within the day column.
+ * @param horizontalOffsetDp The horizontal offset from the left edge of the day column.
+ * @param onEventClick Callback invoked when the event block is clicked.
  */
 @Composable
 private fun DrawEventBlock(
@@ -130,11 +162,12 @@ private fun DrawEventBlock(
     event: Event,
     topOffset: Dp = 0.dp,
     eventHeight: Dp = widthLarge, // squared
-    columnWidthDp: Dp = widthLarge,
-    onEventClick: (Event) -> Unit = {}
+    eventWidthDp: Dp = widthLarge,
+    horizontalOffsetDp: Dp = 0.dp,
+    onEventClick: (Event) -> Unit = {},
 ) {
   // Event styling
-  val backgroundColor = event.color.toComposeColor()
+  val backgroundColor = event.color
   val textColor = Color.Black
 
   // Later : add logic to adapt the view when orientation (portrait or not)
@@ -142,23 +175,32 @@ private fun DrawEventBlock(
   Box(
       modifier =
           modifier
-              .offset(x = 0.dp, y = topOffset) // Later when overlap : x = columnWidth *
-              // eventLayout.offsetFraction
+              .offset(
+                  x = horizontalOffsetDp,
+                  y = topOffset,
+              )
               .size(
-                  width = columnWidthDp,
-                  height = eventHeight) // Later when overlap : width = columnWidth *
-              // eventLayout.widthFraction
+                  width = eventWidthDp,
+                  height = eventHeight,
+              )
+              .shadow(
+                  elevation = ElevationExtraLow,
+                  shape = RoundedCornerShape(CornerRadiusSmall),
+                  clip = true)
               .clip(RoundedCornerShape(CornerRadiusSmall))
               .background(backgroundColor)
+              .border(
+                  width = BorderWidthThin,
+                  color = Color.Black.copy(alpha = AlphaExtraLow),
+                  shape = RoundedCornerShape(CornerRadiusSmall))
               .padding(start = PaddingExtraSmall, top = PaddingExtraSmall, end = PaddingExtraSmall)
               .clickable(onClick = { onEventClick(event) })
               .testTag("${CalendarScreenTestTags.EVENT_BLOCK}_${event.title}"),
       // Later : handle onTap and onLongPress
   ) {
     Column(
-        modifier = Modifier.fillMaxSize(),
-        // Later for testing : .testTag("EventViewInner_${event.id}"),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxSize().padding(start = PaddingExtraSmall),
+        horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top,
     ) {
       // Main title
@@ -167,34 +209,38 @@ private fun DrawEventBlock(
           color = textColor,
           fontSize = 12.sp,
           fontWeight = FontWeight.Medium,
-          maxLines = 1,
+          maxLines = 2,
           overflow = TextOverflow.Ellipsis,
       )
+
+      // later : when 1-day view : Spacer(modifier.height(SpacingExtraSmall))
+
+      // Time information
+      val timeText =
+          "${DateTimeUtils.formatInstantToTime(event.startDate)} — " +
+              DateTimeUtils.formatInstantToTime(event.endDate)
+
+      Text(
+          text = timeText,
+          color = textColor.copy(alpha = AlphaHigh),
+          fontSize = 9.sp,
+          maxLines = 2,
+          overflow = TextOverflow.Ellipsis,
+      )
+
+      // later : when 1-day view : Spacer(modifier.height(SpacingExtraSmall))
 
       // Participants (if any)
       if (event.participants.isNotEmpty()) {
         val participantsText = event.participants.joinToString(", ")
         Text(
             text = participantsText,
-            color = textColor.copy(alpha = 0.8f),
+            color = textColor.copy(alpha = AlphaLow),
             fontSize = 10.sp,
-            maxLines = 1,
+            maxLines = 2,
             overflow = TextOverflow.Ellipsis,
         )
       }
-
-      // Time information
-      val timeText =
-          "${DateTimeUtils.formatInstantToTime(event.startDate)} - " +
-              DateTimeUtils.formatInstantToTime(event.endDate)
-
-      Text(
-          text = timeText,
-          color = textColor.copy(alpha = 0.7f),
-          fontSize = 9.sp,
-          maxLines = 1,
-          overflow = TextOverflow.Ellipsis,
-      )
 
       // Later if needed : upperText and/or lowerText
     }
@@ -214,5 +260,5 @@ private fun DrawEventBlockPreview() {
               cloudStorageStatuses = emptySet(),
               personalNotes = null,
               participants = setOf("Alice"),
-          ))
+          )[0])
 }

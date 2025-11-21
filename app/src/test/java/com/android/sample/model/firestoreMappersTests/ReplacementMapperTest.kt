@@ -6,7 +6,7 @@ import com.android.sample.model.firestoreMappers.EventMapper
 import com.android.sample.model.firestoreMappers.ReplacementMapper
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementStatus
-import com.android.sample.utils.EventColor
+import com.android.sample.ui.theme.EventPalette
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.firestore.DocumentSnapshot
 import java.time.Instant
@@ -29,7 +29,7 @@ class ReplacementMapperTest {
           participants = emptySet(),
           version = 0L,
           recurrenceStatus = RecurrenceStatus.OneTime,
-          color = EventColor.Blue)
+          color = EventPalette.Blue)
 
   private val sampleReplacement =
       Replacement(

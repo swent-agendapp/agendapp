@@ -27,9 +27,9 @@ class AreaMapperTest {
   fun fromMap_withValidData_returnsArea() {
     val markers =
         listOf(
-            Marker("marker1", Location(10.0, 20.0, "Loc 1"), "Marker 1"),
-            Marker("marker2", Location(15.0, 25.0, "Loc 2"), "Marker 2"),
-            Marker("marker3", Location(12.0, 22.0, "Loc 3"), "Marker 3"))
+            Marker("marker1", Location(10.0, 20.0), "Marker 1"),
+            Marker("marker2", Location(15.0, 25.0), "Marker 2"),
+            Marker("marker3", Location(12.0, 22.0), "Marker 3"))
 
     val markersData =
         markers.map { marker ->
@@ -39,8 +39,7 @@ class AreaMapperTest {
               "location" to
                   mapOf(
                       "latitude" to marker.location.latitude,
-                      "longitude" to marker.location.longitude,
-                      "label" to marker.location.label))
+                      "longitude" to marker.location.longitude))
         }
 
     val data = mapOf("id" to "area123", "label" to "My Area", "markers" to markersData)
@@ -81,6 +80,7 @@ class AreaMapperTest {
 
     assertThat(map["id"]).isEqualTo("area123")
     assertThat(map["label"]).isEqualTo("My Area")
+
     val markersList =
         (map["markers"] as? List<*>)?.filterIsInstance<Map<String, Any?>>() ?: emptyList()
     assertThat(markersList.size).isEqualTo(3)

@@ -1,7 +1,8 @@
 package com.android.sample.model.organization
 
+import com.android.sample.model.authentication.AuthRepository
+import com.android.sample.model.constants.FirestoreConstants.COLLECTION_USERS
 import com.android.sample.model.firestoreMappers.EmployeeMapper
-import com.github.se.bootcamp.model.authentication.AuthRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
@@ -16,7 +17,7 @@ class EmployeeRepositoryFirebase(
     private val authRepository: AuthRepository
 ) : EmployeeRepository {
 
-  private fun employeesCol() = db.collection("employees")
+  private fun employeesCol() = db.collection(COLLECTION_USERS)
 
   override suspend fun getEmployees(): List<Employee> {
     val snap = employeesCol().get().await()

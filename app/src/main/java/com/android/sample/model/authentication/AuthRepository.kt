@@ -1,7 +1,6 @@
-package com.github.se.bootcamp.model.authentication
+package com.android.sample.model.authentication
 
 import androidx.credentials.Credential
-import com.android.sample.model.authentication.User
 
 /** Handles authentication operations such as signing in with Google and signing out. */
 interface AuthRepository {

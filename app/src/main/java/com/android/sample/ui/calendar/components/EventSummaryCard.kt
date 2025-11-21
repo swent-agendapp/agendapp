@@ -11,7 +11,7 @@ import com.android.sample.ui.calendar.components.eventSummaryComponents.DrawEven
 import com.android.sample.ui.calendar.style.EventSummaryCardDefaults
 import com.android.sample.ui.calendar.utils.buildDatePresentation
 import com.android.sample.ui.calendar.utils.recurrenceLabel
-import com.android.sample.utils.EventColor
+import com.android.sample.ui.theme.EventPalette
 import java.time.*
 import java.util.Locale
 
@@ -66,7 +66,7 @@ fun EventSummaryCard(
 
   // --- Colors / shapes / participants ---
   val shape = RoundedCornerShape(style.cornerRadiusDp)
-  val sideColor = event.color.toComposeColor()
+  val sideColor = event.color
 
   // Recurrence text (hidden if no recurrence, meaning if the recurrence is OneTime)
   val recurrenceText: String? =
@@ -122,7 +122,7 @@ private val previewEvents: List<Event> by lazy {
           version = 1L,
           recurrenceStatus = RecurrenceStatus.OneTime,
           hasBeenDeleted = false,
-          color = EventColor.Blue),
+          color = EventPalette.Blue),
       // e1) Recurring (weekly)
       Event(
           id = "e1",
@@ -137,7 +137,7 @@ private val previewEvents: List<Event> by lazy {
           version = 1L,
           recurrenceStatus = RecurrenceStatus.Weekly,
           hasBeenDeleted = false,
-          color = EventColor.Green),
+          color = EventPalette.Green),
       // e2) 3-day event
       Event(
           id = "e2",
@@ -152,7 +152,7 @@ private val previewEvents: List<Event> by lazy {
           version = 1L,
           recurrenceStatus = RecurrenceStatus.OneTime,
           hasBeenDeleted = false,
-          color = EventColor.Orange),
+          color = EventPalette.Orange),
       // e3) 3-day recurring
       Event(
           id = "e3",
@@ -167,7 +167,7 @@ private val previewEvents: List<Event> by lazy {
           version = 1L,
           recurrenceStatus = RecurrenceStatus.Weekly,
           hasBeenDeleted = false,
-          color = EventColor.Purple),
+          color = EventPalette.Purple),
       // e4) Long title
       Event(
           id = "e4",
@@ -183,7 +183,7 @@ private val previewEvents: List<Event> by lazy {
           version = 1L,
           recurrenceStatus = RecurrenceStatus.OneTime,
           hasBeenDeleted = false,
-          color = EventColor.Black),
+          color = EventPalette.Black),
       // e5) Long description
       Event(
           id = "e5",
@@ -201,7 +201,7 @@ private val previewEvents: List<Event> by lazy {
           version = 1L,
           recurrenceStatus = RecurrenceStatus.OneTime,
           hasBeenDeleted = false,
-          color = EventColor.Red),
+          color = EventPalette.Red),
       // e6) Many participants
       Event(
           id = "e6",
@@ -216,7 +216,7 @@ private val previewEvents: List<Event> by lazy {
           version = 1L,
           recurrenceStatus = RecurrenceStatus.OneTime,
           hasBeenDeleted = false,
-          color = EventColor.Orange),
+          color = EventPalette.Orange),
       // e7) Minimal
       Event(
           id = "e7",
@@ -231,7 +231,7 @@ private val previewEvents: List<Event> by lazy {
           version = 1L,
           recurrenceStatus = RecurrenceStatus.OneTime,
           hasBeenDeleted = false,
-          color = EventColor.Green))
+          color = EventPalette.Green))
 }
 
 @Preview(showBackground = true)

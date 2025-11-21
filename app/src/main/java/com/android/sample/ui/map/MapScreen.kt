@@ -1,6 +1,7 @@
 package com.android.sample.ui.map
 
 import android.Manifest
+import android.app.Application
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -44,7 +45,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.common.FloatingButton
 import com.android.sample.ui.common.PrimaryButton
@@ -53,9 +53,8 @@ import com.android.sample.ui.map.MapScreenTestTags.CREATE_AREA_FLOATING_BUTTON
 import com.android.sample.ui.map.MapScreenTestTags.DELETE_MARKER_BUTTON
 import com.android.sample.ui.map.MapScreenTestTags.DOWN_SHEET
 import com.android.sample.ui.map.MapScreenTestTags.DOWN_SHEET_FORM
-import com.android.sample.ui.theme.Blue
-import com.android.sample.ui.theme.Blue70
 import com.android.sample.ui.theme.DefaultZoom
+import com.android.sample.ui.theme.MapPalette
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingSmall
@@ -97,7 +96,8 @@ enum class BottomSheetState {
 @OptIn(MapsExperimentalFeature::class, ExperimentalMaterial3Api::class)
 @Composable
 fun MapScreen(
-    mapViewModel: MapViewModel = viewModel(),
+    mapViewModel: MapViewModel =
+        MapViewModel(app = LocalContext.current.applicationContext as Application),
     onGoBack: () -> Unit = {},
 ) {
   val uiState by mapViewModel.state.collectAsState()
@@ -214,7 +214,6 @@ fun MapScreen(
                             MarkerState(
                                 position =
                                     LatLng(marker.location.latitude, marker.location.longitude)),
-                        title = marker.label,
                         draggable = false,
                         onClick = { _ ->
                           showBottomSheet = BottomSheetState.DELETE_MARKER
@@ -228,8 +227,8 @@ fun MapScreen(
                             area.markers.map { marker ->
                               LatLng(marker.location.latitude, marker.location.longitude)
                             },
-                        strokeColor = Blue,
-                        fillColor = Blue70)
+                        strokeColor = MapPalette.Stroke,
+                        fillColor = MapPalette.Fill)
                   }
                 }
           }

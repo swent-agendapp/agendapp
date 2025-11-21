@@ -1,12 +1,17 @@
 package com.android.sample.model.calendar
 
 import androidx.annotation.StringRes
+import androidx.compose.ui.graphics.Color
 import com.android.sample.R
-import com.android.sample.utils.EventColor
+import com.android.sample.ui.calendar.utils.DateTimeUtils
+import com.android.sample.ui.theme.EventPalette
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.temporal.ChronoUnit
+import java.util.UUID
 
 /**
  * Data class representing a calendar event.
@@ -39,7 +44,7 @@ data class Event(
     val version: Long,
     val recurrenceStatus: RecurrenceStatus,
     val hasBeenDeleted: Boolean = false,
-    val color: EventColor
+    val color: Color
 ) {
   // Returns the start date as a LocalDate in the system's default time zone
   val startLocalDate: LocalDate
@@ -85,6 +90,7 @@ enum class CloudStorageStatus {
  * @return A new Event instance.
  */
 fun createEvent(
+    repository: EventRepository? = null,
     title: String = "Untitled",
     description: String = "",
     startDate: Instant = Instant.now(),
@@ -92,25 +98,117 @@ fun createEvent(
     cloudStorageStatuses: Set<CloudStorageStatus> = emptySet(),
     personalNotes: String? = null,
     participants: Set<String> = emptySet(),
-    color: EventColor = EventColor.Blue
-    // notifications: List<String> = emptyList()
-): Event {
-  // Ensure the end date is not before the start date
+    color: Color = EventPalette.Blue,
+    recurrence: RecurrenceStatus = RecurrenceStatus.OneTime,
+    endRecurrence: Instant = Instant.now(),
+): List<Event> {
   require(!endDate.isBefore(startDate)) { "End date cannot be before start date" }
-  return Event(
-      id = java.util.UUID.randomUUID().toString(), // Generate a unique ID for the event
+  val zone = ZoneId.systemDefault()
+
+  return when (recurrence) {
+    RecurrenceStatus.OneTime ->
+        listOf(
+            Event(
+                id = repository?.getNewUid() ?: UUID.randomUUID().toString(),
+                title = title,
+                description = description,
+                startDate = startDate,
+                endDate = endDate,
+                cloudStorageStatuses = cloudStorageStatuses,
+                personalNotes = personalNotes,
+                participants = participants,
+                version = System.currentTimeMillis(),
+                recurrenceStatus = recurrence,
+                color = color))
+    RecurrenceStatus.Weekly -> {
+      val weeks =
+          1 +
+              ChronoUnit.WEEKS.between(
+                  startDate.atZone(ZoneOffset.UTC), endRecurrence.atZone(ZoneOffset.UTC))
+      List(weeks.toInt()) { i ->
+        Event(
+            id = repository?.getNewUid() ?: UUID.randomUUID().toString(),
+            title = title,
+            description = description,
+            startDate = startDate.plus(i * 7L, ChronoUnit.DAYS),
+            endDate = endDate.plus(i * 7L, ChronoUnit.DAYS),
+            cloudStorageStatuses = cloudStorageStatuses,
+            personalNotes = personalNotes,
+            participants = participants,
+            version = System.currentTimeMillis(),
+            recurrenceStatus = recurrence,
+            color = color)
+      }
+    }
+    RecurrenceStatus.Monthly -> {
+
+      val months =
+          1 +
+              ChronoUnit.MONTHS.between(
+                  startDate.atZone(ZoneOffset.UTC), endRecurrence.atZone(ZoneOffset.UTC))
+      List(months.toInt()) { i ->
+        Event(
+            id = repository?.getNewUid() ?: UUID.randomUUID().toString(),
+            title = title,
+            description = description,
+            startDate = startDate.atZone(zone).plusMonths(i * 1L).toInstant(),
+            endDate = endDate.atZone(zone).plusMonths(i * 1L).toInstant(),
+            cloudStorageStatuses = cloudStorageStatuses,
+            personalNotes = personalNotes,
+            participants = participants,
+            version = System.currentTimeMillis(),
+            recurrenceStatus = recurrence,
+            color = color)
+      }
+    }
+    RecurrenceStatus.Yearly -> {
+      val years =
+          1 +
+              ChronoUnit.YEARS.between(
+                  startDate.atZone(ZoneOffset.UTC), endRecurrence.atZone(ZoneOffset.UTC))
+      List(years.toInt()) { i ->
+        Event(
+            id = repository?.getNewUid() ?: UUID.randomUUID().toString(),
+            title = title,
+            description = description,
+            startDate = startDate.atZone(zone).plusYears(i * 1L).toInstant(),
+            endDate = endDate.atZone(zone).plusYears(i * 1L).toInstant(),
+            cloudStorageStatuses = cloudStorageStatuses,
+            personalNotes = personalNotes,
+            participants = participants,
+            version = System.currentTimeMillis(),
+            recurrenceStatus = recurrence,
+            color = color)
+      }
+    }
+  }
+}
+
+/**
+ * Helper to create an [Event] the given times using [DateTimeUtils] and the real [createEvent]
+ * factory.
+ *
+ * This ensures we rely on the same time conversion utilities as the production code.
+ */
+fun createEventForTimes(
+    title: String = "Untitled",
+    startHour: Int = 8,
+    startMinute: Int = 0,
+    endHour: Int = 12,
+    endMinute: Int = 0,
+): List<Event> {
+  val baseDate = LocalDate.of(2025, 1, 1)
+
+  val startTime = LocalTime.of(startHour, startMinute)
+  val endTime = LocalTime.of(endHour, endMinute)
+  val startInstant = DateTimeUtils.localDateTimeToInstant(baseDate, startTime)
+  val endInstant = DateTimeUtils.localDateTimeToInstant(baseDate, endTime)
+
+  return createEvent(
       title = title,
-      description = description,
-      startDate = startDate,
-      endDate = endDate,
-      cloudStorageStatuses = cloudStorageStatuses,
-      personalNotes = personalNotes,
-      participants = participants,
-      version = System.currentTimeMillis(),
-      recurrenceStatus = RecurrenceStatus.OneTime,
-      color = color
-      // notifications = notifications
-      )
+      startDate = startInstant,
+      endDate = endInstant,
+  )
 }
 
 @StringRes

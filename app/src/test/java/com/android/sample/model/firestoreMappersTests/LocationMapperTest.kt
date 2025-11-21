@@ -15,8 +15,8 @@ import org.mockito.Mockito.*
 class LocationMapperTest {
 
   private lateinit var mockDocument: DocumentSnapshot
-  private val sampleLocation = Location(latitude = 48.8566, longitude = 2.3522, label = "Paris")
-  private val sampleMap = mapOf("latitude" to 48.8566, "longitude" to 2.3522, "label" to "Paris")
+  private val sampleLocation = Location(latitude = 48.8566, longitude = 2.3522)
+  private val sampleMap = mapOf("latitude" to 48.8566, "longitude" to 2.3522)
 
   @Before
   fun setUpTest() {
@@ -28,14 +28,12 @@ class LocationMapperTest {
   fun fromDocument_withValidData_returnsLocation() = runBlocking {
     `when`(mockDocument.getDouble("latitude")).thenReturn(sampleLocation.latitude)
     `when`(mockDocument.getDouble("longitude")).thenReturn(sampleLocation.longitude)
-    `when`(mockDocument.getString("label")).thenReturn(sampleLocation.label)
 
     val result = LocationMapper.fromDocument(mockDocument)
 
     assertNotNull(result)
     assertEquals(sampleLocation.latitude, result!!.latitude, 0.0)
     assertEquals(sampleLocation.longitude, result.longitude, 0.0)
-    assertEquals(sampleLocation.label, result.label)
   }
 
   @Test
@@ -63,7 +61,6 @@ class LocationMapperTest {
     assertNotNull(result)
     assertEquals(sampleLocation.latitude, result!!.latitude, 0.0)
     assertEquals(sampleLocation.longitude, result.longitude, 0.0)
-    assertEquals(sampleLocation.label, result.label)
   }
 
   @Test
@@ -94,13 +91,11 @@ class LocationMapperTest {
   fun fromAny_withDocument_returnsLocation() = runBlocking {
     `when`(mockDocument.getDouble("latitude")).thenReturn(sampleLocation.latitude)
     `when`(mockDocument.getDouble("longitude")).thenReturn(sampleLocation.longitude)
-    `when`(mockDocument.getString("label")).thenReturn(sampleLocation.label)
 
     val result = LocationMapper.fromAny(mockDocument)
     assertNotNull(result)
     assertEquals(sampleLocation.latitude, result!!.latitude, 0.0)
     assertEquals(sampleLocation.longitude, result.longitude, 0.0)
-    assertEquals(sampleLocation.label, result.label)
   }
 
   @Test
@@ -109,7 +104,6 @@ class LocationMapperTest {
     assertNotNull(result)
     assertEquals(sampleLocation.latitude, result!!.latitude, 0.0)
     assertEquals(sampleLocation.longitude, result.longitude, 0.0)
-    assertEquals(sampleLocation.label, result.label)
   }
 
   @Test
@@ -124,6 +118,5 @@ class LocationMapperTest {
     val map = LocationMapper.toMap(sampleLocation)
     assertEquals(sampleLocation.latitude, map["latitude"])
     assertEquals(sampleLocation.longitude, map["longitude"])
-    assertEquals(sampleLocation.label, map["label"])
   }
 }

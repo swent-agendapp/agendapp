@@ -13,6 +13,10 @@ class EventRepositoryLocal(preloadSampleData: Boolean = false) : EventRepository
     }
   }
 
+  override fun getNewUid(): String {
+    return java.util.UUID.randomUUID().toString()
+  }
+
   override suspend fun getAllEvents(): List<Event> {
     return events.filter { !it.hasBeenDeleted }
   }

@@ -8,14 +8,21 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.rule.GrantPermissionRule
+import com.android.sample.model.map.MapRepositoryProvider
+import com.android.sample.utils.FirebaseEmulatedTest
 import com.google.android.gms.maps.MapsInitializer
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class MapScreenTest {
+class MapScreenTest : FirebaseEmulatedTest() {
+  lateinit var mapViewModel: MapViewModel
+
   @Before
-  fun setUp() {
+  override fun setUp() {
+    super.setUp()
+    val repo = MapRepositoryProvider.repository
+    mapViewModel = MapViewModel(ApplicationProvider.getApplicationContext(), repo)
     MapsInitializer.initialize(
         ApplicationProvider.getApplicationContext(),
     )
@@ -30,7 +37,7 @@ class MapScreenTest {
 
   @Test
   fun topTitleIsCorrectlySet() {
-    composeTestRule.setContent { MapScreen() }
+    composeTestRule.setContent { MapScreen(mapViewModel = mapViewModel) }
 
     composeTestRule.onNodeWithTag(MapScreenTestTags.GOOGLE_MAP_SCREEN).assertIsDisplayed()
     composeTestRule.onNodeWithTag(MapScreenTestTags.MAP_TITLE).assertIsDisplayed()
@@ -41,7 +48,7 @@ class MapScreenTest {
 
   @Test
   fun clickToolTipDisplayIt() {
-    composeTestRule.setContent { MapScreen() }
+    composeTestRule.setContent { MapScreen(mapViewModel = mapViewModel) }
 
     composeTestRule
         .onNodeWithTag(MapScreenTestTags.TOOLTIP_BUTTON)
@@ -52,7 +59,7 @@ class MapScreenTest {
 
   @Test
   fun openTheCreateAreaDownSheet() {
-    composeTestRule.setContent { MapScreen() }
+    composeTestRule.setContent { MapScreen(mapViewModel = mapViewModel) }
     composeTestRule
         .onNodeWithTag(MapScreenTestTags.CREATE_AREA_FLOATING_BUTTON)
         .assertIsDisplayed()

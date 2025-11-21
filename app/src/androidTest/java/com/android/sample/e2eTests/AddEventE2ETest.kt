@@ -201,7 +201,7 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
       calendarTag: String,
       eventTag: String,
       maxDownScrolls: Int = 30,
-      maxUpScrolls: Int = 30
+      maxUpScrolls: Int = 60
   ) {
     if (isTagDisplayed(eventTag)) return
 

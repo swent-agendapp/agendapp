@@ -216,7 +216,7 @@ fun Agendapp(
                             navigationActions.navigateTo(Screen.ReplacementPending)
                           },
                           onConfirmedClick = {
-                              navigationActions.navigateTo(Screen.ReplacementUpcoming)
+                            navigationActions.navigateTo(Screen.ReplacementUpcoming)
                           })
                     }
                     composable(Screen.ReplacementOrganize.route) {
@@ -232,7 +232,7 @@ fun Agendapp(
                       ReplacementPendingListScreen(
                           onNavigateBack = { navigationActions.navigateBack() })
                     }
-                  // accepted replacement screen
+                    // accepted replacement screen
                     composable(Screen.ReplacementUpcoming.route) {
                       ReplacementUpcomingListScreen(
                           onNavigateBack = { navigationActions.navigateBack() })

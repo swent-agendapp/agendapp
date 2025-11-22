@@ -39,6 +39,8 @@ fun GridCanvas(
     rowHeightDp: Dp = defaultGridContentStyle().dimensions.rowHeightDp,
     totalHours: Int = DefaultTotalHour,
     days: List<LocalDate> = workWeekDays(),
+    today: LocalDate = LocalDate.now(),
+    selectedDate: LocalDate? = null,
     style: GridContentStyle = defaultGridContentStyle(),
 ) {
 
@@ -76,9 +78,8 @@ fun GridCanvas(
         }
 
         // Today highlight
-        val today = LocalDate.now()
         val todayIndex = days.indexOf(today)
-        if (todayIndex in 0 until columnCount) {
+        if (todayIndex in 0 until columnCount && selectedDate == null) {
           val left = todayIndex * columnWidthPx
           drawRect(
               color = style.colors.todayHighlight,

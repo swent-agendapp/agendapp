@@ -8,7 +8,6 @@ package com.android.sample.model.map
  *
  * @property latitude Latitude of the location in decimal degrees.
  * @property longitude Longitude of the location in decimal degrees.
- * @property label Optional human-readable label or description for the location.
  */
 data class Location(
     /** Latitude in decimal degrees (usually -90.0..90.0). */
@@ -16,7 +15,4 @@ data class Location(
 
     /** Longitude in decimal degrees (usually -180.0..180.0). */
     val longitude: Double,
-
-    /** Optional short label for display purposes. Null when no label is provided. */
-    val label: String? = null,
 )

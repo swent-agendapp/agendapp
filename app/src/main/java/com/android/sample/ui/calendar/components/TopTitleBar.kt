@@ -67,7 +67,6 @@ fun TopTitleBar(
         Text(
             text = title,
             style = MaterialTheme.typography.headlineMedium,
-            modifier = modifier.testTag(""), // later : NavigationTestTags.TOP_BAR_TITLE
             fontWeight = FontWeight.Bold)
       },
       navigationIcon = {

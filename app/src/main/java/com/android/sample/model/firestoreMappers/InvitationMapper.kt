@@ -1,6 +1,5 @@
 package com.android.sample.model.firestoreMappers
 
-import android.util.Log
 import com.android.sample.model.organization.invitation.Invitation
 import com.android.sample.model.organization.invitation.InvitationStatus
 import com.google.firebase.Timestamp
@@ -20,44 +19,19 @@ object InvitationMapper : FirestoreMapper<Invitation> {
   const val STATUS_FIELD = "status"
 
   override fun fromDocument(document: DocumentSnapshot): Invitation? {
-    val id =
-        document.getString(ID_FIELD)
-            ?: run {
-              Log.e("InvitationMapper", "Missing \"$ID_FIELD\" field.")
-              return null
-            }
+    val id = document.getString(ID_FIELD) ?: return null
 
-    val organizationId =
-        document.getString(ORGANIZATION_ID_FIELD)
-            ?: run {
-              Log.e("InvitationMapper", "Missing \"$ORGANIZATION_ID_FIELD\" field.")
-              return null
-            }
+    val organizationId = document.getString(ORGANIZATION_ID_FIELD) ?: return null
 
-    val code =
-        document.getString(CODE_FIELD)
-            ?: run {
-              Log.e("InvitationMapper", "Missing \"$CODE_FIELD\" field.")
-              return null
-            }
+    val code = document.getString(CODE_FIELD) ?: return null
 
-    val createdAt =
-        document.getTimestamp(CREATED_AT_FIELD)?.toDate()?.toInstant()
-            ?: run {
-              Log.e("InvitationMapper", "Missing \"$CREATED_AT_FIELD\" field.")
-              return null
-            }
+    val createdAt = document.getTimestamp(CREATED_AT_FIELD)?.toDate()?.toInstant() ?: return null
     val acceptedAt = document.getTimestamp(ACCEPTED_AT_FIELD)?.toDate()?.toInstant()
 
     val inviteeEmail = document.getString(INVITEE_EMAIL_FIELD)
 
     val statusString = document.getString(STATUS_FIELD) ?: return null
-    val status =
-        runCatching { InvitationStatus.valueOf(statusString) }
-            .getOrElse {
-              Log.e("InvitationMapper", "Unknown status \"$statusString\". By default : Expired.")
-              InvitationStatus.Expired
-            }
+    val status = runCatching { InvitationStatus.valueOf(statusString) }.getOrNull() ?: return null
 
     return Invitation(
         id = id,
@@ -70,33 +44,15 @@ object InvitationMapper : FirestoreMapper<Invitation> {
   }
 
   override fun fromMap(data: Map<String, Any?>): Invitation? {
-    val id =
-        data[ID_FIELD] as? String
-            ?: run {
-              Log.e("InvitationMapper", "Missing \"$ID_FIELD\" field.")
-              return null
-            }
-    val organizationId =
-        data[ORGANIZATION_ID_FIELD] as? String
-            ?: run {
-              Log.e("InvitationMapper", "Missing \"$ORGANIZATION_ID_FIELD\" field.")
-              return null
-            }
-    val code =
-        data[CODE_FIELD] as? String
-            ?: run {
-              Log.e("InvitationMapper", "Missing \"$CODE_FIELD\" field.")
-              return null
-            }
+    val id = data[ID_FIELD] as? String ?: return null
+    val organizationId = data[ORGANIZATION_ID_FIELD] as? String ?: return null
+    val code = data[CODE_FIELD] as? String ?: return null
 
     val createdAt =
         (data[CREATED_AT_FIELD] as? Timestamp)?.toDate()?.toInstant()
             ?: (data[CREATED_AT_FIELD] as? Date)?.toInstant()
             ?: (data[CREATED_AT_FIELD] as? Long)?.let { Instant.ofEpochMilli(it) }
-            ?: run {
-              Log.e("InvitationMapper", "Missing \"$CREATED_AT_FIELD\" field.")
-              return null
-            }
+            ?: return null
 
     val acceptedAt =
         (data[ACCEPTED_AT_FIELD] as? Timestamp)?.toDate()?.toInstant()
@@ -106,12 +62,7 @@ object InvitationMapper : FirestoreMapper<Invitation> {
     val inviteeEmail = data[INVITEE_EMAIL_FIELD] as? String
 
     val statusString = data[STATUS_FIELD] as? String ?: return null
-    val status =
-        runCatching { InvitationStatus.valueOf(statusString) }
-            .getOrElse {
-              Log.e("InvitationMapper", "Unknown status \"$statusString\". By default : Expired.")
-              InvitationStatus.Expired
-            }
+    val status = runCatching { InvitationStatus.valueOf(statusString) }.getOrNull() ?: return null
 
     return Invitation(
         id = id,

@@ -169,6 +169,7 @@
     <string name="replacement_create_select_event">Ereignis auswählen</string>
     <string name="replacement_create_choose_date_range">Datumsbereich auswählen</string>
     <string name="event_overview_title">Ereignisübersicht</string>
+    <string name="replacement_upcoming_title">Bevorstehende Vertretungen</string>
     <string name="replacement_process_title">Vertretung organisieren</string>
     <plurals name="replacement_send_requests_button">
         <item quantity="one">Eine Vertretungsanfrage senden</item>

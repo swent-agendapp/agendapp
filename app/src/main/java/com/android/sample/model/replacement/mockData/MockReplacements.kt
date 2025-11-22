@@ -32,8 +32,8 @@ fun getMockReplacements(): List<Replacement> {
       createEvent(
           title = "Reunion C",
           description = "Afternoon meeting",
-          startDate = Instant.parse("2025-11-03T14:00:00Z"),
-          endDate = Instant.parse("2025-11-03T16:00:00Z"),
+          startDate = Instant.parse("2025-12-03T14:00:00Z"),
+          endDate = Instant.parse("2025-12-03T16:00:00Z"),
           cloudStorageStatuses = setOf(CloudStorageStatus.FIRESTORE),
           color = EventPalette.Orange)
 

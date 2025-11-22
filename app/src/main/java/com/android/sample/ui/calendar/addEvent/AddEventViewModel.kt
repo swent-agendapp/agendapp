@@ -42,7 +42,7 @@ data class AddCalendarEventUIState(
     val description: String = "",
     val startInstant: Instant = Instant.now(),
     val endInstant: Instant = Instant.now().plus(Duration.ofHours(1)),
-    val recurrenceEndInstant: Instant = Instant.now(),
+    val recurrenceEndInstant: Instant = Instant.now().plus(Duration.ofHours(1)),
     val recurrenceMode: RecurrenceStatus = RecurrenceStatus.OneTime,
     val participants: Set<String> = emptySet(),
     val errorMsg: String? = null,
@@ -94,17 +94,20 @@ class AddEventViewModel(
     require(orgId != null) { "Organization must be selected to create an event" }
 
     val currentState = _uiState.value
-    val newEvent =
+    val newEvents =
         createEvent(
             organizationId = orgId,
+            repository = repository,
             title = currentState.title,
             description = currentState.description,
             startDate = currentState.startInstant,
             endDate = currentState.endInstant,
-            cloudStorageStatuses = emptySet(), // hardcoded for now
-            personalNotes = "", // hardcoded for now
-            participants = currentState.participants)
-    addEventToRepository(newEvent)
+            cloudStorageStatuses = emptySet(),
+            personalNotes = "",
+            participants = currentState.participants,
+            recurrence = currentState.recurrenceMode,
+            endRecurrence = currentState.recurrenceEndInstant)
+    newEvents.forEach { event -> addEventToRepository(event) }
   }
 
   /**
@@ -145,6 +148,11 @@ class AddEventViewModel(
 
   /** @return `true` if start time is strictly after end time (invalid state). */
   fun startTimeIsAfterEndTime() = _uiState.value.startInstant.isAfter(_uiState.value.endInstant)
+
+  /** @return `true` if start time is strictly after end recurrence time (invalid state). */
+  fun startTimeIsAfterEndRecurrenceTime() =
+      _uiState.value.recurrenceMode != RecurrenceStatus.OneTime &&
+          _uiState.value.startInstant.isAfter(_uiState.value.recurrenceEndInstant)
 
   /**
    * @return `true` only when all event fields are valid.

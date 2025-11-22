@@ -52,7 +52,8 @@ class EventOverviewScreenTest {
   }
 
   private fun makeViewModelWith(event: Event): Pair<EventOverviewViewModel, FakeEventRepository> {
-    val repo = FakeEventRepository(event)
+    val repo = FakeEventRepository()
+    repo.add(event = event)
     val vm = EventOverviewViewModel(eventRepository = repo)
     return vm to repo
   }

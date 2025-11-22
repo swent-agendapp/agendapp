@@ -10,6 +10,10 @@ import kotlinx.coroutines.tasks.await
 
 class EventRepositoryFirebase(private val db: FirebaseFirestore) : EventRepository {
 
+  override fun getNewUid(): String {
+    return db.collection(EVENTS_COLLECTION_PATH).document().id
+  }
+
   override suspend fun getAllEvents(orgId: String): List<Event> {
     val snapshot =
         db.collection(EVENTS_COLLECTION_PATH).whereEqualTo("organizationId", orgId).get().await()

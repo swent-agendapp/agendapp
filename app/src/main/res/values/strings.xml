@@ -175,9 +175,16 @@
 
     <!-- Event Overview -->
     <string name="event_overview_title">Event Overview</string>
+    <string name="view_mode_1day">1 day</string>
+    <string name="view_mode_5days">5 days</string>
+    <string name="view_mode_7days">7 days</string>
+    <string name="view_mode_month">Month</string>
     <string name="delete">Delete</string>
     <string name="modify">Modify</string>
     <string name="delete_event_message">Are you sure you want to delete this event?</string>
+    <string name="replacement_list_title">Select an event</string>
+    <string name="replacement_list_instruction">Select an event you need to be replaced for</string>
+    <string name="select_date_range_instruction">Select the date range for which you need a replacement.</string>
 </resources>
 
 

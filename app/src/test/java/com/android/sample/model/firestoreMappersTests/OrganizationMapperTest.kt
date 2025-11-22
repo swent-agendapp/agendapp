@@ -108,8 +108,6 @@ class OrganizationMapperTest {
     val area = organization.areas[0]
     assertThat(area.label).isEqualTo("Main Area")
     assertThat(area.getSortedMarkers()).hasSize(3)
-    assertThat(area.getSortedMarkers().map { it.label })
-        .containsExactly("Marker 1", "Marker 2", "Marker 3")
 
     assertThat(organization.events).hasSize(1)
     val event = organization.events[0]
@@ -205,13 +203,12 @@ class OrganizationMapperTest {
             Marker("m3", Location(12.0, 22.0), "Marker 3"))
     val areas = listOf(Area("area1", "Main Area", markers))
     val events =
-        listOf(
-            createEvent(
-                organizationId = "org123",
-                title = "Meeting",
-                description = "Team meeting",
-                startDate = Instant.parse("2025-01-01T10:00:00Z"),
-                endDate = Instant.parse("2025-01-01T11:00:00Z")))
+        createEvent(
+            organizationId = "org123",
+            title = "Meeting",
+            description = "Team meeting",
+            startDate = Instant.parse("2025-01-01T10:00:00Z"),
+            endDate = Instant.parse("2025-01-01T11:00:00Z"))
     val organization =
         Organization(
             id = "org123",

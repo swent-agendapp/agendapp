@@ -34,7 +34,7 @@ class ReplacementRepositoryFirebaseTest : FirebaseEmulatedTest() {
             title = "Meeting",
             description = "Team meeting",
             startDate = Instant.parse("2025-11-12T10:00:00Z"),
-            endDate = Instant.parse("2025-11-12T11:00:00Z"))
+            endDate = Instant.parse("2025-11-12T11:00:00Z"))[0]
 
     replacement1 =
         Replacement(

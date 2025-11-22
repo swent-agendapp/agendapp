@@ -1,21 +1,20 @@
 package com.android.sample.ui.calendar.components.eventSummaryComponents
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import com.android.sample.ui.calendar.components.EventSummaryCardTags
@@ -25,6 +24,7 @@ import com.android.sample.ui.calendar.style.EventSummaryCardStyle
 import com.android.sample.ui.calendar.style.EventSummaryTextConfig
 import com.android.sample.ui.theme.AlphaLow
 import com.android.sample.ui.theme.BarWidthSmall
+import com.android.sample.ui.theme.SpacingExtraSmall
 import com.android.sample.ui.theme.SpacingMedium
 import com.android.sample.ui.theme.WeightExtraHeavy
 
@@ -55,39 +55,61 @@ fun DescriptionSection(
     noToggleSpacer: Dp = EventSummaryCardStyle().descHasToggleSpacer,
     hasToggleSpacer: Dp = EventSummaryCardStyle().descNoToggleSpacer
 ) {
-  if (descriptionText.isNotBlank()) {
-    // Measured text height (px), drives the left accent bar height
-    var descHeightPx by remember { mutableIntStateOf(0) }
-    val descHeightDp = with(LocalDensity.current) { descHeightPx.toDp() }
+  if (descriptionText.isBlank()) return
 
-    Row(modifier = Modifier.fillMaxWidth()) {
+  val textConfig = EventSummaryCardDefaults.texts
+
+  Column(modifier = Modifier.fillMaxWidth()) {
+
+    // Main row: side bar and description text share the same height.
+    Row(modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
       // Left accent bar scaled to text height
       Box(
           modifier =
               Modifier.width(BarWidthSmall)
-                  .height(descHeightDp)
+                  .fillMaxHeight()
                   .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = AlphaLow)))
       Spacer(Modifier.width(SpacingMedium))
-      Column(modifier = Modifier.weight(WeightExtraHeavy)) {
-        // Delegate expansion, overflow detection, and edge-fade to the reusable component
-        ExpandableText(
-            text = descriptionText,
-            style = MaterialTheme.typography.bodyMedium,
-            collapsedMaxLines = collapsedMaxLines,
-            isExpanded = isExpanded,
-            onToggleExpand = onToggle,
-            onOverflowChange = onOverflowChange,
-            showToggle = showToggle,
-            toggleLabels = EventSummaryCardDefaults.texts.toggleLabels,
-            toggleTypography = MaterialTheme.typography.labelMedium,
-            onTextHeightChange = { descHeightPx = it },
-            modifier = Modifier.testTag(EventSummaryCardTags.DESCRIPTION_TEXT),
-            toggleTestTag = EventSummaryCardTags.TOGGLE_DESCRIPTION)
+
+      // Delegate expansion, overflow detection, and edge-fade to the reusable component
+      ExpandableText(
+          text = descriptionText,
+          style = MaterialTheme.typography.bodyMedium,
+          collapsedMaxLines = collapsedMaxLines,
+          isExpanded = isExpanded,
+          onToggleExpand = onToggle, // not used here since showToggle = false
+          onOverflowChange = onOverflowChange,
+          showToggle =
+              false, // The toggle row is rendered manually below the description (to handle left
+          // bar correctly).
+          toggleLabels = textConfig.toggleLabels,
+          toggleTypography = MaterialTheme.typography.labelMedium,
+          onTextHeightChange = {}, // Text height is not needed to size the bar.
+          modifier = Modifier.testTag(EventSummaryCardTags.DESCRIPTION_TEXT),
+      )
+    }
+
+    // Separate "Show more / Show less" row so the side bar only follows the description text.
+    if (showToggle) {
+      Spacer(Modifier.height(SpacingExtraSmall))
+
+      Row(modifier = Modifier.fillMaxWidth()) {
+        Spacer(Modifier.weight(WeightExtraHeavy))
+
+        Text(
+            text =
+                if (isExpanded) textConfig.toggleLabels.collapse
+                else textConfig.toggleLabels.expand,
+            style = MaterialTheme.typography.labelMedium,
+            modifier =
+                Modifier.testTag(EventSummaryCardTags.TOGGLE_DESCRIPTION)
+                    .clickable(onClick = onToggle))
       }
+
+      // Keep vertical rhythm consistent whether the toggle is visible or not
+      Spacer(Modifier.height(hasToggleSpacer))
+    } else {
+      Spacer(Modifier.height(noToggleSpacer))
     }
   }
-
-  // Keep vertical rhythm consistent whether the toggle is visible or not
-  if (!showToggle) Spacer(Modifier.height(noToggleSpacer))
-  else Spacer(Modifier.height(hasToggleSpacer))
 }

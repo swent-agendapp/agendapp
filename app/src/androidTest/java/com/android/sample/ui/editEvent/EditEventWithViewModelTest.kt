@@ -57,7 +57,8 @@ class EditEventWithViewModelTest {
             hasBeenDeleted = false,
             color = EventPalette.Blue)
 
-    val fakeRepository = FakeEventRepository(event = sampleEvent)
+    val fakeRepository = FakeEventRepository()
+    fakeRepository.add(event = sampleEvent)
     fakeViewModel = EditEventViewModel(fakeRepository)
   }
 

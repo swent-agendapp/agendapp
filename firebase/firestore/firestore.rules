@@ -1,0 +1,59 @@
+rules_version = '2';
+// Helped by GenAI
+// Read rules can be divided into get and list rules
+// Write rules can be divided into create, update, and delete rules
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /organizations/{id} {
+      allow create: if request.auth != null;
+      allow update, delete: if request.auth != null && request.auth.uid in resource.data.admins;
+      allow read: if request.auth != null
+                  && (
+                    request.auth.uid in resource.data.admins
+                    || request.auth.uid in resource.data.members
+                  );
+
+      match /events/{eventId} {
+         allow create, update, delete: if request.auth != null
+                                       && request.auth.uid in
+                                          get(/databases/$(database)/documents/organizations/$(orgId)).data.admins;
+
+         allow read: if request.auth != null
+                     && (
+                          request.auth.uid in
+                            get(/databases/$(database)/documents/organizations/$(orgId)).data.admins
+                          ||
+                          request.auth.uid in
+                            get(/databases/$(database)/documents/organizations/$(orgId)).data.members
+                        );
+        }
+
+      match /areas/{areaId} {
+              allow create, update, delete: if request.auth != null
+                                            && request.auth.uid in
+                                               get(/databases/$(database)/documents/organizations/$(orgId))
+                                               .data.admins;
+
+              allow read: if request.auth != null
+                          && (
+                               request.auth.uid in
+                                 get(/databases/$(database)/documents/organizations/$(orgId))
+                                 .data.admins
+                              ||
+                               request.auth.uid in
+                                 get(/databases/$(database)/documents/organizations/$(orgId))
+                                 .data.members
+                             );
+            }
+    }
+
+    match /users/{id} {
+      allow create: if request.auth != null
+                    && request.auth.uid == userId;
+      allow update, delete: if request.auth != null
+                            && request.auth.uid == userId;
+      allow read: if true;
+    }
+  }
+}

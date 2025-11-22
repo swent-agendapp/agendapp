@@ -169,9 +169,16 @@
     <string name="replacement_create_select_event">Sélectionner un événement</string>
     <string name="replacement_create_choose_date_range">Choisir une plage de dates</string>
     <string name="event_overview_title">Aperçu de l\'événement</string>
+    <string name="view_mode_1day">1 jour</string>
+    <string name="view_mode_5days">5 jours</string>
+    <string name="view_mode_7days">7 jours</string>
+    <string name="view_mode_month">Mois</string>
     <string name="delete">Supprimer</string>
     <string name="modify">Modifier</string>
     <string name="delete_event_message">Êtes-vous sûr de vouloir supprimer cet événement?</string>
+    <string name="replacement_list_title">Sélectionner un événement</string>
+    <string name="replacement_list_instruction">Sélectionnez un événement pour lequel vous avez besoin d’un remplaçant</string>
+    <string name="select_date_range_instruction">Sélectionnez la plage de dates pour laquelle vous avez besoin d’un remplacement.</string>
 
     <!-- Organizations -->
     <string name="organization_list_title">Vos organisations</string>

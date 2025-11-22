@@ -27,7 +27,7 @@ class ReplacementExtensionsTest {
             id = "1",
             absentUserId = "user-a",
             substituteUserId = "user-b",
-            event = baseEvent,
+            event = baseEvent[0],
             status = ReplacementStatus.ToProcess)
 
     val accepted =
@@ -35,7 +35,7 @@ class ReplacementExtensionsTest {
             id = "2",
             absentUserId = "user-c",
             substituteUserId = "user-d",
-            event = baseEvent,
+            event = baseEvent[0],
             status = ReplacementStatus.Accepted)
 
     val declined =
@@ -43,7 +43,7 @@ class ReplacementExtensionsTest {
             id = "3",
             absentUserId = "user-e",
             substituteUserId = "user-f",
-            event = baseEvent,
+            event = baseEvent[0],
             status = ReplacementStatus.Declined)
 
     val result = listOf(pending, accepted, declined).pendingAdminReplacements()
@@ -67,7 +67,7 @@ class ReplacementExtensionsTest {
             id = "1",
             absentUserId = "user-a",
             substituteUserId = "user-b",
-            event = baseEvent,
+            event = baseEvent[0],
             status = ReplacementStatus.WaitingForAnswer)
 
     val declined =
@@ -75,7 +75,7 @@ class ReplacementExtensionsTest {
             id = "2",
             absentUserId = "user-c",
             substituteUserId = "user-d",
-            event = baseEvent,
+            event = baseEvent[0],
             status = ReplacementStatus.Declined)
 
     val accepted =
@@ -83,7 +83,7 @@ class ReplacementExtensionsTest {
             id = "3",
             absentUserId = "user-e",
             substituteUserId = "user-f",
-            event = baseEvent,
+            event = baseEvent[0],
             status = ReplacementStatus.Accepted)
 
     val result = listOf(waiting, declined, accepted).waitingForAnswerAndDeclinedReplacements()

@@ -261,5 +261,5 @@ private fun DrawEventBlockPreview() {
               cloudStorageStatuses = emptySet(),
               personalNotes = null,
               participants = setOf("Alice"),
-          ))
+          )[0])
 }

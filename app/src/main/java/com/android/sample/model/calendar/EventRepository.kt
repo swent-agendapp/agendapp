@@ -3,6 +3,9 @@ package com.android.sample.model.calendar
 import java.time.Instant
 
 interface EventRepository {
+
+  fun getNewUid(): String
+
   /**
    * Retrieves all event items from the repository.
    *

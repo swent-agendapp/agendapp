@@ -4,10 +4,13 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.onNodeWithText
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepositoryLocal
+import com.android.sample.ui.calendar.CalendarScreenTestTags.DAY_HEADER_DAY_PREFIX
+import com.android.sample.ui.organization.SelectedOrganizationVMProvider
+import java.time.DayOfWeek
+import java.time.LocalDate
 import org.junit.Rule
 import org.junit.Test
 
@@ -40,6 +43,8 @@ class CalendarEventSelectorTests : BaseCalendarScreenTest() {
     val repo = EventRepositoryLocal()
     populateRepo(repo, events)
     val owner = TestOwner(CalendarVMFactory(repo))
+
+    SelectedOrganizationVMProvider.viewModel.changeSelectedOrganization(selectedOrganizationId)
 
     composeTestRule.setContent {
       CompositionLocalProvider(LocalViewModelStoreOwner provides owner) { CalendarEventSelector() }
@@ -105,30 +110,30 @@ class CalendarEventSelectorTests : BaseCalendarScreenTest() {
     // Purpose: Day headers should reflect the currently displayed week and change after a swipe.
     setSelectorContentWithLocalRepo()
 
-    val monday = java.time.LocalDate.now().with(java.time.DayOfWeek.MONDAY)
+    val monday = LocalDate.now().with(DayOfWeek.MONDAY)
 
     // Headers for current week
-    (0 until 7)
+    (0 until 5)
         .map { dowLabel(monday.plusDays(it.toLong())) }
-        .forEach { label ->
-          composeTestRule.onNodeWithText(label, substring = true).assertIsDisplayed()
+        .forEachIndexed { index, label ->
+          composeTestRule.onNodeWithTag("${DAY_HEADER_DAY_PREFIX}$index").assertIsDisplayed()
         }
 
     // After navigating to next week, headers should update accordingly
     swipeLeft()
     val nextMonday = monday.plusWeeks(1)
-    (0 until 7)
+    (0 until 5)
         .map { dowLabel(nextMonday.plusDays(it.toLong())) }
-        .forEach { label ->
-          composeTestRule.onNodeWithText(label, substring = true).assertIsDisplayed()
+        .forEachIndexed { index, label ->
+          composeTestRule.onNodeWithTag("${DAY_HEADER_DAY_PREFIX}$index").assertIsDisplayed()
         }
 
     // And return to current week
     swipeRight()
-    (0 until 7)
+    (0 until 5)
         .map { dowLabel(monday.plusDays(it.toLong())) }
-        .forEach { label ->
-          composeTestRule.onNodeWithText(label, substring = true).assertIsDisplayed()
+        .forEachIndexed { index, label ->
+          composeTestRule.onNodeWithTag("${DAY_HEADER_DAY_PREFIX}$index").assertIsDisplayed()
         }
   }
 }

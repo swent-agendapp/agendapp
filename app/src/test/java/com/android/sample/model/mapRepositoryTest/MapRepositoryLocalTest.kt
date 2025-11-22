@@ -1,6 +1,7 @@
 package com.android.sample.model.mapRepositoryTest
 
 import com.android.sample.model.map.*
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -25,7 +26,8 @@ class MapRepositoryLocalTest {
         Marker(
             latitude = marker1.location.latitude,
             longitude = marker1.location.longitude,
-            label = "Duplicate (Marker 1)") // same as marker1
+            label = "Duplicate (Marker 1)" // same as marker1
+            )
 
     // Add markers to repository
     repository.addMarker(marker1)
@@ -39,6 +41,8 @@ class MapRepositoryLocalTest {
     val fetched = repository.getMarkerById(marker1.id)
     assertNotNull(fetched)
     assertEquals(marker1.label, fetched?.label)
+    assertEquals(marker1.location.latitude, fetched?.location?.latitude)
+    assertEquals(marker1.location.longitude, fetched?.location?.longitude)
   }
 
   @Test
@@ -56,53 +60,63 @@ class MapRepositoryLocalTest {
 
   @Test
   fun createArea_withLessThan3Markers_shouldThrowException() {
-    try {
-      repository.createArea(label = "InvalidArea", markerIds = listOf(marker1.id, marker2.id))
-      fail("Expected IllegalArgumentException for less than 3 distinct markers")
-    } catch (_: IllegalArgumentException) {}
+    runTest {
+      try {
+        repository.createArea(label = "InvalidArea", markerIds = listOf(marker1.id, marker2.id))
+        fail("Expected IllegalArgumentException for less than 3 distinct markers")
+      } catch (_: IllegalArgumentException) {}
+    }
   }
 
   @Test
   fun createArea_withDuplicateMarkers_shouldThrowException() {
-    try {
-      repository.createArea(
-          label = "InvalidArea", markerIds = listOf(marker1.id, markerDuplicate.id, marker1.id))
-      fail("Expected IllegalArgumentException for non-distinct markers")
-    } catch (_: IllegalArgumentException) {}
+    runTest {
+      try {
+        repository.createArea(
+            label = "InvalidArea", markerIds = listOf(marker1.id, markerDuplicate.id, marker1.id))
+        fail("Expected IllegalArgumentException for non-distinct markers")
+      } catch (_: IllegalArgumentException) {}
+    }
   }
 
   @Test
   fun createArea_withValidDistinctMarkers_shouldSucceed() {
-    repository.createArea(
-        label = "ValidArea", markerIds = listOf(marker1.id, marker2.id, marker3.id))
-    val allAreas = repository.getAllAreas()
-    assertEquals(1, allAreas.size)
-    val area = allAreas.first()
-    assertEquals("ValidArea", area.label)
-    assertEquals(3, area.getSortedMarkers().size)
-    // All markers must be distinct
-    val distinctLocations =
-        area.getSortedMarkers().map { it.location.latitude to it.location.longitude }.distinct()
-    assertEquals(3, distinctLocations.size)
+    runTest {
+      repository.createArea(
+          label = "ValidArea", markerIds = listOf(marker1.id, marker2.id, marker3.id))
+      val allAreas = repository.getAllAreas()
+      assertEquals(1, allAreas.size)
+      val area = allAreas.first()
+      assertEquals("ValidArea", area.label)
+      assertEquals(3, area.getSortedMarkers().size)
+      // All markers must be distinct
+      val distinctLocations =
+          area.getSortedMarkers().map { it.location.latitude to it.location.longitude }.distinct()
+      assertEquals(3, distinctLocations.size)
+    }
   }
 
   @Test
   fun getAreaById_shouldReturnCorrectArea() {
-    repository.createArea(
-        label = "ValidArea", markerIds = listOf(marker1.id, marker2.id, marker3.id))
-    val area = repository.getAllAreas().first()
-    val fetched = repository.getAreaById(area.id)
-    assertNotNull(fetched)
-    assertEquals(area.label, fetched?.label)
+    runTest {
+      repository.createArea(
+          label = "ValidArea", markerIds = listOf(marker1.id, marker2.id, marker3.id))
+      val area = repository.getAllAreas().first()
+      val fetched = repository.getAreaById(area.id)
+      assertNotNull(fetched)
+      assertEquals(area.label, fetched?.label)
+    }
   }
 
   @Test
   fun getAllAreas_shouldReturnMultipleAreas() {
-    repository.createArea(label = "Area1", markerIds = listOf(marker1.id, marker2.id, marker3.id))
-    repository.createArea(label = "Area2", markerIds = listOf(marker2.id, marker3.id, marker1.id))
-    val allAreas = repository.getAllAreas()
-    assertEquals(2, allAreas.size)
-    assertTrue(allAreas.any { it.label == "Area1" })
-    assertTrue(allAreas.any { it.label == "Area2" })
+    runTest {
+      repository.createArea(label = "Area1", markerIds = listOf(marker1.id, marker2.id, marker3.id))
+      repository.createArea(label = "Area2", markerIds = listOf(marker2.id, marker3.id, marker1.id))
+      val allAreas = repository.getAllAreas()
+      assertEquals(2, allAreas.size)
+      assertTrue(allAreas.any { it.label == "Area1" })
+      assertTrue(allAreas.any { it.label == "Area2" })
+    }
   }
 }

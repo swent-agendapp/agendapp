@@ -78,12 +78,23 @@ val SizeMassive = 96.dp
 // Font size
 val FontSizeExtraSmall = 10.sp
 val FontSizeSmall = 12.sp
+val FontSizeMediumSmall = 14.sp
 val FontSizeMedium = 16.sp
 val FontSizeLarge = 20.sp
 val FontSizeExtraLarge = 24.sp
 val FontSizeHuge = 32.sp
 val FontSizeExtraHuge = 40.sp
 val FontSizeMassive = 48.sp
+
+// Line height
+val LineHeightSmall = 8.sp
+val LineHeightLarge = 22.sp
+
+// Calendar Dimensions
+val CalendarLeftOffset = 58.dp
+val CalendarTopOffset = 58.dp
+val CalendarColumnWidth = 64.dp
+val CalendarRowHeight = 60.dp
 
 // Border
 val BorderWidthThin = 1.dp

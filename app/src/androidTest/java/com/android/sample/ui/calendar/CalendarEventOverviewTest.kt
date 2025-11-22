@@ -12,6 +12,7 @@ import com.android.sample.ui.calendar.eventOverview.EventOverviewScreen
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreenTestTags
 import com.android.sample.ui.calendar.eventOverview.EventOverviewViewModel
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
+import com.android.sample.utils.FirebaseEmulatedTest
 import java.time.Instant
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -25,7 +26,7 @@ import org.junit.Test
  * These tests focus on verifying that the screen shows its main structure (top bar and content
  * container) and that the back button correctly triggers the provided callback.
  */
-class CalendarEventOverviewTest {
+class CalendarEventOverviewTest : FirebaseEmulatedTest() {
 
   @get:Rule val composeTestRule = createComposeRule()
 
@@ -43,7 +44,7 @@ class CalendarEventOverviewTest {
   @Test
   fun eventOverview_showsTopBarAndRootScreen() { // Arrange: create an in-memory repository and
 
-    val event = createEvent(organizationId = selectedOrganizationId)
+    val event = createEvent(organizationId = selectedOrganizationId)[0]
 
     runBlocking { repo.insertEvent(orgId = selectedOrganizationId, item = event) }
 
@@ -73,7 +74,7 @@ class CalendarEventOverviewTest {
             description = "This is an event used to test the summary card.",
             startDate = Instant.parse("2025-01-10T10:00:00Z"),
             endDate = Instant.parse("2025-01-10T11:00:00Z"),
-            participants = setOf("Alice", "Bob"))
+            participants = setOf("Alice", "Bob"))[0]
 
     runBlocking { repo.insertEvent(orgId = selectedOrganizationId, item = event) }
 
@@ -106,7 +107,7 @@ class CalendarEventOverviewTest {
             description = "This is an event used to test the summary card.",
             startDate = Instant.parse("2025-01-10T10:00:00Z"),
             endDate = Instant.parse("2025-01-10T11:00:00Z"),
-            participants = setOf("Alice", "Bob"))
+            participants = setOf("Alice", "Bob"))[0]
 
     runBlocking { repo.insertEvent(orgId = selectedOrganizationId, item = event) }
 

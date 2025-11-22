@@ -50,9 +50,8 @@ data class MapUiState(
 
 class MapViewModel(
     app: Application,
+    private val mapRepository: MapRepository = MapRepositoryProvider.repository
 ) : AndroidViewModel(app) {
-
-  private val mapRepository: MapRepository = MapRepositoryProvider.repository
 
   /** Provider for android GPS */
   private val fusedClient = LocationServices.getFusedLocationProviderClient(app)
@@ -70,7 +69,10 @@ class MapViewModel(
    * Fetch all existing areas from the repository and update the current state with the full list.
    */
   fun fetchAllArea() {
-    _state.value = _state.value.copy(listArea = mapRepository.getAllAreas())
+    viewModelScope.launch {
+      val areas = mapRepository.getAllAreas()
+      _state.value = _state.value.copy(listArea = areas)
+    }
   }
 
   /**
@@ -159,9 +161,10 @@ class MapViewModel(
 
     if (!hasLocationPermission) {
       _state.value =
-          MapUiState(
+          _state.value.copy(
               errorMessage =
-                  "Location permission required\nTo show your position on the map, we need access to your location. Please enable it in your device settings.")
+                  "Location permission required\nTo show your position on the map, we need access to your location. Please enable it in your device settings.",
+              hasPermission = false)
       return
     }
 
@@ -174,27 +177,27 @@ class MapViewModel(
                 .addOnSuccessListener { location ->
                   if (location == null) {
                     _state.value =
-                        MapUiState(
+                        _state.value.copy(
                             errorMessage = "Error: Cannot fetch you location", hasPermission = true)
                   } else {
                     _state.value =
-                        MapUiState(
+                        _state.value.copy(
                             currentLocation = LatLng(location.latitude, location.longitude),
                             hasPermission = true)
                   }
                 }
                 .addOnFailureListener { e ->
-                  _state.value = MapUiState(errorMessage = e.message, hasPermission = true)
+                  _state.value = _state.value.copy(errorMessage = e.message, hasPermission = true)
                 }
           } else {
             _state.value =
-                MapUiState(
+                _state.value.copy(
                     currentLocation = LatLng(lastLocation.latitude, lastLocation.longitude),
                     hasPermission = true)
           }
         }
         .addOnFailureListener { e ->
-          _state.value = MapUiState(errorMessage = e.message, hasPermission = true)
+          _state.value = _state.value.copy(errorMessage = e.message, hasPermission = true)
         }
   }
 }

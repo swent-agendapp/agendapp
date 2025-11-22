@@ -26,6 +26,8 @@ object Palette {
   // Base / Neutrals
   // ----------------------------------------
   val Platinum = Color(color = 0xFFE6E4E9)
+  val Gray = Color(0xFF888888)
+  val LightGray = Color(0xFFCCCCCC)
   val Black = Color(color = 0xFF000000)
 
   // ----------------------------------------
@@ -37,6 +39,7 @@ object Palette {
   // ----------------------------------------
   // Pinks / Reds
   // ----------------------------------------
+  val Firebrick = Color(color = 0xFFB3261E)
   val LightCarminePink = Color(color = 0xFFED6B6D)
   val CandyPink = Color(color = 0xFFE57373)
 
@@ -106,4 +109,15 @@ object EventPalette {
   val Green = Palette.DarkSeaGreen
   val Red = Palette.CandyPink
   val Purple = Palette.RichLilac
+}
+
+// Calendar Color Scheme
+object CalendarPalette {
+  val todayColumnHighlight = Palette.Ube.copy(AlphaExtraLow)
+  val gridLine = Palette.LightGray
+  val nowIndicator = Palette.Firebrick
+  val timeLabelText = Palette.Gray
+  val currentDayBackground = Palette.BlueJeans
+  val currentDayText = Palette.Black
+  val dayHeaderText = Palette.Gray
 }

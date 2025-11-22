@@ -56,7 +56,7 @@ class ReplacementOrganizeViewModelTest {
             description = "Team sync",
             startDate = Instant.parse("2025-01-10T10:00:00Z"),
             endDate = Instant.parse("2025-01-10T11:00:00Z"),
-            personalNotes = "Bring laptop")
+            personalNotes = "Bring laptop")[0]
   }
 
   @After

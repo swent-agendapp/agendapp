@@ -7,6 +7,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
@@ -63,7 +64,10 @@ abstract class BaseCalendarScreenTest {
    * Returns true if the node with [tag] intersects the root viewport (no assertions/exceptions).
    */
   protected fun isInViewport(tag: String): Boolean {
-    val node = composeTestRule.onNodeWithTag(tag).fetchSemanticsNode()
+    val nodes = composeTestRule.onAllNodesWithTag(tag).fetchSemanticsNodes()
+    if (nodes.isEmpty()) return false
+
+    val node = nodes.first()
     val root = composeTestRule.onRoot().fetchSemanticsNode()
     val nb = node.boundsInRoot
     val rb = root.boundsInRoot
@@ -186,17 +190,15 @@ abstract class BaseCalendarScreenTest {
 
     // Events that belong to the CURRENT visible week
     val current =
-        listOf(
-            // Current week
-            createEvent(
-                organizationId = selectedOrganizationId,
-                title = "First Event",
-                startDate = at(thisWeekMonday.plusDays(1), LocalTime.of(9, 30)), // Tue 09:30–11:30
-                endDate =
-                    at(thisWeekMonday.plusDays(1), LocalTime.of(9, 30)).plus(Duration.ofHours(2)),
-                cloudStorageStatuses = emptySet(),
-                participants = setOf("Alice", "Bob"),
-            ),
+        // Current week
+        createEvent(
+            organizationId = selectedOrganizationId,
+            title = "First Event",
+            startDate = at(thisWeekMonday.plusDays(1), LocalTime.of(9, 30)), // Tue 09:30–11:30
+            endDate = at(thisWeekMonday.plusDays(1), LocalTime.of(9, 30)).plus(Duration.ofHours(2)),
+            cloudStorageStatuses = emptySet(),
+            participants = setOf("Alice", "Bob"),
+        ) +
             createEvent(
                 organizationId = selectedOrganizationId,
                 title = "Nice Event",
@@ -205,7 +207,7 @@ abstract class BaseCalendarScreenTest {
                     at(thisWeekMonday.plusDays(2), LocalTime.of(14, 0)).plus(Duration.ofHours(4)),
                 cloudStorageStatuses = emptySet(),
                 participants = setOf("Charlie", "David"),
-            ),
+            ) +
             createEvent(
                 organizationId = selectedOrganizationId,
                 title = "Top Event",
@@ -214,22 +216,20 @@ abstract class BaseCalendarScreenTest {
                     at(thisWeekMonday.plusDays(3), LocalTime.of(11, 0)).plus(Duration.ofHours(2)),
                 cloudStorageStatuses = emptySet(),
                 participants = setOf("Eve"),
-            ),
-        )
+            )
 
     // Events that belong to the NEXT week (should appear after swipe-left)
     val next =
-        listOf(
-            // Next week
-            createEvent(
-                organizationId = selectedOrganizationId,
-                title = "Next Event",
-                startDate = at(thisWeekMonday.plusWeeks(1), LocalTime.of(10, 0)), // Mon 10:00–13:00
-                endDate =
-                    at(thisWeekMonday.plusWeeks(1), LocalTime.of(10, 0)).plus(Duration.ofHours(3)),
-                cloudStorageStatuses = emptySet(),
-                participants = setOf("Alice", "Bob"),
-            ),
+        // Next week
+        createEvent(
+            organizationId = selectedOrganizationId,
+            title = "Next Event",
+            startDate = at(thisWeekMonday.plusWeeks(1), LocalTime.of(10, 0)), // Mon 10:00–13:00
+            endDate =
+                at(thisWeekMonday.plusWeeks(1), LocalTime.of(10, 0)).plus(Duration.ofHours(3)),
+            cloudStorageStatuses = emptySet(),
+            participants = setOf("Alice", "Bob"),
+        ) +
             createEvent(
                 organizationId = selectedOrganizationId,
                 title = "Later Event",
@@ -239,23 +239,21 @@ abstract class BaseCalendarScreenTest {
                         .plus(Duration.ofHours(4)),
                 cloudStorageStatuses = emptySet(),
                 participants = setOf("Charlie", "David"),
-            ),
-        )
+            )
 
     // Events that belong to the PREVIOUS week (should appear after swipe-right)
     val previous =
-        listOf(
-            // Previous week
-            createEvent(
-                organizationId = selectedOrganizationId,
-                title = "Previous Event",
-                startDate = at(thisWeekMonday.minusWeeks(1).plusDays(1), LocalTime.of(17, 0)),
-                endDate =
-                    at(thisWeekMonday.minusWeeks(1).plusDays(1), LocalTime.of(17, 0))
-                        .plus(Duration.ofHours(2)),
-                cloudStorageStatuses = emptySet(),
-                participants = setOf("Alice", "Bob"),
-            ),
+        // Previous week
+        createEvent(
+            organizationId = selectedOrganizationId,
+            title = "Previous Event",
+            startDate = at(thisWeekMonday.minusWeeks(1).plusDays(1), LocalTime.of(17, 0)),
+            endDate =
+                at(thisWeekMonday.minusWeeks(1).plusDays(1), LocalTime.of(17, 0))
+                    .plus(Duration.ofHours(2)),
+            cloudStorageStatuses = emptySet(),
+            participants = setOf("Alice", "Bob"),
+        ) +
             createEvent(
                 organizationId = selectedOrganizationId,
                 title = "Earlier Event",
@@ -265,8 +263,7 @@ abstract class BaseCalendarScreenTest {
                         .plus(Duration.ofHours(4)),
                 cloudStorageStatuses = emptySet(),
                 participants = setOf("Charlie", "David"),
-            ),
-        )
+            )
 
     // Merge in this order so tests can check visibility by title across ranges
     return previous + current + next
@@ -591,7 +588,7 @@ class CalendarHeaderTests : BaseCalendarScreenTest() {
     setContentWithLocalRepo()
 
     val monday = LocalDate.now().with(DayOfWeek.MONDAY)
-    val expectedLabelsCurrent = (0 until 7).map { dowLabel(monday.plusDays(it.toLong())) }
+    val expectedLabelsCurrent = (0 until 5).map { dowLabel(monday.plusDays(it.toLong())) }
 
     expectedLabelsCurrent.forEach { label ->
       composeTestRule.onNodeWithText(label, substring = true).assertIsDisplayed()
@@ -600,7 +597,7 @@ class CalendarHeaderTests : BaseCalendarScreenTest() {
     swipeLeft()
 
     val nextMonday = monday.plusWeeks(1)
-    val expectedLabelsNext = (0 until 7).map { dowLabel(nextMonday.plusDays(it.toLong())) }
+    val expectedLabelsNext = (0 until 5).map { dowLabel(nextMonday.plusDays(it.toLong())) }
 
     expectedLabelsNext.forEach { label ->
       composeTestRule.onNodeWithText(label, substring = true).assertIsDisplayed()

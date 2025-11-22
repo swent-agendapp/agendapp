@@ -60,7 +60,7 @@ class EventOverviewViewModelTest {
             description = "No participants",
             startDate = Instant.parse("2025-01-10T10:00:00Z"),
             endDate = Instant.parse("2025-01-10T11:00:00Z"),
-            participants = emptySet())
+            participants = emptySet())[0]
 
     eventWithParticipants =
         createEvent(
@@ -69,7 +69,7 @@ class EventOverviewViewModelTest {
             description = "Some participants",
             startDate = Instant.parse("2025-02-01T09:00:00Z"),
             endDate = Instant.parse("2025-02-01T10:00:00Z"),
-            participants = setOf("Alice", "Bob"))
+            participants = setOf("Alice", "Bob"))[0]
 
     // Insert the sample events into the repository before each test.
     runTest {

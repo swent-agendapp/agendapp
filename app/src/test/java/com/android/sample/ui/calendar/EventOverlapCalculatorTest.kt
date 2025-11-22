@@ -51,7 +51,7 @@ class EventOverlapCalculatorTest {
             startMinute = 0,
             endHour = 9,
             endMinute = 0,
-        )
+        )[0]
     val event2 =
         createEventForTimes(
             organizationId = selectedOrganizationID,
@@ -60,7 +60,7 @@ class EventOverlapCalculatorTest {
             startMinute = 0,
             endHour = 11,
             endMinute = 0,
-        )
+        )[0]
     val events = listOf(event1, event2)
 
     val layouts = EventOverlapCalculator.calculateEventLayouts(events)
@@ -96,7 +96,7 @@ class EventOverlapCalculatorTest {
             startMinute = 0,
             endHour = 9,
             endMinute = 0,
-        )
+        )[0]
     val event2 =
         createEventForTimes(
             organizationId = selectedOrganizationID,
@@ -105,7 +105,7 @@ class EventOverlapCalculatorTest {
             startMinute = 0,
             endHour = 10,
             endMinute = 0,
-        )
+        )[0]
     val events = listOf(event1, event2)
 
     val layouts = EventOverlapCalculator.calculateEventLayouts(events)
@@ -136,7 +136,7 @@ class EventOverlapCalculatorTest {
             startMinute = 0,
             endHour = 9,
             endMinute = 0,
-        )
+        )[0]
     val event2 =
         createEventForTimes(
             organizationId = selectedOrganizationID,
@@ -145,7 +145,7 @@ class EventOverlapCalculatorTest {
             startMinute = 30,
             endHour = 9,
             endMinute = 30,
-        )
+        )[0]
     val events = listOf(event1, event2)
 
     val layouts = EventOverlapCalculator.calculateEventLayouts(events)
@@ -188,7 +188,7 @@ class EventOverlapCalculatorTest {
             startMinute = 0,
             endHour = 9,
             endMinute = 0,
-        )
+        )[0]
     val eventB =
         createEventForTimes(
             organizationId = selectedOrganizationID,
@@ -197,7 +197,7 @@ class EventOverlapCalculatorTest {
             startMinute = 30,
             endHour = 9,
             endMinute = 30,
-        )
+        )[0]
     val eventC =
         createEventForTimes(
             organizationId = selectedOrganizationID,
@@ -206,7 +206,7 @@ class EventOverlapCalculatorTest {
             startMinute = 0,
             endHour = 10,
             endMinute = 0,
-        )
+        )[0]
     val events = listOf(eventA, eventB, eventC)
 
     val layouts = EventOverlapCalculator.calculateEventLayouts(events)
@@ -247,7 +247,7 @@ class EventOverlapCalculatorTest {
             startMinute = 0,
             endHour = 10,
             endMinute = 0,
-        )
+        )[0]
     val event2 =
         createEventForTimes(
             organizationId = selectedOrganizationID,
@@ -256,7 +256,7 @@ class EventOverlapCalculatorTest {
             startMinute = 30,
             endHour = 9,
             endMinute = 30,
-        )
+        )[0]
     val event3 =
         createEventForTimes(
             organizationId = selectedOrganizationID,
@@ -265,7 +265,7 @@ class EventOverlapCalculatorTest {
             startMinute = 45,
             endHour = 9,
             endMinute = 15,
-        )
+        )[0]
     val events = listOf(event1, event2, event3)
 
     val layouts = EventOverlapCalculator.calculateEventLayouts(events)
@@ -308,7 +308,7 @@ class EventOverlapCalculatorTest {
             startMinute = 0,
             endHour = 9,
             endMinute = 0,
-        )
+        )[0]
     val morningEvent2 =
         createEventForTimes(
             organizationId = selectedOrganizationID,
@@ -317,7 +317,7 @@ class EventOverlapCalculatorTest {
             startMinute = 30,
             endHour = 9,
             endMinute = 30,
-        )
+        )[0]
 
     // Cluster 2: two overlapping events in the afternoon.
     val afternoonEvent1 =
@@ -328,7 +328,7 @@ class EventOverlapCalculatorTest {
             startMinute = 0,
             endHour = 13,
             endMinute = 0,
-        )
+        )[0]
     val afternoonEvent2 =
         createEventForTimes(
             organizationId = selectedOrganizationID,
@@ -337,7 +337,7 @@ class EventOverlapCalculatorTest {
             startMinute = 30,
             endHour = 13,
             endMinute = 30,
-        )
+        )[0]
 
     val events = listOf(morningEvent1, morningEvent2, afternoonEvent1, afternoonEvent2)
 
@@ -380,7 +380,7 @@ class EventOverlapCalculatorTest {
             startMinute = 0,
             endHour = 10,
             endMinute = 0,
-        )
+        )[0]
     val event2 =
         createEventForTimes(
             organizationId = selectedOrganizationID,
@@ -389,7 +389,7 @@ class EventOverlapCalculatorTest {
             startMinute = 30,
             endHour = 9,
             endMinute = 30,
-        )
+        )[0]
     val event3 =
         createEventForTimes(
             organizationId = selectedOrganizationID,
@@ -398,7 +398,7 @@ class EventOverlapCalculatorTest {
             startMinute = 0,
             endHour = 10,
             endMinute = 0,
-        )
+        )[0]
 
     val eventsInOrder = listOf(event1, event2, event3)
     val eventsReversed = listOf(event3, event2, event1)

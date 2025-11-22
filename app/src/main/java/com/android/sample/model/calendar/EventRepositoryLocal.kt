@@ -11,6 +11,10 @@ class EventRepositoryLocal() : EventRepository {
     return eventsByOrganization[orgId]?.filter { !it.hasBeenDeleted } ?: emptyList()
   }
 
+  override fun getNewUid(): String {
+    return java.util.UUID.randomUUID().toString()
+  }
+
   override suspend fun insertEvent(orgId: String, item: Event) {
     // Calls the interface check to ensure the organizationId matches
     super.insertEvent(orgId, item)

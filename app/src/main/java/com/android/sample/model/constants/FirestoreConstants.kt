@@ -11,6 +11,7 @@ object FirestoreConstants {
   const val COLLECTION_USERS = "users"
   const val REPLACEMENTS_COLLECTION_PATH = "replacements"
   const val EMPLOYEES_COLLECTION_PATH = "employees"
+  const val INVITATIONS_COLLECTION_PATH = "invitations"
 
   val ALL_COLLECTIONS =
       listOf(

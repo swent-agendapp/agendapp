@@ -1,6 +1,7 @@
 package com.android.sample.model.organization.invitation
 
 import java.time.Instant
+import java.util.UUID
 
 data class Invitation(
     val id: String,
@@ -23,7 +24,7 @@ data class Invitation(
         organizationId: String,
     ): Invitation {
       return Invitation(
-          id = java.util.UUID.randomUUID().toString(),
+          id = UUID.randomUUID().toString(),
           organizationId = organizationId,
           code = generateRandomCode(),
           createdAt = Instant.now(),

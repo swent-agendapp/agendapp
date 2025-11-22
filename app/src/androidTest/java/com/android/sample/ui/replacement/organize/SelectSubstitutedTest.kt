@@ -1,5 +1,3 @@
-package com.android.sample.ui.replacement.organize
-
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
@@ -8,6 +6,8 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import com.android.sample.ui.replacement.organize.ReplacementOrganizeTestTags
+import com.android.sample.ui.replacement.organize.ReplacementOrganizeViewModel
 import com.android.sample.ui.replacement.organize.components.SelectSubstitutedScreen
 import org.junit.Before
 import org.junit.Rule

@@ -89,6 +89,20 @@
     <string name="select_date_range">Select date range</string>
     <string name="search_icon_content_description">Search icon</string>
 
+    <string name="replacement_process_title">Organize a replacement</string>
+    <plurals name="replacement_send_requests_button">
+        <item quantity="one">Send request</item>
+        <item quantity="other">Send %d requests</item>
+    </plurals>
+    <plurals name="replacement_selected_members">
+        <item quantity="one">Selected member: %s</item>
+        <item quantity="other">Selected members: %s</item>
+    </plurals>
+    <string name="replacement_selected_members_none">
+    No member selected
+</string>
+
+
     <!-- Settings Screen -->
     <string name="settings_screen_title">Settings</string>
     <string name="settings_profile_button">Profile</string>

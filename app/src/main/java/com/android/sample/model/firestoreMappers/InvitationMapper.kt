@@ -31,8 +31,8 @@ object InvitationMapper : FirestoreMapper<Invitation> {
     val inviteeEmail = document.getString(INVITEE_EMAIL_FIELD)
 
     val status =
-        runCatching { InvitationStatus.valueOf(document.getString(STATUS_FIELD) ?: "Active") }
-            .getOrDefault(InvitationStatus.Active)
+        runCatching { InvitationStatus.valueOf(document.getString(STATUS_FIELD) ?: "Expired") }
+            .getOrDefault(InvitationStatus.Expired)
 
     return Invitation(
         id = id,

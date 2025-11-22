@@ -2,6 +2,7 @@ package com.android.sample.model.organization.invitation
 
 import com.android.sample.model.constants.FirestoreConstants.INVITATIONS_COLLECTION_PATH
 import com.android.sample.model.firestoreMappers.InvitationMapper
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
@@ -58,7 +59,7 @@ class InvitationRepositoryFirebase(private val db: FirebaseFirestore) : Invitati
     val update =
         mapOf(
             "inviteeEmail" to inviteeEmail,
-            "acceptedAt" to com.google.firebase.Timestamp.now(),
+            "acceptedAt" to Timestamp.now(),
             "status" to InvitationStatus.Used.name)
 
     col.document(invitationId).update(update).await()

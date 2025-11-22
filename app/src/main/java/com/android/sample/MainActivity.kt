@@ -251,10 +251,12 @@ fun Agendapp(
                           },
                           onNavigateBack = { navigationActions.navigateBack() })
                     }
+
                     // accepted replacement screen
                     composable(Screen.ReplacementUpcoming.route) {
                       ReplacementUpcomingListScreen(
                           onNavigateBack = { navigationActions.navigateBack() })
+                    }
                     composable(Screen.ReplacementProcess.route) { navBackStackEntry ->
                       val replacementId = navBackStackEntry.arguments?.getString("replacementId")
 

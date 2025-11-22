@@ -1,7 +1,7 @@
 package com.android.sample.ui.calendar
 
-import com.android.sample.model.authentication.FakeAuthRepository
 import com.android.sample.model.calendar.*
+import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import java.time.Instant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -30,19 +30,24 @@ class CalendarViewModelTest {
   private lateinit var event1: Event
   private lateinit var event2: Event
 
+  private val orgId: String = "org123"
+
   @Before
   fun setUp() {
     // Set the main dispatcher to the test dispatcher before each test.
     // This ensures all coroutines launched on Dispatchers.Main use the test dispatcher.
     Dispatchers.setMain(testDispatcher)
 
+    // Set the selected organization for the tests.
+    SelectedOrganizationVMProvider.viewModel.changeSelectedOrganization(orgId)
+
     repository = EventRepositoryLocal()
-    viewModel =
-        CalendarViewModel(eventRepository = repository, authRepository = FakeAuthRepository())
+    viewModel = CalendarViewModel(eventRepository = repository)
 
     // Create two sample events for testing.
     event1 =
         createEvent(
+            organizationId = orgId,
             title = "Meeting",
             description = "Team sync",
             startDate = Instant.parse("2025-01-10T10:00:00Z"),
@@ -51,6 +56,7 @@ class CalendarViewModelTest {
 
     event2 =
         createEvent(
+            organizationId = orgId,
             title = "Conference",
             description = "Tech event",
             startDate = Instant.parse("2025-02-01T09:00:00Z"),
@@ -59,8 +65,8 @@ class CalendarViewModelTest {
 
     // Insert the sample events into the repository before each test.
     runTest {
-      repository.insertEvent(event1)
-      repository.insertEvent(event2)
+      repository.insertEvent(orgId = orgId, item = event1)
+      repository.insertEvent(orgId = orgId, item = event2)
     }
   }
 

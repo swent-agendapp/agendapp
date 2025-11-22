@@ -23,6 +23,7 @@ class EventMapperTest {
   private val sampleEvent =
       Event(
           id = "event123",
+          organizationId = "testOrg",
           title = "Event Title",
           description = "Event Description",
           startDate = start,
@@ -37,6 +38,7 @@ class EventMapperTest {
   private val sampleMap: Map<String, Any?> =
       mapOf(
           "id" to "event123",
+          "organizationId" to "testOrg",
           "title" to "Event Title",
           "description" to "Event Description",
           "startDate" to Timestamp(Date.from(start)),
@@ -53,6 +55,7 @@ class EventMapperTest {
   fun fromDocument_withValidDocument_returnsEvent() {
     val doc = mock(DocumentSnapshot::class.java)
     `when`(doc.id).thenReturn("event123")
+    `when`(doc.getString("organizationId")).thenReturn("testOrg")
     `when`(doc.getString("title")).thenReturn("Event Title")
     `when`(doc.getString("description")).thenReturn("Event Description")
     `when`(doc.getTimestamp("startDate")).thenReturn(Timestamp(Date.from(start)))
@@ -113,6 +116,7 @@ class EventMapperTest {
   fun fromAny_withDocument_returnsEvent() {
     val doc = mock(DocumentSnapshot::class.java)
     `when`(doc.id).thenReturn("event123")
+    `when`(doc.getString("organizationId")).thenReturn("testOrg")
     `when`(doc.getString("title")).thenReturn("Event Title")
     `when`(doc.getTimestamp("startDate")).thenReturn(Timestamp(Date.from(start)))
     `when`(doc.getTimestamp("endDate")).thenReturn(Timestamp(Date.from(end)))
@@ -139,6 +143,8 @@ class EventMapperTest {
   @Test
   fun toMap_returnsCorrectMap() {
     val map = EventMapper.toMap(sampleEvent)
+    assertThat(map["id"]).isEqualTo(sampleEvent.id)
+    assertThat(map["organizationId"]).isEqualTo(sampleEvent.organizationId)
     assertThat(map["title"]).isEqualTo(sampleEvent.title)
     assertThat(map["description"]).isEqualTo(sampleEvent.description)
     assertThat((map["startDate"] as Timestamp).toDate().toInstant()).isEqualTo(start)

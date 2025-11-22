@@ -23,13 +23,13 @@ class MapRepositoryLocal : MapRepository {
 
   override fun getAllMarkersIds(): List<String> = markers.keys.toList()
 
-  override fun createArea(label: String?, markerIds: List<String>) {
+  override suspend fun createArea(label: String?, markerIds: List<String>) {
     val selectedMarkers = markerIds.mapNotNull { markers[it] }
     val area = Area(label = label, markers = selectedMarkers)
     areas[area.id] = area
   }
 
-  override fun getAllAreas(): List<Area> = areas.values.toList()
+  override suspend fun getAllAreas(): List<Area> = areas.values.toList()
 
   override fun getAllAreasIds(): List<String> = areas.keys.toList()
 

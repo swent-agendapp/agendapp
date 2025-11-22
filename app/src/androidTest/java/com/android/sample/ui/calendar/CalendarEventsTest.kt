@@ -111,7 +111,7 @@ abstract class BaseEventsTest {
           endDate = at(date, start).plus(duration),
           cloudStorageStatuses = emptySet(),
           participants = emptySet(),
-      )
+      )[0]
 }
 
 /** Sanity/basic composition for the grid container. */
@@ -369,15 +369,12 @@ class EventsOverlapTests : BaseEventsTest() {
     val thursday = LocalDate.now().with(DayOfWeek.THURSDAY)
 
     val events =
-        listOf(
-            // Event Monday→Thursday [Mon 12:00 - Thu 12:00] — multi-day spanning > 2 days
-            createEvent(
-                title = "Multi-day 3+",
-                startDate = at(monday, LocalTime.of(12, 0)),
-                endDate = at(thursday, LocalTime.of(12, 0)),
-                cloudStorageStatuses = emptySet(),
-                participants = emptySet(),
-            ),
+        createEvent(
+            title = "Multi-day 3+",
+            startDate = at(monday, LocalTime.of(12, 0)),
+            endDate = at(thursday, LocalTime.of(12, 0)),
+            cloudStorageStatuses = emptySet(),
+            participants = emptySet(),
         )
 
     compose.setContent { CalendarGridContent(events = events) }
@@ -525,15 +522,12 @@ class EventsValidationTests : BaseEventsTest() {
     val start = at(monday, LocalTime.of(10, 0))
 
     val events =
-        listOf(
-            // Event on Monday [10:00 - 10:00] — zero-duration should not render
-            createEvent(
-                title = "Zero Duration Event",
-                startDate = start,
-                endDate = start, // same instant
-                cloudStorageStatuses = emptySet(),
-                participants = emptySet(),
-            ),
+        createEvent(
+            title = "Zero Duration Event",
+            startDate = start,
+            endDate = start, // same instant
+            cloudStorageStatuses = emptySet(),
+            participants = emptySet(),
         )
 
     compose.setContent { CalendarGridContent(events = events) }
@@ -576,14 +570,12 @@ class EventsWeekBoundaryTests : BaseEventsTest() {
     val previousSunday = monday.minusDays(1)
 
     val events =
-        listOf(
-            createEvent(
-                title = "Week Boundary Event",
-                startDate = at(previousSunday, LocalTime.of(22, 0)),
-                endDate = at(monday, LocalTime.of(10, 0)),
-                cloudStorageStatuses = emptySet(),
-                participants = emptySet(),
-            ),
+        createEvent(
+            title = "Week Boundary Event",
+            startDate = at(previousSunday, LocalTime.of(22, 0)),
+            endDate = at(monday, LocalTime.of(10, 0)),
+            cloudStorageStatuses = emptySet(),
+            participants = emptySet(),
         )
 
     compose.setContent { CalendarGridContent(events = events) }
@@ -600,14 +592,12 @@ class EventsWeekBoundaryTests : BaseEventsTest() {
     val nextMonday = currentSunday.plusDays(1)
 
     val events =
-        listOf(
-            createEvent(
-                title = "Current Week Boundary Event",
-                startDate = at(currentSunday, LocalTime.of(22, 0)),
-                endDate = at(nextMonday, LocalTime.of(10, 0)),
-                cloudStorageStatuses = emptySet(),
-                participants = emptySet(),
-            ),
+        createEvent(
+            title = "Current Week Boundary Event",
+            startDate = at(currentSunday, LocalTime.of(22, 0)),
+            endDate = at(nextMonday, LocalTime.of(10, 0)),
+            cloudStorageStatuses = emptySet(),
+            participants = emptySet(),
         )
 
     compose.setContent { CalendarGridContent(events = events) }

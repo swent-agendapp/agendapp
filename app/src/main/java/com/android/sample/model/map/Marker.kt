@@ -24,6 +24,6 @@ data class Marker(
       id: String = UUID.randomUUID().toString(),
       latitude: Double,
       longitude: Double,
-      label: String? = null
+      label: String? = null,
   ) : this(id = id, location = Location(latitude, longitude), label = label)
 }

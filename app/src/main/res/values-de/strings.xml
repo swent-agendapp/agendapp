@@ -169,9 +169,30 @@
     <string name="replacement_create_select_event">Ereignis auswählen</string>
     <string name="replacement_create_choose_date_range">Datumsbereich auswählen</string>
     <string name="event_overview_title">Ereignisübersicht</string>
+    <string name="replacement_process_title">Vertretung organisieren</string>
+    <plurals name="replacement_send_requests_button">
+        <item quantity="one">Eine Vertretungsanfrage senden</item>
+        <item quantity="other">%d Vertretungsanfragen senden</item>
+    </plurals>
+
+    <plurals name="replacement_selected_members">
+        <item quantity="one">Ausgewählte Person: %s</item>
+        <item quantity="other">Ausgewählte Personen: %s</item>
+    </plurals>
+    <string name="replacement_selected_members_none">
+    Keine Person ausgewählt
+</string>
+
+    <string name="view_mode_1day">1 Tag</string>
+    <string name="view_mode_5days">5 Tage</string>
+    <string name="view_mode_7days">7 Tage</string>
+    <string name="view_mode_month">Monat</string>
     <string name="delete">Löschen</string>
     <string name="modify">Bearbeiten</string>
     <string name="delete_event_message">Sind Sie sicher, dass Sie dieses Ereignis löschen möchten?</string>
+    <string name="replacement_list_title">Ereignis auswählen</string>
+    <string name="replacement_list_instruction">Wählen Sie ein Ereignis aus, für das Sie eine Vertretung benötigen</string>
+    <string name="select_date_range_instruction">Wählen Sie den Datumsbereich aus, für den Sie eine Vertretung benötigen.</string>
 
     <!-- Organizations -->
     <string name="organization_list_title">Ihre organisationen</string>

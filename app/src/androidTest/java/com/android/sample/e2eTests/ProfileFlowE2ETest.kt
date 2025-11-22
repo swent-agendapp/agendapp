@@ -8,8 +8,6 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import com.android.sample.Agendapp
-import com.android.sample.model.organization.OrganizationRepositoryFirebase
-import com.android.sample.model.organization.OrganizationRepositoryProvider
 import com.android.sample.ui.authentication.SignInScreenTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.common.BottomBarTestTags
@@ -44,12 +42,6 @@ class ProfileFlowE2ETest : FirebaseEmulatedTest() {
 
   // Create a FakeCredentialManager with the fake token
   val fakeCredentialManager = FakeCredentialManager.create(fakeGoogleIdToken)
-
-  // Set the OrganizationRepository to use the Firebase emulator
-  init {
-    OrganizationRepositoryProvider.repository =
-        OrganizationRepositoryFirebase(FirebaseEmulator.firestore)
-  }
 
   @get:Rule val composeTestRule = createComposeRule()
 

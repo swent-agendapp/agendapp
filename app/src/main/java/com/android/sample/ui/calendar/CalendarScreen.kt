@@ -24,7 +24,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.model.calendar.Event
-import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
 import com.android.sample.ui.calendar.style.CalendarDefaults.DefaultDateRange
 import com.android.sample.ui.common.FloatingButton
 import com.android.sample.ui.common.MainPageTopBar
@@ -75,7 +74,6 @@ fun CalendarScreen(
 
   val context = LocalContext.current
   val uiState by calendarViewModel.uiState.collectAsState()
-  val events = uiState.events
   val selectedOrgId by selectedOrganizationViewModel.selectedOrganizationId.collectAsState()
 
   val configuration = LocalConfiguration.current

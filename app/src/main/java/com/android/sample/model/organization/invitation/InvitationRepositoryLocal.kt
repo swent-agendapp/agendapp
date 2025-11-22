@@ -1,14 +1,8 @@
 package com.android.sample.model.organization.invitation
 
-class InvitationRepositoryLocal(preloadSampleData: Boolean = false) : InvitationRepository {
+class InvitationRepositoryLocal : InvitationRepository {
 
   private val invitations = mutableListOf<Invitation>()
-
-  init {
-    if (preloadSampleData) {
-      populateSampleInvitations()
-    }
-  }
 
   override suspend fun getAllInvitations(): List<Invitation> {
     return invitations.toList()
@@ -35,13 +29,5 @@ class InvitationRepositoryLocal(preloadSampleData: Boolean = false) : Invitation
 
   override suspend fun getInvitationById(itemId: String): Invitation? {
     return invitations.find { it.id == itemId }
-  }
-
-  // Sample data for previews / testing
-  private fun populateSampleInvitations() {
-    invitations.addAll(
-        listOf(
-            Invitation(id = "I001", organizationId = "ORG123", code = "A1B2C3"),
-            Invitation(id = "I002", organizationId = "ORG456", code = "Z9Y8X7")))
   }
 }

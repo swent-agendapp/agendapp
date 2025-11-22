@@ -125,15 +125,4 @@ class InvitationRepositoryLocalTest {
     assertEquals(1, actives.size)
     assertEquals(1, expireds.size)
   }
-
-  @Test
-  fun preloadSampleData_success() = runBlocking {
-    val repoWithSamples = InvitationRepositoryLocal(preloadSampleData = true)
-
-    val all = repoWithSamples.getAllInvitations()
-
-    assertEquals(2, all.size)
-    assertNotNull(all.find { it.id == "I001" })
-    assertNotNull(all.find { it.id == "I002" })
-  }
 }

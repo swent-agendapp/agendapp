@@ -39,8 +39,9 @@ class InvitationRepositoryFirebase(private val db: FirebaseFirestore) : Invitati
   /** Returns all ACTIVE invitations for a given organization */
   suspend fun getActiveInvitationsForOrganization(orgId: String): List<Invitation> {
     val snapshot =
-        collection.whereEqualTo("organizationId", orgId)
-            .whereEqualTo("status", InvitationStatus.Active.name)
+        collection
+            .whereEqualTo(InvitationMapper.ORGANIZATION_ID_FIELD, orgId)
+            .whereEqualTo(InvitationMapper.STATUS_FIELD, InvitationStatus.Active.name)
             .get()
             .await()
     return snapshot.mapNotNull { InvitationMapper.fromDocument(it) }
@@ -58,22 +59,23 @@ class InvitationRepositoryFirebase(private val db: FirebaseFirestore) : Invitati
   suspend fun acceptInvitation(invitationId: String, inviteeEmail: String) {
     val update =
         mapOf(
-            "inviteeEmail" to inviteeEmail,
-            "acceptedAt" to Timestamp.now(),
-            "status" to InvitationStatus.Used.name)
+            InvitationMapper.INVITEE_EMAIL_FIELD to inviteeEmail,
+            InvitationMapper.ACCEPTED_AT_FIELD to Timestamp.now(),
+            InvitationMapper.STATUS_FIELD to InvitationStatus.Used.name)
 
     collection.document(invitationId).update(update).await()
   }
 
   /** Marks an invitation as expired */
   suspend fun expireInvitation(invitationId: String) {
-    val update = mapOf("status" to InvitationStatus.Expired.name)
+    val update = mapOf(InvitationMapper.STATUS_FIELD to InvitationStatus.Expired.name)
     collection.document(invitationId).update(update).await()
   }
 
   /** Returns all invitations for admin view (pending + used + expired) */
   suspend fun getInvitationsForOrganization(orgId: String): List<Invitation> {
-    val snapshot = collection.whereEqualTo("organizationId", orgId).get().await()
+    val snapshot =
+        collection.whereEqualTo(InvitationMapper.ORGANIZATION_ID_FIELD, orgId).get().await()
 
     return snapshot.mapNotNull { InvitationMapper.fromDocument(it) }
   }

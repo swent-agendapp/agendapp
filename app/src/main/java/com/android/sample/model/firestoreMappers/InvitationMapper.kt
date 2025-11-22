@@ -11,13 +11,13 @@ import java.util.Date
 /** Maps Firestore documents to [Invitation] objects and vice versa. */
 object InvitationMapper : FirestoreMapper<Invitation> {
 
-  private const val ID_FIELD = "id"
-  private const val ORGANIZATION_ID_FIELD = "organizationId"
-  private const val CODE_FIELD = "code"
-  private const val CREATED_AT_FIELD = "createdAt"
-  private const val ACCEPTED_AT_FIELD = "acceptedAt"
-  private const val INVITEE_EMAIL_FIELD = "inviteeEmail"
-  private const val STATUS_FIELD = "status"
+  const val ID_FIELD = "id"
+  const val ORGANIZATION_ID_FIELD = "organizationId"
+  const val CODE_FIELD = "code"
+  const val CREATED_AT_FIELD = "createdAt"
+  const val ACCEPTED_AT_FIELD = "acceptedAt"
+  const val INVITEE_EMAIL_FIELD = "inviteeEmail"
+  const val STATUS_FIELD = "status"
 
   override fun fromDocument(document: DocumentSnapshot): Invitation? {
     val id = document.getString(ID_FIELD) ?: return null

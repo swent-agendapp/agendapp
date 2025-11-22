@@ -10,7 +10,7 @@ data class Invitation(
     val createdAt: Instant = Instant.now(),
     val acceptedAt: Instant? = null,
     val inviteeEmail: String? = null,
-    val status: InvitationStatus = InvitationStatus.Expired
+    val status: InvitationStatus = InvitationStatus.Active
 ) {
   companion object {
 

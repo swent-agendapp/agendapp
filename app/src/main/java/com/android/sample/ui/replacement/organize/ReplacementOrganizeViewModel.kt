@@ -199,7 +199,7 @@ class ReplacementOrganizeViewModel(
   }
 
   /** Sets the selected member for whom the replacement is being organized. */
-  fun setSelectedMember(member: User) {
+  fun setSelectedMember(member: User?) {
     _uiState.value = _uiState.value.copy(selectedMember = member)
   }
 

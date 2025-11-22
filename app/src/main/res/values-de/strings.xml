@@ -170,6 +170,20 @@
     <string name="replacement_create_choose_date_range">Datumsbereich auswählen</string>
     <string name="event_overview_title">Ereignisübersicht</string>
     <string name="replacement_upcoming_title">Bevorstehende Vertretungen</string>
+    <string name="replacement_process_title">Vertretung organisieren</string>
+    <plurals name="replacement_send_requests_button">
+        <item quantity="one">Eine Vertretungsanfrage senden</item>
+        <item quantity="other">%d Vertretungsanfragen senden</item>
+    </plurals>
+
+    <plurals name="replacement_selected_members">
+        <item quantity="one">Ausgewählte Person: %s</item>
+        <item quantity="other">Ausgewählte Personen: %s</item>
+    </plurals>
+    <string name="replacement_selected_members_none">
+    Keine Person ausgewählt
+</string>
+
     <string name="view_mode_1day">1 Tag</string>
     <string name="view_mode_5days">5 Tage</string>
     <string name="view_mode_7days">7 Tage</string>

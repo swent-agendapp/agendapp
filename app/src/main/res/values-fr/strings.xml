@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">SampleApp</string>
     <string name="title_activity_main">Activité principale</string>
     <string name="next">Suivant</string>
@@ -170,6 +170,20 @@
     <string name="replacement_create_choose_date_range">Choisir une plage de dates</string>
     <string name="event_overview_title">Aperçu de l\'événement</string>
     <string name="replacement_upcoming_title">Remplacements à venir</string>
+    <string name="replacement_process_title">Organiser un remplacement</string>
+    <plurals name="replacement_send_requests_button" tools:ignore="MissingQuantity">
+        <item quantity="one">Envoyer %d demande de remplacment</item>
+        <item quantity="other">Envoyer %d demandes de remplacement </item>
+    </plurals>
+
+    <plurals name="replacement_selected_members" tools:ignore="MissingQuantity">
+        <item quantity="one">Personne séléctionée: %s</item>
+        <item quantity="other">Personnes séléctionées: %s</item>
+    </plurals>
+    <string name="replacement_selected_members_none">
+    Aucun membre sélectionné
+</string>
+
     <string name="view_mode_1day">1 jour</string>
     <string name="view_mode_5days">5 jours</string>
     <string name="view_mode_7days">7 jours</string>

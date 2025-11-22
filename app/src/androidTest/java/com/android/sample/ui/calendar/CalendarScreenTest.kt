@@ -273,9 +273,13 @@ abstract class BaseCalendarScreenTest {
    * Inserts [events] into the given in-memory local repository. Preload the repo with our test
    * events before composing the screen.
    */
-  protected fun populateRepo(repo: EventRepositoryLocal, events: List<Event>) = runBlocking {
+  protected fun populateRepo(
+      repo: EventRepositoryLocal,
+      events: List<Event>,
+      orgId: String = selectedOrganizationId
+  ) = runBlocking {
     // Synchronously insert events so data is ready when the UI composes
-    events.forEach { repo.insertEvent(orgId = selectedOrganizationId, item = it) }
+    events.forEach { repo.insertEvent(orgId = orgId, item = it) }
   }
 
   /**

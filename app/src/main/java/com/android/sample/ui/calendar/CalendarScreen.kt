@@ -12,6 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -21,8 +24,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.model.calendar.Event
+import com.android.sample.ui.calendar.style.CalendarDefaults.DefaultDateRange
 import com.android.sample.ui.common.FloatingButton
 import com.android.sample.ui.common.MainPageTopBar
+import com.android.sample.ui.organization.SelectedOrganizationVMProvider
+import com.android.sample.ui.organization.SelectedOrganizationViewModel
 
 object CalendarScreenTestTags {
   // Top-level calendar screen tags
@@ -58,14 +64,27 @@ object CalendarScreenTestTags {
 @Composable
 fun CalendarScreen(
     calendarViewModel: CalendarViewModel = viewModel(),
+    selectedOrganizationViewModel: SelectedOrganizationViewModel =
+        SelectedOrganizationVMProvider.viewModel,
     onCreateEvent: () -> Unit = {},
     onEventClick: (Event) -> Unit = {}
 ) {
+  // initialize the week from monday to friday
+  var currentDateRange by remember { mutableStateOf(DefaultDateRange) }
+
   val context = LocalContext.current
   val uiState by calendarViewModel.uiState.collectAsState()
+  val selectedOrgId by selectedOrganizationViewModel.selectedOrganizationId.collectAsState()
 
   val configuration = LocalConfiguration.current
   val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+
+  // Fetch events when the screen is recomposed
+  LaunchedEffect(currentDateRange, selectedOrgId) {
+    if (selectedOrgId != null) {
+      loadEventsForDateRange(calendarViewModel, currentDateRange)
+    }
+  }
 
   // Show error message if fetching events fails
   LaunchedEffect(uiState.errorMsg) {

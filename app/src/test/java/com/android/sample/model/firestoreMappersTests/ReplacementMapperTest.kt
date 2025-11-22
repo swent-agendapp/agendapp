@@ -20,6 +20,7 @@ class ReplacementMapperTest {
   private val sampleEvent =
       Event(
           id = "event1",
+          organizationId = "org1",
           title = "Meeting",
           description = "Team meeting",
           startDate = Instant.parse("2025-11-12T10:00:00Z"),

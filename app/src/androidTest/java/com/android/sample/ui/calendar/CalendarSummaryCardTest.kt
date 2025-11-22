@@ -55,6 +55,7 @@ class EventSummaryCardTest {
   ) =
       Event(
           id = "e-test",
+          organizationId = "org-test",
           title = title,
           description = description,
           startDate = start,

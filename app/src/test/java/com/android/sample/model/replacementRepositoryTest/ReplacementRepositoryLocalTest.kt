@@ -31,6 +31,7 @@ class ReplacementRepositoryLocalTest {
     sampleEvent =
         Event(
             id = "E001",
+            organizationId = "ORG123",
             title = "Weekly Sync",
             description = "Team meeting",
             startDate = Instant.now(),

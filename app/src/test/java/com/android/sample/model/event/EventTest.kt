@@ -15,6 +15,8 @@ class EventTest {
   // Event instance used for testing
   private lateinit var event: Event
 
+  private val selectedOrganizationID: String = "org123"
+
   @Before
   fun setUp() {
     // Initialize an Event with specific start and end times for testing
@@ -23,6 +25,7 @@ class EventTest {
 
     event =
         createEvent(
+            organizationId = selectedOrganizationID,
             title = "Meeting",
             description = "Team sync",
             startDate = startLocal.atZone(ZoneId.systemDefault()).toInstant(),
@@ -56,7 +59,7 @@ class EventTest {
 
   @Test
   fun defaultColor_shouldBeUsedWhenNotSpecified() {
-    val defaultEvent = createEvent()[0]
+    val defaultEvent = createEvent(organizationId = selectedOrganizationID)[0]
     assertEquals(EventPalette.Blue, defaultEvent.color)
   }
 
@@ -83,6 +86,7 @@ class EventTest {
 
     val events =
         createEvent(
+            organizationId = selectedOrganizationID,
             title = "Meeting",
             description = "Team sync",
             startDate = startLocal.atZone(ZoneId.systemDefault()).toInstant(),
@@ -101,6 +105,7 @@ class EventTest {
 
     val events =
         createEvent(
+            organizationId = selectedOrganizationID,
             title = "Meeting",
             description = "Team sync",
             startDate = startLocal.atZone(ZoneId.systemDefault()).toInstant(),
@@ -119,6 +124,7 @@ class EventTest {
 
     val events =
         createEvent(
+            organizationId = selectedOrganizationID,
             title = "Meeting",
             description = "Team sync",
             startDate = startLocal.atZone(ZoneId.systemDefault()).toInstant(),
@@ -137,6 +143,7 @@ class EventTest {
 
     val events =
         createEvent(
+            organizationId = selectedOrganizationID,
             title = "Meeting",
             description = "Team sync",
             startDate = startLocal.atZone(ZoneId.systemDefault()).toInstant(),
@@ -155,6 +162,7 @@ class EventTest {
 
     val events =
         createEvent(
+            organizationId = selectedOrganizationID,
             title = "Meeting",
             description = "Team sync",
             startDate = startLocal.atZone(ZoneId.systemDefault()).toInstant(),
@@ -172,7 +180,11 @@ class EventTest {
 
     val exception =
         assertThrows(IllegalArgumentException::class.java) {
-          createEvent(title = "Invalid Event", startDate = start, endDate = end)
+          createEvent(
+              organizationId = selectedOrganizationID,
+              title = "Invalid Event",
+              startDate = start,
+              endDate = end)
         }
 
     assertEquals("End date cannot be before start date", exception.message)

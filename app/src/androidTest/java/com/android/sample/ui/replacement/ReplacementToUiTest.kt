@@ -6,13 +6,22 @@ import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementStatus
 import com.android.sample.ui.calendar.replacementEmployee.components.ReplacementRequestUi
 import com.android.sample.ui.calendar.replacementEmployee.toUi
+import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.theme.EventPalette
 import java.time.Instant
 import java.time.ZoneId
 import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.Test
 
 class ReplacementToUiTest {
+
+  private val selectedOrganizationId = "ORG1"
+
+  @Before
+  fun setup() {
+    SelectedOrganizationVMProvider.viewModel.changeSelectedOrganization(selectedOrganizationId)
+  }
 
   @Test
   fun replacementToUiMapsFieldsCorrectly() {
@@ -23,6 +32,7 @@ class ReplacementToUiTest {
     val event =
         Event(
             id = "E123",
+            organizationId = selectedOrganizationId,
             title = "Team Sync",
             description = "Daily standup",
             startDate = start,

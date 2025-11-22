@@ -111,6 +111,7 @@ private val previewEvents: List<Event> by lazy {
       // e0) Simple event
       Event(
           id = "e0",
+          organizationId = "org1",
           title = "A simple Event",
           description = "A simple single-day event.",
           startDate = base.plusSeconds(10 * 60 * 60),
@@ -126,6 +127,7 @@ private val previewEvents: List<Event> by lazy {
       // e1) Recurring (weekly)
       Event(
           id = "e1",
+          organizationId = "org1",
           title = "Weekly stand-up",
           description = "Short, recurring meeting.",
           startDate = base.plus(day).plus(hour.multipliedBy(9)),
@@ -141,6 +143,7 @@ private val previewEvents: List<Event> by lazy {
       // e2) 3-day event
       Event(
           id = "e2",
+          organizationId = "org1",
           title = "Offsite (3 days)",
           description = "Team offsite spanning three days.",
           startDate = base.plus(day).plus(hour.multipliedBy(18)),
@@ -156,6 +159,7 @@ private val previewEvents: List<Event> by lazy {
       // e3) 3-day recurring
       Event(
           id = "e3",
+          organizationId = "org1",
           title = "Workshop series (3 days)",
           description = "Three-day recurring workshop.",
           startDate = base.plus(day.multipliedBy(2)).plus(hour.multipliedBy(8)),
@@ -171,6 +175,7 @@ private val previewEvents: List<Event> by lazy {
       // e4) Long title
       Event(
           id = "e4",
+          organizationId = "org1",
           title =
               "Very long workshop title here with a lot of words making it intentionally too long for the card layout",
           description = "Long title showcase.",
@@ -187,6 +192,7 @@ private val previewEvents: List<Event> by lazy {
       // e5) Long description
       Event(
           id = "e5",
+          organizationId = "org1",
           title = "Deep-dive session",
           description =
               ("This is a very long description — " +
@@ -205,6 +211,7 @@ private val previewEvents: List<Event> by lazy {
       // e6) Many participants
       Event(
           id = "e6",
+          organizationId = "org1",
           title = "Large meeting",
           description = "A meeting with many attendees.",
           startDate = base.plus(hour.multipliedBy(13)),
@@ -220,6 +227,7 @@ private val previewEvents: List<Event> by lazy {
       // e7) Minimal
       Event(
           id = "e7",
+          organizationId = "org1",
           title = "Smallest event",
           description = "",
           startDate = base.plus(hour.multipliedBy(16)),

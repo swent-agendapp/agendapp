@@ -18,6 +18,7 @@ class EventFirebaseRepositoryTest : FirebaseEmulatedTest() {
 
   private lateinit var event1: Event
   private lateinit var event2: Event
+  private val orgId = "test-org"
 
   @Before
   override fun setUp() {
@@ -25,6 +26,7 @@ class EventFirebaseRepositoryTest : FirebaseEmulatedTest() {
 
     event1 =
         createEvent(
+            organizationId = orgId,
             title = "Meeting",
             description = "Team sync",
             startDate = Instant.parse("2025-01-10T10:00:00Z"),
@@ -34,6 +36,7 @@ class EventFirebaseRepositoryTest : FirebaseEmulatedTest() {
 
     event2 =
         createEvent(
+            organizationId = orgId,
             title = "Conference",
             description = "Tech event",
             startDate = Instant.parse("2025-02-01T09:00:00Z"),
@@ -43,48 +46,52 @@ class EventFirebaseRepositoryTest : FirebaseEmulatedTest() {
 
   @Test
   fun insertEvent_andGetById_shouldWork() = runBlocking {
-    repository.insertEvent(event1)
-    val retrieved = repository.getEventById(event1.id)
+    repository.insertEvent(orgId = orgId, item = event1)
+    val retrieved = repository.getEventById(orgId = orgId, itemId = event1.id)
     Assert.assertNotNull(retrieved)
     Assert.assertEquals(event1.title, retrieved?.title)
   }
 
   @Test
   fun getAllEvents_shouldReturnInsertedOnes() = runBlocking {
-    repository.insertEvent(event1)
-    repository.insertEvent(event2)
-    val allEvents = repository.getAllEvents()
+    repository.insertEvent(orgId = orgId, item = event1)
+    repository.insertEvent(orgId = orgId, item = event2)
+    val allEvents = repository.getAllEvents(orgId = orgId)
     Assert.assertEquals(2, allEvents.size)
   }
 
   @Test
   fun updateEvent_shouldReplaceExistingEvent() = runBlocking {
-    repository.insertEvent(event1)
+    repository.insertEvent(orgId = orgId, item = event1)
     val updated = event1.copy(title = "Updated Meeting")
-    repository.updateEvent(event1.id, updated)
-    val retrieved = repository.getEventById(event1.id)
+    repository.updateEvent(orgId = orgId, itemId = event1.id, item = updated)
+    val retrieved = repository.getEventById(orgId = orgId, itemId = event1.id)
     Assert.assertEquals("Updated Meeting", retrieved?.title)
   }
 
   @Test
   fun deleteEvent_shouldRemoveEvent() = runBlocking {
-    repository.insertEvent(event1)
-    repository.deleteEvent(event1.id)
-    Assert.assertNull(repository.getEventById(event1.id))
+    repository.insertEvent(orgId = orgId, item = event1)
+    repository.deleteEvent(orgId = orgId, itemId = event1.id)
+    Assert.assertNull(repository.getEventById(orgId = orgId, itemId = event1.id))
   }
 
   @Test
   fun getEventsBetweenDates_returnsEventsFullyInsideRange() = runBlocking {
     // event fully inside the range should be returned
     repository.insertEvent(
-        event1.copy(
-            id = "in-range",
-            startDate = Instant.parse("2025-02-10T10:00:00Z"),
-            endDate = Instant.parse("2025-02-10T11:00:00Z")))
+        orgId = orgId,
+        item =
+            event1.copy(
+                id = "in-range",
+                startDate = Instant.parse("2025-02-10T10:00:00Z"),
+                endDate = Instant.parse("2025-02-10T11:00:00Z")))
 
     val results =
         repository.getEventsBetweenDates(
-            Instant.parse("2025-02-01T00:00:00Z"), Instant.parse("2025-02-28T23:59:59Z"))
+            orgId = orgId,
+            startDate = Instant.parse("2025-02-01T00:00:00Z"),
+            endDate = Instant.parse("2025-02-28T23:59:59Z"))
 
     Assert.assertEquals(1, results.size)
     Assert.assertEquals("in-range", results.first().id)
@@ -94,14 +101,18 @@ class EventFirebaseRepositoryTest : FirebaseEmulatedTest() {
   fun getEventsBetweenDates_excludesEventsBeforeRange() = runBlocking {
     // event ending before the start of the range should be ignored
     repository.insertEvent(
-        event1.copy(
-            id = "before-range",
-            startDate = Instant.parse("2025-01-31T09:00:00Z"),
-            endDate = Instant.parse("2025-01-31T10:00:00Z")))
+        orgId = orgId,
+        item =
+            event1.copy(
+                id = "before-range",
+                startDate = Instant.parse("2025-01-31T09:00:00Z"),
+                endDate = Instant.parse("2025-01-31T10:00:00Z")))
 
     val results =
         repository.getEventsBetweenDates(
-            Instant.parse("2025-02-01T00:00:00Z"), Instant.parse("2025-02-28T23:59:59Z"))
+            orgId = orgId,
+            startDate = Instant.parse("2025-02-01T00:00:00Z"),
+            endDate = Instant.parse("2025-02-28T23:59:59Z"))
 
     Assert.assertTrue(results.isEmpty())
   }
@@ -110,14 +121,18 @@ class EventFirebaseRepositoryTest : FirebaseEmulatedTest() {
   fun getEventsBetweenDates_excludesEventsAfterRange() = runBlocking {
     // event starting after the end of the range should be ignored
     repository.insertEvent(
-        event1.copy(
-            id = "after-range",
-            startDate = Instant.parse("2025-03-01T09:00:00Z"),
-            endDate = Instant.parse("2025-03-01T10:00:00Z")))
+        orgId = orgId,
+        item =
+            event1.copy(
+                id = "after-range",
+                startDate = Instant.parse("2025-03-01T09:00:00Z"),
+                endDate = Instant.parse("2025-03-01T10:00:00Z")))
 
     val results =
         repository.getEventsBetweenDates(
-            Instant.parse("2025-02-01T00:00:00Z"), Instant.parse("2025-02-28T23:59:59Z"))
+            orgId = orgId,
+            startDate = Instant.parse("2025-02-01T00:00:00Z"),
+            endDate = Instant.parse("2025-02-28T23:59:59Z"))
 
     Assert.assertTrue(results.isEmpty())
   }
@@ -126,14 +141,18 @@ class EventFirebaseRepositoryTest : FirebaseEmulatedTest() {
   fun getEventsBetweenDates_includesEventsOverlappingStart() = runBlocking {
     // event starting before but ending inside the range should be returned
     repository.insertEvent(
-        event1.copy(
-            id = "overlap-start",
-            startDate = Instant.parse("2025-01-31T23:00:00Z"),
-            endDate = Instant.parse("2025-02-01T01:00:00Z")))
+        orgId = orgId,
+        item =
+            event1.copy(
+                id = "overlap-start",
+                startDate = Instant.parse("2025-01-31T23:00:00Z"),
+                endDate = Instant.parse("2025-02-01T01:00:00Z")))
 
     val results =
         repository.getEventsBetweenDates(
-            Instant.parse("2025-02-01T00:00:00Z"), Instant.parse("2025-02-28T23:59:59Z"))
+            orgId = orgId,
+            startDate = Instant.parse("2025-02-01T00:00:00Z"),
+            endDate = Instant.parse("2025-02-28T23:59:59Z"))
 
     Assert.assertEquals(1, results.size)
     Assert.assertEquals("overlap-start", results.first().id)
@@ -143,14 +162,18 @@ class EventFirebaseRepositoryTest : FirebaseEmulatedTest() {
   fun getEventsBetweenDates_includesEventsOverlappingEnd() = runBlocking {
     // event starting inside but ending after the range should be returned
     repository.insertEvent(
-        event1.copy(
-            id = "overlap-end",
-            startDate = Instant.parse("2025-02-28T22:00:00Z"),
-            endDate = Instant.parse("2025-03-01T01:00:00Z")))
+        orgId = orgId,
+        item =
+            event1.copy(
+                id = "overlap-end",
+                startDate = Instant.parse("2025-02-28T22:00:00Z"),
+                endDate = Instant.parse("2025-03-01T01:00:00Z")))
 
     val results =
         repository.getEventsBetweenDates(
-            Instant.parse("2025-02-01T00:00:00Z"), Instant.parse("2025-02-28T23:59:59Z"))
+            orgId = orgId,
+            startDate = Instant.parse("2025-02-01T00:00:00Z"),
+            endDate = Instant.parse("2025-02-28T23:59:59Z"))
 
     Assert.assertEquals(1, results.size)
     Assert.assertEquals("overlap-end", results.first().id)
@@ -160,14 +183,18 @@ class EventFirebaseRepositoryTest : FirebaseEmulatedTest() {
   fun getEventsBetweenDates_includesEventsEndingExactlyAtStart() = runBlocking {
     // event ending exactly at the start of the range should be returned
     repository.insertEvent(
-        event1.copy(
-            id = "end-at-start",
-            startDate = Instant.parse("2025-01-31T22:00:00Z"),
-            endDate = Instant.parse("2025-02-01T00:00:00Z")))
+        orgId = orgId,
+        item =
+            event1.copy(
+                id = "end-at-start",
+                startDate = Instant.parse("2025-01-31T22:00:00Z"),
+                endDate = Instant.parse("2025-02-01T00:00:00Z")))
 
     val results =
         repository.getEventsBetweenDates(
-            Instant.parse("2025-02-01T00:00:00Z"), Instant.parse("2025-02-28T23:59:59Z"))
+            orgId = orgId,
+            startDate = Instant.parse("2025-02-01T00:00:00Z"),
+            endDate = Instant.parse("2025-02-28T23:59:59Z"))
 
     Assert.assertEquals(1, results.size)
     Assert.assertEquals("end-at-start", results.first().id)
@@ -177,14 +204,18 @@ class EventFirebaseRepositoryTest : FirebaseEmulatedTest() {
   fun getEventsBetweenDates_includesEventsEndingExactlyAtEnd() = runBlocking {
     // event ending exactly at the end of the range should be returned
     repository.insertEvent(
-        event1.copy(
-            id = "end-at-end",
-            startDate = Instant.parse("2025-02-28T22:00:00Z"),
-            endDate = Instant.parse("2025-02-28T23:59:59Z")))
+        orgId = orgId,
+        item =
+            event1.copy(
+                id = "end-at-end",
+                startDate = Instant.parse("2025-02-28T22:00:00Z"),
+                endDate = Instant.parse("2025-02-28T23:59:59Z")))
 
     val results =
         repository.getEventsBetweenDates(
-            Instant.parse("2025-02-01T00:00:00Z"), Instant.parse("2025-02-28T23:59:59Z"))
+            orgId = orgId,
+            startDate = Instant.parse("2025-02-01T00:00:00Z"),
+            endDate = Instant.parse("2025-02-28T23:59:59Z"))
 
     Assert.assertEquals(1, results.size)
     Assert.assertEquals("end-at-end", results.first().id)
@@ -194,14 +225,18 @@ class EventFirebaseRepositoryTest : FirebaseEmulatedTest() {
   fun getEventsBetweenDates_includesEventsCoveringWholeRange() = runBlocking {
     // event that starts before and ends after the range should be returned
     repository.insertEvent(
-        event1.copy(
-            id = "covering",
-            startDate = Instant.parse("2025-01-01T00:00:00Z"),
-            endDate = Instant.parse("2025-03-01T00:00:00Z")))
+        orgId = orgId,
+        item =
+            event1.copy(
+                id = "covering",
+                startDate = Instant.parse("2025-01-01T00:00:00Z"),
+                endDate = Instant.parse("2025-03-01T00:00:00Z")))
 
     val results =
         repository.getEventsBetweenDates(
-            Instant.parse("2025-02-01T00:00:00Z"), Instant.parse("2025-02-28T23:59:59Z"))
+            orgId = orgId,
+            startDate = Instant.parse("2025-02-01T00:00:00Z"),
+            endDate = Instant.parse("2025-02-28T23:59:59Z"))
 
     Assert.assertEquals(1, results.size)
     Assert.assertEquals("covering", results.first().id)
@@ -209,12 +244,14 @@ class EventFirebaseRepositoryTest : FirebaseEmulatedTest() {
 
   @Test
   fun getEventsBetweenDates_shouldThrowIllegalArgumentExceptionForInvalidRange() = runBlocking {
-    repository.insertEvent(event1)
-    repository.insertEvent(event2)
+    repository.insertEvent(orgId = orgId, item = event1)
+    repository.insertEvent(orgId = orgId, item = event2)
 
     try {
       repository.getEventsBetweenDates(
-          Instant.parse("2025-02-01T00:00:00Z"), Instant.parse("2025-01-01T23:59:59Z"))
+          orgId = orgId,
+          startDate = Instant.parse("2025-02-01T00:00:00Z"),
+          endDate = Instant.parse("2025-01-01T23:59:59Z"))
       Assert.fail("Expected IllegalArgumentException for invalid date range")
     } catch (_: IllegalArgumentException) {
       // Success: IllegalArgumentException exception thrown as expected
@@ -225,6 +262,7 @@ class EventFirebaseRepositoryTest : FirebaseEmulatedTest() {
   fun getEventById_returnsEvent_whenExists() = runBlocking {
     val inserted =
         createEvent(
+            organizationId = orgId,
             title = "Board meeting",
             description = "Quarterly review",
             startDate = Instant.parse("2025-04-10T08:00:00Z"),
@@ -233,9 +271,9 @@ class EventFirebaseRepositoryTest : FirebaseEmulatedTest() {
             personalNotes = "Slides in drive")[0]
 
     // Insert the event into the repository
-    repository.insertEvent(inserted)
+    repository.insertEvent(orgId = orgId, item = inserted)
 
-    val retrieved = repository.getEventById(inserted.id)
+    val retrieved = repository.getEventById(orgId = orgId, itemId = inserted.id)
 
     // The event should exists with exact same fields as created
     Assert.assertNotNull("Expected to retrieve an existing event by id", retrieved)
@@ -247,7 +285,7 @@ class EventFirebaseRepositoryTest : FirebaseEmulatedTest() {
 
   @Test
   fun getEventById_returnsNull_whenMissing() = runBlocking {
-    val missing = repository.getEventById("no-such-event-id")
+    val missing = repository.getEventById(orgId = orgId, itemId = "no-such-event-id")
     Assert.assertNull("Unknown id should yield null", missing)
   }
 
@@ -255,6 +293,7 @@ class EventFirebaseRepositoryTest : FirebaseEmulatedTest() {
   fun documentToEvent_customStorageStatus_shouldParse() = runBlocking {
     val customEvent =
         createEvent(
+            organizationId = orgId,
             title = "MultiStorage Event",
             description = "Testing storage status parsing",
             startDate = Instant.parse("2025-01-01T10:00:00Z"),
@@ -263,9 +302,9 @@ class EventFirebaseRepositoryTest : FirebaseEmulatedTest() {
             personalNotes = "None",
             participants = setOf("Charlie"))[0]
 
-    repository.insertEvent(customEvent)
+    repository.insertEvent(orgId = orgId, item = customEvent)
 
-    val retrieved = repository.getEventById(customEvent.id)
+    val retrieved = repository.getEventById(orgId = orgId, itemId = customEvent.id)
 
     Assert.assertNotNull(retrieved)
     Assert.assertTrue(
@@ -277,6 +316,7 @@ class EventFirebaseRepositoryTest : FirebaseEmulatedTest() {
   fun documentToEvent_shouldHandleNullOptionalFields() = runBlocking {
     val eventWithMissingOptional =
         createEvent(
+            organizationId = orgId,
             title = "No description",
             description = "",
             startDate = Instant.parse("2025-03-01T10:00:00Z"),
@@ -285,9 +325,9 @@ class EventFirebaseRepositoryTest : FirebaseEmulatedTest() {
             personalNotes = null,
             participants = emptySet())[0]
 
-    repository.insertEvent(eventWithMissingOptional)
+    repository.insertEvent(orgId = orgId, item = eventWithMissingOptional)
 
-    val retrieved = repository.getEventById(eventWithMissingOptional.id)
+    val retrieved = repository.getEventById(orgId = orgId, itemId = eventWithMissingOptional.id)
     Assert.assertNotNull(retrieved)
     Assert.assertEquals("", retrieved!!.description)
     Assert.assertEquals(emptySet<String>(), retrieved.participants)

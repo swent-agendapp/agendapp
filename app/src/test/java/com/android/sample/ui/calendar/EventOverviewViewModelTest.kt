@@ -6,6 +6,7 @@ import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryLocal
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.ui.calendar.eventOverview.EventOverviewViewModel
+import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import java.time.Instant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -37,10 +38,15 @@ class EventOverviewViewModelTest {
   private lateinit var eventWithoutParticipants: Event
   private lateinit var eventWithParticipants: Event
 
+  private val selectedOrganizationID: String = "org123"
+
   @Before
   fun setUp() {
     // Set the main dispatcher to the test dispatcher before each test.
     Dispatchers.setMain(testDispatcher)
+
+    // Set the selected organization for the tests.
+    SelectedOrganizationVMProvider.viewModel.changeSelectedOrganization(selectedOrganizationID)
 
     repository = EventRepositoryLocal()
     viewModel =
@@ -49,6 +55,7 @@ class EventOverviewViewModelTest {
     // Create sample events for testing.
     eventWithoutParticipants =
         createEvent(
+            organizationId = selectedOrganizationID,
             title = "Event without participants",
             description = "No participants",
             startDate = Instant.parse("2025-01-10T10:00:00Z"),
@@ -57,6 +64,7 @@ class EventOverviewViewModelTest {
 
     eventWithParticipants =
         createEvent(
+            organizationId = selectedOrganizationID,
             title = "Event with participants",
             description = "Some participants",
             startDate = Instant.parse("2025-02-01T09:00:00Z"),
@@ -65,8 +73,8 @@ class EventOverviewViewModelTest {
 
     // Insert the sample events into the repository before each test.
     runTest {
-      repository.insertEvent(eventWithoutParticipants)
-      repository.insertEvent(eventWithParticipants)
+      repository.insertEvent(orgId = selectedOrganizationID, item = eventWithoutParticipants)
+      repository.insertEvent(orgId = selectedOrganizationID, item = eventWithParticipants)
     }
   }
 
@@ -179,7 +187,8 @@ class EventOverviewViewModelTest {
 
     // Update the event in the repository (same id, different title).
     val updatedEvent = eventWithParticipants.copy(title = "Updated title")
-    repository.updateEvent(eventWithParticipants.id, updatedEvent)
+    repository.updateEvent(
+        orgId = selectedOrganizationID, itemId = eventWithParticipants.id, item = updatedEvent)
 
     // Load the same event again and ensure we get the new version from the repository.
     viewModel.loadEvent(eventWithParticipants.id)

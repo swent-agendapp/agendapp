@@ -16,6 +16,7 @@ object EventMapper : FirestoreMapper<Event> {
 
   override fun fromDocument(document: DocumentSnapshot): Event? {
     val id = document.id
+    val organizationId = document.getString("organizationId") ?: return null
     val title = document.getString("title") ?: return null
     val description = document.getString("description") ?: ""
     val startDate = document.getTimestamp("startDate")?.toDate()?.toInstant() ?: return null
@@ -42,6 +43,7 @@ object EventMapper : FirestoreMapper<Event> {
 
     return Event(
         id = id,
+        organizationId = organizationId,
         title = title,
         description = description,
         startDate = startDate,
@@ -56,6 +58,7 @@ object EventMapper : FirestoreMapper<Event> {
 
   override fun fromMap(data: Map<String, Any?>): Event? {
     val id = data["id"] as? String ?: return null
+    val organizationId = data["organizationId"] as? String ?: return null
     val title = data["title"] as? String ?: return null
     val description = data["description"] as? String ?: ""
 
@@ -90,6 +93,7 @@ object EventMapper : FirestoreMapper<Event> {
 
     return Event(
         id = id,
+        organizationId = organizationId,
         title = title,
         description = description,
         startDate = startDate,
@@ -105,6 +109,7 @@ object EventMapper : FirestoreMapper<Event> {
   override fun toMap(model: Event): Map<String, Any?> {
     return mapOf(
         "id" to model.id,
+        "organizationId" to model.organizationId,
         "title" to model.title,
         "description" to model.description,
         "startDate" to Timestamp(Date.from(model.startDate)),

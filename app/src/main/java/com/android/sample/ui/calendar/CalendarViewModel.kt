@@ -2,11 +2,11 @@ package com.android.sample.ui.calendar
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.android.sample.model.authentication.AuthRepository
-import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
+import com.android.sample.ui.organization.SelectedOrganizationVMProvider
+import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import java.time.Instant
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -34,17 +34,21 @@ data class CalendarUIState(
  * [EventRepository].
  *
  * @property eventRepository The repository used to fetch and manage Event items.
- * @property authRepository The repository used to fetch user data, here the participant names.
+ * @property selectedOrganizationViewModel ViewModel that provides the currently selected
+ *   organization.
  */
 class CalendarViewModel(
     // used to get Events
     private val eventRepository: EventRepository = EventRepositoryProvider.repository,
-    // used to get the name of the participants (the event only contains user id, not name)
-    private val authRepository: AuthRepository = AuthRepositoryProvider.repository
+    selectedOrganizationViewModel: SelectedOrganizationViewModel =
+        SelectedOrganizationVMProvider.viewModel
 ) : ViewModel() {
   private val _uiState = MutableStateFlow(CalendarUIState())
   // Publicly exposed immutable UI state
   val uiState: StateFlow<CalendarUIState> = _uiState.asStateFlow()
+
+  private val selectedOrganizationId: StateFlow<String?> =
+      selectedOrganizationViewModel.selectedOrganizationId
 
   /** Sets an error message in the UI state. */
   private fun setErrorMsg(errorMsg: String) {
@@ -96,8 +100,10 @@ class CalendarViewModel(
    * errorMsg property.
    */
   fun loadAllEvents() {
+    val orgId = selectedOrganizationId.value ?: return
+
     loadEventsHelper(
-        loadEventsBlock = { eventRepository.getAllEvents() },
+        loadEventsBlock = { eventRepository.getAllEvents(orgId = orgId) },
         errorMessage = "Failed to load all events")
   }
 
@@ -109,8 +115,13 @@ class CalendarViewModel(
    * @param end The end date (inclusive).
    */
   fun loadEventsBetween(start: Instant, end: Instant) {
+    val orgId = selectedOrganizationId.value
+    if (orgId == null) return
+
     loadEventsHelper(
-        loadEventsBlock = { eventRepository.getEventsBetweenDates(start, end) },
+        loadEventsBlock = {
+          eventRepository.getEventsBetweenDates(orgId = orgId, startDate = start, endDate = end)
+        },
         errorMessage = "Failed to load events between $start and $end")
   }
 }

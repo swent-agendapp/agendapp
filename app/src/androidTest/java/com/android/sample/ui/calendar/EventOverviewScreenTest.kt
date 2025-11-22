@@ -4,14 +4,13 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.android.sample.model.calendar.Event
-import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreen
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreenTestTags
 import com.android.sample.ui.calendar.eventOverview.EventOverviewViewModel
 import com.android.sample.ui.theme.EventPalette
+import com.android.sample.utils.FakeEventRepository
 import java.time.Duration
-import java.time.Instant
 import java.time.Instant.now
 import java.time.temporal.ChronoUnit
 import kotlinx.coroutines.runBlocking
@@ -30,11 +29,14 @@ class EventOverviewScreenTest {
 
   @get:Rule val composeRule = createComposeRule()
 
+  val selectedOrganizationId = "orgTest"
+
   // ---------- Helpers ----------
   private fun sampleEvent(): Event {
     val start = now().truncatedTo(ChronoUnit.HOURS)
     return Event(
         id = "E123",
+        organizationId = selectedOrganizationId,
         title = "Test Event",
         description = "Desc",
         startDate = start,
@@ -49,34 +51,9 @@ class EventOverviewScreenTest {
         color = EventPalette.Blue)
   }
 
-  /** simple FakeEventRepository only for test */
-  private class FakeEventRepository(private val event: Event) : EventRepository {
-
-    var deletedIds = mutableListOf<String>()
-    var shouldFailDelete = false
-
-    override fun getNewUid(): String = java.util.UUID.randomUUID().toString()
-
-    override suspend fun getAllEvents(): List<Event> = listOf(event)
-
-    override suspend fun insertEvent(item: Event) {}
-
-    override suspend fun updateEvent(itemId: String, item: Event) {}
-
-    override suspend fun deleteEvent(itemId: String) {
-      if (shouldFailDelete) throw RuntimeException("delete failed")
-      deletedIds.add(itemId)
-    }
-
-    override suspend fun getEventById(itemId: String): Event? =
-        if (itemId == event.id) event else null
-
-    override suspend fun getEventsBetweenDates(startDate: Instant, endDate: Instant): List<Event> =
-        listOf(event)
-  }
-
   private fun makeViewModelWith(event: Event): Pair<EventOverviewViewModel, FakeEventRepository> {
-    val repo = FakeEventRepository(event)
+    val repo = FakeEventRepository()
+    repo.add(event = event)
     val vm = EventOverviewViewModel(eventRepository = repo)
     return vm to repo
   }

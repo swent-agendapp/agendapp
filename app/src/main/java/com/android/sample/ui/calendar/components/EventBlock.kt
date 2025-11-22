@@ -253,6 +253,7 @@ private fun DrawEventBlockPreview() {
   DrawEventBlock(
       event =
           createEvent(
+              organizationId = "org_1",
               title = "Title !",
               description = "description...",
               startDate = Instant.now(),

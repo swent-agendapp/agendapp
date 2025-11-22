@@ -7,6 +7,8 @@ import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.calendar.RecurrenceStatus
+import com.android.sample.ui.organization.SelectedOrganizationVMProvider
+import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import com.android.sample.ui.theme.EventPalette
 import java.time.Duration
 import java.time.Instant
@@ -51,17 +53,55 @@ enum class EditEventStep {
  * - Navigating between edit steps.
  */
 class EditEventViewModel(
-    private val repository: EventRepository = EventRepositoryProvider.repository
+    private val repository: EventRepository = EventRepositoryProvider.repository,
+    selectedOrganizationViewModel: SelectedOrganizationViewModel =
+        SelectedOrganizationVMProvider.viewModel
 ) : ViewModel() {
 
   private val _uiState = MutableStateFlow(EditCalendarEventUIState())
   val uiState: StateFlow<EditCalendarEventUIState> = _uiState.asStateFlow()
 
+  val selectedOrganizationId: StateFlow<String?> =
+      selectedOrganizationViewModel.selectedOrganizationId
+
+  fun saveEditEventChanges() {
+    viewModelScope.launch {
+      val state = _uiState.value
+      try {
+        val orgId = selectedOrganizationId.value
+        require(orgId != null) { "No organization selected." }
+
+        val updated =
+            Event(
+                id = state.eventId,
+                organizationId = orgId,
+                title = state.title,
+                description = state.description,
+                startDate = state.startInstant,
+                endDate = state.endInstant,
+                cloudStorageStatuses = emptySet(),
+                locallyStoredBy = emptyList(),
+                personalNotes = null,
+                participants = state.participants,
+                version = System.currentTimeMillis(),
+                recurrenceStatus = state.recurrenceMode,
+                hasBeenDeleted = false,
+                color = EventPalette.Blue)
+        repository.updateEvent(orgId = orgId, itemId = updated.id, item = updated)
+      } catch (e: Exception) {
+        Log.e("EditEventViewModel", "Error saving event changes: ${e.message}")
+      }
+    }
+  }
+
   fun loadEvent(eventId: String) {
     viewModelScope.launch {
       _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
       try {
-        val event = repository.getEventById(eventId)
+        val orgId = selectedOrganizationId.value
+        require(orgId != null) { "No organization selected." }
+
+        val event = repository.getEventById(orgId = orgId, itemId = eventId)
         if (event != null) {
           _uiState.value =
               _uiState.value.copy(
@@ -81,32 +121,6 @@ class EditEventViewModel(
         _uiState.value =
             _uiState.value.copy(
                 isLoading = false, errorMessage = "Failed to load event: ${e.message}")
-      }
-    }
-  }
-
-  fun saveEditEventChanges() {
-    viewModelScope.launch {
-      val state = _uiState.value
-      try {
-        val updated =
-            Event(
-                id = state.eventId,
-                title = state.title,
-                description = state.description,
-                startDate = state.startInstant,
-                endDate = state.endInstant,
-                cloudStorageStatuses = emptySet(),
-                locallyStoredBy = emptyList(),
-                personalNotes = null,
-                participants = state.participants,
-                version = System.currentTimeMillis(),
-                recurrenceStatus = state.recurrenceMode,
-                hasBeenDeleted = false,
-                color = EventPalette.Blue)
-        repository.updateEvent(updated.id, updated)
-      } catch (e: Exception) {
-        Log.e("EditEventViewModel", "Error saving event changes: ${e.message}")
       }
     }
   }

@@ -9,10 +9,13 @@ import org.junit.Test
 
 class ReplacementExtensionsTest {
 
+  val selectedOrganizationId = "orgTest"
+
   @Test
   fun pendingReplacements_returnsOnlyPendingItems() {
     val baseEvent =
         createEvent(
+            organizationId = selectedOrganizationId,
             title = "Test event",
             startDate = Instant.parse("2025-01-01T08:00:00Z"),
             endDate = Instant.parse("2025-01-01T10:00:00Z"),
@@ -52,6 +55,7 @@ class ReplacementExtensionsTest {
   fun waitingForAnswerReplacementsUsefullList_returnsWaitingAndDeclined() {
     val baseEvent =
         createEvent(
+            organizationId = selectedOrganizationId,
             title = "Test event",
             startDate = Instant.parse("2025-01-01T08:00:00Z"),
             endDate = Instant.parse("2025-01-01T10:00:00Z"),

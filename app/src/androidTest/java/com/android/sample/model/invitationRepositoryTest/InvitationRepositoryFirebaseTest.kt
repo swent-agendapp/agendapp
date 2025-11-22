@@ -41,7 +41,7 @@ class InvitationRepositoryFirebaseTest : FirebaseEmulatedTest() {
     val retrieved = repo.getInvitationById(inv1.id)
 
     assertNotNull(retrieved)
-    assertEquals((inv1.id), retrieved?.id)
+    assertEquals(inv1.id, retrieved?.id)
     assertEquals(inv1.code, retrieved?.code)
     assertEquals(inv1.organizationId, retrieved?.organizationId)
   }

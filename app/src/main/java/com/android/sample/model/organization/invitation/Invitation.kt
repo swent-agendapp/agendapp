@@ -1,5 +1,6 @@
 package com.android.sample.model.organization.invitation
 
+import com.android.sample.model.organization.Organization
 import java.time.Instant
 import java.util.UUID
 
@@ -11,7 +12,7 @@ import java.util.UUID
  * invitee's email and current status.
  *
  * @property id Unique identifier for this invitation.
- * @property organizationId ID of the organization this invitation belongs to.
+ * @property organization The organization this invitation belongs to.
  * @property code Randomly generated alphanumeric invitation code.
  * @property createdAt Timestamp indicating when the invitation was created.
  * @property acceptedAt Timestamp indicating when the invitation was accepted, or `null` if it has
@@ -21,7 +22,7 @@ import java.util.UUID
  */
 data class Invitation(
     val id: String,
-    val organizationId: String,
+    val organization: Organization,
     val code: String,
     val createdAt: Instant = Instant.now(),
     val acceptedAt: Instant? = null,
@@ -48,15 +49,15 @@ data class Invitation(
      * The invitation starts in the [InvitationStatus.Active] state and has no invitee email or
      * acceptance timestamp.
      *
-     * @param organizationId ID of the organization for which the invitation is created.
+     * @param organization The organization for which the invitation is created.
      * @return A new [Invitation] instance with generated defaults.
      */
     fun create(
-        organizationId: String,
+        organization: Organization,
     ): Invitation {
       return Invitation(
           id = UUID.randomUUID().toString(),
-          organizationId = organizationId,
+          organization = organization,
           code = generateRandomCode(),
           createdAt = Instant.now(),
           acceptedAt = null,

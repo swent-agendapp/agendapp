@@ -11,7 +11,7 @@ import java.util.Date
 object InvitationMapper : FirestoreMapper<Invitation> {
 
   const val ID_FIELD = "id"
-  const val ORGANIZATION_ID_FIELD = "organizationId"
+  const val ORGANIZATION_FIELD = "organization"
   const val CODE_FIELD = "code"
   const val CREATED_AT_FIELD = "createdAt"
   const val ACCEPTED_AT_FIELD = "acceptedAt"
@@ -21,7 +21,9 @@ object InvitationMapper : FirestoreMapper<Invitation> {
   override fun fromDocument(document: DocumentSnapshot): Invitation? {
     val id = document.getString(ID_FIELD) ?: return null
 
-    val organizationId = document.getString(ORGANIZATION_ID_FIELD) ?: return null
+    val rawOrganization = document[ORGANIZATION_FIELD] as? Map<*, *>
+    val organizationMap = rawOrganization?.mapKeys { it.key.toString() }
+    val organization = organizationMap?.let { OrganizationMapper.fromAny(it) } ?: return null
 
     val code = document.getString(CODE_FIELD) ?: return null
 
@@ -35,7 +37,7 @@ object InvitationMapper : FirestoreMapper<Invitation> {
 
     return Invitation(
         id = id,
-        organizationId = organizationId,
+        organization = organization,
         code = code,
         createdAt = createdAt,
         acceptedAt = acceptedAt,
@@ -45,7 +47,11 @@ object InvitationMapper : FirestoreMapper<Invitation> {
 
   override fun fromMap(data: Map<String, Any?>): Invitation? {
     val id = data[ID_FIELD] as? String ?: return null
-    val organizationId = data[ORGANIZATION_ID_FIELD] as? String ?: return null
+
+    val rawOrganization = data[ORGANIZATION_FIELD] as? Map<*, *>
+    val organizationMap = rawOrganization?.mapKeys { it.key.toString() }
+    val organization = organizationMap?.let { OrganizationMapper.fromAny(it) } ?: return null
+
     val code = data[CODE_FIELD] as? String ?: return null
 
     val createdAt =
@@ -66,7 +72,7 @@ object InvitationMapper : FirestoreMapper<Invitation> {
 
     return Invitation(
         id = id,
-        organizationId = organizationId,
+        organization = organization,
         code = code,
         createdAt = createdAt,
         acceptedAt = acceptedAt,
@@ -77,7 +83,7 @@ object InvitationMapper : FirestoreMapper<Invitation> {
   override fun toMap(model: Invitation): Map<String, Any?> {
     return mapOf(
         ID_FIELD to model.id,
-        ORGANIZATION_ID_FIELD to model.organizationId,
+        ORGANIZATION_FIELD to OrganizationMapper.toMap(model.organization),
         CODE_FIELD to model.code,
         CREATED_AT_FIELD to Timestamp(Date.from(model.createdAt)),
         ACCEPTED_AT_FIELD to model.acceptedAt?.let { Timestamp(Date.from(it)) },

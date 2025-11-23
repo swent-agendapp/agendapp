@@ -1,6 +1,9 @@
 package com.android.sample.model.firestoreMappersTests
 
+import com.android.sample.model.authentication.User
 import com.android.sample.model.firestoreMappers.InvitationMapper
+import com.android.sample.model.firestoreMappers.OrganizationMapper
+import com.android.sample.model.organization.Organization
 import com.android.sample.model.organization.invitation.Invitation
 import com.android.sample.model.organization.invitation.InvitationStatus
 import com.google.common.truth.Truth.assertThat
@@ -16,10 +19,19 @@ class InvitationMapperTest {
   private val createdAt = Instant.parse("2025-10-29T10:00:00Z")
   private val acceptedAt = Instant.parse("2025-10-29T12:00:00Z")
 
+  // --- Create users ---
+  private val admin = User(id = "adminA", displayName = "Admin A", email = "adminA@example.com")
+  private val member = User(id = "memberA", displayName = "Member A", email = "memberA@example.com")
+
+  // --- Create organization ---
+  private val sampleOrg =
+      Organization(
+          id = "orgA", name = "Org A", admins = listOf(admin), members = listOf(member, admin))
+
   private val sampleInvitation =
       Invitation(
           id = "inv123",
-          organizationId = "org456",
+          organization = sampleOrg,
           code = "ABCDEF",
           createdAt = createdAt,
           acceptedAt = acceptedAt,
@@ -28,26 +40,30 @@ class InvitationMapperTest {
 
   private val sampleMap: Map<String, Any?> =
       mapOf(
-          "id" to "inv123",
-          "organizationId" to "org456",
-          "code" to "ABCDEF",
-          "createdAt" to Timestamp(Date.from(createdAt)),
-          "acceptedAt" to Timestamp(Date.from(acceptedAt)),
-          "inviteeEmail" to "john@example.com",
-          "status" to "Used")
+          InvitationMapper.ID_FIELD to "inv123",
+          InvitationMapper.ORGANIZATION_FIELD to OrganizationMapper.toMap(sampleOrg),
+          InvitationMapper.CODE_FIELD to "ABCDEF",
+          InvitationMapper.CREATED_AT_FIELD to Timestamp(Date.from(createdAt)),
+          InvitationMapper.ACCEPTED_AT_FIELD to Timestamp(Date.from(acceptedAt)),
+          InvitationMapper.INVITEE_EMAIL_FIELD to "john@example.com",
+          InvitationMapper.STATUS_FIELD to "Used")
 
   // --- fromDocument tests ---
   @Test
   fun fromDocument_withValidDocument_returnsInvitation() {
     val doc = mock(DocumentSnapshot::class.java)
 
-    `when`(doc.getString("id")).thenReturn("inv123")
-    `when`(doc.getString("organizationId")).thenReturn("org456")
-    `when`(doc.getString("code")).thenReturn("ABCDEF")
-    `when`(doc.getTimestamp("createdAt")).thenReturn(Timestamp(Date.from(createdAt)))
-    `when`(doc.getTimestamp("acceptedAt")).thenReturn(Timestamp(Date.from(acceptedAt)))
-    `when`(doc.getString("inviteeEmail")).thenReturn("john@example.com")
-    `when`(doc.getString("status")).thenReturn("Used")
+    `when`(doc.getString(InvitationMapper.ID_FIELD)).thenReturn(sampleInvitation.id)
+    `when`(doc.get(InvitationMapper.ORGANIZATION_FIELD))
+        .thenReturn(OrganizationMapper.toMap(sampleOrg))
+    `when`(doc.getString(InvitationMapper.CODE_FIELD)).thenReturn(sampleInvitation.code)
+    `when`(doc.getTimestamp(InvitationMapper.CREATED_AT_FIELD))
+        .thenReturn(Timestamp(Date.from(createdAt)))
+    `when`(doc.getTimestamp(InvitationMapper.ACCEPTED_AT_FIELD))
+        .thenReturn(Timestamp(Date.from(acceptedAt)))
+    `when`(doc.getString(InvitationMapper.INVITEE_EMAIL_FIELD))
+        .thenReturn(sampleInvitation.inviteeEmail)
+    `when`(doc.getString(InvitationMapper.STATUS_FIELD)).thenReturn(sampleInvitation.status.name)
 
     val invitation = InvitationMapper.fromDocument(doc)
 
@@ -84,16 +100,16 @@ class InvitationMapperTest {
   fun fromMap_withDifferentDateTypes_parsesCorrectly() {
     // Date form
     val mapWithDate = sampleMap.toMutableMap()
-    mapWithDate["createdAt"] = Date.from(createdAt)
-    mapWithDate["acceptedAt"] = Date.from(acceptedAt)
+    mapWithDate[InvitationMapper.CREATED_AT_FIELD] = Date.from(createdAt)
+    mapWithDate[InvitationMapper.ACCEPTED_AT_FIELD] = Date.from(acceptedAt)
 
     val inv1 = InvitationMapper.fromMap(mapWithDate)
     assertThat(inv1).isEqualTo(sampleInvitation)
 
     // Long form
     val mapWithLong = sampleMap.toMutableMap()
-    mapWithLong["createdAt"] = createdAt.toEpochMilli()
-    mapWithLong["acceptedAt"] = acceptedAt.toEpochMilli()
+    mapWithLong[InvitationMapper.CREATED_AT_FIELD] = createdAt.toEpochMilli()
+    mapWithLong[InvitationMapper.ACCEPTED_AT_FIELD] = acceptedAt.toEpochMilli()
 
     val inv2 = InvitationMapper.fromMap(mapWithLong)
     assertThat(inv2).isEqualTo(sampleInvitation)
@@ -104,17 +120,21 @@ class InvitationMapperTest {
   fun fromAny_withDocument_returnsInvitation() {
     val doc = mock(DocumentSnapshot::class.java)
 
-    `when`(doc.getString("id")).thenReturn("inv123")
-    `when`(doc.getString("organizationId")).thenReturn("org456")
-    `when`(doc.getString("code")).thenReturn("ABCDEF")
-    `when`(doc.getTimestamp("createdAt")).thenReturn(Timestamp(Date.from(createdAt)))
-    `when`(doc.getTimestamp("acceptedAt")).thenReturn(Timestamp(Date.from(acceptedAt)))
-    `when`(doc.getString("inviteeEmail")).thenReturn("john@example.com")
-    `when`(doc.getString("status")).thenReturn("Used")
+    `when`(doc.getString(InvitationMapper.ID_FIELD)).thenReturn(sampleInvitation.id)
+    `when`(doc.get(InvitationMapper.ORGANIZATION_FIELD))
+        .thenReturn(OrganizationMapper.toMap(sampleOrg))
+    `when`(doc.getString(InvitationMapper.CODE_FIELD)).thenReturn(sampleInvitation.code)
+    `when`(doc.getTimestamp(InvitationMapper.CREATED_AT_FIELD))
+        .thenReturn(Timestamp(Date.from(createdAt)))
+    `when`(doc.getTimestamp(InvitationMapper.ACCEPTED_AT_FIELD))
+        .thenReturn(Timestamp(Date.from(acceptedAt)))
+    `when`(doc.getString(InvitationMapper.INVITEE_EMAIL_FIELD))
+        .thenReturn(sampleInvitation.inviteeEmail)
+    `when`(doc.getString(InvitationMapper.STATUS_FIELD)).thenReturn(sampleInvitation.status.name)
 
     val invitation = InvitationMapper.fromAny(doc)
     assertThat(invitation).isNotNull()
-    assertThat(invitation!!.id).isEqualTo("inv123")
+    assertThat(invitation).isEqualTo(sampleInvitation)
   }
 
   @Test
@@ -135,12 +155,15 @@ class InvitationMapperTest {
   fun toMap_returnsCorrectMap() {
     val map = InvitationMapper.toMap(sampleInvitation)
 
-    assertThat(map["id"]).isEqualTo(sampleInvitation.id)
-    assertThat(map["organizationId"]).isEqualTo(sampleInvitation.organizationId)
-    assertThat(map["code"]).isEqualTo(sampleInvitation.code)
-    assertThat((map["createdAt"] as Timestamp).toDate().toInstant()).isEqualTo(createdAt)
-    assertThat((map["acceptedAt"] as Timestamp).toDate().toInstant()).isEqualTo(acceptedAt)
-    assertThat(map["inviteeEmail"]).isEqualTo("john@example.com")
-    assertThat(map["status"]).isEqualTo("Used")
+    assertThat(map[InvitationMapper.ID_FIELD]).isEqualTo(sampleInvitation.id)
+    assertThat(map[InvitationMapper.ORGANIZATION_FIELD])
+        .isEqualTo(OrganizationMapper.toMap(sampleInvitation.organization))
+    assertThat(map[InvitationMapper.CODE_FIELD]).isEqualTo(sampleInvitation.code)
+    assertThat((map[InvitationMapper.CREATED_AT_FIELD] as Timestamp).toDate().toInstant())
+        .isEqualTo(createdAt)
+    assertThat((map[InvitationMapper.ACCEPTED_AT_FIELD] as Timestamp).toDate().toInstant())
+        .isEqualTo(acceptedAt)
+    assertThat(map[InvitationMapper.INVITEE_EMAIL_FIELD]).isEqualTo("john@example.com")
+    assertThat(map[InvitationMapper.STATUS_FIELD]).isEqualTo("Used")
   }
 }

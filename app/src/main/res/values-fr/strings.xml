@@ -199,5 +199,9 @@
     <string name="organization_list_title">Vos organisations</string>
     <string name="organization_loading">Chergement des organisations</string>
     <string name="organization_name_label">Nom de l’organisation</string>
+    <string name="hour_recap_results_title">Heures travaillées pour la période sélectionnée:</string>
+    <string name="hour_recap_title">Récapitulatif des heures travaillées</string>
+    <string name="hour_recap_generate">Générer le récapitulatif</string>
+    <string name="export_excel">Exporter vers Excel</string>
 
 </resources>

@@ -199,5 +199,9 @@
     <string name="organization_list_title">Ihre organisationen</string>
     <string name="organization_loading">Organisationen werden geladen</string>
     <string name="organization_name_label">Name der Organisation</string>
+    <string name="hour_recap_results_title">Geleistete Arbeitsstunden für den ausgewählten Zeitraum:</string>
+    <string name="hour_recap_title">Arbeitsstundenübersicht</string>
+    <string name="hour_recap_generate">Übersicht erstellen</string>
+    <string name="export_excel">Als Excel exportieren</string>
 
 </resources>

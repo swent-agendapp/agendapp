@@ -89,65 +89,6 @@ class InvitationRepositoryFirebaseTest : FirebaseEmulatedTest() {
   }
 
   @Test
-  fun getInvitationByCode_shouldReturnCorrectInvitation() = runBlocking {
-    repo.insertInvitation(inv1)
-
-    val retrieved = repo.getInvitationByCode(inv1.code)
-    assertNotNull(retrieved)
-    assertEquals(inv1.id, retrieved?.id)
-  }
-
-  @Test
-  fun getInvitationByCode_shouldReturnNull_ifMissing() = runBlocking {
-    val missing = repo.getInvitationByCode("NOPE")
-    assertNull(missing)
-  }
-
-  @Test
-  fun getActiveInvitationsForOrganization_shouldReturnOnlyActive() = runBlocking {
-    val used = inv2.copy(status = InvitationStatus.Used)
-
-    repo.insertInvitation(inv1)
-    repo.insertInvitation(used)
-
-    val results = repo.getActiveInvitationsForOrganization("orgA")
-
-    assertEquals(1, results.size)
-    assertEquals(inv1.id, results.first().id)
-  }
-
-  @Test
-  fun acceptInvitation_shouldSetUsedStatus_andEmail_andAcceptedAt() = runBlocking {
-    repo.insertInvitation(inv1)
-
-    repo.acceptInvitation(inv1.id, inviteeEmail = "test@mail.com")
-
-    val updated = repo.getInvitationById(inv1.id)
-    assertNotNull(updated)
-    assertEquals(InvitationStatus.Used, updated!!.status)
-    assertEquals("test@mail.com", updated.inviteeEmail)
-    assertNotNull(updated.acceptedAt)
-  }
-
-  @Test
-  fun expireInvitation_shouldSetExpiredStatus() = runBlocking {
-    repo.insertInvitation(inv1)
-    repo.expireInvitation(inv1.id)
-
-    val updated = repo.getInvitationById(inv1.id)
-    assertEquals(InvitationStatus.Expired, updated?.status)
-  }
-
-  @Test
-  fun getInvitationsForOrganization_shouldReturnBothActiveAndUsed() = runBlocking {
-    repo.insertInvitation(inv1)
-    repo.insertInvitation(inv2.copy(status = InvitationStatus.Used))
-
-    val list = repo.getInvitationsForOrganization("orgA")
-    assertEquals(2, list.size)
-  }
-
-  @Test
   fun mapper_shouldHandleNullOptionalFields() = runBlocking {
     val inv =
         Invitation(

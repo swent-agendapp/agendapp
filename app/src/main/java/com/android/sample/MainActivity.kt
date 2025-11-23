@@ -27,6 +27,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.android.sample.model.authentication.AuthRepositoryProvider
+import com.android.sample.model.organization.SelectedOrganizationRepository
 import com.android.sample.ui.authentication.SignInScreen
 import com.android.sample.ui.calendar.CalendarScreen
 import com.android.sample.ui.calendar.addEvent.AddEventScreen
@@ -166,7 +167,10 @@ fun Agendapp(
                     composable(Screen.AddOrganization.route) {
                       AddOrganizationScreen(
                           onNavigateBack = { navigationActions.navigateBack() },
-                          onFinish = { navigationActions.navigateTo(Screen.Organizations) })
+                          onFinish = {
+                            SelectedOrganizationRepository.clearSelection()
+                            navigationActions.navigateTo(Screen.Organizations)
+                          })
                     }
                   }
 

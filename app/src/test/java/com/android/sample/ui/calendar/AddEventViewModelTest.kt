@@ -5,8 +5,8 @@ import com.android.sample.model.calendar.*
 import com.android.sample.model.organization.Employee
 import com.android.sample.model.organization.EmployeeRepository
 import com.android.sample.model.organization.Role
+import com.android.sample.model.organization.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
-import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import java.time.Duration
 import java.time.Instant
 import kotlin.test.Ignore
@@ -41,7 +41,7 @@ class AddEventViewModelTest {
     repository = EventRepositoryLocal()
 
     // Set the selected organization in the provider
-    SelectedOrganizationVMProvider.viewModel.changeSelectedOrganization(selectedOrganizationID)
+    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationID)
   }
 
   @After

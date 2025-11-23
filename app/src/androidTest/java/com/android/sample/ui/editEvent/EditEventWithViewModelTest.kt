@@ -5,11 +5,11 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
+import com.android.sample.model.organization.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.editEvent.EditEventTestTags
 import com.android.sample.ui.calendar.editEvent.EditEventViewModel
 import com.android.sample.ui.calendar.editEvent.components.EditEventAttendantScreen
 import com.android.sample.ui.calendar.editEvent.components.EditEventScreen
-import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.theme.EventPalette
 import com.android.sample.ui.theme.SampleAppTheme
 import com.android.sample.utils.FakeEventRepository
@@ -37,7 +37,7 @@ class EditEventWithViewModelTest {
   @Before
   fun setup() {
     val orgId = "orgTest"
-    SelectedOrganizationVMProvider.viewModel.changeSelectedOrganization(orgId)
+    SelectedOrganizationRepository.changeSelectedOrganization(orgId)
 
     val start = now().truncatedTo(ChronoUnit.HOURS)
     sampleEvent =

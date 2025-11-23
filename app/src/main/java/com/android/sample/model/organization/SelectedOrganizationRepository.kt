@@ -1,11 +1,10 @@
-package com.android.sample.ui.organization
+package com.android.sample.model.organization
 
-import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 /** ViewModel to manage the selected organization state across the app. */
-class SelectedOrganizationViewModel : ViewModel() {
+object SelectedOrganizationRepository {
 
   private val _selectedOrganizationId = MutableStateFlow<String?>(null)
   val selectedOrganizationId: StateFlow<String?> = _selectedOrganizationId

@@ -1,9 +1,9 @@
 package com.android.sample.ui.replacement
 
 import com.android.sample.model.calendar.Event
+import com.android.sample.model.organization.SelectedOrganizationRepository
 import com.android.sample.model.replacement.*
 import com.android.sample.ui.calendar.replacementEmployee.*
-import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.theme.EventPalette
 import com.android.sample.utils.FakeEventRepository
 import java.time.Instant
@@ -38,7 +38,7 @@ class ReplacementEmployeeViewModelExtraCoverageTest {
             eventRepository = eventRepo,
             myUserId = "EMP001")
 
-    SelectedOrganizationVMProvider.viewModel.changeSelectedOrganization(selectedOrganizationId)
+    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
   }
 
   @After

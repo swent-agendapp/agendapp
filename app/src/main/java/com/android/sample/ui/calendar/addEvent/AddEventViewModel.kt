@@ -9,8 +9,7 @@ import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.calendar.createEvent
-import com.android.sample.ui.organization.SelectedOrganizationVMProvider
-import com.android.sample.ui.organization.SelectedOrganizationViewModel
+import com.android.sample.model.organization.SelectedOrganizationRepository
 import java.time.Duration
 import java.time.Instant
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -74,8 +73,7 @@ enum class AddEventStep {
 class AddEventViewModel(
     private val repository: EventRepository = EventRepositoryProvider.repository,
     private val authServ: AuthorizationService = AuthorizationService(),
-    selectedOrganizationViewModel: SelectedOrganizationViewModel =
-        SelectedOrganizationVMProvider.viewModel
+    selectedOrganizationRepository: SelectedOrganizationRepository = SelectedOrganizationRepository
 ) : ViewModel() {
   private val _uiState = MutableStateFlow(AddCalendarEventUIState())
 
@@ -83,7 +81,7 @@ class AddEventViewModel(
   val uiState: StateFlow<AddCalendarEventUIState> = _uiState.asStateFlow()
 
   val selectedOrganizationId: StateFlow<String?> =
-      selectedOrganizationViewModel.selectedOrganizationId
+      selectedOrganizationRepository.selectedOrganizationId
 
   /**
    * Builds a new event from the current UI state and delegates storage. Calls

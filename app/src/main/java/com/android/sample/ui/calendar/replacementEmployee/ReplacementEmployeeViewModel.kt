@@ -6,12 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
+import com.android.sample.model.organization.SelectedOrganizationRepository
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementRepository
 import com.android.sample.model.replacement.ReplacementRepositoryProvider
 import com.android.sample.model.replacement.ReplacementStatus
-import com.android.sample.ui.organization.SelectedOrganizationVMProvider
-import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -71,8 +70,8 @@ class ReplacementEmployeeViewModel(
     private val replacementRepository: ReplacementRepository =
         ReplacementRepositoryProvider.repository,
     private val eventRepository: EventRepository = EventRepositoryProvider.repository,
-    private val selectedOrganizationViewModel: SelectedOrganizationViewModel =
-        SelectedOrganizationVMProvider.viewModel,
+    private val selectedOrganizationRepository: SelectedOrganizationRepository =
+        SelectedOrganizationRepository,
     myUserId: String = "EMP001"
 ) : ViewModel() {
 
@@ -83,7 +82,7 @@ class ReplacementEmployeeViewModel(
   val uiState: StateFlow<ReplacementEmployeeUiState> = _uiState.asStateFlow()
 
   private val selectedOrganizationId: StateFlow<String?> =
-      selectedOrganizationViewModel.selectedOrganizationId
+      selectedOrganizationRepository.selectedOrganizationId
 
   init {
     refreshIncomingRequests()

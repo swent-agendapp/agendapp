@@ -8,8 +8,8 @@ import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepositoryLocal
 import com.android.sample.model.calendar.createEvent
+import com.android.sample.model.organization.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.CalendarScreenTestTags.DAY_HEADER_DAY_PREFIX
-import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
@@ -46,7 +46,7 @@ class CalendarEventSelectorTests : BaseCalendarScreenTest() {
     populateRepo(repo, events)
     val owner = TestOwner(CalendarVMFactory(repo))
 
-    SelectedOrganizationVMProvider.viewModel.changeSelectedOrganization(selectedOrganizationId)
+    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
 
     composeTestRule.setContent {
       CompositionLocalProvider(LocalViewModelStoreOwner provides owner) { CalendarEventSelector() }
@@ -179,13 +179,13 @@ class CalendarEventSelectorTests : BaseCalendarScreenTest() {
 
     val repo = EventRepositoryLocal()
 
-    SelectedOrganizationVMProvider.viewModel.changeSelectedOrganization(selectedOrganizationId)
+    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
     populateRepo(repo, allowedEvents, selectedOrganizationId)
 
-    SelectedOrganizationVMProvider.viewModel.changeSelectedOrganization(otherOrgId)
+    SelectedOrganizationRepository.changeSelectedOrganization(otherOrgId)
     populateRepo(repo, forbiddenEvents, otherOrgId)
 
-    SelectedOrganizationVMProvider.viewModel.changeSelectedOrganization(selectedOrganizationId)
+    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
 
     val owner = TestOwner(CalendarVMFactory(repo))
     composeTestRule.setContent {

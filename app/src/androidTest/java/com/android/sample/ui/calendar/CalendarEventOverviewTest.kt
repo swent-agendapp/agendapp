@@ -7,11 +7,11 @@ import androidx.compose.ui.test.performClick
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.calendar.createEvent
+import com.android.sample.model.organization.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.components.EventSummaryCardTags
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreen
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreenTestTags
 import com.android.sample.ui.calendar.eventOverview.EventOverviewViewModel
-import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.utils.FirebaseEmulatedTest
 import java.time.Instant
 import kotlinx.coroutines.runBlocking
@@ -38,7 +38,7 @@ class CalendarEventOverviewTest : FirebaseEmulatedTest() {
     repo = EventRepositoryProvider.repository
 
     // Ensure the right organization is selected
-    SelectedOrganizationVMProvider.viewModel.changeSelectedOrganization(selectedOrganizationId)
+    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
   }
 
   @Test

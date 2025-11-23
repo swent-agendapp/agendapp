@@ -1,7 +1,7 @@
 package com.android.sample.ui.calendar
 
 import com.android.sample.model.calendar.*
-import com.android.sample.ui.organization.SelectedOrganizationVMProvider
+import com.android.sample.model.organization.SelectedOrganizationRepository
 import java.time.Instant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -39,7 +39,7 @@ class CalendarViewModelTest {
     Dispatchers.setMain(testDispatcher)
 
     // Set the selected organization for the tests.
-    SelectedOrganizationVMProvider.viewModel.changeSelectedOrganization(orgId)
+    SelectedOrganizationRepository.changeSelectedOrganization(orgId)
 
     repository = EventRepositoryLocal()
     viewModel = CalendarViewModel(eventRepository = repository)

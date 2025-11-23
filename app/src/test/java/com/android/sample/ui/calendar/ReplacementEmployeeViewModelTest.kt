@@ -3,9 +3,9 @@ package com.android.sample.ui.calendar
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.RecurrenceStatus
+import com.android.sample.model.organization.SelectedOrganizationRepository
 import com.android.sample.model.replacement.*
 import com.android.sample.ui.calendar.replacementEmployee.ReplacementEmployeeViewModel
-import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.theme.EventPalette
 import java.time.Instant
 import kotlinx.coroutines.Dispatchers
@@ -43,7 +43,7 @@ class ReplacementEmployeeViewModelTest {
     vm = makeEmployeeVm()
 
     // Set selected organization in the VM provider
-    SelectedOrganizationVMProvider.viewModel.changeSelectedOrganization(selectedOrganizationID)
+    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationID)
   }
 
   @After

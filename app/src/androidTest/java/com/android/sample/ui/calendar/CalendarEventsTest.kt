@@ -11,7 +11,7 @@ import androidx.compose.ui.test.swipeDown
 import androidx.compose.ui.test.swipeUp
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.createEvent
-import com.android.sample.ui.organization.SelectedOrganizationVMProvider
+import com.android.sample.model.organization.SelectedOrganizationRepository
 import java.time.DayOfWeek
 import java.time.Duration
 import java.time.LocalDate
@@ -43,7 +43,7 @@ abstract class BaseEventsTest {
   fun setUp() {
     monday = LocalDate.now().with(DayOfWeek.MONDAY)
 
-    SelectedOrganizationVMProvider.viewModel.changeSelectedOrganization(selectedOrganizationId)
+    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
   }
 
   /** Converts a (LocalDate, LocalTime) to an Instant in the system zone for concise test setup. */

@@ -5,8 +5,8 @@ import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryLocal
 import com.android.sample.model.calendar.createEvent
+import com.android.sample.model.organization.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.eventOverview.EventOverviewViewModel
-import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import java.time.Instant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -46,7 +46,7 @@ class EventOverviewViewModelTest {
     Dispatchers.setMain(testDispatcher)
 
     // Set the selected organization for the tests.
-    SelectedOrganizationVMProvider.viewModel.changeSelectedOrganization(selectedOrganizationID)
+    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationID)
 
     repository = EventRepositoryLocal()
     viewModel =

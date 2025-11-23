@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
+import com.android.sample.model.organization.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.components.ValidatingTextField
 import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.theme.PaddingMedium
@@ -32,7 +33,7 @@ object AddOrganizationScreenTestTags {
 fun AddOrganizationScreen(
     addOrganizationViewModel: AddOrganizationViewModel = viewModel(),
     organizationViewModel: OrganizationViewModel = viewModel(),
-    selectedOrganizationViewModel: SelectedOrganizationViewModel = viewModel(),
+    selectedOrganizationRepository: SelectedOrganizationRepository = SelectedOrganizationRepository,
     onNavigateBack: () -> Unit = {},
     onFinish: () -> Unit = {},
 ) {
@@ -64,7 +65,7 @@ fun AddOrganizationScreen(
                   if (organizationName != null) {
                     organizationViewModel.addOrganizationFromName(organizationName)
                   }
-                  selectedOrganizationViewModel.clearSelection()
+                  selectedOrganizationRepository.clearSelection()
                   onFinish()
                 },
                 onBack = onNavigateBack,

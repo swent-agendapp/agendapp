@@ -7,8 +7,7 @@ import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.calendar.RecurrenceStatus
-import com.android.sample.ui.organization.SelectedOrganizationVMProvider
-import com.android.sample.ui.organization.SelectedOrganizationViewModel
+import com.android.sample.model.organization.SelectedOrganizationRepository
 import com.android.sample.ui.theme.EventPalette
 import java.time.Duration
 import java.time.Instant
@@ -54,15 +53,14 @@ enum class EditEventStep {
  */
 class EditEventViewModel(
     private val repository: EventRepository = EventRepositoryProvider.repository,
-    selectedOrganizationViewModel: SelectedOrganizationViewModel =
-        SelectedOrganizationVMProvider.viewModel
+    selectedOrganizationRepository: SelectedOrganizationRepository = SelectedOrganizationRepository
 ) : ViewModel() {
 
   private val _uiState = MutableStateFlow(EditCalendarEventUIState())
   val uiState: StateFlow<EditCalendarEventUIState> = _uiState.asStateFlow()
 
   val selectedOrganizationId: StateFlow<String?> =
-      selectedOrganizationViewModel.selectedOrganizationId
+      selectedOrganizationRepository.selectedOrganizationId
 
   fun saveEditEventChanges() {
     viewModelScope.launch {

@@ -1,0 +1,37 @@
+package com.android.sample.model.organization.invitation
+
+import com.android.sample.model.constants.FirestoreConstants.INVITATIONS_COLLECTION_PATH
+import com.android.sample.model.firestoreMappers.InvitationMapper
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
+
+class InvitationRepositoryFirebase(private val db: FirebaseFirestore) : InvitationRepository {
+
+  private val collection
+    get() = db.collection(INVITATIONS_COLLECTION_PATH)
+
+  override suspend fun getAllInvitations(): List<Invitation> {
+    val snapshot = collection.get().await()
+    return snapshot.mapNotNull { InvitationMapper.fromDocument(it) }
+  }
+
+  override suspend fun insertInvitation(item: Invitation) {
+    collection.document(item.id).set(InvitationMapper.toMap(model = item)).await()
+  }
+
+  override suspend fun updateInvitation(itemId: String, item: Invitation) {
+    require(item.id == itemId) {
+      "Mismatched IDs: updated item id ${item.id} does not match target id $itemId"
+    }
+    collection.document(itemId).set(InvitationMapper.toMap(item)).await()
+  }
+
+  override suspend fun deleteInvitation(itemId: String) {
+    collection.document(itemId).delete().await()
+  }
+
+  override suspend fun getInvitationById(itemId: String): Invitation? {
+    val doc = collection.document(itemId).get().await()
+    return InvitationMapper.fromDocument(doc)
+  }
+}

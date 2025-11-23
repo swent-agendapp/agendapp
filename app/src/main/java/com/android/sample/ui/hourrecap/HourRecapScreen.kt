@@ -24,6 +24,8 @@ import com.android.sample.ui.theme.heightSmall
 import java.time.LocalDate
 
 // Modularization assisted by AI
+
+/** Test tags for HourRecapScreen UI tests. */
 object HourRecapTestTags {
   const val SCREEN_ROOT = "hour_recap_screen_root"
   const val TOP_BAR = "hour_recap_top_bar"

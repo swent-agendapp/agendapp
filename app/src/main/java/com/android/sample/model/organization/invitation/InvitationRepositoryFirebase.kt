@@ -1,5 +1,6 @@
 package com.android.sample.model.organization.invitation
 
+import com.android.sample.model.authentication.User
 import com.android.sample.model.constants.FirestoreConstants.INVITATIONS_COLLECTION_PATH
 import com.android.sample.model.firestoreMappers.InvitationMapper
 import com.google.firebase.firestore.FirebaseFirestore
@@ -15,11 +16,15 @@ class InvitationRepositoryFirebase(private val db: FirebaseFirestore) : Invitati
     return snapshot.mapNotNull { InvitationMapper.fromDocument(it) }
   }
 
-  override suspend fun insertInvitation(item: Invitation) {
+  override suspend fun insertInvitation(item: Invitation, user: User) {
+    // Calls the interface check to ensure the user is an admin
+    super.insertInvitation(item, user)
     collection.document(item.id).set(InvitationMapper.toMap(model = item)).await()
   }
 
-  override suspend fun updateInvitation(itemId: String, item: Invitation) {
+  override suspend fun updateInvitation(itemId: String, item: Invitation, user: User) {
+    // Calls the interface check to ensure the user has the right to update the invitation
+    super.updateInvitation(itemId, item, user)
     require(item.id == itemId) {
       "Mismatched IDs: updated item id ${item.id} does not match target id $itemId"
     }

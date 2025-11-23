@@ -1,6 +1,8 @@
 package com.android.sample.model.invitationRepositoryTest
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.sample.model.authentication.User
+import com.android.sample.model.organization.Organization
 import com.android.sample.model.organization.invitation.Invitation
 import com.android.sample.model.organization.invitation.InvitationRepositoryFirebase
 import com.android.sample.model.organization.invitation.InvitationStatus
@@ -20,7 +22,10 @@ class InvitationRepositoryFirebaseTest : FirebaseEmulatedTest() {
 
   private lateinit var repo: InvitationRepositoryFirebase
   private lateinit var db: FirebaseFirestore
-
+  private lateinit var admin: User
+  private lateinit var member: User
+  private lateinit var outsider: User
+  private lateinit var orgA: Organization
   private lateinit var inv1: Invitation
   private lateinit var inv2: Invitation
 
@@ -30,26 +35,36 @@ class InvitationRepositoryFirebaseTest : FirebaseEmulatedTest() {
     db = FirebaseFirestore.getInstance()
     repo = InvitationRepositoryFirebase(db)
 
-    inv1 = Invitation.create(organizationId = "orgA")
+    // --- Create users ---
+    admin = User(id = "adminA", displayName = "Admin A", email = "adminA@example.com")
+    member = User(id = "memberA", displayName = "Member A", email = "memberA@example.com")
+    outsider = User(id = "outsider", displayName = "Outsider", email = "outsider@example.com")
 
-    inv2 = Invitation.create(organizationId = "orgA")
+    // --- Create organization ---
+    orgA =
+        Organization(
+            id = "orgA", name = "Org A", admins = listOf(admin), members = listOf(member, admin))
+
+    inv1 = Invitation.create(organization = orgA)
+
+    inv2 = Invitation.create(organization = orgA)
   }
 
   @Test
-  fun insert_and_getById_shouldReturnSame() = runBlocking {
-    repo.insertInvitation(inv1)
+  fun admin_can_insert_and_getById_shouldReturnSame() = runBlocking {
+    repo.insertInvitation(inv1, admin)
     val retrieved = repo.getInvitationById(inv1.id)
 
     assertNotNull(retrieved)
     assertEquals(inv1.id, retrieved?.id)
     assertEquals(inv1.code, retrieved?.code)
-    assertEquals(inv1.organizationId, retrieved?.organizationId)
+    assertEquals(inv1.organization, retrieved?.organization)
   }
 
   @Test
-  fun getAllInvitations_shouldReturnAllInserted() = runBlocking {
-    repo.insertInvitation(inv1)
-    repo.insertInvitation(inv2)
+  fun admin_can_insert_and_getAllInvitations_shouldReturnAllInserted() = runBlocking {
+    repo.insertInvitation(inv1, admin)
+    repo.insertInvitation(inv2, admin)
 
     val all = repo.getAllInvitations()
     assertEquals(2, all.size)
@@ -57,10 +72,10 @@ class InvitationRepositoryFirebaseTest : FirebaseEmulatedTest() {
 
   @Test
   fun updateInvitation_shouldModifyFields() = runBlocking {
-    repo.insertInvitation(inv1)
+    repo.insertInvitation(inv1, admin)
 
     val updated = inv1.copy(code = "UPDATED")
-    repo.updateInvitation(inv1.id, updated)
+    repo.updateInvitation(inv1.id, updated, admin)
 
     val retrieved = repo.getInvitationById(inv1.id)
     assertEquals("UPDATED", retrieved?.code)
@@ -68,11 +83,11 @@ class InvitationRepositoryFirebaseTest : FirebaseEmulatedTest() {
 
   @Test
   fun updateInvitation_throws_when_IDs_do_not_match() = runBlocking {
-    repo.insertInvitation(inv1)
+    repo.insertInvitation(inv1, admin)
 
     val exception =
         assertThrows(IllegalArgumentException::class.java) {
-          runBlocking { repo.updateInvitation(inv1.id, inv2) }
+          runBlocking { repo.updateInvitation(inv1.id, inv2, admin) }
         }
 
     assertEquals(
@@ -81,8 +96,28 @@ class InvitationRepositoryFirebaseTest : FirebaseEmulatedTest() {
   }
 
   @Test
+  fun nonAdmin_cannotInsertInvitation_throwsException() = runBlocking {
+    val exception =
+        assertThrows(IllegalArgumentException::class.java) {
+          runBlocking { repo.insertInvitation(inv1, outsider) }
+        }
+    assertEquals("Only organization admins can create invitations.", exception.message)
+  }
+
+  @Test
+  fun nonAdmin_cannotActivateInvitation_throwsException() = runBlocking {
+    repo.insertInvitation(inv1.copy(status = InvitationStatus.Used), admin)
+    val updated = inv1.copy(status = InvitationStatus.Active)
+    val exception =
+        assertThrows(IllegalArgumentException::class.java) {
+          runBlocking { repo.updateInvitation(inv1.id, updated, outsider) }
+        }
+    assertEquals("Only organization admins can activate invitations.", exception.message)
+  }
+
+  @Test
   fun deleteInvitation_shouldRemoveDocument() = runBlocking {
-    repo.insertInvitation(inv1)
+    repo.insertInvitation(inv1, admin)
     repo.deleteInvitation(inv1.id)
 
     assertNull(repo.getInvitationById(inv1.id))
@@ -93,14 +128,14 @@ class InvitationRepositoryFirebaseTest : FirebaseEmulatedTest() {
     val inv =
         Invitation(
             id = "nulltest",
-            organizationId = "orgA",
+            organization = orgA,
             code = "AAAAAA",
             createdAt = Instant.now(),
             acceptedAt = null,
             inviteeEmail = null,
             status = InvitationStatus.Active)
 
-    repo.insertInvitation(inv)
+    repo.insertInvitation(inv, admin)
     val retrieved = repo.getInvitationById("nulltest")
 
     assertNotNull(retrieved)

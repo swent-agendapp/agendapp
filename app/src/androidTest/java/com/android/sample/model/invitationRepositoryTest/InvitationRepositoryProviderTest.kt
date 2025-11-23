@@ -1,5 +1,6 @@
 package com.android.sample.model.invitationRepositoryTest
 
+import com.android.sample.model.authentication.User
 import com.android.sample.model.organization.invitation.Invitation
 import com.android.sample.model.organization.invitation.InvitationRepository
 import com.android.sample.model.organization.invitation.InvitationRepositoryProvider
@@ -19,9 +20,9 @@ class InvitationRepositoryProviderTest {
         object : InvitationRepository {
           override suspend fun getAllInvitations(): List<Invitation> = emptyList()
 
-          override suspend fun insertInvitation(item: Invitation) {}
+          override suspend fun insertInvitation(item: Invitation, user: User) {}
 
-          override suspend fun updateInvitation(itemId: String, item: Invitation) {}
+          override suspend fun updateInvitation(itemId: String, item: Invitation, user: User) {}
 
           override suspend fun deleteInvitation(itemId: String) {}
 

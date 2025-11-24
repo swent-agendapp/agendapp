@@ -54,6 +54,9 @@ object ReplacementUpcomingTestTags {
  * A replacement is considered "upcoming" if:
  * - it's status is [ReplacementStatus.Accepted]
  * - it's event start date is in the future
+ *
+ *     @param replacements List of replacements to display
+ *     @param onNavigateBack Callback invoked when the user presses the back button in the top bar
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

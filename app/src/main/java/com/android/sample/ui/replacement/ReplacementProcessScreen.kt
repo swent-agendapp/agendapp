@@ -51,18 +51,17 @@ object ProcessReplacementTestTags {
 
   fun memberTag(name: String): String = MEMBER_PREFIX + name
 }
-
+private val DefaultCandidates = listOf("Emilien", "Haobin", "Noa", "Weifeng", "Timael", "Méline", "Nathan")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProcessReplacementScreen(
     replacementId: String,
+    candidates: List<String> = DefaultCandidates,
     onSendRequests: (List<String>) -> Unit = {},
     onBack: () -> Unit = {},
 ) {
   val replacement =
       remember(replacementId) { getMockReplacements().first { it.id == replacementId } }
-
-  val candidates = listOf("Emilien", "Haobin", "Noa", "Weifeng", "Timael", "Méline", "Nathan")
 
   var selectedMembers by remember { mutableStateOf(setOf<String>()) }
 

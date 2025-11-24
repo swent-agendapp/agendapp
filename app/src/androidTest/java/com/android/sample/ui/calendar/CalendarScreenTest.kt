@@ -7,6 +7,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
@@ -47,6 +48,8 @@ abstract class BaseCalendarScreenTest {
 
   @get:Rule open val composeTestRule = createComposeRule()
 
+  val selectedOrganizationId = "orgTest"
+
   /** Converts a (LocalDate, LocalTime) to an Instant in the system zone for concise test setup. */
   protected fun at(date: LocalDate, time: LocalTime) =
       date
@@ -61,7 +64,10 @@ abstract class BaseCalendarScreenTest {
    * Returns true if the node with [tag] intersects the root viewport (no assertions/exceptions).
    */
   protected fun isInViewport(tag: String): Boolean {
-    val node = composeTestRule.onNodeWithTag(tag).fetchSemanticsNode()
+    val nodes = composeTestRule.onAllNodesWithTag(tag).fetchSemanticsNodes()
+    if (nodes.isEmpty()) return false
+
+    val node = nodes.first()
     val root = composeTestRule.onRoot().fetchSemanticsNode()
     val nb = node.boundsInRoot
     val rb = root.boundsInRoot
@@ -184,7 +190,9 @@ abstract class BaseCalendarScreenTest {
 
     // Events that belong to the CURRENT visible week
     val current =
+        // Current week
         createEvent(
+            organizationId = selectedOrganizationId,
             title = "First Event",
             startDate = at(thisWeekMonday.plusDays(1), LocalTime.of(9, 30)), // Tue 09:30–11:30
             endDate = at(thisWeekMonday.plusDays(1), LocalTime.of(9, 30)).plus(Duration.ofHours(2)),
@@ -192,6 +200,7 @@ abstract class BaseCalendarScreenTest {
             participants = setOf("Alice", "Bob"),
         ) +
             createEvent(
+                organizationId = selectedOrganizationId,
                 title = "Nice Event",
                 startDate = at(thisWeekMonday.plusDays(2), LocalTime.of(14, 0)), // Wed 14:00–18:00
                 endDate =
@@ -200,6 +209,7 @@ abstract class BaseCalendarScreenTest {
                 participants = setOf("Charlie", "David"),
             ) +
             createEvent(
+                organizationId = selectedOrganizationId,
                 title = "Top Event",
                 startDate = at(thisWeekMonday.plusDays(3), LocalTime.of(11, 0)), // Thu 11:00–13:00
                 endDate =
@@ -212,6 +222,7 @@ abstract class BaseCalendarScreenTest {
     val next =
         // Next week
         createEvent(
+            organizationId = selectedOrganizationId,
             title = "Next Event",
             startDate = at(thisWeekMonday.plusWeeks(1), LocalTime.of(10, 0)), // Mon 10:00–13:00
             endDate =
@@ -220,6 +231,7 @@ abstract class BaseCalendarScreenTest {
             participants = setOf("Alice", "Bob"),
         ) +
             createEvent(
+                organizationId = selectedOrganizationId,
                 title = "Later Event",
                 startDate = at(thisWeekMonday.plusWeeks(1).plusDays(3), LocalTime.of(16, 0)), // Thu
                 endDate =
@@ -231,7 +243,9 @@ abstract class BaseCalendarScreenTest {
 
     // Events that belong to the PREVIOUS week (should appear after swipe-right)
     val previous =
+        // Previous week
         createEvent(
+            organizationId = selectedOrganizationId,
             title = "Previous Event",
             startDate = at(thisWeekMonday.minusWeeks(1).plusDays(1), LocalTime.of(17, 0)),
             endDate =
@@ -241,6 +255,7 @@ abstract class BaseCalendarScreenTest {
             participants = setOf("Alice", "Bob"),
         ) +
             createEvent(
+                organizationId = selectedOrganizationId,
                 title = "Earlier Event",
                 startDate = at(thisWeekMonday.minusWeeks(1).plusDays(4), LocalTime.of(8, 0)),
                 endDate =
@@ -258,9 +273,13 @@ abstract class BaseCalendarScreenTest {
    * Inserts [events] into the given in-memory local repository. Preload the repo with our test
    * events before composing the screen.
    */
-  protected fun populateRepo(repo: EventRepositoryLocal, events: List<Event>) = runBlocking {
+  protected fun populateRepo(
+      repo: EventRepositoryLocal,
+      events: List<Event>,
+      orgId: String = selectedOrganizationId
+  ) = runBlocking {
     // Synchronously insert events so data is ready when the UI composes
-    events.forEach { repo.insertEvent(it) }
+    events.forEach { repo.insertEvent(orgId = orgId, item = it) }
   }
 
   /**

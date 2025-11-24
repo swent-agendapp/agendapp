@@ -11,6 +11,7 @@ import androidx.compose.ui.test.swipeDown
 import androidx.compose.ui.test.swipeUp
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.createEvent
+import com.android.sample.model.organization.SelectedOrganizationRepository
 import java.time.DayOfWeek
 import java.time.Duration
 import java.time.LocalDate
@@ -34,11 +35,15 @@ abstract class BaseEventsTest {
 
   @get:Rule val compose = createComposeRule()
 
+  val selectedOrganizationId = "orgTest"
+
   protected lateinit var monday: LocalDate
 
   @Before
-  fun setupMonday() {
+  fun setUp() {
     monday = LocalDate.now().with(DayOfWeek.MONDAY)
+
+    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
   }
 
   /** Converts a (LocalDate, LocalTime) to an Instant in the system zone for concise test setup. */
@@ -106,6 +111,7 @@ abstract class BaseEventsTest {
    */
   protected fun ev(title: String, date: LocalDate, start: LocalTime, duration: Duration): Event =
       createEvent(
+          organizationId = selectedOrganizationId,
           title = title,
           startDate = at(date, start),
           endDate = at(date, start).plus(duration),
@@ -369,7 +375,9 @@ class EventsOverlapTests : BaseEventsTest() {
     val thursday = LocalDate.now().with(DayOfWeek.THURSDAY)
 
     val events =
+        // Event Monday→Thursday [Mon 12:00 - Thu 12:00] — multi-day spanning > 2 days
         createEvent(
+            organizationId = selectedOrganizationId,
             title = "Multi-day 3+",
             startDate = at(monday, LocalTime.of(12, 0)),
             endDate = at(thursday, LocalTime.of(12, 0)),
@@ -522,7 +530,9 @@ class EventsValidationTests : BaseEventsTest() {
     val start = at(monday, LocalTime.of(10, 0))
 
     val events =
+        // Event on Monday [10:00 - 10:00] — zero-duration should not render
         createEvent(
+            organizationId = selectedOrganizationId,
             title = "Zero Duration Event",
             startDate = start,
             endDate = start, // same instant
@@ -543,6 +553,7 @@ class EventsValidationTests : BaseEventsTest() {
 
     assertThrows(IllegalArgumentException::class.java) {
       createEvent(
+          organizationId = selectedOrganizationId,
           title = "Negative Duration Event",
           startDate = start,
           endDate = end,
@@ -571,6 +582,7 @@ class EventsWeekBoundaryTests : BaseEventsTest() {
 
     val events =
         createEvent(
+            organizationId = selectedOrganizationId,
             title = "Week Boundary Event",
             startDate = at(previousSunday, LocalTime.of(22, 0)),
             endDate = at(monday, LocalTime.of(10, 0)),
@@ -593,6 +605,7 @@ class EventsWeekBoundaryTests : BaseEventsTest() {
 
     val events =
         createEvent(
+            organizationId = selectedOrganizationId,
             title = "Current Week Boundary Event",
             startDate = at(currentSunday, LocalTime.of(22, 0)),
             endDate = at(nextMonday, LocalTime.of(10, 0)),

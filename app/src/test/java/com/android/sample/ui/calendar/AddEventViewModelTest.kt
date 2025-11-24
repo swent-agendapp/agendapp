@@ -5,6 +5,7 @@ import com.android.sample.model.calendar.*
 import com.android.sample.model.organization.Employee
 import com.android.sample.model.organization.EmployeeRepository
 import com.android.sample.model.organization.Role
+import com.android.sample.model.organization.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
 import java.time.Duration
 import java.time.Instant
@@ -32,10 +33,15 @@ class AddEventViewModelTest {
   private val testDispatcher = StandardTestDispatcher()
   private lateinit var repository: EventRepository
 
+  private val selectedOrganizationID: String = "org123"
+
   @Before
   fun setUp() {
     Dispatchers.setMain(testDispatcher)
     repository = EventRepositoryLocal()
+
+    // Set the selected organization in the provider
+    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationID)
   }
 
   @After
@@ -154,7 +160,7 @@ class AddEventViewModelTest {
     vm.addEvent()
     testDispatcher.scheduler.advanceUntilIdle() // run pending coroutines
 
-    val events = repository.getAllEvents()
+    val events = repository.getAllEvents(orgId = selectedOrganizationID)
     assertTrue(events.any { it.title == "Meeting" && it.description == "Team sync" })
   }
 
@@ -170,7 +176,7 @@ class AddEventViewModelTest {
     vm.addEvent()
     testDispatcher.scheduler.advanceUntilIdle()
 
-    val events = repository.getAllEvents()
+    val events = repository.getAllEvents(orgId = selectedOrganizationID)
     assertTrue(events.any { it.title == "Meeting" && it.description == "Team sync" })
   }
 
@@ -187,7 +193,7 @@ class AddEventViewModelTest {
     vm.addEvent()
     testDispatcher.scheduler.advanceUntilIdle()
 
-    val events = repository.getAllEvents()
+    val events = repository.getAllEvents(orgId = selectedOrganizationID)
     assertTrue(events.isEmpty())
   }
 

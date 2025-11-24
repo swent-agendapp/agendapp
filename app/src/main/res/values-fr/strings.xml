@@ -118,7 +118,7 @@
     <string name="top_bar_logout_content_description">Déconnexion</string>
     <string name="organize_replacement">Organiser un remplacement</string>
     <string name="process_replacement">Remplacement à traiter</string>
-    <string name="waiting_confirmation_replacement">En attente de confirmation du remplacement</string>
+    <string name="waiting_confirmation_replacement">Demandes de remplacement</string>
     <!-- Map (Translated by AI)-->
     <string name="delimit_organization_title">Délimitez votre organisation</string>
     <string name="create_area_button">Créer une zone</string>

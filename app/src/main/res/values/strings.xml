@@ -28,7 +28,7 @@
     <string name="replacement">Replacement</string>
     <string name="organize_replacement">Organize a replacement</string>
     <string name="process_replacement">Replacement to process</string>
-    <string name="waiting_confirmation_replacement">Waiting replacement confirmation</string>
+    <string name="waiting_confirmation_replacement">Replacement request</string>
     <string name="confirmed_replacements">Upcoming replacements</string>
 
     <!-- Common -->

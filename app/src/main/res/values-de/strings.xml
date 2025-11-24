@@ -117,7 +117,7 @@
     <string name="top_bar_logout_content_description">Abmelden</string>
     <string name="organize_replacement">Einen Ersatz organisieren</string>
     <string name="process_replacement">Ersatz zur Bearbeitung</string>
-    <string name="waiting_confirmation_replacement">Warten auf Bestätigung des Ersatzes</string>
+    <string name="waiting_confirmation_replacement">Einen Ersatz auswählen</string>
 
     <!-- Map (Translated by AI)-->
     <string name="delimit_organization_title">Begrenzen Sie Ihre Organisation</string>

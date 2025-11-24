@@ -27,7 +27,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.android.sample.R
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementStatus
@@ -35,6 +34,7 @@ import com.android.sample.model.replacement.mockData.getMockReplacements
 import com.android.sample.ui.calendar.utils.DateTimeUtils.DATE_FORMAT_PATTERN
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingMedium
+import com.android.sample.ui.theme.SmallCardElevation
 import com.android.sample.ui.theme.SpacingMedium
 import com.android.sample.ui.theme.SpacingSmall
 import java.time.Instant
@@ -113,7 +113,7 @@ private fun ReplacementUpcomingCard(replacement: Replacement) {
       modifier =
           Modifier.fillMaxWidth().testTag(ReplacementUpcomingTestTags.itemTag(replacement.id)),
       shape = RoundedCornerShape(CornerRadiusLarge),
-      elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)) {
+      elevation = CardDefaults.cardElevation(defaultElevation = SmallCardElevation)) {
         Column(modifier = Modifier.fillMaxWidth().padding(PaddingMedium)) {
           Text(
               text = replacement.event.title,

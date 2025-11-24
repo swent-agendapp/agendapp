@@ -111,15 +111,20 @@ class InvitationRepositoryLocalTest {
   @Test
   fun deleteInvitation_success() = runBlocking {
     repository.insertInvitation(invitation, admin)
-
-    repository.deleteInvitation(invitation.id)
+    repository.deleteInvitation(invitation.id, admin)
 
     assertNull(repository.getInvitationById(invitation.id))
     assertTrue(repository.getAllInvitations().isEmpty())
   }
 
   @Test(expected = IllegalArgumentException::class)
+  fun deleteInvitationByNonAdmin_fails() = runBlocking {
+    repository.insertInvitation(invitation, admin)
+    repository.deleteInvitation(invitation.id, member)
+  }
+
+  @Test(expected = IllegalArgumentException::class)
   fun deleteNonexistentInvitation_fails() = runBlocking {
-    repository.deleteInvitation(UUID.randomUUID().toString())
+    repository.deleteInvitation(UUID.randomUUID().toString(), admin)
   }
 }

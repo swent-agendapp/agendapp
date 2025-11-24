@@ -31,7 +31,9 @@ class InvitationRepositoryFirebase(private val db: FirebaseFirestore) : Invitati
     collection.document(itemId).set(InvitationMapper.toMap(item)).await()
   }
 
-  override suspend fun deleteInvitation(itemId: String) {
+  override suspend fun deleteInvitation(itemId: String, user: User) {
+    // Calls the interface check to ensure the user has the right to delete the invitation
+    super.deleteInvitation(itemId, user)
     collection.document(itemId).delete().await()
   }
 

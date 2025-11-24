@@ -24,7 +24,7 @@ class InvitationRepositoryProviderTest {
 
           override suspend fun updateInvitation(itemId: String, item: Invitation, user: User) {}
 
-          override suspend fun deleteInvitation(itemId: String) {}
+          override suspend fun deleteInvitation(itemId: String, user: User) {}
 
           override suspend fun getInvitationById(itemId: String): Invitation? = null
         }

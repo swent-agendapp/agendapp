@@ -118,9 +118,19 @@ class InvitationRepositoryFirebaseTest : FirebaseEmulatedTest() {
   @Test
   fun deleteInvitation_shouldRemoveDocument() = runBlocking {
     repo.insertInvitation(inv1, admin)
-    repo.deleteInvitation(inv1.id)
+    repo.deleteInvitation(inv1.id, admin)
 
     assertNull(repo.getInvitationById(inv1.id))
+  }
+
+  @Test
+  fun nonAdmin_cannotDeleteInvitation_throwsException() = runBlocking {
+    repo.insertInvitation(inv1, admin)
+    val exception =
+        assertThrows(IllegalArgumentException::class.java) {
+          runBlocking { repo.deleteInvitation(inv1.id, outsider) }
+        }
+    assertEquals("Only organization admins can delete invitations.", exception.message)
   }
 
   @Test

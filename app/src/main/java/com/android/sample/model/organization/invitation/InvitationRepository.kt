@@ -52,7 +52,14 @@ interface InvitationRepository {
    * @param itemId The unique identifier of the invitation.
    * @throws IllegalArgumentException if the itemId does not exist.
    */
-  suspend fun deleteInvitation(itemId: String) {}
+  suspend fun deleteInvitation(itemId: String, user: User) {
+    val organization =
+        getInvitationById(itemId)?.organization
+            ?: throw IllegalArgumentException("Invitation with id $itemId does not exist.")
+    require(organization.admins.contains(user)) {
+      "Only organization admins can delete invitations."
+    }
+  }
 
   /**
    * Retrieves an invitation by its unique identifier.

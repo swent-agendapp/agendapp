@@ -29,7 +29,9 @@ class InvitationRepositoryLocal : InvitationRepository {
     invitations[index] = item
   }
 
-  override suspend fun deleteInvitation(itemId: String) {
+  override suspend fun deleteInvitation(itemId: String, user: User) {
+    // Calls the interface check to ensure the user has the right to delete the invitation
+    super.deleteInvitation(itemId, user)
     val index = invitations.indexOfFirst { it.id == itemId }
     require(index != -1) { "Invitation with id $itemId does not exist." }
     invitations.removeAt(index)

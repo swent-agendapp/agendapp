@@ -4,9 +4,9 @@ import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.sample.R
-import com.android.sample.ui.calendar.replacementEmployee.ReplacementEmployeeFlow
-import com.android.sample.ui.calendar.replacementEmployee.components.ReplacementEmployeeCreateTestTags
-import com.android.sample.ui.calendar.replacementEmployee.components.ReplacementEmployeeListTestTags
+import com.android.sample.ui.replacement.employee.ReplacementEmployeeFlow
+import com.android.sample.ui.replacement.employee.components.ReplacementEmployeeCreateTestTags
+import com.android.sample.ui.replacement.employee.components.ReplacementEmployeeListTestTags
 import org.junit.Rule
 import org.junit.Test
 

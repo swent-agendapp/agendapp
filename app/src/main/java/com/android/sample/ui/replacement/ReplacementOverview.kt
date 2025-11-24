@@ -5,7 +5,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.GroupAdd
 import androidx.compose.material.icons.filled.QuestionAnswer
-import androidx.compose.material.icons.filled.Work
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -58,11 +57,6 @@ fun ReplacementOverviewScreen(
               Icons.Default.GroupAdd,
               ReplacementOverviewTestTags.CARD_ORGANIZE,
               onClick = onOrganizeClick),
-          ButtonItem(
-              stringResource(R.string.process_replacement),
-              Icons.Default.Work,
-              ReplacementOverviewTestTags.CARD_PROCESS,
-              onClick = onProcessClick),
           ButtonItem(
               stringResource(R.string.waiting_confirmation_replacement),
               Icons.Default.QuestionAnswer,

@@ -1,4 +1,4 @@
-package com.android.sample.ui.calendar.replacementEmployee
+package com.android.sample.ui.replacement.employee
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -7,11 +7,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.model.replacement.Replacement
-import com.android.sample.ui.calendar.replacementEmployee.components.ReplacementCreateScreen
-import com.android.sample.ui.calendar.replacementEmployee.components.ReplacementEmployeeListScreen
-import com.android.sample.ui.calendar.replacementEmployee.components.ReplacementRequestUi
 import com.android.sample.ui.replacement.components.SelectDateRangeScreen
 import com.android.sample.ui.replacement.components.SelectEventScreen
+import com.android.sample.ui.replacement.employee.components.ReplacementCreateScreen
+import com.android.sample.ui.replacement.employee.components.ReplacementEmployeeListScreen
+import com.android.sample.ui.replacement.employee.components.ReplacementRequestUi
 import java.time.ZoneId
 
 // Assisted by AI

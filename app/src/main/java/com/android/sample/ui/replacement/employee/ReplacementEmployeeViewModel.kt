@@ -1,4 +1,4 @@
-package com.android.sample.ui.calendar.replacementEmployee
+package com.android.sample.ui.replacement.employee
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

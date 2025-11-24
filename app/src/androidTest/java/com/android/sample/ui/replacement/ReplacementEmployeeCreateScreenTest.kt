@@ -2,8 +2,8 @@ package com.android.sample.ui.replacement
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import com.android.sample.ui.calendar.replacementEmployee.components.ReplacementCreateScreen
-import com.android.sample.ui.calendar.replacementEmployee.components.ReplacementEmployeeCreateTestTags
+import com.android.sample.ui.replacement.employee.components.ReplacementCreateScreen
+import com.android.sample.ui.replacement.employee.components.ReplacementEmployeeCreateTestTags
 import com.android.sample.ui.theme.SampleAppTheme
 import org.junit.Rule
 import org.junit.Test

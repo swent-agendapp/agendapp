@@ -4,7 +4,7 @@ import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.replacement.*
-import com.android.sample.ui.calendar.replacementEmployee.ReplacementEmployeeViewModel
+import com.android.sample.ui.replacement.employee.ReplacementEmployeeViewModel
 import com.android.sample.ui.theme.EventPalette
 import java.time.Instant
 import kotlinx.coroutines.Dispatchers

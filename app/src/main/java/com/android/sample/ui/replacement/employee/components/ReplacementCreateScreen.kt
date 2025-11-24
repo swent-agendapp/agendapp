@@ -1,4 +1,4 @@
-package com.android.sample.ui.calendar.replacementEmployee.components
+package com.android.sample.ui.replacement.employee.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*

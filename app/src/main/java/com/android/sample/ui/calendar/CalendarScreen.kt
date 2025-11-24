@@ -24,10 +24,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.model.calendar.Event
-import com.android.sample.model.organization.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.style.CalendarDefaults.DefaultDateRange
 import com.android.sample.ui.common.FloatingButton
 import com.android.sample.ui.common.MainPageTopBar
+import com.android.sample.ui.organization.SelectedOrganizationVMProvider
+import com.android.sample.ui.organization.SelectedOrganizationViewModel
 
 object CalendarScreenTestTags {
   // Top-level calendar screen tags
@@ -63,7 +64,8 @@ object CalendarScreenTestTags {
 @Composable
 fun CalendarScreen(
     calendarViewModel: CalendarViewModel = viewModel(),
-    selectedOrganizationRepository: SelectedOrganizationRepository = SelectedOrganizationRepository,
+    selectedOrganizationViewModel: SelectedOrganizationViewModel =
+        SelectedOrganizationVMProvider.viewModel,
     onCreateEvent: () -> Unit = {},
     onEventClick: (Event) -> Unit = {}
 ) {
@@ -72,7 +74,7 @@ fun CalendarScreen(
 
   val context = LocalContext.current
   val uiState by calendarViewModel.uiState.collectAsState()
-  val selectedOrgId by selectedOrganizationRepository.selectedOrganizationId.collectAsState()
+  val selectedOrgId by selectedOrganizationViewModel.selectedOrganizationId.collectAsState()
 
   val configuration = LocalConfiguration.current
   val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT

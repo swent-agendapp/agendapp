@@ -7,7 +7,6 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.organization.Organization
-import com.android.sample.model.organization.SelectedOrganizationRepository
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -19,7 +18,7 @@ class OrganizationListScreenTest {
   @get:Rule val composeTestRule = createComposeRule()
 
   private lateinit var fakeViewModel: FakeOrganizationViewModel
-  private lateinit var selectedOrgRepo: SelectedOrganizationRepository
+  private lateinit var selectedOrgVM: SelectedOrganizationViewModel
 
   private val organizations =
       listOf(
@@ -29,7 +28,7 @@ class OrganizationListScreenTest {
   @Before
   fun setUp() {
     fakeViewModel = FakeOrganizationViewModel()
-    selectedOrgRepo = SelectedOrganizationRepository
+    selectedOrgVM = SelectedOrganizationVMProvider.viewModel
   }
 
   @Test
@@ -67,7 +66,7 @@ class OrganizationListScreenTest {
 
     composeTestRule.setContent {
       OrganizationListScreen(
-          organizationViewModel = fakeViewModel, selectedOrganizationRepository = selectedOrgRepo)
+          organizationViewModel = fakeViewModel, selectedOrganizationViewModel = selectedOrgVM)
     }
 
     val org2 = organizations[1]
@@ -78,7 +77,7 @@ class OrganizationListScreenTest {
         .performClick()
 
     // Assert Org 2 is selected
-    assert(selectedOrgRepo.selectedOrganizationId.value == org2.id)
+    assert(selectedOrgVM.selectedOrganizationId.value == org2.id)
   }
 
   @Test

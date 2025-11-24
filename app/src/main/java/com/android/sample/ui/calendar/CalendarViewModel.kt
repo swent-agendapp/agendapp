@@ -5,7 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
-import com.android.sample.model.organization.SelectedOrganizationRepository
+import com.android.sample.ui.organization.SelectedOrganizationVMProvider
+import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import java.time.Instant
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,20 +34,21 @@ data class CalendarUIState(
  * [EventRepository].
  *
  * @property eventRepository The repository used to fetch and manage Event items.
- * @property selectedOrganizationRepository ViewModel that provides the currently selected
+ * @property selectedOrganizationViewModel ViewModel that provides the currently selected
  *   organization.
  */
 class CalendarViewModel(
     // used to get Events
     private val eventRepository: EventRepository = EventRepositoryProvider.repository,
-    selectedOrganizationRepository: SelectedOrganizationRepository = SelectedOrganizationRepository
+    selectedOrganizationViewModel: SelectedOrganizationViewModel =
+        SelectedOrganizationVMProvider.viewModel
 ) : ViewModel() {
   private val _uiState = MutableStateFlow(CalendarUIState())
   // Publicly exposed immutable UI state
   val uiState: StateFlow<CalendarUIState> = _uiState.asStateFlow()
 
   private val selectedOrganizationId: StateFlow<String?> =
-      selectedOrganizationRepository.selectedOrganizationId
+      selectedOrganizationViewModel.selectedOrganizationId
 
   /** Sets an error message in the UI state. */
   private fun setErrorMsg(errorMsg: String) {

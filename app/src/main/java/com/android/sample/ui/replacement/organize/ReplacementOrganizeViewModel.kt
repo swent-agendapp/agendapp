@@ -8,11 +8,12 @@ import com.android.sample.model.authorization.AuthorizationService
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
-import com.android.sample.model.organization.SelectedOrganizationRepository
 import com.android.sample.model.organizations.mockOrganizations.getMockOrganizations
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementRepository
 import com.android.sample.model.replacement.ReplacementRepositoryProvider
+import com.android.sample.ui.organization.SelectedOrganizationVMProvider
+import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import java.time.Instant
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -70,8 +71,8 @@ class ReplacementOrganizeViewModel(
     private val replacementRepository: ReplacementRepository =
         ReplacementRepositoryProvider.repository,
     private val authServ: AuthorizationService = AuthorizationService(),
-    private val selectedOrganizationRepository: SelectedOrganizationRepository =
-        SelectedOrganizationRepository,
+    private val selectedOrganizationViewModel: SelectedOrganizationViewModel =
+        SelectedOrganizationVMProvider.viewModel,
 ) : ViewModel() {
   private val _uiState = MutableStateFlow(ReplacementOrganizeUIState())
 
@@ -140,7 +141,7 @@ class ReplacementOrganizeViewModel(
               _uiState.value = state.copy(errorMsg = "Invalid date range. End must be after start.")
               return@launch
             }
-            val orgId = selectedOrganizationRepository.selectedOrganizationId.value
+            val orgId = selectedOrganizationViewModel.selectedOrganizationId.value
             require(orgId != null) { "Organization must be selected to fetch events" }
 
             eventRepository.getEventsBetweenDates(

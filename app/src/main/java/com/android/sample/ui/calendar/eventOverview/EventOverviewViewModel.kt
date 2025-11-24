@@ -8,7 +8,8 @@ import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
-import com.android.sample.model.organization.SelectedOrganizationRepository
+import com.android.sample.ui.organization.SelectedOrganizationVMProvider
+import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -36,8 +37,8 @@ class EventOverviewViewModel(
     private val eventRepository: EventRepository = EventRepositoryProvider.repository,
     // used to get the name of the participants (the event only contains user id, not name)
     private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
-    private val selectedOrganizationRepository: SelectedOrganizationRepository =
-        SelectedOrganizationRepository
+    private val selectedOrganizationViewModel: SelectedOrganizationViewModel =
+        SelectedOrganizationVMProvider.viewModel
 ) : ViewModel() {
   private val _uiState = MutableStateFlow(OverviewUIState())
   // Publicly exposed immutable UI state
@@ -65,7 +66,7 @@ class EventOverviewViewModel(
   fun deleteEvent(eventId: String) {
     viewModelScope.launch {
       try {
-        val orgId = selectedOrganizationRepository.selectedOrganizationId.value
+        val orgId = selectedOrganizationViewModel.selectedOrganizationId.value
         require(orgId != null) { "Organization must be selected to delete an event" }
 
         eventRepository.deleteEvent(orgId = orgId, itemId = eventId)
@@ -90,7 +91,7 @@ class EventOverviewViewModel(
     viewModelScope.launch {
       setLoading(true)
       try {
-        val orgId = selectedOrganizationRepository.selectedOrganizationId.value
+        val orgId = selectedOrganizationViewModel.selectedOrganizationId.value
         require(orgId != null) { "Organization must be selected to delete an event" }
 
         val event =

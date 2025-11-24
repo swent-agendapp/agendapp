@@ -22,7 +22,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.model.organization.Organization
-import com.android.sample.model.organization.SelectedOrganizationRepository
 import com.android.sample.ui.common.ButtonItem
 import com.android.sample.ui.common.FloatingButton
 import com.android.sample.ui.common.Loading
@@ -47,7 +46,8 @@ object OrganizationListScreenTestTags {
 @Composable
 fun OrganizationListScreen(
     organizationViewModel: OrganizationViewModel = viewModel(),
-    selectedOrganizationRepository: SelectedOrganizationRepository = SelectedOrganizationRepository,
+    selectedOrganizationViewModel: SelectedOrganizationViewModel =
+        SelectedOrganizationVMProvider.viewModel,
     onOrganizationSelected: () -> Unit = {},
     onAddOrganizationClicked: () -> Unit = {},
 ) {
@@ -91,7 +91,7 @@ fun OrganizationListScreen(
                 organizations = uiState.organizations,
                 onOrganizationSelected = { organization ->
                   // Update selected organization in ViewModel
-                  selectedOrganizationRepository.changeSelectedOrganization(orgId = organization.id)
+                  selectedOrganizationViewModel.selectOrganization(orgId = organization.id)
                   // Invoke given callback after selection
                   onOrganizationSelected()
                 })

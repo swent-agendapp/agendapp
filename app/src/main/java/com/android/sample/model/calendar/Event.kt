@@ -134,6 +134,7 @@ fun createEvent(
       List(days.toInt()) { i ->
         Event(
             id = repository?.getNewUid() ?: UUID.randomUUID().toString(),
+            organizationId = organizationId,
             title = title,
             description = description,
             startDate = startDate.plus(i * 1L, ChronoUnit.DAYS),

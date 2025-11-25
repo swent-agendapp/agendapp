@@ -10,6 +10,8 @@ import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
+import java.time.Duration
+import java.time.Instant
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -153,5 +155,34 @@ class EventOverviewViewModel(
       _uiState.value =
           OverviewUIState(event = _uiState.value.event, participantsNames = participantsNames)
     }
+  }
+
+  /**
+   * Returns, for each participant, the total number of hours worked in events occurring between
+   * [startDate] and [endDate] (inclusive).
+   */
+  suspend fun getHoursWorkedByEmployee(
+      startDate: Instant,
+      endDate: Instant,
+  ): List<Pair<String, Double>> {
+    require(startDate <= endDate) { "start date must be before or equal to end date" }
+    val orgId = selectedOrganizationViewModel.selectedOrganizationId.value
+    require(orgId != null) { "Organization must be selected to fetch hours" }
+
+    val events = eventRepository.getEventsBetweenDates(orgId, startDate, endDate)
+
+    val hoursByEmployee = mutableMapOf<String, Double>()
+    events.filter { it.present }.forEach { event ->
+      val overlapStart = maxOf(event.startDate, startDate)
+      val overlapEnd = minOf(event.endDate, endDate)
+      if (overlapEnd.isAfter(overlapStart)) {
+        val durationHours = Duration.between(overlapStart, overlapEnd).toMinutes() / 60.0
+        event.participants.forEach { participant ->
+          hoursByEmployee[participant] = hoursByEmployee.getOrDefault(participant, 0.0) + durationHours
+        }
+      }
+    }
+
+    return hoursByEmployee.toList()
   }
 }

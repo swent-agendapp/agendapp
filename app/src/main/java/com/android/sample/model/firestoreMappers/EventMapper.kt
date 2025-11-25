@@ -37,6 +37,8 @@ object EventMapper : FirestoreMapper<Event> {
             }
             .getOrDefault(RecurrenceStatus.OneTime)
 
+    val present = document.getBoolean("present") ?: false
+
     val version = document.getLong("version") ?: 0L
     val colorLong = document.getLong("eventColor") ?: EventPalette.Blue.toArgb().toLong()
     val color = Palette.fromLong(colorLong)
@@ -52,6 +54,7 @@ object EventMapper : FirestoreMapper<Event> {
         personalNotes = personalNotes,
         participants = participants,
         version = version,
+        present = present,
         recurrenceStatus = recurrenceStatus,
         color = color)
   }
@@ -87,6 +90,8 @@ object EventMapper : FirestoreMapper<Event> {
         runCatching { RecurrenceStatus.valueOf(data["recurrenceStatus"] as? String ?: "OneTime") }
             .getOrDefault(RecurrenceStatus.OneTime)
 
+    val present = (data["present"] as? Boolean) ?: false
+
     val version = (data["version"] as? Number)?.toLong() ?: 0L
     val colorLong = (data["eventColor"] as? Number)?.toLong() ?: EventPalette.Blue.toArgb().toLong()
     val color = Palette.fromLong(colorLong)
@@ -102,6 +107,7 @@ object EventMapper : FirestoreMapper<Event> {
         personalNotes = personalNotes,
         participants = participants,
         version = version,
+        present = present,
         recurrenceStatus = recurrenceStatus,
         color = color)
   }
@@ -118,6 +124,7 @@ object EventMapper : FirestoreMapper<Event> {
         "personalNotes" to model.personalNotes,
         "participants" to model.participants.toList(),
         "version" to model.version,
+        "present" to model.present,
         "recurrenceStatus" to model.recurrenceStatus.name,
         "eventColor" to model.color.toArgb().toLong())
   }

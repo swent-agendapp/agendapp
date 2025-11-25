@@ -69,7 +69,8 @@ class EventOverviewViewModelTest {
             description = "Some participants",
             startDate = Instant.parse("2025-02-01T09:00:00Z"),
             endDate = Instant.parse("2025-02-01T10:00:00Z"),
-            participants = setOf("Alice", "Bob"))[0]
+            participants = setOf("Alice", "Bob"),
+            present = true)[0]
 
     // Insert the sample events into the repository before each test.
     runTest {
@@ -204,5 +205,42 @@ class EventOverviewViewModelTest {
     assertTrue(updatedState.participantsNames.isEmpty())
     assertFalse(updatedState.isLoading)
     assertNull(updatedState.errorMsg)
+  }
+
+  @Test
+  fun getHoursWorkedByEmployee_ShouldAggregateHoursPerParticipant() = runTest {
+    val additionalEvent =
+        createEvent(
+            organizationId = selectedOrganizationID,
+            title = "Extra work",
+            description = "",
+            startDate = Instant.parse("2025-02-02T08:00:00Z"),
+            endDate = Instant.parse("2025-02-02T10:00:00Z"),
+            participants = setOf("Alice"),
+            present = true)[0]
+
+    val notPresentEvent =
+        createEvent(
+            organizationId = selectedOrganizationID,
+            title = "Unattended",
+            description = "",
+            startDate = Instant.parse("2025-02-03T08:00:00Z"),
+            endDate = Instant.parse("2025-02-03T09:00:00Z"),
+            participants = setOf("Bob"),
+            present = false)[0]
+
+    repository.insertEvent(orgId = selectedOrganizationID, item = additionalEvent)
+    repository.insertEvent(orgId = selectedOrganizationID, item = notPresentEvent)
+
+    val recap =
+        viewModel.getHoursWorkedByEmployee(
+            startDate = Instant.parse("2025-02-01T00:00:00Z"),
+            endDate = Instant.parse("2025-02-03T23:59:59Z"))
+
+    val recapMap = recap.toMap()
+    assertEquals(3.0, recapMap["Alice"])
+    assertEquals(1.0, recapMap["Bob"])
+    // The event marked as not present should not contribute to the totals.
+    assertFalse(recapMap.containsKey("Unlisted"))
   }
 }

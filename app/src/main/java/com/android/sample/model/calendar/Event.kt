@@ -27,6 +27,7 @@ import java.util.UUID
  * @property personalNotes Optional personal notes for the event.
  * @property participants Set of user IDs participating in the event.
  * @property version timestamp of last modification, used for conflict resolution.
+ * @property present Indicates whether the event took place as scheduled.
  * @property hasBeenDeleted Flag indicating if the event has been deleted.
  * @property recurrenceStatus Recurrence pattern of the event (e.g., one-time, weekly).
  * @property color Color used to display the event in the UI.
@@ -44,6 +45,7 @@ data class Event(
     val personalNotes: String?,
     val participants: Set<String>,
     val version: Long,
+    val present: Boolean = false,
     val recurrenceStatus: RecurrenceStatus,
     val hasBeenDeleted: Boolean = false,
     val color: Color
@@ -102,6 +104,7 @@ fun createEvent(
     cloudStorageStatuses: Set<CloudStorageStatus> = emptySet(),
     personalNotes: String? = null,
     participants: Set<String> = emptySet(),
+    present: Boolean = false,
     color: Color = EventPalette.Blue,
     recurrence: RecurrenceStatus = RecurrenceStatus.OneTime,
     endRecurrence: Instant = Instant.now(),
@@ -123,6 +126,7 @@ fun createEvent(
                 personalNotes = personalNotes,
                 participants = participants,
                 version = System.currentTimeMillis(),
+                present = present,
                 recurrenceStatus = recurrence,
                 color = color))
     RecurrenceStatus.Weekly -> {
@@ -142,6 +146,7 @@ fun createEvent(
             personalNotes = personalNotes,
             participants = participants,
             version = System.currentTimeMillis(),
+            present = present,
             recurrenceStatus = recurrence,
             color = color)
       }
@@ -164,6 +169,7 @@ fun createEvent(
             personalNotes = personalNotes,
             participants = participants,
             version = System.currentTimeMillis(),
+            present = present,
             recurrenceStatus = recurrence,
             color = color)
       }
@@ -185,6 +191,7 @@ fun createEvent(
             personalNotes = personalNotes,
             participants = participants,
             version = System.currentTimeMillis(),
+            present = present,
             recurrenceStatus = recurrence,
             color = color)
       }

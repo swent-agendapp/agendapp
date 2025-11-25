@@ -32,6 +32,7 @@ class EventMapperTest {
           personalNotes = "Some notes",
           participants = setOf("participant1", "participant2"),
           version = 5L,
+          present = true,
           recurrenceStatus = RecurrenceStatus.OneTime,
           color = eventColor)
 
@@ -47,6 +48,7 @@ class EventMapperTest {
           "personalNotes" to "Some notes",
           "participants" to listOf("participant1", "participant2"),
           "version" to 5L,
+          "present" to true,
           "recurrenceStatus" to "OneTime",
           "eventColor" to eventColor.toArgb().toLong())
 
@@ -66,6 +68,7 @@ class EventMapperTest {
     `when`(doc.getString("recurrenceStatus")).thenReturn("OneTime")
     `when`(doc.getLong("version")).thenReturn(5L)
     `when`(doc.getLong("eventColor")).thenReturn(eventColor.toArgb().toLong())
+    `when`(doc.getBoolean("present")).thenReturn(true)
 
     val event = EventMapper.fromDocument(doc)
     assertThat(event).isNotNull()
@@ -153,6 +156,7 @@ class EventMapperTest {
     assertThat(map["personalNotes"]).isEqualTo(sampleEvent.personalNotes)
     assertThat(map["participants"]).isEqualTo(listOf("participant1", "participant2"))
     assertThat(map["version"]).isEqualTo(sampleEvent.version)
+    assertThat(map["present"]).isEqualTo(true)
     assertThat(map["recurrenceStatus"]).isEqualTo(sampleEvent.recurrenceStatus.name)
     assertThat(map["eventColor"]).isEqualTo(sampleEvent.color.toArgb().toLong())
   }

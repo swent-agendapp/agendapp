@@ -37,7 +37,7 @@ object EventMapper : FirestoreMapper<Event> {
             }
             .getOrDefault(RecurrenceStatus.OneTime)
 
-    val present = document.getBoolean("present") ?: false
+    val presence = parsePresence(document.get("presence"))
 
     val version = document.getLong("version") ?: 0L
     val colorLong = document.getLong("eventColor") ?: EventPalette.Blue.toArgb().toLong()
@@ -54,7 +54,7 @@ object EventMapper : FirestoreMapper<Event> {
         personalNotes = personalNotes,
         participants = participants,
         version = version,
-        present = present,
+        presence = presence,
         recurrenceStatus = recurrenceStatus,
         color = color)
   }
@@ -90,7 +90,7 @@ object EventMapper : FirestoreMapper<Event> {
         runCatching { RecurrenceStatus.valueOf(data["recurrenceStatus"] as? String ?: "OneTime") }
             .getOrDefault(RecurrenceStatus.OneTime)
 
-    val present = (data["present"] as? Boolean) ?: false
+    val presence = parsePresence(data["presence"])
 
     val version = (data["version"] as? Number)?.toLong() ?: 0L
     val colorLong = (data["eventColor"] as? Number)?.toLong() ?: EventPalette.Blue.toArgb().toLong()
@@ -107,7 +107,7 @@ object EventMapper : FirestoreMapper<Event> {
         personalNotes = personalNotes,
         participants = participants,
         version = version,
-        present = present,
+        presence = presence,
         recurrenceStatus = recurrenceStatus,
         color = color)
   }
@@ -124,8 +124,18 @@ object EventMapper : FirestoreMapper<Event> {
         "personalNotes" to model.personalNotes,
         "participants" to model.participants.toList(),
         "version" to model.version,
-        "present" to model.present,
+        "presence" to model.presence,
         "recurrenceStatus" to model.recurrenceStatus.name,
         "eventColor" to model.color.toArgb().toLong())
+  }
+
+  private fun parsePresence(rawPresence: Any?): Map<String, Boolean> {
+    return (rawPresence as? Map<*, *>)
+        ?.mapNotNull { (key, value) ->
+          val userId = key as? String ?: return@mapNotNull null
+          val isPresent = value as? Boolean ?: return@mapNotNull null
+          userId to isPresent
+        }
+        ?.toMap() ?: emptyMap()
   }
 }

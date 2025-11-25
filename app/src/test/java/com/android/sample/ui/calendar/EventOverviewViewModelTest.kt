@@ -70,7 +70,7 @@ class EventOverviewViewModelTest {
             startDate = Instant.parse("2025-02-01T09:00:00Z"),
             endDate = Instant.parse("2025-02-01T10:00:00Z"),
             participants = setOf("Alice", "Bob"),
-            present = true)[0]
+            presence = mapOf("Alice" to true, "Bob" to false))[0]
 
     // Insert the sample events into the repository before each test.
     runTest {

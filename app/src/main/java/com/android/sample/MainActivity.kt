@@ -303,7 +303,10 @@ fun Agendapp(
 
                 // Map Settings Screen
                 composable(Screen.Map.route) {
-                  MapScreen(mapViewModel = MapViewModel(LocalContext.current.applicationContext as Application), onGoBack = { navigationActions.navigateBack() })
+                  MapScreen(
+                      mapViewModel =
+                          MapViewModel(LocalContext.current.applicationContext as Application),
+                      onGoBack = { navigationActions.navigateBack() })
                 }
               }
             }

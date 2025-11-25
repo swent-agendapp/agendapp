@@ -123,7 +123,7 @@ class SignInViewModel(
         _uiState.update {
           it.copy(
               isLoading = false,
-              errorMsg = e.localizedMessage,//context.getString(R.string.sign_in_cancelled_error),
+              errorMsg = e.localizedMessage, // context.getString(R.string.sign_in_cancelled_error),
               signedOut = true,
               user = null)
         }

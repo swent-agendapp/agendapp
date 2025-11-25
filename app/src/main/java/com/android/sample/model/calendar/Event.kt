@@ -128,22 +128,22 @@ fun createEvent(
                 color = color))
     RecurrenceStatus.Daily -> {
       val days =
-        1 +
-                ChronoUnit.DAYS.between(
+          1 +
+              ChronoUnit.DAYS.between(
                   startDate.atZone(ZoneOffset.UTC), endRecurrence.atZone(ZoneOffset.UTC))
       List(days.toInt()) { i ->
         Event(
-          id = repository?.getNewUid() ?: UUID.randomUUID().toString(),
-          title = title,
-          description = description,
-          startDate = startDate.plus(i * 1L, ChronoUnit.DAYS),
-          endDate = endDate.plus(i * 1L, ChronoUnit.DAYS),
-          cloudStorageStatuses = cloudStorageStatuses,
-          personalNotes = personalNotes,
-          participants = participants,
-          version = System.currentTimeMillis(),
-          recurrenceStatus = recurrence,
-          color = color)
+            id = repository?.getNewUid() ?: UUID.randomUUID().toString(),
+            title = title,
+            description = description,
+            startDate = startDate.plus(i * 1L, ChronoUnit.DAYS),
+            endDate = endDate.plus(i * 1L, ChronoUnit.DAYS),
+            cloudStorageStatuses = cloudStorageStatuses,
+            personalNotes = personalNotes,
+            participants = participants,
+            version = System.currentTimeMillis(),
+            recurrenceStatus = recurrence,
+            color = color)
       }
     }
     RecurrenceStatus.Weekly -> {

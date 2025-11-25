@@ -173,10 +173,10 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
     composeTestRule.onAllNodesWithTag(AddEventTestTags.CHECK_BOX_EMPLOYEE)[0].performClick()
     composeTestRule.waitForIdle()
 
-    composeTestRule.onNodeWithTag(AddEventTestTags.CREATE_BUTTON).performClick()
+    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).performClick()
     composeTestRule.waitForIdle()
 
-    composeTestRule.onNodeWithTag(AddEventTestTags.FINISH_BUTTON).performClick()
+    composeTestRule.onNodeWithTag(AddEventTestTags.CREATE_BUTTON).performClick()
     composeTestRule.waitForIdle()
 
     composeTestRule.scrollCalendarUntilEventVisible(

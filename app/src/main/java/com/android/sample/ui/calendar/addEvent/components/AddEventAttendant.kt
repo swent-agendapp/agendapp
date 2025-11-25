@@ -60,7 +60,7 @@ import com.android.sample.ui.theme.WeightExtraHeavy
 @Composable
 fun AddEventAttendantScreen(
     addEventViewModel: AddEventViewModel = viewModel(),
-    onCreate: () -> Unit = {},
+    onNext: () -> Unit = {},
     onBack: () -> Unit = {},
 ) {
   val newEventUIState by addEventViewModel.uiState.collectAsState()
@@ -163,13 +163,13 @@ fun AddEventAttendantScreen(
       },
       bottomBar = {
         BottomNavigationButtons(
-            onNext = { onCreate() },
+            onNext = onNext,
             onBack = onBack,
             backButtonText = stringResource(R.string.goBack),
-            nextButtonText = stringResource(R.string.create),
+            nextButtonText = stringResource(R.string.next),
             canGoNext = allFieldsValid,
             backButtonTestTag = AddEventTestTags.BACK_BUTTON,
-            nextButtonTestTag = AddEventTestTags.CREATE_BUTTON)
+            nextButtonTestTag = AddEventTestTags.NEXT_BUTTON)
       })
 }
 

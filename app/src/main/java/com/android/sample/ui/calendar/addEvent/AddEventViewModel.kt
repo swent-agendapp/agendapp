@@ -79,6 +79,30 @@ class AddEventViewModel(
   val uiState: StateFlow<AddCalendarEventUIState> = _uiState.asStateFlow()
 
   /**
+   * Builds and returns the draft `Event` used for the summary/confirmation screen.
+   *
+   * This method extracts all fields from the current [AddCalendarEventUIState] and constructs the
+   * corresponding `Event` using `createEvent()`.
+   *
+   * This method is used for previewing the event details before the final confirmation step.
+   *
+   * @return The first `Event` instance representing the current draft for preview.
+   */
+  fun getDraftEvent(): Event {
+    val currentState = _uiState.value
+    return createEvent(
+        repository = repository,
+        title = currentState.title,
+        description = currentState.description,
+        startDate = currentState.startInstant,
+        endDate = currentState.endInstant,
+        cloudStorageStatuses = emptySet(),
+        personalNotes = "",
+        participants = currentState.participants,
+        recurrence = currentState.recurrenceMode,
+        endRecurrence = currentState.recurrenceEndInstant)[0]
+  }
+  /**
    * Builds a new event from the current UI state and delegates storage. Calls
    * `addEventToRepository()` to persist the event.
    */

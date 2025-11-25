@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
 import com.android.sample.ui.calendar.components.DatePickerFieldToModal
 import com.android.sample.ui.calendar.components.TopTitleBar
+import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeTestTags
 import com.android.sample.ui.theme.CornerRadiusMedium
@@ -79,7 +80,11 @@ fun SelectDateRangeScreen(
 ) {
 
   Scaffold(
-      topBar = { TopTitleBar(title = title) },
+      topBar = { SecondaryPageTopBar(
+          title = title,
+          onClick = onBack,
+          backButtonTestTags = ReplacementOrganizeTestTags.BACK_BUTTON,
+      )},
       content = { paddingValues ->
         Column(
             modifier =
@@ -140,6 +145,7 @@ fun SelectDateRangeScreen(
             onBack = onBack,
             backButtonText = stringResource(R.string.goBack),
             nextButtonText = stringResource(R.string.next),
+            canGoBack = false,
             canGoNext = canGoNext,
             backButtonTestTag = ReplacementOrganizeTestTags.BACK_BUTTON,
             nextButtonTestTag = ReplacementOrganizeTestTags.NEXT_BUTTON)

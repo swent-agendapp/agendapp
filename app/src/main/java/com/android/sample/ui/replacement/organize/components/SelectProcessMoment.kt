@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
 import com.android.sample.ui.calendar.components.TopTitleBar
+import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeTestTags
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingExtraLarge
@@ -53,9 +54,13 @@ import com.android.sample.ui.theme.WeightExtraHeavy
 fun SelectProcessMomentScreen(
     onProcessNow: () -> Unit = {},
     onProcessLater: () -> Unit = {},
+    onBack: () -> Unit = {},
 ) {
   Scaffold(
-      topBar = { TopTitleBar(title = stringResource(R.string.organize_replacement)) },
+      topBar = { SecondaryPageTopBar(title = stringResource(R.string.organize_replacement),
+          onClick = onBack,
+          backButtonTestTags = ReplacementOrganizeTestTags.BACK_BUTTON,
+      ) },
       content = { paddingValues ->
         Column(
             modifier =

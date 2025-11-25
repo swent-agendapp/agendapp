@@ -177,81 +177,79 @@ private fun ReplacementToProcessCard(
     replacement: Replacement,
     onProcessClick: () -> Unit,
 ) {
-    val dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)
-    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+  val dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)
+  val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
-    val dateText = replacement.event.startLocalDate.format(dateFormatter)
-    val timeText =
-        "${replacement.event.startLocalTime.format(timeFormatter)} - " +
-                replacement.event.endLocalTime.format(timeFormatter)
+  val dateText = replacement.event.startLocalDate.format(dateFormatter)
+  val timeText =
+      "${replacement.event.startLocalTime.format(timeFormatter)} - " +
+          replacement.event.endLocalTime.format(timeFormatter)
 
-    Card(
-        modifier =
-            Modifier.fillMaxWidth().testTag(ReplacementPendingTestTags.itemTag(replacement.id)),
-        shape = RoundedCornerShape(CornerRadiusLarge),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors =
-            CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant,
-            ),
+  Card(
+      modifier =
+          Modifier.fillMaxWidth().testTag(ReplacementPendingTestTags.itemTag(replacement.id)),
+      shape = RoundedCornerShape(CornerRadiusLarge),
+      elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+      colors =
+          CardDefaults.cardColors(
+              containerColor = MaterialTheme.colorScheme.surfaceVariant,
+          ),
+  ) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(PaddingMedium),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(PaddingMedium),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Box(
-                modifier =
-                    Modifier.fillMaxHeight()
-                        .width(BarWidthSmall)
-                        .background(replacement.event.color),
-            )
+      Box(
+          modifier =
+              Modifier.fillMaxHeight().width(BarWidthSmall).background(replacement.event.color),
+      )
 
-            Spacer(modifier = Modifier.width(SpacingMedium))
+      Spacer(modifier = Modifier.width(SpacingMedium))
 
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(
-                    text = replacement.event.title,
-                    style =
-                        MaterialTheme.typography.bodyLarge.copy(
-                            fontWeight = FontWeight.SemiBold,
-                        ),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                Spacer(modifier = Modifier.height(SpacingSmall))
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Filled.Schedule,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                    )
-                    Spacer(modifier = Modifier.width(SpacingSmall))
-                    Text(
-                        text = "$dateText • $timeText",
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                }
-                Spacer(modifier = Modifier.height(SpacingMedium))
-                Text(
-                    text =
-                        stringResource(
-                            id = R.string.replacement_substituted_label,
-                            replacement.absentUserId,
-                        ),
-                    style = MaterialTheme.typography.bodySmall,
-                )
-                Spacer(modifier = Modifier.height(SpacingSmall))
-
-                PrimaryButton(
-                    onClick = onProcessClick,
-                    text = stringResource(id = R.string.replacement_process_button),
-                    innerPadding = PaddingExtraSmall,
-                )
-            }
+      Column(
+          modifier = Modifier.fillMaxWidth(),
+      ) {
+        Text(
+            text = replacement.event.title,
+            style =
+                MaterialTheme.typography.bodyLarge.copy(
+                    fontWeight = FontWeight.SemiBold,
+                ),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+        Spacer(modifier = Modifier.height(SpacingSmall))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+          Icon(
+              imageVector = Icons.Filled.Schedule,
+              contentDescription = null,
+              tint = MaterialTheme.colorScheme.primary,
+          )
+          Spacer(modifier = Modifier.width(SpacingSmall))
+          Text(
+              text = "$dateText • $timeText",
+              style = MaterialTheme.typography.bodyMedium,
+          )
         }
+        Spacer(modifier = Modifier.height(SpacingMedium))
+        Text(
+            text =
+                stringResource(
+                    id = R.string.replacement_substituted_label,
+                    replacement.absentUserId,
+                ),
+            style = MaterialTheme.typography.bodySmall,
+        )
+        Spacer(modifier = Modifier.height(SpacingSmall))
+
+        PrimaryButton(
+            onClick = onProcessClick,
+            text = stringResource(id = R.string.replacement_process_button),
+            innerPadding = PaddingExtraSmall,
+        )
+      }
     }
+  }
 }
 
 @Composable
@@ -281,83 +279,80 @@ fun ReplacementWaitingCard(replacements: List<Replacement>) {
   val timeText =
       "${event.startLocalTime.format(timeFormatter)} - ${event.endLocalTime.format(timeFormatter)}"
 
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(CornerRadiusLarge),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors =
-            CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant,
-            ),
+  Card(
+      modifier = Modifier.fillMaxWidth(),
+      shape = RoundedCornerShape(CornerRadiusLarge),
+      elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+      colors =
+          CardDefaults.cardColors(
+              containerColor = MaterialTheme.colorScheme.surfaceVariant,
+          ),
+  ) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(PaddingMedium),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(PaddingMedium),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Box(
-                modifier =
-                    Modifier.fillMaxHeight()
-                        .width(4.dp)
-                        .background(event.color),
-            )
+      Box(
+          modifier = Modifier.fillMaxHeight().width(4.dp).background(event.color),
+      )
 
-            Spacer(modifier = Modifier.width(SpacingMedium))
+      Spacer(modifier = Modifier.width(SpacingMedium))
 
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(
-                    text = event.title,
-                    style =
-                        MaterialTheme.typography.bodyLarge.copy(
-                            fontWeight = FontWeight.SemiBold,
-                        ),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                Spacer(modifier = Modifier.height(SpacingSmall))
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Filled.Schedule,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                    )
-                    Spacer(modifier = Modifier.width(SpacingSmall))
-                    Text(
-                        text = "$dateText • $timeText",
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                }
-                Spacer(modifier = Modifier.height(SpacingMedium))
-                Text(
-                    text = stringResource(R.string.replacement_substituted_label, absentUserId),
-                    style = MaterialTheme.typography.bodySmall,
-                )
-
-                Spacer(modifier = Modifier.height(SpacingMedium))
-
-                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    ReplacementAssistChip(
-                        count = pending.size,
-                        labelRes = R.string.replacement_no_response_label,
-                        enabled = pending.isNotEmpty(),
-                        onClick = { showPendingDialog = true },
-                        icon = Icons.AutoMirrored.Outlined.HelpOutline,
-                        tint = MaterialTheme.colorScheme.tertiary,
-                    )
-
-                    ReplacementAssistChip(
-                        count = declined.size,
-                        labelRes = R.string.replacement_declined_label,
-                        enabled = declined.isNotEmpty(),
-                        onClick = { showDeclinedDialog = true },
-                        icon = Icons.Outlined.Close,
-                        tint = MaterialTheme.colorScheme.error,
-                    )
-                }
-            }
+      Column(
+          modifier = Modifier.fillMaxWidth(),
+      ) {
+        Text(
+            text = event.title,
+            style =
+                MaterialTheme.typography.bodyLarge.copy(
+                    fontWeight = FontWeight.SemiBold,
+                ),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+        Spacer(modifier = Modifier.height(SpacingSmall))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+          Icon(
+              imageVector = Icons.Filled.Schedule,
+              contentDescription = null,
+              tint = MaterialTheme.colorScheme.primary,
+          )
+          Spacer(modifier = Modifier.width(SpacingSmall))
+          Text(
+              text = "$dateText • $timeText",
+              style = MaterialTheme.typography.bodyMedium,
+          )
         }
+        Spacer(modifier = Modifier.height(SpacingMedium))
+        Text(
+            text = stringResource(R.string.replacement_substituted_label, absentUserId),
+            style = MaterialTheme.typography.bodySmall,
+        )
+
+        Spacer(modifier = Modifier.height(SpacingMedium))
+
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+          ReplacementAssistChip(
+              count = pending.size,
+              labelRes = R.string.replacement_no_response_label,
+              enabled = pending.isNotEmpty(),
+              onClick = { showPendingDialog = true },
+              icon = Icons.AutoMirrored.Outlined.HelpOutline,
+              tint = MaterialTheme.colorScheme.tertiary,
+          )
+
+          ReplacementAssistChip(
+              count = declined.size,
+              labelRes = R.string.replacement_declined_label,
+              enabled = declined.isNotEmpty(),
+              onClick = { showDeclinedDialog = true },
+              icon = Icons.Outlined.Close,
+              tint = MaterialTheme.colorScheme.error,
+          )
+        }
+      }
     }
+  }
 
   if (showPendingDialog) {
     PeopleListDialog(

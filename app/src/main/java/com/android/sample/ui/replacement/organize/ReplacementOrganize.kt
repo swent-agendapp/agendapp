@@ -100,22 +100,22 @@ fun ReplacementOrganizeScreen(
             errorMessage = stringResource(R.string.invalidDateRangeMessage),
             canGoNext = replacementOrganizeViewModel.dateRangeValid())
     ReplacementOrganizeStep.SelectProcessMoment ->
-      SelectProcessMomentScreen(
-          onProcessNow = {
+        SelectProcessMomentScreen(
+            onProcessNow = {
               onProcessNow()
               replacementOrganizeViewModel.addReplacement()
-          },
-          onProcessLater = {
+            },
+            onProcessLater = {
               onProcessLater()
               replacementOrganizeViewModel.addReplacement()
-          },
-          onBack = {
+            },
+            onBack = {
               if (uiState.selectedEvents.isNotEmpty()) {
-                  replacementOrganizeViewModel.goToStep(ReplacementOrganizeStep.SelectEvents)
+                replacementOrganizeViewModel.goToStep(ReplacementOrganizeStep.SelectEvents)
               } else {
-                  replacementOrganizeViewModel.goToStep(ReplacementOrganizeStep.SelectDateRange)
+                replacementOrganizeViewModel.goToStep(ReplacementOrganizeStep.SelectDateRange)
               }
-          },
-      )
+            },
+        )
   }
 }

@@ -1,9 +1,20 @@
 package com.android.sample.ui.replacement.employee.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -12,7 +23,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
-import com.android.sample.ui.calendar.components.TopTitleBar
+import com.android.sample.ui.common.PrimaryButton
+import com.android.sample.ui.common.SecondaryButton
+import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.theme.*
 
 // Assisted by AI
@@ -37,7 +50,8 @@ data class ReplacementRequestUi(
     val weekdayAndDay: String,
     val timeRange: String,
     val title: String,
-    val description: String
+    val description: String,
+    val absentDisplayName: String
 )
 
 /** Sample Requests List (only for preview) */
@@ -48,111 +62,100 @@ private val sampleRequests =
             weekdayAndDay = "Monday 7",
             timeRange = "10:00 - 12:00",
             title = "Meeting 123",
-            description = "Meeting about 123"),
+            description = "Meeting about 123",
+            absentDisplayName = "Emilien"),
         ReplacementRequestUi(
             id = "req2",
             weekdayAndDay = "Friday 7",
             timeRange = "14:00 - 16:00",
             title = "Meeting 321",
-            description = "Meeting about 321"))
+            description = "Meeting about 321",
+            absentDisplayName = "Emilien"))
 
-/**
- * **ReplacementEmployeeListScreen**
- *
- * Displays a list of replacement requests for an employee, allowing them to **accept**, **refuse**,
- * or **create** a new replacement request.
- *
- * This screen is the main entry point for employees managing their replacement duties. It lists all
- * current replacement requests (provided by [ReplacementRequestUi]) and includes a bottom button to
- * initiate a new replacement request.
- * ---
- * ### Parameters:
- *
- * @param requests List of replacement requests displayed on screen.
- * @param onAccept Callback triggered when the user accepts a replacement request.
- * @param onRefuse Callback triggered when the user refuses a replacement request.
- * @param onAskToBeReplaced Callback triggered when the user clicks "Ask to be replaced" at the
- *   bottom.
- * ---
- * ### Test Tags:
- * - [ReplacementEmployeeListTestTags.ROOT] — root column container.
- * - [ReplacementEmployeeListTestTags.ASK_BUTTON] — bottom "Ask to be replaced" button.
- * - [ReplacementEmployeeListTestTags.card] — individual request card container.
- * - [ReplacementEmployeeListTestTags.accept] — accept button inside each card.
- * - [ReplacementEmployeeListTestTags.refuse] — refuse button inside each card.
- */
 @Composable
 fun ReplacementEmployeeListScreen(
-    requests: List<ReplacementRequestUi> = sampleRequests, // Will be provided by ViewModel later
+    requests: List<ReplacementRequestUi> = sampleRequests,
     onAccept: (id: String) -> Unit = {},
     onRefuse: (id: String) -> Unit = {},
-    onAskToBeReplaced: () -> Unit = {}
+    onSelectEvent: () -> Unit = {},
+    onChooseDateRange: () -> Unit = {},
+    onBack: () -> Unit = {},
 ) {
+  var showCreateOptions by remember { mutableStateOf(false) }
   Scaffold(
-      topBar = { TopTitleBar(title = stringResource(R.string.replacement_title)) },
+      topBar = {
+        SecondaryPageTopBar(
+            title = stringResource(R.string.replacement_title),
+            onClick = onBack,
+        )
+      },
       bottomBar = {
-        // centered large button at the bottom
-        Box(
+        Column(
             modifier =
                 Modifier.fillMaxWidth().padding(horizontal = PaddingLarge, vertical = PaddingLarge),
-            contentAlignment = Alignment.Center) {
-              // "Ask to be replaced" button
-              OutlinedButton(
-                  onClick = onAskToBeReplaced,
-                  shape = RoundedCornerShape(CornerRadiusHuge),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(PaddingMedium),
+        ) {
+          AnimatedVisibility(visible = showCreateOptions) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(PaddingSmall),
+            ) {
+              SecondaryButton(
                   modifier =
-                      Modifier.testTag(ReplacementEmployeeListTestTags.ASK_BUTTON)
-                          .height(heightLarge)
-                          .fillMaxWidth(WeightHeavy)) {
-                    Text(text = stringResource(R.string.replacement_ask_to_be_replaced))
-                  }
+                      Modifier.fillMaxWidth()
+                          .testTag(ReplacementEmployeeCreateTestTags.SELECT_EVENT_BUTTON),
+                  text = stringResource(R.string.replacement_create_select_event),
+                  onClick = {
+                    showCreateOptions = false
+                    onSelectEvent()
+                  },
+              )
+
+              SecondaryButton(
+                  modifier =
+                      Modifier.fillMaxWidth()
+                          .testTag(ReplacementEmployeeCreateTestTags.CHOOSE_DATE_RANGE_BUTTON),
+                  text = stringResource(R.string.replacement_create_choose_date_range),
+                  onClick = {
+                    showCreateOptions = false
+                    onChooseDateRange()
+                  },
+              )
             }
+          }
+
+          PrimaryButton(
+              onClick = { showCreateOptions = !showCreateOptions },
+              text = stringResource(R.string.replacement_ask_to_be_replaced),
+              modifier =
+                  Modifier.fillMaxWidth().testTag(ReplacementEmployeeListTestTags.ASK_BUTTON),
+          )
+        }
       }) { inner ->
-        Column(
+        LazyColumn(
             modifier =
                 Modifier.fillMaxSize()
                     .padding(inner)
                     .padding(horizontal = PaddingLarge)
                     .testTag(ReplacementEmployeeListTestTags.ROOT),
             verticalArrangement = Arrangement.spacedBy(PaddingLarge)) {
-              requests.forEach { req ->
+              items(requests, key = { it.id }) { req ->
                 ReplacementRequestCard(
                     data = req,
                     onAccept = { onAccept(req.id) },
                     onRefuse = { onRefuse(req.id) },
                     testTag = ReplacementEmployeeListTestTags.card(req.id),
                     acceptTag = ReplacementEmployeeListTestTags.accept(req.id),
-                    refuseTag = ReplacementEmployeeListTestTags.refuse(req.id))
+                    refuseTag = ReplacementEmployeeListTestTags.refuse(req.id),
+                )
               }
-              Spacer(Modifier.height(heightLarge))
+
+              item { Spacer(Modifier.height(heightLarge)) }
             }
       }
 }
 
-/**
- * **ReplacementRequestCard**
- *
- * Displays a single replacement request entry in the employee replacement list. Each card shows the
- * event’s **date**, **time**, **title**, and **description**, and provides two actions — **accept**
- * or **refuse** — for the employee to respond to the request.
- * ---
- * ### UI Structure:
- * - **Header:** Shows weekday/day and time range.
- * - **Body:** Displays event title and description.
- * - **Footer:** Contains two text buttons:
- *     - “Accept” → confirms the replacement.
- *     - “Refuse” → declines the request.
- * ---
- * ### Parameters:
- *
- * @param data The [ReplacementRequestUi] object containing the event information.
- * @param onAccept Called when the user taps the "Accept" button.
- * @param onRefuse Called when the user taps the "Refuse" button.
- * @param testTag The test tag applied to the entire card (for UI testing).
- * @param acceptTag The test tag applied to the "Accept" button.
- * @param refuseTag The test tag applied to the "Refuse" button.
- * @see ReplacementRequestUi
- */
 @Composable
 private fun ReplacementRequestCard(
     data: ReplacementRequestUi,
@@ -160,56 +163,82 @@ private fun ReplacementRequestCard(
     onRefuse: () -> Unit,
     testTag: String,
     acceptTag: String,
-    refuseTag: String
+    refuseTag: String,
 ) {
   Card(
       modifier = Modifier.fillMaxWidth().testTag(testTag),
       shape = RoundedCornerShape(CornerRadiusLarge),
-      elevation = CardDefaults.cardElevation(defaultElevation = ElevationLow)) {
-        Column(modifier = Modifier.padding(PaddingLarge)) {
+      elevation = CardDefaults.cardElevation(defaultElevation = ElevationLow),
+  ) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(PaddingLarge),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+      Box(
+          modifier =
+              Modifier.fillMaxHeight()
+                  .width(BarWidthSmall)
+                  .background(MaterialTheme.colorScheme.primary),
+      )
 
-          // Date and time row
-          Row(
-              modifier = Modifier.fillMaxWidth(),
-              horizontalArrangement = Arrangement.spacedBy(PaddingMedium),
-              verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = data.weekdayAndDay,
-                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
-                Text(text = data.timeRange, style = MaterialTheme.typography.titleMedium)
-              }
+      Spacer(Modifier.width(PaddingLarge))
 
-          Spacer(Modifier.height(PaddingMedium))
+      Column(
+          modifier = Modifier.fillMaxWidth(),
+          verticalArrangement = Arrangement.spacedBy(SpacingSmall),
+      ) {
+        Text(
+            text = data.title,
+            style =
+                MaterialTheme.typography.bodyLarge.copy(
+                    fontWeight = FontWeight.SemiBold,
+                ),
+            maxLines = titleMaxLine,
+            overflow = TextOverflow.Ellipsis,
+        )
 
-          // Title
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(PaddingMedium),
+        ) {
+          Icon(
+              imageVector = Icons.Default.AccessTime,
+              contentDescription = null,
+              tint = MaterialTheme.colorScheme.onSurfaceVariant,
+          )
           Text(
-              text = stringResource(R.string.replacement_card_title, data.title),
-              style = MaterialTheme.typography.bodyLarge,
-              maxLines = titleMaxLine,
-              overflow = TextOverflow.Ellipsis)
+              text = "${data.weekdayAndDay} • ${data.timeRange}",
+              style = MaterialTheme.typography.bodyMedium,
+          )
+        }
 
-          // Description
-          Text(
-              text = stringResource(R.string.replacement_card_description, data.description),
-              style = MaterialTheme.typography.bodyLarge,
-              maxLines = descriptionMaxLine,
-              overflow = TextOverflow.Ellipsis)
+        Text(
+            text = stringResource(R.string.replacement_substituted_label, data.absentDisplayName),
+            style = MaterialTheme.typography.bodySmall,
+        )
 
-          Spacer(Modifier.height(PaddingMedium))
+        Text(
+            text = data.description,
+            style = MaterialTheme.typography.bodyMedium,
+            maxLines = descriptionMaxLine,
+            overflow = TextOverflow.Ellipsis,
+        )
 
-          // Accept / Refuse buttons
-          Row(horizontalArrangement = Arrangement.spacedBy(PaddingLarge)) {
-            TextButton(onClick = onAccept, modifier = Modifier.testTag(acceptTag)) {
-              Text(text = stringResource(R.string.replacement_accept_short))
-            }
+        Spacer(Modifier.height(PaddingMedium))
 
-            TextButton(onClick = onRefuse, modifier = Modifier.testTag(refuseTag)) {
-              Text(text = stringResource(R.string.replacement_refuse_short))
-            }
+        Row(horizontalArrangement = Arrangement.spacedBy(PaddingLarge)) {
+          TextButton(onClick = onAccept, modifier = Modifier.testTag(acceptTag)) {
+            Text(text = stringResource(R.string.replacement_accept_short))
+          }
+          TextButton(onClick = onRefuse, modifier = Modifier.testTag(refuseTag)) {
+            Text(text = stringResource(R.string.replacement_refuse_short))
           }
         }
       }
+    }
+  }
 }
+
 /** ---------- Previews ---------- */
 @Preview(showBackground = true)
 @Composable

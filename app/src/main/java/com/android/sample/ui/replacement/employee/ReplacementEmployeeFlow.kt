@@ -26,7 +26,10 @@ import java.time.ZoneId
  * - SELECT_DATE_RANGE → [SelectDateRangeScreen] (date interval)
  */
 @Composable
-fun ReplacementEmployeeFlow(viewModel: ReplacementEmployeeViewModel = viewModel()) {
+fun ReplacementEmployeeFlow(
+    viewModel: ReplacementEmployeeViewModel = viewModel(),
+    onBack: () -> Unit = {},
+) {
   val uiState by viewModel.uiState.collectAsState()
 
   when (uiState.step) {
@@ -35,7 +38,10 @@ fun ReplacementEmployeeFlow(viewModel: ReplacementEmployeeViewModel = viewModel(
           requests = uiState.incomingRequests.map { it.toUi() },
           onAccept = { id -> viewModel.acceptRequest(id) },
           onRefuse = { id -> viewModel.refuseRequest(id) },
-          onAskToBeReplaced = { viewModel.goToCreateOptions() })
+          onSelectEvent = { viewModel.goToSelectEvent() },
+          onChooseDateRange = { viewModel.goToSelectDateRange() },
+          onBack = onBack,
+      )
     }
     ReplacementEmployeeStep.CREATE_OPTIONS -> {
       ReplacementCreateScreen(
@@ -85,5 +91,6 @@ fun Replacement.toUi(): ReplacementRequestUi {
       weekdayAndDay = dateLabel,
       timeRange = timeRange,
       title = event.title,
-      description = event.description)
+      description = event.description,
+      absentDisplayName = absentUserId)
 }

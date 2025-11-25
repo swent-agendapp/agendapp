@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -145,10 +146,19 @@ private fun ReplacementUpcomingCard(replacement: Replacement) {
                 overflow = TextOverflow.Ellipsis,
             )
 
-            Text(
-                text = "$dateText • $timeText",
-                style = MaterialTheme.typography.bodyMedium,
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+              Icon(
+                  imageVector = Icons.Filled.AccessTime,
+                  contentDescription = null,
+                  modifier = Modifier.padding(end = SpacingSmall),
+              )
+              Text(
+                  text = "$dateText • $timeText",
+                  style = MaterialTheme.typography.bodyMedium,
+              )
+            }
 
             Text(
                 text =

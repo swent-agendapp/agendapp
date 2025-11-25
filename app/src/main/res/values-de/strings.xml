@@ -97,6 +97,7 @@
 
     <!-- Recurrence -->
     <string name="recurrence_one_time">Einmalig</string>
+    <string name="recurrence_daily">Täglich</string>
     <string name="recurrence_weekly">Wöchentlich</string>
     <string name="recurrence_monthly">Monatlich</string>
     <string name="recurrence_yearly">Jährlich</string>

@@ -137,6 +137,7 @@
 
     <!-- Recurrence -->
     <string name="recurrence_one_time">One Time</string>
+    <string name="recurrence_daily">Daily</string>
     <string name="recurrence_weekly">Weekly</string>
     <string name="recurrence_monthly">Monthly</string>
     <string name="recurrence_yearly">Yearly</string>

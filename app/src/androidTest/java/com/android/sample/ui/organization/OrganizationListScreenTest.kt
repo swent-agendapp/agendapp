@@ -6,7 +6,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.android.sample.model.organization.Organization
+import com.android.sample.model.organization.data.Organization
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

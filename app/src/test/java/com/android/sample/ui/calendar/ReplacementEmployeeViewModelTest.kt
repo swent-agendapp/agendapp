@@ -3,7 +3,7 @@ package com.android.sample.ui.calendar
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.RecurrenceStatus
-import com.android.sample.model.organization.SelectedOrganizationRepository
+import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.model.replacement.*
 import com.android.sample.ui.calendar.replacementEmployee.ReplacementEmployeeViewModel
 import com.android.sample.ui.theme.EventPalette

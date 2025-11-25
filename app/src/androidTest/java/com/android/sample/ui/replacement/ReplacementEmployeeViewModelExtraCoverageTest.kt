@@ -1,7 +1,7 @@
 package com.android.sample.ui.replacement
 
 import com.android.sample.model.calendar.Event
-import com.android.sample.model.organization.SelectedOrganizationRepository
+import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.model.replacement.*
 import com.android.sample.ui.calendar.replacementEmployee.*
 import com.android.sample.ui.theme.EventPalette

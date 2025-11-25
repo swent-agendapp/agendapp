@@ -1,5 +1,8 @@
 package com.android.sample.model.organization
 
+import com.android.sample.model.organization.data.Employee
+import com.android.sample.model.organization.data.Role
+import com.android.sample.model.organization.repository.EmployeeRepository
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
 import org.junit.Test

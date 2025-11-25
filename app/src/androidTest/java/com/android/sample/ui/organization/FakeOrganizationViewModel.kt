@@ -36,15 +36,6 @@ class FakeOrganizationViewModel(
     _uiState.value = OrganizationUIState(isLoading = false, organizations = organizations)
   }
 
-  /** Simulate selecting an organization */
-  override fun selectOrganization(organization: Organization) {
-    val currentOrgs = _uiState.value.organizations
-    require(currentOrgs.contains(organization)) {
-      "Selected organization is not in the current list."
-    }
-    _uiState.value = _uiState.value.copy(selectedOrganization = organization)
-  }
-
   /** Clear error message */
   override fun clearErrorMsg() {
     _uiState.value = _uiState.value.copy(errorMsg = null)

@@ -22,6 +22,9 @@ private const val DELTA = 0.0001f
  * - The fact that the result does not depend on the input order.
  */
 class EventOverlapCalculatorTest {
+
+  private val selectedOrganizationID: String = "org123"
+
   /** Verifies that providing an empty event list results in an empty layout map. */
   @Test
   fun calculateEventLayouts_withEmptyList_returnsEmptyMap() {
@@ -42,6 +45,7 @@ class EventOverlapCalculatorTest {
     // Two events that do not overlap in time.
     val event1 =
         createEventForTimes(
+            organizationId = selectedOrganizationID,
             title = "Event 1",
             startHour = 8,
             startMinute = 0,
@@ -50,6 +54,7 @@ class EventOverlapCalculatorTest {
         )[0]
     val event2 =
         createEventForTimes(
+            organizationId = selectedOrganizationID,
             title = "Event 2",
             startHour = 10,
             startMinute = 0,
@@ -85,6 +90,7 @@ class EventOverlapCalculatorTest {
     // event1 ends exactly when event2 starts.
     val event1 =
         createEventForTimes(
+            organizationId = selectedOrganizationID,
             title = "Event 1",
             startHour = 8,
             startMinute = 0,
@@ -93,6 +99,7 @@ class EventOverlapCalculatorTest {
         )[0]
     val event2 =
         createEventForTimes(
+            organizationId = selectedOrganizationID,
             title = "Event 2",
             startHour = 9,
             startMinute = 0,
@@ -123,6 +130,7 @@ class EventOverlapCalculatorTest {
     // Two events that overlap in time.
     val event1 =
         createEventForTimes(
+            organizationId = selectedOrganizationID,
             title = "Event 1",
             startHour = 8,
             startMinute = 0,
@@ -131,6 +139,7 @@ class EventOverlapCalculatorTest {
         )[0]
     val event2 =
         createEventForTimes(
+            organizationId = selectedOrganizationID,
             title = "Event 2",
             startHour = 8,
             startMinute = 30,
@@ -173,6 +182,7 @@ class EventOverlapCalculatorTest {
     // A overlaps B, B overlaps C, but A and C only touch at 09:00.
     val eventA =
         createEventForTimes(
+            organizationId = selectedOrganizationID,
             title = "Event A",
             startHour = 8,
             startMinute = 0,
@@ -181,6 +191,7 @@ class EventOverlapCalculatorTest {
         )[0]
     val eventB =
         createEventForTimes(
+            organizationId = selectedOrganizationID,
             title = "Event B",
             startHour = 8,
             startMinute = 30,
@@ -189,6 +200,7 @@ class EventOverlapCalculatorTest {
         )[0]
     val eventC =
         createEventForTimes(
+            organizationId = selectedOrganizationID,
             title = "Event C",
             startHour = 9,
             startMinute = 0,
@@ -229,6 +241,7 @@ class EventOverlapCalculatorTest {
     // All three overlap between 08:45 and 09:15.
     val event1 =
         createEventForTimes(
+            organizationId = selectedOrganizationID,
             title = "Event 1",
             startHour = 8,
             startMinute = 0,
@@ -237,6 +250,7 @@ class EventOverlapCalculatorTest {
         )[0]
     val event2 =
         createEventForTimes(
+            organizationId = selectedOrganizationID,
             title = "Event 2",
             startHour = 8,
             startMinute = 30,
@@ -245,6 +259,7 @@ class EventOverlapCalculatorTest {
         )[0]
     val event3 =
         createEventForTimes(
+            organizationId = selectedOrganizationID,
             title = "Event 3",
             startHour = 8,
             startMinute = 45,
@@ -287,6 +302,7 @@ class EventOverlapCalculatorTest {
     // Cluster 1: two overlapping events in the morning.
     val morningEvent1 =
         createEventForTimes(
+            organizationId = selectedOrganizationID,
             title = "Morning 1",
             startHour = 8,
             startMinute = 0,
@@ -295,6 +311,7 @@ class EventOverlapCalculatorTest {
         )[0]
     val morningEvent2 =
         createEventForTimes(
+            organizationId = selectedOrganizationID,
             title = "Morning 2",
             startHour = 8,
             startMinute = 30,
@@ -305,6 +322,7 @@ class EventOverlapCalculatorTest {
     // Cluster 2: two overlapping events in the afternoon.
     val afternoonEvent1 =
         createEventForTimes(
+            organizationId = selectedOrganizationID,
             title = "Afternoon 1",
             startHour = 12,
             startMinute = 0,
@@ -313,6 +331,7 @@ class EventOverlapCalculatorTest {
         )[0]
     val afternoonEvent2 =
         createEventForTimes(
+            organizationId = selectedOrganizationID,
             title = "Afternoon 2",
             startHour = 12,
             startMinute = 30,
@@ -355,6 +374,7 @@ class EventOverlapCalculatorTest {
   fun calculateEventLayouts_isIndependentOfInputOrder() {
     val event1 =
         createEventForTimes(
+            organizationId = selectedOrganizationID,
             title = "Event 1",
             startHour = 8,
             startMinute = 0,
@@ -363,6 +383,7 @@ class EventOverlapCalculatorTest {
         )[0]
     val event2 =
         createEventForTimes(
+            organizationId = selectedOrganizationID,
             title = "Event 2",
             startHour = 8,
             startMinute = 30,
@@ -371,6 +392,7 @@ class EventOverlapCalculatorTest {
         )[0]
     val event3 =
         createEventForTimes(
+            organizationId = selectedOrganizationID,
             title = "Event 3",
             startHour = 9,
             startMinute = 0,

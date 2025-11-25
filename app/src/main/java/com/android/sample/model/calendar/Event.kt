@@ -17,6 +17,7 @@ import java.util.UUID
  * Data class representing a calendar event.
  *
  * @property id Unique identifier for the event.
+ * @property organizationId Identifier for the organization the event belongs to.
  * @property title Title of the event.
  * @property description Description of the event.
  * @property startDate Start date and time of the event.
@@ -33,6 +34,7 @@ import java.util.UUID
  */
 data class Event(
     val id: String,
+    val organizationId: String,
     val title: String,
     val description: String,
     val startDate: Instant,
@@ -80,6 +82,7 @@ enum class CloudStorageStatus {
 /**
  * Factory function to create a new Event instance with a generated unique ID and default values.
  *
+ * @param organizationId Identifier for the organization the event belongs to.
  * @param title Title of the event.
  * @param description Description of the event.
  * @param startDate Start date and time of the event.
@@ -91,6 +94,7 @@ enum class CloudStorageStatus {
  * @return A new Event instance.
  */
 fun createEvent(
+    organizationId: String,
     repository: EventRepository? = null,
     title: String = "Untitled",
     description: String = "",
@@ -111,6 +115,7 @@ fun createEvent(
         listOf(
             Event(
                 id = repository?.getNewUid() ?: UUID.randomUUID().toString(),
+                organizationId = organizationId,
                 title = title,
                 description = description,
                 startDate = startDate,
@@ -149,6 +154,7 @@ fun createEvent(
       List(weeks.toInt()) { i ->
         Event(
             id = repository?.getNewUid() ?: UUID.randomUUID().toString(),
+            organizationId = organizationId,
             title = title,
             description = description,
             startDate = startDate.plus(i * 7L, ChronoUnit.DAYS),
@@ -169,6 +175,7 @@ fun createEvent(
       List(months.toInt()) { i ->
         Event(
             id = repository?.getNewUid() ?: UUID.randomUUID().toString(),
+            organizationId = organizationId,
             title = title,
             description = description,
             startDate = startDate.atZone(zone).plusMonths(i * 1L).toInstant(),
@@ -189,6 +196,7 @@ fun createEvent(
       List(years.toInt()) { i ->
         Event(
             id = repository?.getNewUid() ?: UUID.randomUUID().toString(),
+            organizationId = organizationId,
             title = title,
             description = description,
             startDate = startDate.atZone(zone).plusYears(i * 1L).toInstant(),
@@ -209,8 +217,17 @@ fun createEvent(
  * factory.
  *
  * This ensures we rely on the same time conversion utilities as the production code.
+ *
+ * @param organizationId Identifier for the organization the event belongs to.
+ * @param title Title of the event.
+ * @param startHour Start hour of the event.
+ * @param startMinute Start minute of the event.
+ * @param endHour End hour of the event.
+ * @param endMinute End minute of the event.
+ * @return A new Event instance.
  */
 fun createEventForTimes(
+    organizationId: String,
     title: String = "Untitled",
     startHour: Int = 8,
     startMinute: Int = 0,
@@ -225,6 +242,7 @@ fun createEventForTimes(
   val endInstant = DateTimeUtils.localDateTimeToInstant(baseDate, endTime)
 
   return createEvent(
+      organizationId = organizationId,
       title = title,
       startDate = startInstant,
       endDate = endInstant,

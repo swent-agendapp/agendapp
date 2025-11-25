@@ -3,6 +3,7 @@ package com.android.sample.ui.calendar
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.RecurrenceStatus
+import com.android.sample.model.organization.SelectedOrganizationRepository
 import com.android.sample.model.replacement.*
 import com.android.sample.ui.calendar.replacementEmployee.ReplacementEmployeeViewModel
 import com.android.sample.ui.theme.EventPalette
@@ -32,12 +33,17 @@ class ReplacementEmployeeViewModelTest {
 
   private val employeeId = "EMP001"
 
+  private val selectedOrganizationID = "ORG001"
+
   @Before
   fun setup() {
     Dispatchers.setMain(testDispatcher)
     replacementRepo = FakeReplacementRepository()
     eventRepo = FakeEventRepository()
     vm = makeEmployeeVm()
+
+    // Set selected organization in the VM provider
+    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationID)
   }
 
   @After
@@ -141,7 +147,7 @@ class ReplacementEmployeeViewModelTest {
     val repos = replacementRepo as FakeReplacementRepository
     val event = sampleEvent("EV123")
 
-    eventRepo.insertEvent(event)
+    eventRepo.insertEvent(orgId = selectedOrganizationID, item = event)
 
     vm.createReplacementForEvent(event)
     testDispatcher.scheduler.advanceUntilIdle()
@@ -163,9 +169,9 @@ class ReplacementEmployeeViewModelTest {
     val e2 = sampleEvent("D2", startOffset = 3_600)
     val e3 = sampleEvent("D3", startOffset = 50_000) // out of range
 
-    eventRepo.insertEvent(e1)
-    eventRepo.insertEvent(e2)
-    eventRepo.insertEvent(e3)
+    eventRepo.insertEvent(orgId = selectedOrganizationID, item = e1)
+    eventRepo.insertEvent(orgId = selectedOrganizationID, item = e2)
+    eventRepo.insertEvent(orgId = selectedOrganizationID, item = e3)
 
     val start = Instant.now()
     val end = start.plusSeconds(10_000)
@@ -185,6 +191,7 @@ class ReplacementEmployeeViewModelTest {
   private fun sampleEvent(id: String, startOffset: Long = 0): Event =
       Event(
           id = id,
+          organizationId = selectedOrganizationID,
           title = "T$id",
           description = "D$id",
           startDate = Instant.now().plusSeconds(startOffset),
@@ -245,18 +252,22 @@ class FakeEventRepository : EventRepository {
 
   override fun getNewUid(): String = "fake-uid"
 
-  override suspend fun getAllEvents(): List<Event> = events.toList()
+  override suspend fun getAllEvents(orgId: String): List<Event> = events.toList()
 
-  override suspend fun insertEvent(item: Event) {
+  override suspend fun insertEvent(orgId: String, item: Event) {
     events.add(item)
   }
 
-  override suspend fun updateEvent(itemId: String, item: Event) {}
+  override suspend fun updateEvent(orgId: String, itemId: String, item: Event) {}
 
-  override suspend fun deleteEvent(itemId: String) {}
+  override suspend fun deleteEvent(orgId: String, itemId: String) {}
 
-  override suspend fun getEventById(itemId: String): Event? = events.find { it.id == itemId }
+  override suspend fun getEventById(orgId: String, itemId: String): Event? =
+      events.find { it.id == itemId }
 
-  override suspend fun getEventsBetweenDates(startDate: Instant, endDate: Instant): List<Event> =
-      events.filter { e -> e.startDate <= endDate && e.endDate >= startDate }
+  override suspend fun getEventsBetweenDates(
+      orgId: String,
+      startDate: Instant,
+      endDate: Instant
+  ): List<Event> = events.filter { e -> e.startDate <= endDate && e.endDate >= startDate }
 }

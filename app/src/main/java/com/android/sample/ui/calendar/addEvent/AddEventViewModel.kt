@@ -9,6 +9,8 @@ import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.calendar.createEvent
+import com.android.sample.ui.organization.SelectedOrganizationVMProvider
+import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import java.time.Duration
 import java.time.Instant
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -71,21 +73,30 @@ enum class AddEventStep {
  */
 class AddEventViewModel(
     private val repository: EventRepository = EventRepositoryProvider.repository,
-    private val authServ: AuthorizationService = AuthorizationService()
+    private val authServ: AuthorizationService = AuthorizationService(),
+    selectedOrganizationViewModel: SelectedOrganizationViewModel =
+        SelectedOrganizationVMProvider.viewModel
 ) : ViewModel() {
   private val _uiState = MutableStateFlow(AddCalendarEventUIState())
 
   /** Public immutable state that the UI observes. */
   val uiState: StateFlow<AddCalendarEventUIState> = _uiState.asStateFlow()
 
+  val selectedOrganizationId: StateFlow<String?> =
+      selectedOrganizationViewModel.selectedOrganizationId
+
   /**
    * Builds a new event from the current UI state and delegates storage. Calls
    * `addEventToRepository()` to persist the event.
    */
   fun addEvent() {
+    val orgId = selectedOrganizationId.value
+    require(orgId != null) { "Organization must be selected to create an event" }
+
     val currentState = _uiState.value
     val newEvents =
         createEvent(
+            organizationId = orgId,
             repository = repository,
             title = currentState.title,
             description = currentState.description,
@@ -118,7 +129,10 @@ class AddEventViewModel(
           return@launch
         }
 
-        repository.insertEvent(event)
+        val orgId = selectedOrganizationId.value
+        require(orgId != null) { "Organization must be selected to create an event" }
+
+        repository.insertEvent(orgId = orgId, item = event)
       } catch (e: Exception) {
         Log.e("AddEventViewModel", "Error adding event: ${e.message}")
         _uiState.value = _uiState.value.copy(errorMsg = "Unexpected error while creating the event")

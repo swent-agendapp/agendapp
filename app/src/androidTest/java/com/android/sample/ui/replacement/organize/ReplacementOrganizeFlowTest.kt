@@ -6,6 +6,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import java.time.Instant
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -57,6 +58,21 @@ class ReplacementOrganizeFlowTest {
     composeTestRule
         .onNodeWithText("Select the date range for which alice@example.com needs a replacement")
         .assertIsDisplayed()
+    fakeViewModel.setStartInstant(Instant.parse("2024-01-05T00:00:00Z"))
+    fakeViewModel.setEndInstant(Instant.parse("2024-01-01T00:00:00Z"))
+    // Buttons should be disabled
+    composeTestRule.onNodeWithTag(ReplacementOrganizeTestTags.NEXT_BUTTON).assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag(ReplacementOrganizeTestTags.DATE_RANGE_INVALID_TEXT)
+        .assertIsDisplayed()
+
+    fakeViewModel.setStartInstant(Instant.parse("2024-01-01T00:00:00Z"))
+    fakeViewModel.setEndInstant(Instant.parse("2024-01-05T00:00:00Z"))
+    // Buttons should be enabled
+    composeTestRule.onNodeWithTag(ReplacementOrganizeTestTags.NEXT_BUTTON).assertIsEnabled()
+    composeTestRule
+        .onNodeWithTag(ReplacementOrganizeTestTags.DATE_RANGE_INVALID_TEXT)
+        .assertDoesNotExist()
 
     // Navigate to SelectProcessMoment
     composeTestRule.onNodeWithTag(ReplacementOrganizeTestTags.NEXT_BUTTON).performClick()

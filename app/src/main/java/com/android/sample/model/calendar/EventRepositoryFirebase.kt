@@ -1,6 +1,7 @@
 package com.android.sample.model.calendar
 
 import com.android.sample.model.constants.FirestoreConstants.EVENTS_COLLECTION_PATH
+import com.android.sample.model.constants.FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH
 import com.android.sample.model.firestoreMappers.EventMapper
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
@@ -14,47 +15,113 @@ class EventRepositoryFirebase(private val db: FirebaseFirestore) : EventReposito
     return db.collection(EVENTS_COLLECTION_PATH).document().id
   }
 
-  override suspend fun getAllEvents(): List<Event> {
-    val snapshot = db.collection(EVENTS_COLLECTION_PATH).get().await()
+  override suspend fun getAllEvents(orgId: String): List<Event> {
+    val snapshot =
+        db.collection(ORGANIZATIONS_COLLECTION_PATH)
+            .document(orgId)
+            .collection(EVENTS_COLLECTION_PATH)
+            .whereEqualTo("organizationId", orgId)
+            .get()
+            .await()
     return snapshot.mapNotNull { EventMapper.fromDocument(document = it) }
   }
 
-  override suspend fun insertEvent(item: Event) {
-    db.collection(EVENTS_COLLECTION_PATH)
+  override suspend fun insertEvent(orgId: String, item: Event) {
+    // Calls the interface check to ensure the organizationId matches
+    super.insertEvent(orgId, item)
+
+    val data = EventMapper.toMap(item.copy(version = System.currentTimeMillis())).toMutableMap()
+
+    db.collection(ORGANIZATIONS_COLLECTION_PATH)
+        .document(orgId)
+        .collection(EVENTS_COLLECTION_PATH)
         .document(item.id)
-        .set(EventMapper.toMap(model = item))
+        .set(data)
         .await()
   }
 
-  override suspend fun updateEvent(itemId: String, item: Event) {
-    db.collection(EVENTS_COLLECTION_PATH)
+  override suspend fun updateEvent(orgId: String, itemId: String, item: Event) {
+    // Calls the interface check to ensure the organizationId matches
+    super.updateEvent(orgId, itemId, item)
+
+    val data = EventMapper.toMap(item.copy(version = System.currentTimeMillis())).toMutableMap()
+
+    db.collection(ORGANIZATIONS_COLLECTION_PATH)
+        .document(orgId)
+        .collection(EVENTS_COLLECTION_PATH)
         .document(itemId)
-        .set(EventMapper.toMap(model = item))
+        .set(data)
         .await()
   }
 
-  override suspend fun deleteEvent(itemId: String) {
-    db.collection(EVENTS_COLLECTION_PATH).document(itemId).delete().await()
+  override suspend fun deleteEvent(orgId: String, itemId: String) {
+    val retrievedItem =
+        db.collection(ORGANIZATIONS_COLLECTION_PATH)
+            .document(orgId)
+            .collection(EVENTS_COLLECTION_PATH)
+            .document(itemId)
+            .get()
+            .await()
+
+    require(retrievedItem.getString("organizationId") == orgId) {
+      "Event's organizationId ${retrievedItem.getString("organizationId")} does not match the provided orgId $orgId."
+    }
+
+    // Soft delete: set hasBeenDeleted to true and update version
+    db.collection(ORGANIZATIONS_COLLECTION_PATH)
+        .document(orgId)
+        .collection(EVENTS_COLLECTION_PATH)
+        .document(itemId)
+        .update(mapOf("version" to System.currentTimeMillis(), "hasBeenDeleted" to true))
+        .await()
   }
 
-  override suspend fun getEventById(itemId: String): Event? {
-    val document = db.collection(EVENTS_COLLECTION_PATH).document(itemId).get().await()
-    return EventMapper.fromDocument(document = document)
+  override suspend fun getEventById(orgId: String, itemId: String): Event? {
+    val document =
+        db.collection(ORGANIZATIONS_COLLECTION_PATH)
+            .document(orgId)
+            .collection(EVENTS_COLLECTION_PATH)
+            .document(itemId)
+            .get()
+            .await()
+
+    // Return null if the document does not exist or has been deleted
+    if (!document.exists() || document.getBoolean("hasBeenDeleted") == true) {
+      return null
+    }
+
+    require(document.getString("organizationId") == orgId) {
+      "Event's organizationId ${document.getString("organizationId")} does not match the provided orgId $orgId."
+    }
+
+    return EventMapper.fromDocument(document)
   }
 
-  override suspend fun getEventsBetweenDates(startDate: Instant, endDate: Instant): List<Event> {
+  override suspend fun getEventsBetweenDates(
+      orgId: String,
+      startDate: Instant,
+      endDate: Instant
+  ): List<Event> {
     require(startDate <= endDate) { "start date must be before or equal to end date" }
 
     val snapshot =
-        db.collection(EVENTS_COLLECTION_PATH)
+        db.collection(ORGANIZATIONS_COLLECTION_PATH)
+            .document(orgId)
+            .collection(EVENTS_COLLECTION_PATH)
+            // get all events that end on or after the start of the range
             .whereGreaterThanOrEqualTo("endDate", Timestamp(Date.from(startDate)))
             .get()
             .await()
 
-    val result =
-        snapshot
-            .mapNotNull { EventMapper.fromDocument(document = it) }
-            .filter { it.startDate <= endDate }
-    return result
+    val documentList = snapshot.documents.filter { it.getString("organizationId") == orgId }
+
+    require(documentList.all { it.getString("organizationId") == orgId }) {
+      "Some events' organizationId does not match the provided orgId $orgId."
+    }
+
+    return snapshot
+        .mapNotNull { EventMapper.fromDocument(document = it) }
+        // keep only events whose start is on/before the queried end
+        .filter { it.startDate <= endDate }
   }
 }

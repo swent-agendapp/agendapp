@@ -3,12 +3,20 @@ package com.android.sample.ui.editEvent
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.android.sample.model.calendar.EventRepositoryLocal
+import com.android.sample.model.calendar.Event
+import com.android.sample.model.calendar.RecurrenceStatus
+import com.android.sample.model.organization.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.editEvent.EditEventTestTags
 import com.android.sample.ui.calendar.editEvent.EditEventViewModel
 import com.android.sample.ui.calendar.editEvent.components.EditEventAttendantScreen
 import com.android.sample.ui.calendar.editEvent.components.EditEventScreen
+import com.android.sample.ui.theme.EventPalette
 import com.android.sample.ui.theme.SampleAppTheme
+import com.android.sample.utils.FakeEventRepository
+import java.time.Duration
+import java.time.Instant.now
+import java.time.temporal.ChronoUnit
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,14 +31,42 @@ class EditEventWithViewModelTest {
 
   @get:Rule val composeTestRule = createComposeRule()
 
+  private lateinit var sampleEvent: Event
+  private lateinit var fakeViewModel: EditEventViewModel
+
+  @Before
+  fun setup() {
+    val orgId = "orgTest"
+    SelectedOrganizationRepository.changeSelectedOrganization(orgId)
+
+    val start = now().truncatedTo(ChronoUnit.HOURS)
+    sampleEvent =
+        Event(
+            id = "E123",
+            organizationId = orgId,
+            title = "Test Event",
+            description = "Desc",
+            startDate = start,
+            endDate = start.plus(Duration.ofHours(1)),
+            cloudStorageStatuses = emptySet(),
+            locallyStoredBy = emptyList(),
+            personalNotes = null,
+            participants = setOf("Alice", "Bob"),
+            version = 1L,
+            recurrenceStatus = RecurrenceStatus.OneTime,
+            hasBeenDeleted = false,
+            color = EventPalette.Blue)
+
+    val fakeRepository = FakeEventRepository()
+    fakeRepository.add(event = sampleEvent)
+    fakeViewModel = EditEventViewModel(fakeRepository)
+  }
+
   // -------------------------------------------------------------------------
   // 1. Test: EditEventScreen disables Save button when fields are empty
   // -------------------------------------------------------------------------
   @Test
   fun editEventScreen_showsErrorWhenFieldsEmpty_withViewModel() {
-    val fakeRepository = EventRepositoryLocal(preloadSampleData = true)
-    val fakeViewModel = EditEventViewModel(fakeRepository)
-
     composeTestRule.setContent {
       SampleAppTheme {
         EditEventScreen(
@@ -60,13 +96,10 @@ class EditEventWithViewModelTest {
     var saveClicked = false
     var cancelClicked = false
 
-    val fakeRepository = EventRepositoryLocal(preloadSampleData = true)
-    val fakeViewModel = EditEventViewModel(fakeRepository)
-
     composeTestRule.setContent {
       SampleAppTheme {
         EditEventScreen(
-            eventId = "E001",
+            eventId = sampleEvent.id,
             editEventViewModel = fakeViewModel,
             onSave = { saveClicked = true },
             onCancel = { cancelClicked = true },
@@ -103,9 +136,6 @@ class EditEventWithViewModelTest {
     var saveClicked = false
     var backClicked = false
 
-    val fakeRepository = EventRepositoryLocal(preloadSampleData = true)
-    val fakeViewModel = EditEventViewModel(fakeRepository)
-
     composeTestRule.setContent {
       SampleAppTheme {
         EditEventAttendantScreen(
@@ -134,8 +164,6 @@ class EditEventWithViewModelTest {
   // -------------------------------------------------------------------------
   @Test
   fun editEventAttendantScreen_toggleParticipantCheckbox_withViewModel() {
-    val fakeRepository = EventRepositoryLocal(preloadSampleData = true)
-    val fakeViewModel = EditEventViewModel(fakeRepository)
 
     composeTestRule.setContent {
       SampleAppTheme { EditEventAttendantScreen(editEventViewModel = fakeViewModel) }

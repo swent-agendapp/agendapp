@@ -32,6 +32,8 @@ object AddOrganizationScreenTestTags {
 fun AddOrganizationScreen(
     addOrganizationViewModel: AddOrganizationViewModel = viewModel(),
     organizationViewModel: OrganizationViewModel = viewModel(),
+    selectedOrganizationViewModel: SelectedOrganizationViewModel =
+        SelectedOrganizationVMProvider.viewModel,
     onNavigateBack: () -> Unit = {},
     onFinish: () -> Unit = {},
 ) {
@@ -63,6 +65,7 @@ fun AddOrganizationScreen(
                   if (organizationName != null) {
                     organizationViewModel.addOrganizationFromName(organizationName)
                   }
+                  selectedOrganizationViewModel.clearSelection()
                   onFinish()
                 },
                 onBack = onNavigateBack,

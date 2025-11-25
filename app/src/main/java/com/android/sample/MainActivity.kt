@@ -44,8 +44,10 @@ import com.android.sample.ui.organization.AddOrganizationScreen
 import com.android.sample.ui.organization.OrganizationListScreen
 import com.android.sample.ui.profile.AdminContactScreen
 import com.android.sample.ui.profile.ProfileScreen
+import com.android.sample.ui.replacement.ProcessReplacementScreen
 import com.android.sample.ui.replacement.ReplacementOverviewScreen
 import com.android.sample.ui.replacement.ReplacementPendingListScreen
+import com.android.sample.ui.replacement.ReplacementUpcomingListScreen
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeScreen
 import com.android.sample.ui.settings.SettingsScreen
 import com.android.sample.ui.theme.SampleAppTheme
@@ -106,14 +108,6 @@ fun Agendapp(
   val bottomBarItems =
       listOf(
           BottomBarItem(
-              icon = Icons.Default.Event,
-              label = "Calendar",
-              route = Screen.Calendar.route,
-              onClick = { navigationActions.navigateTo(Screen.Calendar) },
-              contentDescription = "Calendar",
-              isSelected = currentRoute == Screen.Calendar.route,
-              testTag = BottomBarTestTags.ITEM_CALENDAR),
-          BottomBarItem(
               icon = Icons.Default.Accessibility,
               label = "Replacement",
               route = Screen.ReplacementOverview.route,
@@ -121,6 +115,14 @@ fun Agendapp(
               contentDescription = "Replacement",
               isSelected = currentRoute == Screen.ReplacementOverview.route,
               testTag = BottomBarTestTags.ITEM_REPLACEMENT),
+          BottomBarItem(
+              icon = Icons.Default.Event,
+              label = "Calendar",
+              route = Screen.Calendar.route,
+              onClick = { navigationActions.navigateTo(Screen.Calendar) },
+              contentDescription = "Calendar",
+              isSelected = currentRoute == Screen.Calendar.route,
+              testTag = BottomBarTestTags.ITEM_CALENDAR),
           BottomBarItem(
               icon = Icons.Default.Settings,
               label = "Settings",
@@ -146,7 +148,7 @@ fun Agendapp(
               composable(Screen.Authentication.route) {
                 SignInScreen(
                     credentialManager = credentialManager,
-                    onSignedIn = { navigationActions.navigateTo(Screen.Calendar) })
+                    onSignedIn = { navigationActions.navigateTo(Screen.Organizations) })
               }
 
               // Organization Selection Graph
@@ -230,6 +232,9 @@ fun Agendapp(
                           },
                           onWaitingConfirmationClick = {
                             navigationActions.navigateTo(Screen.ReplacementPending)
+                          },
+                          onConfirmedClick = {
+                            navigationActions.navigateTo(Screen.ReplacementUpcoming)
                           })
                     }
                     composable(Screen.ReplacementOrganize.route) {
@@ -243,7 +248,34 @@ fun Agendapp(
                     // Pending Replacement Screen
                     composable(Screen.ReplacementPending.route) {
                       ReplacementPendingListScreen(
+                          onProcessReplacement = { replacement ->
+                            navigationActions.navigateToReplacementProcess(replacement.id)
+                          },
                           onNavigateBack = { navigationActions.navigateBack() })
+                    }
+
+                    // accepted replacement screen
+                    composable(Screen.ReplacementUpcoming.route) {
+                      ReplacementUpcomingListScreen(
+                          onNavigateBack = { navigationActions.navigateBack() })
+                    }
+                    composable(Screen.ReplacementProcess.route) { navBackStackEntry ->
+                      val replacementId = navBackStackEntry.arguments?.getString("replacementId")
+
+                      replacementId?.let {
+                        ProcessReplacementScreen(
+                            replacementId = it,
+                            onSendRequests = { _ ->
+                              // Later: the requests have to be send, now it just goes back
+                              navigationActions.navigateBack()
+                            },
+                            onBack = { navigationActions.navigateBack() },
+                        )
+                      }
+                          ?: run {
+                            Log.e("ProcessReplacementScreen", "replacementId is null")
+                            navigationActions.navigateBack()
+                          }
                     }
                   }
 

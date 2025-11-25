@@ -221,6 +221,7 @@ class OrganizationMapperTest {
 
     val map = OrganizationMapper.toMap(organization)
 
+    assertThat(map["id"]).isEqualTo("org123")
     assertThat(map["name"]).isEqualTo("My Organization")
     assertThat(map["geoCheckEnabled"]).isEqualTo(true)
 

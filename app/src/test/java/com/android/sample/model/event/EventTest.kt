@@ -61,7 +61,7 @@ class EventTest {
   fun defaultColor_shouldBeUsedWhenNotSpecified() {
     val defaultEvent = createEvent(organizationId = selectedOrganizationID)[0]
     assertEquals(EventPalette.Blue, defaultEvent.color)
-    assertFalse(defaultEvent.present)
+    assertTrue(defaultEvent.presence.isEmpty())
   }
 
   @Test

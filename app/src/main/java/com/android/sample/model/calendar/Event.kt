@@ -66,6 +66,7 @@ data class Event(
 /** Enum representing the recurrence pattern of an event. */
 enum class RecurrenceStatus {
   OneTime,
+  Daily,
   Weekly,
   Monthly,
   Yearly
@@ -120,6 +121,26 @@ fun createEvent(
                 version = System.currentTimeMillis(),
                 recurrenceStatus = recurrence,
                 color = color))
+    RecurrenceStatus.Daily -> {
+      val days =
+        1 +
+                ChronoUnit.DAYS.between(
+                  startDate.atZone(ZoneOffset.UTC), endRecurrence.atZone(ZoneOffset.UTC))
+      List(days.toInt()) { i ->
+        Event(
+          id = repository?.getNewUid() ?: UUID.randomUUID().toString(),
+          title = title,
+          description = description,
+          startDate = startDate.plus(i * 1L, ChronoUnit.DAYS),
+          endDate = endDate.plus(i * 1L, ChronoUnit.DAYS),
+          cloudStorageStatuses = cloudStorageStatuses,
+          personalNotes = personalNotes,
+          participants = participants,
+          version = System.currentTimeMillis(),
+          recurrenceStatus = recurrence,
+          color = color)
+      }
+    }
     RecurrenceStatus.Weekly -> {
       val weeks =
           1 +
@@ -141,7 +162,6 @@ fun createEvent(
       }
     }
     RecurrenceStatus.Monthly -> {
-
       val months =
           1 +
               ChronoUnit.MONTHS.between(
@@ -215,6 +235,7 @@ fun createEventForTimes(
 fun RecurrenceStatus.labelRes(): Int =
     when (this) {
       RecurrenceStatus.OneTime -> R.string.recurrence_one_time
+      RecurrenceStatus.Daily -> R.string.recurrence_daily
       RecurrenceStatus.Weekly -> R.string.recurrence_weekly
       RecurrenceStatus.Monthly -> R.string.recurrence_monthly
       RecurrenceStatus.Yearly -> R.string.recurrence_yearly

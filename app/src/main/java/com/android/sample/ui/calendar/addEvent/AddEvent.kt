@@ -35,6 +35,7 @@ object AddEventTestTags {
   fun recurrenceTag(status: RecurrenceStatus): String =
       when (status) {
         RecurrenceStatus.OneTime -> "recurrence_one_time"
+        RecurrenceStatus.Daily -> "recurrence_one_time"
         RecurrenceStatus.Weekly -> "recurrence_weekly"
         RecurrenceStatus.Monthly -> "recurrence_monthly"
         RecurrenceStatus.Yearly -> "recurrence_yearly"

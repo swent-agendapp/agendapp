@@ -127,6 +127,7 @@ fun EditEventScreen(
                       editEventViewModel.setStartInstant(
                           DateTimeUtils.instantWithDate(uiState.startInstant, date))
                     },
+                    enabled = true,
                     initialInstant = uiState.startInstant)
               }
 
@@ -138,6 +139,7 @@ fun EditEventScreen(
                       editEventViewModel.setEndInstant(
                           DateTimeUtils.instantWithDate(uiState.endInstant, date))
                     },
+                    enabled = true,
                     initialInstant = uiState.endInstant)
               }
 

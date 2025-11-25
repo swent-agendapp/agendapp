@@ -2,9 +2,8 @@ package com.android.sample.ui.calendar.eventOverview
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -30,6 +29,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.model.calendar.Event
@@ -37,8 +37,7 @@ import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.ui.calendar.components.EventSummaryCard
 import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.theme.EventPalette
-import com.android.sample.ui.theme.WeightHeavy
-import com.android.sample.ui.theme.WeightVeryHeavy
+import com.android.sample.ui.theme.PaddingExtraLarge
 import java.time.Duration
 import java.time.Instant
 
@@ -83,11 +82,8 @@ fun EventOverviewScreen(
     }
   }
 
-  // Fetch the event and its participant display names
-  LaunchedEffect(eventId) {
-    eventOverviewViewModel.loadEvent(eventId)
-    eventOverviewViewModel.loadParticipantNames()
-  }
+  // Fetch the event
+  LaunchedEffect(eventId) { eventOverviewViewModel.loadEvent(eventId) }
 
   val context = LocalContext.current
 
@@ -149,12 +145,18 @@ fun EventOverviewScreen(
                     .padding(innerPadding)
                     .testTag(EventOverviewScreenTestTags.SCREEN_ROOT),
             contentAlignment = Alignment.TopCenter) {
-              // Constrain the card so it does not take the whole width on large screens.
-              // EventSummaryCard internally uses fillMaxWidth(), so we wrap it in a box
-              // with a max width and a fraction of the screen width.
-              Box(modifier = Modifier.fillMaxWidth(WeightVeryHeavy).fillMaxHeight(WeightHeavy)) {
-                event?.let { EventSummaryCard(event = it, participantNames = participantNames) }
-              }
+              // Keep horizontal (and bottom) padding around the card so it does not stretch
+              // edge‑to‑edge.
+              Box(
+                  modifier =
+                      Modifier.padding(
+                          PaddingValues(
+                              start = PaddingExtraLarge,
+                              end = PaddingExtraLarge,
+                              bottom = PaddingExtraLarge,
+                              top = 0.dp))) {
+                    event?.let { EventSummaryCard(event = it, participantNames = participantNames) }
+                  }
             }
       }
 }

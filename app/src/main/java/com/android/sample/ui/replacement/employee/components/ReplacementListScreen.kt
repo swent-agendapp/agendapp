@@ -8,7 +8,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
-import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -79,6 +78,10 @@ fun ReplacementEmployeeListScreen(
     onRefuse: (id: String) -> Unit = {},
     onSelectEvent: () -> Unit = {},
     onChooseDateRange: () -> Unit = {},
+    isAdmin: Boolean = false,
+    onOrganizeClick: () -> Unit = {},
+    onWaitingConfirmationClick: () -> Unit = {},
+    onConfirmedClick: () -> Unit = {},
     onBack: () -> Unit = {},
 ) {
   var showCreateOptions by remember { mutableStateOf(false) }
@@ -92,10 +95,31 @@ fun ReplacementEmployeeListScreen(
       bottomBar = {
         Column(
             modifier =
-                Modifier.fillMaxWidth().padding(horizontal = PaddingLarge, vertical = PaddingLarge),
+                Modifier.fillMaxWidth().padding(horizontal = PaddingSmall, vertical = PaddingLarge),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(PaddingMedium),
         ) {
+            if (isAdmin){
+                SecondaryButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(R.string.organize_replacement),
+                    onClick = onOrganizeClick,
+                )
+
+                SecondaryButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(R.string.waiting_confirmation_replacement),
+                    onClick = onWaitingConfirmationClick,
+                )
+
+                SecondaryButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(R.string.confirmed_replacements),
+                    onClick = onConfirmedClick,
+                )
+
+                Spacer(Modifier.height(PaddingExtraSmall))
+            }
           AnimatedVisibility(visible = showCreateOptions) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -137,9 +161,9 @@ fun ReplacementEmployeeListScreen(
             modifier =
                 Modifier.fillMaxSize()
                     .padding(inner)
-                    .padding(horizontal = PaddingLarge)
+                    .padding(horizontal = PaddingSmall, vertical = PaddingMedium)
                     .testTag(ReplacementEmployeeListTestTags.ROOT),
-            verticalArrangement = Arrangement.spacedBy(PaddingLarge)) {
+            verticalArrangement = Arrangement.spacedBy(PaddingMedium)) {
               items(requests, key = { it.id }) { req ->
                 ReplacementRequestCard(
                     data = req,
@@ -151,7 +175,7 @@ fun ReplacementEmployeeListScreen(
                 )
               }
 
-              item { Spacer(Modifier.height(heightLarge)) }
+              item { Spacer(Modifier.height(SpacingMedium)) }
             }
       }
 }
@@ -168,10 +192,11 @@ private fun ReplacementRequestCard(
   Card(
       modifier = Modifier.fillMaxWidth().testTag(testTag),
       shape = RoundedCornerShape(CornerRadiusLarge),
-      elevation = CardDefaults.cardElevation(defaultElevation = ElevationLow),
+      elevation = CardDefaults.cardElevation(defaultElevation = SmallCardElevation),
   ) {
+
     Row(
-        modifier = Modifier.fillMaxWidth().padding(PaddingLarge),
+        modifier = Modifier.fillMaxWidth().padding(PaddingMedium),
         verticalAlignment = Alignment.CenterVertically,
     ) {
       Box(
@@ -181,7 +206,7 @@ private fun ReplacementRequestCard(
                   .background(MaterialTheme.colorScheme.primary),
       )
 
-      Spacer(Modifier.width(PaddingLarge))
+      Spacer(Modifier.width(PaddingMedium))
 
       Column(
           modifier = Modifier.fillMaxWidth(),
@@ -199,10 +224,10 @@ private fun ReplacementRequestCard(
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(PaddingMedium),
+            horizontalArrangement = Arrangement.spacedBy(PaddingSmall),
         ) {
           Icon(
-              imageVector = Icons.Default.AccessTime,
+              imageVector = Icons.Filled.AccessTime,
               contentDescription = null,
               tint = MaterialTheme.colorScheme.onSurfaceVariant,
           )
@@ -224,7 +249,7 @@ private fun ReplacementRequestCard(
             overflow = TextOverflow.Ellipsis,
         )
 
-        Spacer(Modifier.height(PaddingMedium))
+        Spacer(Modifier.height(PaddingExtraSmall))
 
         Row(horizontalArrangement = Arrangement.spacedBy(PaddingLarge)) {
           TextButton(onClick = onAccept, modifier = Modifier.testTag(acceptTag)) {
@@ -239,7 +264,6 @@ private fun ReplacementRequestCard(
   }
 }
 
-/** ---------- Previews ---------- */
 @Preview(showBackground = true)
 @Composable
 fun ReplacementEmployeeViewScreenPreview() {

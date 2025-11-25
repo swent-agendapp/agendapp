@@ -98,9 +98,10 @@
 
     <!-- Recurrence -->
     <string name="recurrence_one_time">Une fois</string>
-    <string name="recurrence_weekly">Hebdomadaire</string>
-    <string name="recurrence_monthly">Mensuel</string>
-    <string name="recurrence_yearly">Annuel</string>
+    <string name="recurrence_daily">Tous les jours</string>
+    <string name="recurrence_weekly">Toutes les semaines</string>
+    <string name="recurrence_monthly">Tous les mois</string>
+    <string name="recurrence_yearly">Tous les ans</string>
 
     <!-- Sign In -->
     <string name="sign_in_app_title">Agendapp</string>

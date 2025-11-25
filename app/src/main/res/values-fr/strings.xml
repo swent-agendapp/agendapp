@@ -110,7 +110,6 @@
     <string name="sign_in_button_text">Se connecter avec Google</string>
     <string name="sign_in_logout_content_description">Se déconnecter</string>
     <string name="sign_in_logo_content_description">Logo de l’application</string>
-    <string name="sign_in_cancelled_error">Connexion annulée</string>
     <string name="sign_in_credentials_error">Échec de la récupération des identifiants : %1$s</string>
     <string name="sign_in_unexpected_error">Erreur inattendue : %1$s</string>
 

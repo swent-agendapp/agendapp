@@ -149,7 +149,6 @@
     <string name="sign_in_button_text">Sign in with Google</string>
     <string name="sign_in_logout_content_description">Sign out</string>
     <string name="sign_in_logo_content_description">App logo</string>
-    <string name="sign_in_cancelled_error">Sign-in cancelled</string>
     <string name="sign_in_credentials_error">Failed to get credentials: %1$s</string>
     <string name="sign_in_unexpected_error">Unexpected error: %1$s</string>
 

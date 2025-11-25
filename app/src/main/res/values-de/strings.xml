@@ -109,7 +109,6 @@
     <string name="sign_in_button_text">Mit Google anmelden</string>
     <string name="sign_in_logout_content_description">Abmelden</string>
     <string name="sign_in_logo_content_description">App-Logo</string>
-    <string name="sign_in_cancelled_error">Anmeldung abgebrochen</string>
     <string name="sign_in_credentials_error">Fehler beim Abrufen der Anmeldedaten: %1$s</string>
     <string name="sign_in_unexpected_error">Unerwarteter Fehler: %1$s</string>
 

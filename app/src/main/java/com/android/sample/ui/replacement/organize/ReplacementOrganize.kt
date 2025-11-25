@@ -49,6 +49,10 @@ fun ReplacementOrganizeScreen(
   LaunchedEffect(Unit) { replacementOrganizeViewModel.loadOrganizationMembers() }
   val uiState by replacementOrganizeViewModel.uiState.collectAsState()
 
+    val memberLabel = uiState.selectedMember?.displayName
+            ?: uiState.selectedMember?.email
+            ?: uiState.selectedMember?.id
+
   when (uiState.step) {
     ReplacementOrganizeStep.SelectSubstitute ->
         SelectSubstitutedScreen(
@@ -72,7 +76,7 @@ fun ReplacementOrganizeScreen(
             instruction =
                 stringResource(
                     R.string.select_replacement_events,
-                    uiState.selectedMember!!.email ?: uiState.selectedMember!!.id),
+                    memberLabel ?: ""),
             onEventClick = { replacementOrganizeViewModel.toggleSelectedEvent(event = it) },
             canGoNext = uiState.selectedEvents.isNotEmpty())
     ReplacementOrganizeStep.SelectDateRange ->
@@ -97,7 +101,7 @@ fun ReplacementOrganizeScreen(
             instruction =
                 stringResource(
                     R.string.select_replacement_date_range,
-                    uiState.selectedMember!!.email ?: uiState.selectedMember!!.id),
+                    memberLabel ?: ""),
             errorMessage = stringResource(R.string.invalidDateRangeMessage),
             canGoNext = replacementOrganizeViewModel.dateRangeValid())
     ReplacementOrganizeStep.SelectProcessMoment ->

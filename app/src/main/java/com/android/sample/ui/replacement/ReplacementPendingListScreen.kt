@@ -1,20 +1,25 @@
 package com.android.sample.ui.replacement
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.HelpOutline
+import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AssistChip
@@ -33,6 +38,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
@@ -48,6 +54,7 @@ import com.android.sample.model.replacement.toProcessReplacements
 import com.android.sample.model.replacement.waitingForAnswerAndDeclinedReplacements
 import com.android.sample.ui.calendar.utils.DateTimeUtils.DATE_FORMAT_PATTERN
 import com.android.sample.ui.common.PrimaryButton
+import com.android.sample.ui.theme.BarWidthSmall
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingExtraSmall
 import com.android.sample.ui.theme.PaddingMedium
@@ -170,76 +177,81 @@ private fun ReplacementToProcessCard(
     replacement: Replacement,
     onProcessClick: () -> Unit,
 ) {
-  val dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)
-  val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+    val dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)
+    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
-  val dateText = replacement.event.startLocalDate.format(dateFormatter)
-  val timeText =
-      "${replacement.event.startLocalTime.format(timeFormatter)} - " +
-          replacement.event.endLocalTime.format(timeFormatter)
+    val dateText = replacement.event.startLocalDate.format(dateFormatter)
+    val timeText =
+        "${replacement.event.startLocalTime.format(timeFormatter)} - " +
+                replacement.event.endLocalTime.format(timeFormatter)
 
-  Card(
-      modifier =
-          Modifier.fillMaxWidth().testTag(ReplacementPendingTestTags.itemTag(replacement.id)),
-      shape = RoundedCornerShape(CornerRadiusLarge),
-      elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)) {
-        Column(modifier = Modifier.fillMaxWidth().padding(PaddingMedium)) {
-          Text(
-              text = replacement.event.title,
-              style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold))
-          Spacer(modifier = Modifier.height(SpacingSmall))
-          Text(text = "$dateText • $timeText", style = MaterialTheme.typography.bodyMedium)
-          Spacer(modifier = Modifier.height(SpacingMedium))
-          Text(
-              text =
-                  stringResource(
-                      id = R.string.replacement_substituted_label, replacement.absentUserId),
-              style = MaterialTheme.typography.bodySmall)
-          Spacer(modifier = Modifier.height(SpacingSmall))
+    Card(
+        modifier =
+            Modifier.fillMaxWidth().testTag(ReplacementPendingTestTags.itemTag(replacement.id)),
+        shape = RoundedCornerShape(CornerRadiusLarge),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            ),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(PaddingMedium),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(
+                modifier =
+                    Modifier.fillMaxHeight()
+                        .width(BarWidthSmall)
+                        .background(replacement.event.color),
+            )
 
-          PrimaryButton(
-              onClick = onProcessClick,
-              text = stringResource(id = R.string.replacement_process_button),
-              innerPadding = PaddingExtraSmall)
+            Spacer(modifier = Modifier.width(SpacingMedium))
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(
+                    text = replacement.event.title,
+                    style =
+                        MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.SemiBold,
+                        ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Spacer(modifier = Modifier.height(SpacingSmall))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Filled.Schedule,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
+                    Spacer(modifier = Modifier.width(SpacingSmall))
+                    Text(
+                        text = "$dateText • $timeText",
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
+                Spacer(modifier = Modifier.height(SpacingMedium))
+                Text(
+                    text =
+                        stringResource(
+                            id = R.string.replacement_substituted_label,
+                            replacement.absentUserId,
+                        ),
+                    style = MaterialTheme.typography.bodySmall,
+                )
+                Spacer(modifier = Modifier.height(SpacingSmall))
+
+                PrimaryButton(
+                    onClick = onProcessClick,
+                    text = stringResource(id = R.string.replacement_process_button),
+                    innerPadding = PaddingExtraSmall,
+                )
+            }
         }
-      }
-}
-
-/** Card for a pending replacement that is already waiting for a substitute's answer */
-@Composable
-fun ReplacementPendingCard(replacement: Replacement) {
-  val dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)
-  val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
-
-  val dateText = replacement.event.startLocalDate.format(dateFormatter)
-  val timeText =
-      "${replacement.event.startLocalTime.format(timeFormatter)} - " +
-          replacement.event.endLocalTime.format(timeFormatter)
-
-  Card(
-      modifier =
-          Modifier.fillMaxWidth().testTag(ReplacementPendingTestTags.itemTag(replacement.id)),
-      shape = RoundedCornerShape(CornerRadiusLarge),
-      elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)) {
-        Column(modifier = Modifier.fillMaxWidth().padding(PaddingMedium)) {
-          Text(
-              text = replacement.event.title,
-              style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold))
-          Spacer(modifier = Modifier.height(SpacingSmall))
-          Text(text = "$dateText • $timeText", style = MaterialTheme.typography.bodyMedium)
-          Spacer(modifier = Modifier.height(SpacingMedium))
-          Text(
-              text =
-                  stringResource(
-                      id = R.string.replacement_substituted_label, replacement.absentUserId),
-              style = MaterialTheme.typography.bodySmall)
-          Text(
-              text =
-                  stringResource(
-                      id = R.string.replacement_substitute_label, replacement.substituteUserId),
-              style = MaterialTheme.typography.bodySmall)
-        }
-      }
+    }
 }
 
 @Composable
@@ -269,44 +281,83 @@ fun ReplacementWaitingCard(replacements: List<Replacement>) {
   val timeText =
       "${event.startLocalTime.format(timeFormatter)} - ${event.endLocalTime.format(timeFormatter)}"
 
-  Card(
-      modifier = Modifier.fillMaxWidth(),
-      shape = RoundedCornerShape(CornerRadiusLarge),
-      elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)) {
-        Column(modifier = Modifier.fillMaxWidth().padding(PaddingMedium)) {
-          Text(
-              text = event.title,
-              style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
-              maxLines = 1,
-              overflow = TextOverflow.Ellipsis)
-          Spacer(modifier = Modifier.height(SpacingSmall))
-          Text(text = "$dateText • $timeText", style = MaterialTheme.typography.bodyMedium)
-          Spacer(modifier = Modifier.height(SpacingMedium))
-          Text(
-              text = stringResource(R.string.replacement_substituted_label, absentUserId),
-              style = MaterialTheme.typography.bodySmall)
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(CornerRadiusLarge),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            ),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(PaddingMedium),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(
+                modifier =
+                    Modifier.fillMaxHeight()
+                        .width(4.dp)
+                        .background(event.color),
+            )
 
-          Spacer(modifier = Modifier.height(SpacingMedium))
+            Spacer(modifier = Modifier.width(SpacingMedium))
 
-          Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            ReplacementAssistChip(
-                count = pending.size,
-                labelRes = R.string.replacement_no_response_label,
-                enabled = pending.isNotEmpty(),
-                onClick = { showPendingDialog = true },
-                icon = Icons.AutoMirrored.Outlined.HelpOutline,
-                tint = MaterialTheme.colorScheme.tertiary)
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(
+                    text = event.title,
+                    style =
+                        MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.SemiBold,
+                        ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Spacer(modifier = Modifier.height(SpacingSmall))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Filled.Schedule,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
+                    Spacer(modifier = Modifier.width(SpacingSmall))
+                    Text(
+                        text = "$dateText • $timeText",
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
+                Spacer(modifier = Modifier.height(SpacingMedium))
+                Text(
+                    text = stringResource(R.string.replacement_substituted_label, absentUserId),
+                    style = MaterialTheme.typography.bodySmall,
+                )
 
-            ReplacementAssistChip(
-                count = declined.size,
-                labelRes = R.string.replacement_declined_label,
-                enabled = declined.isNotEmpty(),
-                onClick = { showDeclinedDialog = true },
-                icon = Icons.Outlined.Close,
-                tint = MaterialTheme.colorScheme.error)
-          }
+                Spacer(modifier = Modifier.height(SpacingMedium))
+
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    ReplacementAssistChip(
+                        count = pending.size,
+                        labelRes = R.string.replacement_no_response_label,
+                        enabled = pending.isNotEmpty(),
+                        onClick = { showPendingDialog = true },
+                        icon = Icons.AutoMirrored.Outlined.HelpOutline,
+                        tint = MaterialTheme.colorScheme.tertiary,
+                    )
+
+                    ReplacementAssistChip(
+                        count = declined.size,
+                        labelRes = R.string.replacement_declined_label,
+                        enabled = declined.isNotEmpty(),
+                        onClick = { showDeclinedDialog = true },
+                        icon = Icons.Outlined.Close,
+                        tint = MaterialTheme.colorScheme.error,
+                    )
+                }
+            }
         }
-      }
+    }
 
   if (showPendingDialog) {
     PeopleListDialog(

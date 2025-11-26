@@ -109,4 +109,49 @@ class ReplacementRepositoryFirebaseTest : FirebaseEmulatedTest() {
     val result = repository.getReplacementsByAbsentUser(selectedOrganizationId, "someone-else")
     Assert.assertTrue(result.isEmpty())
   }
+
+  @Test
+  fun getAllReplacements_forDifferentOrganizations() = runBlocking {
+    val orgId1 = "org1"
+    val orgId2 = "org2"
+
+    val replacementOrg1 =
+        Replacement(
+            id = "replacementOrg1",
+            absentUserId = "userA",
+            substituteUserId = "userB",
+            event = sampleEvent,
+            status = ReplacementStatus.ToProcess)
+
+    val replacementOrg2 =
+        Replacement(
+            id = "replacementOrg2",
+            absentUserId = "userC",
+            substituteUserId = "userD",
+            event = sampleEvent,
+            status = ReplacementStatus.Accepted)
+
+    repository.insertReplacement(orgId1, replacementOrg1)
+    repository.insertReplacement(orgId2, replacementOrg2)
+
+    val replacementsOrg1 = repository.getAllReplacements(orgId1)
+    val replacementsOrg2 = repository.getAllReplacements(orgId2)
+
+    Assert.assertEquals(1, replacementsOrg1.size)
+    Assert.assertEquals("replacementOrg1", replacementsOrg1.first().id)
+
+    Assert.assertEquals(1, replacementsOrg2.size)
+    Assert.assertEquals("replacementOrg2", replacementsOrg2.first().id)
+  }
+
+  @Test
+  fun getNoReplacementsForInvalidOrganization() = runBlocking {
+    repository.insertReplacement(
+        selectedOrganizationId,
+        Replacement(absentUserId = "Alice", substituteUserId = "Charlie", event = sampleEvent))
+
+    val invalidOrgId = "invalidOrg"
+    val replacements = repository.getAllReplacements(invalidOrgId)
+    Assert.assertTrue(replacements.isEmpty())
+  }
 }

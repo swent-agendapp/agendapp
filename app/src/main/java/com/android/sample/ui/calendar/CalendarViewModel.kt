@@ -124,4 +124,40 @@ class CalendarViewModel(
         },
         errorMessage = "Failed to load events between $start and $end")
   }
+
+  /**
+   * Calculates the total worked hours for each employee within a given time range.
+   *
+   * @param start The start of the time range.
+   * @param end The end of the time range.
+   * @return A list of pairs where each pair contains an employee ID and their total worked hours.
+   */
+  suspend fun calculateWorkedHours(start: Instant, end: Instant): List<Pair<String, Double>> {
+    val orgId = selectedOrganizationId.value ?: return emptyList()
+    val events =
+        eventRepository.getEventsBetweenDates(orgId = orgId, startDate = start, endDate = end)
+    val workedHoursMap = mutableMapOf<String, Double>()
+    val now = Instant.now()
+
+    events.forEach { event ->
+      val durationHours =
+          java.time.Duration.between(event.startDate, event.endDate).toMinutes() / 60.0
+
+      if (event.endDate.isBefore(now)) {
+        // Past event: check presence
+        event.presence.forEach { (userId, isPresent) ->
+          if (isPresent) {
+            workedHoursMap[userId] = workedHoursMap.getOrDefault(userId, 0.0) + durationHours
+          }
+        }
+      } else {
+        // Future event: assume participation
+        event.participants.forEach { userId ->
+          workedHoursMap[userId] = workedHoursMap.getOrDefault(userId, 0.0) + durationHours
+        }
+      }
+    }
+
+    return workedHoursMap.toList()
+  }
 }

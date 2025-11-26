@@ -51,6 +51,7 @@ const val AlphaVeryHigh = 1f
 const val DefaultZoom = 16f
 
 // Elevation
+val ElevationNull = 0.dp
 val ElevationExtraLow = 2.dp
 val ElevationLow = 4.dp
 val ElevationMedium = 8.dp

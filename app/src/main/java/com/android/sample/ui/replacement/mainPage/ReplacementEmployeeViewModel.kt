@@ -1,4 +1,4 @@
-package com.android.sample.ui.replacement.employee
+package com.android.sample.ui.replacement.mainPage
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

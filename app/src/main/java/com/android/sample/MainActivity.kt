@@ -49,7 +49,7 @@ import com.android.sample.ui.profile.ProfileScreen
 import com.android.sample.ui.replacement.ProcessReplacementScreen
 import com.android.sample.ui.replacement.ReplacementPendingListScreen
 import com.android.sample.ui.replacement.ReplacementUpcomingListScreen
-import com.android.sample.ui.replacement.employee.ReplacementEmployeeFlow
+import com.android.sample.ui.replacement.mainPage.ReplacementEmployeeFlow
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeScreen
 import com.android.sample.ui.settings.SettingsScreen
 import com.android.sample.ui.theme.SampleAppTheme
@@ -238,6 +238,9 @@ fun Agendapp(
                           },
                           onConfirmedClick = {
                             navigationActions.navigateTo(Screen.ReplacementUpcoming)
+                          },
+                          onBack = {
+                              navigationActions.navigateTo(Screen.Calendar)
                           },
                       )
                     }

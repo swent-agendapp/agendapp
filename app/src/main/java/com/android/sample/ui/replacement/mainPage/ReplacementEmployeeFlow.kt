@@ -1,4 +1,4 @@
-package com.android.sample.ui.replacement.employee
+package com.android.sample.ui.replacement.mainPage
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -9,8 +9,6 @@ import com.android.sample.R
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.ui.replacement.components.SelectDateRangeScreen
 import com.android.sample.ui.replacement.components.SelectEventScreen
-import com.android.sample.ui.replacement.employee.components.ReplacementEmployeeListScreen
-import com.android.sample.ui.replacement.employee.components.ReplacementRequestUi
 import java.time.ZoneId
 
 // Assisted by AI

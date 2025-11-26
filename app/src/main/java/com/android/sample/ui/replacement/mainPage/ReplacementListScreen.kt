@@ -1,6 +1,7 @@
-package com.android.sample.ui.replacement.employee.components
+package com.android.sample.ui.replacement.mainPage
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.android.sample.R
 import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.common.SecondaryButton
@@ -87,6 +89,11 @@ fun ReplacementEmployeeListScreen(
     onBack: () -> Unit = {},
 ) {
   var showCreateOptions by remember { mutableStateOf(false) }
+
+    // SUPPRESS WHEN WE HAVE REAL REPLACEMENT REQUEST
+    val visibleRequests =
+        if (requests.isEmpty()) sampleRequests else requests
+
   Scaffold(
       topBar = {
         SecondaryPageTopBar(
@@ -95,11 +102,18 @@ fun ReplacementEmployeeListScreen(
         )
       },
       bottomBar = {
+          Column(
+              modifier = Modifier.fillMaxWidth(),
+          ) {
+              Divider(
+                  thickness = BorderWidthThin,
+                  color = MaterialTheme.colorScheme.outlineVariant,
+              )}
         Column(
             modifier =
                 Modifier.fillMaxWidth().padding(horizontal = PaddingSmall, vertical = PaddingLarge),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(PaddingMedium),
+            verticalArrangement = Arrangement.spacedBy(PaddingExtraSmall),
         ) {
           if (true) { // TODO: mettre isAdmin()
             SecondaryButton(
@@ -120,7 +134,6 @@ fun ReplacementEmployeeListScreen(
                 onClick = onConfirmedClick,
             )
 
-            Spacer(Modifier.height(PaddingExtraSmall))
           }
           AnimatedVisibility(visible = showCreateOptions) {
             Column(
@@ -165,8 +178,12 @@ fun ReplacementEmployeeListScreen(
                     .padding(inner)
                     .padding(horizontal = PaddingSmall, vertical = PaddingMedium)
                     .testTag(ReplacementEmployeeListTestTags.ROOT),
-            verticalArrangement = Arrangement.spacedBy(PaddingMedium)) {
-              items(requests, key = { it.id }) { req ->
+            contentPadding = PaddingValues(
+                top = PaddingMedium,
+                bottom = PaddingExtraLarge,
+            ),
+            verticalArrangement = Arrangement.spacedBy(PaddingSmall)) {
+              items(visibleRequests, key = { it.id }) { req ->
                 ReplacementRequestCard(
                     data = req,
                     onAccept = { onAccept(req.id) },
@@ -191,79 +208,105 @@ private fun ReplacementRequestCard(
     acceptTag: String,
     refuseTag: String,
 ) {
-  Card(
-      modifier = Modifier.fillMaxWidth().testTag(testTag),
-      shape = RoundedCornerShape(CornerRadiusLarge),
-      elevation = CardDefaults.cardElevation(defaultElevation = SmallCardElevation),
-  ) {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(PaddingMedium),
-        verticalAlignment = Alignment.CenterVertically,
+    val accentColor = CircusPalette.Tertiary
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag(testTag),
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(CornerRadiusLarge),
+        elevation = CardDefaults.cardElevation(defaultElevation = ElevationNull),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.background
+        ),
+        border = CardDefaults.outlinedCardBorder(),
     ) {
-      Box(
-          modifier =
-              Modifier.fillMaxHeight()
-                  .width(BarWidthSmall)
-                  .background(MaterialTheme.colorScheme.primary),
-      )
-
-      Spacer(Modifier.width(PaddingMedium))
-
-      Column(
-          modifier = Modifier.fillMaxWidth(),
-          verticalArrangement = Arrangement.spacedBy(SpacingSmall),
-      ) {
-        Text(
-            text = data.title,
-            style =
-                MaterialTheme.typography.bodyLarge.copy(
-                    fontWeight = FontWeight.SemiBold,
-                ),
-            maxLines = titleMaxLine,
-            overflow = TextOverflow.Ellipsis,
-        )
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(PaddingSmall),
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = PaddingMedium, vertical = PaddingSmall),
+            verticalArrangement = Arrangement.spacedBy(SpacingSmall),
         ) {
-          Icon(
-              imageVector = Icons.Filled.AccessTime,
-              contentDescription = null,
-              tint = MaterialTheme.colorScheme.onSurfaceVariant,
-          )
-          Text(
-              text = "${data.weekdayAndDay} • ${data.timeRange}",
-              style = MaterialTheme.typography.bodyMedium,
-          )
+            Text(
+                text = data.title,
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(PaddingSmall),
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.AccessTime,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Text(
+                    text = "${data.weekdayAndDay} • ${data.timeRange}",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+
+            Text(
+                text = androidx.compose.ui.res.stringResource(
+                    R.string.replacement_substituted_label,
+                    data.absentDisplayName,
+                ),
+                style = MaterialTheme.typography.bodySmall,
+            )
+
+            if (data.description.isNotBlank()) {
+                Text(
+                    text = data.description,
+                    style = MaterialTheme.typography.bodySmall,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+
+            Spacer(Modifier.height(PaddingExtraSmall))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(PaddingSmall),
+            ) {
+                OutlinedButton(
+                    onClick = onRefuse,
+                    modifier = Modifier
+                        .weight(1f)
+                        .testTag(refuseTag),
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(CornerRadiusLarge),
+                    border = BorderStroke(BorderWidthThin, CircusPalette.Primary),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        containerColor = MaterialTheme.colorScheme.background,
+                        contentColor = MaterialTheme.colorScheme.onSurface,
+                    ),
+                ) {
+                    Text(text = androidx.compose.ui.res.stringResource(R.string.replacement_refuse_short))
+                }
+
+                OutlinedButton(
+                    onClick = onAccept,
+                    modifier = Modifier
+                        .weight(1f)
+                        .testTag(acceptTag),
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(CornerRadiusLarge),
+                    border = BorderStroke(BorderWidthThin, accentColor),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        containerColor = MaterialTheme.colorScheme.background,
+                        contentColor = MaterialTheme.colorScheme.onSurface,
+                    ),
+                ) {
+                    Text(text = androidx.compose.ui.res.stringResource(R.string.replacement_accept_short))
+                }
+            }
         }
-
-        Text(
-            text = stringResource(R.string.replacement_substituted_label, data.absentDisplayName),
-            style = MaterialTheme.typography.bodySmall,
-        )
-
-        Text(
-            text = data.description,
-            style = MaterialTheme.typography.bodyMedium,
-            maxLines = descriptionMaxLine,
-            overflow = TextOverflow.Ellipsis,
-        )
-
-        Spacer(Modifier.height(PaddingExtraSmall))
-
-        Row(horizontalArrangement = Arrangement.spacedBy(PaddingLarge)) {
-          TextButton(onClick = onAccept, modifier = Modifier.testTag(acceptTag)) {
-            Text(text = stringResource(R.string.replacement_accept_short))
-          }
-          TextButton(onClick = onRefuse, modifier = Modifier.testTag(refuseTag)) {
-            Text(text = stringResource(R.string.replacement_refuse_short))
-          }
-        }
-      }
     }
-  }
 }
+
+
 
 @Preview(showBackground = true)
 @Composable

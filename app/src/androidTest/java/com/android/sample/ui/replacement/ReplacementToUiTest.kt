@@ -4,8 +4,8 @@ import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementStatus
-import com.android.sample.ui.replacement.employee.components.ReplacementRequestUi
-import com.android.sample.ui.replacement.employee.toUi
+import com.android.sample.ui.replacement.mainPage.ReplacementRequestUi
+import com.android.sample.ui.replacement.mainPage.toUi
 import com.android.sample.ui.theme.EventPalette
 import java.time.Instant
 import java.time.ZoneId

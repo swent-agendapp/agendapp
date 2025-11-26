@@ -37,6 +37,8 @@ import com.android.sample.ui.theme.PaddingSmall
 import com.android.sample.ui.theme.SizeMedium
 import com.android.sample.ui.theme.heightMedium
 
+// Assisted by AI
+
 /**
  * A color selector displayed as a form field.
  * - The parent controls the selected color via [selectedColor] and [onColorSelected].

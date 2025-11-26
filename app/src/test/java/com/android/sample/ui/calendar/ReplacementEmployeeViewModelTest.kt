@@ -270,4 +270,31 @@ class FakeEventRepository : EventRepository {
       startDate: Instant,
       endDate: Instant
   ): List<Event> = events.filter { e -> e.startDate <= endDate && e.endDate >= startDate }
+
+  override suspend fun calculateWorkedHoursPastEvents(
+      orgId: String,
+      start: Instant,
+      end: Instant
+  ): List<Pair<String, Double>> {
+    // Stub implementation for testing - not used in these tests
+    return emptyList()
+  }
+
+  override suspend fun calculateWorkedHoursFutureEvents(
+      orgId: String,
+      start: Instant,
+      end: Instant
+  ): List<Pair<String, Double>> {
+    // Stub implementation for testing - not used in these tests
+    return emptyList()
+  }
+
+  override suspend fun calculateWorkedHours(
+      orgId: String,
+      start: Instant,
+      end: Instant
+  ): List<Pair<String, Double>> {
+    // Stub implementation for testing - not used in these tests
+    return emptyList()
+  }
 }

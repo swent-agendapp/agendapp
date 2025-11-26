@@ -7,7 +7,6 @@ import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
-import java.time.Duration
 import java.time.Instant
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -134,32 +133,16 @@ class CalendarViewModel(
    * @param end The end of the time range.
    */
   fun calculateWorkedHours(start: Instant, end: Instant) {
-    val orgId = selectedOrganizationId.value ?: return
+    val orgId = selectedOrganizationId.value
+    if (orgId == null) {
+      setErrorMsg("No organization selected")
+      return
+    }
+
     viewModelScope.launch {
       try {
-        val events =
-            eventRepository.getEventsBetweenDates(orgId = orgId, startDate = start, endDate = end)
-        val workedHoursMap = mutableMapOf<String, Double>()
-        val now = Instant.now()
-
-        events.forEach { event ->
-          val durationHours = Duration.between(event.startDate, event.endDate).toMinutes() / 60.0
-
-          if (event.endDate.isBefore(now)) {
-            // Past event: check presence
-            event.presence.forEach { (userId, isPresent) ->
-              if (isPresent) {
-                workedHoursMap[userId] = workedHoursMap.getOrDefault(userId, 0.0) + durationHours
-              }
-            }
-          } else {
-            // Future event: assume participation
-            event.participants.forEach { userId ->
-              workedHoursMap[userId] = workedHoursMap.getOrDefault(userId, 0.0) + durationHours
-            }
-          }
-        }
-        _uiState.value = _uiState.value.copy(workedHours = workedHoursMap.toList())
+        val workedHours = eventRepository.calculateWorkedHours(orgId, start, end)
+        _uiState.value = _uiState.value.copy(workedHours = workedHours)
       } catch (e: Exception) {
         setErrorMsg("Failed to calculate worked hours: ${e.message}")
       }

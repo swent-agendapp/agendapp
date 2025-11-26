@@ -31,10 +31,11 @@ class ReplacementEmployeeViewModelExtraCoverageTest {
     eventRepo = FakeEventRepository()
 
     vm =
-        ReplacementEmployeeViewModel(
-            replacementRepository = replacementRepo,
-            eventRepository = eventRepo,
-            myUserId = "EMP001")
+      ReplacementEmployeeViewModel(
+        replacementRepository = replacementRepo,
+        eventRepository = eventRepo,
+        myUserId = "EMP001"
+      )
   }
 
   @After
@@ -42,12 +43,9 @@ class ReplacementEmployeeViewModelExtraCoverageTest {
     Dispatchers.resetMain()
   }
 
-  // ----------------------------------------------------------
-  // 1. backToList() — test coverage
-  // ----------------------------------------------------------
   @Test
   fun backToListResetsStepAndClearsState() = runTest {
-    vm.goToCreateOptions()
+    vm.goToSelectEvent()
     vm.setSelectedEvent("E99")
     vm.setStartDate(LocalDate.now())
     vm.setEndDate(LocalDate.now().plusDays(1))
@@ -62,9 +60,6 @@ class ReplacementEmployeeViewModelExtraCoverageTest {
     Assert.assertNull(state.endDate)
   }
 
-  // ----------------------------------------------------------
-  // 2. confirmSelectedEventAndCreateReplacement() — eventId null
-  // ----------------------------------------------------------
   @Test
   fun confirmSelectedEventAndCreateReplacementDoesNothingIfEventIdIsNull() = runTest {
     vm.confirmSelectedEventAndCreateReplacement()
@@ -73,9 +68,6 @@ class ReplacementEmployeeViewModelExtraCoverageTest {
     Assert.assertTrue(replacementRepo.items.isEmpty())
   }
 
-  // ----------------------------------------------------------
-  // 3. confirmSelectedEventAndCreateReplacement() — event not found
-  // ----------------------------------------------------------
   @Test
   fun confirmSelectedEventAndCreateReplacementSetsErrorWhenEventNotFound() = runTest {
     vm.setSelectedEvent("NOT_EXIST")
@@ -87,9 +79,6 @@ class ReplacementEmployeeViewModelExtraCoverageTest {
     Assert.assertTrue(vm.uiState.value.errorMessage?.contains("not found") == true)
   }
 
-  // ----------------------------------------------------------
-  // 4. confirmDateRangeAndCreateReplacements() — start or end null
-  // ----------------------------------------------------------
   @Test
   fun confirmDateRangeAndCreateReplacementsDoesNothingIfDatesAreNull() = runTest {
     vm.confirmDateRangeAndCreateReplacements()
@@ -98,9 +87,6 @@ class ReplacementEmployeeViewModelExtraCoverageTest {
     Assert.assertTrue(replacementRepo.items.isEmpty())
   }
 
-  // ----------------------------------------------------------
-  // 5. confirmDateRangeAndCreateReplacements() — happy path
-  // ----------------------------------------------------------
   @Test
   fun confirmDateRangeAndCreateReplacements_createsReplacementsForEvents() = runTest {
     val e1 = sampleEvent("A1")
@@ -118,24 +104,18 @@ class ReplacementEmployeeViewModelExtraCoverageTest {
     Assert.assertEquals(2, replacementRepo.items.size)
   }
 
-  // ----------------------------------------------------------
-  // 6. findEventsInRange — indirectly covered by calling confirmDateRange
-  // ----------------------------------------------------------
+
   @Test
-  fun findEventsInRangeIsExecutedViaConfirmDateRangeAndCreateReplacements() = runTest {
+  fun confirmDateRangeAndCreateReplacements_createsNoReplacementsWhenNoEventsInRepo() = runTest {
     vm.setStartDate(LocalDate.now())
     vm.setEndDate(LocalDate.now().plusDays(1))
 
-    // eventRepo empty → findEventsInRange returns empty list
     vm.confirmDateRangeAndCreateReplacements()
     testDispatcher.scheduler.advanceUntilIdle()
 
     Assert.assertTrue(replacementRepo.items.isEmpty())
   }
 
-  // ----------------------------------------------------------
-  // Helper classes
-  // ----------------------------------------------------------
   private class FakeReplacementRepository : ReplacementRepository {
     val items = mutableListOf<Replacement>()
 
@@ -145,7 +125,8 @@ class ReplacementEmployeeViewModelExtraCoverageTest {
       items.add(item)
     }
 
-    override suspend fun updateReplacement(itemId: String, item: Replacement) {}
+    override suspend fun updateReplacement(itemId: String, item: Replacement) {
+    }
 
     override suspend fun deleteReplacement(itemId: String) {}
 
@@ -154,10 +135,10 @@ class ReplacementEmployeeViewModelExtraCoverageTest {
     override suspend fun getReplacementsByAbsentUser(userId: String) = emptyList<Replacement>()
 
     override suspend fun getReplacementsBySubstituteUser(userId: String) =
-        items.filter { it.substituteUserId == userId }
+      items.filter { it.substituteUserId == userId }
 
     override suspend fun getReplacementsByStatus(status: ReplacementStatus) =
-        emptyList<Replacement>()
+      emptyList<Replacement>()
   }
 
   private class FakeEventRepository : EventRepository {
@@ -183,18 +164,19 @@ class ReplacementEmployeeViewModelExtraCoverageTest {
   }
 
   private fun sampleEvent(id: String) =
-      Event(
-          id = id,
-          title = "T$id",
-          description = "D$id",
-          startDate = Instant.now(),
-          endDate = Instant.now().plusSeconds(3600),
-          participants = setOf(),
-          recurrenceStatus = com.android.sample.model.calendar.RecurrenceStatus.OneTime,
-          hasBeenDeleted = false,
-          color = EventPalette.Blue,
-          version = 1L,
-          locallyStoredBy = listOf("X"),
-          cloudStorageStatuses = emptySet(),
-          personalNotes = null)
+    Event(
+      id = id,
+      title = "T$id",
+      description = "D$id",
+      startDate = Instant.now(),
+      endDate = Instant.now().plusSeconds(3600),
+      participants = setOf(),
+      recurrenceStatus = com.android.sample.model.calendar.RecurrenceStatus.OneTime,
+      hasBeenDeleted = false,
+      color = EventPalette.Blue,
+      version = 1L,
+      locallyStoredBy = listOf("X"),
+      cloudStorageStatuses = emptySet(),
+      personalNotes = null
+    )
 }

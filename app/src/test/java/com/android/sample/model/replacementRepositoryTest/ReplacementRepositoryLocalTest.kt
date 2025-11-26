@@ -160,4 +160,39 @@ class ReplacementRepositoryLocalTest {
     assertEquals("Alice", pending.first().absentUserId)
     assertEquals("Bob", accepted.first().absentUserId)
   }
+
+  @Test
+  fun getAllReplacements_forDifferentOrganizations() = runBlocking {
+    val orgId1 = "ORG1"
+    val orgId2 = "ORG2"
+
+    val r1 = Replacement(absentUserId = "Alice", substituteUserId = "Charlie", event = sampleEvent)
+    val r2 = Replacement(absentUserId = "Bob", substituteUserId = "Eve", event = sampleEvent)
+
+    repository.insertReplacement(orgId1, r1)
+    repository.insertReplacement(orgId2, r2)
+
+    val org1Replacements = repository.getAllReplacements(orgId1)
+    val org2Replacements = repository.getAllReplacements(orgId2)
+
+    assertEquals(1, org1Replacements.size)
+    assertEquals("Alice", org1Replacements.first().absentUserId)
+
+    assertEquals(1, org2Replacements.size)
+    assertEquals("Bob", org2Replacements.first().absentUserId)
+  }
+
+  @Test
+  fun getNoReplacementsForInvalidOrganization() = runBlocking {
+    // Insert a replacement for a valid organization
+    repository.insertReplacement(
+        testOrgId,
+        Replacement(absentUserId = "Alice", substituteUserId = "Charlie", event = sampleEvent))
+
+    val invalidOrgId = "INVALID_ORG"
+
+    // Attempt to retrieve replacements for a non-existent organization
+    val replacements = repository.getAllReplacements(invalidOrgId)
+    assertTrue(replacements.isEmpty())
+  }
 }

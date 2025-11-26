@@ -10,7 +10,6 @@ import com.android.sample.R
 import com.android.sample.ui.calendar.utils.DateTimeUtils
 import com.android.sample.ui.replacement.components.SelectDateRangeScreen
 import com.android.sample.ui.replacement.components.SelectEventScreen
-import com.android.sample.ui.replacement.organize.components.SelectProcessMomentScreen
 import com.android.sample.ui.replacement.organize.components.SelectSubstitutedScreen
 
 /** Contains the test tags used across the replacement organization screen UI. */
@@ -65,57 +64,59 @@ fun ReplacementOrganizeScreen(
               replacementOrganizeViewModel.goToStep(ReplacementOrganizeStep.SelectDateRange)
             },
             replacementOrganizeViewModel = replacementOrganizeViewModel)
-    ReplacementOrganizeStep.SelectEvents ->
-        SelectEventScreen(
-            onNext = {
-              replacementOrganizeViewModel.goToStep(ReplacementOrganizeStep.SelectProcessMoment)
-            },
-            onBack = {
-              replacementOrganizeViewModel.goToStep(ReplacementOrganizeStep.SelectSubstitute)
-            },
-            title = stringResource(R.string.organize_replacement),
-            instruction = stringResource(R.string.select_replacement_events, memberLabel ?: ""),
-            onEventClick = { replacementOrganizeViewModel.toggleSelectedEvent(event = it) },
-            canGoNext = uiState.selectedEvents.isNotEmpty())
-    ReplacementOrganizeStep.SelectDateRange ->
-        SelectDateRangeScreen(
-            onNext = {
-              replacementOrganizeViewModel.goToStep(ReplacementOrganizeStep.SelectProcessMoment)
-            },
-            onBack = {
-              replacementOrganizeViewModel.goToStep(ReplacementOrganizeStep.SelectSubstitute)
-            },
-            initialStartInstant = uiState.startInstant,
-            initialEndInstant = uiState.endInstant,
-            onStartDateSelected = {
-              replacementOrganizeViewModel.setStartInstant(
-                  DateTimeUtils.instantWithDate(instant = uiState.startInstant, date = it))
-            },
-            onEndDateSelected = {
-              replacementOrganizeViewModel.setEndInstant(
-                  DateTimeUtils.instantWithDate(instant = uiState.endInstant, date = it))
-            },
-            title = stringResource(R.string.organize_replacement),
-            instruction = stringResource(R.string.select_replacement_date_range, memberLabel ?: ""),
-            errorMessage = stringResource(R.string.invalidDateRangeMessage),
-            canGoNext = replacementOrganizeViewModel.dateRangeValid())
-    ReplacementOrganizeStep.SelectProcessMoment ->
-        SelectProcessMomentScreen(
-            onProcessNow = {
-              onProcessNow()
-              replacementOrganizeViewModel.addReplacement()
-            },
-            onProcessLater = {
-              onProcessLater()
-              replacementOrganizeViewModel.addReplacement()
-            },
-            onBack = {
-              if (uiState.selectedEvents.isNotEmpty()) {
-                replacementOrganizeViewModel.goToStep(ReplacementOrganizeStep.SelectEvents)
-              } else {
-                replacementOrganizeViewModel.goToStep(ReplacementOrganizeStep.SelectDateRange)
-              }
-            },
-        )
+      ReplacementOrganizeStep.SelectEvents ->
+          SelectEventScreen(
+              onNext = {},
+              onBack = {
+                  replacementOrganizeViewModel.goToStep(ReplacementOrganizeStep.SelectSubstitute)
+              },
+              title = stringResource(R.string.organize_replacement),
+              instruction = stringResource(R.string.select_replacement_events, memberLabel ?: ""),
+              onEventClick = { event ->
+                  replacementOrganizeViewModel.toggleSelectedEvent(event)
+              },
+              canGoNext = uiState.selectedEvents.isNotEmpty(),
+              onProcessNow = {
+                  onProcessNow()
+                  replacementOrganizeViewModel.addReplacement()
+              },
+              onProcessLater = {
+                  onProcessLater()
+                  replacementOrganizeViewModel.addReplacement()
+              },
+          )
+
+      ReplacementOrganizeStep.SelectDateRange ->
+          SelectDateRangeScreen(
+              onNext = {},
+              onBack = {
+                  replacementOrganizeViewModel.goToStep(ReplacementOrganizeStep.SelectSubstitute)
+              },
+              initialStartInstant = uiState.startInstant,
+              initialEndInstant = uiState.endInstant,
+              onStartDateSelected = {
+                  replacementOrganizeViewModel.setStartInstant(
+                      DateTimeUtils.instantWithDate(instant = uiState.startInstant, date = it))
+              },
+              onEndDateSelected = {
+                  replacementOrganizeViewModel.setEndInstant(
+                      DateTimeUtils.instantWithDate(instant = uiState.endInstant, date = it))
+              },
+              title = stringResource(R.string.organize_replacement),
+              instruction = stringResource(
+                  R.string.select_replacement_date_range,
+                  memberLabel ?: "",
+              ),
+              errorMessage = stringResource(R.string.invalidDateRangeMessage),
+              canGoNext = replacementOrganizeViewModel.dateRangeValid(),
+              onProcessNow = {
+                  onProcessNow()
+                  replacementOrganizeViewModel.addReplacement()
+              },
+              onProcessLater = {
+                  onProcessLater()
+                  replacementOrganizeViewModel.addReplacement()
+              },
+          )
   }
 }

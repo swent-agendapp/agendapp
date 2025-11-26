@@ -199,5 +199,14 @@
     <string name="organization_list_title">Ihre organisationen</string>
     <string name="organization_loading">Organisationen werden geladen</string>
     <string name="organization_name_label">Name der Organisation</string>
+    <string name="filter">Filter</string>
+    <string name="close">Schließen</string>
+    <string name="filter_event_type">Ereignistyp</string>
+    <string name="filter_location">Ort</string>
+    <string name="filter_participants">Teilnehmer</string>
+    <string name="clear_all">Alles löschen</string>
+    <string name="apply">Anwenden</string>
+    <string name="eventType">Ereignistyp</string>
+    <string name="location">Ort</string>
 
 </resources>

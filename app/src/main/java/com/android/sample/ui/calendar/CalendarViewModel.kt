@@ -113,4 +113,9 @@ class CalendarViewModel(
         loadEventsBlock = { eventRepository.getEventsBetweenDates(start, end) },
         errorMessage = "Failed to load events between $start and $end")
   }
+
+  // Placeholder for applying filters to the events
+  fun applyFilters(filters: Any) {
+    // Implementation for applying filters goes here
+  }
 }

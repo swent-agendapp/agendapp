@@ -14,13 +14,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
 import com.android.sample.ui.calendar.components.DatePickerFieldToModal
+import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.theme.ElevationLow
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.PaddingSmall
 import com.android.sample.ui.theme.SpacingLarge
+import com.android.sample.ui.theme.SpacingMedium
 import com.android.sample.ui.theme.Weight
-import com.android.sample.ui.theme.heightMedium
-import com.android.sample.ui.theme.heightSmall
 import java.time.LocalDate
 
 // Modularization assisted by AI
@@ -102,7 +102,7 @@ fun HourRecapScreen(onBackClick: () -> Unit = {}) {
                   onDateSelected = { selected -> startDate = selected },
                   modifier = Modifier.fillMaxWidth().testTag(HourRecapTestTags.START_DATE))
 
-              Spacer(Modifier.height(heightSmall))
+              Spacer(Modifier.height(SpacingMedium))
 
               // End Date
               DatePickerFieldToModal(
@@ -110,21 +110,19 @@ fun HourRecapScreen(onBackClick: () -> Unit = {}) {
                   onDateSelected = { selected -> endDate = selected },
                   modifier = Modifier.fillMaxWidth().testTag(HourRecapTestTags.END_DATE))
 
-              Spacer(Modifier.height(heightMedium))
+              Spacer(Modifier.height(SpacingMedium))
 
-              Button(
+              PrimaryButton(
+                  modifier = Modifier.fillMaxWidth().testTag(HourRecapTestTags.GENERATE_BUTTON),
+                  text = stringResource(R.string.hour_recap_generate),
                   onClick = { /* later: trigger ViewModel.loadRecap() */},
-                  enabled = startDate != null && endDate != null,
-                  modifier = Modifier.fillMaxWidth().testTag(HourRecapTestTags.GENERATE_BUTTON)) {
-                    Text(stringResource(R.string.hour_recap_generate))
-                  }
-
-              Spacer(Modifier.height(heightMedium))
+                  enabled = startDate != null && endDate != null)
+              Spacer(Modifier.height(SpacingLarge))
 
               Text(
                   text = stringResource(R.string.hour_recap_results_title),
                   style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
-              Spacer(Modifier.height(heightSmall))
+              Spacer(Modifier.height(SpacingMedium))
 
               LazyColumn(modifier = Modifier.testTag(HourRecapTestTags.RECAP_LIST)) {
                 fakeRecap.forEach { (name, time) ->

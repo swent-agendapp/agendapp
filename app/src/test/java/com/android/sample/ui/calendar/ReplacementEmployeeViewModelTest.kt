@@ -70,6 +70,7 @@ class ReplacementEmployeeViewModelTest {
     val e2 = sampleEvent("E200")
 
     repos.insertReplacement(
+        selectedOrganizationID,
         Replacement(
             absentUserId = "A",
             substituteUserId = employeeId,
@@ -77,6 +78,7 @@ class ReplacementEmployeeViewModelTest {
             status = ReplacementStatus.ToProcess))
 
     repos.insertReplacement(
+        selectedOrganizationID,
         Replacement(
             absentUserId = "A",
             substituteUserId = "SOMEONE_ELSE",
@@ -106,12 +108,12 @@ class ReplacementEmployeeViewModelTest {
             event = event,
             status = ReplacementStatus.ToProcess)
 
-    repos.insertReplacement(r)
+    repos.insertReplacement(selectedOrganizationID, r)
 
     vm.acceptRequest(r.id)
     testDispatcher.scheduler.advanceUntilIdle()
 
-    val updated = repos.getReplacementById(r.id)
+    val updated = repos.getReplacementById(selectedOrganizationID, r.id)
     assertEquals(ReplacementStatus.Accepted, updated?.status)
   }
 
@@ -130,12 +132,12 @@ class ReplacementEmployeeViewModelTest {
             event = event,
             status = ReplacementStatus.ToProcess)
 
-    repos.insertReplacement(r)
+    repos.insertReplacement(selectedOrganizationID, r)
 
     vm.refuseRequest(r.id)
     testDispatcher.scheduler.advanceUntilIdle()
 
-    val updated = repos.getReplacementById(r.id)
+    val updated = repos.getReplacementById(selectedOrganizationID, r.id)
     assertEquals(ReplacementStatus.Declined, updated?.status)
   }
 
@@ -152,7 +154,7 @@ class ReplacementEmployeeViewModelTest {
     vm.createReplacementForEvent(event)
     testDispatcher.scheduler.advanceUntilIdle()
 
-    val all = repos.getAllReplacements()
+    val all = repos.getAllReplacements(selectedOrganizationID)
     assertEquals(1, all.size)
     assertEquals("EV123", all[0].event.id)
     assertEquals(employeeId, all[0].absentUserId)
@@ -179,7 +181,7 @@ class ReplacementEmployeeViewModelTest {
     vm.createReplacementsForDateRange(start, end)
     testDispatcher.scheduler.advanceUntilIdle()
 
-    val list = repos.getAllReplacements()
+    val list = repos.getAllReplacements(selectedOrganizationID)
     assertEquals(2, list.size)
     assertTrue(list.any { it.event.id == "D1" })
     assertTrue(list.any { it.event.id == "D2" })
@@ -218,32 +220,38 @@ class FakeReplacementRepository : ReplacementRepository {
 
   private val storage = mutableListOf<Replacement>()
 
-  override suspend fun getAllReplacements(): List<Replacement> = storage.toList()
+  override suspend fun getAllReplacements(orgId: String): List<Replacement> = storage.toList()
 
-  override suspend fun insertReplacement(item: Replacement) {
+  override suspend fun insertReplacement(orgId: String, item: Replacement) {
     storage.add(item)
   }
 
-  override suspend fun updateReplacement(itemId: String, item: Replacement) {
+  override suspend fun updateReplacement(orgId: String, itemId: String, item: Replacement) {
     val idx = storage.indexOfFirst { it.id == itemId }
     if (idx != -1) storage[idx] = item
   }
 
-  override suspend fun deleteReplacement(itemId: String) {
+  override suspend fun deleteReplacement(orgId: String, itemId: String) {
     storage.removeAll { it.id == itemId }
   }
 
-  override suspend fun getReplacementById(itemId: String): Replacement? =
+  override suspend fun getReplacementById(orgId: String, itemId: String): Replacement? =
       storage.find { it.id == itemId }
 
-  override suspend fun getReplacementsByAbsentUser(userId: String): List<Replacement> =
-      storage.filter { it.absentUserId == userId }
+  override suspend fun getReplacementsByAbsentUser(
+      orgId: String,
+      userId: String
+  ): List<Replacement> = storage.filter { it.absentUserId == userId }
 
-  override suspend fun getReplacementsBySubstituteUser(userId: String): List<Replacement> =
-      storage.filter { it.substituteUserId == userId }
+  override suspend fun getReplacementsBySubstituteUser(
+      orgId: String,
+      userId: String
+  ): List<Replacement> = storage.filter { it.substituteUserId == userId }
 
-  override suspend fun getReplacementsByStatus(status: ReplacementStatus): List<Replacement> =
-      storage.filter { it.status == status }
+  override suspend fun getReplacementsByStatus(
+      orgId: String,
+      status: ReplacementStatus
+  ): List<Replacement> = storage.filter { it.status == status }
 }
 
 class FakeEventRepository : EventRepository {

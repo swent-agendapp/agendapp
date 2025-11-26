@@ -8,14 +8,14 @@ interface ReplacementRepository {
    *
    * @return A list of all replacement requests.
    */
-  suspend fun getAllReplacements(): List<Replacement>
+  suspend fun getAllReplacements(orgId: String): List<Replacement>
 
   /**
    * Inserts a new replacement request into the repository.
    *
    * @param item The replacement request to be inserted.
    */
-  suspend fun insertReplacement(item: Replacement)
+  suspend fun insertReplacement(orgId: String, item: Replacement)
 
   /**
    * Updates an existing replacement request in the repository.
@@ -23,7 +23,7 @@ interface ReplacementRepository {
    * @param itemId The unique identifier of the replacement request to update.
    * @param item The updated replacement data.
    */
-  suspend fun updateReplacement(itemId: String, item: Replacement)
+  suspend fun updateReplacement(orgId: String, itemId: String, item: Replacement)
 
   /**
    * Deletes a replacement request from the repository.
@@ -31,7 +31,7 @@ interface ReplacementRepository {
    * @param itemId The unique identifier of the replacement request to delete.
    * @throws IllegalArgumentException if the itemId does not exist.
    */
-  suspend fun deleteReplacement(itemId: String)
+  suspend fun deleteReplacement(orgId: String, itemId: String)
 
   /**
    * Retrieves a replacement request by its unique identifier.
@@ -39,7 +39,7 @@ interface ReplacementRepository {
    * @param itemId The unique identifier of the replacement request.
    * @return The replacement request if found, or null if not found.
    */
-  suspend fun getReplacementById(itemId: String): Replacement?
+  suspend fun getReplacementById(orgId: String, itemId: String): Replacement?
 
   /**
    * Retrieves all replacement requests associated with a specific absent user.
@@ -47,7 +47,7 @@ interface ReplacementRepository {
    * @param userId The ID of the absent user whose replacement requests to retrieve.
    * @return A list of replacement requests where the specified user is the absent user.
    */
-  suspend fun getReplacementsByAbsentUser(userId: String): List<Replacement>
+  suspend fun getReplacementsByAbsentUser(orgId: String, userId: String): List<Replacement>
 
   /**
    * Retrieves all replacement requests associated with a specific substitute user.
@@ -55,7 +55,7 @@ interface ReplacementRepository {
    * @param userId The ID of the substitute user whose replacement requests to retrieve.
    * @return A list of replacement requests where the specified user is the substitute user.
    */
-  suspend fun getReplacementsBySubstituteUser(userId: String): List<Replacement>
+  suspend fun getReplacementsBySubstituteUser(orgId: String, userId: String): List<Replacement>
 
   /**
    * Retrieves all replacement requests for a given status (e.g., Pending, Accepted, Declined).
@@ -63,5 +63,5 @@ interface ReplacementRepository {
    * @param status The status of the replacement requests to retrieve.
    * @return A list of replacement requests with the specified status.
    */
-  suspend fun getReplacementsByStatus(status: ReplacementStatus): List<Replacement>
+  suspend fun getReplacementsByStatus(orgId: String, status: ReplacementStatus): List<Replacement>
 }

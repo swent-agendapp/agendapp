@@ -13,6 +13,7 @@ import com.android.sample.model.organization.repository.OrganizationRepository
 import com.android.sample.model.organization.repository.OrganizationRepositoryLocal
 import com.android.sample.model.replacement.ReplacementRepository
 import com.android.sample.model.replacement.ReplacementRepositoryLocal
+import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeStep
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeViewModel
 import java.time.Instant
@@ -57,6 +58,8 @@ class ReplacementOrganizeViewModelTest {
             startDate = Instant.parse("2025-01-10T10:00:00Z"),
             endDate = Instant.parse("2025-01-10T11:00:00Z"),
             personalNotes = "Bring laptop")[0]
+
+    SelectedOrganizationVMProvider.viewModel.selectOrganization(selectedOrganizationID)
   }
 
   @After
@@ -252,7 +255,7 @@ class ReplacementOrganizeViewModelTest {
     vm.addReplacement()
     testDispatcher.scheduler.advanceUntilIdle()
 
-    val replacements = replacementRepo.getAllReplacements()
+    val replacements = replacementRepo.getAllReplacements(selectedOrganizationID)
     assertEquals(1, replacements.size)
     assertEquals("1", replacements.first().absentUserId)
   }
@@ -268,7 +271,7 @@ class ReplacementOrganizeViewModelTest {
     testDispatcher.scheduler.advanceUntilIdle()
 
     assertEquals("You are not allowed to organize replacements !", vm.uiState.value.errorMsg)
-    assertTrue(replacementRepo.getAllReplacements().isEmpty())
+    assertTrue(replacementRepo.getAllReplacements(selectedOrganizationID).isEmpty())
   }
 
   @Test

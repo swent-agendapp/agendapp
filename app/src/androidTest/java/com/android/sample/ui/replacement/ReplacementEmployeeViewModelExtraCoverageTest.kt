@@ -143,24 +143,26 @@ class ReplacementEmployeeViewModelExtraCoverageTest {
   private class FakeReplacementRepository : ReplacementRepository {
     val items = mutableListOf<Replacement>()
 
-    override suspend fun getAllReplacements() = items
+    override suspend fun getAllReplacements(orgId: String) = items
 
-    override suspend fun insertReplacement(item: Replacement) {
+    override suspend fun insertReplacement(orgId: String, item: Replacement) {
       items.add(item)
     }
 
-    override suspend fun updateReplacement(itemId: String, item: Replacement) {}
+    override suspend fun updateReplacement(orgId: String, itemId: String, item: Replacement) {}
 
-    override suspend fun deleteReplacement(itemId: String) {}
+    override suspend fun deleteReplacement(orgId: String, itemId: String) {}
 
-    override suspend fun getReplacementById(itemId: String) = items.find { it.id == itemId }
+    override suspend fun getReplacementById(orgId: String, itemId: String) =
+        items.find { it.id == itemId }
 
-    override suspend fun getReplacementsByAbsentUser(userId: String) = emptyList<Replacement>()
+    override suspend fun getReplacementsByAbsentUser(orgId: String, userId: String) =
+        emptyList<Replacement>()
 
-    override suspend fun getReplacementsBySubstituteUser(userId: String) =
+    override suspend fun getReplacementsBySubstituteUser(orgId: String, userId: String) =
         items.filter { it.substituteUserId == userId }
 
-    override suspend fun getReplacementsByStatus(status: ReplacementStatus) =
+    override suspend fun getReplacementsByStatus(orgId: String, status: ReplacementStatus) =
         emptyList<Replacement>()
   }
 

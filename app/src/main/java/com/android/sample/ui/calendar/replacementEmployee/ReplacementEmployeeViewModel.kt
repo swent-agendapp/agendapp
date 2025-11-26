@@ -107,7 +107,11 @@ class ReplacementEmployeeViewModel(
               substituteUserId = "",
               event = event,
               status = ReplacementStatus.ToProcess)
-      replacementRepository.insertReplacement(r)
+
+      val orgId = selectedOrganizationViewModel.selectedOrganizationId.value
+      require(orgId != null) { "Organization must be selected to fetch replacements" }
+
+      replacementRepository.insertReplacement(orgId = orgId, item = r)
       refreshIncomingRequests()
     }
   }
@@ -126,7 +130,11 @@ class ReplacementEmployeeViewModel(
                 substituteUserId = "",
                 event = e,
                 status = ReplacementStatus.ToProcess)
-        replacementRepository.insertReplacement(r)
+
+        val orgId = selectedOrganizationViewModel.selectedOrganizationId.value
+        require(orgId != null) { "Organization must be selected to fetch replacements" }
+
+        replacementRepository.insertReplacement(orgId = orgId, item = r)
       }
       refreshIncomingRequests()
     }
@@ -137,8 +145,11 @@ class ReplacementEmployeeViewModel(
     viewModelScope.launch {
       _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
       try {
+        val orgId = selectedOrganizationViewModel.selectedOrganizationId.value
+        require(orgId != null) { "Organization must be selected to fetch replacements" }
         val list =
-            replacementRepository.getReplacementsBySubstituteUser(currentUserId) // Substitute side
+            replacementRepository.getReplacementsBySubstituteUser(
+                orgId = orgId, userId = currentUserId) // Substitute side
         _uiState.value =
             _uiState.value.copy(incomingRequests = list, isLoading = false, errorMessage = null)
       } catch (e: Exception) {
@@ -167,9 +178,13 @@ class ReplacementEmployeeViewModel(
   private fun updateRequestStatus(id: String, newStatus: ReplacementStatus) {
     viewModelScope.launch {
       try {
-        val existing = replacementRepository.getReplacementById(id) ?: return@launch
+        val orgId = selectedOrganizationViewModel.selectedOrganizationId.value
+        require(orgId != null) { "Organization must be selected to fetch replacements" }
+
+        val existing =
+            replacementRepository.getReplacementById(orgId = orgId, itemId = id) ?: return@launch
         val updated = existing.copy(status = newStatus)
-        replacementRepository.updateReplacement(id, updated)
+        replacementRepository.updateReplacement(orgId = orgId, itemId = id, item = updated)
         refreshIncomingRequests()
       } catch (e: Exception) {
         Log.e("ReplacementEmployeeVM", "Error updating replacement status", e)
@@ -261,7 +276,10 @@ class ReplacementEmployeeViewModel(
                 event = event,
                 status = ReplacementStatus.ToProcess)
 
-        replacementRepository.insertReplacement(replacement)
+        val orgId = selectedOrganizationViewModel.selectedOrganizationId.value
+        require(orgId != null) { "Organization must be selected to fetch replacements" }
+
+        replacementRepository.insertReplacement(orgId = orgId, item = replacement)
 
         _uiState.value =
             _uiState.value.copy(
@@ -321,7 +339,10 @@ class ReplacementEmployeeViewModel(
                   status = ReplacementStatus.ToProcess)
             }
 
-        created.forEach { replacementRepository.insertReplacement(it) }
+        val orgId = selectedOrganizationViewModel.selectedOrganizationId.value
+        require(orgId != null) { "Organization must be selected to fetch replacements" }
+
+        created.forEach { replacementRepository.insertReplacement(orgId = orgId, item = it) }
 
         _uiState.value =
             _uiState.value.copy(

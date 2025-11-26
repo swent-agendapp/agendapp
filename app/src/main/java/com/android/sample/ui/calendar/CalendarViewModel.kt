@@ -7,6 +7,7 @@ import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
+import java.time.Duration
 import java.time.Instant
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -142,8 +143,7 @@ class CalendarViewModel(
         val now = Instant.now()
 
         events.forEach { event ->
-          val durationHours =
-              java.time.Duration.between(event.startDate, event.endDate).toMinutes() / 60.0
+          val durationHours = Duration.between(event.startDate, event.endDate).toMinutes() / 60.0
 
           if (event.endDate.isBefore(now)) {
             // Past event: check presence

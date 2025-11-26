@@ -43,6 +43,7 @@ data class AddCalendarEventUIState(
     val recurrenceEndInstant: Instant = Instant.now().plus(Duration.ofHours(1)),
     val recurrenceMode: RecurrenceStatus = RecurrenceStatus.OneTime,
     val participants: Set<String> = emptySet(),
+    val draftEvent: Event = createEvent()[0],
     val errorMsg: String? = null,
     val step: AddEventStep = AddEventStep.TITLE_AND_DESC
 )
@@ -88,19 +89,22 @@ class AddEventViewModel(
    *
    * @return The first `Event` instance representing the current draft for preview.
    */
-  fun getDraftEvent(): Event {
+  fun loadDraftEvent() {
     val currentState = _uiState.value
-    return createEvent(
-        repository = repository,
-        title = currentState.title,
-        description = currentState.description,
-        startDate = currentState.startInstant,
-        endDate = currentState.endInstant,
-        cloudStorageStatuses = emptySet(),
-        personalNotes = "",
-        participants = currentState.participants,
-        recurrence = currentState.recurrenceMode,
-        endRecurrence = currentState.recurrenceEndInstant)[0]
+    val newDraftEvent =
+        createEvent(
+            repository = repository,
+            title = currentState.title,
+            description = currentState.description,
+            startDate = currentState.startInstant,
+            endDate = currentState.endInstant,
+            cloudStorageStatuses = emptySet(),
+            personalNotes = "",
+            participants = currentState.participants,
+            recurrence = currentState.recurrenceMode,
+            endRecurrence = currentState.recurrenceEndInstant)[0]
+
+    _uiState.value = _uiState.value.copy(draftEvent = newDraftEvent)
   }
   /**
    * Builds a new event from the current UI state and delegates storage. Calls

@@ -4,6 +4,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -31,6 +34,12 @@ fun AddEventConfirmationScreen(
     onCreate: () -> Unit = {},
     onBack: () -> Unit = {},
 ) {
+  val newEventUIState by addEventViewModel.uiState.collectAsState()
+  val draftEvent = newEventUIState.draftEvent
+
+  // Fetch the draft Event
+  LaunchedEffect(Unit) { addEventViewModel.loadDraftEvent() }
+
   Scaffold(
       topBar = {
         SecondaryPageTopBar(
@@ -39,18 +48,17 @@ fun AddEventConfirmationScreen(
             canGoBack = false)
       },
       content = { paddingValues ->
-        val currentEvent = addEventViewModel.getDraftEvent()
         EventSummaryCard(
             modifier = Modifier.padding(paddingValues).padding(PaddingExtraLarge),
-            event = currentEvent,
-            participantNames = currentEvent.participants.toList())
+            event = draftEvent,
+            participantNames = draftEvent.participants.toList())
       },
       bottomBar = {
         BottomNavigationButtons(
             onNext = onCreate,
             onBack = onBack,
             nextButtonText = stringResource(R.string.create),
-            backButtonText = stringResource(R.string.modify),
+            backButtonText = stringResource(R.string.goBack),
             canGoNext = true,
             nextButtonTestTag = AddEventTestTags.CREATE_BUTTON,
             backButtonTestTag = AddEventTestTags.BACK_BUTTON)

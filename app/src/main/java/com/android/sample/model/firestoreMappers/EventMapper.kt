@@ -37,8 +37,7 @@ object EventMapper : FirestoreMapper<Event> {
             }
             .getOrDefault(RecurrenceStatus.OneTime)
 
-    val presence = parsePresence(document.get("presence"))
-
+    val presence = parsePresence(document["presence"])
     val version = document.getLong("version") ?: 0L
     val colorLong = document.getLong("eventColor") ?: EventPalette.Blue.toArgb().toLong()
     val color = Palette.fromLong(colorLong)

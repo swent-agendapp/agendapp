@@ -85,7 +85,7 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
           .isNotEmpty()
     }
 
-    // Create Organization to proceed to Calendar
+    //  Create Organization to proceed to Calendar
 
     // Click on Add Organization button
     composeTestRule

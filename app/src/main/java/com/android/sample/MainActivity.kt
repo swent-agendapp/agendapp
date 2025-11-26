@@ -111,14 +111,6 @@ fun Agendapp(
   val bottomBarItems =
       listOf(
           BottomBarItem(
-              icon = Icons.Default.Event,
-              label = "Calendar",
-              route = Screen.Calendar.route,
-              onClick = { navigationActions.navigateTo(Screen.Calendar) },
-              contentDescription = "Calendar",
-              isSelected = currentRoute == Screen.Calendar.route,
-              testTag = BottomBarTestTags.ITEM_CALENDAR),
-          BottomBarItem(
               icon = Icons.Default.Accessibility,
               label = "Replacement",
               route = Screen.ReplacementOverview.route,
@@ -126,6 +118,14 @@ fun Agendapp(
               contentDescription = "Replacement",
               isSelected = currentRoute == Screen.ReplacementOverview.route,
               testTag = BottomBarTestTags.ITEM_REPLACEMENT),
+          BottomBarItem(
+              icon = Icons.Default.Event,
+              label = "Calendar",
+              route = Screen.Calendar.route,
+              onClick = { navigationActions.navigateTo(Screen.Calendar) },
+              contentDescription = "Calendar",
+              isSelected = currentRoute == Screen.Calendar.route,
+              testTag = BottomBarTestTags.ITEM_CALENDAR),
           BottomBarItem(
               icon = Icons.Default.Settings,
               label = "Settings",
@@ -151,7 +151,7 @@ fun Agendapp(
               composable(Screen.Authentication.route) {
                 SignInScreen(
                     credentialManager = credentialManager,
-                    onSignedIn = { navigationActions.navigateTo(Screen.Calendar) })
+                    onSignedIn = { navigationActions.navigateTo(Screen.Organizations) })
               }
 
               // Organization Selection Graph

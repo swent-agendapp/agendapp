@@ -71,6 +71,7 @@ class OrganizationMapperTest {
     // Event document
     val eventDoc = mock(DocumentSnapshot::class.java)
     `when`(eventDoc.id).thenReturn("event1")
+    `when`(eventDoc.getString("organizationId")).thenReturn("org123")
     `when`(eventDoc.getString("title")).thenReturn("Meeting")
     `when`(eventDoc.getString("description")).thenReturn("Team meeting")
     `when`(eventDoc.getTimestamp("startDate"))
@@ -153,6 +154,7 @@ class OrganizationMapperTest {
         listOf(
             mapOf(
                 "id" to "event1",
+                "organizationId" to "org123",
                 "title" to "Meeting",
                 "description" to "Team meeting",
                 "startDate" to Timestamp(Date.from(Instant.parse("2025-01-01T10:00:00Z"))),
@@ -202,6 +204,7 @@ class OrganizationMapperTest {
     val areas = listOf(Area("area1", "Main Area", markers))
     val events =
         createEvent(
+            organizationId = "org123",
             title = "Meeting",
             description = "Team meeting",
             startDate = Instant.parse("2025-01-01T10:00:00Z"),
@@ -218,6 +221,7 @@ class OrganizationMapperTest {
 
     val map = OrganizationMapper.toMap(organization)
 
+    assertThat(map["id"]).isEqualTo("org123")
     assertThat(map["name"]).isEqualTo("My Organization")
     assertThat(map["geoCheckEnabled"]).isEqualTo(true)
 

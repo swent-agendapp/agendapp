@@ -8,12 +8,12 @@ import com.android.sample.model.authorization.AuthorizationService
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
-import com.android.sample.model.organization.OrganizationRepository
-import com.android.sample.model.organization.OrganizationRepositoryProvider
 import com.android.sample.model.organizations.mockOrganizations.getMockOrganizations
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementRepository
 import com.android.sample.model.replacement.ReplacementRepositoryProvider
+import com.android.sample.ui.organization.SelectedOrganizationVMProvider
+import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import java.time.Instant
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -67,11 +67,11 @@ enum class ReplacementOrganizeStep {
  */
 class ReplacementOrganizeViewModel(
     private val eventRepository: EventRepository = EventRepositoryProvider.repository,
-    private val organizationRepository: OrganizationRepository =
-        OrganizationRepositoryProvider.repository,
     private val replacementRepository: ReplacementRepository =
         ReplacementRepositoryProvider.repository,
-    private val authz: AuthorizationService = AuthorizationService()
+    private val authServ: AuthorizationService = AuthorizationService(),
+    private val selectedOrganizationViewModel: SelectedOrganizationViewModel =
+        SelectedOrganizationVMProvider.viewModel,
 ) : ViewModel() {
   private val _uiState = MutableStateFlow(ReplacementOrganizeUIState())
 
@@ -113,9 +113,9 @@ class ReplacementOrganizeViewModel(
       val state = uiState.value
       // For now, we throw an exception if unauthorized, because requireAdmin() disabled
       // temporarily and does nothing
-      val allowed = runCatching { authz.requireAdmin() }.isSuccess
+      val allowed = runCatching { authServ.requireAdmin() }.isSuccess
       // Start of temporary code
-      if (!authz.canEditCourses()) {
+      if (!authServ.canEditCourses()) {
         _uiState.value = state.copy(errorMsg = "You are not allowed to organize replacements !")
         return@launch
       }
@@ -140,8 +140,11 @@ class ReplacementOrganizeViewModel(
               _uiState.value = state.copy(errorMsg = "Invalid date range. End must be after start.")
               return@launch
             }
+            val orgId = selectedOrganizationViewModel.selectedOrganizationId.value
+            require(orgId != null) { "Organization must be selected to fetch events" }
+
             eventRepository.getEventsBetweenDates(
-                startDate = state.startInstant, endDate = state.endInstant)
+                orgId = orgId, startDate = state.startInstant, endDate = state.endInstant)
           }
 
       if (events.isEmpty()) {

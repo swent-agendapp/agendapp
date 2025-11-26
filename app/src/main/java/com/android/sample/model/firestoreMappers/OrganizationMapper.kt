@@ -58,6 +58,7 @@ object OrganizationMapper : FirestoreMapper<Organization> {
 
   override fun toMap(model: Organization): Map<String, Any?> {
     return mapOf(
+        "id" to model.id,
         "name" to model.name,
         "admins" to model.admins.map { UserMapper.toMap(it) },
         "members" to model.members.map { UserMapper.toMap(it) },

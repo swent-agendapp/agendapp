@@ -17,6 +17,7 @@ import java.util.UUID
  * Data class representing a calendar event.
  *
  * @property id Unique identifier for the event.
+ * @property organizationId Identifier for the organization the event belongs to.
  * @property title Title of the event.
  * @property description Description of the event.
  * @property startDate Start date and time of the event.
@@ -26,6 +27,7 @@ import java.util.UUID
  * @property personalNotes Optional personal notes for the event.
  * @property participants Set of user IDs participating in the event.
  * @property version timestamp of last modification, used for conflict resolution.
+ * @property presence Map of user IDs to their presence status at the event.
  * @property hasBeenDeleted Flag indicating if the event has been deleted.
  * @property recurrenceStatus Recurrence pattern of the event (e.g., one-time, weekly).
  * @property color Color used to display the event in the UI.
@@ -33,6 +35,7 @@ import java.util.UUID
  */
 data class Event(
     val id: String,
+    val organizationId: String,
     val title: String,
     val description: String,
     val startDate: Instant,
@@ -42,6 +45,7 @@ data class Event(
     val personalNotes: String?,
     val participants: Set<String>,
     val version: Long,
+    val presence: Map<String, Boolean> = emptyMap(),
     val recurrenceStatus: RecurrenceStatus,
     val hasBeenDeleted: Boolean = false,
     val color: Color
@@ -79,6 +83,7 @@ enum class CloudStorageStatus {
 /**
  * Factory function to create a new Event instance with a generated unique ID and default values.
  *
+ * @param organizationId Identifier for the organization the event belongs to.
  * @param title Title of the event.
  * @param description Description of the event.
  * @param startDate Start date and time of the event.
@@ -90,6 +95,7 @@ enum class CloudStorageStatus {
  * @return A new Event instance.
  */
 fun createEvent(
+    organizationId: String,
     repository: EventRepository? = null,
     title: String = "Untitled",
     description: String = "",
@@ -98,6 +104,7 @@ fun createEvent(
     cloudStorageStatuses: Set<CloudStorageStatus> = emptySet(),
     personalNotes: String? = null,
     participants: Set<String> = emptySet(),
+    presence: Map<String, Boolean> = emptyMap(),
     color: Color = EventPalette.Blue,
     recurrence: RecurrenceStatus = RecurrenceStatus.OneTime,
     endRecurrence: Instant = Instant.now(),
@@ -110,6 +117,7 @@ fun createEvent(
         listOf(
             Event(
                 id = repository?.getNewUid() ?: UUID.randomUUID().toString(),
+                organizationId = organizationId,
                 title = title,
                 description = description,
                 startDate = startDate,
@@ -118,6 +126,7 @@ fun createEvent(
                 personalNotes = personalNotes,
                 participants = participants,
                 version = System.currentTimeMillis(),
+                presence = presence,
                 recurrenceStatus = recurrence,
                 color = color))
     RecurrenceStatus.Weekly -> {
@@ -128,6 +137,7 @@ fun createEvent(
       List(weeks.toInt()) { i ->
         Event(
             id = repository?.getNewUid() ?: UUID.randomUUID().toString(),
+            organizationId = organizationId,
             title = title,
             description = description,
             startDate = startDate.plus(i * 7L, ChronoUnit.DAYS),
@@ -136,6 +146,7 @@ fun createEvent(
             personalNotes = personalNotes,
             participants = participants,
             version = System.currentTimeMillis(),
+            presence = presence,
             recurrenceStatus = recurrence,
             color = color)
       }
@@ -149,6 +160,7 @@ fun createEvent(
       List(months.toInt()) { i ->
         Event(
             id = repository?.getNewUid() ?: UUID.randomUUID().toString(),
+            organizationId = organizationId,
             title = title,
             description = description,
             startDate = startDate.atZone(zone).plusMonths(i * 1L).toInstant(),
@@ -157,6 +169,7 @@ fun createEvent(
             personalNotes = personalNotes,
             participants = participants,
             version = System.currentTimeMillis(),
+            presence = presence,
             recurrenceStatus = recurrence,
             color = color)
       }
@@ -169,6 +182,7 @@ fun createEvent(
       List(years.toInt()) { i ->
         Event(
             id = repository?.getNewUid() ?: UUID.randomUUID().toString(),
+            organizationId = organizationId,
             title = title,
             description = description,
             startDate = startDate.atZone(zone).plusYears(i * 1L).toInstant(),
@@ -177,6 +191,7 @@ fun createEvent(
             personalNotes = personalNotes,
             participants = participants,
             version = System.currentTimeMillis(),
+            presence = presence,
             recurrenceStatus = recurrence,
             color = color)
       }
@@ -189,8 +204,17 @@ fun createEvent(
  * factory.
  *
  * This ensures we rely on the same time conversion utilities as the production code.
+ *
+ * @param organizationId Identifier for the organization the event belongs to.
+ * @param title Title of the event.
+ * @param startHour Start hour of the event.
+ * @param startMinute Start minute of the event.
+ * @param endHour End hour of the event.
+ * @param endMinute End minute of the event.
+ * @return A new Event instance.
  */
 fun createEventForTimes(
+    organizationId: String,
     title: String = "Untitled",
     startHour: Int = 8,
     startMinute: Int = 0,
@@ -205,6 +229,7 @@ fun createEventForTimes(
   val endInstant = DateTimeUtils.localDateTimeToInstant(baseDate, endTime)
 
   return createEvent(
+      organizationId = organizationId,
       title = title,
       startDate = startInstant,
       endDate = endInstant,

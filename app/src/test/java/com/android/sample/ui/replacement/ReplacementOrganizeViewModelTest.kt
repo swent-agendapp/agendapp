@@ -39,6 +39,8 @@ class ReplacementOrganizeViewModelTest {
   private lateinit var replacementRepo: ReplacementRepository
   private lateinit var event1: Event
 
+  private val selectedOrganizationID: String = "org123"
+
   @Before
   fun setUp() {
     Dispatchers.setMain(testDispatcher)
@@ -49,6 +51,7 @@ class ReplacementOrganizeViewModelTest {
     // Create a sample event for testing.
     event1 =
         createEvent(
+            organizationId = selectedOrganizationID,
             title = "Meeting",
             description = "Team sync",
             startDate = Instant.parse("2025-01-10T10:00:00Z"),
@@ -76,10 +79,7 @@ class ReplacementOrganizeViewModelTest {
                   override suspend fun getMyRole(): Role? = Role.ADMIN
                 })
     return ReplacementOrganizeViewModel(
-        eventRepository = eventRepo,
-        organizationRepository = orgRepo,
-        replacementRepository = replacementRepo,
-        authz = adminAuthz)
+        eventRepository = eventRepo, replacementRepository = replacementRepo, authServ = adminAuthz)
   }
 
   /** Helper: employee VM */
@@ -98,9 +98,8 @@ class ReplacementOrganizeViewModelTest {
                 })
     return ReplacementOrganizeViewModel(
         eventRepository = eventRepo,
-        organizationRepository = orgRepo,
         replacementRepository = replacementRepo,
-        authz = employeeAuthz)
+        authServ = employeeAuthz)
   }
 
   // ----------------------------------------------------------------------

@@ -1,11 +1,12 @@
 package com.android.sample.ui.replacement
 
 import com.android.sample.model.calendar.Event
-import com.android.sample.model.calendar.EventRepository
+import com.android.sample.model.organization.SelectedOrganizationRepository
 import com.android.sample.model.replacement.*
 import com.android.sample.ui.replacement.mainPage.ReplacementEmployeeStep
 import com.android.sample.ui.replacement.mainPage.ReplacementEmployeeViewModel
 import com.android.sample.ui.theme.EventPalette
+import com.android.sample.utils.FakeEventRepository
 import java.time.Instant
 import java.time.LocalDate
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +24,8 @@ class ReplacementEmployeeViewModelExtraCoverageTest {
   private lateinit var eventRepo: FakeEventRepository
   private lateinit var vm: ReplacementEmployeeViewModel
 
+  private val selectedOrganizationId = "ORG1"
+
   @Before
   fun setup() {
     Dispatchers.setMain(testDispatcher)
@@ -35,6 +38,8 @@ class ReplacementEmployeeViewModelExtraCoverageTest {
             replacementRepository = replacementRepo,
             eventRepository = eventRepo,
             myUserId = "EMP001")
+
+    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
   }
 
   @After
@@ -138,31 +143,10 @@ class ReplacementEmployeeViewModelExtraCoverageTest {
         emptyList<Replacement>()
   }
 
-  private class FakeEventRepository : EventRepository {
-    private val list = mutableListOf<Event>()
-
-    fun add(event: Event) = list.add(event)
-
-    override fun getNewUid(): String = "fake-uid"
-
-    override suspend fun getAllEvents() = list
-
-    override suspend fun insertEvent(item: Event) {}
-
-    override suspend fun updateEvent(itemId: String, item: Event) {}
-
-    override suspend fun deleteEvent(itemId: String) {}
-
-    override suspend fun getEventById(itemId: String) = list.find { it.id == itemId }
-
-    override suspend fun getEventsBetweenDates(startDate: Instant, endDate: Instant): List<Event> {
-      return list
-    }
-  }
-
   private fun sampleEvent(id: String) =
       Event(
           id = id,
+          organizationId = selectedOrganizationId,
           title = "T$id",
           description = "D$id",
           startDate = Instant.now(),

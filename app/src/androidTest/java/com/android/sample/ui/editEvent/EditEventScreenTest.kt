@@ -151,4 +151,75 @@ class EditEventScreenTest {
         .onNodeWithTag(EditEventTestTags.TITLE_FIELD)
         .assertExists("Screen should still be present after user interactions")
   }
+
+  @Test
+  fun editEventScreen_displaysColorSelector() {
+    composeTestRule.setContent {
+      SampleAppTheme {
+        EditEventScreen(
+            eventId = "E123",
+            skipLoad = true, // we skip loading from repository to simplify the test
+        )
+      }
+    }
+
+    composeTestRule
+        .onNodeWithTag(EditEventTestTags.COLOR_SELECTOR, useUnmergedTree = true)
+        .performScrollTo()
+        .assertExists()
+        .assertIsDisplayed()
+  }
+
+  @Test
+  fun editEventScreen_openColorSelector_showsColorOptions() {
+    composeTestRule.setContent {
+      SampleAppTheme {
+        EditEventScreen(
+            eventId = "E123",
+            skipLoad = true, // we skip loading from repository to simplify the test
+        )
+      }
+    }
+
+    // Scroll to the ColorSelector and open the menu
+    composeTestRule
+        .onNodeWithTag(EditEventTestTags.COLOR_SELECTOR, useUnmergedTree = true)
+        .performScrollTo()
+        .performClick()
+
+    // At least the first option should be visible when the menu is open
+    composeTestRule
+        .onNodeWithTag(EditEventTestTags.COLOR_SELECTOR + "_option_0", useUnmergedTree = true)
+        .assertExists()
+        .assertIsDisplayed()
+  }
+
+  @Test
+  fun editEventScreen_selectingColor_doesNotEnableSaveWhenFieldsInvalid() {
+    composeTestRule.setContent {
+      SampleAppTheme {
+        EditEventScreen(
+            eventId = "E123",
+            skipLoad = true, // we skip loading from repository to simplify the test
+        )
+      }
+    }
+
+    // At start, required fields are invalid, so the Save button must be disabled
+    composeTestRule.onNodeWithTag(EditEventTestTags.SAVE_BUTTON).assertExists().assertIsNotEnabled()
+
+    // Open the ColorSelector and select the first color
+    composeTestRule
+        .onNodeWithTag(EditEventTestTags.COLOR_SELECTOR, useUnmergedTree = true)
+        .performScrollTo()
+        .performClick()
+
+    composeTestRule
+        .onNodeWithTag(EditEventTestTags.COLOR_SELECTOR + "_option_0", useUnmergedTree = true)
+        .performClick()
+
+    // Changing only the color should not make the form valid,
+    // so the Save button must remain disabled
+    composeTestRule.onNodeWithTag(EditEventTestTags.SAVE_BUTTON).assertIsNotEnabled()
+  }
 }

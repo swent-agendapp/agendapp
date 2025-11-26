@@ -52,7 +52,7 @@ roomCompiler = "2.8.2"
 playServicesLocation = "19.2.0"
 places = "3.5.0"
 coreKtxVersion = "1.7.0"
-animation = "1.9.5"
+animation = "1.7.5"
 
 [libraries]
 

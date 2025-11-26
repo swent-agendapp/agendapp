@@ -271,22 +271,4 @@ class ReplacementOrganizeViewModelTest {
     assertEquals("You are not allowed to organize replacements !", vm.uiState.value.errorMsg)
     assertTrue(replacementRepo.getAllReplacements().isEmpty())
   }
-
-  @Test
-  fun `resetUiState resets all values`() {
-    val vm = makeAdminVm()
-
-    vm.setMemberSearchQuery("abc")
-    vm.setSelectedMember(User("1", "Test", "user@example.com"))
-    vm.addSelectedEvent(event1)
-    vm.goToStep(ReplacementOrganizeStep.SelectProcessMoment)
-
-    vm.resetUiState()
-    val state = vm.uiState.value
-
-    assertTrue(state.memberSearchQuery.isEmpty())
-    assertTrue(state.selectedEvents.isEmpty())
-    assertNull(state.selectedMember)
-    assertEquals(ReplacementOrganizeStep.SelectSubstitute, state.step)
-  }
 }

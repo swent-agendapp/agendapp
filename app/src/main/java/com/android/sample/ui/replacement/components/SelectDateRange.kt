@@ -15,15 +15,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
 import com.android.sample.ui.calendar.components.DatePickerFieldToModal
+import com.android.sample.ui.common.SecondaryButton
 import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeTestTags
@@ -66,17 +70,20 @@ import java.time.LocalDate
  */
 @Composable
 fun SelectDateRangeScreen(
-    onNext: () -> Unit = {},
-    onBack: () -> Unit = {},
-    title: String = "",
-    instruction: String = "",
-    initialStartInstant: Instant = Instant.now(),
-    initialEndInstant: Instant = Instant.now(),
-    onStartDateSelected: (LocalDate) -> Unit = {},
-    onEndDateSelected: (LocalDate) -> Unit = {},
-    errorMessage: String = "",
-    canGoNext: Boolean = false,
+    onNext: () -> Unit,
+    onBack: () -> Unit,
+    title: String,
+    instruction: String,
+    onStartDateSelected: (LocalDate) -> Unit,
+    onEndDateSelected: (LocalDate) -> Unit,
+    initialStartInstant: Instant? = null,
+    initialEndInstant: Instant? = null,
+    errorMessage: String? = null,
+    canGoNext: Boolean = true,
+    onProcessNow: (() -> Unit)? = null,
+    onProcessLater: (() -> Unit)? = null,
 ) {
+  var showProcessOptions by remember { mutableStateOf(false) }
 
   Scaffold(
       topBar = {
@@ -132,29 +139,65 @@ fun SelectDateRangeScreen(
                             .padding(vertical = PaddingMedium, horizontal = PaddingMedium)
                             .testTag(ReplacementOrganizeTestTags.DATE_RANGE_INVALID_TEXT),
                     contentAlignment = Alignment.Center) {
-                      Text(
-                          text = errorMessage,
-                          style = MaterialTheme.typography.bodyMedium,
-                          textAlign = TextAlign.Center)
+                      if (errorMessage != null) {
+                        Text(
+                            text = errorMessage,
+                            style = MaterialTheme.typography.bodyMedium,
+                            textAlign = TextAlign.Center)
+                      }
                     }
               }
             }
       },
       bottomBar = {
-        BottomNavigationButtons(
-            onNext = onNext,
-            onBack = onBack,
-            backButtonText = stringResource(R.string.goBack),
-            nextButtonText = stringResource(R.string.next),
-            canGoBack = false,
-            canGoNext = canGoNext,
-            backButtonTestTag = ReplacementOrganizeTestTags.BACK_BUTTON,
-            nextButtonTestTag = ReplacementOrganizeTestTags.NEXT_BUTTON)
-      })
-}
+        Column(
+            modifier =
+                Modifier.fillMaxWidth()
+                    .padding(horizontal = PaddingExtraLarge, vertical = PaddingMedium),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(PaddingMedium),
+        ) {
+          BottomNavigationButtons(
+              onNext = {
+                if (onProcessNow == null && onProcessLater == null) {
+                  onNext()
+                } else {
+                  showProcessOptions = !showProcessOptions
+                }
+              },
+              onBack = onBack,
+              backButtonText = stringResource(R.string.goBack),
+              nextButtonText = stringResource(R.string.next),
+              canGoBack = false,
+              canGoNext = canGoNext,
+              backButtonTestTag = ReplacementOrganizeTestTags.BACK_BUTTON,
+              nextButtonTestTag = ReplacementOrganizeTestTags.NEXT_BUTTON,
+          )
 
-@Preview(showBackground = true)
-@Composable
-fun SelectDateRangeScreenPreview() {
-  SelectDateRangeScreen(title = "Example Title", instruction = "Example Instruction")
+          AnimatedVisibility(
+              visible = showProcessOptions && onProcessNow != null && onProcessLater != null,
+          ) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(PaddingMedium),
+            ) {
+              SecondaryButton(
+                  modifier =
+                      Modifier.fillMaxWidth()
+                          .testTag(ReplacementOrganizeTestTags.PROCESS_NOW_BUTTON),
+                  text = stringResource(R.string.process_now),
+                  onClick = { onProcessNow?.invoke() },
+              )
+
+              SecondaryButton(
+                  modifier =
+                      Modifier.fillMaxWidth()
+                          .testTag(ReplacementOrganizeTestTags.PROCESS_LATER_BUTTON),
+                  text = stringResource(R.string.process_later),
+                  onClick = { onProcessLater?.invoke() },
+              )
+            }
+          }
+        }
+      })
 }

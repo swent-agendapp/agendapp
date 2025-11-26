@@ -239,9 +239,7 @@ fun Agendapp(
                           onConfirmedClick = {
                             navigationActions.navigateTo(Screen.ReplacementUpcoming)
                           },
-                          onBack = {
-                              navigationActions.navigateTo(Screen.Calendar)
-                          },
+                          onBack = { navigationActions.navigateTo(Screen.Calendar) },
                       )
                     }
                     composable(Screen.ReplacementOrganize.route) {

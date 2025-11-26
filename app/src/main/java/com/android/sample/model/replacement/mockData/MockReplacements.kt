@@ -12,6 +12,7 @@ const val DEFAULT_EMAIL = "timael.andrie@epfl.ch"
 fun getMockReplacements(): List<Replacement> {
   val eventA =
       createEvent(
+          organizationId = "orgTest",
           title = "Reunion A",
           description = "Morning meeting",
           startDate = Instant.parse("2025-10-14T08:00:00Z"),
@@ -21,6 +22,7 @@ fun getMockReplacements(): List<Replacement> {
 
   val eventB =
       createEvent(
+          organizationId = "orgTest",
           title = "Reunion B",
           description = "Late morning meeting",
           startDate = Instant.parse("2025-10-18T09:15:00Z"),
@@ -30,10 +32,11 @@ fun getMockReplacements(): List<Replacement> {
 
   val eventC =
       createEvent(
+          organizationId = "orgTest",
           title = "Reunion C",
           description = "Afternoon meeting",
-          startDate = Instant.parse("2025-11-03T14:00:00Z"),
-          endDate = Instant.parse("2025-11-03T16:00:00Z"),
+          startDate = Instant.parse("2025-12-03T14:00:00Z"),
+          endDate = Instant.parse("2025-12-03T16:00:00Z"),
           cloudStorageStatuses = setOf(CloudStorageStatus.FIRESTORE),
           color = EventPalette.Orange)
 

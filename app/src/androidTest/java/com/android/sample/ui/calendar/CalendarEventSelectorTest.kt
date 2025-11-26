@@ -7,9 +7,12 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepositoryLocal
+import com.android.sample.model.calendar.createEvent
+import com.android.sample.model.organization.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.CalendarScreenTestTags.DAY_HEADER_DAY_PREFIX
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.LocalTime
 import org.junit.Rule
 import org.junit.Test
 
@@ -42,6 +45,8 @@ class CalendarEventSelectorTests : BaseCalendarScreenTest() {
     val repo = EventRepositoryLocal()
     populateRepo(repo, events)
     val owner = TestOwner(CalendarVMFactory(repo))
+
+    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
 
     composeTestRule.setContent {
       CompositionLocalProvider(LocalViewModelStoreOwner provides owner) { CalendarEventSelector() }
@@ -132,5 +137,67 @@ class CalendarEventSelectorTests : BaseCalendarScreenTest() {
         .forEachIndexed { index, label ->
           composeTestRule.onNodeWithTag("${DAY_HEADER_DAY_PREFIX}$index").assertIsDisplayed()
         }
+  }
+
+  @Test
+  fun onlyEventsInSelectedOrganizationAreShown() {
+    val otherOrgId = "otherOrg"
+
+    // Events for the selected organization (orgTest)
+    val allowedEvents =
+        createEvent(
+            organizationId = selectedOrganizationId,
+            title = "Visible Event 1",
+            startDate = at(LocalDate.now(), LocalTime.of(10, 0)),
+            endDate = at(LocalDate.now(), LocalTime.of(11, 0)),
+            cloudStorageStatuses = emptySet(),
+            participants = emptySet()) +
+            createEvent(
+                organizationId = selectedOrganizationId,
+                title = "Visible Event 2",
+                startDate = at(LocalDate.now(), LocalTime.of(12, 0)),
+                endDate = at(LocalDate.now(), LocalTime.of(13, 0)),
+                cloudStorageStatuses = emptySet(),
+                participants = emptySet())
+
+    // Events belonging to another organization (should not appear)
+    val forbiddenEvents =
+        createEvent(
+            organizationId = otherOrgId,
+            title = "Hidden Event 1",
+            startDate = at(LocalDate.now(), LocalTime.of(10, 0)),
+            endDate = at(LocalDate.now(), LocalTime.of(11, 0)),
+            cloudStorageStatuses = emptySet(),
+            participants = emptySet()) +
+            createEvent(
+                organizationId = otherOrgId,
+                title = "Hidden Event 2",
+                startDate = at(LocalDate.now(), LocalTime.of(14, 0)),
+                endDate = at(LocalDate.now(), LocalTime.of(15, 0)),
+                cloudStorageStatuses = emptySet(),
+                participants = emptySet())
+
+    val repo = EventRepositoryLocal()
+
+    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
+    populateRepo(repo, allowedEvents, selectedOrganizationId)
+
+    SelectedOrganizationRepository.changeSelectedOrganization(otherOrgId)
+    populateRepo(repo, forbiddenEvents, otherOrgId)
+
+    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
+
+    val owner = TestOwner(CalendarVMFactory(repo))
+    composeTestRule.setContent {
+      CompositionLocalProvider(LocalViewModelStoreOwner provides owner) { CalendarEventSelector() }
+    }
+
+    // Allowed events must appear
+    assertEventVisible("Visible Event 1")
+    assertEventVisible("Visible Event 2")
+
+    // Forbidden events must NOT appear at all (node does not exist)
+    assertEventAbsent("Hidden Event 1")
+    assertEventAbsent("Hidden Event 2")
   }
 }

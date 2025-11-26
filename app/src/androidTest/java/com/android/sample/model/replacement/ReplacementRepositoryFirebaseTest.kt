@@ -21,6 +21,8 @@ class ReplacementRepositoryFirebaseTest : FirebaseEmulatedTest() {
   private lateinit var replacement1: Replacement
   private lateinit var replacement2: Replacement
 
+  private val selectedOrganizationId = "orgTest"
+
   @Before
   override fun setUp() {
     super.setUp()
@@ -28,6 +30,7 @@ class ReplacementRepositoryFirebaseTest : FirebaseEmulatedTest() {
 
     sampleEvent =
         createEvent(
+            organizationId = selectedOrganizationId,
             title = "Meeting",
             description = "Team meeting",
             startDate = Instant.parse("2025-11-12T10:00:00Z"),

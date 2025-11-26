@@ -169,6 +169,7 @@
     <string name="replacement_create_select_event">Sélectionner un événement</string>
     <string name="replacement_create_choose_date_range">Choisir une plage de dates</string>
     <string name="event_overview_title">Aperçu de l\'événement</string>
+    <string name="replacement_upcoming_title">Remplacements à venir</string>
     <string name="replacement_process_title">Organiser un remplacement</string>
     <plurals name="replacement_send_requests_button" tools:ignore="MissingQuantity">
         <item quantity="one">Envoyer %d demande de remplacment</item>

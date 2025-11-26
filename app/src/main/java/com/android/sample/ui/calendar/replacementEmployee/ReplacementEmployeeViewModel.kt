@@ -10,6 +10,8 @@ import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementRepository
 import com.android.sample.model.replacement.ReplacementRepositoryProvider
 import com.android.sample.model.replacement.ReplacementStatus
+import com.android.sample.ui.organization.SelectedOrganizationVMProvider
+import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -69,6 +71,8 @@ class ReplacementEmployeeViewModel(
     private val replacementRepository: ReplacementRepository =
         ReplacementRepositoryProvider.repository,
     private val eventRepository: EventRepository = EventRepositoryProvider.repository,
+    private val selectedOrganizationViewModel: SelectedOrganizationViewModel =
+        SelectedOrganizationVMProvider.viewModel,
     myUserId: String = "EMP001"
 ) : ViewModel() {
 
@@ -77,6 +81,9 @@ class ReplacementEmployeeViewModel(
 
   private val _uiState = MutableStateFlow(ReplacementEmployeeUiState())
   val uiState: StateFlow<ReplacementEmployeeUiState> = _uiState.asStateFlow()
+
+  private val selectedOrganizationId: StateFlow<String?> =
+      selectedOrganizationViewModel.selectedOrganizationId
 
   init {
     refreshIncomingRequests()
@@ -107,8 +114,11 @@ class ReplacementEmployeeViewModel(
 
   fun createReplacementsForDateRange(start: Instant, end: Instant) {
 
+    val orgId = selectedOrganizationId.value ?: return
+
     viewModelScope.launch {
-      val events = eventRepository.getEventsBetweenDates(start, end)
+      val events =
+          eventRepository.getEventsBetweenDates(orgId = orgId, startDate = start, endDate = end)
       events.forEach { e ->
         val r =
             Replacement(
@@ -231,11 +241,12 @@ class ReplacementEmployeeViewModel(
 
   /** Creates a replacement for the currently selected event. */
   fun confirmSelectedEventAndCreateReplacement() {
+    val orgId = selectedOrganizationId.value ?: return
     val eventId = _uiState.value.selectedEventId ?: return
     viewModelScope.launch {
       try {
         val event: Event =
-            eventRepository.getEventById(eventId)
+            eventRepository.getEventById(orgId = orgId, itemId = eventId)
                 ?: run {
                   _uiState.value = _uiState.value.copy(errorMessage = "Event $eventId not found.")
                   return@launch
@@ -286,6 +297,8 @@ class ReplacementEmployeeViewModel(
    * - create one [Replacement] per event where current user is the absent member
    */
   fun confirmDateRangeAndCreateReplacements() {
+    val orgId = selectedOrganizationId.value ?: return
+
     val start = _uiState.value.startDate
     val end = _uiState.value.endDate
     if (start == null || end == null) return
@@ -295,7 +308,9 @@ class ReplacementEmployeeViewModel(
         val startInstant = start.atStartOfDay(ZoneId.systemDefault()).toInstant()
         val endInstant = end.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant()
 
-        val eventsInRange = eventRepository.getEventsBetweenDates(startInstant, endInstant)
+        val eventsInRange =
+            eventRepository.getEventsBetweenDates(
+                orgId = orgId, startDate = startInstant, endDate = endInstant)
 
         val created =
             eventsInRange.map { event ->

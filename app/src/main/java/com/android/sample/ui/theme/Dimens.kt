@@ -103,6 +103,7 @@ val BorderWidthExtraThick = 4.dp
 
 // Card elevation
 val DefaultCardElevation = 4.dp
+val SmallCardElevation = 2.dp
 
 // weight
 const val Weight = 1f

@@ -4,8 +4,10 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.calendar.createEvent
+import com.android.sample.model.organization.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.components.EventSummaryCardTags
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreen
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreenTestTags
@@ -14,6 +16,7 @@ import com.android.sample.utils.FirebaseEmulatedTest
 import java.time.Instant
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -27,14 +30,23 @@ class CalendarEventOverviewTest : FirebaseEmulatedTest() {
 
   @get:Rule val composeTestRule = createComposeRule()
 
+  private val selectedOrganizationId = "orgTest"
+  private lateinit var repo: EventRepository
+
+  @Before
+  fun setup() {
+    repo = EventRepositoryProvider.repository
+
+    // Ensure the right organization is selected
+    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
+  }
+
   @Test
   fun eventOverview_showsTopBarAndRootScreen() { // Arrange: create an in-memory repository and
-    // insert a single event
-    val repo = EventRepositoryProvider.repository
 
-    val event = createEvent()[0]
+    val event = createEvent(organizationId = selectedOrganizationId)[0]
 
-    runBlocking { repo.insertEvent(event) }
+    runBlocking { repo.insertEvent(orgId = selectedOrganizationId, item = event) }
 
     val viewModel = EventOverviewViewModel(repo)
 
@@ -55,18 +67,16 @@ class CalendarEventOverviewTest : FirebaseEmulatedTest() {
 
   @Test
   fun eventOverview_showsTitleDescriptionParticipantsAndSidebar() {
-    // Arrange: create an in-memory repository and insert a single event
-    val repo = EventRepositoryProvider.repository
-
     val event =
         createEvent(
+            organizationId = selectedOrganizationId,
             title = "Overviewed Event",
             description = "This is an event used to test the summary card.",
             startDate = Instant.parse("2025-01-10T10:00:00Z"),
             endDate = Instant.parse("2025-01-10T11:00:00Z"),
             participants = setOf("Alice", "Bob"))[0]
 
-    runBlocking { repo.insertEvent(event) }
+    runBlocking { repo.insertEvent(orgId = selectedOrganizationId, item = event) }
 
     val viewModel = EventOverviewViewModel(repo)
 
@@ -90,18 +100,16 @@ class CalendarEventOverviewTest : FirebaseEmulatedTest() {
   fun eventOverview_backButton_callsOnBackClick() {
     var backClicked = false
 
-    // Arrange: create an in-memory repository and insert a single event
-    val repo = EventRepositoryProvider.repository
-
     val event =
         createEvent(
+            organizationId = selectedOrganizationId,
             title = "Overviewed Event",
             description = "This is an event used to test the summary card.",
             startDate = Instant.parse("2025-01-10T10:00:00Z"),
             endDate = Instant.parse("2025-01-10T11:00:00Z"),
             participants = setOf("Alice", "Bob"))[0]
 
-    runBlocking { repo.insertEvent(event) }
+    runBlocking { repo.insertEvent(orgId = selectedOrganizationId, item = event) }
 
     val viewModel = EventOverviewViewModel(repo)
 

@@ -17,6 +17,7 @@ import com.android.sample.ui.calendar.addEvent.components.AddEventTitleAndDescri
 object AddEventTestTags {
   const val INSTRUCTION_TEXT = "instruction_text"
   const val TITLE_TEXT_FIELD = "title_text_field"
+  const val COLOR_SELECTOR = "color_selector"
   const val DESCRIPTION_TEXT_FIELD = "description_text_field"
   const val START_DATE_FIELD = "start_date_field"
   const val END_DATE_FIELD = "end_date_field"

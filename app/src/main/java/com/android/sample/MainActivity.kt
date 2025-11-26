@@ -206,7 +206,7 @@ fun Agendapp(
                     EditEventFlow(
                         eventId = it,
                         onCancel = { navigationActions.navigateBack() },
-                        onFinish = { navigationActions.navigateBack() })
+                        onFinish = { navigationActions.navigateTo(Screen.Calendar) })
                   } ?: run { Log.e("EditEventScreen", "Event id is null") }
                 }
               }

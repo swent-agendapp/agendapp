@@ -62,7 +62,7 @@ class CreateInvitationViewModel(
    * This function is typically called after the user confirms the creation from the invitation
    * creation bottom sheet.
    */
-  suspend fun addInvitations(count: Int) {
+  suspend fun addInvitations() {
     val user =
         authRepository.getCurrentUser()
             ?: throw IllegalStateException("No authenticated user found.")
@@ -72,7 +72,7 @@ class CreateInvitationViewModel(
     val selectedOrganization =
         organizationRepository.getOrganizationById(selectedOrganizationId, user)
             ?: throw IllegalStateException("Selected organization not found.")
-    repeat(count) {
+    repeat(_uiState.value.count) {
       val invitation = Invitation.create(selectedOrganization)
       invitationRepository.insertInvitation(item = invitation, user = user)
     }

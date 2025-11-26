@@ -101,6 +101,9 @@ fun AddEventTitleAndDescriptionScreen(
                     errorMessage = stringResource(R.string.title_empty_error),
                     value = newEventUIState.title,
                     onValueChange = { addEventViewModel.setTitle(it) },
+                    onFocusChange = { focusState ->
+                        if (focusState.isFocused) titleTouched = true
+                    },
                 )
 
                 ColorSelector(

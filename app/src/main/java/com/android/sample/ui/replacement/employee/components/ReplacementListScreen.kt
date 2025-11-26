@@ -99,27 +99,27 @@ fun ReplacementEmployeeListScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(PaddingMedium),
         ) {
-            if (isAdmin){
-                SecondaryButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(R.string.organize_replacement),
-                    onClick = onOrganizeClick,
-                )
+          if (true) { // TODO: mettre isAdmin()
+            SecondaryButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(R.string.organize_replacement),
+                onClick = onOrganizeClick,
+            )
 
-                SecondaryButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(R.string.waiting_confirmation_replacement),
-                    onClick = onWaitingConfirmationClick,
-                )
+            SecondaryButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(R.string.waiting_confirmation_replacement),
+                onClick = onWaitingConfirmationClick,
+            )
 
-                SecondaryButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(R.string.confirmed_replacements),
-                    onClick = onConfirmedClick,
-                )
+            SecondaryButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(R.string.confirmed_replacements),
+                onClick = onConfirmedClick,
+            )
 
-                Spacer(Modifier.height(PaddingExtraSmall))
-            }
+            Spacer(Modifier.height(PaddingExtraSmall))
+          }
           AnimatedVisibility(visible = showCreateOptions) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -127,8 +127,7 @@ fun ReplacementEmployeeListScreen(
             ) {
               SecondaryButton(
                   modifier =
-                      Modifier.fillMaxWidth()
-                          .testTag(ReplacementEmployeeCreateTestTags.SELECT_EVENT_BUTTON),
+                      Modifier.fillMaxWidth(),
                   text = stringResource(R.string.replacement_create_select_event),
                   onClick = {
                     showCreateOptions = false
@@ -138,8 +137,7 @@ fun ReplacementEmployeeListScreen(
 
               SecondaryButton(
                   modifier =
-                      Modifier.fillMaxWidth()
-                          .testTag(ReplacementEmployeeCreateTestTags.CHOOSE_DATE_RANGE_BUTTON),
+                      Modifier.fillMaxWidth(),
                   text = stringResource(R.string.replacement_create_choose_date_range),
                   onClick = {
                     showCreateOptions = false
@@ -194,7 +192,6 @@ private fun ReplacementRequestCard(
       shape = RoundedCornerShape(CornerRadiusLarge),
       elevation = CardDefaults.cardElevation(defaultElevation = SmallCardElevation),
   ) {
-
     Row(
         modifier = Modifier.fillMaxWidth().padding(PaddingMedium),
         verticalAlignment = Alignment.CenterVertically,

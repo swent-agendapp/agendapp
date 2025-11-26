@@ -43,9 +43,9 @@ import com.android.sample.ui.organization.OrganizationListScreen
 import com.android.sample.ui.profile.AdminContactScreen
 import com.android.sample.ui.profile.ProfileScreen
 import com.android.sample.ui.replacement.ProcessReplacementScreen
-import com.android.sample.ui.replacement.ReplacementOverviewScreen
 import com.android.sample.ui.replacement.ReplacementPendingListScreen
 import com.android.sample.ui.replacement.ReplacementUpcomingListScreen
+import com.android.sample.ui.replacement.employee.ReplacementEmployeeFlow
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeScreen
 import com.android.sample.ui.settings.SettingsScreen
 import com.android.sample.ui.theme.SampleAppTheme
@@ -224,7 +224,7 @@ fun Agendapp(
                   startDestination = Screen.ReplacementOverview.route,
                   route = Screen.ReplacementOverview.name) {
                     composable(Screen.ReplacementOverview.route) {
-                      ReplacementOverviewScreen(
+                      ReplacementEmployeeFlow(
                           onOrganizeClick = {
                             navigationActions.navigateTo(Screen.ReplacementOrganize)
                           },
@@ -233,7 +233,8 @@ fun Agendapp(
                           },
                           onConfirmedClick = {
                             navigationActions.navigateTo(Screen.ReplacementUpcoming)
-                          })
+                          },
+                      )
                     }
                     composable(Screen.ReplacementOrganize.route) {
                       ReplacementOrganizeScreen(
@@ -263,11 +264,8 @@ fun Agendapp(
                       replacementId?.let {
                         ProcessReplacementScreen(
                             replacementId = it,
-                            onSendRequests = { _ ->
-                              // Later: the requests have to be send, now it just goes back
-                              navigationActions.navigateBack()
-                            },
-                            onBack = { navigationActions.navigateBack() },
+                            onSendRequests = { _ -> navigationActions.navigateBack() },
+                            onBack = { navigationActions.navigateTo(Screen.Calendar) },
                         )
                       }
                           ?: run {

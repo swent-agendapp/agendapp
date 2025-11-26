@@ -29,7 +29,6 @@ import kotlinx.coroutines.launch
  */
 enum class ReplacementEmployeeStep {
   LIST,
-  CREATE_OPTIONS,
   SELECT_EVENT,
   SELECT_DATE_RANGE
 }
@@ -173,15 +172,6 @@ class ReplacementEmployeeViewModel(
   //  Step navigation
   // ---------------------------------------------------------------------------
 
-  /** From list → go to "create replacement" options. */
-  fun goToCreateOptions() {
-    _uiState.value =
-        _uiState.value.copy(
-            step = ReplacementEmployeeStep.CREATE_OPTIONS,
-            errorMessage = null // clear previous errors
-            )
-  }
-
   /** From create options → go back to list. */
   fun backToList() {
     _uiState.value =
@@ -212,12 +202,6 @@ class ReplacementEmployeeViewModel(
             startDate = null,
             endDate = null,
             errorMessage = null)
-  }
-
-  /** From second-step screens → back to create options. */
-  fun backToCreateOptions() {
-    _uiState.value =
-        _uiState.value.copy(step = ReplacementEmployeeStep.CREATE_OPTIONS, errorMessage = null)
   }
 
   // ---------------------------------------------------------------------------

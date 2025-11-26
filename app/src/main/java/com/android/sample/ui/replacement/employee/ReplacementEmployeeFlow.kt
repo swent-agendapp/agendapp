@@ -7,9 +7,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.model.replacement.Replacement
+import com.android.sample.ui.navigation.Screen
 import com.android.sample.ui.replacement.components.SelectDateRangeScreen
 import com.android.sample.ui.replacement.components.SelectEventScreen
-import com.android.sample.ui.replacement.employee.components.ReplacementCreateScreen
 import com.android.sample.ui.replacement.employee.components.ReplacementEmployeeListScreen
 import com.android.sample.ui.replacement.employee.components.ReplacementRequestUi
 import java.time.ZoneId
@@ -27,6 +27,9 @@ import java.time.ZoneId
  */
 @Composable
 fun ReplacementEmployeeFlow(
+    onOrganizeClick: () -> Unit,
+    onWaitingConfirmationClick: () -> Unit,
+    onConfirmedClick: () -> Unit,
     viewModel: ReplacementEmployeeViewModel = viewModel(),
     onBack: () -> Unit = {},
 ) {
@@ -38,23 +41,20 @@ fun ReplacementEmployeeFlow(
           requests = uiState.incomingRequests.map { it.toUi() },
           onAccept = { id -> viewModel.acceptRequest(id) },
           onRefuse = { id -> viewModel.refuseRequest(id) },
+          onOrganizeClick = onOrganizeClick,
+          onWaitingConfirmationClick = onWaitingConfirmationClick,
+          onConfirmedClick = onConfirmedClick,
           onSelectEvent = { viewModel.goToSelectEvent() },
           onChooseDateRange = { viewModel.goToSelectDateRange() },
           onBack = onBack,
       )
-    }
-    ReplacementEmployeeStep.CREATE_OPTIONS -> {
-      ReplacementCreateScreen(
-          onSelectEvent = { viewModel.goToSelectEvent() },
-          onChooseDateRange = { viewModel.goToSelectDateRange() },
-          onBack = { viewModel.backToList() })
     }
     ReplacementEmployeeStep.SELECT_EVENT -> {
       // NOTE: actual event selection calendar will be implemented by another teammate.
       // For now, we only pass title/instruction and the "Next" enable state.
       SelectEventScreen(
           onNext = { viewModel.confirmSelectedEventAndCreateReplacement() },
-          onBack = { viewModel.backToCreateOptions() },
+          onBack = { viewModel.backToList() },
           title = stringResource(R.string.replacement_list_title),
           instruction = stringResource(R.string.replacement_list_instruction),
           canGoNext = uiState.selectedEventId != null)
@@ -62,7 +62,7 @@ fun ReplacementEmployeeFlow(
     ReplacementEmployeeStep.SELECT_DATE_RANGE -> {
       SelectDateRangeScreen(
           onNext = { viewModel.confirmDateRangeAndCreateReplacements() },
-          onBack = { viewModel.backToCreateOptions() },
+          onBack = { viewModel.backToList() },
           title = stringResource(R.string.replacement_create_choose_date_range),
           instruction = stringResource(R.string.select_date_range_instruction),
           onStartDateSelected = { viewModel.setStartDate(it) },

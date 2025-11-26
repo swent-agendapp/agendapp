@@ -131,14 +131,14 @@ fun EventOverviewScreen(
       bottomBar = {
         if (event != null) {
           BottomNavigationButtons(
-              onBack = { showDeleteDialog.value = true },
-              backButtonText = stringResource(R.string.delete),
+              onBack = { onEditClick(event.id) },
+              backButtonText = stringResource(R.string.modify),
               canGoBack = true,
-              backButtonTestTag = EventOverviewScreenTestTags.DELETE_BUTTON,
-              onNext = { onEditClick(event.id) },
-              nextButtonText = stringResource(R.string.modify),
+              backButtonTestTag = EventOverviewScreenTestTags.MODIFY_BUTTON,
+              onNext = { showDeleteDialog.value = true },
+              nextButtonText = stringResource(R.string.delete),
               canGoNext = true,
-              nextButtonTestTag = EventOverviewScreenTestTags.MODIFY_BUTTON,
+              nextButtonTestTag = EventOverviewScreenTestTags.DELETE_BUTTON,
           )
         }
       }) { innerPadding ->

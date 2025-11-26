@@ -16,6 +16,7 @@ object EventMapper : FirestoreMapper<Event> {
 
   override fun fromDocument(document: DocumentSnapshot): Event? {
     val id = document.id
+    val organizationId = document.getString("organizationId") ?: return null
     val title = document.getString("title") ?: return null
     val description = document.getString("description") ?: ""
     val startDate = document.getTimestamp("startDate")?.toDate()?.toInstant() ?: return null
@@ -36,12 +37,14 @@ object EventMapper : FirestoreMapper<Event> {
             }
             .getOrDefault(RecurrenceStatus.OneTime)
 
+    val presence = parsePresence(document["presence"])
     val version = document.getLong("version") ?: 0L
     val colorLong = document.getLong("eventColor") ?: EventPalette.Blue.toArgb().toLong()
     val color = Palette.fromLong(colorLong)
 
     return Event(
         id = id,
+        organizationId = organizationId,
         title = title,
         description = description,
         startDate = startDate,
@@ -50,12 +53,14 @@ object EventMapper : FirestoreMapper<Event> {
         personalNotes = personalNotes,
         participants = participants,
         version = version,
+        presence = presence,
         recurrenceStatus = recurrenceStatus,
         color = color)
   }
 
   override fun fromMap(data: Map<String, Any?>): Event? {
     val id = data["id"] as? String ?: return null
+    val organizationId = data["organizationId"] as? String ?: return null
     val title = data["title"] as? String ?: return null
     val description = data["description"] as? String ?: ""
 
@@ -84,12 +89,15 @@ object EventMapper : FirestoreMapper<Event> {
         runCatching { RecurrenceStatus.valueOf(data["recurrenceStatus"] as? String ?: "OneTime") }
             .getOrDefault(RecurrenceStatus.OneTime)
 
+    val presence = parsePresence(data["presence"])
+
     val version = (data["version"] as? Number)?.toLong() ?: 0L
     val colorLong = (data["eventColor"] as? Number)?.toLong() ?: EventPalette.Blue.toArgb().toLong()
     val color = Palette.fromLong(colorLong)
 
     return Event(
         id = id,
+        organizationId = organizationId,
         title = title,
         description = description,
         startDate = startDate,
@@ -98,6 +106,7 @@ object EventMapper : FirestoreMapper<Event> {
         personalNotes = personalNotes,
         participants = participants,
         version = version,
+        presence = presence,
         recurrenceStatus = recurrenceStatus,
         color = color)
   }
@@ -105,6 +114,7 @@ object EventMapper : FirestoreMapper<Event> {
   override fun toMap(model: Event): Map<String, Any?> {
     return mapOf(
         "id" to model.id,
+        "organizationId" to model.organizationId,
         "title" to model.title,
         "description" to model.description,
         "startDate" to Timestamp(Date.from(model.startDate)),
@@ -113,7 +123,18 @@ object EventMapper : FirestoreMapper<Event> {
         "personalNotes" to model.personalNotes,
         "participants" to model.participants.toList(),
         "version" to model.version,
+        "presence" to model.presence,
         "recurrenceStatus" to model.recurrenceStatus.name,
         "eventColor" to model.color.toArgb().toLong())
+  }
+
+  private fun parsePresence(rawPresence: Any?): Map<String, Boolean> {
+    return (rawPresence as? Map<*, *>)
+        ?.mapNotNull { (key, value) ->
+          val userId = key as? String ?: return@mapNotNull null
+          val isPresent = value as? Boolean ?: return@mapNotNull null
+          userId to isPresent
+        }
+        ?.toMap() ?: emptyMap()
   }
 }

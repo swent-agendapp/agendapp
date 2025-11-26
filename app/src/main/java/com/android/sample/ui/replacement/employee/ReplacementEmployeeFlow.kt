@@ -7,7 +7,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.model.replacement.Replacement
-import com.android.sample.ui.navigation.Screen
 import com.android.sample.ui.replacement.components.SelectDateRangeScreen
 import com.android.sample.ui.replacement.components.SelectEventScreen
 import com.android.sample.ui.replacement.employee.components.ReplacementEmployeeListScreen
@@ -33,40 +32,40 @@ fun ReplacementEmployeeFlow(
     viewModel: ReplacementEmployeeViewModel = viewModel(),
     onBack: () -> Unit = {},
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+  val uiState by viewModel.uiState.collectAsState()
 
-    when (uiState.step) {
-        ReplacementEmployeeStep.LIST -> {
-            ReplacementEmployeeListScreen(
-                requests = uiState.incomingRequests.map { it.toUi() },
-                onAccept = { id -> viewModel.acceptRequest(id) },
-                onRefuse = { id -> viewModel.refuseRequest(id) },
-                onSelectEvent = { viewModel.goToSelectEvent() },
-                onChooseDateRange = { viewModel.goToSelectDateRange() },
-                onOrganizeClick = onOrganizeClick,
-                onWaitingConfirmationClick = onWaitingConfirmationClick,
-                onConfirmedClick = onConfirmedClick,
-                onBack = onBack,
-            )
-        }
-        ReplacementEmployeeStep.SELECT_EVENT -> {
-            SelectEventScreen(
-                onNext = { viewModel.confirmSelectedEventAndCreateReplacement() },
-                onBack = { viewModel.backToList() },
-                title = stringResource(R.string.replacement_list_title),
-                instruction = stringResource(R.string.replacement_list_instruction),
-                canGoNext = uiState.selectedEventId != null)
-        }
-        ReplacementEmployeeStep.SELECT_DATE_RANGE -> {
-            SelectDateRangeScreen(
-                onNext = { viewModel.confirmDateRangeAndCreateReplacements() },
-                onBack = { viewModel.backToList() },
-                title = stringResource(R.string.replacement_create_choose_date_range),
-                instruction = stringResource(R.string.select_date_range_instruction),
-                onStartDateSelected = { viewModel.setStartDate(it) },
-                onEndDateSelected = { viewModel.setEndDate(it) })
-        }
+  when (uiState.step) {
+    ReplacementEmployeeStep.LIST -> {
+      ReplacementEmployeeListScreen(
+          requests = uiState.incomingRequests.map { it.toUi() },
+          onAccept = { id -> viewModel.acceptRequest(id) },
+          onRefuse = { id -> viewModel.refuseRequest(id) },
+          onSelectEvent = { viewModel.goToSelectEvent() },
+          onChooseDateRange = { viewModel.goToSelectDateRange() },
+          onOrganizeClick = onOrganizeClick,
+          onWaitingConfirmationClick = onWaitingConfirmationClick,
+          onConfirmedClick = onConfirmedClick,
+          onBack = onBack,
+      )
     }
+    ReplacementEmployeeStep.SELECT_EVENT -> {
+      SelectEventScreen(
+          onNext = { viewModel.confirmSelectedEventAndCreateReplacement() },
+          onBack = { viewModel.backToList() },
+          title = stringResource(R.string.replacement_list_title),
+          instruction = stringResource(R.string.replacement_list_instruction),
+          canGoNext = uiState.selectedEventId != null)
+    }
+    ReplacementEmployeeStep.SELECT_DATE_RANGE -> {
+      SelectDateRangeScreen(
+          onNext = { viewModel.confirmDateRangeAndCreateReplacements() },
+          onBack = { viewModel.backToList() },
+          title = stringResource(R.string.replacement_create_choose_date_range),
+          instruction = stringResource(R.string.select_date_range_instruction),
+          onStartDateSelected = { viewModel.setStartDate(it) },
+          onEndDateSelected = { viewModel.setEndDate(it) })
+    }
+  }
 }
 
 /**

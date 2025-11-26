@@ -34,36 +34,42 @@ class ReplacementPendingListScreenTest {
 
     composeTestRule.setContent {
       ReplacementPendingListScreen(
-        replacementsToProcess = replacementsToProcess,
-        replacementsWaitingForAnswer = waitingAndDeclined)
+          replacementsToProcess = replacementsToProcess,
+          replacementsWaitingForAnswer = waitingAndDeclined)
     }
   }
 
   @Test
   fun pendingListScreen_displaysScreenAndList() {
     composeTestRule
-      .onNodeWithTag(ReplacementPendingTestTags.SCREEN, useUnmergedTree = true)
-      .assertIsDisplayed()
+        .onNodeWithTag(ReplacementPendingTestTags.SCREEN, useUnmergedTree = true)
+        .assertIsDisplayed()
 
     composeTestRule
-      .onNodeWithTag(ReplacementPendingTestTags.LIST, useUnmergedTree = true)
-      .assertIsDisplayed()
+        .onNodeWithTag(ReplacementPendingTestTags.LIST, useUnmergedTree = true)
+        .assertIsDisplayed()
   }
 
   @Test
   fun pendingListScreen_displaysOneCardPerReplacementToProcess() {
     replacementsToProcess.forEach { replacement ->
       composeTestRule
-        .onNodeWithTag(ReplacementPendingTestTags.itemTag(replacement.id), useUnmergedTree = true)
-        .assertIsDisplayed()
+          .onNodeWithTag(ReplacementPendingTestTags.itemTag(replacement.id), useUnmergedTree = true)
+          .assertIsDisplayed()
     }
   }
 
   @Test
   fun waitingSection_displaysPendingAndDeclinedCounts() {
     val context = InstrumentationRegistry.getInstrumentation().targetContext
-    val pendingCount = waitingAndDeclined.count { it.status == com.android.sample.model.replacement.ReplacementStatus.WaitingForAnswer }
-    val declinedCount = waitingAndDeclined.count { it.status == com.android.sample.model.replacement.ReplacementStatus.Declined }
+    val pendingCount =
+        waitingAndDeclined.count {
+          it.status == com.android.sample.model.replacement.ReplacementStatus.WaitingForAnswer
+        }
+    val declinedCount =
+        waitingAndDeclined.count {
+          it.status == com.android.sample.model.replacement.ReplacementStatus.Declined
+        }
 
     val noResponseText = context.getString(R.string.replacement_no_response_label, pendingCount)
     val declinedText = context.getString(R.string.replacement_declined_label, declinedCount)
@@ -77,36 +83,32 @@ class ReplacementPendingListScreenTest {
     val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     val pendingPeople =
-      waitingAndDeclined
-        .filter { it.status == com.android.sample.model.replacement.ReplacementStatus.WaitingForAnswer }
-        .map { it.substituteUserId }
-        .distinct()
+        waitingAndDeclined
+            .filter {
+              it.status == com.android.sample.model.replacement.ReplacementStatus.WaitingForAnswer
+            }
+            .map { it.substituteUserId }
+            .distinct()
 
     val declinedPeople =
-      waitingAndDeclined
-        .filter { it.status == com.android.sample.model.replacement.ReplacementStatus.Declined }
-        .map { it.substituteUserId }
-        .distinct()
+        waitingAndDeclined
+            .filter { it.status == com.android.sample.model.replacement.ReplacementStatus.Declined }
+            .map { it.substituteUserId }
+            .distinct()
 
     val noResponseText =
-      context.getString(R.string.replacement_no_response_label, pendingPeople.size)
-    val declinedText =
-      context.getString(R.string.replacement_declined_label, declinedPeople.size)
+        context.getString(R.string.replacement_no_response_label, pendingPeople.size)
+    val declinedText = context.getString(R.string.replacement_declined_label, declinedPeople.size)
     val closeText = context.getString(R.string.replacement_people_dialog_close)
 
     composeTestRule.onNodeWithText(noResponseText).performClick()
 
-    pendingPeople.forEach { person ->
-      composeTestRule.onNodeWithText(person).assertExists()
-    }
+    pendingPeople.forEach { person -> composeTestRule.onNodeWithText(person).assertExists() }
 
     composeTestRule.onNodeWithText(closeText).performClick()
 
     composeTestRule.onNodeWithText(declinedText).performClick()
 
-    declinedPeople.forEach { person ->
-      composeTestRule.onNodeWithText(person).assertExists()
-    }
+    declinedPeople.forEach { person -> composeTestRule.onNodeWithText(person).assertExists() }
   }
 }
-

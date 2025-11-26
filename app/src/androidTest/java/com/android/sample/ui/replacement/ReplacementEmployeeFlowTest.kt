@@ -1,4 +1,5 @@
 package com.android.sample.ui.replacement
+
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -13,51 +14,47 @@ import org.junit.Test
 
 class ReplacementEmployeeFlowTest {
 
-  @get:Rule
-  val compose = createComposeRule()
+  @get:Rule val compose = createComposeRule()
 
   private fun setContent() {
     compose.setContent {
       ReplacementEmployeeFlow(
-        onOrganizeClick = {},
-        onWaitingConfirmationClick = {},
-        onConfirmedClick = {},
+          onOrganizeClick = {},
+          onWaitingConfirmationClick = {},
+          onConfirmedClick = {},
       )
     }
   }
-
 
   @Test
   fun listScreen_showsAskButton() {
     setContent()
 
-    compose.onNodeWithTag(ReplacementEmployeeListTestTags.ROOT)
-      .assertExists()
-      .assertIsDisplayed()
+    compose.onNodeWithTag(ReplacementEmployeeListTestTags.ROOT).assertExists().assertIsDisplayed()
 
-    compose.onNodeWithTag(ReplacementEmployeeListTestTags.ASK_BUTTON)
-      .assertExists()
-      .assertIsDisplayed()
+    compose
+        .onNodeWithTag(ReplacementEmployeeListTestTags.ASK_BUTTON)
+        .assertExists()
+        .assertIsDisplayed()
   }
 
   @Test
   fun clickingAskButton_showsCreateOptions() {
     setContent()
 
-    compose.onNodeWithTag(ReplacementEmployeeListTestTags.SELECT_EVENT_BUTTON)
-      .assertDoesNotExist()
-    compose.onNodeWithTag(ReplacementEmployeeListTestTags.DATE_RANGE_BUTTON)
-      .assertDoesNotExist()
+    compose.onNodeWithTag(ReplacementEmployeeListTestTags.SELECT_EVENT_BUTTON).assertDoesNotExist()
+    compose.onNodeWithTag(ReplacementEmployeeListTestTags.DATE_RANGE_BUTTON).assertDoesNotExist()
 
-    compose.onNodeWithTag(ReplacementEmployeeListTestTags.ASK_BUTTON)
-      .performClick()
+    compose.onNodeWithTag(ReplacementEmployeeListTestTags.ASK_BUTTON).performClick()
 
-    compose.onNodeWithTag(ReplacementEmployeeListTestTags.SELECT_EVENT_BUTTON)
-      .assertExists()
-      .assertIsDisplayed()
-    compose.onNodeWithTag(ReplacementEmployeeListTestTags.DATE_RANGE_BUTTON)
-      .assertExists()
-      .assertIsDisplayed()
+    compose
+        .onNodeWithTag(ReplacementEmployeeListTestTags.SELECT_EVENT_BUTTON)
+        .assertExists()
+        .assertIsDisplayed()
+    compose
+        .onNodeWithTag(ReplacementEmployeeListTestTags.DATE_RANGE_BUTTON)
+        .assertExists()
+        .assertIsDisplayed()
   }
 
   @Test
@@ -67,17 +64,12 @@ class ReplacementEmployeeFlowTest {
 
     setContent()
 
-    compose.onNodeWithTag(ReplacementEmployeeListTestTags.ASK_BUTTON)
-      .performClick()
+    compose.onNodeWithTag(ReplacementEmployeeListTestTags.ASK_BUTTON).performClick()
 
-    compose.onNodeWithTag(ReplacementEmployeeListTestTags.SELECT_EVENT_BUTTON)
-      .performClick()
+    compose.onNodeWithTag(ReplacementEmployeeListTestTags.SELECT_EVENT_BUTTON).performClick()
 
-    compose.onNodeWithText(nextText)
-      .assertExists()
-      .assertIsDisplayed()
+    compose.onNodeWithText(nextText).assertExists().assertIsDisplayed()
   }
-
 
   @Test
   fun dateRangeOption_goesToDateRangeScreen() {
@@ -86,16 +78,10 @@ class ReplacementEmployeeFlowTest {
 
     setContent()
 
-    compose.onNodeWithTag(ReplacementEmployeeListTestTags.ASK_BUTTON)
-      .performClick()
+    compose.onNodeWithTag(ReplacementEmployeeListTestTags.ASK_BUTTON).performClick()
 
-    compose.onNodeWithTag(ReplacementEmployeeListTestTags.DATE_RANGE_BUTTON)
-      .performClick()
+    compose.onNodeWithTag(ReplacementEmployeeListTestTags.DATE_RANGE_BUTTON).performClick()
 
-    compose.onNodeWithText(startDateText)
-      .assertExists()
-      .assertIsDisplayed()
+    compose.onNodeWithText(startDateText).assertExists().assertIsDisplayed()
   }
-
-
 }

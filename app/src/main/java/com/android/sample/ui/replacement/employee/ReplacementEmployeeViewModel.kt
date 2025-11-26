@@ -126,9 +126,10 @@ class ReplacementEmployeeViewModel(
     viewModelScope.launch {
       _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
       try {
-          val list = replacementRepository
-                  .getReplacementsBySubstituteUser(currentUserId)
-                  .filter { it.status == ReplacementStatus.WaitingForAnswer }
+        val list =
+            replacementRepository.getReplacementsBySubstituteUser(currentUserId).filter {
+              it.status == ReplacementStatus.WaitingForAnswer
+            }
         _uiState.value =
             _uiState.value.copy(incomingRequests = list, isLoading = false, errorMessage = null)
       } catch (e: Exception) {

@@ -31,11 +31,10 @@ class ReplacementEmployeeViewModelExtraCoverageTest {
     eventRepo = FakeEventRepository()
 
     vm =
-      ReplacementEmployeeViewModel(
-        replacementRepository = replacementRepo,
-        eventRepository = eventRepo,
-        myUserId = "EMP001"
-      )
+        ReplacementEmployeeViewModel(
+            replacementRepository = replacementRepo,
+            eventRepository = eventRepo,
+            myUserId = "EMP001")
   }
 
   @After
@@ -104,7 +103,6 @@ class ReplacementEmployeeViewModelExtraCoverageTest {
     Assert.assertEquals(2, replacementRepo.items.size)
   }
 
-
   @Test
   fun confirmDateRangeAndCreateReplacements_createsNoReplacementsWhenNoEventsInRepo() = runTest {
     vm.setStartDate(LocalDate.now())
@@ -125,8 +123,7 @@ class ReplacementEmployeeViewModelExtraCoverageTest {
       items.add(item)
     }
 
-    override suspend fun updateReplacement(itemId: String, item: Replacement) {
-    }
+    override suspend fun updateReplacement(itemId: String, item: Replacement) {}
 
     override suspend fun deleteReplacement(itemId: String) {}
 
@@ -135,10 +132,10 @@ class ReplacementEmployeeViewModelExtraCoverageTest {
     override suspend fun getReplacementsByAbsentUser(userId: String) = emptyList<Replacement>()
 
     override suspend fun getReplacementsBySubstituteUser(userId: String) =
-      items.filter { it.substituteUserId == userId }
+        items.filter { it.substituteUserId == userId }
 
     override suspend fun getReplacementsByStatus(status: ReplacementStatus) =
-      emptyList<Replacement>()
+        emptyList<Replacement>()
   }
 
   private class FakeEventRepository : EventRepository {
@@ -164,19 +161,18 @@ class ReplacementEmployeeViewModelExtraCoverageTest {
   }
 
   private fun sampleEvent(id: String) =
-    Event(
-      id = id,
-      title = "T$id",
-      description = "D$id",
-      startDate = Instant.now(),
-      endDate = Instant.now().plusSeconds(3600),
-      participants = setOf(),
-      recurrenceStatus = com.android.sample.model.calendar.RecurrenceStatus.OneTime,
-      hasBeenDeleted = false,
-      color = EventPalette.Blue,
-      version = 1L,
-      locallyStoredBy = listOf("X"),
-      cloudStorageStatuses = emptySet(),
-      personalNotes = null
-    )
+      Event(
+          id = id,
+          title = "T$id",
+          description = "D$id",
+          startDate = Instant.now(),
+          endDate = Instant.now().plusSeconds(3600),
+          participants = setOf(),
+          recurrenceStatus = com.android.sample.model.calendar.RecurrenceStatus.OneTime,
+          hasBeenDeleted = false,
+          color = EventPalette.Blue,
+          version = 1L,
+          locallyStoredBy = listOf("X"),
+          cloudStorageStatuses = emptySet(),
+          personalNotes = null)
 }

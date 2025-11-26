@@ -33,10 +33,10 @@ private val titleMaxLine = 1
 private val descriptionMaxLine = 2
 /** ---------- Test Tags ---------- */
 object ReplacementEmployeeListTestTags {
-    const val ROOT = "replacement_employee_list_root"
-    const val ASK_BUTTON = "replacement_employee_ask_button"
-    const val SELECT_EVENT_BUTTON = "replacement_employee_select_event_button"
-    const val DATE_RANGE_BUTTON = "replacement_employee_date_range_button"
+  const val ROOT = "replacement_employee_list_root"
+  const val ASK_BUTTON = "replacement_employee_ask_button"
+  const val SELECT_EVENT_BUTTON = "replacement_employee_select_event_button"
+  const val DATE_RANGE_BUTTON = "replacement_employee_date_range_button"
 
   fun card(id: String) = "replacement_employee_card_$id"
 
@@ -129,7 +129,8 @@ fun ReplacementEmployeeListScreen(
             ) {
               SecondaryButton(
                   modifier =
-                      Modifier.fillMaxWidth().testTag(ReplacementEmployeeListTestTags.SELECT_EVENT_BUTTON),
+                      Modifier.fillMaxWidth()
+                          .testTag(ReplacementEmployeeListTestTags.SELECT_EVENT_BUTTON),
                   text = stringResource(R.string.replacement_create_select_event),
                   onClick = {
                     showCreateOptions = false
@@ -139,7 +140,8 @@ fun ReplacementEmployeeListScreen(
 
               SecondaryButton(
                   modifier =
-                      Modifier.fillMaxWidth().testTag(ReplacementEmployeeListTestTags.DATE_RANGE_BUTTON),
+                      Modifier.fillMaxWidth()
+                          .testTag(ReplacementEmployeeListTestTags.DATE_RANGE_BUTTON),
                   text = stringResource(R.string.replacement_create_choose_date_range),
                   onClick = {
                     showCreateOptions = false

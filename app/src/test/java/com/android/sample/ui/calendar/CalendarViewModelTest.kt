@@ -150,7 +150,10 @@ class CalendarViewModelTest {
 
     repository.insertEvent(orgId, pastEvent)
 
-    val result = viewModel.calculateWorkedHours(pastStart.minusSeconds(1), pastEnd.plusSeconds(1))
+    viewModel.calculateWorkedHours(pastStart.minusSeconds(1), pastEnd.plusSeconds(1))
+    testDispatcher.scheduler.advanceUntilIdle()
+
+    val result = viewModel.uiState.value.workedHours
 
     // user1: 2 hours, user2: 0 hours (not present)
     val user1Hours = result.find { it.first == "user1" }?.second ?: 0.0
@@ -178,8 +181,10 @@ class CalendarViewModelTest {
 
     repository.insertEvent(orgId, futureEvent)
 
-    val result =
-        viewModel.calculateWorkedHours(futureStart.minusSeconds(1), futureEnd.plusSeconds(1))
+    viewModel.calculateWorkedHours(futureStart.minusSeconds(1), futureEnd.plusSeconds(1))
+    testDispatcher.scheduler.advanceUntilIdle()
+
+    val result = viewModel.uiState.value.workedHours
 
     // user1: 2 hours, user2: 2 hours (assumed present)
     val user1Hours = result.find { it.first == "user1" }?.second ?: 0.0
@@ -215,7 +220,10 @@ class CalendarViewModelTest {
     repository.insertEvent(orgId, event1)
     repository.insertEvent(orgId, event2)
 
-    val result = viewModel.calculateWorkedHours(start, end)
+    viewModel.calculateWorkedHours(start, end)
+    testDispatcher.scheduler.advanceUntilIdle()
+
+    val result = viewModel.uiState.value.workedHours
 
     val user1Hours = result.find { it.first == "user1" }?.second ?: 0.0
     assertEquals(3.0, user1Hours, 0.01)

@@ -24,7 +24,8 @@ import kotlinx.coroutines.launch
 data class CalendarUIState(
     val events: List<Event> = emptyList(),
     val errorMsg: String? = null,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val workedHours: List<Pair<String, Double>> = emptyList()
 )
 
 /**
@@ -130,34 +131,38 @@ class CalendarViewModel(
    *
    * @param start The start of the time range.
    * @param end The end of the time range.
-   * @return A list of pairs where each pair contains an employee ID and their total worked hours.
    */
-  suspend fun calculateWorkedHours(start: Instant, end: Instant): List<Pair<String, Double>> {
-    val orgId = selectedOrganizationId.value ?: return emptyList()
-    val events =
-        eventRepository.getEventsBetweenDates(orgId = orgId, startDate = start, endDate = end)
-    val workedHoursMap = mutableMapOf<String, Double>()
-    val now = Instant.now()
+  fun calculateWorkedHours(start: Instant, end: Instant) {
+    val orgId = selectedOrganizationId.value ?: return
+    viewModelScope.launch {
+      try {
+        val events =
+            eventRepository.getEventsBetweenDates(orgId = orgId, startDate = start, endDate = end)
+        val workedHoursMap = mutableMapOf<String, Double>()
+        val now = Instant.now()
 
-    events.forEach { event ->
-      val durationHours =
-          java.time.Duration.between(event.startDate, event.endDate).toMinutes() / 60.0
+        events.forEach { event ->
+          val durationHours =
+              java.time.Duration.between(event.startDate, event.endDate).toMinutes() / 60.0
 
-      if (event.endDate.isBefore(now)) {
-        // Past event: check presence
-        event.presence.forEach { (userId, isPresent) ->
-          if (isPresent) {
-            workedHoursMap[userId] = workedHoursMap.getOrDefault(userId, 0.0) + durationHours
+          if (event.endDate.isBefore(now)) {
+            // Past event: check presence
+            event.presence.forEach { (userId, isPresent) ->
+              if (isPresent) {
+                workedHoursMap[userId] = workedHoursMap.getOrDefault(userId, 0.0) + durationHours
+              }
+            }
+          } else {
+            // Future event: assume participation
+            event.participants.forEach { userId ->
+              workedHoursMap[userId] = workedHoursMap.getOrDefault(userId, 0.0) + durationHours
+            }
           }
         }
-      } else {
-        // Future event: assume participation
-        event.participants.forEach { userId ->
-          workedHoursMap[userId] = workedHoursMap.getOrDefault(userId, 0.0) + durationHours
-        }
+        _uiState.value = _uiState.value.copy(workedHours = workedHoursMap.toList())
+      } catch (e: Exception) {
+        setErrorMsg("Failed to calculate worked hours: ${e.message}")
       }
     }
-
-    return workedHoursMap.toList()
   }
 }

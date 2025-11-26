@@ -31,8 +31,9 @@ object Palette {
   val Black = Color(color = 0xFF000000)
 
   // ----------------------------------------
-  // Purples
+  // Purples / Violets / Indigo
   // ----------------------------------------
+  val SteelBlue = Color(0xFF5C6BC0)
   val Ube = Color(color = 0xFF8687BA)
   val RichLilac = Color(color = 0xFFBA68C8)
 
@@ -41,7 +42,8 @@ object Palette {
   // ----------------------------------------
   val Firebrick = Color(color = 0xFFB3261E)
   val LightCarminePink = Color(color = 0xFFED6B6D)
-  val CandyPink = Color(color = 0xFFE57373)
+  val CandyPink = Color(0xFFEF6C6C)
+  val Orchid = Color(0xFFCE93D8)
 
   // ----------------------------------------
   // Greens
@@ -55,11 +57,19 @@ object Palette {
   val CadmiumBlue = Color(color = 0xFF09099D)
   val CadmiumBlue_50 = Color(color = 0x8009099D)
   val BlueJeans = Color(color = 0xFF64B5F6)
+  val MediumAquamarine = Color(0xFF4DB6AC)
 
   // ----------------------------------------
   // Oranges / Accents
   // ----------------------------------------
+  val Coral = Color(0xFFFF8A65)
   val PastelOrange = Color(color = 0xFFFFB74D)
+  val Maize = Color(0xFFFFF176)
+
+  // ----------------------------------------
+  // Browns
+  // ----------------------------------------
+  val LightBrown = Color(0xFF8D6E63) // nouveau brun
 
   // ----------------------------------------
   // Utility function to create a Color from a Long
@@ -103,12 +113,28 @@ object MapPalette {
 
 // Event Color Scheme
 object EventPalette {
-  val Black = Palette.Black
+  val Yellow = Palette.Maize
   val Orange = Palette.PastelOrange
+  val Red = Palette.CandyPink
+  val PinkViolet = Palette.Orchid
+  val Purple = Palette.RichLilac
+  val Indigo = Palette.SteelBlue
   val Blue = Palette.BlueJeans
   val Green = Palette.DarkSeaGreen
-  val Red = Palette.CandyPink
-  val Purple = Palette.RichLilac
+  val Brown = Palette.LightBrown
+
+  val defaultColors: List<Color> =
+      listOf(
+          Indigo,
+          Blue,
+          Green,
+          Yellow,
+          Orange,
+          Red,
+          PinkViolet,
+          Purple,
+          Brown,
+      )
 }
 
 // Calendar Color Scheme

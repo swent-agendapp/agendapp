@@ -33,42 +33,40 @@ fun ReplacementEmployeeFlow(
     viewModel: ReplacementEmployeeViewModel = viewModel(),
     onBack: () -> Unit = {},
 ) {
-  val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
-  when (uiState.step) {
-    ReplacementEmployeeStep.LIST -> {
-      ReplacementEmployeeListScreen(
-          requests = uiState.incomingRequests.map { it.toUi() },
-          onAccept = { id -> viewModel.acceptRequest(id) },
-          onRefuse = { id -> viewModel.refuseRequest(id) },
-          onOrganizeClick = onOrganizeClick,
-          onWaitingConfirmationClick = onWaitingConfirmationClick,
-          onConfirmedClick = onConfirmedClick,
-          onSelectEvent = { viewModel.goToSelectEvent() },
-          onChooseDateRange = { viewModel.goToSelectDateRange() },
-          onBack = onBack,
-      )
+    when (uiState.step) {
+        ReplacementEmployeeStep.LIST -> {
+            ReplacementEmployeeListScreen(
+                requests = uiState.incomingRequests.map { it.toUi() },
+                onAccept = { id -> viewModel.acceptRequest(id) },
+                onRefuse = { id -> viewModel.refuseRequest(id) },
+                onSelectEvent = { viewModel.goToSelectEvent() },
+                onChooseDateRange = { viewModel.goToSelectDateRange() },
+                onOrganizeClick = onOrganizeClick,
+                onWaitingConfirmationClick = onWaitingConfirmationClick,
+                onConfirmedClick = onConfirmedClick,
+                onBack = onBack,
+            )
+        }
+        ReplacementEmployeeStep.SELECT_EVENT -> {
+            SelectEventScreen(
+                onNext = { viewModel.confirmSelectedEventAndCreateReplacement() },
+                onBack = { viewModel.backToList() },
+                title = stringResource(R.string.replacement_list_title),
+                instruction = stringResource(R.string.replacement_list_instruction),
+                canGoNext = uiState.selectedEventId != null)
+        }
+        ReplacementEmployeeStep.SELECT_DATE_RANGE -> {
+            SelectDateRangeScreen(
+                onNext = { viewModel.confirmDateRangeAndCreateReplacements() },
+                onBack = { viewModel.backToList() },
+                title = stringResource(R.string.replacement_create_choose_date_range),
+                instruction = stringResource(R.string.select_date_range_instruction),
+                onStartDateSelected = { viewModel.setStartDate(it) },
+                onEndDateSelected = { viewModel.setEndDate(it) })
+        }
     }
-    ReplacementEmployeeStep.SELECT_EVENT -> {
-      // NOTE: actual event selection calendar will be implemented by another teammate.
-      // For now, we only pass title/instruction and the "Next" enable state.
-      SelectEventScreen(
-          onNext = { viewModel.confirmSelectedEventAndCreateReplacement() },
-          onBack = { viewModel.backToList() },
-          title = stringResource(R.string.replacement_list_title),
-          instruction = stringResource(R.string.replacement_list_instruction),
-          canGoNext = uiState.selectedEventId != null)
-    }
-    ReplacementEmployeeStep.SELECT_DATE_RANGE -> {
-      SelectDateRangeScreen(
-          onNext = { viewModel.confirmDateRangeAndCreateReplacements() },
-          onBack = { viewModel.backToList() },
-          title = stringResource(R.string.replacement_create_choose_date_range),
-          instruction = stringResource(R.string.select_date_range_instruction),
-          onStartDateSelected = { viewModel.setStartDate(it) },
-          onEndDateSelected = { viewModel.setEndDate(it) })
-    }
-  }
 }
 
 /**

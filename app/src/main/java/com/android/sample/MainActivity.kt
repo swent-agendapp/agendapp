@@ -15,6 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -27,6 +28,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.android.sample.model.authentication.AuthRepositoryProvider
+import com.android.sample.model.replacement.Replacement
+import com.android.sample.model.replacement.ReplacementRepositoryProvider
+import com.android.sample.model.replacement.ReplacementStatus
 import com.android.sample.ui.authentication.SignInScreen
 import com.android.sample.ui.calendar.CalendarScreen
 import com.android.sample.ui.calendar.addEvent.AddEventScreen
@@ -49,6 +53,7 @@ import com.android.sample.ui.replacement.employee.ReplacementEmployeeFlow
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeScreen
 import com.android.sample.ui.settings.SettingsScreen
 import com.android.sample.ui.theme.SampleAppTheme
+import kotlinx.coroutines.launch
 
 object MainActivityTestTags {
   const val MAIN_SCREEN_CONTAINER = "main_screen_container"
@@ -142,166 +147,206 @@ fun Agendapp(
             startDestination = startDestination,
             modifier = modifier.padding(innerPadding)) {
 
-              // Authentication Screen
-              composable(Screen.Authentication.route) {
+            // Authentication Screen
+            composable(Screen.Authentication.route) {
                 SignInScreen(
                     credentialManager = credentialManager,
                     onSignedIn = { navigationActions.navigateTo(Screen.Calendar) })
-              }
+            }
 
-              // Organization Selection Graph
-              navigation(
-                  startDestination = Screen.Organizations.route,
-                  route = Screen.Organizations.name) {
-                    // Organization List Screen
-                    composable(Screen.Organizations.route) {
-                      OrganizationListScreen(
-                          onOrganizationSelected = {
+            // Organization Selection Graph
+            navigation(
+                startDestination = Screen.Organizations.route,
+                route = Screen.Organizations.name
+            ) {
+                // Organization List Screen
+                composable(Screen.Organizations.route) {
+                    OrganizationListScreen(
+                        onOrganizationSelected = {
                             navigationActions.navigateTo(Screen.Calendar)
-                          },
-                          onAddOrganizationClicked = {
+                        },
+                        onAddOrganizationClicked = {
                             navigationActions.navigateTo(Screen.AddOrganization)
-                          })
-                    }
+                        })
+                }
 
-                    // Add Organization Screen
-                    composable(Screen.AddOrganization.route) {
-                      AddOrganizationScreen(
-                          onNavigateBack = { navigationActions.navigateBack() },
-                          onFinish = { navigationActions.navigateTo(Screen.Organizations) })
-                    }
-                  }
+                // Add Organization Screen
+                composable(Screen.AddOrganization.route) {
+                    AddOrganizationScreen(
+                        onNavigateBack = { navigationActions.navigateBack() },
+                        onFinish = { navigationActions.navigateTo(Screen.Organizations) })
+                }
+            }
 
-              // Calendar Graph
-              navigation(startDestination = Screen.Calendar.route, route = Screen.Calendar.name) {
+            // Calendar Graph
+            navigation(startDestination = Screen.Calendar.route, route = Screen.Calendar.name) {
                 // Main Calendar Screen
                 composable(Screen.Calendar.route) {
-                  CalendarScreen(
-                      onCreateEvent = { navigationActions.navigateTo(Screen.AddEvent) },
-                      onEventClick = { event ->
-                        navigationActions.navigateToEventOverview(event.id)
-                      })
+                    CalendarScreen(
+                        onCreateEvent = { navigationActions.navigateTo(Screen.AddEvent) },
+                        onEventClick = { event ->
+                            navigationActions.navigateToEventOverview(event.id)
+                        })
                 }
                 // Event Overview
                 composable(Screen.EventOverview.route) { navBackStackEntry ->
-                  // Get the Event id from the arguments
-                  val eventId = navBackStackEntry.arguments?.getString("eventId")
+                    // Get the Event id from the arguments
+                    val eventId = navBackStackEntry.arguments?.getString("eventId")
 
-                  // Create the Overview screen with the Event id
-                  eventId?.let {
-                    EventOverviewScreen(
-                        eventId = eventId,
-                        onBackClick = { navigationActions.navigateBack() },
-                        onEditClick = { id -> navigationActions.navigateToEditEvent(id) },
-                        onDeleteClick = { navigationActions.navigateBack() })
-                  } ?: run { Log.e("EventOverviewScreen", "Event id is null") }
+                    // Create the Overview screen with the Event id
+                    eventId?.let {
+                        EventOverviewScreen(
+                            eventId = eventId,
+                            onBackClick = { navigationActions.navigateBack() },
+                            onEditClick = { id -> navigationActions.navigateToEditEvent(id) },
+                            onDeleteClick = { navigationActions.navigateBack() })
+                    } ?: run { Log.e("EventOverviewScreen", "Event id is null") }
                 }
-              }
-
-              // Edit Event Graph
-              navigation(startDestination = Screen.EditEvent.route, route = Screen.EditEvent.name) {
-                composable(Screen.EditEvent.route) { navBackStackEntry ->
-                  val eventId = navBackStackEntry.arguments?.getString("eventId")
-                  eventId?.let {
-                    EditEventFlow(
-                        eventId = it,
-                        onCancel = { navigationActions.navigateBack() },
-                        onFinish = { navigationActions.navigateBack() })
-                  } ?: run { Log.e("EditEventScreen", "Event id is null") }
-                }
-              }
-
-              // Add Event Screen Flow
-              navigation(startDestination = Screen.AddEvent.route, route = "Add Event") {
-                composable(Screen.AddEvent.route) {
-                  AddEventScreen(
-                      onFinish = { navigationActions.navigateTo(Screen.Calendar) },
-                      onCancel = { navigationActions.navigateBack() })
-                }
-              }
-              // Replacement Overview Screen
-              navigation(
-                  startDestination = Screen.ReplacementOverview.route,
-                  route = Screen.ReplacementOverview.name) {
-                    composable(Screen.ReplacementOverview.route) {
-                      ReplacementEmployeeFlow(
-                          onOrganizeClick = {
-                            navigationActions.navigateTo(Screen.ReplacementOrganize)
-                          },
-                          onWaitingConfirmationClick = {
-                            navigationActions.navigateTo(Screen.ReplacementPending)
-                          },
-                          onConfirmedClick = {
-                            navigationActions.navigateTo(Screen.ReplacementUpcoming)
-                          },
-                      )
-                    }
-                    composable(Screen.ReplacementOrganize.route) {
-                      ReplacementOrganizeScreen(
-                          onCancel = { navigationActions.navigateBack() },
-                          onProcessLater = {
-                            navigationActions.navigateTo(Screen.ReplacementOverview)
-                          },
-                      )
-                    }
-                    // Pending Replacement Screen
-                    composable(Screen.ReplacementPending.route) {
-                      ReplacementPendingListScreen(
-                          onProcessReplacement = { replacement ->
-                            navigationActions.navigateToReplacementProcess(replacement.id)
-                          },
-                          onNavigateBack = { navigationActions.navigateBack() })
-                    }
-
-                    // accepted replacement screen
-                    composable(Screen.ReplacementUpcoming.route) {
-                      ReplacementUpcomingListScreen(
-                          onNavigateBack = { navigationActions.navigateBack() })
-                    }
-                    composable(Screen.ReplacementProcess.route) { navBackStackEntry ->
-                      val replacementId = navBackStackEntry.arguments?.getString("replacementId")
-
-                      replacementId?.let {
-                        ProcessReplacementScreen(
-                            replacementId = it,
-                            onSendRequests = { _ -> navigationActions.navigateBack() },
-                            onBack = { navigationActions.navigateTo(Screen.Calendar) },
-                        )
-                      }
-                          ?: run {
-                            Log.e("ProcessReplacementScreen", "replacementId is null")
-                            navigationActions.navigateBack()
-                          }
-                    }
-                  }
-
-              // Settings Graph
-              navigation(startDestination = Screen.Settings.route, route = Screen.Settings.name) {
-                // Settings Screen
-                composable(Screen.Settings.route) {
-                  SettingsScreen(
-                      onNavigateToUserProfile = { navigationActions.navigateTo(Screen.Profile) },
-                      onNavigateToAdminInfo = { navigationActions.navigateTo(Screen.AdminContact) },
-                      onNavigateToMapSettings = { navigationActions.navigateTo(Screen.Map) })
-                }
-                // User profile Screen
-                composable(Screen.Profile.route) {
-                  ProfileScreen(
-                      onNavigateBack = { navigationActions.navigateBack() },
-                      credentialManager = credentialManager,
-                      onSignOut = { navigationActions.navigateTo(Screen.Authentication) })
-                }
-
-                // Admin contact Screen
-                composable(Screen.AdminContact.route) {
-                  AdminContactScreen(onNavigateBack = { navigationActions.navigateBack() })
-                }
-
-                // Map Settings Screen
-                composable(Screen.Map.route) {
-                  MapScreen(onGoBack = { navigationActions.navigateBack() })
-                }
-              }
             }
+
+            // Edit Event Graph
+            navigation(startDestination = Screen.EditEvent.route, route = Screen.EditEvent.name) {
+                composable(Screen.EditEvent.route) { navBackStackEntry ->
+                    val eventId = navBackStackEntry.arguments?.getString("eventId")
+                    eventId?.let {
+                        EditEventFlow(
+                            eventId = it,
+                            onCancel = { navigationActions.navigateBack() },
+                            onFinish = { navigationActions.navigateBack() })
+                    } ?: run { Log.e("EditEventScreen", "Event id is null") }
+                }
+            }
+
+            // Add Event Screen Flow
+            navigation(startDestination = Screen.AddEvent.route, route = "Add Event") {
+                composable(Screen.AddEvent.route) {
+                    AddEventScreen(
+                        onFinish = { navigationActions.navigateTo(Screen.Calendar) },
+                        onCancel = { navigationActions.navigateBack() })
+                }
+            }
+            // Replacement Overview Screen
+            navigation(
+                startDestination = Screen.ReplacementOverview.route,
+                route = Screen.ReplacementOverview.name
+            ) {
+                composable(Screen.ReplacementOverview.route) {
+                    ReplacementEmployeeFlow(
+                        onOrganizeClick = {
+                            navigationActions.navigateTo(Screen.ReplacementOrganize)
+                        },
+                        onWaitingConfirmationClick = {
+                            navigationActions.navigateTo(Screen.ReplacementPending)
+                        },
+                        onConfirmedClick = {
+                            navigationActions.navigateTo(Screen.ReplacementUpcoming)
+                        },
+                    )
+                }
+                composable(Screen.ReplacementOrganize.route) {
+                    ReplacementOrganizeScreen(
+                        onCancel = { navigationActions.navigateBack() },
+                        onProcessLater = {
+                            navigationActions.navigateTo(Screen.ReplacementOverview)
+                        },
+                    )
+                }
+                // Pending Replacement Screen
+                composable(Screen.ReplacementPending.route) {
+                    ReplacementPendingListScreen(
+                        onProcessReplacement = { replacement ->
+                            navigationActions.navigateToReplacementProcess(replacement.id)
+                        },
+                        onNavigateBack = { navigationActions.navigateBack() })
+                }
+
+                // accepted replacement screen
+                composable(Screen.ReplacementUpcoming.route) {
+                    ReplacementUpcomingListScreen(
+                        onNavigateBack = { navigationActions.navigateBack() })
+                }
+                composable(Screen.ReplacementProcess.route) { navBackStackEntry ->
+                    val replacementId = navBackStackEntry.arguments?.getString("replacementId")
+                    val replacementRepository = ReplacementRepositoryProvider.repository
+                    val scope = rememberCoroutineScope()
+
+                    if (replacementId == null) {
+                        Log.e("ProcessReplacementScreen", "replacementId is null")
+                        navigationActions.navigateBack()
+                    } else {
+                        ProcessReplacementScreen(
+                            replacementId = replacementId,
+                            onSendRequests = { selectedSubstitutes ->
+                                scope.launch {
+                                    try {
+                                        val original =
+                                            replacementRepository.getReplacementById(replacementId)
+
+                                        if (original == null) {
+                                            Log.e(
+                                                "ProcessReplacementScreen",
+                                                "Original replacement not found for id=$replacementId"
+                                            )
+                                            navigationActions.navigateBack()
+                                        } else {
+                                            selectedSubstitutes.forEach { substituteId ->
+                                                val request =
+                                                    Replacement(
+                                                        absentUserId = original.absentUserId,
+                                                        substituteUserId = substituteId,
+                                                        event = original.event,
+                                                        status = ReplacementStatus.WaitingForAnswer,
+                                                    )
+
+                                                replacementRepository.insertReplacement(request)
+                                            }
+
+                                            navigationActions.navigateTo(Screen.ReplacementOverview)
+                                        }
+                                    } catch (e: Exception) {
+                                        Log.e(
+                                            "ProcessReplacementScreen",
+                                            "Error sending requests",
+                                            e
+                                        )
+                                        navigationActions.navigateBack()
+                                    }
+                                }
+                            },
+                            onBack = { navigationActions.navigateBack() },
+                        )
+                    }
+                }
+
+
+                // Settings Graph
+                navigation(startDestination = Screen.Settings.route, route = Screen.Settings.name) {
+                    // Settings Screen
+                    composable(Screen.Settings.route) {
+                        SettingsScreen(
+                            onNavigateToUserProfile = { navigationActions.navigateTo(Screen.Profile) },
+                            onNavigateToAdminInfo = { navigationActions.navigateTo(Screen.AdminContact) },
+                            onNavigateToMapSettings = { navigationActions.navigateTo(Screen.Map) })
+                    }
+                    // User profile Screen
+                    composable(Screen.Profile.route) {
+                        ProfileScreen(
+                            onNavigateBack = { navigationActions.navigateBack() },
+                            credentialManager = credentialManager,
+                            onSignOut = { navigationActions.navigateTo(Screen.Authentication) })
+                    }
+
+                    // Admin contact Screen
+                    composable(Screen.AdminContact.route) {
+                        AdminContactScreen(onNavigateBack = { navigationActions.navigateBack() })
+                    }
+
+                    // Map Settings Screen
+                    composable(Screen.Map.route) {
+                        MapScreen(onGoBack = { navigationActions.navigateBack() })
+                    }
+                }
+            }
+        }
       }
 }

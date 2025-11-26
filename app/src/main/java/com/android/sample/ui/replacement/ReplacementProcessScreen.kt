@@ -86,7 +86,7 @@ fun ProcessReplacementScreen(
         Column(
             modifier =
                 Modifier.fillMaxSize()
-                    .padding(horizontal = PaddingExtraLarge)
+                    .padding(horizontal = PaddingExtraLarge, vertical = PaddingMedium)
                     .padding(paddingValues)
                     .testTag(ProcessReplacementTestTags.ROOT),
             horizontalAlignment = Alignment.CenterHorizontally) {

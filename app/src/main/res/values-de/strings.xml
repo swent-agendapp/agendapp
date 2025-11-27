@@ -97,10 +97,10 @@
 
     <!-- Recurrence -->
     <string name="recurrence_one_time">Einmalig</string>
-    <string name="recurrence_daily">Täglich</string>
-    <string name="recurrence_weekly">Wöchentlich</string>
-    <string name="recurrence_monthly">Monatlich</string>
-    <string name="recurrence_yearly">Jährlich</string>
+    <string name="recurrence_daily">Jeden Tag</string>
+    <string name="recurrence_weekly">Jede Woche</string>
+    <string name="recurrence_monthly">Jeden Monat</string>
+    <string name="recurrence_yearly">Jedes Jahr</string>
 
     <!-- Sign In -->
     <string name="sign_in_app_title">Agendapp</string>

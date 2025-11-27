@@ -53,12 +53,21 @@ object FirebaseEmulator {
 
   val isRunning = areEmulatorsRunning()
 
+  private var isInitialized = false
+
   init {
-    if (isRunning) {
-      auth.useEmulator(HOST, AUTH_PORT)
-      firestore.useEmulator(HOST, FIRESTORE_PORT)
-      assert(Firebase.firestore.firestoreSettings.host.contains(HOST)) {
-        "Failed to connect to Firebase Firestore Emulator."
+    if (isRunning && !isInitialized) {
+      try {
+        auth.useEmulator(HOST, AUTH_PORT)
+        firestore.useEmulator(HOST, FIRESTORE_PORT)
+        assert(Firebase.firestore.firestoreSettings.host.contains(HOST)) {
+          "Failed to connect to Firebase Firestore Emulator."
+        }
+        isInitialized = true
+      } catch (e: IllegalStateException) {
+        // Firebase already initialized from a previous test - this is expected when running all tests
+        Log.d("FirebaseEmulator", "Firebase already initialized, skipping emulator setup")
+        isInitialized = true
       }
     }
   }

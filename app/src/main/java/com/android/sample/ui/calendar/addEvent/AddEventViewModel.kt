@@ -45,8 +45,8 @@ data class AddCalendarEventUIState(
     val recurrenceEndInstant: Instant = Instant.now().plus(Duration.ofHours(1)),
     val recurrenceMode: RecurrenceStatus = RecurrenceStatus.OneTime,
     val participants: Set<String> = emptySet(),
-    val draftEvent: Event = createEvent()[0],
     val errorMsg: String? = null,
+    val draftEvent: Event = createEvent(organizationId = "").first(),
     val step: AddEventStep = AddEventStep.TITLE_AND_DESC
 )
 
@@ -78,9 +78,10 @@ class AddEventViewModel(
     selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel
 ) : ViewModel() {
-  private val _uiState = MutableStateFlow(AddCalendarEventUIState())
 
   /** Public immutable state that the UI observes. */
+
+  private val _uiState = MutableStateFlow(AddCalendarEventUIState( ))
   val uiState: StateFlow<AddCalendarEventUIState> = _uiState.asStateFlow()
 
   val selectedOrganizationId: StateFlow<String?> =
@@ -97,6 +98,7 @@ class AddEventViewModel(
    * @return The first `Event` instance representing the current draft for preview.
    */
   fun loadDraftEvent() {
+
     val currentState = _uiState.value
     val newDraftEvent =
         createEvent(
@@ -109,7 +111,8 @@ class AddEventViewModel(
             personalNotes = "",
             participants = currentState.participants,
             recurrence = currentState.recurrenceMode,
-            endRecurrence = currentState.recurrenceEndInstant)[0]
+            organizationId = "",
+            endRecurrence = currentState.recurrenceEndInstant).first()
 
     _uiState.value = _uiState.value.copy(draftEvent = newDraftEvent)
   }

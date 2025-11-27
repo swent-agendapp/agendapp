@@ -90,7 +90,8 @@ class CreateInvitationViewModel(
     if (current < MAX_INVITATION_COUNT) {
       _uiState.value = _uiState.value.copy(count = current + 1, errorMsg = null)
     } else {
-      _uiState.value = _uiState.value.copy(errorMsg = "Invitation count cannot be negative")
+      _uiState.value =
+          _uiState.value.copy(errorMsg = "Invitation count cannot exceed $MAX_INVITATION_COUNT")
     }
   }
 
@@ -100,7 +101,7 @@ class CreateInvitationViewModel(
     if (current > MIN_INVITATION_COUNT) {
       _uiState.value = _uiState.value.copy(count = current - 1, errorMsg = null)
     } else {
-      _uiState.value = _uiState.value.copy(errorMsg = "Invitation count cannot be negative")
+      _uiState.value = _uiState.value.copy(errorMsg = "Invitation count must be positive")
     }
   }
 
@@ -112,7 +113,10 @@ class CreateInvitationViewModel(
    */
   fun setCount(newValue: Int) {
     if (newValue <= MIN_INVITATION_COUNT || newValue > MAX_INVITATION_COUNT) {
-      _uiState.value = _uiState.value.copy(errorMsg = "Invitation count must be ≥ 0")
+      _uiState.value =
+          _uiState.value.copy(
+              errorMsg =
+                  "Invalid invitation count: must be between $MIN_INVITATION_COUNT and $MAX_INVITATION_COUNT")
     } else {
       _uiState.value = _uiState.value.copy(count = newValue, errorMsg = null)
     }

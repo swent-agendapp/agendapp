@@ -123,7 +123,7 @@ class CreateInvitationViewModel(
    * updated and an error message is shown instead.
    */
   fun setCount(newValue: Int) {
-    if (newValue <= MIN_INVITATION_COUNT || newValue > MAX_INVITATION_COUNT) {
+    if (newValue < MIN_INVITATION_COUNT || newValue > MAX_INVITATION_COUNT) {
       _uiState.value = _uiState.value.copy(errorMsg = INVALID_INVITATION_COUNT_ERROR_MSG)
     } else {
       _uiState.value = _uiState.value.copy(count = newValue, errorMsg = null)

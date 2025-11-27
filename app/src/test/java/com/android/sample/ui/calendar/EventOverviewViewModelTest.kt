@@ -8,7 +8,6 @@ import com.android.sample.model.calendar.createEvent
 import com.android.sample.model.organization.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.eventOverview.EventOverviewViewModel
 import java.time.Instant
-import kotlin.test.Ignore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -19,7 +18,6 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 

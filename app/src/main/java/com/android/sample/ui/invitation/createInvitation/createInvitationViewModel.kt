@@ -16,7 +16,12 @@ import kotlinx.coroutines.flow.asStateFlow
 
 const val MIN_INVITATION_COUNT = 1
 const val MAX_INVITATION_COUNT = 99
-
+const val MAX_INVITATION_COUNT_ERROR_MSG =
+    "Cannot create more than $MAX_INVITATION_COUNT invitations at once."
+const val MIN_INVITATION_COUNT_ERROR_MSG =
+    "Cannot create less than $MIN_INVITATION_COUNT invitations."
+const val INVALID_INVITATION_COUNT_ERROR_MSG =
+    "Invitation count must be between $MIN_INVITATION_COUNT and $MAX_INVITATION_COUNT."
 /**
  * UI state representing the current draft for invitation creation.
  *
@@ -90,8 +95,7 @@ class CreateInvitationViewModel(
     if (current < MAX_INVITATION_COUNT) {
       _uiState.value = _uiState.value.copy(count = current + 1, errorMsg = null)
     } else {
-      _uiState.value =
-          _uiState.value.copy(errorMsg = "Invitation count cannot exceed $MAX_INVITATION_COUNT")
+      _uiState.value = _uiState.value.copy(errorMsg = MAX_INVITATION_COUNT_ERROR_MSG)
     }
   }
 
@@ -101,7 +105,7 @@ class CreateInvitationViewModel(
     if (current > MIN_INVITATION_COUNT) {
       _uiState.value = _uiState.value.copy(count = current - 1, errorMsg = null)
     } else {
-      _uiState.value = _uiState.value.copy(errorMsg = "Invitation count must be positive")
+      _uiState.value = _uiState.value.copy(errorMsg = MIN_INVITATION_COUNT_ERROR_MSG)
     }
   }
 
@@ -113,10 +117,7 @@ class CreateInvitationViewModel(
    */
   fun setCount(newValue: Int) {
     if (newValue <= MIN_INVITATION_COUNT || newValue > MAX_INVITATION_COUNT) {
-      _uiState.value =
-          _uiState.value.copy(
-              errorMsg =
-                  "Invalid invitation count: must be between $MIN_INVITATION_COUNT and $MAX_INVITATION_COUNT")
+      _uiState.value = _uiState.value.copy(errorMsg = INVALID_INVITATION_COUNT_ERROR_MSG)
     } else {
       _uiState.value = _uiState.value.copy(count = newValue, errorMsg = null)
     }

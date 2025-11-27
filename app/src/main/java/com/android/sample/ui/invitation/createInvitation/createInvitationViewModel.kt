@@ -28,7 +28,7 @@ const val INVALID_INVITATION_COUNT_ERROR_MSG =
  * @property count The number of invitations the user intends to create. Defaults to 0.
  * @property errorMsg Optional error message (e.g., invalid input).
  */
-data class CreateInvitationUIState(val count: Int = 0, val errorMsg: String? = null)
+data class CreateInvitationUIState(val count: Int = MIN_INVITATION_COUNT, val errorMsg: String? = null)
 
 /**
  * ViewModel that manages a simple state: how many invitations the user wants to create.

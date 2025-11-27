@@ -23,7 +23,7 @@ class ColorSelectorTest {
   fun initialState_shouldShowMainField_andHideMenuOptions() {
     composeTestRule.setContent {
       ColorSelector(
-          selectedColor = colors.first(),
+          selectedColor = colors[0],
           onColorSelected = {},
           testTag = COLOR_SELECTOR,
           colors = colors,
@@ -41,7 +41,7 @@ class ColorSelectorTest {
   fun clickingField_shouldOpenMenu_andShowAllOptions() {
     composeTestRule.setContent {
       ColorSelector(
-          selectedColor = colors.first(),
+          selectedColor = colors[0],
           onColorSelected = {},
           testTag = COLOR_SELECTOR,
           colors = colors,
@@ -90,7 +90,7 @@ class ColorSelectorTest {
   fun clickingFieldTwice_shouldStayStable_andFieldShouldRemainVisible() {
     composeTestRule.setContent {
       ColorSelector(
-          selectedColor = colors.first(),
+          selectedColor = colors[0],
           onColorSelected = {},
           testTag = COLOR_SELECTOR,
           colors = colors,

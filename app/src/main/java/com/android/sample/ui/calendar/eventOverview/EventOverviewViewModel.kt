@@ -121,7 +121,7 @@ class EventOverviewViewModel(
    * future iteration, this method is expected to resolve human-readable names via the
    * [AuthRepository].
    */
-  private fun loadParticipantNames() {
+  fun loadParticipantNames() {
     viewModelScope.launch {
       // Later (when the Add flow will propose a list of User that are in the Auth repository
       // instead of a fake name's list) :

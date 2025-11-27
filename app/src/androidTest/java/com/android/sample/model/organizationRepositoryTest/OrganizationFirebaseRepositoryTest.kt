@@ -29,7 +29,6 @@ class OrganizationFirebaseRepositoryTest : FirebaseEmulatedTest() {
   @Before
   override fun setUp() {
     super.setUp()
-    repository = createInitializedOrganizationRepository()
 
     // --- Create users ---
     adminA = User(id = "adminA", displayName = "Admin A", email = "adminA@example.com")

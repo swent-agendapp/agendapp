@@ -53,7 +53,9 @@ class CalendarViewModelTest {
     repositoryEvent = EventRepositoryLocal()
     repositoryMap = MapRepositoryLocal()
 
-    viewModel = CalendarViewModel(app = app, eventRepository = repositoryEvent, mapRepository = repositoryMap)
+    viewModel =
+        CalendarViewModel(
+            app = app, eventRepository = repositoryEvent, mapRepository = repositoryMap)
 
     // Create two sample events for testing.
     event1 =

@@ -77,10 +77,7 @@ fun AddEventScreen(
     AddEventStep.ATTENDEES ->
         AddEventAttendantScreen(
             addEventViewModel = addEventViewModel,
-            onCreate = {
-              addEventViewModel.addEvent()
-              addEventViewModel.nextStep()
-            },
+            onCreate = { addEventViewModel.addEvent() },
             onBack = { addEventViewModel.previousStep() })
     AddEventStep.CONFIRMATION ->
         AddEventConfirmationScreen(

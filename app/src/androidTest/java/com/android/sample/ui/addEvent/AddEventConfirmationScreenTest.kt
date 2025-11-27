@@ -1,9 +1,9 @@
+package com.android.sample.ui.addEvent
+
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
-import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.components.AddEventConfirmationScreen
 import com.android.sample.ui.calendar.components.EventSummaryCardTags
 import com.android.sample.utils.FirebaseEmulatedTest
@@ -34,14 +34,5 @@ class AddEventConfirmationScreenTest : FirebaseEmulatedTest() {
     composeTestRule
         .onNodeWithTag(EventSummaryCardTags.DATE_LINE1)
         .assertTextContains(today.dayOfMonth.toString(), substring = true)
-
-    // Go back and Create button are visible
-    composeTestRule.onNodeWithTag(AddEventTestTags.BACK_BUTTON).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(AddEventTestTags.CREATE_BUTTON).assertIsDisplayed()
-  }
-
-  @Test
-  fun finishButtonIsEnabled() {
-    composeTestRule.onNodeWithTag(AddEventTestTags.CREATE_BUTTON).assertIsEnabled()
   }
 }

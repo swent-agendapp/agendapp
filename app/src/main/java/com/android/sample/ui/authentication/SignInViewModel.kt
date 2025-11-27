@@ -118,14 +118,10 @@ class SignInViewModel(
                     it.copy(isLoading = false, errorMsg = failure.message, signedOut = true)
                   }
                 })
-      } catch (_: GetCredentialCancellationException) {
+      } catch (e: GetCredentialCancellationException) {
         // User cancelled the sign-in flow
         _uiState.update {
-          it.copy(
-              isLoading = false,
-              errorMsg = context.getString(R.string.sign_in_cancelled_error),
-              signedOut = true,
-              user = null)
+          it.copy(isLoading = false, errorMsg = e.localizedMessage, signedOut = true, user = null)
         }
       } catch (e: GetCredentialException) {
         // Other credential errors

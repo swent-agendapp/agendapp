@@ -80,6 +80,25 @@ class EventTest {
   }
 
   @Test
+  fun `create A Daily Event For 1 Weeks Create 7 Event`() {
+    val startLocal = LocalDateTime.of(2025, 11, 24, 9, 0)
+    val endLocal = LocalDateTime.of(2025, 11, 24, 9, 30)
+    val endRecurrenceLocal = LocalDateTime.of(2025, 11, 30, 9, 30)
+
+    val events =
+        createEvent(
+            organizationId = selectedOrganizationID,
+            title = "Meeting",
+            description = "Team sync",
+            startDate = startLocal.atZone(ZoneId.systemDefault()).toInstant(),
+            endDate = endLocal.atZone(ZoneId.systemDefault()).toInstant(),
+            color = EventPalette.Green,
+            endRecurrence = endRecurrenceLocal.atZone(ZoneId.systemDefault()).toInstant(),
+            recurrence = RecurrenceStatus.Daily)
+    assertEquals(events.size, 7)
+  }
+
+  @Test
   fun `create A Weekly Event For 4 Weeks Create 5 Event`() {
     val startLocal = LocalDateTime.of(2025, 10, 15, 9, 30)
     val endLocal = LocalDateTime.of(2025, 10, 15, 11, 0)

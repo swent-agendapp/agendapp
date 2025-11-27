@@ -26,14 +26,14 @@ object Palette {
   // Base / Neutrals
   // ----------------------------------------
   val Platinum = Color(color = 0xFFE6E4E9)
-  val Gray = Color(0xFF888888)
-  val LightGray = Color(0xFFCCCCCC)
+  val Gray = Color(color = 0xFF888888)
+  val LightGray = Color(color = 0xFFCCCCCC)
   val Black = Color(color = 0xFF000000)
 
   // ----------------------------------------
   // Purples / Violets / Indigo
   // ----------------------------------------
-  val SteelBlue = Color(0xFF5C6BC0)
+  val SteelBlue = Color(color = 0xFF5C6BC0)
   val Ube = Color(color = 0xFF8687BA)
   val RichLilac = Color(color = 0xFFBA68C8)
 
@@ -42,8 +42,8 @@ object Palette {
   // ----------------------------------------
   val Firebrick = Color(color = 0xFFB3261E)
   val LightCarminePink = Color(color = 0xFFED6B6D)
-  val CandyPink = Color(0xFFEF6C6C)
-  val Orchid = Color(0xFFCE93D8)
+  val CandyPink = Color(color = 0xFFEF6C6C)
+  val Orchid = Color(color = 0xFFCE93D8)
 
   // ----------------------------------------
   // Greens
@@ -57,19 +57,19 @@ object Palette {
   val CadmiumBlue = Color(color = 0xFF09099D)
   val CadmiumBlue_50 = Color(color = 0x8009099D)
   val BlueJeans = Color(color = 0xFF64B5F6)
-  val MediumAquamarine = Color(0xFF4DB6AC)
+  val MediumAquamarine = Color(color = 0xFF4DB6AC)
 
   // ----------------------------------------
   // Oranges / Accents
   // ----------------------------------------
-  val Coral = Color(0xFFFF8A65)
+  val Coral = Color(color = 0xFFFF8A65)
   val PastelOrange = Color(color = 0xFFFFB74D)
-  val Maize = Color(0xFFFFF176)
+  val Maize = Color(color = 0xFFFFF176)
 
   // ----------------------------------------
   // Browns
   // ----------------------------------------
-  val LightBrown = Color(0xFF8D6E63) // nouveau brun
+  val LightBrown = Color(color = 0xFF8D6E63)
 
   // ----------------------------------------
   // Utility function to create a Color from a Long

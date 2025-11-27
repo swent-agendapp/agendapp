@@ -69,7 +69,8 @@ fun AddEventTitleAndDescriptionScreen(
         SecondaryPageTopBar(
             modifier = Modifier.testTag(MapScreenTestTags.MAP_TITLE),
             title = stringResource(R.string.addEventTitle),
-            canGoBack = false)
+            canGoBack = true,
+            onClick = onCancel)
       },
       content = { paddingValues ->
         Column(

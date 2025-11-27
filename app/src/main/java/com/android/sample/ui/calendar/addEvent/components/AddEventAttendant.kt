@@ -62,6 +62,7 @@ fun AddEventAttendantScreen(
     addEventViewModel: AddEventViewModel = viewModel(),
     onCreate: () -> Unit = {},
     onBack: () -> Unit = {},
+    onCancel: () -> Unit = {},
 ) {
   val newEventUIState by addEventViewModel.uiState.collectAsState()
   val allFieldsValid by
@@ -101,7 +102,8 @@ fun AddEventAttendantScreen(
         SecondaryPageTopBar(
             modifier = Modifier.testTag(MapScreenTestTags.MAP_TITLE),
             title = stringResource(R.string.addEventTitle),
-            canGoBack = false)
+            canGoBack = true,
+            onClick = onCancel)
       },
       content = { paddingValues ->
         Column(

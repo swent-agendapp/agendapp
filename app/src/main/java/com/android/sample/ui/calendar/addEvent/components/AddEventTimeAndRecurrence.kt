@@ -66,6 +66,7 @@ fun AddEventTimeAndRecurrenceScreen(
     addEventViewModel: AddEventViewModel = viewModel(),
     onNext: () -> Unit = {},
     onBack: () -> Unit = {},
+    onCancel: () -> Unit = {}
 ) {
   val newEventUIState by addEventViewModel.uiState.collectAsState()
   val context = LocalContext.current
@@ -90,7 +91,8 @@ fun AddEventTimeAndRecurrenceScreen(
         SecondaryPageTopBar(
             modifier = Modifier.testTag(MapScreenTestTags.MAP_TITLE),
             title = stringResource(R.string.addEventTitle),
-            canGoBack = false)
+            canGoBack = true,
+            onClick = onCancel)
       },
       content = { paddingValues ->
         Column(

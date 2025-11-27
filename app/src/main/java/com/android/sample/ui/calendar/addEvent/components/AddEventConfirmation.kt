@@ -35,13 +35,15 @@ import com.android.sample.ui.theme.WeightExtraHeavy
 @Composable
 fun AddEventConfirmationScreen(
     onFinish: () -> Unit = {},
+    onCancel: () -> Unit = {},
 ) {
   Scaffold(
       topBar = {
         SecondaryPageTopBar(
             modifier = Modifier.testTag(MapScreenTestTags.MAP_TITLE),
             title = stringResource(R.string.addEventTitle),
-            canGoBack = false)
+            canGoBack = true,
+            onClick = onCancel)
       },
       content = { paddingValues ->
         Column(

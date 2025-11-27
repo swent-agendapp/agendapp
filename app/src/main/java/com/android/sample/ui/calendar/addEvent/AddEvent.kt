@@ -74,7 +74,11 @@ fun AddEventScreen(
         AddEventTimeAndRecurrenceScreen(
             addEventViewModel = addEventViewModel,
             onNext = { addEventViewModel.nextStep() },
-            onBack = { addEventViewModel.previousStep() })
+            onBack = { addEventViewModel.previousStep() },
+            onCancel = {
+              onCancel()
+              addEventViewModel.resetUiState()
+            })
     AddEventStep.ATTENDEES ->
         AddEventAttendantScreen(
             addEventViewModel = addEventViewModel,
@@ -82,11 +86,19 @@ fun AddEventScreen(
               addEventViewModel.addEvent()
               addEventViewModel.nextStep()
             },
-            onBack = { addEventViewModel.previousStep() })
+            onBack = { addEventViewModel.previousStep() },
+            onCancel = {
+              onCancel()
+              addEventViewModel.resetUiState()
+            })
     AddEventStep.CONFIRMATION ->
         AddEventConfirmationScreen(
             onFinish = {
               onFinish()
+              addEventViewModel.resetUiState()
+            },
+            onCancel = {
+              onCancel()
               addEventViewModel.resetUiState()
             })
   }

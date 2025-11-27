@@ -6,8 +6,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -16,6 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -58,12 +62,15 @@ object CalendarScreenTestTags {
 
   // FAB / actions
   const val ADD_EVENT_BUTTON = "AddEventButton"
+
+  // Location status chip
+  const val LOCATION_STATUS_CHIP = "LocationStatusChip"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalendarScreen(
-    calendarViewModel: CalendarViewModel = viewModel(),
+    calendarViewModel: CalendarViewModel = viewModel(factory = CalendarViewModel.Factory),
     selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel,
     onCreateEvent: () -> Unit = {},
@@ -99,7 +106,8 @@ fun CalendarScreen(
         if (isPortrait) {
           MainPageTopBar(
               title = stringResource(R.string.calendar_screen_title),
-              modifier = Modifier.testTag(CalendarScreenTestTags.TOP_BAR_TITLE))
+              modifier = Modifier.testTag(CalendarScreenTestTags.TOP_BAR_TITLE),
+              actions = { LocationStatusChip(locationStatus = uiState.locationStatus) })
         }
       },
       floatingActionButton = {
@@ -116,6 +124,40 @@ fun CalendarScreen(
             calendarViewModel = calendarViewModel,
             onEventClick = onEventClick)
       }
+}
+
+/**
+ * Composable function to display a location status chip.
+ *
+ * The chip changes color based on the location status:
+ * - Green: User is inside an area
+ * - Red: User is outside all areas
+ * - Grey: User hasn't granted location permission
+ *
+ * @param locationStatus The current location status.
+ */
+@Composable
+fun LocationStatusChip(locationStatus: LocationStatus) {
+  val chipColor =
+      when (locationStatus) {
+        LocationStatus.INSIDE_AREA -> Color(0xFF4CAF50) // Green
+        LocationStatus.OUTSIDE_AREA -> Color(0xFFF44336) // Red
+        LocationStatus.NO_PERMISSION -> Color(0xFF9E9E9E) // Grey
+      }
+
+  val chipText =
+      when (locationStatus) {
+        LocationStatus.INSIDE_AREA -> "Inside"
+        LocationStatus.OUTSIDE_AREA -> "Outside"
+        LocationStatus.NO_PERMISSION -> "No Location"
+      }
+
+  AssistChip(
+      onClick = {},
+      label = { Text(text = chipText) },
+      colors =
+          AssistChipDefaults.assistChipColors(containerColor = chipColor, labelColor = Color.White),
+      modifier = Modifier.testTag(CalendarScreenTestTags.LOCATION_STATUS_CHIP))
 }
 
 @Preview

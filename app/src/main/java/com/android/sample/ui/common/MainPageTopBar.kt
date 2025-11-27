@@ -10,15 +10,18 @@ import com.android.sample.ui.theme.TopBarPalette
  *
  * @param modifier The modifier to be applied to the top bar.
  * @param title The text to display in the top bar.
+ * @param actions Optional composable actions to display in the top bar (e.g., icons, chips).
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainPageTopBar(
     modifier: Modifier = Modifier,
     title: String = "Untitled",
+    actions: @Composable () -> Unit = {},
 ) {
   TopAppBar(
       title = { Text(text = title, modifier = modifier) },
+      actions = { actions() },
       colors =
           TopAppBarDefaults.topAppBarColors(
               containerColor = TopBarPalette.Background,

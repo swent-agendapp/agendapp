@@ -1,10 +1,18 @@
 package com.android.sample.ui.calendar
 
+import android.app.Application
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
+import com.android.sample.model.map.LocationRepository
+import com.android.sample.model.map.LocationRepositoryAndroid
+import com.android.sample.model.map.MapRepository
+import com.android.sample.model.map.MapRepositoryProvider
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import java.time.Instant
@@ -13,6 +21,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+enum class LocationStatus {
+  NO_PERMISSION, // Grey - user hasn't accepted location
+  OUTSIDE_AREA, // Red - user is not inside any area
+  INSIDE_AREA // Green - user is inside an area
+}
+
 /**
  * Represents the UI state for the Calendar screen.
  *
@@ -20,11 +34,13 @@ import kotlinx.coroutines.launch
  * @property errorMsg An error message to be shown when fetching events fails. Null if no error is
  *   present.
  * @property isLoading Indicates if the events are currently being loaded.
+ * @property locationStatus The current location status of the user relative to defined areas.
  */
 data class CalendarUIState(
     val events: List<Event> = emptyList(),
     val errorMsg: String? = null,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val locationStatus: LocationStatus = LocationStatus.NO_PERMISSION
 )
 
 /**
@@ -33,13 +49,19 @@ data class CalendarUIState(
  * Responsible for managing the UI state, by fetching and providing Event items via the
  * [EventRepository].
  *
+ * @property app Application context needed for location services.
  * @property eventRepository The repository used to fetch and manage Event items.
+ * @property locationRepository The repository used to check user location.
+ * @property mapRepository The repository used to fetch areas.
  * @property selectedOrganizationViewModel ViewModel that provides the currently selected
  *   organization.
  */
 class CalendarViewModel(
+    app: Application,
     // used to get Events
     private val eventRepository: EventRepository = EventRepositoryProvider.repository,
+    private val locationRepository: LocationRepository = LocationRepositoryAndroid(app),
+    private val mapRepository: MapRepository = MapRepositoryProvider.repository,
     selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel
 ) : ViewModel() {
@@ -49,6 +71,10 @@ class CalendarViewModel(
 
   private val selectedOrganizationId: StateFlow<String?> =
       selectedOrganizationViewModel.selectedOrganizationId
+
+  init {
+    checkUserLocationStatus()
+  }
 
   /** Sets an error message in the UI state. */
   private fun setErrorMsg(errorMsg: String) {
@@ -123,5 +149,46 @@ class CalendarViewModel(
           eventRepository.getEventsBetweenDates(orgId = orgId, startDate = start, endDate = end)
         },
         errorMessage = "Failed to load events between $start and $end")
+  }
+
+  /**
+   * Checks if the user's current location is inside any of the defined areas and updates the
+   * location status.
+   *
+   * Fetches all areas from the map repository and uses the location repository to check if the user
+   * is inside any of them. Updates the locationStatus property in the UI state based on:
+   * - NO_PERMISSION if location permission is not granted
+   * - INSIDE_AREA if user is inside at least one area
+   * - OUTSIDE_AREA if user has permission but is not inside any area
+   */
+  fun checkUserLocationStatus() {
+    viewModelScope.launch {
+      val orgId = selectedOrganizationId.value
+      if (orgId == null)
+          throw IllegalArgumentException("You must join an Organisation for this feature")
+      try {
+        val areas = mapRepository.getAllAreas(orgId = orgId)
+        val isInside = locationRepository.isUserLocationInAreas(areas)
+        _uiState.value =
+            _uiState.value.copy(
+                locationStatus =
+                    if (isInside) LocationStatus.INSIDE_AREA else LocationStatus.OUTSIDE_AREA)
+      } catch (e: SecurityException) {
+        // No permission granted
+        _uiState.value = _uiState.value.copy(locationStatus = LocationStatus.NO_PERMISSION)
+      } catch (e: Exception) {
+        // Other errors - keep current status or set to NO_PERMISSION
+        _uiState.value = _uiState.value.copy(locationStatus = LocationStatus.NO_PERMISSION)
+      }
+    }
+  }
+
+  companion object {
+    val Factory: ViewModelProvider.Factory = viewModelFactory {
+      initializer {
+        val app = this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application
+        CalendarViewModel(app = app)
+      }
+    }
   }
 }

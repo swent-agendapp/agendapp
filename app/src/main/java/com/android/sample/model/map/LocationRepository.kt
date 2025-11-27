@@ -1,7 +1,5 @@
 package com.android.sample.model.map
 
-import kotlinx.coroutines.flow.Flow
-
 /**
  * Repository interface for location-related operations.
  *

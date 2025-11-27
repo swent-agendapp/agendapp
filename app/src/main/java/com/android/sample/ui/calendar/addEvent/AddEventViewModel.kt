@@ -80,8 +80,7 @@ class AddEventViewModel(
 ) : ViewModel() {
 
   /** Public immutable state that the UI observes. */
-
-  private val _uiState = MutableStateFlow(AddCalendarEventUIState( ))
+  private val _uiState = MutableStateFlow(AddCalendarEventUIState())
   val uiState: StateFlow<AddCalendarEventUIState> = _uiState.asStateFlow()
 
   val selectedOrganizationId: StateFlow<String?> =
@@ -102,17 +101,18 @@ class AddEventViewModel(
     val currentState = _uiState.value
     val newDraftEvent =
         createEvent(
-            repository = repository,
-            title = currentState.title,
-            description = currentState.description,
-            startDate = currentState.startInstant,
-            endDate = currentState.endInstant,
-            cloudStorageStatuses = emptySet(),
-            personalNotes = "",
-            participants = currentState.participants,
-            recurrence = currentState.recurrenceMode,
-            organizationId = "",
-            endRecurrence = currentState.recurrenceEndInstant).first()
+                repository = repository,
+                title = currentState.title,
+                description = currentState.description,
+                startDate = currentState.startInstant,
+                endDate = currentState.endInstant,
+                cloudStorageStatuses = emptySet(),
+                personalNotes = "",
+                participants = currentState.participants,
+                recurrence = currentState.recurrenceMode,
+                organizationId = "",
+                endRecurrence = currentState.recurrenceEndInstant)
+            .first()
 
     _uiState.value = _uiState.value.copy(draftEvent = newDraftEvent)
   }

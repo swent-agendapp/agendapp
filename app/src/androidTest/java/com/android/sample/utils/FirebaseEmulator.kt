@@ -1,3 +1,4 @@
+
 package com.android.sample.utils
 
 import android.util.Log
@@ -44,30 +45,21 @@ object FirebaseEmulator {
   private val emulatorsEndpoint = "http://$HOST:$EMULATORS_PORT/emulators"
 
   private fun areEmulatorsRunning(): Boolean =
-      runCatching {
-            val client = httpClient
-            val request = Request.Builder().url(emulatorsEndpoint).build()
-            client.newCall(request).execute().isSuccessful
-          }
-          .getOrNull() == true
+    runCatching {
+      val client = httpClient
+      val request = Request.Builder().url(emulatorsEndpoint).build()
+      client.newCall(request).execute().isSuccessful
+    }
+      .getOrNull() == true
 
   val isRunning = areEmulatorsRunning()
 
-  private var isInitialized = false
-
   init {
-    if (isRunning && !isInitialized) {
-      try {
-        auth.useEmulator(HOST, AUTH_PORT)
-        firestore.useEmulator(HOST, FIRESTORE_PORT)
-        assert(Firebase.firestore.firestoreSettings.host.contains(HOST)) {
-          "Failed to connect to Firebase Firestore Emulator."
-        }
-        isInitialized = true
-      } catch (e: IllegalStateException) {
-        // Firebase already initialized from a previous test - this is expected when running all tests
-        Log.d("FirebaseEmulator", "Firebase already initialized, skipping emulator setup")
-        isInitialized = true
+    if (isRunning) {
+      auth.useEmulator(HOST, AUTH_PORT)
+      firestore.useEmulator(HOST, FIRESTORE_PORT)
+      assert(Firebase.firestore.firestoreSettings.host.contains(HOST)) {
+        "Failed to connect to Firebase Firestore Emulator."
       }
     }
   }
@@ -95,24 +87,24 @@ object FirebaseEmulator {
    */
   fun createGoogleUser(fakeIdToken: String) {
     val url =
-        "http://$HOST:$AUTH_PORT/identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=fake-api-key"
+      "http://$HOST:$AUTH_PORT/identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=fake-api-key"
 
     // postBody must be x-www-form-urlencoded style string, wrapped in JSON
     val postBody = "id_token=$fakeIdToken&providerId=google.com"
 
     val requestJson =
-        JSONObject().apply {
-          put("postBody", postBody)
-          put("requestUri", "http://localhost")
-          put("returnIdpCredential", true)
-          put("returnSecureToken", true)
-        }
+      JSONObject().apply {
+        put("postBody", postBody)
+        put("requestUri", "http://localhost")
+        put("returnIdpCredential", true)
+        put("returnSecureToken", true)
+      }
 
     val mediaType = "application/json; charset=utf-8".toMediaType()
     val body = requestJson.toString().toRequestBody(mediaType)
 
     val request =
-        Request.Builder().url(url).post(body).addHeader("Content-Type", "application/json").build()
+      Request.Builder().url(url).post(body).addHeader("Content-Type", "application/json").build()
 
     val response = httpClient.newCall(request).execute()
     assert(response.isSuccessful) {
@@ -122,23 +114,23 @@ object FirebaseEmulator {
 
   fun changeEmail(fakeIdToken: String, newEmail: String) {
     val response =
-        httpClient
-            .newCall(
-                Request.Builder()
-                    .url(
-                        "http://$HOST:$AUTH_PORT/identitytoolkit.googleapis.com/v1/accounts:update?key=fake-api-key")
-                    .post(
-                        """
+      httpClient
+        .newCall(
+          Request.Builder()
+            .url(
+              "http://$HOST:$AUTH_PORT/identitytoolkit.googleapis.com/v1/accounts:update?key=fake-api-key")
+            .post(
+              """
             {
                 "idToken": "$fakeIdToken",
                 "email": "$newEmail",
                 "returnSecureToken": true
             }
         """
-                            .trimIndent()
-                            .toRequestBody())
-                    .build())
-            .execute()
+                .trimIndent()
+                .toRequestBody())
+            .build())
+        .execute()
     assert(response.isSuccessful) {
       "Failed to change email in Auth Emulator: ${response.code} ${response.message}"
     }
@@ -147,10 +139,10 @@ object FirebaseEmulator {
   val users: String
     get() {
       val request =
-          Request.Builder()
-              .url(
-                  "http://$HOST:$AUTH_PORT/identitytoolkit.googleapis.com/v1/accounts:query?key=fake-api-key")
-              .build()
+        Request.Builder()
+          .url(
+            "http://$HOST:$AUTH_PORT/identitytoolkit.googleapis.com/v1/accounts:query?key=fake-api-key")
+          .build()
 
       Log.d("FirebaseEmulator", "Fetching users with request: ${request.url}")
       val response = httpClient.newCall(request).execute()

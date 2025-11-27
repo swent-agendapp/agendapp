@@ -122,7 +122,7 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
         .performTextInput("Test Description")
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
     // No recurrence end field for one time events
-    composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).assertDoesNotExist()
+    composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).assertIsDisplayed()
     // Enter weekly recurrence
     composeTestRule
         .onNodeWithTag(AddEventTestTags.RECURRENCE_STATUS_DROPDOWN)

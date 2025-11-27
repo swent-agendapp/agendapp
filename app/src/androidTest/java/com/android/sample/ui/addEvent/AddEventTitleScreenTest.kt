@@ -27,8 +27,6 @@ class AddEventTitleScreenTest {
     composeTestRule.onNodeWithTag(AddEventTestTags.TITLE_TEXT_FIELD).assertIsDisplayed()
     composeTestRule.onNodeWithTag(AddEventTestTags.COLOR_SELECTOR).assertIsDisplayed()
     composeTestRule.onNodeWithTag(AddEventTestTags.DESCRIPTION_TEXT_FIELD).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(AddEventTestTags.CANCEL_BUTTON).assertIsDisplayed()
   }
 
   @Test

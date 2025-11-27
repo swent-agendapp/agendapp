@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.sample.model.authorization.AuthorizationService
+import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.calendar.RecurrenceStatus
@@ -88,10 +89,6 @@ class AddEventViewModel(
    * Builds a new event from the current UI state and delegates storage. Calls
    * `addEventToRepository()` to persist the event.
    */
-  /**
-   * Builds a new event from the current UI state and delegates storage. Persists the event through
-   * `EventRepository` and advances to the next step upon success.
-   */
   fun addEvent() {
     val orgId = selectedOrganizationId.value
     require(orgId != null) { "Organization must be selected to create an event" }
@@ -110,7 +107,20 @@ class AddEventViewModel(
             participants = currentState.participants,
             recurrence = currentState.recurrenceMode,
             endRecurrence = currentState.recurrenceEndInstant)
+    newEvents.forEach { event -> addEventToRepository(event) }
+  }
 
+  /**
+   * Inserts the event into the repository after checking authorization.
+   *
+   * If the user is not authorized, the state is updated with an error message instead of throwing
+   * an exception.
+   *
+   * Any unexpected error is caught and surfaced to the UI through `errorMsg`.
+   *
+   * @param event The event to persist.
+   */
+  fun addEventToRepository(event: Event) {
     viewModelScope.launch {
       try {
         val allowed = runCatching { authServ.requireAdmin() }.isSuccess
@@ -119,10 +129,10 @@ class AddEventViewModel(
           return@launch
         }
 
-        newEvents.forEach { event -> repository.insertEvent(orgId = orgId, item = event) }
+        val orgId = selectedOrganizationId.value
+        require(orgId != null) { "Organization must be selected to create an event" }
 
-        // Advance to Confirmation step only after successful insertion
-        nextStep()
+        repository.insertEvent(orgId = orgId, item = event)
       } catch (e: Exception) {
         Log.e("AddEventViewModel", "Error adding event: ${e.message}")
         _uiState.value = _uiState.value.copy(errorMsg = "Unexpected error while creating the event")

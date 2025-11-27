@@ -4,6 +4,7 @@ import com.android.sample.model.constants.FirestoreConstants.MAP_COLLECTION_PATH
 import com.android.sample.model.constants.FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH
 import com.android.sample.model.firestoreMappers.AreaMapper
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.concurrent.ConcurrentHashMap
 import kotlinx.coroutines.tasks.await
 
 /** Represents a repository that manages a local list of markers and areas. */
@@ -11,12 +12,12 @@ class MapRepositoryFirebase(private val db: FirebaseFirestore) : MapRepository {
 
   // Helper properties to access markers and areas for the current organization
   private data class OrgData(
-      val markers: MutableMap<String, Marker> = mutableMapOf(),
-      val areas: MutableMap<String, Area> = mutableMapOf()
+      val markers: ConcurrentHashMap<String, Marker> = ConcurrentHashMap(),
+      val areas: ConcurrentHashMap<String, Area> = ConcurrentHashMap()
   )
 
   // In-memory storage for markers and areas by organization ID
-  private val dataByOrganization = mutableMapOf<String, OrgData>()
+  private val dataByOrganization = ConcurrentHashMap<String, OrgData>()
 
   // Helper function to get or create OrgData for a given organization ID
   private fun getOrCreate(orgId: String): OrgData = dataByOrganization.getOrPut(orgId) { OrgData() }

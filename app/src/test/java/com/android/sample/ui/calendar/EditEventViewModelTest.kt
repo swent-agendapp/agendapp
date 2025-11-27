@@ -21,7 +21,6 @@ import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 
-@Ignore("Please work")
 @OptIn(ExperimentalCoroutinesApi::class)
 class EditEventViewModelTest {
 

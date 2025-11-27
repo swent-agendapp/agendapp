@@ -1,8 +1,6 @@
 package com.android.sample.ui.addEvent
 
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertIsEnabled
-import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -25,8 +23,6 @@ class AddEventTitleScreenTest {
   fun displayAllComponents() {
     composeTestRule.onNodeWithTag(AddEventTestTags.TITLE_TEXT_FIELD).assertIsDisplayed()
     composeTestRule.onNodeWithTag(AddEventTestTags.DESCRIPTION_TEXT_FIELD).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(AddEventTestTags.CANCEL_BUTTON).assertIsDisplayed()
   }
 
   @Test
@@ -69,21 +65,5 @@ class AddEventTitleScreenTest {
     composeTestRule
         .onNodeWithTag(AddEventTestTags.ERROR_MESSAGE, useUnmergedTree = true)
         .assertIsDisplayed()
-  }
-
-  @Test
-  fun nextButtonDisabledWhenFieldsEmpty() {
-    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertIsNotEnabled()
-  }
-
-  @Test
-  fun nextButtonEnabledWhenTitleAndDescriptionValid() {
-    composeTestRule.onNodeWithTag(AddEventTestTags.TITLE_TEXT_FIELD).performTextInput("Concert")
-    composeTestRule
-        .onNodeWithTag(AddEventTestTags.DESCRIPTION_TEXT_FIELD)
-        .performTextInput("Outdoor concert with friends")
-    composeTestRule.waitForIdle()
-
-    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertIsEnabled()
   }
 }

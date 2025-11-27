@@ -33,7 +33,7 @@ class EventRepositoryFirebaseTest {
    * Test double for EventRepositoryFirebase that allows injecting test events without needing
    * Firebase mocking.
    */
- private class TestableEventRepositoryFirebase(
+  private class TestableEventRepositoryFirebase(
       db: FirebaseFirestore,
       private val testEvents: MutableList<Event> = mutableListOf(),
       private var orgExists: Boolean = true
@@ -44,9 +44,7 @@ class EventRepositoryFirebaseTest {
         endDate: Instant
     ): List<Event> {
       // Filter events to match the date range
-      return testEvents.filter { event ->
-        event.endDate >= startDate && event.startDate <= endDate
-      }
+      return testEvents.filter { event -> event.endDate >= startDate && event.startDate <= endDate }
     }
 
     override suspend fun calculateWorkedHoursPastEvents(
@@ -56,7 +54,7 @@ class EventRepositoryFirebaseTest {
     ): List<Pair<String, Double>> {
       // Check org exists without accessing Firestore
       require(orgExists) { "Organization with id $orgId not found" }
-      
+
       val events = getEventsBetweenDates(orgId, start, end)
       val now = Instant.now()
       val workedHoursMap = mutableMapOf<String, Double>()
@@ -83,7 +81,7 @@ class EventRepositoryFirebaseTest {
     ): List<Pair<String, Double>> {
       // Check org exists without accessing Firestore
       require(orgExists) { "Organization with id $orgId not found" }
-      
+
       val events = getEventsBetweenDates(orgId, start, end)
       val now = Instant.now()
       val workedHoursMap = mutableMapOf<String, Double>()
@@ -108,14 +106,14 @@ class EventRepositoryFirebaseTest {
     ): List<Pair<String, Double>> {
       // Check org exists without accessing Firestore
       require(orgExists) { "Organization with id $orgId not found" }
-      
+
       val pastHours = calculateWorkedHoursPastEvents(orgId, start, end).toMap()
       val futureHours = calculateWorkedHoursFutureEvents(orgId, start, end).toMap()
 
       val allEmployeeIds = (pastHours.keys + futureHours.keys).toSet()
       val combinedHours =
           allEmployeeIds.map { employeeId ->
-            val total =  
+            val total =
                 pastHours.getOrDefault(employeeId, 0.0) + futureHours.getOrDefault(employeeId, 0.0)
             employeeId to total
           }
@@ -161,20 +159,22 @@ class EventRepositoryFirebaseTest {
   @Test
   fun calculateWorkedHoursPastEvents_noPastEvents_returnsEmpty() = runBlocking {
     // Given: organization exists but all events are in the future
-    val futureEvent = createMockEvent(
-        id = "event1",
-        startDate = Instant.now().plusSeconds(3600), // 1 hour in future
-        endDate = Instant.now().plusSeconds(7200), // 2 hours in future
-        participants = setOf(userId1, userId2),
-        presence = mapOf(userId1 to true, userId2 to true))
-    
+    val futureEvent =
+        createMockEvent(
+            id = "event1",
+            startDate = Instant.now().plusSeconds(3600), // 1 hour in future
+            endDate = Instant.now().plusSeconds(7200), // 2 hours in future
+            participants = setOf(userId1, userId2),
+            presence = mapOf(userId1 to true, userId2 to true))
+
     repository.setTestEvents(listOf(futureEvent))
 
     // When
-    val result = repository.calculateWorkedHoursPastEvents(
-        orgId = orgId,
-        start = Instant.parse("2025-01-01T00:00:00Z"),
-        end = Instant.parse("2025-12-31T23:59:59Z"))
+    val result =
+        repository.calculateWorkedHoursPastEvents(
+            orgId = orgId,
+            start = Instant.parse("2025-01-01T00:00:00Z"),
+            end = Instant.parse("2025-12-31T23:59:59Z"))
 
     // Then
     assertTrue(result.isEmpty())
@@ -183,27 +183,27 @@ class EventRepositoryFirebaseTest {
   @Test
   fun calculateWorkedHoursPastEvents_pastEventWithPresence_countsHours() = runBlocking {
     // Given: one past event where user1 was present and user2 was not
-    val pastEvent = createMockEvent(
-        id = "event1",
-        startDate = Instant.now().minusSeconds(7200), // 2 hours ago
-        endDate = Instant.now().minusSeconds(3600), // 1 hour ago (1 hour duration)
-        participants = setOf(userId1, userId2),
-        presence = mapOf(userId1 to true, userId2 to false))
-    
+    val pastEvent =
+        createMockEvent(
+            id = "event1",
+            startDate = Instant.now().minusSeconds(7200), // 2 hours ago
+            endDate = Instant.now().minusSeconds(3600), // 1 hour ago (1 hour duration)
+            participants = setOf(userId1, userId2),
+            presence = mapOf(userId1 to true, userId2 to false))
+
     repository.setTestEvents(listOf(pastEvent))
 
     // When
-    val result = repository.calculateWorkedHoursPastEvents(
-        orgId = orgId,
-        start = Instant.now().minusSeconds(10800),
-        end = Instant.now())
+    val result =
+        repository.calculateWorkedHoursPastEvents(
+            orgId = orgId, start = Instant.now().minusSeconds(10800), end = Instant.now())
 
     // Then
     assertEquals(1, result.size)
     val user1Hours = result.find { it.first == userId1 }
     assertNotNull(user1Hours)
     assertEquals(1.0, user1Hours!!.second, 0.01)
-    
+
     // user2 should not be counted
     val user2Hours = result.find { it.first == userId2 }
     assertNull(user2Hours)
@@ -212,27 +212,30 @@ class EventRepositoryFirebaseTest {
   @Test
   fun calculateWorkedHoursPastEvents_multipleEvents_aggregatesHours() = runBlocking {
     // Given: multiple past events with different presence patterns
-    val event1 = createMockEvent(
-        id = "event1",
-        startDate = Instant.parse("2025-01-01T09:00:00Z"),
-        endDate = Instant.parse("2025-01-01T11:00:00Z"), // 2 hours
-        participants = setOf(userId1, userId2),
-        presence = mapOf(userId1 to true, userId2 to true))
-    
-    val event2 = createMockEvent(
-        id = "event2",
-        startDate = Instant.parse("2025-01-02T09:00:00Z"),
-        endDate = Instant.parse("2025-01-02T10:30:00Z"), // 1.5 hours
-        participants = setOf(userId1, userId3),
-        presence = mapOf(userId1 to true, userId3 to false))
-    
+    val event1 =
+        createMockEvent(
+            id = "event1",
+            startDate = Instant.parse("2025-01-01T09:00:00Z"),
+            endDate = Instant.parse("2025-01-01T11:00:00Z"), // 2 hours
+            participants = setOf(userId1, userId2),
+            presence = mapOf(userId1 to true, userId2 to true))
+
+    val event2 =
+        createMockEvent(
+            id = "event2",
+            startDate = Instant.parse("2025-01-02T09:00:00Z"),
+            endDate = Instant.parse("2025-01-02T10:30:00Z"), // 1.5 hours
+            participants = setOf(userId1, userId3),
+            presence = mapOf(userId1 to true, userId3 to false))
+
     repository.setTestEvents(listOf(event1, event2))
 
     // When
-    val result = repository.calculateWorkedHoursPastEvents(
-        orgId = orgId,
-        start = Instant.parse("2025-01-01T00:00:00Z"),
-        end = Instant.parse("2025-01-31T23:59:59Z"))
+    val result =
+        repository.calculateWorkedHoursPastEvents(
+            orgId = orgId,
+            start = Instant.parse("2025-01-01T00:00:00Z"),
+            end = Instant.parse("2025-01-31T23:59:59Z"))
 
     // Then
     val resultMap = result.toMap()
@@ -244,27 +247,30 @@ class EventRepositoryFirebaseTest {
   @Test
   fun calculateWorkedHoursPastEvents_mixedPastAndFuture_onlyCountsPast() = runBlocking {
     // Given: events in both past and future
-    val pastEvent = createMockEvent(
-        id = "past",
-        startDate = Instant.now().minusSeconds(7200),
-        endDate = Instant.now().minusSeconds(3600), // 1 hour duration
-        participants = setOf(userId1),
-        presence = mapOf(userId1 to true))
-    
-    val futureEvent = createMockEvent(
-        id = "future",
-        startDate = Instant.now().plusSeconds(3600),
-        endDate = Instant.now().plusSeconds(7200), // 1 hour duration
-        participants = setOf(userId1),
-        presence = mapOf(userId1 to true))
-    
+    val pastEvent =
+        createMockEvent(
+            id = "past",
+            startDate = Instant.now().minusSeconds(7200),
+            endDate = Instant.now().minusSeconds(3600), // 1 hour duration
+            participants = setOf(userId1),
+            presence = mapOf(userId1 to true))
+
+    val futureEvent =
+        createMockEvent(
+            id = "future",
+            startDate = Instant.now().plusSeconds(3600),
+            endDate = Instant.now().plusSeconds(7200), // 1 hour duration
+            participants = setOf(userId1),
+            presence = mapOf(userId1 to true))
+
     repository.setTestEvents(listOf(pastEvent, futureEvent))
 
     // When
-    val result = repository.calculateWorkedHoursPastEvents(
-        orgId = orgId,
-        start = Instant.now().minusSeconds(10800),
-        end = Instant.now().plusSeconds(10800))
+    val result =
+        repository.calculateWorkedHoursPastEvents(
+            orgId = orgId,
+            start = Instant.now().minusSeconds(10800),
+            end = Instant.now().plusSeconds(10800))
 
     // Then: only past event should be counted
     val resultMap = result.toMap()
@@ -293,20 +299,22 @@ class EventRepositoryFirebaseTest {
   @Test
   fun calculateWorkedHoursFutureEvents_noFutureEvents_returnsEmpty() = runBlocking {
     // Given: organization exists but all events are in the past
-    val pastEvent = createMockEvent(
-        id = "event1",
-        startDate = Instant.now().minusSeconds(7200),
-        endDate = Instant.now().minusSeconds(3600),
-        participants = setOf(userId1, userId2),
-        presence = mapOf(userId1 to true, userId2 to true))
-    
+    val pastEvent =
+        createMockEvent(
+            id = "event1",
+            startDate = Instant.now().minusSeconds(7200),
+            endDate = Instant.now().minusSeconds(3600),
+            participants = setOf(userId1, userId2),
+            presence = mapOf(userId1 to true, userId2 to true))
+
     repository.setTestEvents(listOf(pastEvent))
 
     // When
-    val result = repository.calculateWorkedHoursFutureEvents(
-        orgId = orgId,
-        start = Instant.parse("2025-01-01T00:00:00Z"),
-        end = Instant.parse("2025-12-31T23:59:59Z"))
+    val result =
+        repository.calculateWorkedHoursFutureEvents(
+            orgId = orgId,
+            start = Instant.parse("2025-01-01T00:00:00Z"),
+            end = Instant.parse("2025-12-31T23:59:59Z"))
 
     // Then
     assertTrue(result.isEmpty())
@@ -315,20 +323,20 @@ class EventRepositoryFirebaseTest {
   @Test
   fun calculateWorkedHoursFutureEvents_futureEvent_countsAllParticipants() = runBlocking {
     // Given: one future event with participants (presence is ignored)
-    val futureEvent = createMockEvent(
-        id = "event1",
-        startDate = Instant.now().plusSeconds(3600),
-        endDate = Instant.now().plusSeconds(5400), // 0.5 hour duration
-        participants = setOf(userId1, userId2),
-        presence = mapOf(userId1 to false, userId2 to false)) // presence should be ignored
-    
+    val futureEvent =
+        createMockEvent(
+            id = "event1",
+            startDate = Instant.now().plusSeconds(3600),
+            endDate = Instant.now().plusSeconds(5400), // 0.5 hour duration
+            participants = setOf(userId1, userId2),
+            presence = mapOf(userId1 to false, userId2 to false)) // presence should be ignored
+
     repository.setTestEvents(listOf(futureEvent))
 
     // When
-    val result = repository.calculateWorkedHoursFutureEvents(
-        orgId = orgId,
-        start = Instant.now(),
-        end = Instant.now().plusSeconds(10800))
+    val result =
+        repository.calculateWorkedHoursFutureEvents(
+            orgId = orgId, start = Instant.now(), end = Instant.now().plusSeconds(10800))
 
     // Then: both users should be counted regardless of presence
     val resultMap = result.toMap()
@@ -339,27 +347,30 @@ class EventRepositoryFirebaseTest {
   @Test
   fun calculateWorkedHoursFutureEvents_multipleEvents_aggregatesHours() = runBlocking {
     // Given: multiple future events
-    val event1 = createMockEvent(
-        id = "event1",
-        startDate = Instant.parse("2025-12-01T09:00:00Z"),
-        endDate = Instant.parse("2025-12-01T11:00:00Z"), // 2 hours
-        participants = setOf(userId1, userId2),
-        presence = emptyMap())
-    
-    val event2 = createMockEvent(
-        id = "event2",
-        startDate = Instant.parse("2025-12-02T09:00:00Z"),
-        endDate = Instant.parse("2025-12-02T10:00:00Z"), // 1 hour
-        participants = setOf(userId1, userId3),
-        presence = emptyMap())
-    
+    val event1 =
+        createMockEvent(
+            id = "event1",
+            startDate = Instant.parse("2025-12-01T09:00:00Z"),
+            endDate = Instant.parse("2025-12-01T11:00:00Z"), // 2 hours
+            participants = setOf(userId1, userId2),
+            presence = emptyMap())
+
+    val event2 =
+        createMockEvent(
+            id = "event2",
+            startDate = Instant.parse("2025-12-02T09:00:00Z"),
+            endDate = Instant.parse("2025-12-02T10:00:00Z"), // 1 hour
+            participants = setOf(userId1, userId3),
+            presence = emptyMap())
+
     repository.setTestEvents(listOf(event1, event2))
 
     // When
-    val result = repository.calculateWorkedHoursFutureEvents(
-        orgId = orgId,
-        start = Instant.parse("2025-12-01T00:00:00Z"),
-        end = Instant.parse("2025-12-31T23:59:59Z"))
+    val result =
+        repository.calculateWorkedHoursFutureEvents(
+            orgId = orgId,
+            start = Instant.parse("2025-12-01T00:00:00Z"),
+            end = Instant.parse("2025-12-31T23:59:59Z"))
 
     // Then
     val resultMap = result.toMap()
@@ -371,27 +382,30 @@ class EventRepositoryFirebaseTest {
   @Test
   fun calculateWorkedHoursFutureEvents_mixedPastAndFuture_onlyCountsFuture() = runBlocking {
     // Given: events in both past and future
-    val pastEvent = createMockEvent(
-        id = "past",
-        startDate = Instant.now().minusSeconds(7200),
-        endDate = Instant.now().minusSeconds(3600), // 1 hour duration
-        participants = setOf(userId1),
-        presence = mapOf(userId1 to true))
-    
-    val futureEvent = createMockEvent(
-        id = "future",
-        startDate = Instant.now().plusSeconds(3600),
-        endDate = Instant.now().plusSeconds(7200), // 1 hour duration
-        participants = setOf(userId1),
-        presence = emptyMap())
-    
+    val pastEvent =
+        createMockEvent(
+            id = "past",
+            startDate = Instant.now().minusSeconds(7200),
+            endDate = Instant.now().minusSeconds(3600), // 1 hour duration
+            participants = setOf(userId1),
+            presence = mapOf(userId1 to true))
+
+    val futureEvent =
+        createMockEvent(
+            id = "future",
+            startDate = Instant.now().plusSeconds(3600),
+            endDate = Instant.now().plusSeconds(7200), // 1 hour duration
+            participants = setOf(userId1),
+            presence = emptyMap())
+
     repository.setTestEvents(listOf(pastEvent, futureEvent))
 
     // When
-    val result = repository.calculateWorkedHoursFutureEvents(
-        orgId = orgId,
-        start = Instant.now().minusSeconds(10800),
-        end = Instant.now().plusSeconds(10800))
+    val result =
+        repository.calculateWorkedHoursFutureEvents(
+            orgId = orgId,
+            start = Instant.now().minusSeconds(10800),
+            end = Instant.now().plusSeconds(10800))
 
     // Then: only future event should be counted
     val resultMap = result.toMap()
@@ -423,10 +437,11 @@ class EventRepositoryFirebaseTest {
     repository.setTestEvents(emptyList())
 
     // When
-    val result = repository.calculateWorkedHours(
-        orgId = orgId,
-        start = Instant.parse("2025-01-01T00:00:00Z"),
-        end = Instant.parse("2025-01-31T23:59:59Z"))
+    val result =
+        repository.calculateWorkedHours(
+            orgId = orgId,
+            start = Instant.parse("2025-01-01T00:00:00Z"),
+            end = Instant.parse("2025-01-31T23:59:59Z"))
 
     // Then
     assertTrue(result.isEmpty())
@@ -435,27 +450,30 @@ class EventRepositoryFirebaseTest {
   @Test
   fun calculateWorkedHours_combinesPastAndFutureEvents() = runBlocking {
     // Given: both past and future events
-    val pastEvent = createMockEvent(
-        id = "past",
-        startDate = Instant.now().minusSeconds(7200),
-        endDate = Instant.now().minusSeconds(3600), // 1 hour
-        participants = setOf(userId1, userId2),
-        presence = mapOf(userId1 to true, userId2 to false))
-    
-    val futureEvent = createMockEvent(
-        id = "future",
-        startDate = Instant.now().plusSeconds(3600),
-        endDate = Instant.now().plusSeconds(5400), // 0.5 hours
-        participants = setOf(userId1, userId3),
-        presence = emptyMap())
-    
+    val pastEvent =
+        createMockEvent(
+            id = "past",
+            startDate = Instant.now().minusSeconds(7200),
+            endDate = Instant.now().minusSeconds(3600), // 1 hour
+            participants = setOf(userId1, userId2),
+            presence = mapOf(userId1 to true, userId2 to false))
+
+    val futureEvent =
+        createMockEvent(
+            id = "future",
+            startDate = Instant.now().plusSeconds(3600),
+            endDate = Instant.now().plusSeconds(5400), // 0.5 hours
+            participants = setOf(userId1, userId3),
+            presence = emptyMap())
+
     repository.setTestEvents(listOf(pastEvent, futureEvent))
 
     // When
-    val result = repository.calculateWorkedHours(
-        orgId = orgId,
-        start = Instant.now().minusSeconds(10800),
-        end = Instant.now().plusSeconds(10800))
+    val result =
+        repository.calculateWorkedHours(
+            orgId = orgId,
+            start = Instant.now().minusSeconds(10800),
+            end = Instant.now().plusSeconds(10800))
 
     // Then
     val resultMap = result.toMap()
@@ -468,41 +486,46 @@ class EventRepositoryFirebaseTest {
   @Test
   fun calculateWorkedHours_userInBothPastAndFutureEvents_aggregatesCorrectly() = runBlocking {
     // Given: user appears in multiple past and future events
-    val pastEvent1 = createMockEvent(
-        id = "past1",
-        startDate = Instant.parse("2025-01-01T09:00:00Z"),
-        endDate = Instant.parse("2025-01-01T11:00:00Z"), // 2 hours
-        participants = setOf(userId1),
-        presence = mapOf(userId1 to true))
-    
-    val pastEvent2 = createMockEvent(
-        id = "past2",
-        startDate = Instant.parse("2025-01-02T09:00:00Z"),
-        endDate = Instant.parse("2025-01-02T10:30:00Z"), // 1.5 hours
-        participants = setOf(userId1),
-        presence = mapOf(userId1 to true))
-    
-    val futureEvent1 = createMockEvent(
-        id = "future1",
-        startDate = Instant.parse("2025-12-01T09:00:00Z"),
-        endDate = Instant.parse("2025-12-01T12:00:00Z"), // 3 hours
-        participants = setOf(userId1),
-        presence = emptyMap())
-    
-    val futureEvent2 = createMockEvent(
-        id = "future2",
-        startDate = Instant.parse("2025-12-02T09:00:00Z"),
-        endDate = Instant.parse("2025-12-02T10:00:00Z"), // 1 hour
-        participants = setOf(userId1),
-        presence = emptyMap())
-    
+    val pastEvent1 =
+        createMockEvent(
+            id = "past1",
+            startDate = Instant.parse("2025-01-01T09:00:00Z"),
+            endDate = Instant.parse("2025-01-01T11:00:00Z"), // 2 hours
+            participants = setOf(userId1),
+            presence = mapOf(userId1 to true))
+
+    val pastEvent2 =
+        createMockEvent(
+            id = "past2",
+            startDate = Instant.parse("2025-01-02T09:00:00Z"),
+            endDate = Instant.parse("2025-01-02T10:30:00Z"), // 1.5 hours
+            participants = setOf(userId1),
+            presence = mapOf(userId1 to true))
+
+    val futureEvent1 =
+        createMockEvent(
+            id = "future1",
+            startDate = Instant.parse("2025-12-01T09:00:00Z"),
+            endDate = Instant.parse("2025-12-01T12:00:00Z"), // 3 hours
+            participants = setOf(userId1),
+            presence = emptyMap())
+
+    val futureEvent2 =
+        createMockEvent(
+            id = "future2",
+            startDate = Instant.parse("2025-12-02T09:00:00Z"),
+            endDate = Instant.parse("2025-12-02T10:00:00Z"), // 1 hour
+            participants = setOf(userId1),
+            presence = emptyMap())
+
     repository.setTestEvents(listOf(pastEvent1, pastEvent2, futureEvent1, futureEvent2))
 
     // When
-    val result = repository.calculateWorkedHours(
-        orgId = orgId,
-        start = Instant.parse("2025-01-01T00:00:00Z"),
-        end = Instant.parse("2025-12-31T23:59:59Z"))
+    val result =
+        repository.calculateWorkedHours(
+            orgId = orgId,
+            start = Instant.parse("2025-01-01T00:00:00Z"),
+            end = Instant.parse("2025-12-31T23:59:59Z"))
 
     // Then: total should be 2 + 1.5 + 3 + 1 = 7.5 hours
     val resultMap = result.toMap()
@@ -513,28 +536,31 @@ class EventRepositoryFirebaseTest {
   fun calculateWorkedHours_multipleUsers_calculatesIndependently() = runBlocking {
     // Given: multiple users with different participation patterns
     // Past: user1 present, user2 not present
-    val pastEvent = createMockEvent(
-        id = "past",
-        startDate = Instant.parse("2025-01-01T09:00:00Z"),
-        endDate = Instant.parse("2025-01-01T11:00:00Z"), // 2 hours
-        participants = setOf(userId1, userId2),
-        presence = mapOf(userId1 to true, userId2 to false))
-    
+    val pastEvent =
+        createMockEvent(
+            id = "past",
+            startDate = Instant.parse("2025-01-01T09:00:00Z"),
+            endDate = Instant.parse("2025-01-01T11:00:00Z"), // 2 hours
+            participants = setOf(userId1, userId2),
+            presence = mapOf(userId1 to true, userId2 to false))
+
     // Future: user2 and user3 participating
-    val futureEvent = createMockEvent(
-        id = "future",
-        startDate = Instant.parse("2025-12-01T09:00:00Z"),
-        endDate = Instant.parse("2025-12-01T12:00:00Z"), // 3 hours
-        participants = setOf(userId2, userId3),
-        presence = emptyMap())
-    
+    val futureEvent =
+        createMockEvent(
+            id = "future",
+            startDate = Instant.parse("2025-12-01T09:00:00Z"),
+            endDate = Instant.parse("2025-12-01T12:00:00Z"), // 3 hours
+            participants = setOf(userId2, userId3),
+            presence = emptyMap())
+
     repository.setTestEvents(listOf(pastEvent, futureEvent))
 
     // When
-    val result = repository.calculateWorkedHours(
-        orgId = orgId,
-        start = Instant.parse("2025-01-01T00:00:00Z"),
-        end = Instant.parse("2025-12-31T23:59:59Z"))
+    val result =
+        repository.calculateWorkedHours(
+            orgId = orgId,
+            start = Instant.parse("2025-01-01T00:00:00Z"),
+            end = Instant.parse("2025-12-31T23:59:59Z"))
 
     // Then
     val resultMap = result.toMap()

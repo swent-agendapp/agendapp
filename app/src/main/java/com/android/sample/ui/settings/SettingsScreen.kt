@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AdminPanelSettings
+import androidx.compose.material.icons.filled.Business
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
@@ -19,6 +20,8 @@ import com.android.sample.R
 import com.android.sample.ui.common.ButtonItem
 import com.android.sample.ui.common.MainPageButton
 import com.android.sample.ui.common.MainPageTopBar
+import com.android.sample.ui.organization.SelectedOrganizationVMProvider
+import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import com.android.sample.ui.replacement.ReplacementOverviewTestTags
 import com.android.sample.ui.theme.*
 
@@ -37,6 +40,9 @@ fun SettingsScreen(
     onNavigateToUserProfile: () -> Unit = {},
     onNavigateToAdminInfo: () -> Unit = {},
     onNavigateToMapSettings: () -> Unit = {},
+    onNavigateToOrganizationList: () -> Unit = {},
+    selectedOrganizationViewModel: SelectedOrganizationViewModel =
+        SelectedOrganizationVMProvider.viewModel,
 ) {
   val items =
       listOf(
@@ -54,7 +60,16 @@ fun SettingsScreen(
               stringResource(R.string.settings_map_settings_button),
               Icons.Default.Map,
               SettingsScreenTestTags.MAP_SETTINGS_BUTTON,
-              onClick = onNavigateToMapSettings))
+              onClick = onNavigateToMapSettings),
+          ButtonItem(
+              stringResource(R.string.settings_organization_selection_button),
+              Icons.Default.Business,
+              "app_info_button",
+              onClick = {
+                // Clear selected organization before navigating to organization list
+                selectedOrganizationViewModel.clearSelection()
+                onNavigateToOrganizationList()
+              }))
 
   Scaffold(
       topBar = {

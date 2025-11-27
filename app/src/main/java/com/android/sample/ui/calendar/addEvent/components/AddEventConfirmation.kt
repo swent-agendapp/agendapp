@@ -6,9 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,9 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
-import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.components.BottomNavigationButtons
-import com.android.sample.ui.map.MapScreenTestTags
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.WeightExtraHeavy
 
@@ -31,47 +27,37 @@ import com.android.sample.ui.theme.WeightExtraHeavy
  *
  * Only shows a single "Finish" button.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEventConfirmationScreen(
-    onFinish: () -> Unit = {},
-    onCancel: () -> Unit = {},
+    modifier: Modifier = Modifier,
 ) {
-  Scaffold(
-      topBar = {
-        SecondaryPageTopBar(
-            modifier = Modifier.testTag(MapScreenTestTags.MAP_TITLE),
-            title = stringResource(R.string.addEventTitle),
-            canGoBack = true,
-            onClick = onCancel)
-      },
-      content = { paddingValues ->
-        Column(
-            modifier =
-                Modifier.fillMaxSize()
-                    .padding(horizontal = PaddingExtraLarge)
-                    .padding(paddingValues),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceAround) {
-              Box(
-                  modifier = Modifier.weight(WeightExtraHeavy).fillMaxWidth(),
-                  contentAlignment = Alignment.Center) {
-                    Text(
-                        stringResource(R.string.confirmationMessage),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.headlineMedium,
-                        modifier = Modifier.testTag(AddEventTestTags.INSTRUCTION_TEXT))
-                  }
+
+  Column(
+      modifier = modifier.fillMaxSize().padding(horizontal = PaddingExtraLarge),
+      horizontalAlignment = Alignment.CenterHorizontally,
+      verticalArrangement = Arrangement.SpaceAround) {
+        Box(
+            modifier = Modifier.weight(WeightExtraHeavy).fillMaxWidth(),
+            contentAlignment = Alignment.Center) {
+              Text(
+                  stringResource(R.string.confirmationMessage),
+                  textAlign = TextAlign.Center,
+                  style = MaterialTheme.typography.headlineMedium,
+                  modifier = Modifier.testTag(AddEventTestTags.INSTRUCTION_TEXT))
             }
-      },
-      bottomBar = {
-        BottomNavigationButtons(
-            onNext = onFinish,
-            nextButtonText = stringResource(R.string.finish),
-            canGoBack = false,
-            canGoNext = true,
-            nextButtonTestTag = AddEventTestTags.FINISH_BUTTON)
-      })
+      }
+}
+
+@Composable
+fun AddEventConfirmationBottomBar(
+    onFinish: () -> Unit = {},
+) {
+  BottomNavigationButtons(
+      onNext = onFinish,
+      nextButtonText = stringResource(R.string.finish),
+      canGoBack = false,
+      canGoNext = true,
+      nextButtonTestTag = AddEventTestTags.FINISH_BUTTON)
 }
 
 @Preview(showBackground = true)

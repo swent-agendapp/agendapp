@@ -1,15 +1,26 @@
 package com.android.sample.ui.calendar.addEvent
 
-import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.android.sample.R
 import com.android.sample.model.calendar.RecurrenceStatus
+import com.android.sample.ui.calendar.addEvent.components.AddEventAttendantBottomBar
 import com.android.sample.ui.calendar.addEvent.components.AddEventAttendantScreen
+import com.android.sample.ui.calendar.addEvent.components.AddEventConfirmationBottomBar
 import com.android.sample.ui.calendar.addEvent.components.AddEventConfirmationScreen
+import com.android.sample.ui.calendar.addEvent.components.AddEventTimeAndRecurrenceBottomBar
 import com.android.sample.ui.calendar.addEvent.components.AddEventTimeAndRecurrenceScreen
+import com.android.sample.ui.calendar.addEvent.components.AddEventTitleAndDescriptionBottomBar
 import com.android.sample.ui.calendar.addEvent.components.AddEventTitleAndDescriptionScreen
+import com.android.sample.ui.common.SecondaryPageTopBar
+import com.android.sample.ui.map.MapScreenTestTags
 
 // Assisted by AI
 
@@ -60,54 +71,65 @@ fun AddEventScreen(
     onCancel: () -> Unit = {}
 ) {
   val uiState by addEventViewModel.uiState.collectAsState()
-
-  when (uiState.step) {
-    AddEventStep.TITLE_AND_DESC ->
-        AddEventTitleAndDescriptionScreen(
-            addEventViewModel = addEventViewModel,
-            onNext = { addEventViewModel.nextStep() },
-            onCancel = {
+  Scaffold(
+      topBar = {
+        SecondaryPageTopBar(
+            modifier = Modifier.testTag(MapScreenTestTags.MAP_TITLE),
+            title = stringResource(R.string.addEventTitle),
+            canGoBack = true,
+            onClick = {
               onCancel()
               addEventViewModel.resetUiState()
             })
-    AddEventStep.TIME_AND_RECURRENCE ->
-        AddEventTimeAndRecurrenceScreen(
-            addEventViewModel = addEventViewModel,
-            onNext = { addEventViewModel.nextStep() },
-            onBack = { addEventViewModel.previousStep() },
-            onCancel = {
-              onCancel()
-              addEventViewModel.resetUiState()
-            })
-    AddEventStep.ATTENDEES ->
-        AddEventAttendantScreen(
-            addEventViewModel = addEventViewModel,
-            onCreate = {
-              addEventViewModel.addEvent()
-              addEventViewModel.nextStep()
-            },
-            onBack = { addEventViewModel.previousStep() },
-            onCancel = {
-              onCancel()
-              addEventViewModel.resetUiState()
-            })
-    AddEventStep.CONFIRMATION ->
-        AddEventConfirmationScreen(
-            onFinish = {
-              onFinish()
-              addEventViewModel.resetUiState()
-            },
-            onCancel = {
-              onCancel()
-              addEventViewModel.resetUiState()
-            })
-  }
-
-  // Handle physical back button
-  BackHandler(
-      enabled =
-          uiState.step != AddEventStep.TITLE_AND_DESC &&
-              uiState.step != AddEventStep.CONFIRMATION) {
-        addEventViewModel.previousStep()
-      }
+      },
+      content = { padding ->
+        when (uiState.step) {
+          AddEventStep.TITLE_AND_DESC ->
+              AddEventTitleAndDescriptionScreen(
+                  modifier = Modifier.padding(padding),
+                  addEventViewModel = addEventViewModel,
+              )
+          AddEventStep.TIME_AND_RECURRENCE ->
+              AddEventTimeAndRecurrenceScreen(
+                  modifier = Modifier.padding(padding),
+                  addEventViewModel = addEventViewModel,
+              )
+          AddEventStep.ATTENDEES ->
+              AddEventAttendantScreen(
+                  modifier = Modifier.padding(padding), addEventViewModel = addEventViewModel)
+          AddEventStep.CONFIRMATION ->
+              AddEventConfirmationScreen(
+                  modifier = Modifier.padding(padding),
+              )
+        }
+      },
+      bottomBar = {
+        when (uiState.step) {
+          AddEventStep.TITLE_AND_DESC ->
+              AddEventTitleAndDescriptionBottomBar(
+                  addEventViewModel = addEventViewModel,
+                  onNext = { addEventViewModel.nextStep() },
+              )
+          AddEventStep.TIME_AND_RECURRENCE ->
+              AddEventTimeAndRecurrenceBottomBar(
+                  addEventViewModel = addEventViewModel,
+                  onNext = { addEventViewModel.nextStep() },
+                  onBack = { addEventViewModel.previousStep() })
+          AddEventStep.ATTENDEES ->
+              AddEventAttendantBottomBar(
+                  addEventViewModel = addEventViewModel,
+                  onCreate = {
+                    addEventViewModel.addEvent()
+                    addEventViewModel.nextStep()
+                  },
+                  onBack = { addEventViewModel.previousStep() },
+              )
+          AddEventStep.CONFIRMATION ->
+              AddEventConfirmationBottomBar(
+                  onFinish = {
+                    onFinish()
+                    addEventViewModel.resetUiState()
+                  })
+        }
+      })
 }

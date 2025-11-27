@@ -19,7 +19,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -43,9 +42,7 @@ import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
 import com.android.sample.ui.calendar.components.DatePickerFieldToModal
 import com.android.sample.ui.calendar.utils.DateTimeUtils
-import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.components.BottomNavigationButtons
-import com.android.sample.ui.map.MapScreenTestTags
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.SpacingLarge
@@ -63,13 +60,180 @@ import com.android.sample.ui.theme.WeightMedium
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEventTimeAndRecurrenceScreen(
-    addEventViewModel: AddEventViewModel = viewModel(),
-    onNext: () -> Unit = {},
-    onBack: () -> Unit = {},
-    onCancel: () -> Unit = {}
+    modifier: Modifier = Modifier,
+    addEventViewModel: AddEventViewModel = viewModel()
 ) {
   val newEventUIState by addEventViewModel.uiState.collectAsState()
   val context = LocalContext.current
+
+  var expanded by remember { mutableStateOf(false) }
+  val recurrenceOptions = RecurrenceStatus.entries.toList()
+  val selectedRecurrence = newEventUIState.recurrenceMode
+
+  var showStartTimePicker by remember { mutableStateOf(false) }
+  var showEndTimePicker by remember { mutableStateOf(false) }
+
+  Column(
+      modifier = modifier.fillMaxSize().padding(horizontal = PaddingExtraLarge),
+      horizontalAlignment = Alignment.CenterHorizontally,
+      verticalArrangement = Arrangement.SpaceAround) {
+        Box(
+            modifier = Modifier.weight(WeightMedium).fillMaxWidth(),
+            contentAlignment = Alignment.Center) {
+              Text(
+                  stringResource(R.string.enterTimeAndRecurrence),
+                  textAlign = TextAlign.Center,
+                  style = MaterialTheme.typography.headlineMedium,
+                  modifier = Modifier.testTag(AddEventTestTags.INSTRUCTION_TEXT))
+            }
+
+        Column(modifier = Modifier.weight(WeightExtraHeavy)) {
+          if (recurrenceOptions.isNotEmpty()) {
+            ExposedDropdownMenuBox(
+                expanded = expanded, onExpandedChange = { expanded = !expanded }) {
+                  OutlinedTextField(
+                      value = stringResource(selectedRecurrence.labelRes()),
+                      onValueChange = {},
+                      readOnly = true,
+                      label = { Text(stringResource(R.string.recurrenceMenuLabel)) },
+                      trailingIcon = {
+                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                      },
+                      modifier =
+                          Modifier.menuAnchor(type = MenuAnchorType.PrimaryNotEditable, true)
+                              .fillMaxWidth()
+                              .testTag(AddEventTestTags.RECURRENCE_STATUS_DROPDOWN),
+                      shape = RoundedCornerShape(CornerRadiusLarge),
+                      colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors())
+                  ExposedDropdownMenu(
+                      expanded = expanded, onDismissRequest = { expanded = false }) {
+                        recurrenceOptions.forEach { option ->
+                          DropdownMenuItem(
+                              text = { Text(stringResource(option.labelRes())) },
+                              onClick = {
+                                addEventViewModel.setRecurrenceMode(option)
+                                expanded = false
+                              },
+                              modifier = Modifier.testTag(AddEventTestTags.recurrenceTag(option)))
+                        }
+                      }
+                }
+          }
+
+          Spacer(modifier = Modifier.height(SpacingLarge))
+
+          DatePickerFieldToModal(
+              label = stringResource(R.string.startDatePickerLabel),
+              modifier = Modifier.testTag(AddEventTestTags.START_DATE_FIELD),
+              onDateSelected = { date ->
+                addEventViewModel.setStartInstant(
+                    DateTimeUtils.instantWithDate(newEventUIState.startInstant, date = date))
+              },
+              initialInstant = newEventUIState.startInstant,
+              enabled = true)
+
+          Spacer(modifier = Modifier.height(SpacingSmall))
+
+          DatePickerFieldToModal(
+              label = stringResource(R.string.endDatePickerLabel),
+              modifier = Modifier.testTag(AddEventTestTags.END_DATE_FIELD),
+              onDateSelected = { date ->
+                addEventViewModel.setEndInstant(
+                    DateTimeUtils.instantWithDate(newEventUIState.endInstant, date = date))
+              },
+              initialInstant = newEventUIState.endInstant,
+              enabled = true)
+
+          Spacer(modifier = Modifier.height(SpacingLarge))
+
+          Row(
+              modifier = Modifier.fillMaxWidth(),
+              horizontalArrangement = Arrangement.SpaceBetween,
+              verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = stringResource(R.string.startTime),
+                    modifier = Modifier.weight(WeightExtraHeavy),
+                    textAlign = TextAlign.Center)
+                OutlinedButton(
+                    onClick = { showStartTimePicker = true },
+                    modifier =
+                        Modifier.weight(WeightExtraHeavy)
+                            .testTag(AddEventTestTags.START_TIME_BUTTON)) {
+                      Text(text = DateTimeUtils.formatInstantToTime(newEventUIState.startInstant))
+                    }
+              }
+
+          Row(
+              modifier = Modifier.fillMaxWidth(),
+              horizontalArrangement = Arrangement.SpaceBetween,
+              verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = stringResource(R.string.endTime),
+                    modifier = Modifier.weight(WeightExtraHeavy),
+                    textAlign = TextAlign.Center)
+                OutlinedButton(
+                    onClick = { showEndTimePicker = true },
+                    modifier =
+                        Modifier.weight(WeightExtraHeavy)
+                            .testTag(AddEventTestTags.END_TIME_BUTTON)) {
+                      Text(text = DateTimeUtils.formatInstantToTime(newEventUIState.endInstant))
+                    }
+              }
+
+          Spacer(modifier = Modifier.height(SpacingSmall))
+
+          DatePickerFieldToModal(
+              label = stringResource(R.string.recurrenceEndPickerLabel),
+              modifier = Modifier.testTag(AddEventTestTags.END_RECURRENCE_FIELD),
+              onDateSelected = { date ->
+                addEventViewModel.setRecurrenceEndTime(
+                    DateTimeUtils.instantWithDate(newEventUIState.startInstant, date = date))
+              },
+              enabled = (selectedRecurrence != RecurrenceStatus.OneTime),
+              initialInstant = newEventUIState.recurrenceEndInstant)
+        }
+
+        if (showStartTimePicker) {
+          TimePickerDialog(
+                  context,
+                  { _, hour: Int, minute: Int ->
+                    val newInstant =
+                        DateTimeUtils.instantWithTime(
+                            instant = newEventUIState.startInstant, hour = hour, minute = minute)
+                    addEventViewModel.setStartInstant(newInstant)
+                  },
+                  DateTimeUtils.getInstantHour(newEventUIState.startInstant),
+                  DateTimeUtils.getInstantMinute(newEventUIState.startInstant),
+                  false)
+              .show()
+          showStartTimePicker = false
+        }
+
+        if (showEndTimePicker) {
+          TimePickerDialog(
+                  context,
+                  { _, hour: Int, minute: Int ->
+                    val newInstant =
+                        DateTimeUtils.instantWithTime(
+                            instant = newEventUIState.endInstant, hour = hour, minute = minute)
+                    addEventViewModel.setEndInstant(newInstant)
+                  },
+                  DateTimeUtils.getInstantHour(newEventUIState.endInstant),
+                  DateTimeUtils.getInstantMinute(newEventUIState.endInstant),
+                  false)
+              .show()
+          showEndTimePicker = false
+        }
+      }
+}
+
+@Composable
+fun AddEventTimeAndRecurrenceBottomBar(
+    addEventViewModel: AddEventViewModel = viewModel(),
+    onNext: () -> Unit = {},
+    onBack: () -> Unit = {},
+) {
+  val newEventUIState by addEventViewModel.uiState.collectAsState()
 
   val timeIsCoherent by
       remember(newEventUIState) {
@@ -79,197 +243,14 @@ fun AddEventTimeAndRecurrenceScreen(
         }
       }
 
-  var expanded by remember { mutableStateOf(false) }
-  val recurrenceOptions = RecurrenceStatus.entries.toList()
-  val selectedRecurrence = newEventUIState.recurrenceMode
-
-  var showStartTimePicker by remember { mutableStateOf(false) }
-  var showEndTimePicker by remember { mutableStateOf(false) }
-
-  Scaffold(
-      topBar = {
-        SecondaryPageTopBar(
-            modifier = Modifier.testTag(MapScreenTestTags.MAP_TITLE),
-            title = stringResource(R.string.addEventTitle),
-            canGoBack = true,
-            onClick = onCancel)
-      },
-      content = { paddingValues ->
-        Column(
-            modifier =
-                Modifier.fillMaxSize()
-                    .padding(horizontal = PaddingExtraLarge)
-                    .padding(paddingValues),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceAround) {
-              Box(
-                  modifier = Modifier.weight(WeightMedium).fillMaxWidth(),
-                  contentAlignment = Alignment.Center) {
-                    Text(
-                        stringResource(R.string.enterTimeAndRecurrence),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.headlineMedium,
-                        modifier = Modifier.testTag(AddEventTestTags.INSTRUCTION_TEXT))
-                  }
-
-              Column(modifier = Modifier.weight(WeightExtraHeavy)) {
-                if (recurrenceOptions.isNotEmpty()) {
-                  ExposedDropdownMenuBox(
-                      expanded = expanded, onExpandedChange = { expanded = !expanded }) {
-                        OutlinedTextField(
-                            value = stringResource(selectedRecurrence.labelRes()),
-                            onValueChange = {},
-                            readOnly = true,
-                            label = { Text(stringResource(R.string.recurrenceMenuLabel)) },
-                            trailingIcon = {
-                              ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-                            },
-                            modifier =
-                                Modifier.menuAnchor(type = MenuAnchorType.PrimaryNotEditable, true)
-                                    .fillMaxWidth()
-                                    .testTag(AddEventTestTags.RECURRENCE_STATUS_DROPDOWN),
-                            shape = RoundedCornerShape(CornerRadiusLarge),
-                            colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors())
-                        ExposedDropdownMenu(
-                            expanded = expanded, onDismissRequest = { expanded = false }) {
-                              recurrenceOptions.forEach { option ->
-                                DropdownMenuItem(
-                                    text = { Text(stringResource(option.labelRes())) },
-                                    onClick = {
-                                      addEventViewModel.setRecurrenceMode(option)
-                                      expanded = false
-                                    },
-                                    modifier =
-                                        Modifier.testTag(AddEventTestTags.recurrenceTag(option)))
-                              }
-                            }
-                      }
-                }
-
-                Spacer(modifier = Modifier.height(SpacingLarge))
-
-                DatePickerFieldToModal(
-                    label = stringResource(R.string.startDatePickerLabel),
-                    modifier = Modifier.testTag(AddEventTestTags.START_DATE_FIELD),
-                    onDateSelected = { date ->
-                      addEventViewModel.setStartInstant(
-                          DateTimeUtils.instantWithDate(newEventUIState.startInstant, date = date))
-                    },
-                    initialInstant = newEventUIState.startInstant,
-                    enabled = true)
-
-                Spacer(modifier = Modifier.height(SpacingSmall))
-
-                DatePickerFieldToModal(
-                    label = stringResource(R.string.endDatePickerLabel),
-                    modifier = Modifier.testTag(AddEventTestTags.END_DATE_FIELD),
-                    onDateSelected = { date ->
-                      addEventViewModel.setEndInstant(
-                          DateTimeUtils.instantWithDate(newEventUIState.endInstant, date = date))
-                    },
-                    initialInstant = newEventUIState.endInstant,
-                    enabled = true)
-
-                Spacer(modifier = Modifier.height(SpacingLarge))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically) {
-                      Text(
-                          text = stringResource(R.string.startTime),
-                          modifier = Modifier.weight(WeightExtraHeavy),
-                          textAlign = TextAlign.Center)
-                      OutlinedButton(
-                          onClick = { showStartTimePicker = true },
-                          modifier =
-                              Modifier.weight(WeightExtraHeavy)
-                                  .testTag(AddEventTestTags.START_TIME_BUTTON)) {
-                            Text(
-                                text =
-                                    DateTimeUtils.formatInstantToTime(newEventUIState.startInstant))
-                          }
-                    }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically) {
-                      Text(
-                          text = stringResource(R.string.endTime),
-                          modifier = Modifier.weight(WeightExtraHeavy),
-                          textAlign = TextAlign.Center)
-                      OutlinedButton(
-                          onClick = { showEndTimePicker = true },
-                          modifier =
-                              Modifier.weight(WeightExtraHeavy)
-                                  .testTag(AddEventTestTags.END_TIME_BUTTON)) {
-                            Text(
-                                text =
-                                    DateTimeUtils.formatInstantToTime(newEventUIState.endInstant))
-                          }
-                    }
-
-                Spacer(modifier = Modifier.height(SpacingSmall))
-
-                DatePickerFieldToModal(
-                    label = stringResource(R.string.recurrenceEndPickerLabel),
-                    modifier = Modifier.testTag(AddEventTestTags.END_RECURRENCE_FIELD),
-                    onDateSelected = { date ->
-                      addEventViewModel.setRecurrenceEndTime(
-                          DateTimeUtils.instantWithDate(newEventUIState.startInstant, date = date))
-                    },
-                    enabled = (selectedRecurrence != RecurrenceStatus.OneTime),
-                    initialInstant = newEventUIState.recurrenceEndInstant)
-              }
-
-              if (showStartTimePicker) {
-                TimePickerDialog(
-                        context,
-                        { _, hour: Int, minute: Int ->
-                          val newInstant =
-                              DateTimeUtils.instantWithTime(
-                                  instant = newEventUIState.startInstant,
-                                  hour = hour,
-                                  minute = minute)
-                          addEventViewModel.setStartInstant(newInstant)
-                        },
-                        DateTimeUtils.getInstantHour(newEventUIState.startInstant),
-                        DateTimeUtils.getInstantMinute(newEventUIState.startInstant),
-                        false)
-                    .show()
-                showStartTimePicker = false
-              }
-
-              if (showEndTimePicker) {
-                TimePickerDialog(
-                        context,
-                        { _, hour: Int, minute: Int ->
-                          val newInstant =
-                              DateTimeUtils.instantWithTime(
-                                  instant = newEventUIState.endInstant,
-                                  hour = hour,
-                                  minute = minute)
-                          addEventViewModel.setEndInstant(newInstant)
-                        },
-                        DateTimeUtils.getInstantHour(newEventUIState.endInstant),
-                        DateTimeUtils.getInstantMinute(newEventUIState.endInstant),
-                        false)
-                    .show()
-                showEndTimePicker = false
-              }
-            }
-      },
-      bottomBar = {
-        BottomNavigationButtons(
-            onNext = onNext,
-            onBack = onBack,
-            backButtonText = stringResource(R.string.goBack),
-            nextButtonText = stringResource(R.string.next),
-            canGoNext = timeIsCoherent,
-            backButtonTestTag = AddEventTestTags.BACK_BUTTON,
-            nextButtonTestTag = AddEventTestTags.NEXT_BUTTON)
-      })
+  BottomNavigationButtons(
+      onNext = onNext,
+      onBack = onBack,
+      backButtonText = stringResource(R.string.goBack),
+      nextButtonText = stringResource(R.string.next),
+      canGoNext = timeIsCoherent,
+      backButtonTestTag = AddEventTestTags.BACK_BUTTON,
+      nextButtonTestTag = AddEventTestTags.NEXT_BUTTON)
 }
 
 @Preview(showBackground = true)

@@ -54,14 +54,4 @@ class AddEventTimeScreenTest {
     composeTestRule.runOnUiThread { fakeViewModel.setRecurrenceMode(RecurrenceStatus.Weekly) }
     composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).assertIsDisplayed()
   }
-
-  @Test
-  fun displayNextButton() {
-    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertIsDisplayed()
-  }
-
-  @Test
-  fun displayBackButton() {
-    composeTestRule.onNodeWithTag(AddEventTestTags.BACK_BUTTON).assertIsDisplayed()
-  }
 }

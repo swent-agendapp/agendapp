@@ -27,6 +27,7 @@ import com.android.sample.ui.map.MapScreenTestTags
 /** Contains the test tags used across the Add Event screen UI. */
 object AddEventTestTags {
   const val INSTRUCTION_TEXT = "instruction_text"
+  const val LIST_USER = "list_user"
   const val TITLE_TEXT_FIELD = "title_text_field"
   const val DESCRIPTION_TEXT_FIELD = "description_text_field"
   const val START_DATE_FIELD = "start_date_field"

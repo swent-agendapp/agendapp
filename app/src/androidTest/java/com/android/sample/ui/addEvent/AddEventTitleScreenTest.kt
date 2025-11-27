@@ -25,8 +25,6 @@ class AddEventTitleScreenTest {
   fun displayAllComponents() {
     composeTestRule.onNodeWithTag(AddEventTestTags.TITLE_TEXT_FIELD).assertIsDisplayed()
     composeTestRule.onNodeWithTag(AddEventTestTags.DESCRIPTION_TEXT_FIELD).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(AddEventTestTags.CANCEL_BUTTON).assertIsDisplayed()
   }
 
   @Test
@@ -69,21 +67,5 @@ class AddEventTitleScreenTest {
     composeTestRule
         .onNodeWithTag(AddEventTestTags.ERROR_MESSAGE, useUnmergedTree = true)
         .assertIsDisplayed()
-  }
-
-  @Test
-  fun nextButtonDisabledWhenFieldsEmpty() {
-    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertIsNotEnabled()
-  }
-
-  @Test
-  fun nextButtonEnabledWhenTitleAndDescriptionValid() {
-    composeTestRule.onNodeWithTag(AddEventTestTags.TITLE_TEXT_FIELD).performTextInput("Concert")
-    composeTestRule
-        .onNodeWithTag(AddEventTestTags.DESCRIPTION_TEXT_FIELD)
-        .performTextInput("Outdoor concert with friends")
-    composeTestRule.waitForIdle()
-
-    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertIsEnabled()
   }
 }

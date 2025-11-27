@@ -103,7 +103,8 @@ fun AddEventAttendantScreen(
             }
         Card(
             modifier =
-                Modifier.weight(WeightExtraHeavy).fillMaxWidth().padding(vertical = PaddingSmall),
+                Modifier.weight(WeightExtraHeavy).fillMaxWidth().padding(vertical = PaddingSmall).testTag(
+                  AddEventTestTags.LIST_USER),
             shape = RoundedCornerShape(CornerRadiusLarge),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
               // Scrollable list

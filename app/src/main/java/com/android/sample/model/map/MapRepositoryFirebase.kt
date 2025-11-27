@@ -22,11 +22,11 @@ class MapRepositoryFirebase(private val db: FirebaseFirestore) : MapRepository {
   private fun getOrCreate(orgId: String): OrgData = dataByOrganization.getOrPut(orgId) { OrgData() }
 
   // Helper function to get the Firestore collection reference for map data
-  private fun collection(orgId: String) =
+  private fun mapDataCollection(orgId: String) =
       db.collection(ORGANIZATIONS_COLLECTION_PATH).document(orgId).collection(MAP_COLLECTION_PATH)
 
   private fun getNewUid(orgId: String): String {
-    return collection(orgId).document().id
+    return mapDataCollection(orgId).document().id
   }
 
   override fun addMarker(orgId: String, marker: Marker) {
@@ -50,7 +50,7 @@ class MapRepositoryFirebase(private val db: FirebaseFirestore) : MapRepository {
   override fun getAreaById(orgId: String, id: String): Area? = getOrCreate(orgId).areas[id]
 
   override suspend fun getAllAreas(orgId: String): List<Area> {
-    val snapshot = collection(orgId).get().await()
+    val snapshot = mapDataCollection(orgId).get().await()
     return snapshot.mapNotNull { AreaMapper.fromDocument(it) }
   }
 
@@ -61,7 +61,7 @@ class MapRepositoryFirebase(private val db: FirebaseFirestore) : MapRepository {
     val area = Area(uid, label, markers)
     val map = AreaMapper.toMap(area)
 
-    collection(orgId).document(uid).set(map).await()
+    mapDataCollection(orgId).document(uid).set(map).await()
 
     // Update local cache
     getOrCreate(orgId).areas[uid] = area

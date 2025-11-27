@@ -1,7 +1,11 @@
 package com.android.sample.ui.calendar
 
+import android.app.Application
 import com.android.sample.model.calendar.*
+import com.android.sample.model.map.MapRepository
+import com.android.sample.model.map.MapRepositoryLocal
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
+import io.mockk.mockk
 import java.time.Instant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,7 +28,9 @@ class CalendarViewModelTest {
 
   // StandardTestDispatcher allows manual control over coroutine execution in tests.
   private val testDispatcher = StandardTestDispatcher()
-  private lateinit var repository: EventRepository
+  private lateinit var repositoryEvent: EventRepository
+  private lateinit var repositoryMap: MapRepository
+  private lateinit var app: Application
   private lateinit var viewModel: CalendarViewModel
 
   private lateinit var event1: Event
@@ -41,8 +47,13 @@ class CalendarViewModelTest {
     // Set the selected organization for the tests.
     SelectedOrganizationRepository.changeSelectedOrganization(orgId)
 
-    repository = EventRepositoryLocal()
-    viewModel = CalendarViewModel(eventRepository = repository)
+    // Mock Application for CalendarViewModel
+    app = mockk<Application>(relaxed = true)
+
+    repositoryEvent = EventRepositoryLocal()
+    repositoryMap = MapRepositoryLocal()
+
+    viewModel = CalendarViewModel(app = app, eventRepository = repositoryEvent, mapRepository = repositoryMap)
 
     // Create two sample events for testing.
     event1 =
@@ -65,8 +76,8 @@ class CalendarViewModelTest {
 
     // Insert the sample events into the repository before each test.
     runTest {
-      repository.insertEvent(orgId = orgId, item = event1)
-      repository.insertEvent(orgId = orgId, item = event2)
+      repositoryEvent.insertEvent(orgId = orgId, item = event1)
+      repositoryEvent.insertEvent(orgId = orgId, item = event2)
     }
   }
 

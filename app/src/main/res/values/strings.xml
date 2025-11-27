@@ -137,9 +137,10 @@
 
     <!-- Recurrence -->
     <string name="recurrence_one_time">One Time</string>
-    <string name="recurrence_weekly">Weekly</string>
-    <string name="recurrence_monthly">Monthly</string>
-    <string name="recurrence_yearly">Yearly</string>
+    <string name="recurrence_daily">Every day</string>
+    <string name="recurrence_weekly">Every week</string>
+    <string name="recurrence_monthly">Every Month</string>
+    <string name="recurrence_yearly">Every year</string>
 
     <!-- Sign In -->
     <string name="sign_in_app_title">Agendapp</string>
@@ -148,7 +149,6 @@
     <string name="sign_in_button_text">Sign in with Google</string>
     <string name="sign_in_logout_content_description">Sign out</string>
     <string name="sign_in_logo_content_description">App logo</string>
-    <string name="sign_in_cancelled_error">Sign-in cancelled</string>
     <string name="sign_in_credentials_error">Failed to get credentials: %1$s</string>
     <string name="sign_in_unexpected_error">Unexpected error: %1$s</string>
 

@@ -118,6 +118,7 @@ fun SelectDateRangeScreen(
                     label = stringResource(R.string.startDatePickerLabel),
                     modifier = Modifier.testTag(ReplacementOrganizeTestTags.START_DATE_FIELD),
                     onDateSelected = { date -> onStartDateSelected(date) },
+                    enabled = true,
                     initialInstant = initialStartInstant)
 
                 Spacer(modifier = Modifier.height(SpacingExtraLarge))
@@ -126,6 +127,7 @@ fun SelectDateRangeScreen(
                     label = stringResource(R.string.endDatePickerLabel),
                     modifier = Modifier.testTag(ReplacementOrganizeTestTags.END_DATE_FIELD),
                     onDateSelected = { date -> onEndDateSelected(date) },
+                    enabled = true,
                     initialInstant = initialEndInstant)
               }
               AnimatedVisibility(visible = !canGoNext) {

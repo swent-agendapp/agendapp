@@ -1,5 +1,6 @@
 package com.android.sample
 
+import android.app.Application
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
@@ -40,6 +41,7 @@ import com.android.sample.ui.common.BottomBar
 import com.android.sample.ui.common.BottomBarItem
 import com.android.sample.ui.common.BottomBarTestTags
 import com.android.sample.ui.map.MapScreen
+import com.android.sample.ui.map.MapViewModel
 import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
 import com.android.sample.ui.organization.AddOrganizationScreen
@@ -342,12 +344,14 @@ fun Agendapp(
                                 onNavigateBack = { navigationActions.navigateBack() })
                           }
 
-                          // Map Settings Screen
-                          composable(Screen.Map.route) {
-                            MapScreen(onGoBack = { navigationActions.navigateBack() })
-                          }
-                        }
-                  }
+                // Map Settings Screen
+                composable(Screen.Map.route) {
+                  MapScreen(
+                      mapViewModel =
+                          MapViewModel(LocalContext.current.applicationContext as Application),
+                      onGoBack = { navigationActions.navigateBack() })
+                }
+              }
             }
       }
 }

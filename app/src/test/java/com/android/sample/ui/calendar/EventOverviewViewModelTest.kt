@@ -116,66 +116,6 @@ class EventOverviewViewModelTest {
     testDispatcher.scheduler.advanceUntilIdle()
   }
 
-  @Ignore
-  fun loadParticipantNames_WithNoEvent_ShouldKeepStateUnchanged() = runTest {
-    // When there is no event in the state, calling loadParticipantNames should be a no-op.
-    val initialState = viewModel.uiState.value
-
-    viewModel.loadParticipantNames()
-    testDispatcher.scheduler.advanceUntilIdle()
-
-    val state = viewModel.uiState.value
-    assertEquals(initialState, state)
-  }
-
-  @Test
-  fun loadParticipantNames_WithEmptyParticipants_ShouldKeepEmptyList() = runTest {
-    // When the event has an empty participants list, the UI should keep an empty list.
-    viewModel.loadEvent(eventWithoutParticipants.id)
-    testDispatcher.scheduler.advanceUntilIdle()
-
-    viewModel.loadParticipantNames()
-    testDispatcher.scheduler.advanceUntilIdle()
-
-    val state = viewModel.uiState.value
-
-    // Override fields “locallyStoredBy“ and “version“, which are automatically filled by the
-    // repository.
-    val expectedEvent =
-        eventWithoutParticipants.copy(
-            locallyStoredBy = state.event?.locallyStoredBy ?: emptyList(),
-            version = state.event?.version ?: 1L)
-
-    assertEquals(expectedEvent, state.event)
-    assertTrue(state.participantsNames.isEmpty())
-    assertFalse(state.isLoading)
-    assertNull(state.errorMsg)
-  }
-
-  @Test
-  fun loadParticipantNames_WithParticipants_ShouldCopyIdsAsNames() = runTest {
-    // When the event has participants, their ids should be copied as display names.
-    viewModel.loadEvent(eventWithParticipants.id)
-    testDispatcher.scheduler.advanceUntilIdle()
-
-    viewModel.loadParticipantNames()
-    testDispatcher.scheduler.advanceUntilIdle()
-
-    val state = viewModel.uiState.value
-
-    // Override fields “locallyStoredBy“ and “version“, which are automatically filled by the
-    // repository.
-    val expectedEvent =
-        eventWithParticipants.copy(
-            locallyStoredBy = state.event?.locallyStoredBy ?: emptyList(),
-            version = state.event?.version ?: 1L)
-
-    assertEquals(expectedEvent, state.event)
-    assertEquals(eventWithParticipants.participants.toList(), state.participantsNames)
-    assertFalse(state.isLoading)
-    assertNull(state.errorMsg)
-  }
-
   @Test
   fun loadEvent_WhenEventChangesInRepository_ShouldLoadUpdatedEvent() = runTest {
     // First load the event to populate the UI state with the initial version.

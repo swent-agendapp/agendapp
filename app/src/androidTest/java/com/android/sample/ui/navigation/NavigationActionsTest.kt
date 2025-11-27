@@ -97,7 +97,9 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
     composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_REPLACEMENT).assertExists().performClick()
 
     // Validate screen content
-    composeTestRule.onNodeWithTag(ReplacementOverviewTestTags.SCREEN).assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag(ReplacementOverviewTestTags.SCREEN, useUnmergedTree = true)
+        .assertIsDisplayed()
   }
 
   @Test
@@ -171,8 +173,9 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
 
     // Navigate to Replacement screen
     composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_REPLACEMENT).performClick()
-    composeTestRule.onNodeWithTag(ReplacementOverviewTestTags.SCREEN).assertIsDisplayed()
-
+    composeTestRule
+        .onNodeWithTag(ReplacementOverviewTestTags.SCREEN, useUnmergedTree = true)
+        .assertIsDisplayed()
     // Go to Settings screen
     composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_SETTINGS).performClick()
     composeTestRule.onNodeWithTag(SettingsScreenTestTags.ROOT).assertIsDisplayed()

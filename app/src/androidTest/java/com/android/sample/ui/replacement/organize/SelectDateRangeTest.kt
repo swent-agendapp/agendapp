@@ -21,6 +21,7 @@ class SelectDateRangeTest {
           instruction = "Instruction",
           onStartDateSelected = {},
           onEndDateSelected = {},
+          canGoNext = true,
       )
     }
 
@@ -41,6 +42,8 @@ class SelectDateRangeTest {
           instruction = "Instruction",
           onStartDateSelected = {},
           onEndDateSelected = {},
+          errorMessage = "Invalid range",
+          canGoNext = false,
       )
     }
 
@@ -48,6 +51,7 @@ class SelectDateRangeTest {
         .onNodeWithTag(ReplacementOrganizeTestTags.NEXT_BUTTON)
         .assertIsDisplayed()
         .assertIsNotEnabled()
+
     composeTestRule
         .onNodeWithTag(ReplacementOrganizeTestTags.DATE_RANGE_INVALID_TEXT)
         .assertIsDisplayed()

@@ -200,6 +200,15 @@
     <string name="replacement_list_title">Select an event</string>
     <string name="replacement_list_instruction">Select an event you need to be replaced for</string>
     <string name="select_date_range_instruction">Select the date range for which you need a replacement.</string>
+    <string name="filter">Filter</string>
+    <string name="close">Close</string>
+    <string name="filter_event_type">Event type</string>
+    <string name="filter_location">Location</string>
+    <string name="filter_participants">Participants</string>
+    <string name="clear_all">Clear all</string>
+    <string name="apply">Apply</string>
+    <string name="eventType">Event Type</string>
+    <string name="location">Location</string>
 </resources>
 
 

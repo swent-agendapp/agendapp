@@ -16,6 +16,7 @@ import com.android.sample.ui.theme.TopBarPalette
 fun MainPageTopBar(
     modifier: Modifier = Modifier,
     title: String = "Untitled",
+    actions: @Composable (() -> Unit)? = null,
 ) {
   TopAppBar(
       title = { Text(text = title, modifier = modifier) },
@@ -24,5 +25,5 @@ fun MainPageTopBar(
               containerColor = TopBarPalette.Background,
               titleContentColor = TopBarPalette.Font,
           ),
-  )
+      actions = { actions?.invoke() })
 }

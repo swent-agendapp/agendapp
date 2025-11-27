@@ -14,7 +14,14 @@ class SelectDateRangeTest {
   @Test
   fun screenElements_areDisplayedCorrectly() {
     composeTestRule.setContent {
-      SelectDateRangeScreen(title = "Example title", instruction = "Example instruction")
+      SelectDateRangeScreen(
+          onNext = {},
+          onBack = {},
+          title = "Title",
+          instruction = "Instruction",
+          onStartDateSelected = {},
+          onEndDateSelected = {},
+      )
     }
 
     composeTestRule.onNodeWithTag(ReplacementOrganizeTestTags.INSTRUCTION_TEXT).assertIsDisplayed()
@@ -26,7 +33,16 @@ class SelectDateRangeTest {
 
   @Test
   fun next_button_disabled_when_end_date_is_not_strictly_after_start_date() {
-    composeTestRule.setContent { SelectDateRangeScreen() }
+    composeTestRule.setContent {
+      SelectDateRangeScreen(
+          onNext = {},
+          onBack = {},
+          title = "Title",
+          instruction = "Instruction",
+          onStartDateSelected = {},
+          onEndDateSelected = {},
+      )
+    }
 
     composeTestRule
         .onNodeWithTag(ReplacementOrganizeTestTags.NEXT_BUTTON)

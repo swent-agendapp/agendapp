@@ -344,14 +344,16 @@ fun Agendapp(
                                 onNavigateBack = { navigationActions.navigateBack() })
                           }
 
-                // Map Settings Screen
-                composable(Screen.Map.route) {
-                  MapScreen(
-                      mapViewModel =
-                          MapViewModel(LocalContext.current.applicationContext as Application),
-                      onGoBack = { navigationActions.navigateBack() })
-                }
-              }
+                          // Map Settings Screen
+                          composable(Screen.Map.route) {
+                            MapScreen(
+                                mapViewModel =
+                                    MapViewModel(
+                                        LocalContext.current.applicationContext as Application),
+                                onGoBack = { navigationActions.navigateBack() })
+                          }
+                        }
+                  }
             }
       }
 }

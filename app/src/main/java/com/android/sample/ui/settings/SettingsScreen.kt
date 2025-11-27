@@ -66,8 +66,7 @@ fun SettingsScreen(
               Icons.Default.Business,
               "app_info_button",
               onClick = {
-                // Clear selected organization before navigating to organization list
-                selectedOrganizationViewModel.clearSelection()
+                // Navigate to organization list
                 onNavigateToOrganizationList()
               }))
 

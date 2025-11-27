@@ -22,6 +22,8 @@
     <string name="recurrenceMenuLabel">Wiederholung</string>
     <string name="finish">Fertig</string>
     <string name="create">Erstellen</string>
+    <string name="change">Änderung</string>
+    <string name="delete">Löschen</string>
     <string name="confirmationMessage">Herzlichen Glückwunsch!\nIhr Ereignis wurde erfolgreich erstellt und zum Kalender hinzugefügt</string>
     <string name="cancel">Abbrechen</string>
     <string name="default_web_client_id">423898020035-fu7m7lmtsuu6cn7d3s4ev4mrf0ep68l3.apps.googleusercontent.com</string>
@@ -189,7 +191,6 @@
     <string name="view_mode_5days">5 Tage</string>
     <string name="view_mode_7days">7 Tage</string>
     <string name="view_mode_month">Monat</string>
-    <string name="delete">Löschen</string>
     <string name="modify">Bearbeiten</string>
     <string name="delete_event_message">Sind Sie sicher, dass Sie dieses Ereignis löschen möchten?</string>
     <string name="replacement_list_title">Ereignis auswählen</string>
@@ -200,5 +201,7 @@
     <string name="organization_list_title">Ihre organisationen</string>
     <string name="organization_loading">Organisationen werden geladen</string>
     <string name="organization_name_label">Name der Organisation</string>
+    <string name="organization_none_selected">Keine Organisation ausgewählt</string>
+    <string name="organization_members">Mitglieder</string>
 
 </resources>

@@ -40,6 +40,7 @@ import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
 import com.android.sample.ui.organization.AddOrganizationScreen
 import com.android.sample.ui.organization.OrganizationListScreen
+import com.android.sample.ui.organization.OrganizationOverViewScreen
 import com.android.sample.ui.profile.AdminContactScreen
 import com.android.sample.ui.profile.ProfileScreen
 import com.android.sample.ui.replacement.ProcessReplacementScreen
@@ -286,7 +287,7 @@ fun Agendapp(
                       onNavigateToAdminInfo = { navigationActions.navigateTo(Screen.AdminContact) },
                       onNavigateToMapSettings = { navigationActions.navigateTo(Screen.Map) },
                       onNavigateToOrganizationList = {
-                        navigationActions.navigateTo(Screen.Organizations)
+                        navigationActions.navigateTo(Screen.OrganizationOverview)
                       })
                 }
                 // User profile Screen
@@ -305,6 +306,14 @@ fun Agendapp(
                 // Map Settings Screen
                 composable(Screen.Map.route) {
                   MapScreen(onGoBack = { navigationActions.navigateBack() })
+                }
+
+                // Organization Overview Screen
+                composable(Screen.OrganizationOverview.route) {
+                  OrganizationOverViewScreen(
+                      onNavigateBack = { navigationActions.navigateBack() },
+                      onChangeOrganization = { navigationActions.navigateTo(Screen.Organizations) },
+                      onDeleteOrganization = { navigationActions.navigateTo(Screen.Organizations) })
                 }
               }
             }

@@ -3,7 +3,6 @@ package com.android.sample.ui.hourrecap
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.FileDownload
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -15,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
 import com.android.sample.ui.calendar.components.DatePickerFieldToModal
 import com.android.sample.ui.common.PrimaryButton
+import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.theme.ElevationLow
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.PaddingSmall
@@ -27,6 +27,7 @@ import java.time.LocalDate
 
 /** Test tags for HourRecapScreen UI tests. */
 object HourRecapTestTags {
+  const val BACK_BUTTON = "hour_recap_back_button"
   const val SCREEN_ROOT = "hour_recap_screen_root"
   const val TOP_BAR = "hour_recap_top_bar"
   const val START_DATE = "hour_recap_start_date"
@@ -56,7 +57,6 @@ object HourRecapTestTags {
  *
  * @param onBackClick Callback invoked when the user presses the back navigation button.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HourRecapScreen(onBackClick: () -> Unit = {}) {
   var startDate by remember { mutableStateOf<LocalDate?>(null) }
@@ -68,19 +68,15 @@ fun HourRecapScreen(onBackClick: () -> Unit = {}) {
 
   Scaffold(
       topBar = {
-        TopAppBar(
+        SecondaryPageTopBar(
             modifier = Modifier.testTag(HourRecapTestTags.TOP_BAR),
-            title = { Text(stringResource(R.string.hour_recap_title)) },
-            navigationIcon = {
-              IconButton(onClick = onBackClick) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(R.string.goBack))
-              }
-            },
+            title = stringResource(R.string.hour_recap_title),
+            canGoBack = true,
+            onClick = onBackClick,
+            backButtonTestTags = HourRecapTestTags.BACK_BUTTON,
             actions = {
               IconButton(
-                  onClick = { /* Later: implement Excel export */},
+                  onClick = { /* Later: Export to Excel */},
                   modifier = Modifier.testTag(HourRecapTestTags.EXPORT_BUTTON)) {
                     Icon(
                         imageVector = Icons.Default.FileDownload,

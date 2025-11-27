@@ -1,9 +1,6 @@
-package com.android.sample.model.organizations.mockOrganizations
+package com.android.sample.model.organization.data
 
 import com.android.sample.model.authentication.User
-import com.android.sample.model.organization.Organization
-
-// Written by AI
 
 /** Provides mock organizations for ViewModel and repository testing. */
 fun getMockOrganizations(): MutableList<Organization> {

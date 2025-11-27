@@ -12,6 +12,7 @@ import com.android.sample.model.map.Location
 import com.android.sample.model.map.MapRepository
 import com.android.sample.model.map.MapRepositoryProvider
 import com.android.sample.model.map.Marker
+import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.model.LatLng
@@ -59,6 +60,16 @@ class MapViewModel(
   private val _state = MutableStateFlow(MapUiState())
   val state: StateFlow<MapUiState> = _state
 
+  private val selectedOrganizationId: StateFlow<String?> =
+      SelectedOrganizationRepository.selectedOrganizationId
+
+  // Helper function to get the selected organization ID or throw an exception if none is selected
+  fun getSelectedOrganizationId(): String {
+    val orgId = selectedOrganizationId.value
+    require(orgId != null) { "No organization selected" }
+    return orgId
+  }
+
   init {
     val apiKey = BuildConfig.MAPS_API_KEY
     Places.initializeWithNewPlacesApiEnabled(app, apiKey)
@@ -70,7 +81,7 @@ class MapViewModel(
    */
   fun fetchAllArea() {
     viewModelScope.launch {
-      val areas = mapRepository.getAllAreas()
+      val areas = mapRepository.getAllAreas(getSelectedOrganizationId())
       _state.value = _state.value.copy(listArea = areas)
     }
   }
@@ -87,10 +98,14 @@ class MapViewModel(
    */
   fun createNewArea() {
     viewModelScope.launch {
-      _state.value.listNewMarker.forEach { marker -> mapRepository.addMarker(marker) }
+      _state.value.listNewMarker.forEach { marker ->
+        mapRepository.addMarker(getSelectedOrganizationId(), marker)
+      }
       try {
         mapRepository.createArea(
-            label = _state.value.nextAreaName, markerIds = _state.value.listNewMarker.map { it.id })
+            orgId = getSelectedOrganizationId(),
+            label = _state.value.nextAreaName,
+            markerIds = _state.value.listNewMarker.map { it.id })
         _state.value = _state.value.copy(listNewMarker = emptyList(), nextAreaName = "Untitled")
         fetchAllArea()
       } catch (e: IllegalArgumentException) {

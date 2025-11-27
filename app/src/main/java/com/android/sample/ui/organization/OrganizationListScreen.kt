@@ -21,7 +21,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
-import com.android.sample.model.organization.Organization
+import com.android.sample.model.organization.data.Organization
 import com.android.sample.ui.common.ButtonItem
 import com.android.sample.ui.common.FloatingButton
 import com.android.sample.ui.common.Loading

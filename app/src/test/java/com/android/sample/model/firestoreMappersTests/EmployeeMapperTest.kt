@@ -2,8 +2,8 @@ package com.android.sample.model.firestoreMappersTests
 
 import com.android.sample.model.authentication.User
 import com.android.sample.model.firestoreMappers.EmployeeMapper
-import com.android.sample.model.organization.Employee
-import com.android.sample.model.organization.Role
+import com.android.sample.model.organization.data.Employee
+import com.android.sample.model.organization.data.Role
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot

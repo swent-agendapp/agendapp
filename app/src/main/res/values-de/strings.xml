@@ -199,5 +199,9 @@
     <string name="organization_list_title">Ihre organisationen</string>
     <string name="organization_loading">Organisationen werden geladen</string>
     <string name="organization_name_label">Name der Organisation</string>
+    <string name="hour_recap_results_title">Gesamtstunden pro Mitarbeiter im ausgewählten Zeitraum:</string>
+    <string name="hour_recap_title">Gesamtstunden pro Mitarbeiter</string>
+    <string name="hour_recap_generate">Zusammenfassung erstellen</string>
+    <string name="export_excel">Nach Excel exportieren</string>
 
 </resources>

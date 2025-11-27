@@ -83,6 +83,9 @@ class CreateInvitationViewModel(
       val selectedOrganization =
           organizationRepository.getOrganizationById(selectedOrganizationId, user)
               ?: throw IllegalStateException("Selected organization not found.")
+      if (!selectedOrganization.admins.contains(user)) {
+        throw IllegalStateException("Only organization admins can create invitations.")
+      }
       repeat(_uiState.value.count) {
         val invitation = Invitation.create(selectedOrganization)
         invitationRepository.insertInvitation(item = invitation, user = user)

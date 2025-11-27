@@ -26,6 +26,7 @@ class ReplacementRepositoryFirebaseTest : FirebaseEmulatedTest() {
   @Before
   override fun setUp() {
     super.setUp()
+    repository = createInitializedReplacementRepository()
 
     sampleEvent =
         createEvent(

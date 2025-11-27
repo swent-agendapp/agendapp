@@ -6,17 +6,19 @@ import androidx.compose.ui.test.onNodeWithTag
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.components.AddEventConfirmationScreen
 import com.android.sample.ui.calendar.components.EventSummaryCardTags
+import com.android.sample.utils.FirebaseEmulatedTest
 import java.time.LocalDate
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class AddEventConfirmationScreenTest {
+class AddEventConfirmationScreenTest : FirebaseEmulatedTest() {
 
   @get:Rule val composeTestRule = createComposeRule()
 
   @Before
-  fun setUp() {
+  override fun setUp() {
+    super.setUp()
     composeTestRule.setContent { AddEventConfirmationScreen() }
   }
 

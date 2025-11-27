@@ -1,5 +1,8 @@
 package com.android.sample.ui.addEvent
 
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
@@ -9,6 +12,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
+import com.android.sample.ui.calendar.addEvent.components.AddEventTitleAndDescriptionBottomBar
 import com.android.sample.ui.calendar.addEvent.components.AddEventTitleAndDescriptionScreen
 import org.junit.Before
 import org.junit.Rule
@@ -19,7 +23,13 @@ class AddEventTitleScreenTest {
 
   @Before
   fun setUp() {
-    composeTestRule.setContent { AddEventTitleAndDescriptionScreen() }
+    composeTestRule.setContent {
+      Scaffold(
+          content = { padding ->
+            AddEventTitleAndDescriptionScreen(modifier = Modifier.padding(padding))
+          },
+          bottomBar = { AddEventTitleAndDescriptionBottomBar() })
+    }
   }
 
   @Test

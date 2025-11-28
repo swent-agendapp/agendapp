@@ -6,7 +6,10 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.GrantPermissionRule
 import com.android.sample.model.map.MapRepositoryLocal
+import com.android.sample.model.organization.repository.SelectedOrganizationRepository
+import com.google.android.gms.maps.model.LatLng
 import org.junit.Assert.*
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -35,6 +38,12 @@ class MapViewModelTestWithPermission {
 
   @get:Rule val composeTestRule = createComposeRule()
 
+  @Before
+  fun setup() {
+    // Set a selected organization before tests
+    SelectedOrganizationRepository.changeSelectedOrganization("testOrg")
+  }
+
   @Test
   fun `check area name is correct`() {
     val vm = MapViewModel(ApplicationProvider.getApplicationContext(), repository)
@@ -60,8 +69,8 @@ class MapViewModelTestWithPermission {
   fun `create area with 2 marker make an error and clean it`() {
 
     val vm = MapViewModel(ApplicationProvider.getApplicationContext(), repository)
-    vm.addNewMarker(com.google.android.gms.maps.model.LatLng(0.0, 0.0))
-    vm.addNewMarker(com.google.android.gms.maps.model.LatLng(1.0, 0.0))
+    vm.addNewMarker(LatLng(0.0, 0.0))
+    vm.addNewMarker(LatLng(1.0, 0.0))
 
     assertEquals(2, vm.state.value.listNewMarker.size)
     vm.createNewArea()

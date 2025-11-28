@@ -101,9 +101,10 @@
 
     <!-- Recurrence -->
     <string name="recurrence_one_time">Une fois</string>
-    <string name="recurrence_weekly">Hebdomadaire</string>
-    <string name="recurrence_monthly">Mensuel</string>
-    <string name="recurrence_yearly">Annuel</string>
+    <string name="recurrence_daily">Tous les jours</string>
+    <string name="recurrence_weekly">Toutes les semaines</string>
+    <string name="recurrence_monthly">Tous les mois</string>
+    <string name="recurrence_yearly">Tous les ans</string>
 
     <!-- Sign In -->
     <string name="sign_in_app_title">Agendapp</string>
@@ -112,7 +113,6 @@
     <string name="sign_in_button_text">Se connecter avec Google</string>
     <string name="sign_in_logout_content_description">Se déconnecter</string>
     <string name="sign_in_logo_content_description">Logo de l’application</string>
-    <string name="sign_in_cancelled_error">Connexion annulée</string>
     <string name="sign_in_credentials_error">Échec de la récupération des identifiants : %1$s</string>
     <string name="sign_in_unexpected_error">Erreur inattendue : %1$s</string>
 
@@ -203,5 +203,10 @@
     <string name="organization_name_label">Nom de l’organisation</string>
     <string name="organization_none_selected">Aucune organisation sélectionnée</string>
     <string name="organization_members">Membres</string>
+  
+    <string name="hour_recap_results_title">Total d\'heures par employé pour la période sélectionnée :</string>
+    <string name="hour_recap_title">Total d\'heures par employé</string>
+    <string name="hour_recap_generate">Générer le récapitulatif</string>
+    <string name="export_excel">Exporter vers Excel</string>
 
 </resources>

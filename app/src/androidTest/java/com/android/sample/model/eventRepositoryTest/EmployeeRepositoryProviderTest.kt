@@ -1,9 +1,9 @@
 package com.android.sample.model.eventRepositoryTest
 
-import com.android.sample.model.organization.Employee
-import com.android.sample.model.organization.EmployeeRepository
-import com.android.sample.model.organization.EmployeeRepositoryProvider
-import com.android.sample.model.organization.Role
+import com.android.sample.model.organization.data.Employee
+import com.android.sample.model.organization.data.Role
+import com.android.sample.model.organization.repository.EmployeeRepository
+import com.android.sample.model.organization.repository.EmployeeRepositoryProvider
 import org.junit.Assert.assertSame
 import org.junit.Test
 

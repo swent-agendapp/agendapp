@@ -204,4 +204,10 @@
     <string name="hour_recap_generate">Générer le récapitulatif</string>
     <string name="export_excel">Exporter vers Excel</string>
 
+    <!-- Invitations -->
+    <plurals name="create_invitation_button_text" tools:ignore="MissingQuantity">
+        <item quantity="one" tools:ignore="ImpliedQuantity">Créer une invitation</item>
+        <item quantity="other">Créer %d invitations</item>
+    </plurals>
+
 </resources>

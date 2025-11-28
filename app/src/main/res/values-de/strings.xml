@@ -204,4 +204,10 @@
     <string name="hour_recap_generate">Zusammenfassung erstellen</string>
     <string name="export_excel">Nach Excel exportieren</string>
 
+    <!-- Invitations -->
+    <plurals name="create_invitation_button_text">
+        <item quantity="one">Einladung erstellen</item>
+        <item quantity="other">%d Einladungen erstellen</item>
+    </plurals>
+
 </resources>

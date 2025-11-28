@@ -204,6 +204,12 @@
     <string name="hour_recap_title">Total hours per employee</string>
     <string name="hour_recap_generate">Generate summary</string>
     <string name="export_excel">Export to Excel</string>
+
+    <!-- Invitations -->
+    <plurals name="create_invitation_button_text">
+        <item quantity="one">Create invitation</item>
+        <item quantity="other">Create %d invitations</item>
+    </plurals>
 </resources>
 
 

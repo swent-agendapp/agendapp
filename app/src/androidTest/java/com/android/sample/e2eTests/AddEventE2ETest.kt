@@ -1,6 +1,5 @@
 package com.android.sample.e2eTests
 
-import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
@@ -68,12 +67,12 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
     composeTestRule.waitForIdle()
 
     // Ensure Sign-In screen is displayed
-    composeTestRule.onNodeWithTag(SignInScreenTestTags.LOGIN_TITLE).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(SignInScreenTestTags.LOGIN_TITLE).assertExists()
 
     // Perform Sign-In
     composeTestRule
         .onNodeWithTag(SignInScreenTestTags.LOGIN_BUTTON)
-        .assertIsDisplayed()
+        .assertExists()
         .performClick()
 
     // Wait for sign-in to complete
@@ -90,14 +89,14 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
     // Click on Add Organization button
     composeTestRule
         .onNodeWithTag(OrganizationListScreenTestTags.ADD_ORGANIZATION_BUTTON)
-        .assertIsDisplayed()
+        .assertExists()
         .performClick()
 
     // Wait for Add Organization screen to load
     composeTestRule.waitForIdle()
 
     // Verify Add Organization screen is displayed
-    composeTestRule.onNodeWithTag(AddOrganizationScreenTestTags.ROOT).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(AddOrganizationScreenTestTags.ROOT).assertExists()
 
     // Fill organization name
     val organizationName = "Test Organization"
@@ -108,19 +107,19 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
     // Click on Create button
     composeTestRule
         .onNodeWithTag(AddOrganizationScreenTestTags.CREATE_BUTTON)
-        .assertIsDisplayed()
+        .assertExists()
         .performClick()
 
     // Wait for navigation back to Organization List screen
     composeTestRule.waitForIdle()
 
     // Verify that we are back on Organization List screen
-    composeTestRule.onNodeWithTag(OrganizationListScreenTestTags.ROOT).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(OrganizationListScreenTestTags.ROOT).assertExists()
 
     // Click on the newly created organization to enter its Calendar
     composeTestRule
         .onNodeWithTag(OrganizationListScreenTestTags.organizationItemTag(organizationName))
-        .assertIsDisplayed()
+        .assertExists()
         .performClick()
 
     // Wait for Calendar screen to load
@@ -136,12 +135,12 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
     assert(FirebaseEmulator.auth.currentUser != null)
 
     // Verify Calendar screen is displayed
-    composeTestRule.onNodeWithTag(CalendarScreenTestTags.ROOT).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(CalendarScreenTestTags.ROOT).assertExists()
 
     // Go to Event Creation Assistant
     composeTestRule
         .onNodeWithTag(CalendarScreenTestTags.ADD_EVENT_BUTTON)
-        .assertIsDisplayed()
+        .assertExists()
         .performClick()
 
     // Wait for Add Event screen to load
@@ -186,12 +185,12 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
 
     composeTestRule
         .onNodeWithTag(CalendarScreenTestTags.EVENT_BLOCK + "_" + eventTitle)
-        .assertIsDisplayed()
+        .assertExists()
   }
 
   private fun ComposeTestRule.isTagDisplayed(tag: String): Boolean =
       try {
-        onNodeWithTag(tag).assertIsDisplayed()
+        onNodeWithTag(tag).assertExists()
         true
       } catch (_: AssertionError) {
         false

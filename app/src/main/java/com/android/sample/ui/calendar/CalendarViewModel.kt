@@ -24,7 +24,8 @@ import kotlinx.coroutines.launch
 data class CalendarUIState(
     val events: List<Event> = emptyList(),
     val errorMsg: String? = null,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val workedHours: List<Pair<String, Double>> = emptyList()
 )
 
 /**
@@ -123,5 +124,28 @@ class CalendarViewModel(
           eventRepository.getEventsBetweenDates(orgId = orgId, startDate = start, endDate = end)
         },
         errorMessage = "Failed to load events between $start and $end")
+  }
+
+  /**
+   * Calculates the total worked hours for each employee within a given time range.
+   *
+   * @param start The start of the time range.
+   * @param end The end of the time range.
+   */
+  fun calculateWorkedHours(start: Instant, end: Instant) {
+    val orgId = selectedOrganizationId.value
+    if (orgId == null) {
+      setErrorMsg("No organization selected")
+      return
+    }
+
+    viewModelScope.launch {
+      try {
+        val workedHours = eventRepository.calculateWorkedHours(orgId, start, end)
+        _uiState.value = _uiState.value.copy(workedHours = workedHours)
+      } catch (e: Exception) {
+        setErrorMsg("Failed to calculate worked hours: ${e.message}")
+      }
+    }
   }
 }

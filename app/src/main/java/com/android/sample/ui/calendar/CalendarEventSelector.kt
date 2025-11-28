@@ -45,8 +45,8 @@ object CalendarEventSelectorTestTags {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalendarEventSelector(
-    calendarViewModel: CalendarViewModel = viewModel(),
-    onEventClick: (Event) -> Unit = {}
+  calendarViewModel: CalendarViewModel = viewModel(factory = CalendarViewModel.Factory),
+  onEventClick: (Event) -> Unit = {}
 ) {
   val context = LocalContext.current
   val uiState by calendarViewModel.uiState.collectAsState()

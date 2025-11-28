@@ -3,8 +3,10 @@ package com.android.sample.ui.calendar.addEvent.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -26,9 +28,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
+import com.android.sample.ui.calendar.components.ColorSelector
 import com.android.sample.ui.calendar.components.ValidatingTextField
 import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.theme.PaddingExtraLarge
+import com.android.sample.ui.theme.SpacingExtraLarge
 import com.android.sample.ui.theme.WeightExtraHeavy
 import com.android.sample.ui.theme.WeightMedium
 
@@ -74,6 +78,14 @@ fun AddEventTitleAndDescriptionScreen(
               value = newEventUIState.title,
               onValueChange = { addEventViewModel.setTitle(it) },
               onFocusChange = { focusState -> if (focusState.isFocused) titleTouched = true })
+
+          ColorSelector(
+              selectedColor = newEventUIState.color,
+              onColorSelected = { addEventViewModel.setColor(it) },
+              testTag = AddEventTestTags.COLOR_SELECTOR,
+          )
+
+          Spacer(modifier = Modifier.height(SpacingExtraLarge))
 
           ValidatingTextField(
               label = stringResource(R.string.eventDescription),

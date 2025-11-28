@@ -58,6 +58,7 @@ val ElevationHigh = 12.dp
 
 // widths and heights
 val widthLarge = 120.dp
+val heightMedium = 40.dp
 val heightLarge = 60.dp
 val BarWidthSmall = 4.dp
 val BarWidthMedium = 18.dp

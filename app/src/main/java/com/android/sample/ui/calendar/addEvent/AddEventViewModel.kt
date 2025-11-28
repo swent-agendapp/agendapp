@@ -1,6 +1,7 @@
 package com.android.sample.ui.calendar.addEvent
 
 import android.util.Log
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.sample.model.authorization.AuthorizationService
@@ -11,6 +12,7 @@ import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
+import com.android.sample.ui.theme.EventPalette
 import java.time.Duration
 import java.time.Instant
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,6 +47,7 @@ data class AddCalendarEventUIState(
     val recurrenceEndInstant: Instant = Instant.now().plus(Duration.ofHours(1)),
     val recurrenceMode: RecurrenceStatus = RecurrenceStatus.OneTime,
     val participants: Set<String> = emptySet(),
+    val color: Color = EventPalette.Blue,
     val errorMsg: String? = null,
     val draftEvent: Event = createEvent(organizationId = "").first(),
     val step: AddEventStep = AddEventStep.TITLE_AND_DESC
@@ -137,7 +140,8 @@ class AddEventViewModel(
             personalNotes = "",
             participants = currentState.participants,
             recurrence = currentState.recurrenceMode,
-            endRecurrence = currentState.recurrenceEndInstant)
+            endRecurrence = currentState.recurrenceEndInstant,
+            color = currentState.color)
     newEvents.forEach { event -> addEventToRepository(event) }
   }
 
@@ -257,6 +261,11 @@ class AddEventViewModel(
   /** Sets the end date for the recurrence rule. Ignored when recurrence mode is OneTime. */
   fun setRecurrenceEndTime(recurrenceEndTime: Instant) {
     _uiState.value = _uiState.value.copy(recurrenceEndInstant = recurrenceEndTime)
+  }
+
+  /** Updates the color of the event. */
+  fun setColor(color: Color) {
+    _uiState.value = _uiState.value.copy(color = color)
   }
 
   /**

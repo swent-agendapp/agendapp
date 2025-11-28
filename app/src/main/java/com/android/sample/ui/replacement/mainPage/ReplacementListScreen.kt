@@ -241,7 +241,7 @@ private fun ReplacementRequestCard(
 
       Text(
           text =
-             stringResource(
+              stringResource(
                   R.string.replacement_substituted_label,
                   data.absentDisplayName,
               ),

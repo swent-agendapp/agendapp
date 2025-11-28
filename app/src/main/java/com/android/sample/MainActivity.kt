@@ -29,6 +29,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.android.sample.model.authentication.AuthRepositoryProvider
+import com.android.sample.model.organization.data.getMockOrganizations
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementRepositoryProvider
 import com.android.sample.model.replacement.ReplacementStatus
@@ -280,8 +281,10 @@ fun Agendapp(
                             onSendRequests = { selectedSubstitutes ->
                               scope.launch {
                                 try {
+                                  val organizationId = getMockOrganizations().last().id
                                   val original =
-                                      replacementRepository.getReplacementById(replacementId)
+                                      replacementRepository.getReplacementById(
+                                          organizationId, replacementId)
 
                                   if (original == null) {
                                     Log.e(
@@ -298,7 +301,8 @@ fun Agendapp(
                                               status = ReplacementStatus.WaitingForAnswer,
                                           )
 
-                                      replacementRepository.insertReplacement(request)
+                                      replacementRepository.insertReplacement(
+                                          organizationId, request)
                                     }
 
                                     navigationActions.navigateTo(Screen.ReplacementOverview)
@@ -313,7 +317,6 @@ fun Agendapp(
                         )
                       }
                     }
-
                     // Settings Graph
                     navigation(
                         startDestination = Screen.Settings.route, route = Screen.Settings.name) {

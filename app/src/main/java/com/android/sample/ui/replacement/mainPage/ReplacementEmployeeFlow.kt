@@ -7,6 +7,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.model.replacement.Replacement
+import com.android.sample.ui.calendar.replacementEmployee.ReplacementEmployeeStep
+import com.android.sample.ui.calendar.replacementEmployee.ReplacementEmployeeViewModel
 import com.android.sample.ui.replacement.components.SelectDateRangeScreen
 import com.android.sample.ui.replacement.components.SelectEventScreen
 import java.time.ZoneId
@@ -63,6 +65,7 @@ fun ReplacementEmployeeFlow(
           onStartDateSelected = { viewModel.setStartDate(it) },
           onEndDateSelected = { viewModel.setEndDate(it) })
     }
+    else -> {}
   }
 }
 

@@ -89,6 +89,9 @@
 
     <!-- Calendar -->
     <string name="calendar_screen_title">Kalender</string>
+    <string name="location_status_inside">Innerhalb</string>
+    <string name="location_status_outside">Außerhalb</string>
+    <string name="location_status_no_permission">Kein Standort</string>
     <string name="replacement">Ersetzung</string>
 
     <!-- Date Picker -->

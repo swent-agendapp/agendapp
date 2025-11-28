@@ -33,6 +33,7 @@ import com.android.sample.ui.common.FloatingButton
 import com.android.sample.ui.common.MainPageTopBar
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
+import com.android.sample.ui.theme.Palette
 
 object CalendarScreenTestTags {
   // Top-level calendar screen tags
@@ -134,22 +135,24 @@ fun CalendarScreen(
  * - Red: User is outside all areas
  * - Grey: User hasn't granted location permission
  *
+ * assisted by AI
+ *
  * @param locationStatus The current location status.
  */
 @Composable
 fun LocationStatusChip(locationStatus: LocationStatus) {
   val chipColor =
       when (locationStatus) {
-        LocationStatus.INSIDE_AREA -> Color(0xFF4CAF50) // Green
-        LocationStatus.OUTSIDE_AREA -> Color(0xFFF44336) // Red
-        LocationStatus.NO_PERMISSION -> Color(0xFF9E9E9E) // Grey
+        LocationStatus.INSIDE_AREA -> Palette.DarkSeaGreen
+        LocationStatus.OUTSIDE_AREA -> Palette.Firebrick
+        LocationStatus.NO_PERMISSION -> Palette.LightGray
       }
 
   val chipText =
       when (locationStatus) {
-        LocationStatus.INSIDE_AREA -> "Inside"
-        LocationStatus.OUTSIDE_AREA -> "Outside"
-        LocationStatus.NO_PERMISSION -> "No Location"
+        LocationStatus.INSIDE_AREA -> stringResource(R.string.location_status_inside)
+        LocationStatus.OUTSIDE_AREA -> stringResource(R.string.location_status_outside)
+        LocationStatus.NO_PERMISSION -> stringResource(R.string.location_status_no_permission)
       }
 
   AssistChip(

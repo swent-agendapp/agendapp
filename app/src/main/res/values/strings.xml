@@ -130,6 +130,9 @@
 
     <!-- Calendar -->
     <string name="calendar_screen_title">Calendar</string>
+    <string name="location_status_inside">Inside</string>
+    <string name="location_status_outside">Outside</string>
+    <string name="location_status_no_permission">No Location</string>
 
     <!-- Date Picker -->
     <string name="date_picker_placeholder">DD/MM/YYYY</string>

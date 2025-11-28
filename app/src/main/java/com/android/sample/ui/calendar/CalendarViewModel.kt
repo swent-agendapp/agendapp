@@ -164,8 +164,8 @@ class CalendarViewModel(
   fun checkUserLocationStatus() {
     viewModelScope.launch {
       val orgId = selectedOrganizationId.value
-      if (orgId == null)
-          throw IllegalArgumentException("You must join an Organisation for this feature")
+      requireNotNull(orgId) { "You must join an Organisation for this feature" }
+
       try {
         val areas = mapRepository.getAllAreas(orgId = orgId)
         val isInside = locationRepository.isUserLocationInAreas(areas)

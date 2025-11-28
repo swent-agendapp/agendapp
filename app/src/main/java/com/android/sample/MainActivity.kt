@@ -62,10 +62,7 @@ object MainActivityTestTags {
 class MainActivity : ComponentActivity() {
 
   private val locationPermissionLauncher =
-      registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-        // Permission result - no immediate action needed
-        // The LocationRepository will check permission when needed
-      }
+      registerForActivityResult(ActivityResultContracts.RequestPermission()) { _ -> }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

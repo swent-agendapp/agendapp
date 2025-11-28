@@ -5,7 +5,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
-import com.android.sample.model.organization.SelectedOrganizationRepository
+import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.editEvent.EditEventTestTags
 import com.android.sample.ui.calendar.editEvent.EditEventViewModel
 import com.android.sample.ui.calendar.editEvent.components.EditEventAttendantScreen

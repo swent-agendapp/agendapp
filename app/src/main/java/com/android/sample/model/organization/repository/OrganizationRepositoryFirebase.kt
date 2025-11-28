@@ -1,8 +1,9 @@
-package com.android.sample.model.organization
+package com.android.sample.model.organization.repository
 
 import com.android.sample.model.authentication.User
 import com.android.sample.model.constants.FirestoreConstants
 import com.android.sample.model.firestoreMappers.OrganizationMapper
+import com.android.sample.model.organization.data.Organization
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 

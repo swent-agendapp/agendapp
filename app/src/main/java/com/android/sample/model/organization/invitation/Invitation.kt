@@ -1,6 +1,6 @@
 package com.android.sample.model.organization.invitation
 
-import com.android.sample.model.organization.Organization
+import com.android.sample.model.organization.data.Organization
 import java.time.Instant
 import java.util.UUID
 

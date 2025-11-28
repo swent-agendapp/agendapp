@@ -16,7 +16,7 @@ interface MapRepository {
    *
    * @param marker The Marker to store.
    */
-  fun addMarker(marker: Marker)
+  fun addMarker(orgId: String, marker: Marker)
 
   /**
    * Remove a marker by its id.
@@ -25,7 +25,7 @@ interface MapRepository {
    *
    * @param id The identifier of the marker to remove.
    */
-  fun removeMarker(id: String)
+  fun removeMarker(orgId: String, id: String)
 
   /**
    * Retrieve a marker by id.
@@ -33,21 +33,21 @@ interface MapRepository {
    * @param id The marker id to look up.
    * @return The Marker if found, or null otherwise.
    */
-  fun getMarkerById(id: String): Marker?
+  fun getMarkerById(orgId: String, id: String): Marker?
 
   /**
    * Return all markers currently stored.
    *
    * A snapshot list is returned to avoid exposing the internal mutable collection.
    */
-  fun getAllMarkers(): List<Marker>
+  fun getAllMarkers(orgId: String): List<Marker>
 
   /**
    * Return the ids of all stored markers.
    *
    * Useful for clients that want to create areas by referencing marker ids.
    */
-  fun getAllMarkersIds(): List<String>
+  fun getAllMarkersIds(orgId: String): List<String>
 
   /**
    * Create a new Area from a list of marker ids and add it in the repository.
@@ -61,17 +61,21 @@ interface MapRepository {
    * @param markerIds List of marker ids to include in the area. Defaults to all markers currently
    *   stored.
    */
-  suspend fun createArea(label: String? = null, markerIds: List<String> = getAllMarkersIds())
+  suspend fun createArea(
+      orgId: String,
+      label: String? = null,
+      markerIds: List<String> = getAllMarkersIds(orgId)
+  )
 
   /**
    * Return all areas currently stored.
    *
    * A snapshot list is returned to avoid exposing internal mutable collection.
    */
-  suspend fun getAllAreas(): List<Area>
+  suspend fun getAllAreas(orgId: String): List<Area>
 
   /** Return the ids of all stored areas. */
-  fun getAllAreasIds(): List<String>
+  fun getAllAreasIds(orgId: String): List<String>
 
   /**
    * Retrieve an area by id.
@@ -79,5 +83,5 @@ interface MapRepository {
    * @param id The area id to look up.
    * @return The Area if found, or null otherwise.
    */
-  fun getAreaById(id: String): Area?
+  fun getAreaById(orgId: String, id: String): Area?
 }

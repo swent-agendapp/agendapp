@@ -2,8 +2,8 @@ package com.android.sample.ui.organization
 
 import com.android.sample.model.authentication.FakeAuthRepository
 import com.android.sample.model.authentication.User
-import com.android.sample.model.organization.Organization
-import com.android.sample.model.organization.OrganizationRepositoryLocal
+import com.android.sample.model.organization.data.Organization
+import com.android.sample.model.organization.repository.OrganizationRepositoryLocal
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 

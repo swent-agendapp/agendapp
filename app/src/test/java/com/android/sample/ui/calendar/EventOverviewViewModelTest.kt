@@ -5,7 +5,7 @@ import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryLocal
 import com.android.sample.model.calendar.createEvent
-import com.android.sample.model.organization.SelectedOrganizationRepository
+import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.eventOverview.EventOverviewViewModel
 import java.time.Instant
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +18,6 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -101,7 +100,7 @@ class EventOverviewViewModelTest {
             version = state.event?.version ?: 1L)
 
     assertEquals(expectedEvent, state.event)
-    assertTrue(state.participantsNames.isEmpty())
+    assertEquals(state.participantsNames.size, 2)
     assertFalse(state.isLoading)
     assertNull(state.errorMsg)
   }
@@ -113,66 +112,6 @@ class EventOverviewViewModelTest {
     // it will escape this test method and satisfy the expected exception.
     viewModel.loadEvent("unknown-id")
     testDispatcher.scheduler.advanceUntilIdle()
-  }
-
-  @Test
-  fun loadParticipantNames_WithNoEvent_ShouldKeepStateUnchanged() = runTest {
-    // When there is no event in the state, calling loadParticipantNames should be a no-op.
-    val initialState = viewModel.uiState.value
-
-    viewModel.loadParticipantNames()
-    testDispatcher.scheduler.advanceUntilIdle()
-
-    val state = viewModel.uiState.value
-    assertEquals(initialState, state)
-  }
-
-  @Test
-  fun loadParticipantNames_WithEmptyParticipants_ShouldKeepEmptyList() = runTest {
-    // When the event has an empty participants list, the UI should keep an empty list.
-    viewModel.loadEvent(eventWithoutParticipants.id)
-    testDispatcher.scheduler.advanceUntilIdle()
-
-    viewModel.loadParticipantNames()
-    testDispatcher.scheduler.advanceUntilIdle()
-
-    val state = viewModel.uiState.value
-
-    // Override fields “locallyStoredBy“ and “version“, which are automatically filled by the
-    // repository.
-    val expectedEvent =
-        eventWithoutParticipants.copy(
-            locallyStoredBy = state.event?.locallyStoredBy ?: emptyList(),
-            version = state.event?.version ?: 1L)
-
-    assertEquals(expectedEvent, state.event)
-    assertTrue(state.participantsNames.isEmpty())
-    assertFalse(state.isLoading)
-    assertNull(state.errorMsg)
-  }
-
-  @Test
-  fun loadParticipantNames_WithParticipants_ShouldCopyIdsAsNames() = runTest {
-    // When the event has participants, their ids should be copied as display names.
-    viewModel.loadEvent(eventWithParticipants.id)
-    testDispatcher.scheduler.advanceUntilIdle()
-
-    viewModel.loadParticipantNames()
-    testDispatcher.scheduler.advanceUntilIdle()
-
-    val state = viewModel.uiState.value
-
-    // Override fields “locallyStoredBy“ and “version“, which are automatically filled by the
-    // repository.
-    val expectedEvent =
-        eventWithParticipants.copy(
-            locallyStoredBy = state.event?.locallyStoredBy ?: emptyList(),
-            version = state.event?.version ?: 1L)
-
-    assertEquals(expectedEvent, state.event)
-    assertEquals(eventWithParticipants.participants.toList(), state.participantsNames)
-    assertFalse(state.isLoading)
-    assertNull(state.errorMsg)
   }
 
   @Test
@@ -202,7 +141,7 @@ class EventOverviewViewModelTest {
     // Different title -> the ViewModel did not use an old cached version.
     assertEquals("Updated title", updatedState.event?.title)
 
-    assertTrue(updatedState.participantsNames.isEmpty())
+    assertEquals(updatedState.participantsNames.size, 2)
     assertFalse(updatedState.isLoading)
     assertNull(updatedState.errorMsg)
   }

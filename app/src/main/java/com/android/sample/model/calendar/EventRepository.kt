@@ -84,4 +84,54 @@ interface EventRepository {
       startDate: Instant,
       endDate: Instant
   ): List<Event>
+
+  /**
+   * Calculates worked hours for past events between the given time range. Only counts hours for
+   * employees who were marked as present. Events are considered "past" if their start date is at or
+   * before the current time (startDate <= now).
+   *
+   * @param orgId The organization ID.
+   * @param start The start of the time range.
+   * @param end The end of the time range.
+   * @return A list of employee IDs paired with their worked hours.
+   * @throws IllegalArgumentException if organization is not found.
+   */
+  suspend fun calculateWorkedHoursPastEvents(
+      orgId: String,
+      start: Instant,
+      end: Instant
+  ): List<Pair<String, Double>>
+
+  /**
+   * Calculates worked hours for future events between the given time range. Assumes all
+   * participants will be present. Events are considered "future" if their start date is strictly
+   * after the current time (startDate > now).
+   *
+   * @param orgId: The organization ID.
+   * @param start The start of the time range.
+   * @param end The end of the time range.
+   * @return A list of employee IDs paired with their worked hours.
+   * @throws IllegalArgumentException if organization is not found.
+   */
+  suspend fun calculateWorkedHoursFutureEvents(
+      orgId: String,
+      start: Instant,
+      end: Instant
+  ): List<Pair<String, Double>>
+
+  /**
+   * Calculates total worked hours combining both past and future events. For past events (startDate
+   * <= now), checks presence. For future events (startDate > now), assumes participation.
+   *
+   * @param orgId The organization ID.
+   * @param start The start of the time range.
+   * @param end The end of the time range.
+   * @return A list of employee IDs paired with their total worked hours.
+   * @throws IllegalArgumentException if organization is not found.
+   */
+  suspend fun calculateWorkedHours(
+      orgId: String,
+      start: Instant,
+      end: Instant
+  ): List<Pair<String, Double>>
 }

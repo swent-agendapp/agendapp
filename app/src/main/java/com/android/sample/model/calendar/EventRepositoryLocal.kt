@@ -2,7 +2,7 @@ package com.android.sample.model.calendar
 
 import java.time.Instant
 
-class EventRepositoryLocal() : EventRepository {
+class EventRepositoryLocal() : BaseEventRepository() {
 
   // In-memory storage for events : map of organization ID to list of events
   private val eventsByOrganization: MutableMap<String, MutableList<Event>> = mutableMapOf()
@@ -103,5 +103,9 @@ class EventRepositoryLocal() : EventRepository {
     }
 
     return retrievedEvents
+  }
+
+  override suspend fun ensureOrganizationExists(orgId: String) {
+    require(eventsByOrganization.containsKey(orgId)) { "Organization with id $orgId not found" }
   }
 }

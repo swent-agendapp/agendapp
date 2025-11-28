@@ -1,11 +1,12 @@
 package com.android.sample.ui.calendar
 
+import androidx.compose.ui.graphics.Color
 import com.android.sample.model.authorization.AuthorizationService
 import com.android.sample.model.calendar.*
-import com.android.sample.model.organization.Employee
-import com.android.sample.model.organization.EmployeeRepository
-import com.android.sample.model.organization.Role
-import com.android.sample.model.organization.SelectedOrganizationRepository
+import com.android.sample.model.organization.data.Employee
+import com.android.sample.model.organization.data.Role
+import com.android.sample.model.organization.repository.EmployeeRepository
+import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
 import java.time.Duration
 import java.time.Instant
@@ -64,6 +65,16 @@ class AddEventViewModelTest {
     val vm = makeAdminVm()
     vm.setTitle("SwEnt Meeting")
     assertEquals("SwEnt Meeting", vm.uiState.value.title)
+  }
+
+  @Test
+  fun `setColor updates the color in UI state`() {
+    val vm = makeAdminVm()
+    val newColor = Color(0xFFFF0000)
+
+    vm.setColor(newColor)
+
+    assertEquals(newColor, vm.uiState.value.color)
   }
 
   @Test

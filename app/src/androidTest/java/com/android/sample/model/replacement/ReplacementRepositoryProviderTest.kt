@@ -16,23 +16,33 @@ class ReplacementRepositoryProviderTest {
   fun repository_returns_the_instance_we_set() {
     val fake =
         object : ReplacementRepository {
-          override suspend fun getAllReplacements(): List<Replacement> = emptyList()
+          override suspend fun getAllReplacements(orgId: String): List<Replacement> = emptyList()
 
-          override suspend fun insertReplacement(item: Replacement) {}
+          override suspend fun insertReplacement(orgId: String, item: Replacement) {}
 
-          override suspend fun updateReplacement(itemId: String, item: Replacement) {}
+          override suspend fun updateReplacement(
+              orgId: String,
+              itemId: String,
+              item: Replacement
+          ) {}
 
-          override suspend fun deleteReplacement(itemId: String) {}
+          override suspend fun deleteReplacement(orgId: String, itemId: String) {}
 
-          override suspend fun getReplacementById(itemId: String): Replacement? = null
+          override suspend fun getReplacementById(orgId: String, itemId: String): Replacement? =
+              null
 
-          override suspend fun getReplacementsByAbsentUser(userId: String): List<Replacement> =
-              emptyList()
+          override suspend fun getReplacementsByAbsentUser(
+              orgId: String,
+              userId: String
+          ): List<Replacement> = emptyList()
 
-          override suspend fun getReplacementsBySubstituteUser(userId: String): List<Replacement> =
-              emptyList()
+          override suspend fun getReplacementsBySubstituteUser(
+              orgId: String,
+              userId: String
+          ): List<Replacement> = emptyList()
 
           override suspend fun getReplacementsByStatus(
+              orgId: String,
               status: ReplacementStatus
           ): List<Replacement> = emptyList()
         }

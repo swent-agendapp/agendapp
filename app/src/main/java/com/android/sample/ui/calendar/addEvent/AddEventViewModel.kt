@@ -1,6 +1,7 @@
 package com.android.sample.ui.calendar.addEvent
 
 import android.util.Log
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.sample.model.authorization.AuthorizationService
@@ -11,6 +12,7 @@ import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
+import com.android.sample.ui.theme.EventPalette
 import java.time.Duration
 import java.time.Instant
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,7 +47,9 @@ data class AddCalendarEventUIState(
     val recurrenceEndInstant: Instant = Instant.now().plus(Duration.ofHours(1)),
     val recurrenceMode: RecurrenceStatus = RecurrenceStatus.OneTime,
     val participants: Set<String> = emptySet(),
+    val color: Color = EventPalette.Blue,
     val errorMsg: String? = null,
+    val draftEvent: Event = createEvent(organizationId = "").first(),
     val step: AddEventStep = AddEventStep.TITLE_AND_DESC
 )
 
@@ -77,14 +81,44 @@ class AddEventViewModel(
     selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel
 ) : ViewModel() {
-  private val _uiState = MutableStateFlow(AddCalendarEventUIState())
 
   /** Public immutable state that the UI observes. */
+  private val _uiState = MutableStateFlow(AddCalendarEventUIState())
   val uiState: StateFlow<AddCalendarEventUIState> = _uiState.asStateFlow()
 
   val selectedOrganizationId: StateFlow<String?> =
       selectedOrganizationViewModel.selectedOrganizationId
 
+  /**
+   * Builds and returns the draft `Event` used for the summary/confirmation screen.
+   *
+   * This method extracts all fields from the current [AddCalendarEventUIState] and constructs the
+   * corresponding `Event` using `createEvent()`.
+   *
+   * This method is used for previewing the event details before the final confirmation step.
+   *
+   * @return The first `Event` instance representing the current draft for preview.
+   */
+  fun loadDraftEvent() {
+
+    val currentState = _uiState.value
+    val newDraftEvent =
+        createEvent(
+                repository = repository,
+                title = currentState.title,
+                description = currentState.description,
+                startDate = currentState.startInstant,
+                endDate = currentState.endInstant,
+                cloudStorageStatuses = emptySet(),
+                personalNotes = "",
+                participants = currentState.participants,
+                recurrence = currentState.recurrenceMode,
+                organizationId = "",
+                endRecurrence = currentState.recurrenceEndInstant)
+            .first()
+
+    _uiState.value = _uiState.value.copy(draftEvent = newDraftEvent)
+  }
   /**
    * Builds a new event from the current UI state and delegates storage. Calls
    * `addEventToRepository()` to persist the event.
@@ -106,7 +140,8 @@ class AddEventViewModel(
             personalNotes = "",
             participants = currentState.participants,
             recurrence = currentState.recurrenceMode,
-            endRecurrence = currentState.recurrenceEndInstant)
+            endRecurrence = currentState.recurrenceEndInstant,
+            color = currentState.color)
     newEvents.forEach { event -> addEventToRepository(event) }
   }
 
@@ -226,6 +261,11 @@ class AddEventViewModel(
   /** Sets the end date for the recurrence rule. Ignored when recurrence mode is OneTime. */
   fun setRecurrenceEndTime(recurrenceEndTime: Instant) {
     _uiState.value = _uiState.value.copy(recurrenceEndInstant = recurrenceEndTime)
+  }
+
+  /** Updates the color of the event. */
+  fun setColor(color: Color) {
+    _uiState.value = _uiState.value.copy(color = color)
   }
 
   /**

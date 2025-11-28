@@ -43,4 +43,28 @@ class FakeEventRepository : EventRepository {
       startDate: Instant,
       endDate: Instant
   ): List<Event> = events.filter { it.startDate >= startDate && it.endDate <= endDate }
+
+  override suspend fun calculateWorkedHoursPastEvents(
+      orgId: String,
+      start: Instant,
+      end: Instant
+  ): List<Pair<String, Double>> {
+    TODO("Not yet implemented")
+  }
+
+  override suspend fun calculateWorkedHoursFutureEvents(
+      orgId: String,
+      start: Instant,
+      end: Instant
+  ): List<Pair<String, Double>> {
+    TODO("Not yet implemented")
+  }
+
+  override suspend fun calculateWorkedHours(
+      orgId: String,
+      start: Instant,
+      end: Instant
+  ): List<Pair<String, Double>> {
+    TODO("Not yet implemented")
+  }
 }

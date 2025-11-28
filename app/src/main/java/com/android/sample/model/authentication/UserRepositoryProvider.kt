@@ -1,6 +1,5 @@
-package com.android.sample.model.organization.repository
+package com.android.sample.model.authentication
 
-import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 
@@ -11,7 +10,7 @@ import com.google.firebase.firestore.firestore
 object EmployeeRepositoryProvider {
   private val _repository: EmployeeRepository by lazy {
     // Change this to switch between different implementations
-    EmployeeRepositoryFirebase(Firebase.firestore, AuthRepositoryProvider.repository)
+    UsersRepositoryFirebase(Firebase.firestore, AuthRepositoryProvider.repository)
   }
 
   var repository: EmployeeRepository = _repository

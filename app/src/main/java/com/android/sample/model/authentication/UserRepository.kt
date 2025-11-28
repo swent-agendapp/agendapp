@@ -1,6 +1,6 @@
 package com.android.sample.model.authentication
 
-interface EmployeeRepository {
+interface UserRepository {
 
   /** @return The list of employees. */
   suspend fun getUsers(): List<User>

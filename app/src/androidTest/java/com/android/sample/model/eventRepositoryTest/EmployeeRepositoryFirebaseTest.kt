@@ -3,10 +3,8 @@ package com.android.sample.model.eventRepositoryTest
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.authentication.FakeAuthRepository
 import com.android.sample.model.authentication.User
-import com.android.sample.model.organization.data.Employee
-import com.android.sample.model.organization.data.Role
-import com.android.sample.model.organization.repository.EmployeeRepository
-import com.android.sample.model.organization.repository.EmployeeRepositoryFirebase
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UsersRepositoryFirebase
 import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.FirebaseEmulator
 import java.util.UUID
@@ -20,7 +18,7 @@ import org.junit.runner.RunWith
 @RunWith(value = AndroidJUnit4::class)
 class EmployeeRepositoryFirebaseTest : FirebaseEmulatedTest() {
 
-  private lateinit var repository: EmployeeRepository
+  private lateinit var repository: UserRepository
 
   @Before
   override fun setUp() {
@@ -29,14 +27,14 @@ class EmployeeRepositoryFirebaseTest : FirebaseEmulatedTest() {
     val authRepository = FakeAuthRepository(user = null)
 
     repository =
-        EmployeeRepositoryFirebase(
+        UsersRepositoryFirebase(
             db = FirebaseEmulator.firestore,
             authRepository = authRepository,
         )
   }
 
   @Test
-  fun newEmployee_andGetEmployees_shouldWork() = runBlocking {
+  fun newUser_andGetUsers_shouldWork() = runBlocking {
     val employee1 =
         Employee(
             user = User("user-1", "Alice", "alice@example.com"),
@@ -48,10 +46,10 @@ class EmployeeRepositoryFirebaseTest : FirebaseEmulatedTest() {
             role = Role.EMPLOYEE,
         )
 
-    repository.newEmployee(employee1)
-    repository.newEmployee(employee2)
+    repository.newUser(employee1)
+    repository.newUser(employee2)
 
-    val employees = repository.getEmployees()
+    val employees = repository.getUsers()
 
     Assert.assertEquals(2, employees.size)
     Assert.assertTrue(
@@ -68,14 +66,14 @@ class EmployeeRepositoryFirebaseTest : FirebaseEmulatedTest() {
             role = Role.EMPLOYEE,
         )
 
-    repository.newEmployee(employee)
+    repository.newUser(employee)
 
-    var employees = repository.getEmployees()
+    var employees = repository.getUsers()
     Assert.assertTrue(employees.any { it.user.id == employee.user.id })
 
-    repository.deleteEmployee(employee.user.id)
+    repository.deleteUser(employee.user.id)
 
-    employees = repository.getEmployees()
+    employees = repository.getUsers()
     Assert.assertFalse(employees.any { it.user.id == employee.user.id })
   }
 
@@ -88,19 +86,19 @@ class EmployeeRepositoryFirebaseTest : FirebaseEmulatedTest() {
         )
 
     try {
-      repository.newEmployee(invalidEmployee)
+      repository.newUser(invalidEmployee)
       Assert.fail("Expected IllegalArgumentException for blank userId")
     } catch (_: IllegalArgumentException) {}
   }
 
   @Test
-  fun getEmployees_shouldIgnoreMalformedDocuments() = runBlocking {
+  fun getUsers_shouldIgnoreMalformedDocuments() = runBlocking {
     val validEmployee =
         Employee(
             user = User("valid-user", "Valid", "valid@example.com"),
             role = Role.ADMIN,
         )
-    repository.newEmployee(validEmployee)
+    repository.newUser(validEmployee)
 
     val malformedId = "malformed-" + UUID.randomUUID().toString()
     val malformedData =
@@ -116,7 +114,7 @@ class EmployeeRepositoryFirebaseTest : FirebaseEmulatedTest() {
         .set(malformedData)
         .await()
 
-    val employees = repository.getEmployees()
+    val employees = repository.getUsers()
 
     Assert.assertTrue(employees.any { it.user.id == validEmployee.user.id })
     Assert.assertFalse(employees.any { it.user.id == malformedId })

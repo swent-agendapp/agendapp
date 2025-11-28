@@ -90,6 +90,9 @@
 
     <!-- Calendar -->
     <string name="calendar_screen_title">Calendrier</string>
+    <string name="location_status_inside">À l\'intérieur</string>
+    <string name="location_status_outside">À l\'extérieur</string>
+    <string name="location_status_no_permission">Pas de localisation</string>
     <string name="replacement">Remplacement</string>
 
     <!-- Date Picker -->

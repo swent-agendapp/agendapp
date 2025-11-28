@@ -14,9 +14,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
-import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.calendar.editEvent.EditEventTestTags
 import com.android.sample.ui.calendar.editEvent.EditEventViewModel
+import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.ElevationLow
@@ -52,7 +52,10 @@ fun EditEventAttendantScreen(
 
   Scaffold(
       topBar = {
-        TopTitleBar(title = stringResource(R.string.edit_event_participants_screen_title))
+        SecondaryPageTopBar(
+            title = stringResource(R.string.edit_event_participants_screen_title),
+            canGoBack = false
+        )
       },
       content = { paddingValues ->
         Column(

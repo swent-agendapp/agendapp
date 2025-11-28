@@ -1,4 +1,7 @@
-package com.android.sample.model.organization
+package com.android.sample.model.organization.repository
+
+import com.android.sample.model.organization.data.Employee
+import com.android.sample.model.organization.data.Role
 
 interface EmployeeRepository {
 

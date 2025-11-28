@@ -1,9 +1,9 @@
 package com.android.sample.model.authorization
 
 import com.android.sample.model.authentication.AuthRepositoryFirebase
-import com.android.sample.model.organization.EmployeeRepository
-import com.android.sample.model.organization.EmployeeRepositoryFirebase
-import com.android.sample.model.organization.Role
+import com.android.sample.model.organization.data.Role
+import com.android.sample.model.organization.repository.EmployeeRepository
+import com.android.sample.model.organization.repository.EmployeeRepositoryFirebase
 import com.google.firebase.firestore.FirebaseFirestore
 
 /** Simple authorization helper */

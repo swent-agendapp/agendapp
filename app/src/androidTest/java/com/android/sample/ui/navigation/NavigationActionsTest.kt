@@ -122,7 +122,7 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
         .performTextInput("Test Description")
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
     // No recurrence end field for one time events
-    composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).assertDoesNotExist()
+    composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).assertIsDisplayed()
     // Enter weekly recurrence
     composeTestRule
         .onNodeWithTag(AddEventTestTags.RECURRENCE_STATUS_DROPDOWN)
@@ -135,9 +135,9 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
     composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).assertIsDisplayed()
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
     // Create event without any assignees
-    composeTestRule.onNodeWithTag(AddEventTestTags.CREATE_BUTTON).assertExists().performClick()
+    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
     // Finish screen
-    composeTestRule.onNodeWithTag(AddEventTestTags.FINISH_BUTTON).assertExists().performClick()
+    composeTestRule.onNodeWithTag(AddEventTestTags.CREATE_BUTTON).assertExists().performClick()
 
     // Back to calendar screen
     composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertIsDisplayed()

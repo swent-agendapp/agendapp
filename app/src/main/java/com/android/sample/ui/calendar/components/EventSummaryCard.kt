@@ -188,7 +188,7 @@ private val previewEvents: List<Event> by lazy {
           version = 1L,
           recurrenceStatus = RecurrenceStatus.OneTime,
           hasBeenDeleted = false,
-          color = EventPalette.Black),
+          color = EventPalette.Blue),
       // e5) Long description
       Event(
           id = "e5",

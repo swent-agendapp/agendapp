@@ -8,7 +8,7 @@ import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepositoryLocal
 import com.android.sample.model.calendar.createEvent
-import com.android.sample.model.organization.SelectedOrganizationRepository
+import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.CalendarScreenTestTags.DAY_HEADER_DAY_PREFIX
 import java.time.DayOfWeek
 import java.time.LocalDate

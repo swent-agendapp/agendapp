@@ -1,5 +1,6 @@
 package com.android.sample.ui.common
 
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
@@ -23,7 +24,8 @@ fun SecondaryPageTopBar(
     title: String = "Untitled",
     canGoBack: Boolean = true,
     onClick: () -> Unit = {},
-    backButtonTestTags: String = ""
+    backButtonTestTags: String = "",
+    actions: @Composable RowScope.() -> Unit = {}
 ) {
   TopAppBar(
       title = { Text(text = title, modifier = modifier) },
@@ -36,6 +38,7 @@ fun SecondaryPageTopBar(
           }
         }
       },
+      actions = actions,
       colors =
           TopAppBarDefaults.topAppBarColors(
               containerColor = TopBarPalette.Background,

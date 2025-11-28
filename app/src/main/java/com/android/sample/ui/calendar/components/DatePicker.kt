@@ -68,7 +68,8 @@ fun DatePickerFieldToModal(
     modifier: Modifier = Modifier,
     label: String,
     initialInstant: Instant? = null,
-    onDateSelected: (LocalDate) -> Unit
+    onDateSelected: (LocalDate) -> Unit,
+    enabled: Boolean = true,
 ) {
   var selectedDate by remember { mutableStateOf(initialInstant?.toEpochMilli()) }
   var showModal by remember { mutableStateOf(false) }
@@ -85,17 +86,18 @@ fun DatePickerFieldToModal(
                 stringResource(R.string.date_picker_select_date_content_description))
       },
       modifier =
-          modifier.fillMaxWidth().pointerInput(selectedDate) {
+          modifier.fillMaxWidth().pointerInput(selectedDate, enabled) {
             awaitEachGesture {
               awaitFirstDown(pass = PointerEventPass.Initial)
               val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
-              if (upEvent != null) {
+              if (upEvent != null && enabled) {
                 showModal = true
               }
             }
           },
       shape = RoundedCornerShape(CornerRadiusLarge),
-      readOnly = true)
+      readOnly = true,
+      enabled = enabled)
 
   if (showModal) {
     DatePickerModal(

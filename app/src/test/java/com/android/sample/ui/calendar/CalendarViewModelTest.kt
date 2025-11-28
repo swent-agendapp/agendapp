@@ -1,7 +1,7 @@
 package com.android.sample.ui.calendar
 
 import com.android.sample.model.calendar.*
-import com.android.sample.model.organization.SelectedOrganizationRepository
+import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import java.time.Instant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

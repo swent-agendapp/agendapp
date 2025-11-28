@@ -52,9 +52,9 @@ class CalendarEventSelectorTests : BaseCalendarScreenTest() {
     SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
 
     composeTestRule.setContent {
-      CompositionLocalProvider(LocalViewModelStoreOwner provides owner) { CalendarEventSelector(
-        viewModel(factory = CalendarVMFactory(repoEvents, repoMap))
-      ) }
+      CompositionLocalProvider(LocalViewModelStoreOwner provides owner) {
+        CalendarEventSelector(viewModel(factory = CalendarVMFactory(repoEvents, repoMap)))
+      }
     }
   }
 
@@ -193,9 +193,12 @@ class CalendarEventSelectorTests : BaseCalendarScreenTest() {
 
     SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
 
-    val owner = TestOwner(CalendarVMFactory(repoEvent,repoMap))
+    val owner = TestOwner(CalendarVMFactory(repoEvent, repoMap))
     composeTestRule.setContent {
-      CompositionLocalProvider(LocalViewModelStoreOwner provides owner) { CalendarEventSelector(calendarViewModel = viewModel(factory = CalendarVMFactory(repoEvent,repoMap))) }
+      CompositionLocalProvider(LocalViewModelStoreOwner provides owner) {
+        CalendarEventSelector(
+            calendarViewModel = viewModel(factory = CalendarVMFactory(repoEvent, repoMap)))
+      }
     }
 
     // Allowed events must appear

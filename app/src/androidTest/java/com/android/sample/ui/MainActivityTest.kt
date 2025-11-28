@@ -14,15 +14,12 @@ import org.junit.rules.RuleChain
 class MainActivityTest {
 
   private val permissionRule: GrantPermissionRule =
-    GrantPermissionRule.grant(
-      Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+      GrantPermissionRule.grant(
+          Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
 
   private val composeTestRule = createAndroidComposeRule<MainActivity>()
 
-  @get:Rule
-  val ruleChain: RuleChain = RuleChain
-    .outerRule(permissionRule)
-    .around(composeTestRule)
+  @get:Rule val ruleChain: RuleChain = RuleChain.outerRule(permissionRule).around(composeTestRule)
 
   @Test
   fun mainActivity_displaysRootContainer() {

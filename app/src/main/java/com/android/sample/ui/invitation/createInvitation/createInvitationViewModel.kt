@@ -68,6 +68,8 @@ class CreateInvitationViewModel(
    *
    * @param count The number of invitations to generate and store.
    * @throws IllegalStateException if no authenticated user is found.
+   * @throws IllegalStateException if no organization is selected.
+   * @throws IllegalStateException if the current user is not an admin of the selected organization
    *
    * This function is typically called after the user confirms the creation from the invitation
    * creation bottom sheet.

@@ -1,7 +1,9 @@
-package com.android.sample.model.calendar
+package com.android.sample.model.eventRepositoryTest
 
-import com.android.sample.model.constants.FirestoreConstants.EVENTS_COLLECTION_PATH
-import com.android.sample.model.constants.FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH
+import com.android.sample.model.calendar.Event
+import com.android.sample.model.calendar.EventRepositoryFirebase
+import com.android.sample.model.calendar.createEvent
+import com.android.sample.model.constants.FirestoreConstants
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.CollectionReference
@@ -46,12 +48,14 @@ class EventRepositoryFirebaseTest {
   fun setUp() {
     repository = EventRepositoryFirebase(firestore)
 
-    whenever(firestore.collection(ORGANIZATIONS_COLLECTION_PATH))
+    whenever(firestore.collection(FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH))
         .thenReturn(organizationsCollection)
     whenever(organizationsCollection.document(any())).thenReturn(organizationDocument)
-    whenever(organizationDocument.collection(EVENTS_COLLECTION_PATH)).thenReturn(eventsCollection)
+    whenever(organizationDocument.collection(FirestoreConstants.EVENTS_COLLECTION_PATH))
+        .thenReturn(eventsCollection)
 
-    whenever(firestore.collection(EVENTS_COLLECTION_PATH)).thenReturn(eventsCollection)
+    whenever(firestore.collection(FirestoreConstants.EVENTS_COLLECTION_PATH))
+        .thenReturn(eventsCollection)
     whenever(eventsCollection.document()).thenReturn(eventDocument)
     whenever(eventsCollection.document(any())).thenReturn(eventDocument)
   }
@@ -276,5 +280,48 @@ class EventRepositoryFirebaseTest {
     }
 
     return snapshot
+  }
+
+  @Test
+  fun ongoingEvent_isCountedAsPastNotFuture() = runTest {
+    val now = Instant.now()
+
+    // Ongoing event: started 30 minutes ago, ends in 30 minutes → FULL duration is 1h
+    val ongoingEvent =
+        createEvent(
+            organizationId = orgId,
+            title = "OngoingShift",
+            startDate = now.minusSeconds(1800),
+            endDate = now.plusSeconds(1800),
+            cloudStorageStatuses = emptySet(),
+            participants = setOf("worker"),
+            presence = mapOf("worker" to true))[0]
+
+    val repoSpy = spy(repository)
+
+    // Mock event retrieval
+    doReturn(listOf(ongoingEvent)).whenever(repoSpy).getEventsBetweenDates(eq(orgId), any(), any())
+
+    whenever(organizationSnapshot.exists()).thenReturn(true)
+    whenever(organizationDocument.get()).thenReturn(Tasks.forResult(organizationSnapshot))
+
+    // 1) Past events MUST include ongoing event (full duration)
+    val pastHours =
+        repoSpy.calculateWorkedHoursPastEvents(
+            orgId = orgId, start = now.minusSeconds(10_000), end = now.plusSeconds(1))
+
+    // 2) Future events MUST NOT include it
+    val futureHours =
+        repoSpy.calculateWorkedHoursFutureEvents(
+            orgId = orgId, start = now.minusSeconds(1), end = now.plusSeconds(10_000))
+
+    // Assert: counted as past
+    assertEquals(
+        listOf("worker" to 1.0),
+        pastHours,
+        "Ongoing event must be counted in past events with full duration")
+
+    // Assert: NOT counted as future
+    assertEquals(emptyList(), futureHours, "Ongoing event must NOT be counted in future events")
   }
 }

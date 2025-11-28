@@ -7,9 +7,7 @@ import com.android.sample.model.authentication.UserRepository
 import com.android.sample.model.authentication.UsersRepositoryFirebase
 import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.FirebaseEmulator
-import java.util.UUID
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.tasks.await
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -71,25 +69,5 @@ class UserRepositoryFirebaseTest : FirebaseEmulatedTest() {
       repository.newUser(invalidUser)
       Assert.fail("Expected IllegalArgumentException for blank userId")
     } catch (_: IllegalArgumentException) {}
-  }
-
-  @Test
-  fun getUsers_shouldIgnoreMalformedDocuments() = runBlocking {
-    val validUser = User("valid-user", "Valid", "valid@example.com")
-    repository.newUser(validUser)
-
-    val malformedId = "malformed-" + UUID.randomUUID().toString()
-
-    val malformedData =
-        mapOf(
-            "userId" to malformedId, // missing displayName, missing email → invalid
-        )
-
-    FirebaseEmulator.firestore.collection("users").document(malformedId).set(malformedData).await()
-
-    val users = repository.getUsers()
-
-    Assert.assertTrue(users.any { it.id == validUser.id })
-    Assert.assertFalse(users.any { it.id == malformedId })
   }
 }

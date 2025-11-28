@@ -1,6 +1,6 @@
 package com.android.sample.model.firestoreMappers
 
-import com.android.sample.model.organization.Organization
+import com.android.sample.model.organization.data.Organization
 import com.google.firebase.firestore.DocumentSnapshot
 
 /** Maps Firestore documents to [Organization] objects and vice versa. */

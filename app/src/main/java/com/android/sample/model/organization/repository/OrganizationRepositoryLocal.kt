@@ -1,6 +1,7 @@
-package com.android.sample.model.organization
+package com.android.sample.model.organization.repository
 
 import com.android.sample.model.authentication.User
+import com.android.sample.model.organization.data.Organization
 
 /**
  * Local in-memory implementation of [OrganizationRepository] for testing or offline usage.

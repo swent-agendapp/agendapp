@@ -8,7 +8,7 @@ import com.android.sample.model.authorization.AuthorizationService
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
-import com.android.sample.model.organizations.mockOrganizations.getMockOrganizations
+import com.android.sample.model.organization.data.getMockOrganizations
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementRepository
 import com.android.sample.model.replacement.ReplacementRepositoryProvider
@@ -141,7 +141,7 @@ class ReplacementOrganizeViewModel(
               return@launch
             }
             val orgId = selectedOrganizationViewModel.selectedOrganizationId.value
-            require(orgId != null) { "Organization must be selected to fetch events" }
+            require(orgId != null) { "Organization must be selected to fetch replacements" }
 
             eventRepository.getEventsBetweenDates(
                 orgId = orgId, startDate = state.startInstant, endDate = state.endInstant)
@@ -175,7 +175,10 @@ class ReplacementOrganizeViewModel(
    */
   private suspend fun addReplacementToRepository(replacement: Replacement) {
     try {
-      replacementRepository.insertReplacement(replacement)
+      val orgId = selectedOrganizationViewModel.selectedOrganizationId.value
+      require(orgId != null) { "Organization must be selected to fetch replacements" }
+
+      replacementRepository.insertReplacement(orgId = orgId, item = replacement)
     } catch (e: Exception) {
       Log.e("ReplacementOrganizeVM", "Error adding replacement: ${e.message}")
       _uiState.value =

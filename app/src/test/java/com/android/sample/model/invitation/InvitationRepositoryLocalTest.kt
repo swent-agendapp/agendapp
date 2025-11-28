@@ -1,7 +1,7 @@
 package com.android.sample.model.invitation
 
 import com.android.sample.model.authentication.User
-import com.android.sample.model.organization.Organization
+import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.invitation.Invitation
 import com.android.sample.model.organization.invitation.InvitationRepositoryLocal
 import com.android.sample.model.organization.invitation.InvitationStatus

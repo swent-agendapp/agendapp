@@ -7,9 +7,9 @@ import com.android.sample.model.constants.FirestoreConstants
 import com.android.sample.model.map.MapRepository
 import com.android.sample.model.map.MapRepositoryFirebase
 import com.android.sample.model.map.MapRepositoryProvider
-import com.android.sample.model.organization.OrganizationRepository
-import com.android.sample.model.organization.OrganizationRepositoryFirebase
-import com.android.sample.model.organization.OrganizationRepositoryProvider
+import com.android.sample.model.organization.repository.OrganizationRepository
+import com.android.sample.model.organization.repository.OrganizationRepositoryFirebase
+import com.android.sample.model.organization.repository.OrganizationRepositoryProvider
 import com.android.sample.model.replacement.ReplacementRepositoryFirebase
 import com.android.sample.model.replacement.ReplacementRepositoryProvider
 import kotlinx.coroutines.tasks.await

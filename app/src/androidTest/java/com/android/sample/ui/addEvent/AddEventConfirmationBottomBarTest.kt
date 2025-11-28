@@ -21,11 +21,11 @@ class AddEventConfirmationBottomBarTest {
 
   @Test
   fun displayAllComponents() {
-    composeTestRule.onNodeWithTag(AddEventTestTags.FINISH_BUTTON).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(AddEventTestTags.CREATE_BUTTON).assertIsDisplayed()
   }
 
   @Test
   fun finishButtonIsEnabled() {
-    composeTestRule.onNodeWithTag(AddEventTestTags.FINISH_BUTTON).assertIsEnabled()
+    composeTestRule.onNodeWithTag(AddEventTestTags.CREATE_BUTTON).assertIsEnabled()
   }
 }

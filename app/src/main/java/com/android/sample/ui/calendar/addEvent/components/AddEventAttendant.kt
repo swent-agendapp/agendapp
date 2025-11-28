@@ -146,7 +146,7 @@ fun AddEventAttendantScreen(
 @Composable
 fun AddEventAttendantBottomBar(
     addEventViewModel: AddEventViewModel = viewModel(),
-    onCreate: () -> Unit = {},
+    onNext: () -> Unit = {},
     onBack: () -> Unit = {},
 ) {
   val newEventUIState by addEventViewModel.uiState.collectAsState()
@@ -155,13 +155,13 @@ fun AddEventAttendantBottomBar(
       remember(newEventUIState) { derivedStateOf { addEventViewModel.allFieldsValid() } }
 
   BottomNavigationButtons(
-      onNext = { onCreate() },
+      onNext = onNext,
       onBack = onBack,
       backButtonText = stringResource(R.string.goBack),
-      nextButtonText = stringResource(R.string.create),
+      nextButtonText = stringResource(R.string.next),
       canGoNext = allFieldsValid,
       backButtonTestTag = AddEventTestTags.BACK_BUTTON,
-      nextButtonTestTag = AddEventTestTags.CREATE_BUTTON)
+      nextButtonTestTag = AddEventTestTags.NEXT_BUTTON)
 }
 
 @Preview(showBackground = true)

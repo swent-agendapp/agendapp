@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.android.sample.model.authentication.AuthRepository
 import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.authentication.User
-import com.android.sample.model.organization.Organization
-import com.android.sample.model.organization.OrganizationRepository
-import com.android.sample.model.organization.OrganizationRepositoryProvider
+import com.android.sample.model.organization.data.Organization
+import com.android.sample.model.organization.repository.OrganizationRepository
+import com.android.sample.model.organization.repository.OrganizationRepositoryProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update

@@ -70,10 +70,7 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
     composeTestRule.onNodeWithTag(SignInScreenTestTags.LOGIN_TITLE).assertExists()
 
     // Perform Sign-In
-    composeTestRule
-        .onNodeWithTag(SignInScreenTestTags.LOGIN_BUTTON)
-        .assertExists()
-        .performClick()
+    composeTestRule.onNodeWithTag(SignInScreenTestTags.LOGIN_BUTTON).assertExists().performClick()
 
     // Wait for sign-in to complete
     composeTestRule.waitUntil(timeoutMillis = UI_AUTH_TIMEOUT) {

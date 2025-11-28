@@ -2,11 +2,9 @@ package com.android.sample.ui.replacement.mainPage
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material3.*
@@ -30,8 +28,6 @@ import com.android.sample.ui.theme.*
 
 // Assisted by AI
 
-private val titleMaxLine = 1
-private val descriptionMaxLine = 2
 /** ---------- Test Tags ---------- */
 object ReplacementEmployeeListTestTags {
   const val ROOT = "replacement_employee_list_root"
@@ -103,7 +99,7 @@ fun ReplacementEmployeeListScreen(
         Column(
             modifier = Modifier.fillMaxWidth(),
         ) {
-          Divider(
+          HorizontalDivider(
               thickness = BorderWidthThin,
               color = MaterialTheme.colorScheme.outlineVariant,
           )
@@ -245,7 +241,7 @@ private fun ReplacementRequestCard(
 
       Text(
           text =
-              androidx.compose.ui.res.stringResource(
+             stringResource(
                   R.string.replacement_substituted_label,
                   data.absentDisplayName,
               ),

@@ -293,7 +293,7 @@ fun ReplacementWaitingCard(replacements: List<Replacement>) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
       Box(
-          modifier = Modifier.fillMaxHeight().width(4.dp).background(event.color),
+          modifier = Modifier.fillMaxHeight().width(BarWidthSmall).background(event.color),
       )
 
       Spacer(modifier = Modifier.width(SpacingMedium))

@@ -35,7 +35,8 @@ fun ReplacementEmployeeFlow(
   val uiState by viewModel.uiState.collectAsState()
 
   when (uiState.step) {
-    ReplacementEmployeeStep.LIST -> {
+    ReplacementEmployeeStep.LIST,
+    ReplacementEmployeeStep.CREATE_OPTIONS -> {
       ReplacementEmployeeListScreen(
           requests = uiState.incomingRequests.map { it.toUi() },
           callbacks =
@@ -75,7 +76,6 @@ fun ReplacementEmployeeFlow(
           onStartDateSelected = { viewModel.setStartDate(it) },
           onEndDateSelected = { viewModel.setEndDate(it) })
     }
-    else -> {}
   }
 }
 

@@ -20,8 +20,6 @@ import com.android.sample.R
 import com.android.sample.ui.common.ButtonItem
 import com.android.sample.ui.common.MainPageButton
 import com.android.sample.ui.common.MainPageTopBar
-import com.android.sample.ui.organization.SelectedOrganizationVMProvider
-import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import com.android.sample.ui.replacement.ReplacementOverviewTestTags
 import com.android.sample.ui.theme.*
 
@@ -30,6 +28,7 @@ object SettingsScreenTestTags {
   const val PROFILE_BUTTON = "profile_button"
   const val ADMIN_BUTTON = "admin_info_button"
   const val MAP_SETTINGS_BUTTON = "map_settings_button"
+  const val ORGANIZATION_BUTTON = "organization_selection_button"
 }
 
 /** Settings screen with navigation to profile. */
@@ -40,9 +39,7 @@ fun SettingsScreen(
     onNavigateToUserProfile: () -> Unit = {},
     onNavigateToAdminInfo: () -> Unit = {},
     onNavigateToMapSettings: () -> Unit = {},
-    onNavigateToOrganizationList: () -> Unit = {},
-    selectedOrganizationViewModel: SelectedOrganizationViewModel =
-        SelectedOrganizationVMProvider.viewModel,
+    onNavigateToOrganizationList: () -> Unit = {}
 ) {
   val items =
       listOf(
@@ -64,11 +61,8 @@ fun SettingsScreen(
           ButtonItem(
               stringResource(R.string.settings_organization_selection_button),
               Icons.Default.Business,
-              "app_info_button",
-              onClick = {
-                // Navigate to organization list
-                onNavigateToOrganizationList()
-              }))
+              SettingsScreenTestTags.ORGANIZATION_BUTTON,
+              onClick = onNavigateToOrganizationList))
 
   Scaffold(
       topBar = {

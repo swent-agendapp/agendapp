@@ -2,11 +2,12 @@ package com.android.sample.ui.calendar.eventOverview
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -15,7 +16,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -29,15 +29,17 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.ui.calendar.components.EventSummaryCard
-import com.android.sample.ui.components.BottomNavigationButtons
+import com.android.sample.ui.common.PrimaryButton
+import com.android.sample.ui.common.SecondaryButton
+import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.theme.EventPalette
 import com.android.sample.ui.theme.PaddingExtraLarge
+import com.android.sample.ui.theme.PaddingMedium
 import java.time.Duration
 import java.time.Instant
 
@@ -107,35 +109,37 @@ fun EventOverviewScreen(
 
   Scaffold(
       topBar = {
-        TopAppBar(
+        SecondaryPageTopBar(
             modifier = modifier.testTag(EventOverviewScreenTestTags.TOP_BAR),
-            title = {
-              Text(
-                  stringResource(R.string.event_overview_title),
-                  style = MaterialTheme.typography.titleLarge)
-            },
-            navigationIcon = {
+            title = stringResource(R.string.event_overview_title),
+            onClick = onBackClick,
+            actions = {
               IconButton(
-                  onClick = onBackClick,
-                  modifier = modifier.testTag(EventOverviewScreenTestTags.BACK_BUTTON)) {
+                  onClick = { showDeleteDialog.value = true },
+                  modifier = Modifier.testTag(EventOverviewScreenTestTags.DELETE_BUTTON)) {
                     Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.goBack))
+                        imageVector = Icons.Default.DeleteForever,
+                        contentDescription = stringResource(R.string.delete),
+                        tint = MaterialTheme.colorScheme.error)
                   }
             })
       },
       bottomBar = {
         if (event != null) {
-          BottomNavigationButtons(
-              onBack = { onEditClick(event.id) },
-              backButtonText = stringResource(R.string.modify),
-              canGoBack = true,
-              backButtonTestTag = EventOverviewScreenTestTags.MODIFY_BUTTON,
-              onNext = { showDeleteDialog.value = true },
-              nextButtonText = stringResource(R.string.delete),
-              canGoNext = true,
-              nextButtonTestTag = EventOverviewScreenTestTags.DELETE_BUTTON,
-          )
+          Column(modifier = Modifier.fillMaxWidth().padding(PaddingMedium)) {
+            // Later : condition to display the Modify button
+            // if ( user is admin ) { SecondaryButton( ... ) }
+            SecondaryButton(
+                modifier = Modifier.testTag(EventOverviewScreenTestTags.MODIFY_BUTTON),
+                text = stringResource(R.string.modify),
+                onClick = { onEditClick(event.id) })
+
+            // Later : condition to display the Replacement button
+            // if (participantNames.contains( current user name )) { PrimaryButton( ... ) }
+            PrimaryButton(
+                text = stringResource(R.string.replacement_ask_to_be_replaced),
+                onClick = { /* later : create a replacement */})
+          }
         }
       }) { innerPadding ->
         Box(
@@ -147,16 +151,9 @@ fun EventOverviewScreen(
             contentAlignment = Alignment.TopCenter) {
               // Keep horizontal (and bottom) padding around the card so it does not stretch
               // edge‑to‑edge.
-              Box(
-                  modifier =
-                      Modifier.padding(
-                          PaddingValues(
-                              start = PaddingExtraLarge,
-                              end = PaddingExtraLarge,
-                              bottom = PaddingExtraLarge,
-                              top = 0.dp))) {
-                    event?.let { EventSummaryCard(event = it, participantNames = participantNames) }
-                  }
+              Box(modifier = Modifier.padding(PaddingExtraLarge)) {
+                event?.let { EventSummaryCard(event = it, participantNames = participantNames) }
+              }
             }
       }
 }

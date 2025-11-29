@@ -10,6 +10,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
@@ -17,6 +18,14 @@ import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.theme.PaddingMedium
 import kotlinx.coroutines.launch
+
+object OrganizationOverviewScreenTestTags {
+  const val ROOT = "organizationOverviewScreenRoot"
+  const val ORGANIZATION_NAME_TEXT = "organizationNameText"
+  const val MEMBER_COUNT_TEXT = "memberCountText"
+  const val CHANGE_BUTTON = "changeButton"
+  const val DELETE_BUTTON = "deleteButton"
+}
 
 @Composable
 fun OrganizationOverViewScreen(
@@ -44,20 +53,25 @@ fun OrganizationOverViewScreen(
             title = stringResource(R.string.settings_organization_selection_button),
             onClick = onNavigateBack,
             backButtonTestTags = "")
-      }) { innerPadding ->
+      },
+      modifier = Modifier.testTag(OrganizationOverviewScreenTestTags.ROOT)) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding).padding(PaddingMedium)) {
 
           // Later: Add other organization details as needed and management options
 
           // Display selected organization name
           Text(
+              modifier =
+                  Modifier.testTag(OrganizationOverviewScreenTestTags.ORGANIZATION_NAME_TEXT),
               text =
                   uiState.organizationName.ifEmpty {
                     stringResource(R.string.organization_none_selected)
                   })
 
           // Display member count
-          Text(text = stringResource(R.string.organization_members) + ": ${uiState.memberCount}")
+          Text(
+              modifier = Modifier.testTag(OrganizationOverviewScreenTestTags.MEMBER_COUNT_TEXT),
+              text = stringResource(R.string.organization_members) + ": ${uiState.memberCount}")
 
           // Bottom buttons (Change / Delete)
           BottomNavigationButtons(
@@ -75,8 +89,8 @@ fun OrganizationOverViewScreen(
               canGoBack = true,
               nextButtonText = stringResource(R.string.delete),
               backButtonText = stringResource(R.string.change),
-              nextButtonTestTag = "",
-              backButtonTestTag = "")
+              nextButtonTestTag = OrganizationOverviewScreenTestTags.DELETE_BUTTON,
+              backButtonTestTag = OrganizationOverviewScreenTestTags.CHANGE_BUTTON)
         }
       }
 }

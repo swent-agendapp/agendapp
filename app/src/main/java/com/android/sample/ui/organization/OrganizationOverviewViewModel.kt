@@ -3,9 +3,9 @@ package com.android.sample.ui.organization
 import androidx.lifecycle.ViewModel
 import com.android.sample.model.authentication.AuthRepository
 import com.android.sample.model.authentication.AuthRepositoryProvider
-import com.android.sample.model.organization.OrganizationRepository
-import com.android.sample.model.organization.OrganizationRepositoryProvider
-import com.android.sample.model.organization.SelectedOrganizationRepository
+import com.android.sample.model.organization.repository.OrganizationRepository
+import com.android.sample.model.organization.repository.OrganizationRepositoryProvider
+import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 

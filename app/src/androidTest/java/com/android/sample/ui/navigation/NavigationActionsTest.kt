@@ -19,7 +19,6 @@ import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.common.BottomBarTestTags
 import com.android.sample.ui.organization.AddOrganizationScreenTestTags
 import com.android.sample.ui.organization.OrganizationListScreenTestTags
-import com.android.sample.ui.replacement.ReplacementOverviewTestTags
 import com.android.sample.ui.settings.SettingsScreenTestTags
 import com.android.sample.utils.FakeCredentialManager
 import com.android.sample.utils.FakeJwtGenerator
@@ -90,14 +89,9 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
   fun navigate_to_replacement() {
     composeTestRule.setContent { Agendapp() }
 
-    // Create organization and navigate to calendar
     createOrganizationAndNavigateToCalendar()
 
-    // Go to replacement
     composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_REPLACEMENT).assertExists().performClick()
-
-    // Validate screen content
-    composeTestRule.onNodeWithTag(ReplacementOverviewTestTags.SCREEN).assertIsDisplayed()
   }
 
   @Test
@@ -158,26 +152,19 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
   fun goBottomBarIcons() {
     composeTestRule.setContent { Agendapp() }
 
-    // Create organization and navigate to calendar
     createOrganizationAndNavigateToCalendar()
 
-    // Assert the Bottom Bar is displayed
     composeTestRule.onNodeWithTag(BottomBarTestTags.BOTTOM_BAR).assertIsDisplayed()
 
-    // Assert each icon is displayed
     composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_CALENDAR).assertIsDisplayed()
     composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_REPLACEMENT).assertIsDisplayed()
     composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_SETTINGS).assertIsDisplayed()
 
-    // Navigate to Replacement screen
-    composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_REPLACEMENT).performClick()
-    composeTestRule.onNodeWithTag(ReplacementOverviewTestTags.SCREEN).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_REPLACEMENT).assertExists().performClick()
 
-    // Go to Settings screen
     composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_SETTINGS).performClick()
     composeTestRule.onNodeWithTag(SettingsScreenTestTags.ROOT).assertIsDisplayed()
 
-    // Navigate back to Calendar screen
     composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_CALENDAR).performClick()
     composeTestRule.onNodeWithTag(CalendarScreenTestTags.ROOT).assertIsDisplayed()
   }

@@ -25,7 +25,6 @@ class ReplacementScreenTest {
   @Test
   fun displayAllCards() {
     composeTestRule.onNodeWithTag(ReplacementOverviewTestTags.CARD_ORGANIZE).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(ReplacementOverviewTestTags.CARD_PROCESS).assertIsDisplayed()
     composeTestRule.onNodeWithTag(ReplacementOverviewTestTags.CARD_WAITING).assertIsDisplayed()
     composeTestRule.onNodeWithTag(ReplacementOverviewTestTags.CARD_CONFIRMED).assertIsDisplayed()
   }

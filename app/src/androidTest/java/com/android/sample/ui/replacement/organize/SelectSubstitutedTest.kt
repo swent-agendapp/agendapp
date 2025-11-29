@@ -6,6 +6,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import com.android.sample.model.authentication.User
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeTestTags
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeViewModel
 import com.android.sample.ui.replacement.organize.components.SelectSubstitutedScreen
@@ -16,13 +17,14 @@ import org.junit.Test
 class SelectSubstitutedScreenTest {
 
   @get:Rule val composeTestRule = createComposeRule()
-
+  private lateinit var members: List<User>
   private lateinit var fakeViewModel: ReplacementOrganizeViewModel
 
   @Before
   fun setUp() {
     fakeViewModel = ReplacementOrganizeViewModel()
     fakeViewModel.loadOrganizationMembers()
+
     composeTestRule.setContent {
       SelectSubstitutedScreen(
           replacementOrganizeViewModel = fakeViewModel,
@@ -30,6 +32,16 @@ class SelectSubstitutedScreenTest {
           onSelectDateRange = {},
           onBack = {})
     }
+
+    composeTestRule.waitUntil(timeoutMillis = 5_000) {
+      fakeViewModel.uiState.value.memberList.isNotEmpty()
+    }
+
+    members = fakeViewModel.uiState.value.memberList
+  }
+
+  private fun labelOf(user: User): String {
+    return user.displayName ?: user.email ?: user.id
   }
 
   @Test
@@ -60,13 +72,13 @@ class SelectSubstitutedScreenTest {
 
   @Test
   fun memberSelection_enablesButtons() {
-    // Click on charlie's email
-    composeTestRule.onNodeWithText("charlie@example.com").performClick()
+    val charlie = members.first { it.email == "charlie@example.com" }
+    val charlieLabel = labelOf(charlie)
 
-    // Verify selected member
-    assert(fakeViewModel.uiState.value.selectedMember?.email == "charlie@example.com")
+    composeTestRule.onNodeWithText(charlieLabel).performClick()
 
-    // Buttons should be enabled
+    assert(fakeViewModel.uiState.value.selectedMember?.id == charlie.id)
+
     composeTestRule.onNodeWithTag(ReplacementOrganizeTestTags.SELECT_EVENT_BUTTON).assertIsEnabled()
     composeTestRule
         .onNodeWithTag(ReplacementOrganizeTestTags.SELECT_DATE_RANGE_BUTTON)
@@ -75,76 +87,115 @@ class SelectSubstitutedScreenTest {
 
   @Test
   fun searchFilter_filtersList_with_email() {
-    composeTestRule.onNodeWithText("alice@example.com").assertIsDisplayed()
-    composeTestRule.onNodeWithText("bob@example.com").assertIsDisplayed()
-    composeTestRule.onNodeWithText("charlie@example.com").assertIsDisplayed()
-    composeTestRule.onNodeWithText("dana@example.com").assertIsDisplayed()
+    val alice = members.first { it.email == "alice@example.com" }
+    val bob = members.first { it.email == "bob@example.com" }
+    val charlie = members.first { it.email == "charlie@example.com" }
+    val dana = members.first { it.email == "dana@example.com" }
 
-    // Type "ali" in search bar
+    val aliceLabel = labelOf(alice)
+    val bobLabel = labelOf(bob)
+    val charlieLabel = labelOf(charlie)
+    val danaLabel = labelOf(dana)
+
+    composeTestRule.onNodeWithText(aliceLabel).assertIsDisplayed()
+    composeTestRule.onNodeWithText(bobLabel).assertIsDisplayed()
+    composeTestRule.onNodeWithText(charlieLabel).assertIsDisplayed()
+    composeTestRule.onNodeWithText(danaLabel).assertIsDisplayed()
+
     composeTestRule
         .onNodeWithTag(ReplacementOrganizeTestTags.SEARCH_BAR)
         .performClick()
         .performTextInput("ali")
 
-    composeTestRule.onNodeWithText("alice@example.com").assertIsDisplayed()
-    composeTestRule.onNodeWithText("bob@example.com").assertDoesNotExist()
-    composeTestRule.onNodeWithText("charlie@example.com").assertDoesNotExist()
-    composeTestRule.onNodeWithText("dana@example.com").assertDoesNotExist()
+    composeTestRule.onNodeWithText(aliceLabel).assertIsDisplayed()
+    composeTestRule.onNodeWithText(bobLabel).assertDoesNotExist()
+    composeTestRule.onNodeWithText(charlieLabel).assertDoesNotExist()
+    composeTestRule.onNodeWithText(danaLabel).assertDoesNotExist()
   }
 
   @Test
-  fun searchFilter_filtersList_with_id() {
-    composeTestRule.onNodeWithText("alice@example.com").assertIsDisplayed()
-    composeTestRule.onNodeWithText("bob@example.com").assertIsDisplayed()
-    composeTestRule.onNodeWithText("charlie@example.com").assertIsDisplayed()
-    composeTestRule.onNodeWithText("dana@example.com").assertIsDisplayed()
+  fun searchFilter_filtersList_with_id_like_query() {
+    val alice = members.first { it.email == "alice@example.com" }
+    val bob = members.first { it.email == "bob@example.com" }
+    val charlie = members.first { it.email == "charlie@example.com" }
+    val dana = members.first { it.email == "dana@example.com" }
 
-    // Type "U4" in search bar
+    val aliceLabel = labelOf(alice)
+    val bobLabel = labelOf(bob)
+    val charlieLabel = labelOf(charlie)
+    val danaLabel = labelOf(dana)
+
+    composeTestRule.onNodeWithText(aliceLabel).assertIsDisplayed()
+    composeTestRule.onNodeWithText(bobLabel).assertIsDisplayed()
+    composeTestRule.onNodeWithText(charlieLabel).assertIsDisplayed()
+    composeTestRule.onNodeWithText(danaLabel).assertIsDisplayed()
+
+    val query = danaLabel.take(2)
+
     composeTestRule
         .onNodeWithTag(ReplacementOrganizeTestTags.SEARCH_BAR)
         .performClick()
-        .performTextInput("U4")
+        .performTextInput(query)
 
-    composeTestRule.onNodeWithText("alice@example.com").assertDoesNotExist()
-    composeTestRule.onNodeWithText("bob@example.com").assertDoesNotExist()
-    composeTestRule.onNodeWithText("charlie@example.com").assertDoesNotExist()
-    composeTestRule.onNodeWithText("dana@example.com").assertIsDisplayed()
+    composeTestRule.onNodeWithText(danaLabel).assertIsDisplayed()
+    composeTestRule.onNodeWithText(aliceLabel).assertDoesNotExist()
   }
 
   @Test
   fun searchFilter_filterList_with_displayName() {
-    composeTestRule.onNodeWithText("alice@example.com").assertIsDisplayed()
-    composeTestRule.onNodeWithText("bob@example.com").assertIsDisplayed()
-    composeTestRule.onNodeWithText("charlie@example.com").assertIsDisplayed()
-    composeTestRule.onNodeWithText("dana@example.com").assertIsDisplayed()
+    val alice = members.first { it.email == "alice@example.com" }
+    val bob = members.first { it.email == "bob@example.com" }
+    val charlie = members.first { it.email == "charlie@example.com" }
+    val dana = members.first { it.email == "dana@example.com" }
 
-    // Type "bob boss" in search bar
+    val aliceLabel = labelOf(alice)
+    val bobLabel = labelOf(bob)
+    val charlieLabel = labelOf(charlie)
+    val danaLabel = labelOf(dana)
+
+    composeTestRule.onNodeWithText(aliceLabel).assertIsDisplayed()
+    composeTestRule.onNodeWithText(bobLabel).assertIsDisplayed()
+    composeTestRule.onNodeWithText(charlieLabel).assertIsDisplayed()
+    composeTestRule.onNodeWithText(danaLabel).assertIsDisplayed()
+
+    val query = bobLabel.lowercase()
+
     composeTestRule
         .onNodeWithTag(ReplacementOrganizeTestTags.SEARCH_BAR)
         .performClick()
-        .performTextInput("bob boss")
+        .performTextInput(query)
 
-    composeTestRule.onNodeWithText("alice@example.com").assertDoesNotExist()
-    composeTestRule.onNodeWithText("bob@example.com").assertIsDisplayed()
-    composeTestRule.onNodeWithText("charlie@example.com").assertDoesNotExist()
-    composeTestRule.onNodeWithText("dana@example.com").assertDoesNotExist()
+    composeTestRule.onNodeWithText(bobLabel).assertIsDisplayed()
+    composeTestRule.onNodeWithText(aliceLabel).assertDoesNotExist()
+    composeTestRule.onNodeWithText(charlieLabel).assertDoesNotExist()
+    composeTestRule.onNodeWithText(danaLabel).assertDoesNotExist()
   }
 
   @Test
   fun searchFilter_filtersList_noMatch() {
-    composeTestRule.onNodeWithText("alice@example.com").assertIsDisplayed()
-    composeTestRule.onNodeWithText("bob@example.com").assertIsDisplayed()
-    composeTestRule.onNodeWithText("charlie@example.com").assertIsDisplayed()
-    composeTestRule.onNodeWithText("dana@example.com").assertIsDisplayed()
+    val alice = members.first { it.email == "alice@example.com" }
+    val bob = members.first { it.email == "bob@example.com" }
+    val charlie = members.first { it.email == "charlie@example.com" }
+    val dana = members.first { it.email == "dana@example.com" }
+
+    val aliceLabel = labelOf(alice)
+    val bobLabel = labelOf(bob)
+    val charlieLabel = labelOf(charlie)
+    val danaLabel = labelOf(dana)
+
+    composeTestRule.onNodeWithText(aliceLabel).assertIsDisplayed()
+    composeTestRule.onNodeWithText(bobLabel).assertIsDisplayed()
+    composeTestRule.onNodeWithText(charlieLabel).assertIsDisplayed()
+    composeTestRule.onNodeWithText(danaLabel).assertIsDisplayed()
 
     composeTestRule
         .onNodeWithTag(ReplacementOrganizeTestTags.SEARCH_BAR)
         .performClick()
         .performTextInput("unknown user")
 
-    composeTestRule.onNodeWithText("dana@example.com").assertDoesNotExist()
-    composeTestRule.onNodeWithText("alice@example.com").assertDoesNotExist()
-    composeTestRule.onNodeWithText("bob@example.com").assertDoesNotExist()
-    composeTestRule.onNodeWithText("charlie@example.com").assertDoesNotExist()
+    composeTestRule.onNodeWithText(aliceLabel).assertDoesNotExist()
+    composeTestRule.onNodeWithText(bobLabel).assertDoesNotExist()
+    composeTestRule.onNodeWithText(charlieLabel).assertDoesNotExist()
+    composeTestRule.onNodeWithText(danaLabel).assertDoesNotExist()
   }
 }

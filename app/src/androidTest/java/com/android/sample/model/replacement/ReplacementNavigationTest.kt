@@ -31,7 +31,6 @@ class ReplacementNavigationTest {
         composable(Screen.ReplacementOverview.route) {
           ReplacementOverviewScreen(
               onOrganizeClick = {},
-              onProcessClick = {},
               onWaitingConfirmationClick = {
                 navController.navigate(Screen.ReplacementPending.route)
               },

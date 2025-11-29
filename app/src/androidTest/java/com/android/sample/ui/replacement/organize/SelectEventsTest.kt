@@ -14,7 +14,12 @@ class SelectEventsTest {
   @Test
   fun screenElements_areDisplayedCorrectly() {
     composeTestRule.setContent {
-      SelectEventScreen(title = "Example title", instruction = "Example instruction")
+      SelectEventScreen(
+          onNext = {},
+          onBack = {},
+          title = "Title",
+          instruction = "Instruction",
+      )
     }
 
     composeTestRule.onNodeWithTag(ReplacementOrganizeTestTags.INSTRUCTION_TEXT).assertIsDisplayed()
@@ -24,7 +29,15 @@ class SelectEventsTest {
 
   @Test
   fun nextButton_isDisabled_whenNoEventSelected() {
-    composeTestRule.setContent { SelectEventScreen() }
+    composeTestRule.setContent {
+      SelectEventScreen(
+          onNext = {},
+          onBack = {},
+          title = "Title",
+          instruction = "Instruction",
+          canGoNext = false,
+      )
+    }
 
     composeTestRule.onNodeWithTag(ReplacementOrganizeTestTags.NEXT_BUTTON).assertIsNotEnabled()
   }

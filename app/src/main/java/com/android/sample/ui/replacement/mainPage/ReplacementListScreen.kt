@@ -70,17 +70,29 @@ private val sampleRequests =
             description = "Meeting about 321",
             absentDisplayName = "Emilien"))
 
+data class ReplacementEmployeeCallbacks(
+    val onAccept: (String) -> Unit = {},
+    val onRefuse: (String) -> Unit = {},
+)
+
+data class ReplacementAdminActions(
+    val onOrganizeClick: () -> Unit = {},
+    val onWaitingConfirmationClick: () -> Unit = {},
+    val onConfirmedClick: () -> Unit = {},
+)
+
+data class ReplacementCreateRequestActions(
+    val onSelectEvent: () -> Unit = {},
+    val onChooseDateRange: () -> Unit = {},
+)
+
 @Composable
 fun ReplacementEmployeeListScreen(
     requests: List<ReplacementRequestUi> = sampleRequests,
-    onAccept: (id: String) -> Unit = {},
-    onRefuse: (id: String) -> Unit = {},
-    onSelectEvent: () -> Unit = {},
-    onChooseDateRange: () -> Unit = {},
+    callbacks: ReplacementEmployeeCallbacks = ReplacementEmployeeCallbacks(),
     isAdmin: Boolean = false,
-    onOrganizeClick: () -> Unit = {},
-    onWaitingConfirmationClick: () -> Unit = {},
-    onConfirmedClick: () -> Unit = {},
+    adminActions: ReplacementAdminActions = ReplacementAdminActions(),
+    createRequestActions: ReplacementCreateRequestActions = ReplacementCreateRequestActions(),
     onBack: () -> Unit = {},
 ) {
   var showCreateOptions by remember { mutableStateOf(false) }
@@ -114,19 +126,19 @@ fun ReplacementEmployeeListScreen(
             SecondaryButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(R.string.organize_replacement),
-                onClick = onOrganizeClick,
+                onClick = adminActions.onOrganizeClick,
             )
 
             SecondaryButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(R.string.waiting_confirmation_replacement),
-                onClick = onWaitingConfirmationClick,
+                onClick = adminActions.onWaitingConfirmationClick,
             )
 
             SecondaryButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(R.string.confirmed_replacements),
-                onClick = onConfirmedClick,
+                onClick = adminActions.onConfirmedClick,
             )
           }
           AnimatedVisibility(visible = showCreateOptions) {
@@ -141,7 +153,7 @@ fun ReplacementEmployeeListScreen(
                   text = stringResource(R.string.replacement_create_select_event),
                   onClick = {
                     showCreateOptions = false
-                    onSelectEvent()
+                    createRequestActions.onSelectEvent()
                   },
               )
 
@@ -152,7 +164,7 @@ fun ReplacementEmployeeListScreen(
                   text = stringResource(R.string.replacement_create_choose_date_range),
                   onClick = {
                     showCreateOptions = false
-                    onChooseDateRange()
+                    createRequestActions.onChooseDateRange()
                   },
               )
             }
@@ -181,8 +193,8 @@ fun ReplacementEmployeeListScreen(
               items(visibleRequests, key = { it.id }) { req ->
                 ReplacementRequestCard(
                     data = req,
-                    onAccept = { onAccept(req.id) },
-                    onRefuse = { onRefuse(req.id) },
+                    onAccept = { callbacks.onAccept(req.id) },
+                    onRefuse = { callbacks.onRefuse(req.id) },
                     testTag = ReplacementEmployeeListTestTags.card(req.id),
                     acceptTag = ReplacementEmployeeListTestTags.accept(req.id),
                     refuseTag = ReplacementEmployeeListTestTags.refuse(req.id),

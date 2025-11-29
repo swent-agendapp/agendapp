@@ -38,13 +38,23 @@ fun ReplacementEmployeeFlow(
     ReplacementEmployeeStep.LIST -> {
       ReplacementEmployeeListScreen(
           requests = uiState.incomingRequests.map { it.toUi() },
-          onAccept = { id -> viewModel.acceptRequest(id) },
-          onRefuse = { id -> viewModel.refuseRequest(id) },
-          onSelectEvent = { viewModel.goToSelectEvent() },
-          onChooseDateRange = { viewModel.goToSelectDateRange() },
-          onOrganizeClick = onOrganizeClick,
-          onWaitingConfirmationClick = onWaitingConfirmationClick,
-          onConfirmedClick = onConfirmedClick,
+          callbacks =
+              ReplacementEmployeeCallbacks(
+                  onAccept = { id -> viewModel.acceptRequest(id) },
+                  onRefuse = { id -> viewModel.refuseRequest(id) },
+              ),
+          isAdmin = false,
+          adminActions =
+              ReplacementAdminActions(
+                  onOrganizeClick = onOrganizeClick,
+                  onWaitingConfirmationClick = onWaitingConfirmationClick,
+                  onConfirmedClick = onConfirmedClick,
+              ),
+          createRequestActions =
+              ReplacementCreateRequestActions(
+                  onSelectEvent = { viewModel.goToSelectEvent() },
+                  onChooseDateRange = { viewModel.goToSelectDateRange() },
+              ),
           onBack = onBack,
       )
     }

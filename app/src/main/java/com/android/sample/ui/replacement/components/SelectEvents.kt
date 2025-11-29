@@ -24,6 +24,11 @@ import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.WeightExtraHeavy
 import com.android.sample.ui.theme.WeightVeryLight
 
+data class ReplacementProcessActions(
+    val onProcessNow: () -> Unit,
+    val onProcessLater: () -> Unit,
+)
+
 /**
  * Screen allowing the admin to **select the events** for which a member needs a replacement.
  *
@@ -53,8 +58,7 @@ fun SelectEventScreen(
     instruction: String,
     canGoNext: Boolean = true,
     onEventClick: (Event) -> Unit = {},
-    onProcessNow: (() -> Unit)? = null,
-    onProcessLater: (() -> Unit)? = null,
+    processActions: ReplacementProcessActions? = null,
 ) {
 
   Scaffold(
@@ -92,8 +96,8 @@ fun SelectEventScreen(
             canGoNext = canGoNext,
             onBack = onBack,
             onNext = onNext,
-            onProcessNow = onProcessNow,
-            onProcessLater = onProcessLater,
+            onProcessNow = processActions?.onProcessNow,
+            onProcessLater = processActions?.onProcessLater,
         )
       })
 }

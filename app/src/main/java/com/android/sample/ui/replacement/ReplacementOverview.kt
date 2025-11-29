@@ -39,14 +39,12 @@ object ReplacementOverviewTestTags {
  * (organize, process, waiting confirmation, or confirmed).
  *
  * @param onOrganizeClick Callback when the "Organize Replacement" card is clicked.
- * @param onProcessClick Callback when the "Process Replacement" card is clicked.
  * @param onWaitingConfirmationClick Callback when the "Waiting Confirmation" card is clicked.
  * @param onConfirmedClick Callback when the "Confirmed Replacements" card is clicked.
  */
 @Composable
 fun ReplacementOverviewScreen(
     onOrganizeClick: () -> Unit = {},
-    onProcessClick: () -> Unit = {},
     onWaitingConfirmationClick: () -> Unit = {},
     onConfirmedClick: () -> Unit = {}
 ) {

@@ -8,6 +8,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.calendar.utils.DateTimeUtils
+import com.android.sample.ui.replacement.components.ReplacementProcessActions
 import com.android.sample.ui.replacement.components.SelectDateRangeScreen
 import com.android.sample.ui.replacement.components.SelectEventScreen
 import com.android.sample.ui.replacement.organize.components.SelectSubstitutedScreen
@@ -74,15 +75,17 @@ fun ReplacementOrganizeScreen(
             instruction = stringResource(R.string.select_replacement_events, memberLabel ?: ""),
             onEventClick = { event -> replacementOrganizeViewModel.toggleSelectedEvent(event) },
             canGoNext = uiState.selectedEvents.isNotEmpty(),
-            onProcessNow = {
-              onProcessNow()
-              replacementOrganizeViewModel.addReplacement()
-            },
-            onProcessLater = {
-              onProcessLater()
-              replacementOrganizeViewModel.addReplacement()
-            },
-        )
+            processActions =
+                ReplacementProcessActions(
+                    onProcessNow = {
+                      onProcessNow()
+                      replacementOrganizeViewModel.addReplacement()
+                    },
+                    onProcessLater = {
+                      onProcessLater()
+                      replacementOrganizeViewModel.addReplacement()
+                    },
+                ))
     ReplacementOrganizeStep.SelectDateRange ->
         SelectDateRangeScreen(
             onNext = {},

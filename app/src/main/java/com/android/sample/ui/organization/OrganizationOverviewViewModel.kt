@@ -1,6 +1,7 @@
 package com.android.sample.ui.organization
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.android.sample.model.authentication.AuthRepository
 import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.organization.repository.OrganizationRepository
@@ -8,6 +9,7 @@ import com.android.sample.model.organization.repository.OrganizationRepositoryPr
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 data class OrganizationOverviewUIState(val organizationName: String = "", val memberCount: Int = 0)
 
@@ -23,20 +25,20 @@ class OrganizationOverviewViewModel(
   // Current authenticated user
   private val currentUser = authRepository.getCurrentUser()
 
-  suspend fun fillSelectedOrganizationDetails(orgId: String) {
+  fun fillSelectedOrganizationDetails(orgId: String) {
     // Ensure the current user is not null
     require(currentUser != null) { "No authenticated user found." }
     require(orgId.isNotEmpty()) { "No organization selected" }
 
-    val org = organizationRepository.getOrganizationById(organizationId = orgId, user = currentUser)
+    viewModelScope.launch {
+      val org =
+          organizationRepository.getOrganizationById(organizationId = orgId, user = currentUser)
 
-    val orgName = org?.name ?: ""
-    val members = org?.members ?: emptyList()
-    val memberCount = members.size
-
-    // Update the UI state with organization details
-    _uiState.value =
-        OrganizationOverviewUIState(organizationName = orgName, memberCount = memberCount)
+      // Update the UI state with organization details
+      _uiState.value =
+          OrganizationOverviewUIState(
+              organizationName = org?.name ?: "", memberCount = org?.members?.size ?: 0)
+    }
   }
 
   fun clearSelectedOrganization() {
@@ -44,11 +46,13 @@ class OrganizationOverviewViewModel(
     _uiState.value = OrganizationOverviewUIState()
   }
 
-  suspend fun deleteSelectedOrganization(orgId: String?) {
+  fun deleteSelectedOrganization(orgId: String?) {
     require(!orgId.isNullOrEmpty()) { "No organization selected to delete." }
     require(currentUser != null) { "No authenticated user found." }
 
-    organizationRepository.deleteOrganization(organizationId = orgId, user = currentUser)
-    clearSelectedOrganization()
+    viewModelScope.launch {
+      organizationRepository.deleteOrganization(organizationId = orgId, user = currentUser)
+      clearSelectedOrganization()
+    }
   }
 }

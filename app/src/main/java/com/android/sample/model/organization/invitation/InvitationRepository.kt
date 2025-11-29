@@ -1,6 +1,7 @@
 package com.android.sample.model.organization.invitation
 
 import com.android.sample.model.authentication.User
+import com.android.sample.model.organization.data.Organization
 
 interface InvitationRepository {
 
@@ -18,10 +19,12 @@ interface InvitationRepository {
    *
    * If you override this method in a subclass, you should call `super.insertInvitation(...)` to
    *
-   * @param item The invitation to be inserted.
+   * @param Organization The organization for which an invitation will be inserted.
+   * @param user The user attempting to perform the insertion.
+   * @throws IllegalArgumentException if the user is not an organization admin.
    */
-  suspend fun insertInvitation(item: Invitation, user: User) {
-    require(item.organization.admins.contains(user)) {
+  suspend fun insertInvitation(organization: Organization, user: User) {
+    require(organization.admins.contains(user)) {
       "Only organization admins can create invitations."
     }
   }
@@ -37,10 +40,31 @@ interface InvitationRepository {
    *
    * @param itemId The unique identifier of the invitation.
    * @param item The updated invitation object.
+   * @param organization The organization associated with the invitation.
+   * @param user The user attempting to perform the update.
+   * @throws IllegalArgumentException if the user does not have permission to activate the
+   *   invitation.
    */
-  suspend fun updateInvitation(itemId: String, item: Invitation, user: User) {
+  suspend fun updateInvitation(
+      itemId: String,
+      item: Invitation,
+      organization: Organization,
+      user: User
+  ) {
+    require(item.id == itemId) {
+      "Mismatched IDs: updated item id ${item.id} does not match target id $itemId"
+    }
+    val organizationId =
+        getInvitationById(itemId)?.organizationId
+            ?: throw IllegalArgumentException("Invitation with id $itemId does not exist.")
+    require(organizationId == organization.id) {
+      "Old invitation organizationId $organizationId does not match organization id ${organization.id}"
+    }
+    require(item.organizationId == organization.id) {
+      "New invitation organizationId ${item.organizationId} does not match organization id ${organization.id}"
+    }
     if (item.status == InvitationStatus.Active) {
-      require(item.organization.admins.contains(user)) {
+      require(organization.admins.contains(user)) {
         "Only organization admins can activate invitations."
       }
     }
@@ -50,14 +74,20 @@ interface InvitationRepository {
    * Deletes an invitation from the repository.
    *
    * @param itemId The unique identifier of the invitation.
+   * @param organization The organization associated with the invitation.
+   * @param user The user attempting to perform the deletion.
    * @throws IllegalArgumentException if the itemId does not exist.
    */
-  suspend fun deleteInvitation(itemId: String, user: User) {
-    val organization =
-        getInvitationById(itemId)?.organization
+  suspend fun deleteInvitation(itemId: String, organization: Organization, user: User) {
+    val organizationId =
+        getInvitationById(itemId)?.organizationId
             ?: throw IllegalArgumentException("Invitation with id $itemId does not exist.")
+
     require(organization.admins.contains(user)) {
       "Only organization admins can delete invitations."
+    }
+    require(organizationId == organization.id) {
+      "Invitation organizationId $organizationId does not match organization id ${organization.id}"
     }
   }
 

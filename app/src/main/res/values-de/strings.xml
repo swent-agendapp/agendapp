@@ -204,4 +204,14 @@
     <string name="hour_recap_generate">Zusammenfassung erstellen</string>
     <string name="export_excel">Nach Excel exportieren</string>
 
+    <!-- Filters -->
+    <string name="filter">Filter</string>
+    <string name="close">Schließen</string>
+    <string name="filter_event_type">Ereignistyp</string>
+    <string name="filter_location">Ort</string>
+    <string name="filter_participants">Teilnehmer</string>
+    <string name="clear_all">Alles löschen</string>
+    <string name="apply">Anwenden</string>
+    <string name="eventType">Ereignistyp</string>
+    <string name="location">Ort</string>
 </resources>

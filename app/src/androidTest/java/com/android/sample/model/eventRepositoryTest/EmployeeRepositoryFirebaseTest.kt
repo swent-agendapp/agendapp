@@ -3,10 +3,10 @@ package com.android.sample.model.eventRepositoryTest
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.authentication.FakeAuthRepository
 import com.android.sample.model.authentication.User
-import com.android.sample.model.organization.Employee
-import com.android.sample.model.organization.EmployeeRepository
-import com.android.sample.model.organization.EmployeeRepositoryFirebase
-import com.android.sample.model.organization.Role
+import com.android.sample.model.organization.data.Employee
+import com.android.sample.model.organization.data.Role
+import com.android.sample.model.organization.repository.EmployeeRepository
+import com.android.sample.model.organization.repository.EmployeeRepositoryFirebase
 import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.FirebaseEmulator
 import java.util.UUID

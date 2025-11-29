@@ -21,7 +21,6 @@ class AddEventAttendantScreenTest {
   @Test
   fun displayAllComponents() {
     composeTestRule.onNodeWithTag(AddEventTestTags.INSTRUCTION_TEXT).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(AddEventTestTags.BACK_BUTTON).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(AddEventTestTags.CREATE_BUTTON).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(AddEventTestTags.LIST_USER).assertIsDisplayed()
   }
 }

@@ -21,6 +21,7 @@ import java.util.Locale
 fun recurrenceLabel(status: RecurrenceStatus, start: ZonedDateTime, locale: Locale): String =
     when (status) {
       RecurrenceStatus.OneTime -> ""
+      RecurrenceStatus.Daily -> "every day"
       RecurrenceStatus.Weekly -> "every week (${weekdayShortLocalized(start.dayOfWeek, locale)})"
       RecurrenceStatus.Monthly -> "every month"
       RecurrenceStatus.Yearly -> "every year"

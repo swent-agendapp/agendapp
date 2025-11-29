@@ -1,4 +1,4 @@
-package com.android.sample.model.organization
+package com.android.sample.model.organization.repository
 
 import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.google.firebase.Firebase

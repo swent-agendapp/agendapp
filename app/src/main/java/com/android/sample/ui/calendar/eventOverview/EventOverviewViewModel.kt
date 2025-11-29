@@ -103,6 +103,7 @@ class EventOverviewViewModel(
         setErrorMsg("Failed to fetch event $eventId: ${e.message}")
         throw NoSuchElementException("Event with id=$eventId not found.")
       } finally {
+        loadParticipantNames()
         setLoading(false)
       }
     }
@@ -120,8 +121,7 @@ class EventOverviewViewModel(
    * future iteration, this method is expected to resolve human-readable names via the
    * [AuthRepository].
    */
-  fun loadParticipantNames() {
-    if (_uiState.value.event == null) return
+  private fun loadParticipantNames() {
     viewModelScope.launch {
       // Later (when the Add flow will propose a list of User that are in the Auth repository
       // instead of a fake name's list) :
@@ -150,8 +150,7 @@ class EventOverviewViewModel(
       val participantsNames = _uiState.value.event!!.participants.toList()
 
       // update the uiState with the new participants list
-      _uiState.value =
-          OverviewUIState(event = _uiState.value.event, participantsNames = participantsNames)
+      _uiState.value = _uiState.value.copy(participantsNames = participantsNames)
     }
   }
 }

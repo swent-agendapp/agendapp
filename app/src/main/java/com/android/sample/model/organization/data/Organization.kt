@@ -1,4 +1,4 @@
-package com.android.sample.model.organization
+package com.android.sample.model.organization.data
 
 import com.android.sample.model.authentication.User
 import com.android.sample.model.calendar.Event

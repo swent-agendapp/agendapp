@@ -13,7 +13,7 @@ import com.android.sample.model.authentication.AuthRepository
 import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authorization.AuthorizationService
-import com.android.sample.model.organization.Role
+import com.android.sample.model.organization.data.Role
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -118,14 +118,10 @@ class SignInViewModel(
                     it.copy(isLoading = false, errorMsg = failure.message, signedOut = true)
                   }
                 })
-      } catch (_: GetCredentialCancellationException) {
+      } catch (e: GetCredentialCancellationException) {
         // User cancelled the sign-in flow
         _uiState.update {
-          it.copy(
-              isLoading = false,
-              errorMsg = context.getString(R.string.sign_in_cancelled_error),
-              signedOut = true,
-              user = null)
+          it.copy(isLoading = false, errorMsg = e.localizedMessage, signedOut = true, user = null)
         }
       } catch (e: GetCredentialException) {
         // Other credential errors

@@ -1,4 +1,4 @@
-package com.android.sample.model.organization
+package com.android.sample.model.organization.repository
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

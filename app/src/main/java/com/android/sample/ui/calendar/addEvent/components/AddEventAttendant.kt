@@ -17,10 +17,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DividerDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -39,9 +37,7 @@ import com.android.sample.R
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags.CHECK_BOX_EMPLOYEE
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
-import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.components.BottomNavigationButtons
-import com.android.sample.ui.map.MapScreenTestTags
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.PaddingMedium
@@ -56,16 +52,12 @@ import com.android.sample.ui.theme.WeightExtraHeavy
  *
  * On "Create", the ViewModel persists the event.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEventAttendantScreen(
+    modifier: Modifier = Modifier,
     addEventViewModel: AddEventViewModel = viewModel(),
-    onCreate: () -> Unit = {},
-    onBack: () -> Unit = {},
 ) {
   val newEventUIState by addEventViewModel.uiState.collectAsState()
-  val allFieldsValid by
-      remember(newEventUIState) { derivedStateOf { addEventViewModel.allFieldsValid() } }
 
   val allParticipants =
       listOf(
@@ -96,81 +88,80 @@ fun AddEventAttendantScreen(
           "Zoé") // Placeholder for all possible participants
   // note : these temporary names are inspired from the real Stakeholder's employee's names
 
-  Scaffold(
-      topBar = {
-        SecondaryPageTopBar(
-            modifier = Modifier.testTag(MapScreenTestTags.MAP_TITLE),
-            title = stringResource(R.string.addEventTitle),
-            canGoBack = false)
-      },
-      content = { paddingValues ->
-        Column(
-            modifier =
-                Modifier.fillMaxSize()
-                    .padding(horizontal = PaddingExtraLarge)
-                    .padding(paddingValues),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceAround) {
-              Box(
-                  modifier = Modifier.weight(WeightExtraHeavy).fillMaxWidth(),
-                  contentAlignment = Alignment.Center) {
-                    Text(
-                        stringResource(R.string.selectAttendants),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.headlineMedium,
-                        modifier = Modifier.testTag(AddEventTestTags.INSTRUCTION_TEXT))
-                  }
-              Card(
-                  modifier =
-                      Modifier.weight(WeightExtraHeavy)
-                          .fillMaxWidth()
-                          .padding(vertical = PaddingSmall),
-                  shape = RoundedCornerShape(CornerRadiusLarge),
-                  elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
-                    // Scrollable list
-                    LazyColumn(modifier = Modifier.fillMaxSize().padding(PaddingMedium)) {
-                      items(allParticipants) { participant ->
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier =
-                                Modifier.fillMaxWidth()
-                                    .clickable {
-                                      val action =
-                                          if (participant in newEventUIState.participants)
-                                              addEventViewModel::removeParticipant
-                                          else addEventViewModel::addParticipant
-                                      action(participant)
-                                    }
-                                    .padding(vertical = PaddingSmall)
-                                    .testTag(CHECK_BOX_EMPLOYEE)) {
-                              Checkbox(
-                                  checked = newEventUIState.participants.contains(participant),
-                                  onCheckedChange = { checked ->
-                                    val action =
-                                        if (checked) addEventViewModel::addParticipant
-                                        else addEventViewModel::removeParticipant
-                                    action(participant)
-                                  })
-                              Spacer(modifier = Modifier.width(SpacingSmall))
-                              Text(text = participant)
-                            }
-                        HorizontalDivider(
-                            Modifier, DividerDefaults.Thickness, DividerDefaults.color)
-                      }
-                    }
-                  }
+  Column(
+      modifier = modifier.fillMaxSize().padding(horizontal = PaddingExtraLarge),
+      horizontalAlignment = Alignment.CenterHorizontally,
+      verticalArrangement = Arrangement.SpaceAround) {
+        Box(
+            modifier = Modifier.weight(WeightExtraHeavy).fillMaxWidth(),
+            contentAlignment = Alignment.Center) {
+              Text(
+                  stringResource(R.string.selectAttendants),
+                  textAlign = TextAlign.Center,
+                  style = MaterialTheme.typography.headlineMedium,
+                  modifier = Modifier.testTag(AddEventTestTags.INSTRUCTION_TEXT))
             }
-      },
-      bottomBar = {
-        BottomNavigationButtons(
-            onNext = { onCreate() },
-            onBack = onBack,
-            backButtonText = stringResource(R.string.goBack),
-            nextButtonText = stringResource(R.string.create),
-            canGoNext = allFieldsValid,
-            backButtonTestTag = AddEventTestTags.BACK_BUTTON,
-            nextButtonTestTag = AddEventTestTags.CREATE_BUTTON)
-      })
+        Card(
+            modifier =
+                Modifier.weight(WeightExtraHeavy)
+                    .fillMaxWidth()
+                    .padding(vertical = PaddingSmall)
+                    .testTag(AddEventTestTags.LIST_USER),
+            shape = RoundedCornerShape(CornerRadiusLarge),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
+              // Scrollable list
+              LazyColumn(modifier = Modifier.fillMaxSize().padding(PaddingMedium)) {
+                items(allParticipants) { participant ->
+                  Row(
+                      verticalAlignment = Alignment.CenterVertically,
+                      modifier =
+                          Modifier.fillMaxWidth()
+                              .clickable {
+                                val action =
+                                    if (participant in newEventUIState.participants)
+                                        addEventViewModel::removeParticipant
+                                    else addEventViewModel::addParticipant
+                                action(participant)
+                              }
+                              .padding(vertical = PaddingSmall)
+                              .testTag(CHECK_BOX_EMPLOYEE)) {
+                        Checkbox(
+                            checked = newEventUIState.participants.contains(participant),
+                            onCheckedChange = { checked ->
+                              val action =
+                                  if (checked) addEventViewModel::addParticipant
+                                  else addEventViewModel::removeParticipant
+                              action(participant)
+                            })
+                        Spacer(modifier = Modifier.width(SpacingSmall))
+                        Text(text = participant)
+                      }
+                  HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
+                }
+              }
+            }
+      }
+}
+
+@Composable
+fun AddEventAttendantBottomBar(
+    addEventViewModel: AddEventViewModel = viewModel(),
+    onNext: () -> Unit = {},
+    onBack: () -> Unit = {},
+) {
+  val newEventUIState by addEventViewModel.uiState.collectAsState()
+
+  val allFieldsValid by
+      remember(newEventUIState) { derivedStateOf { addEventViewModel.allFieldsValid() } }
+
+  BottomNavigationButtons(
+      onNext = onNext,
+      onBack = onBack,
+      backButtonText = stringResource(R.string.goBack),
+      nextButtonText = stringResource(R.string.next),
+      canGoNext = allFieldsValid,
+      backButtonTestTag = AddEventTestTags.BACK_BUTTON,
+      nextButtonTestTag = AddEventTestTags.NEXT_BUTTON)
 }
 
 @Preview(showBackground = true)

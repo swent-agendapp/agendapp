@@ -2,7 +2,7 @@ package com.android.sample.model.invitationRepositoryTest
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.authentication.User
-import com.android.sample.model.organization.Organization
+import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.invitation.Invitation
 import com.android.sample.model.organization.invitation.InvitationRepositoryFirebase
 import com.android.sample.model.organization.invitation.InvitationStatus

@@ -140,9 +140,10 @@
 
     <!-- Recurrence -->
     <string name="recurrence_one_time">One Time</string>
-    <string name="recurrence_weekly">Weekly</string>
-    <string name="recurrence_monthly">Monthly</string>
-    <string name="recurrence_yearly">Yearly</string>
+    <string name="recurrence_daily">Every day</string>
+    <string name="recurrence_weekly">Every week</string>
+    <string name="recurrence_monthly">Every Month</string>
+    <string name="recurrence_yearly">Every year</string>
 
     <!-- Sign In -->
     <string name="sign_in_app_title">Agendapp</string>
@@ -151,7 +152,6 @@
     <string name="sign_in_button_text">Sign in with Google</string>
     <string name="sign_in_logout_content_description">Sign out</string>
     <string name="sign_in_logo_content_description">App logo</string>
-    <string name="sign_in_cancelled_error">Sign-in cancelled</string>
     <string name="sign_in_credentials_error">Failed to get credentials: %1$s</string>
     <string name="sign_in_unexpected_error">Unexpected error: %1$s</string>
 
@@ -204,6 +204,10 @@
     <string name="replacement_list_title">Select an event</string>
     <string name="replacement_list_instruction">Select an event you need to be replaced for</string>
     <string name="select_date_range_instruction">Select the date range for which you need a replacement.</string>
+    <string name="hour_recap_results_title">Total hours per employee for the selected period:</string>
+    <string name="hour_recap_title">Total hours per employee</string>
+    <string name="hour_recap_generate">Generate summary</string>
+    <string name="export_excel">Export to Excel</string>
 </resources>
 
 

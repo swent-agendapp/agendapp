@@ -9,7 +9,7 @@ import java.time.Instant
 import java.util.Date
 import kotlinx.coroutines.tasks.await
 
-class EventRepositoryFirebase(private val db: FirebaseFirestore) : EventRepository {
+open class EventRepositoryFirebase(private val db: FirebaseFirestore) : BaseEventRepository() {
 
   override fun getNewUid(): String {
     return db.collection(EVENTS_COLLECTION_PATH).document().id
@@ -123,5 +123,12 @@ class EventRepositoryFirebase(private val db: FirebaseFirestore) : EventReposito
         .mapNotNull { EventMapper.fromDocument(document = it) }
         // keep only events whose start is on/before the queried end
         .filter { it.startDate <= endDate }
+  }
+
+  override suspend fun ensureOrganizationExists(orgId: String) {
+    val orgExists =
+        db.collection(ORGANIZATIONS_COLLECTION_PATH).document(orgId).get().await().exists()
+
+    require(orgExists) { "Organization with id $orgId not found" }
   }
 }

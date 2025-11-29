@@ -1,8 +1,8 @@
 package com.android.sample.model.authorization
 
-import com.android.sample.model.organization.Employee
-import com.android.sample.model.organization.EmployeeRepository
-import com.android.sample.model.organization.Role
+import com.android.sample.model.organization.data.Employee
+import com.android.sample.model.organization.data.Role
+import com.android.sample.model.organization.repository.EmployeeRepository
 import com.google.common.truth.Truth.assertThat
 import kotlin.test.Ignore
 import kotlinx.coroutines.test.runTest

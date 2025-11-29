@@ -2,7 +2,6 @@ package com.android.sample.model.firestoreMappersTests
 
 import com.android.sample.model.authentication.User
 import com.android.sample.model.firestoreMappers.InvitationMapper
-import com.android.sample.model.firestoreMappers.OrganizationMapper
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.invitation.Invitation
 import com.android.sample.model.organization.invitation.InvitationStatus
@@ -41,7 +40,7 @@ class InvitationMapperTest {
   private val sampleMap: Map<String, Any?> =
       mapOf(
           InvitationMapper.ID_FIELD to "inv123",
-          InvitationMapper.ORGANIZATION_ID_FIELD to OrganizationMapper.toMap(sampleOrg),
+          InvitationMapper.ORGANIZATION_ID_FIELD to sampleOrg.id,
           InvitationMapper.CODE_FIELD to "ABCDEF",
           InvitationMapper.CREATED_AT_FIELD to Timestamp(Date.from(createdAt)),
           InvitationMapper.ACCEPTED_AT_FIELD to Timestamp(Date.from(acceptedAt)),
@@ -54,8 +53,7 @@ class InvitationMapperTest {
     val doc = mock(DocumentSnapshot::class.java)
 
     `when`(doc.getString(InvitationMapper.ID_FIELD)).thenReturn(sampleInvitation.id)
-    `when`(doc.get(InvitationMapper.ORGANIZATION_ID_FIELD))
-        .thenReturn(OrganizationMapper.toMap(sampleOrg))
+    `when`(doc.getString(InvitationMapper.ORGANIZATION_ID_FIELD)).thenReturn(sampleOrg.id)
     `when`(doc.getString(InvitationMapper.CODE_FIELD)).thenReturn(sampleInvitation.code)
     `when`(doc.getTimestamp(InvitationMapper.CREATED_AT_FIELD))
         .thenReturn(Timestamp(Date.from(createdAt)))
@@ -121,8 +119,7 @@ class InvitationMapperTest {
     val doc = mock(DocumentSnapshot::class.java)
 
     `when`(doc.getString(InvitationMapper.ID_FIELD)).thenReturn(sampleInvitation.id)
-    `when`(doc.get(InvitationMapper.ORGANIZATION_ID_FIELD))
-        .thenReturn(OrganizationMapper.toMap(sampleOrg))
+    `when`(doc.getString(InvitationMapper.ORGANIZATION_ID_FIELD)).thenReturn(sampleOrg.id)
     `when`(doc.getString(InvitationMapper.CODE_FIELD)).thenReturn(sampleInvitation.code)
     `when`(doc.getTimestamp(InvitationMapper.CREATED_AT_FIELD))
         .thenReturn(Timestamp(Date.from(createdAt)))

@@ -11,7 +11,7 @@ import java.util.UUID
  * invitee's email and current status.
  *
  * @property id Unique identifier for this invitation.
- * @property organizationId The organization this invitation belongs to.
+ * @property organizationId The ID of the organization this invitation belongs to.
  * @property code Randomly generated alphanumeric invitation code.
  * @property createdAt Timestamp indicating when the invitation was created.
  * @property acceptedAt Timestamp indicating when the invitation was accepted, or `null` if it has
@@ -48,7 +48,7 @@ data class Invitation(
      * The invitation starts in the [InvitationStatus.Active] state and has no invitee email or
      * acceptance timestamp.
      *
-     * @param organization The organization for which the invitation is created.
+     * @param organizationId The ID of the organization for which the invitation is created.
      * @return A new [Invitation] instance with generated defaults.
      */
     fun create(

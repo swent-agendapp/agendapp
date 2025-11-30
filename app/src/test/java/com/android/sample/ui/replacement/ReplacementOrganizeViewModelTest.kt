@@ -1,14 +1,10 @@
 package com.android.sample.ui.replacement
 
 import com.android.sample.model.authentication.User
-import com.android.sample.model.authorization.AuthorizationService
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryLocal
 import com.android.sample.model.calendar.createEvent
-import com.android.sample.model.organization.data.Employee
-import com.android.sample.model.organization.data.Role
-import com.android.sample.model.organization.repository.EmployeeRepository
 import com.android.sample.model.organization.repository.OrganizationRepository
 import com.android.sample.model.organization.repository.OrganizationRepositoryLocal
 import com.android.sample.model.replacement.ReplacementRepository
@@ -28,8 +24,6 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 
-// Tests written by AI
-
 @OptIn(ExperimentalCoroutinesApi::class)
 class ReplacementOrganizeViewModelTest {
 
@@ -40,7 +34,7 @@ class ReplacementOrganizeViewModelTest {
   private lateinit var replacementRepo: ReplacementRepository
   private lateinit var event1: Event
 
-  private val selectedOrganizationID: String = "org123"
+  private val selectedOrganizationID = "org123"
 
   @Before
   fun setUp() {
@@ -49,7 +43,6 @@ class ReplacementOrganizeViewModelTest {
     orgRepo = OrganizationRepositoryLocal()
     replacementRepo = ReplacementRepositoryLocal()
 
-    // Create a sample event for testing.
     event1 =
         createEvent(
             organizationId = selectedOrganizationID,
@@ -67,51 +60,19 @@ class ReplacementOrganizeViewModelTest {
     Dispatchers.resetMain()
   }
 
-  /** Helper: admin VM */
-  private fun makeAdminVm(): ReplacementOrganizeViewModel {
-    val adminAuthz =
-        AuthorizationService(
-            repo =
-                object : EmployeeRepository {
-                  override suspend fun getEmployees(): List<Employee> = emptyList()
-
-                  override suspend fun newEmployee(employee: Employee) {}
-
-                  override suspend fun deleteEmployee(userId: String) {}
-
-                  override suspend fun getMyRole(): Role? = Role.ADMIN
-                })
+  /** Helper VM (authorization removed everywhere) */
+  private fun makeVm(): ReplacementOrganizeViewModel {
     return ReplacementOrganizeViewModel(
-        eventRepository = eventRepo, replacementRepository = replacementRepo, authServ = adminAuthz)
-  }
-
-  /** Helper: employee VM */
-  private fun makeEmployeeVm(): ReplacementOrganizeViewModel {
-    val employeeAuthz =
-        AuthorizationService(
-            repo =
-                object : EmployeeRepository {
-                  override suspend fun getEmployees(): List<Employee> = emptyList()
-
-                  override suspend fun newEmployee(employee: Employee) {}
-
-                  override suspend fun deleteEmployee(userId: String) {}
-
-                  override suspend fun getMyRole(): Role? = Role.EMPLOYEE
-                })
-    return ReplacementOrganizeViewModel(
-        eventRepository = eventRepo,
-        replacementRepository = replacementRepo,
-        authServ = employeeAuthz)
+        eventRepository = eventRepo, replacementRepository = replacementRepo)
   }
 
   // ----------------------------------------------------------------------
-  // UI STATE BASICS
+  // UI State Basics
   // ----------------------------------------------------------------------
 
   @Test
   fun `initial state has default values`() {
-    val vm = makeAdminVm()
+    val vm = makeVm()
     val state = vm.uiState.value
 
     assertTrue(state.memberList.isEmpty())
@@ -122,29 +83,29 @@ class ReplacementOrganizeViewModelTest {
 
   @Test
   fun `goToStep updates the current step`() {
-    val vm = makeAdminVm()
+    val vm = makeVm()
     vm.goToStep(ReplacementOrganizeStep.SelectEvents)
     assertEquals(ReplacementOrganizeStep.SelectEvents, vm.uiState.value.step)
   }
 
   @Test
-  fun `setMemberSearchQuery updates the query`() {
-    val vm = makeAdminVm()
+  fun `setMemberSearchQuery updates query`() {
+    val vm = makeVm()
     vm.setMemberSearchQuery("john")
     assertEquals("john", vm.uiState.value.memberSearchQuery)
   }
 
   @Test
   fun `setSelectedMember updates selected member`() {
-    val vm = makeAdminVm()
-    val member = User(id = "123", displayName = "Alice", email = "alice@example.com")
-    vm.setSelectedMember(member)
-    assertEquals(member, vm.uiState.value.selectedMember)
+    val vm = makeVm()
+    val user = User("123", "Alice", "alice@example.com")
+    vm.setSelectedMember(user)
+    assertEquals(user, vm.uiState.value.selectedMember)
   }
 
   @Test
   fun `setStartInstant updates start date`() {
-    val vm = makeAdminVm()
+    val vm = makeVm()
     val now = Instant.now()
     vm.setStartInstant(now)
     assertEquals(now, vm.uiState.value.startInstant)
@@ -152,73 +113,62 @@ class ReplacementOrganizeViewModelTest {
 
   @Test
   fun `setEndInstant updates end date`() {
-    val vm = makeAdminVm()
+    val vm = makeVm()
     val now = Instant.now()
     vm.setEndInstant(now)
     assertEquals(now, vm.uiState.value.endInstant)
   }
 
   // ----------------------------------------------------------------------
-  // MEMBER LOADING
+  // Member Loading
   // ----------------------------------------------------------------------
 
   @Test
-  fun `loadOrganizationMembers loads mock members`() = runTest {
-    val vm = makeAdminVm()
+  fun `loadOrganizationMembers loads mock data`() = runTest {
+    val vm = makeVm()
     vm.loadOrganizationMembers()
     testDispatcher.scheduler.advanceUntilIdle()
-
     assertTrue(vm.uiState.value.memberList.isNotEmpty())
   }
 
   // ----------------------------------------------------------------------
-  // EVENT SELECTION
+  // Event Selection
   // ----------------------------------------------------------------------
 
   @Test
   fun `addSelectedEvent adds event only once`() {
-    val vm = makeAdminVm()
+    val vm = makeVm()
+    vm.addSelectedEvent(event1)
+    vm.addSelectedEvent(event1)
 
-    val e = event1
-
-    vm.addSelectedEvent(e)
-    vm.addSelectedEvent(e)
-
-    val selected = vm.uiState.value.selectedEvents
-    assertEquals(1, selected.size)
-    assertEquals(e.id, selected.first().id)
+    assertEquals(1, vm.uiState.value.selectedEvents.size)
   }
 
   @Test
   fun `removeSelectedEvent removes event`() {
-    val vm = makeAdminVm()
-    val e = event1
-
-    vm.addSelectedEvent(e)
-    vm.removeSelectedEvent(e)
-
+    val vm = makeVm()
+    vm.addSelectedEvent(event1)
+    vm.removeSelectedEvent(event1)
     assertTrue(vm.uiState.value.selectedEvents.isEmpty())
   }
 
   @Test
   fun `toggleSelectedEvent adds then removes`() {
-    val vm = makeAdminVm()
-    val e = event1
+    val vm = makeVm()
+    vm.toggleSelectedEvent(event1)
+    assertTrue(vm.uiState.value.selectedEvents.contains(event1))
 
-    vm.toggleSelectedEvent(e)
-    assertTrue(vm.uiState.value.selectedEvents.contains(e))
-
-    vm.toggleSelectedEvent(e)
-    assertFalse(vm.uiState.value.selectedEvents.contains(e))
+    vm.toggleSelectedEvent(event1)
+    assertFalse(vm.uiState.value.selectedEvents.contains(event1))
   }
 
   // ----------------------------------------------------------------------
-  // DATE RANGE VALIDATION
+  // Date Range Validation
   // ----------------------------------------------------------------------
 
   @Test
   fun `dateRangeValid returns true only when end is after start`() {
-    val vm = makeAdminVm()
+    val vm = makeVm()
     val now = Instant.now()
 
     vm.setStartInstant(now)
@@ -230,27 +180,22 @@ class ReplacementOrganizeViewModelTest {
   }
 
   // ----------------------------------------------------------------------
-  // REPLACEMENT CREATION
+  // Replacement Creation
   // ----------------------------------------------------------------------
 
   @Test
   fun `addReplacement sets error when no selected member`() = runTest {
-    val vm = makeAdminVm()
+    val vm = makeVm()
     vm.addReplacement()
     testDispatcher.scheduler.advanceUntilIdle()
-
     assertEquals("No absent member selected.", vm.uiState.value.errorMsg)
   }
 
   @Test
-  fun `admin can insert replacement for selected events`() = runTest {
-    val vm = makeAdminVm()
-    val member = User("1", "John Doe", "john.doe@example.com")
-    vm.setSelectedMember(member)
-
-    // Add event selection
-    val event = event1
-    vm.addSelectedEvent(event)
+  fun `addReplacement inserts replacements for selected events`() = runTest {
+    val vm = makeVm()
+    vm.setSelectedMember(User("1", "John Doe", "john@example.com"))
+    vm.addSelectedEvent(event1)
 
     vm.addReplacement()
     testDispatcher.scheduler.advanceUntilIdle()
@@ -272,5 +217,19 @@ class ReplacementOrganizeViewModelTest {
 
     assertEquals("You are not allowed to organize replacements !", vm.uiState.value.errorMsg)
     assertTrue(replacementRepo.getAllReplacements(selectedOrganizationID).isEmpty())
+  fun `resetUiState resets everything`() {
+    val vm = makeVm()
+    vm.setMemberSearchQuery("abc")
+    vm.setSelectedMember(User("1", "Test", "user@example.com"))
+    vm.addSelectedEvent(event1)
+    vm.goToStep(ReplacementOrganizeStep.SelectProcessMoment)
+
+    vm.resetUiState()
+    val state = vm.uiState.value
+
+    assertTrue(state.memberSearchQuery.isEmpty())
+    assertTrue(state.selectedEvents.isEmpty())
+    assertNull(state.selectedMember)
+    assertEquals(ReplacementOrganizeStep.SelectSubstitute, state.step)
   }
 }

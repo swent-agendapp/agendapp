@@ -22,6 +22,8 @@
     <string name="recurrenceMenuLabel">Wiederholung</string>
     <string name="finish">Fertig</string>
     <string name="create">Erstellen</string>
+    <string name="change">Änderung</string>
+    <string name="delete">Löschen</string>
     <string name="confirmationMessage">Herzlichen Glückwunsch!\nIhr Ereignis wurde erfolgreich erstellt und zum Kalender hinzugefügt</string>
     <string name="cancel">Abbrechen</string>
     <string name="default_web_client_id">423898020035-fu7m7lmtsuu6cn7d3s4ev4mrf0ep68l3.apps.googleusercontent.com</string>
@@ -68,6 +70,7 @@
     <string name="settings_profile_button">Profil</string>
     <string name="settings_admin_info_button">Admin-Informationen</string>
     <string name="settings_map_settings_button">Karte</string>
+    <string name="settings_organization_selection_button">Organisation</string>
 
     <!-- Profile Screen -->
     <string name="profile_screen_title">Profil</string>
@@ -181,7 +184,6 @@
     <string name="view_mode_5days">5 Tage</string>
     <string name="view_mode_7days">7 Tage</string>
     <string name="view_mode_month">Monat</string>
-    <string name="delete">Löschen</string>
     <string name="modify">Bearbeiten</string>
     <string name="delete_event_message">Sind Sie sicher, dass Sie dieses Ereignis löschen möchten?</string>
     <string name="replacement_list_title">Ereignis auswählen</string>
@@ -192,9 +194,26 @@
     <string name="organization_list_title">Ihre organisationen</string>
     <string name="organization_loading">Organisationen werden geladen</string>
     <string name="organization_name_label">Name der Organisation</string>
+    <string name="organization_none_selected">Keine Organisation ausgewählt</string>
+    <string name="organization_members">Mitglieder</string>
+    <string name="error_no_authenticated_user">Kein authentifizierter Benutzer gefunden.</string>
+    <string name="error_no_organization_selected">Keine Organisation ausgewählt.</string>
+    <string name="error_organization_not_found">Organisation nicht gefunden.</string>
+    <string name="error_no_organization_to_delete">Keine Organisation zum Löschen ausgewählt.</string>
+
+
     <string name="hour_recap_results_title">Gesamtstunden pro Mitarbeiter im ausgewählten Zeitraum:</string>
     <string name="hour_recap_title">Gesamtstunden pro Mitarbeiter</string>
     <string name="hour_recap_generate">Zusammenfassung erstellen</string>
     <string name="export_excel">Nach Excel exportieren</string>
+
+    <!-- Filters -->
+    <string name="filter">Filter</string>
+    <string name="close">Schließen</string>
+    <string name="filter_event_type">Ereignistyp</string>
+    <string name="filter_location">Ort</string>
+    <string name="filter_participants">Teilnehmer</string>
+    <string name="clear_all">Alles löschen</string>
+    <string name="apply">Anwenden</string>
 
 </resources>

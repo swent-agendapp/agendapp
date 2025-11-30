@@ -48,6 +48,7 @@ import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
 import com.android.sample.ui.organization.AddOrganizationScreen
 import com.android.sample.ui.organization.OrganizationListScreen
+import com.android.sample.ui.organization.OrganizationOverViewScreen
 import com.android.sample.ui.profile.AdminContactScreen
 import com.android.sample.ui.profile.ProfileScreen
 import com.android.sample.ui.replacement.ProcessReplacementScreen
@@ -347,37 +348,47 @@ private fun NavGraphBuilder.replacementGraph(
       }
 }
 
-private fun NavGraphBuilder.settingsGraph(
-    navigationActions: NavigationActions,
-    credentialManager: CredentialManager
-) {
-  // Settings Graph
-  navigation(startDestination = Screen.Settings.route, route = Screen.Settings.name) {
-    // Settings Screen
-    composable(Screen.Settings.route) {
-      SettingsScreen(
-          onNavigateToUserProfile = { navigationActions.navigateTo(Screen.Profile) },
-          onNavigateToAdminInfo = { navigationActions.navigateTo(Screen.AdminContact) },
-          onNavigateToMapSettings = { navigationActions.navigateTo(Screen.Map) })
-    }
-    // User profile Screen
-    composable(Screen.Profile.route) {
-      ProfileScreen(
-          onNavigateBack = { navigationActions.navigateBack() },
-          credentialManager = credentialManager,
-          onSignOut = { navigationActions.navigateTo(Screen.Authentication) })
-    }
+              // Settings Graph
+              navigation(startDestination = Screen.Settings.route, route = Screen.Settings.name) {
+                // Settings Screen
+                composable(Screen.Settings.route) {
+                  SettingsScreen(
+                      onNavigateToUserProfile = { navigationActions.navigateTo(Screen.Profile) },
+                      onNavigateToAdminInfo = { navigationActions.navigateTo(Screen.AdminContact) },
+                      onNavigateToMapSettings = { navigationActions.navigateTo(Screen.Map) },
+                      onNavigateToOrganizationList = {
+                        navigationActions.navigateTo(Screen.OrganizationOverview)
+                      })
+                }
+                // User profile Screen
+                composable(Screen.Profile.route) {
+                  ProfileScreen(
+                      onNavigateBack = { navigationActions.navigateBack() },
+                      credentialManager = credentialManager,
+                      onSignOut = { navigationActions.navigateTo(Screen.Authentication) })
+                }
 
     // Admin contact Screen
     composable(Screen.AdminContact.route) {
       AdminContactScreen(onNavigateBack = { navigationActions.navigateBack() })
     }
 
-    // Map Settings Screen
-    composable(Screen.Map.route) {
-      MapScreen(
-          mapViewModel = MapViewModel(LocalContext.current.applicationContext as Application),
-          onGoBack = { navigationActions.navigateBack() })
-    }
-  }
+                // Map Settings Screen
+                composable(Screen.Map.route) {
+                  MapScreen(
+                      mapViewModel =
+                          MapViewModel(LocalContext.current.applicationContext as Application),
+                      onGoBack = { navigationActions.navigateBack() })
+                }
+
+                // Organization Overview Screen
+                composable(Screen.OrganizationOverview.route) {
+                  OrganizationOverViewScreen(
+                      onNavigateBack = { navigationActions.navigateBack() },
+                      onChangeOrganization = { navigationActions.navigateTo(Screen.Organizations) },
+                      onDeleteOrganization = { navigationActions.navigateTo(Screen.Organizations) })
+                }
+              }
+            }
+      }
 }

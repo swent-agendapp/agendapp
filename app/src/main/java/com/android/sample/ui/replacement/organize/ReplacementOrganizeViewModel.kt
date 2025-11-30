@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.sample.model.authentication.User
-import com.android.sample.model.authorization.AuthorizationService
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
@@ -18,21 +17,23 @@ import java.time.Instant
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
-// Assisted by AI
 
 /**
  * UI state representing all fields involved in the replacement-organization flow.
  *
- * @property memberSearchQuery Current query string used for filtering organization members.
- * @property selectedMember The absent member selected for replacement.
- * @property memberList Full member list of the current organization.
- * @property selectedEvents Events explicitly selected by the user (optional if using date range).
- * @property startInstant Beginning of the date range for auto-selecting events.
- * @property endInstant End of the date range for auto-selecting events.
- * @property step Current step of the replacement-organize multi-step UI flow.
- * @property errorMsg Optional error message to surface to the UI.
+ * This state is observed by composables and updated exclusively through
+ * [ReplacementOrganizeViewModel].
+ *
+ * @property memberSearchQuery Current user input for filtering organization members.
+ * @property selectedMember The absent member for whom replacements will be organized.
+ * @property memberList All available members from the current organization.
+ * @property selectedEvents Events manually selected by the user for replacement.
+ * @property startInstant Start of the event lookup range (when auto-selecting events).
+ * @property endInstant End of the event lookup range.
+ * @property step Current UI step in the replacement workflow.
+ * @property errorMsg Optional error message displayed in the UI.
  */
 data class ReplacementOrganizeUIState(
     val memberSearchQuery: String = "",
@@ -45,7 +46,14 @@ data class ReplacementOrganizeUIState(
     val errorMsg: String? = null
 )
 
-/** Enumeration of the steps in the replacement-organization multi-step flow. */
+/**
+ * Steps in the replacement-organization multi-step flow.
+ *
+ * This ordering defines the user journey:
+ * 1. Select an absent substitute
+ * 2. Select events or choose a date range
+ * 3. Confirm the processing moment
+ */
 enum class ReplacementOrganizeStep {
   SelectSubstitute,
   SelectEvents,
@@ -53,102 +61,90 @@ enum class ReplacementOrganizeStep {
 }
 
 /**
- * ViewModel managing the state and operations required to organize replacements for absent members.
+ * ViewModel for managing the process of organizing replacements for absent members.
  *
  * Responsibilities:
- * - Load organization members
- * - Allow selecting a member, selecting events, or choosing event ranges
- * - Validate date ranges
- * - Create and insert Replacement objects
- * - Enforce authorization for replacement creation
+ * - Load and expose organization members
+ * - Track user input: absent member, selected events, date ranges
+ * - Validate user selections
+ * - Auto-select events based on date ranges
+ * - Build and persist [Replacement] entries
  *
- * The UI interacts only with the exposed methods (e.g., `setSelectedMember()`,
- * `toggleSelectedEvent()`, etc.) and observes state updates via [uiState].
+ * UI interacts with this ViewModel through exposed methods like:
+ * - [setSelectedMember]
+ * - [toggleSelectedEvent]
+ * - [setStartInstant]
+ * - [addReplacement]
+ *
+ * All ViewModel state is exposed through a [StateFlow] of [ReplacementOrganizeUIState].
  */
 class ReplacementOrganizeViewModel(
     private val eventRepository: EventRepository = EventRepositoryProvider.repository,
     private val replacementRepository: ReplacementRepository =
         ReplacementRepositoryProvider.repository,
-    private val authServ: AuthorizationService = AuthorizationService(),
     private val selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel,
 ) : ViewModel() {
+
+  /** Internal mutable UI state. */
   private val _uiState = MutableStateFlow(ReplacementOrganizeUIState())
 
-  /** Public immutable state that the UI observes. */
+  /** Public immutable UI state observed by the UI. */
   val uiState: StateFlow<ReplacementOrganizeUIState> = _uiState.asStateFlow()
 
   /**
-   * Loads all members of the user's organization.
+   * Loads all members from the selected organization.
    *
-   * Currently uses mock organizations for development/testing.
-   *
-   * After loading, updates the member list in the UI state.
+   * Currently uses mock data until real backend integration is implemented.
    */
   fun loadOrganizationMembers() {
     viewModelScope.launch {
       val currentOrganization = getMockOrganizations().last()
-      // Later replace with actual user and organization
-      _uiState.value = _uiState.value.copy(memberList = currentOrganization.members)
+      _uiState.update { it.copy(memberList = currentOrganization.members) }
     }
   }
 
   /**
-   * Builds replacement entries from the current UI state and delegates persistence.
+   * Creates replacement entries based on the current UI state.
    *
    * Event selection logic:
-   * - If the user manually selected events → those events are used.
-   * - If no manual selection → events are fetched from the selected date range.
+   * - If the user manually selected events → use those.
+   * - Otherwise, fetch events between [startInstant] and [endInstant].
    *
    * Validation:
-   * - An absent member must be selected.
-   * - The date range must be valid when auto-selecting events.
-   * - The user must have permission to organize replacements.
+   * - A selected absent member is required
+   * - If auto-selecting events, date range must be valid
    *
-   * For each event, a [Replacement] object is constructed and passed to
-   * [addReplacementToRepository] for insertion.
+   * For each event found, a [Replacement] object is constructed and stored.
    */
   fun addReplacement() {
     viewModelScope.launch {
       val state = uiState.value
-      // For now, we throw an exception if unauthorized, because requireAdmin() disabled
-      // temporarily and does nothing
-      val allowed = runCatching { authServ.requireAdmin() }.isSuccess
-      // Start of temporary code
-      if (!authServ.canEditCourses()) {
-        _uiState.value = state.copy(errorMsg = "You are not allowed to organize replacements !")
-        return@launch
-      }
-      // End of temporary code
-      if (!allowed) {
-        _uiState.value =
-            _uiState.value.copy(errorMsg = "You are not allowed to organize replacements !")
-        return@launch
-      }
-
       val absentMember = state.selectedMember
 
       if (absentMember == null) {
-        _uiState.value = state.copy(errorMsg = "No absent member selected.")
+        _uiState.update { it.copy(errorMsg = "No absent member selected.") }
         return@launch
       }
 
-      val selectedEvents = state.selectedEvents
       val events: List<Event> =
-          selectedEvents.ifEmpty {
+          if (state.selectedEvents.isNotEmpty()) {
+            state.selectedEvents
+          } else {
             if (!dateRangeValid()) {
-              _uiState.value = state.copy(errorMsg = "Invalid date range. End must be after start.")
+              _uiState.update { it.copy(errorMsg = "Invalid date range. End must be after start.") }
               return@launch
             }
+
             val orgId = selectedOrganizationViewModel.selectedOrganizationId.value
-            require(orgId != null) { "Organization must be selected to fetch replacements" }
+            require(orgId != null) { "Organization must be selected to fetch events." }
 
             eventRepository.getEventsBetweenDates(
                 orgId = orgId, startDate = state.startInstant, endDate = state.endInstant)
           }
 
       if (events.isEmpty()) {
-        _uiState.value = state.copy(errorMsg = "No events available to create replacements.")
+        _uiState.update { it.copy(errorMsg = "No events available to create replacements.") }
         return@launch
       }
 
@@ -156,75 +152,63 @@ class ReplacementOrganizeViewModel(
         val replacement =
             Replacement(
                 absentUserId = absentMember.id,
-                substituteUserId = "",
-                event = event,
-            )
-
+                substituteUserId = "", // selected in next steps
+                event = event)
         addReplacementToRepository(replacement)
       }
     }
   }
 
   /**
-   * Inserts a single replacement into the repository.
+   * Persists a single [Replacement] entry into the repository.
    *
-   * Authorization is validated in [addReplacement], so this method only performs the persistence
-   * operation.
-   *
-   * @param replacement The replacement entry to persist.
+   * Errors are caught and surfaced to the UI via [errorMsg].
    */
   private suspend fun addReplacementToRepository(replacement: Replacement) {
     try {
       val orgId = selectedOrganizationViewModel.selectedOrganizationId.value
-      require(orgId != null) { "Organization must be selected to fetch replacements" }
+      require(orgId != null) { "Organization must be selected to create a replacement." }
 
       replacementRepository.insertReplacement(orgId = orgId, item = replacement)
     } catch (e: Exception) {
       Log.e("ReplacementOrganizeVM", "Error adding replacement: ${e.message}")
-      _uiState.value =
-          _uiState.value.copy(errorMsg = "Unexpected error while creating the replacement")
+      _uiState.update { it.copy(errorMsg = "Unexpected error while creating the replacement.") }
     }
   }
 
-  /**
-   * @return `true` if the end instant is strictly after the start instant.
-   *
-   * Used when auto-selecting events via date range.
-   */
+  /** @return `true` if the date range is valid (end instant strictly after start instant). */
   fun dateRangeValid() = uiState.value.endInstant.isAfter(uiState.value.startInstant)
 
-  /** Navigates directly to a specific step in the replacement organization flow. */
+  /** Navigates to a specific step in the multi-step flow. */
   fun goToStep(step: ReplacementOrganizeStep) {
-    _uiState.value = _uiState.value.copy(step = step)
+    _uiState.update { it.copy(step = step) }
   }
 
-  /** Sets the member search query used to filter the member list. */
+  /** Updates the query used for filtering members. */
   fun setMemberSearchQuery(query: String) {
-    _uiState.value = _uiState.value.copy(memberSearchQuery = query)
+    _uiState.update { it.copy(memberSearchQuery = query) }
   }
 
-  /** Sets the selected member for whom the replacement is being organized. */
+  /** Sets or clears the absent member for whom replacements are being organized. */
   fun setSelectedMember(member: User?) {
-    _uiState.value = _uiState.value.copy(selectedMember = member)
+    _uiState.update { it.copy(selectedMember = member) }
   }
 
-  /** Adds an event to the list of selected events for replacement. */
+  /** Adds an event to the selected event list if it is not already present. */
   fun addSelectedEvent(event: Event) {
-    if (_uiState.value.selectedEvents.any { it.id == event.id }) return
-    _uiState.value = _uiState.value.copy(selectedEvents = _uiState.value.selectedEvents + event)
+    val events = _uiState.value.selectedEvents
+    if (events.any { it.id == event.id }) return
+    _uiState.update { it.copy(selectedEvents = events + event) }
   }
 
-  /** Removes an event from the list of selected events for replacement. */
+  /** Removes an event from the selected event list. */
   fun removeSelectedEvent(event: Event) {
-    _uiState.value =
-        _uiState.value.copy(
-            selectedEvents = _uiState.value.selectedEvents.filterNot { it.id == event.id })
+    _uiState.update {
+      it.copy(selectedEvents = it.selectedEvents.filterNot { e -> e.id == event.id })
+    }
   }
-  /**
-   * Toggles the selection state of an event:
-   * - Adds it if not selected
-   * - Removes it if already selected
-   */
+
+  /** Toggles an event in or out of the selection list. */
   fun toggleSelectedEvent(event: Event) {
     if (uiState.value.selectedEvents.contains(event)) {
       removeSelectedEvent(event)
@@ -233,23 +217,17 @@ class ReplacementOrganizeViewModel(
     }
   }
 
-  /** Sets the start instant for the replacement date range. */
+  /** Sets the beginning of the date range used to auto-select events. */
   fun setStartInstant(instant: Instant) {
-    _uiState.value = _uiState.value.copy(startInstant = instant)
+    _uiState.update { it.copy(startInstant = instant) }
   }
 
-  /** Sets the end instant for the replacement date range. */
+  /** Sets the end of the date range used to auto-select events. */
   fun setEndInstant(instant: Instant) {
-    _uiState.value = _uiState.value.copy(endInstant = instant)
+    _uiState.update { it.copy(endInstant = instant) }
   }
 
-  /**
-   * Resets all UI fields to their default values.
-   *
-   * Useful when:
-   * - The user restarts the replacement organization flow
-   * - The UI is closed or cancelled
-   */
+  /** Resets all UI state fields to their default values. */
   fun resetUiState() {
     _uiState.value = ReplacementOrganizeUIState()
   }

@@ -132,7 +132,38 @@ class CreateInvitationViewModelTest {
     vm.addInvitations()
   }
 
-  private fun makeVm(isAdminVm: Boolean = false): CreateInvitationViewModel {
+  @Test(expected = IllegalStateException::class)
+  fun `adding invitation without authenticated user throws exception`() = runTest {
+    val vm = makeVm(isAdminVm = false, hasAuthenticatedUser = false)
+    vm.addInvitations()
+  }
+
+  @Test(expected = IllegalStateException::class)
+  fun `adding invitation without selected organization throws exception`() = runTest {
+    val vm = makeVm(isAdminVm = false, hasSelectedOrganization = false)
+    vm.addInvitations()
+  }
+
+  @Test(expected = IllegalStateException::class)
+  fun `adding invitation when selected organization does not exist throws exception`() = runTest {
+    val vm = makeVm(isAdminVm = false, selectedOrganizationExists = false)
+    vm.addInvitations()
+  }
+
+  @Test
+  fun `canCreateInvitations returns false when errorMsg is not null`() {
+    val vm = makeVm(hasAuthenticatedUser = false)
+    vm.setCount(-5) // Invalid count to set error message
+    assertFalse(vm.canCreateInvitations())
+    assertEquals(INVALID_INVITATION_COUNT_ERROR_MSG, vm.uiState.value.errorMsg)
+  }
+
+  private fun makeVm(
+      isAdminVm: Boolean = false,
+      hasAuthenticatedUser: Boolean = true,
+      hasSelectedOrganization: Boolean = true,
+      selectedOrganizationExists: Boolean = true
+  ): CreateInvitationViewModel {
     val fakeAuthRepository =
         object : AuthRepository {
           override suspend fun signInWithGoogle(credential: Credential): Result<User> {
@@ -140,11 +171,12 @@ class CreateInvitationViewModelTest {
           }
 
           override fun signOut(): Result<Unit> {
+
             return Result.success(Unit)
           }
 
           override fun getCurrentUser(): User? {
-            return if (isAdminVm) admin else employee
+            return if (!hasAuthenticatedUser) null else if (isAdminVm) admin else employee
           }
 
           override suspend fun getUserById(userId: String): User? {
@@ -162,7 +194,11 @@ class CreateInvitationViewModelTest {
           }
         }
     val selectedOrganizationVm = SelectedOrganizationViewModel()
-    selectedOrganizationVm.selectOrganization(organization.id)
+    if (hasSelectedOrganization) {
+      selectedOrganizationVm.selectOrganization(organization.id)
+    } else {
+      selectedOrganizationVm.clearSelection()
+    }
     val fakeOrganizationRepository =
         object : OrganizationRepository {
           override suspend fun getAllOrganizations(user: User): List<Organization> {
@@ -175,7 +211,7 @@ class CreateInvitationViewModelTest {
               organizationId: String,
               user: User
           ): Organization? {
-            return organization
+            return if (selectedOrganizationExists) organization else null
           }
         }
     return CreateInvitationViewModel(

@@ -3,10 +3,10 @@ package com.android.sample.ui.invitation
 import androidx.credentials.Credential
 import com.android.sample.model.authentication.AuthRepository
 import com.android.sample.model.authentication.User
-import com.android.sample.model.organization.Organization
-import com.android.sample.model.organization.OrganizationRepository
+import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.invitation.InvitationRepository
 import com.android.sample.model.organization.invitation.InvitationRepositoryLocal
+import com.android.sample.model.organization.repository.OrganizationRepository
 import com.android.sample.ui.invitation.createInvitation.CreateInvitationViewModel
 import com.android.sample.ui.invitation.createInvitation.INVALID_INVITATION_COUNT_ERROR_MSG
 import com.android.sample.ui.invitation.createInvitation.MAX_INVITATION_COUNT_ERROR_MSG
@@ -16,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.*
@@ -109,14 +110,27 @@ class CreateInvitationViewModelTest {
     assertEquals(MIN_INVITATION_COUNT_ERROR_MSG, vm.uiState.value.errorMsg)
   }
 
-  // This test fails for some reason and I can't figure out why. Commenting it out for now.
-  //  @Test(expected = IllegalArgumentException::class)
-  //  fun `non-admin user cannot add invitation`() {
-  //    val vm = makeVm(false)
-  //    vm.increment()
-  //    assertEquals(2, vm.uiState.value.count)
-  //    vm.addInvitations()
-  //  }
+  @Test
+  fun `admin user can add invitation`() = runTest {
+    val vm = makeVm(true)
+
+    vm.increment()
+    assertEquals(2, vm.uiState.value.count)
+    vm.addInvitations()
+
+    testDispatcher.scheduler.advanceUntilIdle()
+    val invitations = invitationRepository.getAllInvitations()
+    assertEquals(2, invitations.size)
+  }
+
+  @Test(expected = IllegalArgumentException::class)
+  fun `non-admin user cannot add invitation`() = runTest {
+    val vm = makeVm(false)
+
+    vm.increment()
+    assertEquals(2, vm.uiState.value.count)
+    vm.addInvitations()
+  }
 
   private fun makeVm(isAdminVm: Boolean = false): CreateInvitationViewModel {
     val fakeAuthRepository =

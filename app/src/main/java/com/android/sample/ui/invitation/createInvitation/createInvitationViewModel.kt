@@ -4,11 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.sample.model.authentication.AuthRepository
 import com.android.sample.model.authentication.AuthRepositoryProvider
-import com.android.sample.model.organization.OrganizationRepository
-import com.android.sample.model.organization.OrganizationRepositoryProvider
-import com.android.sample.model.organization.invitation.Invitation
 import com.android.sample.model.organization.invitation.InvitationRepository
 import com.android.sample.model.organization.invitation.InvitationRepositoryProvider
+import com.android.sample.model.organization.repository.OrganizationRepository
+import com.android.sample.model.organization.repository.OrganizationRepositoryProvider
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -85,12 +84,8 @@ class CreateInvitationViewModel(
       val selectedOrganization =
           organizationRepository.getOrganizationById(selectedOrganizationId, user)
               ?: throw IllegalStateException("Selected organization not found.")
-      if (!selectedOrganization.admins.contains(user)) {
-        throw IllegalStateException("Only organization admins can create invitations.")
-      }
       repeat(_uiState.value.count) {
-        val invitation = Invitation.create(selectedOrganization)
-        invitationRepository.insertInvitation(item = invitation, user = user)
+        invitationRepository.insertInvitation(organization = selectedOrganization, user = user)
       }
     }
   }

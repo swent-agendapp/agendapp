@@ -214,4 +214,13 @@
     <string name="hour_recap_generate">Générer le récapitulatif</string>
     <string name="export_excel">Exporter vers Excel</string>
 
+    <!-- Filters -->
+    <string name="filter">Filtrer</string>
+    <string name="close">Fermer</string>
+    <string name="filter_event_type">Type d’événement</string>
+    <string name="filter_location">Lieu</string>
+    <string name="filter_participants">Participants</string>
+    <string name="clear_all">Tout effacer</string>
+    <string name="apply">Appliquer</string>
+
 </resources>

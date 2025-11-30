@@ -213,6 +213,16 @@
     <string name="hour_recap_title">Total hours per employee</string>
     <string name="hour_recap_generate">Generate summary</string>
     <string name="export_excel">Export to Excel</string>
+
+    <!-- Filters -->
+    <string name="filter">Filter</string>
+    <string name="close">Close</string>
+    <string name="filter_event_type">Event type</string>
+    <string name="filter_location">Location</string>
+    <string name="filter_participants">Participants</string>
+    <string name="clear_all">Clear all</string>
+    <string name="apply">Apply</string>
+
 </resources>
 
 

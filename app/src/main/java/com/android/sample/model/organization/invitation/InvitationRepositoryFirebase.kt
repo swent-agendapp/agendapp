@@ -3,6 +3,7 @@ package com.android.sample.model.organization.invitation
 import com.android.sample.model.authentication.User
 import com.android.sample.model.constants.FirestoreConstants.INVITATIONS_COLLECTION_PATH
 import com.android.sample.model.firestoreMappers.InvitationMapper
+import com.android.sample.model.organization.data.Organization
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
@@ -16,24 +17,32 @@ class InvitationRepositoryFirebase(private val db: FirebaseFirestore) : Invitati
     return snapshot.mapNotNull { InvitationMapper.fromDocument(it) }
   }
 
-  override suspend fun insertInvitation(item: Invitation, user: User) {
+  override suspend fun insertInvitation(organization: Organization, user: User) {
     // Calls the interface check to ensure the user is an admin
-    super.insertInvitation(item, user)
+    super.insertInvitation(organization, user)
+
+    val item = Invitation.create(organizationId = organization.id)
+    require(getInvitationById(item.id) == null) { "Invitation with id ${item.id} already exists." }
     collection.document(item.id).set(InvitationMapper.toMap(model = item)).await()
   }
 
-  override suspend fun updateInvitation(itemId: String, item: Invitation, user: User) {
+  override suspend fun updateInvitation(
+      itemId: String,
+      item: Invitation,
+      organization: Organization,
+      user: User
+  ) {
     // Calls the interface check to ensure the user has the right to update the invitation
-    super.updateInvitation(itemId, item, user)
+    super.updateInvitation(itemId, item, organization, user)
     require(item.id == itemId) {
       "Mismatched IDs: updated item id ${item.id} does not match target id $itemId"
     }
     collection.document(itemId).set(InvitationMapper.toMap(item)).await()
   }
 
-  override suspend fun deleteInvitation(itemId: String, user: User) {
+  override suspend fun deleteInvitation(itemId: String, organization: Organization, user: User) {
     // Calls the interface check to ensure the user has the right to delete the invitation
-    super.deleteInvitation(itemId, user)
+    super.deleteInvitation(itemId, organization, user)
     collection.document(itemId).delete().await()
   }
 

@@ -1,6 +1,7 @@
 package com.android.sample.ui.organization
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.sample.R
 import com.android.sample.model.authentication.FakeAuthRepository
 import com.android.sample.model.authentication.User
 import com.android.sample.model.organization.data.Organization
@@ -50,20 +51,26 @@ class OrganizationOverviewViewModelTest {
     val state = vm.uiState.value
     assertEquals("My Organization", state.organizationName)
     assertEquals(3, state.memberCount)
+    assertNull(state.errorMessageId)
   }
 
   @OptIn(ExperimentalCoroutinesApi::class)
-  @Test(expected = IllegalArgumentException::class)
-  fun `fillSelectedOrganizationDetails throws error when no organization id`() = runTest {
+  @Test
+  fun `fillSelectedOrganizationDetails sets error when no organization id`() = runTest {
     vm.fillSelectedOrganizationDetails("")
+
+    val state = vm.uiState.value
+    assertEquals(R.string.error_no_organization_selected, state.errorMessageId)
   }
 
   @OptIn(ExperimentalCoroutinesApi::class)
-  @Test(expected = IllegalArgumentException::class)
-  fun `fillSelectedOrganizationDetails throws when no authenticated user`() = runTest {
+  @Test
+  fun `fillSelectedOrganizationDetails sets error when no authenticated user`() = runTest {
     val vmNoUser = OrganizationOverviewViewModel(organizationRepository, FakeAuthRepository(null))
-
     vmNoUser.fillSelectedOrganizationDetails("org1")
+
+    val state = vmNoUser.uiState.value
+    assertEquals(R.string.error_no_authenticated_user, state.errorMessageId)
   }
 
   @Test
@@ -74,6 +81,7 @@ class OrganizationOverviewViewModelTest {
     val state = vm.uiState.value
     assertEquals("", state.organizationName)
     assertEquals(0, state.memberCount)
+    assertNull(state.errorMessageId)
   }
 
   @OptIn(ExperimentalCoroutinesApi::class)
@@ -90,11 +98,15 @@ class OrganizationOverviewViewModelTest {
     val state = vm.uiState.value
     assertEquals("", state.organizationName)
     assertEquals(0, state.memberCount)
+    assertNull(state.errorMessageId)
   }
 
   @OptIn(ExperimentalCoroutinesApi::class)
-  @Test(expected = IllegalArgumentException::class)
-  fun `deleteSelectedOrganization throws on null id`() = runTest {
+  @Test
+  fun `deleteSelectedOrganization sets error on null id`() = runTest {
     vm.deleteSelectedOrganization(null)
+
+    val state = vm.uiState.value
+    assertEquals(R.string.error_no_organization_to_delete, state.errorMessageId)
   }
 }

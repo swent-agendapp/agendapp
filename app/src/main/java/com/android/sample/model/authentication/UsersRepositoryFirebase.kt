@@ -16,20 +16,20 @@ class UsersRepositoryFirebase(
     private val authRepository: AuthRepository
 ) : UserRepository {
 
-  private fun usersCol() = db.collection(COLLECTION_USERS)
+  private fun usersCollection() = db.collection(COLLECTION_USERS)
 
   override suspend fun getUsers(): List<User> {
-    val snap = usersCol().get().await()
+    val snap = usersCollection().get().await()
     return snap.documents.mapNotNull { UserMapper.fromDocument(it) }
   }
 
   override suspend fun newUser(user: User) {
     require(user.id.isNotBlank()) { "userId is required" }
     val data = UserMapper.toMap(user)
-    usersCol().document(user.id).set(data).await()
+    usersCollection().document(user.id).set(data).await()
   }
 
   override suspend fun deleteUser(userId: String) {
-    usersCol().document(userId).delete().await()
+    usersCollection().document(userId).delete().await()
   }
 }

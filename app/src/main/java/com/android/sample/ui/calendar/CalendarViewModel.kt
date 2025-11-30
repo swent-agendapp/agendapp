@@ -126,6 +126,11 @@ class CalendarViewModel(
         errorMessage = "Failed to load events between $start and $end")
   }
 
+  // Placeholder for applying filters to the events
+  fun applyFilters(filters: Any) {
+    // Implementation for applying filters goes here
+  }
+
   /**
    * Calculates the total worked hours for each employee within a given time range.
    *

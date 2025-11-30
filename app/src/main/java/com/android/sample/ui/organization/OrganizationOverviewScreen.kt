@@ -3,11 +3,14 @@ package com.android.sample.ui.organization
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -25,6 +28,7 @@ object OrganizationOverviewScreenTestTags {
   const val MEMBER_COUNT_TEXT = "memberCountText"
   const val CHANGE_BUTTON = "changeButton"
   const val DELETE_BUTTON = "deleteButton"
+  const val ERROR_SNACKBAR = "errorSnackBar"
 }
 
 @Composable
@@ -38,14 +42,25 @@ fun OrganizationOverViewScreen(
 ) {
 
   val coroutineScope = rememberCoroutineScope()
+  val snackBarHostState = remember { SnackbarHostState() }
+
   val selectedOrgId by selectedOrganizationViewModel.selectedOrganizationId.collectAsState()
+  val uiState by organizationOverviewViewModel.uiState.collectAsState()
+
+  val errorMessage = uiState.errorMessageId?.let { id -> stringResource(id) }
 
   // Load organization details when selectedOrgId changes
   LaunchedEffect(Unit) {
     selectedOrgId?.let { organizationOverviewViewModel.fillSelectedOrganizationDetails(it) }
   }
 
-  val uiState by organizationOverviewViewModel.uiState.collectAsState()
+  // Show error messages in a snack-bar
+  LaunchedEffect(errorMessage) {
+    errorMessage?.let { msg ->
+      snackBarHostState.showSnackbar(msg)
+      organizationOverviewViewModel.clearError()
+    }
+  }
 
   Scaffold(
       topBar = {
@@ -53,6 +68,11 @@ fun OrganizationOverViewScreen(
             title = stringResource(R.string.settings_organization_selection_button),
             onClick = onNavigateBack,
             backButtonTestTags = "")
+      },
+      snackbarHost = {
+        SnackbarHost(
+            hostState = snackBarHostState,
+            modifier = Modifier.testTag(OrganizationOverviewScreenTestTags.ERROR_SNACKBAR))
       },
       modifier = Modifier.testTag(OrganizationOverviewScreenTestTags.ROOT)) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding).padding(PaddingMedium)) {

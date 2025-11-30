@@ -192,6 +192,11 @@
     <string name="organization_name_label">Name of organization</string>
     <string name="organization_none_selected">No organization selected</string>
     <string name="organization_members">Members</string>
+    <string name="error_no_authenticated_user">No authenticated user found.</string>
+    <string name="error_no_organization_selected">No organization selected.</string>
+    <string name="error_organization_not_found">Organization not found.</string>
+    <string name="error_no_organization_to_delete">No organization selected to delete.</string>
+
 
     <!-- Event Overview -->
     <string name="event_overview_title">Event Overview</string>

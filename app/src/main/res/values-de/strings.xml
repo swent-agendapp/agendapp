@@ -203,6 +203,11 @@
     <string name="organization_name_label">Name der Organisation</string>
     <string name="organization_none_selected">Keine Organisation ausgewählt</string>
     <string name="organization_members">Mitglieder</string>
+    <string name="error_no_authenticated_user">Kein authentifizierter Benutzer gefunden.</string>
+    <string name="error_no_organization_selected">Keine Organisation ausgewählt.</string>
+    <string name="error_organization_not_found">Organisation nicht gefunden.</string>
+    <string name="error_no_organization_to_delete">Keine Organisation zum Löschen ausgewählt.</string>
+
 
     <string name="hour_recap_results_title">Gesamtstunden pro Mitarbeiter im ausgewählten Zeitraum:</string>
     <string name="hour_recap_title">Gesamtstunden pro Mitarbeiter</string>

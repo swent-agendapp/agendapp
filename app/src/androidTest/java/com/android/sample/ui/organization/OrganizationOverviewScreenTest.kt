@@ -6,6 +6,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.sample.R
 import com.android.sample.model.authentication.FakeAuthRepository
 import com.android.sample.model.authentication.User
 import com.android.sample.model.organization.data.Organization
@@ -163,5 +164,22 @@ class OrganizationOverviewScreenTest {
 
     // Callback must be called
     assert(deleteCallbackCalled)
+  }
+
+  @OptIn(ExperimentalCoroutinesApi::class)
+  @Test
+  fun snackBarAppearsOnError() = runTest {
+    // Simulate an error in the ViewModel
+    vm.setError(R.string.error_organization_not_found)
+
+    composeTestRule.setContent {
+      OrganizationOverViewScreen(
+          organizationOverviewViewModel = vm, selectedOrganizationViewModel = selectedOrgVM)
+    }
+
+    // Verify that the snackbar with the error message is displayed
+    composeTestRule
+        .onNodeWithTag(OrganizationOverviewScreenTestTags.ERROR_SNACKBAR)
+        .assertIsDisplayed()
   }
 }

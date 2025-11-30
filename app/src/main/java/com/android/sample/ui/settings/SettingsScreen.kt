@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AdminPanelSettings
+import androidx.compose.material.icons.filled.Business
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
@@ -27,6 +28,7 @@ object SettingsScreenTestTags {
   const val PROFILE_BUTTON = "profile_button"
   const val ADMIN_BUTTON = "admin_info_button"
   const val MAP_SETTINGS_BUTTON = "map_settings_button"
+  const val ORGANIZATION_BUTTON = "organization_selection_button"
 }
 
 /** Settings screen with navigation to profile. */
@@ -37,6 +39,7 @@ fun SettingsScreen(
     onNavigateToUserProfile: () -> Unit = {},
     onNavigateToAdminInfo: () -> Unit = {},
     onNavigateToMapSettings: () -> Unit = {},
+    onNavigateToOrganizationList: () -> Unit = {}
 ) {
   val items =
       listOf(
@@ -54,7 +57,12 @@ fun SettingsScreen(
               stringResource(R.string.settings_map_settings_button),
               Icons.Default.Map,
               SettingsScreenTestTags.MAP_SETTINGS_BUTTON,
-              onClick = onNavigateToMapSettings))
+              onClick = onNavigateToMapSettings),
+          ButtonItem(
+              stringResource(R.string.settings_organization_selection_button),
+              Icons.Default.Business,
+              SettingsScreenTestTags.ORGANIZATION_BUTTON,
+              onClick = onNavigateToOrganizationList))
 
   Scaffold(
       topBar = {

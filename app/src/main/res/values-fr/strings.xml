@@ -22,6 +22,8 @@
     <string name="recurrenceMenuLabel">Récurrence</string>
     <string name="finish">Terminer</string>
     <string name="create">Créer</string>
+    <string name="change">Changer</string>
+    <string name="delete">Supprimer</string>
     <string name="confirmationMessage">Félicitations !\nVotre événement a été créé et ajouté à votre calendrier</string>
     <string name="cancel">Annuler</string>
     <string name="default_web_client_id">423898020035-fu7m7lmtsuu6cn7d3s4ev4mrf0ep68l3.apps.googleusercontent.com</string>
@@ -68,6 +70,7 @@
     <string name="settings_profile_button">Profil</string>
     <string name="settings_admin_info_button">Infos administrateur</string>
     <string name="settings_map_settings_button">Carte</string>
+    <string name="settings_organization_selection_button">Organisation</string>
 
 
     <!-- Profile Screen -->
@@ -188,7 +191,6 @@
     <string name="view_mode_5days">5 jours</string>
     <string name="view_mode_7days">7 jours</string>
     <string name="view_mode_month">Mois</string>
-    <string name="delete">Supprimer</string>
     <string name="modify">Modifier</string>
     <string name="delete_event_message">Êtes-vous sûr de vouloir supprimer cet événement?</string>
     <string name="replacement_list_title">Sélectionner un événement</string>
@@ -199,6 +201,14 @@
     <string name="organization_list_title">Vos organisations</string>
     <string name="organization_loading">Chergement des organisations</string>
     <string name="organization_name_label">Nom de l’organisation</string>
+    <string name="organization_none_selected">Aucune organisation sélectionnée</string>
+    <string name="organization_members">Membres</string>
+    <string name="error_no_authenticated_user">Aucun utilisateur authentifié.</string>
+    <string name="error_no_organization_selected">Aucune organisation sélectionnée.</string>
+    <string name="error_organization_not_found">Organisation introuvable.</string>
+    <string name="error_no_organization_to_delete">Aucune organisation sélectionnée pour la suppression.</string>
+
+
     <string name="hour_recap_results_title">Total d\'heures par employé pour la période sélectionnée :</string>
     <string name="hour_recap_title">Total d\'heures par employé</string>
     <string name="hour_recap_generate">Générer le récapitulatif</string>

@@ -62,4 +62,19 @@ class SettingsScreenTest {
 
     assert(mapSettingsClicked)
   }
+
+  @Test
+  fun settingsScreen_organizationButtonWorks() {
+    var organizationClicked = false
+    composeTestRule.setContent {
+      SettingsScreen(onNavigateToOrganizationList = { organizationClicked = true })
+    }
+
+    composeTestRule
+        .onNodeWithTag(SettingsScreenTestTags.ORGANIZATION_BUTTON)
+        .assertIsDisplayed()
+        .performClick()
+
+    assert(organizationClicked)
+  }
 }

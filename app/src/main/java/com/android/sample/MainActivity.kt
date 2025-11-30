@@ -16,7 +16,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -30,10 +29,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.android.sample.model.authentication.AuthRepositoryProvider
-import com.android.sample.model.organization.data.getMockOrganizations
-import com.android.sample.model.replacement.Replacement
-import com.android.sample.model.replacement.ReplacementRepositoryProvider
-import com.android.sample.model.replacement.ReplacementStatus
 import com.android.sample.ui.authentication.SignInScreen
 import com.android.sample.ui.calendar.CalendarScreen
 import com.android.sample.ui.calendar.addEvent.AddEventScreen
@@ -51,14 +46,13 @@ import com.android.sample.ui.organization.OrganizationListScreen
 import com.android.sample.ui.organization.OrganizationOverViewScreen
 import com.android.sample.ui.profile.AdminContactScreen
 import com.android.sample.ui.profile.ProfileScreen
-import com.android.sample.ui.replacement.ProcessReplacementScreen
 import com.android.sample.ui.replacement.ReplacementPendingListScreen
 import com.android.sample.ui.replacement.ReplacementUpcomingListScreen
+import com.android.sample.ui.replacement.mainPage.ProcessReplacementRoute
 import com.android.sample.ui.replacement.mainPage.ReplacementEmployeeFlow
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeScreen
 import com.android.sample.ui.settings.SettingsScreen
 import com.android.sample.ui.theme.SampleAppTheme
-import kotlinx.coroutines.launch
 
 object MainActivityTestTags {
   const val MAIN_SCREEN_CONTAINER = "main_screen_container"
@@ -297,48 +291,14 @@ private fun NavGraphBuilder.replacementGraph(
         }
         composable(Screen.ReplacementProcess.route) { navBackStackEntry ->
           val replacementId = navBackStackEntry.arguments?.getString("replacementId")
-          val replacementRepository = ReplacementRepositoryProvider.repository
-          val scope = rememberCoroutineScope()
 
           if (replacementId == null) {
             Log.e("ProcessReplacementScreen", "replacementId is null")
             navigationActions.navigateBack()
           } else {
-            ProcessReplacementScreen(
+            ProcessReplacementRoute(
                 replacementId = replacementId,
-                onSendRequests = { selectedSubstitutes ->
-                  scope.launch {
-                    try {
-                      val organizationId = getMockOrganizations().last().id
-                      val original =
-                          replacementRepository.getReplacementById(organizationId, replacementId)
-
-                      if (original == null) {
-                        Log.e(
-                            "ProcessReplacementScreen",
-                            "Original replacement not found for id=$replacementId")
-                        navigationActions.navigateBack()
-                      } else {
-                        selectedSubstitutes.forEach { substituteId ->
-                          val request =
-                              Replacement(
-                                  absentUserId = original.absentUserId,
-                                  substituteUserId = substituteId,
-                                  event = original.event,
-                                  status = ReplacementStatus.WaitingForAnswer,
-                              )
-
-                          replacementRepository.insertReplacement(organizationId, request)
-                        }
-
-                        navigationActions.navigateTo(Screen.ReplacementOverview)
-                      }
-                    } catch (e: Exception) {
-                      Log.e("ProcessReplacementScreen", "Error sending requests", e)
-                      navigationActions.navigateBack()
-                    }
-                  }
-                },
+                onFinished = { navigationActions.navigateTo(Screen.ReplacementOverview) },
                 onBack = { navigationActions.navigateBack() },
             )
           }

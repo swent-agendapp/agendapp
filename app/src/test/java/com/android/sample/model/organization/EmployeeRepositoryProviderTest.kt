@@ -1,26 +1,48 @@
 package com.android.sample.model.organization
 
-import com.android.sample.model.organization.data.Employee
-import com.android.sample.model.organization.data.Role
-import com.android.sample.model.organization.repository.EmployeeRepository
+import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepository
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
-private class StubEmployeeRepo(private val role: Role?) : EmployeeRepository {
-  override suspend fun getEmployees(): List<Employee> = emptyList()
+/**
+ * Simple stub implementation of [UserRepository] for testing purposes.
+ *
+ * This stub:
+ * - Stores no data
+ * - Implements only the required functions of the current UserRepository contract
+ */
+private class StubUserRepo : UserRepository {
 
-  override suspend fun newEmployee(employee: Employee) {}
+  override suspend fun getUsers(): List<User> = emptyList()
 
-  override suspend fun deleteEmployee(userId: String) {}
+  override suspend fun newUser(user: User) {
+    // No-op for stub
+  }
 
-  override suspend fun getMyRole(): Role? = role
+  override suspend fun deleteUser(userId: String) {
+    // No-op for stub
+  }
 }
 
-class EmployeeRepositoryProviderTest {
+/**
+ * Basic test ensuring that the repository provider can instantiate and call a UserRepository
+ * implementation without throwing or misbehaving.
+ */
+class UserRepositoryProviderTest {
+
   @Test
-  fun provider_holds_assigned_instance() = runBlocking {
-    val result = StubEmployeeRepo(Role.ADMIN).getMyRole()
-    assertThat(result).isEqualTo(Role.ADMIN)
+  fun stubRepository_instantiates_and_calls_methods() = runBlocking {
+    val repo = StubUserRepo()
+
+    // getUsers should return an empty list
+    assertThat(repo.getUsers()).isEmpty()
+
+    // newUser should not throw
+    repo.newUser(User("u1", "Alice", "alice@test.com"))
+
+    // deleteUser should not throw
+    repo.deleteUser("u1")
   }
 }

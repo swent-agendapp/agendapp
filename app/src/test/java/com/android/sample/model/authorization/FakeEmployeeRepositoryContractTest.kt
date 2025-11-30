@@ -1,56 +1,64 @@
 package com.android.sample.model.authorization
 
 import com.android.sample.model.authentication.User
-import com.android.sample.model.organization.data.Employee
-import com.android.sample.model.organization.data.Role
-import com.android.sample.model.organization.repository.EmployeeRepository
+import com.android.sample.model.authentication.UserRepository
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
+/**
+ * Contract tests for a simple in-memory fake implementation of [UserRepository].
+ *
+ * This verifies the expected behavior of:
+ * - Upsert logic (newUser replaces existing ID)
+ * - getUsers()
+ * - deleteUser()
+ *
+ * Since the authorization system (Role, Employee, getMyRole) has been removed, this test only
+ * checks the UserRepository contract.
+ */
 class FakeEmployeeRepositoryContractTest {
 
-  private class Fake : EmployeeRepository {
-    val l = mutableListOf<Employee>()
-    var role: Role? = null
+  /** Basic fake implementation used for tests. */
+  private class Fake : UserRepository {
+    val storage = mutableListOf<User>()
 
-    override suspend fun getEmployees(): List<Employee> = l
+    override suspend fun getUsers(): List<User> = storage
 
-    override suspend fun newEmployee(employee: Employee) {
-      l.removeAll { it.user.id == employee.user.id }
-      l.add(employee)
+    override suspend fun newUser(user: User) {
+      storage.removeAll { it.id == user.id }
+      storage.add(user)
     }
 
-    override suspend fun deleteEmployee(userId: String) {
-      l.removeAll { it.user.id == userId }
+    override suspend fun deleteUser(userId: String) {
+      storage.removeAll { it.id == userId }
     }
-
-    override suspend fun getMyRole(): Role? = role
   }
 
   @Test
-  fun newEmployee_upserts_and_getEmployees_returnsList() = runTest {
+  fun newUser_upserts_and_getUsers_returnsList() = runTest {
     val fake = Fake()
-    fake.newEmployee(Employee(User("u1", "Nathan", "nathan@rien.com"), Role.EMPLOYEE))
-    fake.newEmployee(Employee(User("u2", "Emilien", "emilien@rien.com"), Role.ADMIN))
-    assertThat(fake.getEmployees()).hasSize(2)
 
-    fake.newEmployee(Employee(User("u2", "Emi2", "emi2@rien.com"), role = Role.ADMIN))
-    assertThat(fake.getEmployees().first { it.user.id == "u2" }.user.displayName).isEqualTo("Emi2")
+    // Insert two distinct users
+    fake.newUser(User(id = "u1", displayName = "Nathan", email = "nathan@rien.com"))
+    fake.newUser(User(id = "u2", displayName = "Emilien", email = "emilien@rien.com"))
+
+    assertThat(fake.getUsers()).hasSize(2)
+
+    // Upsert: replace user with ID "u2"
+    fake.newUser(User(id = "u2", displayName = "Emi2", email = "emi2@rien.com"))
+
+    val updated = fake.getUsers().first { it.id == "u2" }
+    assertThat(updated.displayName).isEqualTo("Emi2")
   }
 
   @Test
-  fun deleteEmployee_removesUser() = runTest {
+  fun deleteUser_removesUser() = runTest {
     val fake = Fake()
-    fake.newEmployee(Employee(User("u1", "Nathan", "nathan@rien.com"), Role.EMPLOYEE))
-    fake.deleteEmployee("u1")
-    assertThat(fake.getEmployees()).isEmpty()
-  }
 
-  @Test
-  fun getMyRole_returnsRole() = runTest {
-    val fake = Fake()
-    fake.role = Role.ADMIN
-    assertThat(fake.getMyRole()).isEqualTo(Role.ADMIN)
+    fake.newUser(User(id = "u1", displayName = "Nathan", email = "nathan@rien.com"))
+    fake.deleteUser("u1")
+
+    assertThat(fake.getUsers()).isEmpty()
   }
 }

@@ -31,6 +31,15 @@ object OrganizationOverviewScreenTestTags {
   const val ERROR_SNACKBAR = "errorSnackBar"
 }
 
+/**
+ * Composable function for the Organization Overview screen.
+ *
+ * @param onNavigateBack Callback for navigating back.
+ * @param onChangeOrganization Callback for changing the organization.
+ * @param onDeleteOrganization Callback for deleting the organization.
+ * @param organizationOverviewViewModel ViewModel for managing organization overview state.
+ * @param selectedOrganizationViewModel ViewModel for managing selected organization state.
+ */
 @Composable
 fun OrganizationOverViewScreen(
     onNavigateBack: () -> Unit = {},
@@ -41,12 +50,15 @@ fun OrganizationOverViewScreen(
         SelectedOrganizationVMProvider.viewModel,
 ) {
 
+  // Remember coroutine scope and snackbar host state for handling async operations and messages
   val coroutineScope = rememberCoroutineScope()
   val snackBarHostState = remember { SnackbarHostState() }
 
+  // Collect state from ViewModels
   val selectedOrgId by selectedOrganizationViewModel.selectedOrganizationId.collectAsState()
   val uiState by organizationOverviewViewModel.uiState.collectAsState()
 
+  // Get error message string if available
   val errorMessage = uiState.errorMessageId?.let { id -> stringResource(id) }
 
   // Load organization details when selectedOrgId changes

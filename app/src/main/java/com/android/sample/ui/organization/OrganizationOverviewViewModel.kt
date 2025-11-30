@@ -13,12 +13,19 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+/**
+ * UI state data class for the Organization Overview screen.
+ *
+ * organizationName: Name of the organization. memberCount: Number of members in the organization.
+ * errorMessageId: Resource ID for any error message to display (nullable).
+ */
 data class OrganizationOverviewUIState(
     val organizationName: String = "",
     val memberCount: Int = 0,
     @StringRes val errorMessageId: Int? = null
 )
 
+/** ViewModel for managing the state and logic of the Organization Overview screen. */
 class OrganizationOverviewViewModel(
     private val organizationRepository: OrganizationRepository =
         OrganizationRepositoryProvider.repository,
@@ -28,17 +35,19 @@ class OrganizationOverviewViewModel(
   private val _uiState = MutableStateFlow(OrganizationOverviewUIState())
   val uiState: StateFlow<OrganizationOverviewUIState> = _uiState
 
+  // Current authenticated user
+  private val currentUser = authRepository.getCurrentUser()
+
+  /** Sets an error message in the UI state using a string resource ID. */
   fun setError(@StringRes resId: Int) {
     _uiState.value = _uiState.value.copy(errorMessageId = resId)
   }
-
+  /** Clears any error message from the UI state. */
   fun clearError() {
     _uiState.value = _uiState.value.copy(errorMessageId = null)
   }
 
-  // Current authenticated user
-  private val currentUser = authRepository.getCurrentUser()
-
+  /** Fills the UI state with details of the selected organization by its ID. */
   fun fillSelectedOrganizationDetails(orgId: String) {
     // Ensure the current user is not null
     if (currentUser == null) {
@@ -46,12 +55,14 @@ class OrganizationOverviewViewModel(
       return
     }
 
+    // Ensure an organization ID is provided
     if (orgId.isEmpty()) {
       setError(R.string.error_no_organization_selected)
       return
     }
 
     viewModelScope.launch {
+      // Fetch organization details from the repository
       val org =
           organizationRepository.getOrganizationById(organizationId = orgId, user = currentUser)
 
@@ -62,23 +73,28 @@ class OrganizationOverviewViewModel(
     }
   }
 
+  /** Clears the selected organization from the repository and resets the UI state. */
   fun clearSelectedOrganization() {
     SelectedOrganizationRepository.clearSelection()
     _uiState.value = OrganizationOverviewUIState()
   }
 
+  /** Deletes the selected organization by its ID. */
   fun deleteSelectedOrganization(orgId: String?) {
+    // Ensure an organization ID is provided
     if (orgId.isNullOrEmpty()) {
       setError(R.string.error_no_organization_to_delete)
       return
     }
 
+    // Ensure the current user is not null
     if (currentUser == null) {
       setError(R.string.error_no_authenticated_user)
       return
     }
 
     viewModelScope.launch {
+      // Delete the organization from the repository
       organizationRepository.deleteOrganization(organizationId = orgId, user = currentUser)
       clearSelectedOrganization()
     }

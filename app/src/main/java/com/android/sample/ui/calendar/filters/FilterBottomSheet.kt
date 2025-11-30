@@ -28,6 +28,14 @@ import com.android.sample.ui.theme.SpacingMedium
 
 // Assisted by AI
 
+/**
+ * Test tags used in UI tests for the Filter screen.
+ *
+ * These tags are attached to composables via `Modifier.testTag(...)` and allow tests to reliably
+ * query and interact with UI elements.
+ *
+ * Each constant corresponds to a specific UI element in the Filter screen.
+ */
 object FilterScreenTestTags {
 
   // Content

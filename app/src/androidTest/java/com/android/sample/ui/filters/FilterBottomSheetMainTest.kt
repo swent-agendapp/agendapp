@@ -20,17 +20,22 @@ class FilterBottomSheetMainTest {
 
     // Bottom sheet root exists
     compose.onNodeWithTag(CalendarScreenTestTags.FILTER_BOTTOM_SHEET).assertExists()
+    compose.onNodeWithTag(CalendarScreenTestTags.FILTER_BOTTOM_SHEET).assertIsDisplayed()
 
     // Main content container exists
     compose.onNodeWithTag(FilterScreenTestTags.FILTER_SHEET_CONTENT).assertExists()
+    compose.onNodeWithTag(FilterScreenTestTags.FILTER_SHEET_CONTENT).assertIsDisplayed()
 
     // Category: Event Type
     compose.onNodeWithTag(FilterScreenTestTags.CATEGORY_EVENT_TYPE).assertExists()
+    compose.onNodeWithTag(FilterScreenTestTags.CATEGORY_EVENT_TYPE).assertIsDisplayed()
 
     // Category: Location
     compose.onNodeWithTag(FilterScreenTestTags.CATEGORY_LOCATION).assertExists()
+    compose.onNodeWithTag(FilterScreenTestTags.CATEGORY_LOCATION).assertIsDisplayed()
 
     // Category: Participants
     compose.onNodeWithTag(FilterScreenTestTags.CATEGORY_PARTICIPANTS).assertExists()
+    compose.onNodeWithTag(FilterScreenTestTags.CATEGORY_PARTICIPANTS).assertIsDisplayed()
   }
 }

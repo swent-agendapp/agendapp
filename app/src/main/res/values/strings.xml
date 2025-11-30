@@ -217,6 +217,8 @@
     <string name="filter_participants">Participants</string>
     <string name="clear_all">Clear all</string>
     <string name="apply">Apply</string>
+    <string name="eventType">Event Type</string>
+    <string name="location">Location</string>
 
 
     <!-- Invitations -->

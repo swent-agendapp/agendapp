@@ -218,6 +218,8 @@
     <string name="filter_participants">Teilnehmer</string>
     <string name="clear_all">Alles löschen</string>
     <string name="apply">Anwenden</string>
+    <string name="eventType">Ereignistyp</string>
+    <string name="location">Ort</string>
 
     <!-- Invitations -->
     <string name="invitation_codes_title">Einladungscodes</string>

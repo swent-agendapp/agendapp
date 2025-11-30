@@ -218,6 +218,8 @@
     <string name="filter_participants">Participants</string>
     <string name="clear_all">Tout effacer</string>
     <string name="apply">Appliquer</string>
+    <string name="eventType">Type d’événement</string>
+    <string name="location">Lieu</string>
 
     <!-- Invitations -->
     <string name="invitation_codes_title">Codes d’invitation</string>

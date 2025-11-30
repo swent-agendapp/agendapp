@@ -55,6 +55,18 @@ object FilterScreenTestTags {
   const val BUTTON_ROW = "FilterSheet_ButtonRow"
   const val CLEAR_ALL = "FilterSheet_ClearAll"
   const val APPLY = "FilterSheet_Apply"
+
+  // Event Type Filter Screen
+  const val EVENT_TYPE_SCREEN = "Filter_EventType_Screen"
+  const val EVENT_TYPE_HEADER = "Filter_EventType_Header"
+  const val EVENT_TYPE_BACK_BUTTON = "Filter_EventType_Back"
+  const val EVENT_TYPE_TITLE = "Filter_EventType_Title"
+
+  const val EVENT_TYPE_LIST = "Filter_EventType_List"
+  const val EVENT_TYPE_ITEM_PREFIX = "Filter_EventType_Item_" // + type name
+
+  const val EVENT_TYPE_CLEAR_BUTTON = "Filter_EventType_Clear"
+  const val EVENT_TYPE_APPLY_BUTTON = "Filter_EventType_Apply"
 }
 
 enum class FilterPage {
@@ -184,8 +196,43 @@ fun FilterBottomSheet(onDismiss: () -> Unit, onApply: (Map<String, List<String>>
                   Spacer(Modifier.height(SpacingMedium))
                 }
           }
-          else -> {
-            // Later implementation for other filter pages will go here
+          // -------------------------------
+          // EVENT TYPE FILTER SCREEN
+          // -------------------------------
+          FilterPage.EVENT_TYPE -> {
+            EventTypeFilterScreen(
+                selected = eventTypeFilters,
+                onBack = { currentPage = FilterPage.MAIN },
+                onApply = {
+                  eventTypeFilters = it
+                  currentPage = FilterPage.MAIN
+                })
+          }
+
+          // -------------------------------
+          // LOCATION FILTER SCREEN
+          // -------------------------------
+          FilterPage.LOCATION -> {
+            LocationFilterScreen(
+                selected = locationFilters,
+                onBack = { currentPage = FilterPage.MAIN },
+                onApply = {
+                  locationFilters = it
+                  currentPage = FilterPage.MAIN
+                })
+          }
+
+          // -------------------------------
+          // PARTICIPANTS FILTER SCREEN
+          // -------------------------------
+          FilterPage.PARTICIPANTS -> {
+            ParticipantFilterScreen(
+                selected = participantFilters,
+                onBack = { currentPage = FilterPage.MAIN },
+                onApply = {
+                  participantFilters = it
+                  currentPage = FilterPage.MAIN
+                })
           }
         }
       }

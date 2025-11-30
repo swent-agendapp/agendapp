@@ -26,7 +26,6 @@ class InvitationRepositoryLocalTest {
   private lateinit var member: User
   private lateinit var outsider: User
   private lateinit var orgA: Organization
-  private lateinit var invitation: Invitation
 
   @Before
   fun setup() {
@@ -41,44 +40,33 @@ class InvitationRepositoryLocalTest {
     orgA =
         Organization(
             id = "orgA", name = "Org A", admins = listOf(admin), members = listOf(member, admin))
-
-    invitation = Invitation.create(orgA)
   }
 
   @Test
   fun insertAndRetrieveInvitation_success() = runBlocking {
-    repository.insertInvitation(invitation, admin)
+    repository.insertInvitation(orgA, admin)
 
-    val retrieved = repository.getInvitationById(invitation.id)
-    assertNotNull(retrieved)
-    assertEquals(orgA, retrieved?.organization)
-    assertEquals(invitation.code, retrieved?.code)
-    assertEquals(InvitationStatus.Active, retrieved?.status)
+    val retrievedList = repository.getAllInvitations()
+    assertNotNull(retrievedList)
+    assertEquals(1, retrievedList.size)
+    assertEquals(orgA.id, retrievedList.first().organizationId)
+    assertEquals(InvitationStatus.Active, retrievedList.first().status)
   }
 
   @Test(expected = IllegalArgumentException::class)
-  fun insertDuplicateInvitation_fails() = runBlocking {
-    repository.insertInvitation(invitation, admin)
-
-    // Same ID → must fail
-    repository.insertInvitation(invitation, admin)
-  }
-
-  @Test(expected = IllegalArgumentException::class)
-  fun insertInvitationByNonAdmin_fails() = runBlocking {
-    repository.insertInvitation(invitation, member)
-  }
+  fun insertInvitationByNonAdmin_fails() = runBlocking { repository.insertInvitation(orgA, member) }
 
   @Test
   fun updateInvitation_success() = runBlocking {
-    repository.insertInvitation(invitation, admin)
+    repository.insertInvitation(orgA, admin)
+    val retrievedInv = repository.getAllInvitations().first()
 
-    val updated = invitation.copy(acceptedAt = Instant.now(), status = InvitationStatus.Used)
-    repository.updateInvitation(invitation.id, updated, admin)
+    val updated = retrievedInv.copy(acceptedAt = Instant.now(), status = InvitationStatus.Used)
+    repository.updateInvitation(retrievedInv.id, updated, orgA, admin)
 
-    val retrieved = repository.getInvitationById(invitation.id)
-    assertEquals(InvitationStatus.Used, retrieved?.status)
-    assertNotNull(retrieved?.acceptedAt)
+    val retrievedUpdated = repository.getInvitationById(retrievedInv.id)
+    assertEquals(InvitationStatus.Used, retrievedUpdated?.status)
+    assertNotNull(retrievedUpdated?.acceptedAt)
   }
 
   @Test(expected = IllegalArgumentException::class)
@@ -88,43 +76,54 @@ class InvitationRepositoryLocalTest {
     repository.updateInvitation(
         randomId,
         Invitation(
-            id = randomId, organization = orgA, code = "ABC123", status = InvitationStatus.Active),
+            id = randomId,
+            organizationId = orgA.id,
+            code = "ABC123",
+            status = InvitationStatus.Active),
+        orgA,
         admin)
   }
 
   @Test(expected = IllegalArgumentException::class)
   fun updateInvitationToActiveByMember_fails() = runBlocking {
-    repository.insertInvitation(invitation, admin)
-    val updated = invitation.copy(status = InvitationStatus.Active)
+    repository.insertInvitation(orgA, admin)
+    val retrievedInv = repository.getAllInvitations().first()
+    val updated = retrievedInv.copy(status = InvitationStatus.Active)
 
-    repository.updateInvitation(invitation.id, updated, member)
+    repository.updateInvitation(retrievedInv.id, updated, orgA, member)
   }
 
   @Test(expected = IllegalArgumentException::class)
   fun updateInvitationToActiveByOutsider_fails() = runBlocking {
-    repository.insertInvitation(invitation, admin)
-    val updated = invitation.copy(status = InvitationStatus.Active)
+    repository.insertInvitation(orgA, admin)
+    val retrievedInv = repository.getAllInvitations().first()
 
-    repository.updateInvitation(invitation.id, updated, outsider)
+    val updated = retrievedInv.copy(status = InvitationStatus.Active)
+
+    repository.updateInvitation(retrievedInv.id, updated, orgA, outsider)
   }
 
   @Test
   fun deleteInvitation_success() = runBlocking {
-    repository.insertInvitation(invitation, admin)
-    repository.deleteInvitation(invitation.id, admin)
+    repository.insertInvitation(orgA, admin)
+    val retrievedInv = repository.getAllInvitations().first()
 
-    assertNull(repository.getInvitationById(invitation.id))
+    repository.deleteInvitation(retrievedInv.id, orgA, admin)
+
+    assertNull(repository.getInvitationById(retrievedInv.id))
     assertTrue(repository.getAllInvitations().isEmpty())
   }
 
   @Test(expected = IllegalArgumentException::class)
   fun deleteInvitationByNonAdmin_fails() = runBlocking {
-    repository.insertInvitation(invitation, admin)
-    repository.deleteInvitation(invitation.id, member)
+    repository.insertInvitation(orgA, admin)
+    val retrievedInv = repository.getAllInvitations().first()
+
+    repository.deleteInvitation(retrievedInv.id, orgA, member)
   }
 
   @Test(expected = IllegalArgumentException::class)
   fun deleteNonexistentInvitation_fails() = runBlocking {
-    repository.deleteInvitation(UUID.randomUUID().toString(), admin)
+    repository.deleteInvitation(UUID.randomUUID().toString(), orgA, admin)
   }
 }

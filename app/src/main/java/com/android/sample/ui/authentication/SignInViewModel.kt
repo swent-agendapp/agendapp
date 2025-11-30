@@ -12,8 +12,6 @@ import com.android.sample.R
 import com.android.sample.model.authentication.AuthRepository
 import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.authentication.User
-import com.android.sample.model.authorization.AuthorizationService
-import com.android.sample.model.organization.data.Role
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,7 +31,6 @@ data class AuthUIState(
     val user: User? = null,
     val errorMsg: String? = null,
     val signedOut: Boolean = true,
-    val role: Role? = null
 )
 
 /**
@@ -43,7 +40,6 @@ data class AuthUIState(
  */
 class SignInViewModel(
     private val repository: AuthRepository = AuthRepositoryProvider.repository,
-    private val authServ: AuthorizationService = AuthorizationService()
 ) : ViewModel() {
 
   private val _uiState = MutableStateFlow(AuthUIState())
@@ -56,17 +52,13 @@ class SignInViewModel(
   /** Checks if there's a persisted user session and restores it. */
   private fun checkCurrentUser() {
     val user = repository.getCurrentUser()
+
     if (user == null) {
-      _uiState.update { it.copy(signedOut = true, isLoading = false, role = null, user = null) }
+      _uiState.update { it.copy(signedOut = true, isLoading = false, user = null) }
       return
     }
 
     _uiState.update { it.copy(user = user, signedOut = false, isLoading = false) }
-
-    viewModelScope.launch {
-      val role = runCatching { authServ.getMyRole() }.getOrNull()
-      _uiState.update { it.copy(role = role) }
-    }
   }
 
   /** Clears the error message in the UI state. */
@@ -108,10 +100,6 @@ class SignInViewModel(
             .fold(
                 { user ->
                   _uiState.update { it.copy(isLoading = false, user = user, signedOut = false) }
-                  viewModelScope.launch {
-                    val role = runCatching { authServ.getMyRole() }.getOrNull()
-                    _uiState.update { it.copy(role = role) }
-                  }
                 },
                 { failure ->
                   _uiState.update {

@@ -9,8 +9,6 @@ import com.android.sample.model.organization.invitation.InvitationRepositoryLoca
 import com.android.sample.model.organization.repository.OrganizationRepository
 import com.android.sample.ui.invitation.createInvitation.CreateInvitationViewModel
 import com.android.sample.ui.invitation.createInvitation.INVALID_INVITATION_COUNT_ERROR_MSG
-import com.android.sample.ui.invitation.createInvitation.MAX_INVITATION_COUNT_ERROR_MSG
-import com.android.sample.ui.invitation.createInvitation.MIN_INVITATION_COUNT_ERROR_MSG
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -91,7 +89,7 @@ class CreateInvitationViewModelTest {
     vm.setCount(99)
     assertEquals(99, vm.uiState.value.count)
     vm.increment()
-    assertEquals(MAX_INVITATION_COUNT_ERROR_MSG, vm.uiState.value.errorMsg)
+    assertEquals(INVALID_INVITATION_COUNT_ERROR_MSG, vm.uiState.value.errorMsg)
   }
 
   @Test
@@ -107,7 +105,7 @@ class CreateInvitationViewModelTest {
     assertEquals(1, vm.uiState.value.count)
 
     vm.decrement()
-    assertEquals(MIN_INVITATION_COUNT_ERROR_MSG, vm.uiState.value.errorMsg)
+    assertEquals(INVALID_INVITATION_COUNT_ERROR_MSG, vm.uiState.value.errorMsg)
   }
 
   @Test

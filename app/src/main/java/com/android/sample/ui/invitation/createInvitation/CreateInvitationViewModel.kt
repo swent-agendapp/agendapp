@@ -17,10 +17,6 @@ import kotlinx.coroutines.launch
 
 const val MIN_INVITATION_COUNT = 1
 const val MAX_INVITATION_COUNT = 99
-const val MAX_INVITATION_COUNT_ERROR_MSG =
-    "Cannot create more than $MAX_INVITATION_COUNT invitations at once."
-const val MIN_INVITATION_COUNT_ERROR_MSG =
-    "Cannot create less than $MIN_INVITATION_COUNT invitations."
 const val INVALID_INVITATION_COUNT_ERROR_MSG =
     "Invitation count must be between $MIN_INVITATION_COUNT and $MAX_INVITATION_COUNT."
 /**
@@ -98,22 +94,12 @@ class CreateInvitationViewModel(
 
   /** Increments the invitation count by 1, if not greater than [MAX_INVITATION_COUNT] */
   fun increment() {
-    val current = _uiState.value.count
-    if (current < MAX_INVITATION_COUNT) {
-      _uiState.value = _uiState.value.copy(count = current + 1, errorMsg = null)
-    } else {
-      _uiState.value = _uiState.value.copy(errorMsg = MAX_INVITATION_COUNT_ERROR_MSG)
-    }
+    setCount(_uiState.value.count + 1)
   }
 
-  /** Decrements the invitation count by 1, staying at 0 minimum. */
+  /** Decrements the invitation count by 1, if not smaller than [MIN_INVITATION_COUNT] */
   fun decrement() {
-    val current = _uiState.value.count
-    if (current > MIN_INVITATION_COUNT) {
-      _uiState.value = _uiState.value.copy(count = current - 1, errorMsg = null)
-    } else {
-      _uiState.value = _uiState.value.copy(errorMsg = MIN_INVITATION_COUNT_ERROR_MSG)
-    }
+    setCount(_uiState.value.count - 1)
   }
 
   /**

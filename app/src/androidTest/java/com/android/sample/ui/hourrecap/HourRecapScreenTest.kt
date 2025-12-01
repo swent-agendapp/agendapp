@@ -2,7 +2,6 @@ package com.android.sample.ui.hourrecap
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import org.junit.Rule
@@ -41,25 +40,6 @@ class HourRecapScreenTest {
   }
 
   /**
-   * Ensures that the recap list is rendered and that at least one recap item exists. (Uses the fake
-   * data in HourRecapScreen.)
-   */
-  @Test
-  fun recapList_displaysRecapItems() {
-    compose.setContent { HourRecapScreen() }
-
-    // verify list exists
-    compose.onNodeWithTag(HourRecapTestTags.RECAP_LIST).assertExists()
-
-    // get all recap items
-    val items = compose.onAllNodesWithTag(HourRecapTestTags.RECAP_ITEM)
-
-    // assert at least 1 item is rendered
-    val count = items.fetchSemanticsNodes().size
-    assert(count > 0)
-  }
-
-  /**
    * Tests clicking the export button (UI only — no file generation yet). This ensures that the
    * button exists and is clickable without crashing.
    */
@@ -68,5 +48,16 @@ class HourRecapScreenTest {
     compose.setContent { HourRecapScreen() }
 
     compose.onNodeWithTag(HourRecapTestTags.EXPORT_BUTTON).assertExists().performClick()
+  }
+
+  /**
+   * Tests clicking the generate button (UI only — no data generation yet). This ensures that the
+   * button exists and is clickable without crashing.
+   */
+  @Test
+  fun generateButton_isClickable() {
+    compose.setContent { HourRecapScreen(onBackClick = {}) }
+
+    compose.onNodeWithTag(HourRecapTestTags.GENERATE_BUTTON).performClick()
   }
 }

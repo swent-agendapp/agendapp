@@ -1,7 +1,7 @@
 package com.android.sample.ui.hourrecap
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FileDownload
 import androidx.compose.material3.*
@@ -10,8 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
+import com.android.sample.ui.calendar.CalendarViewModel
 import com.android.sample.ui.calendar.components.DatePickerFieldToModal
 import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.common.SecondaryPageTopBar
@@ -22,6 +23,7 @@ import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingMedium
 import com.android.sample.ui.theme.Weight
 import java.time.LocalDate
+import java.time.ZoneOffset
 
 // Modularization assisted by AI
 
@@ -58,13 +60,14 @@ object HourRecapTestTags {
  * @param onBackClick Callback invoked when the user presses the back navigation button.
  */
 @Composable
-fun HourRecapScreen(onBackClick: () -> Unit = {}) {
+fun HourRecapScreen(
+    calendarViewModel: CalendarViewModel = viewModel(),
+    onBackClick: () -> Unit = {}
+) {
+  val uiState by calendarViewModel.uiState.collectAsState()
+
   var startDate by remember { mutableStateOf<LocalDate?>(null) }
   var endDate by remember { mutableStateOf<LocalDate?>(null) }
-
-  // Fake data for now — later replaced by ViewModel
-  val fakeRecap: Map<String, String> =
-      mapOf("Alice" to "12h 30m", "Bob" to "8h 00m", "Charlie" to "4h 45m")
 
   Scaffold(
       topBar = {
@@ -76,7 +79,7 @@ fun HourRecapScreen(onBackClick: () -> Unit = {}) {
             backButtonTestTags = HourRecapTestTags.BACK_BUTTON,
             actions = {
               IconButton(
-                  onClick = { /* Later: Export to Excel */},
+                  onClick = { /* Later: Export */},
                   modifier = Modifier.testTag(HourRecapTestTags.EXPORT_BUTTON)) {
                     Icon(
                         imageVector = Icons.Default.FileDownload,
@@ -92,66 +95,80 @@ fun HourRecapScreen(onBackClick: () -> Unit = {}) {
                     .testTag(HourRecapTestTags.SCREEN_ROOT),
             verticalArrangement = Arrangement.Top) {
 
-              // Start Date
+              // ---- Start date Picker ----
               DatePickerFieldToModal(
                   label = stringResource(R.string.startDatePickerLabel),
-                  onDateSelected = { selected -> startDate = selected },
-                  modifier = Modifier.fillMaxWidth().testTag(HourRecapTestTags.START_DATE))
+                  modifier = Modifier.fillMaxWidth().testTag(HourRecapTestTags.START_DATE),
+                  onDateSelected = { startDate = it })
 
               Spacer(Modifier.height(SpacingMedium))
 
-              // End Date
+              // ---- End date Picker ----
               DatePickerFieldToModal(
                   label = stringResource(R.string.endDatePickerLabel),
-                  onDateSelected = { selected -> endDate = selected },
-                  modifier = Modifier.fillMaxWidth().testTag(HourRecapTestTags.END_DATE))
+                  modifier = Modifier.fillMaxWidth().testTag(HourRecapTestTags.END_DATE),
+                  onDateSelected = { endDate = it })
 
               Spacer(Modifier.height(SpacingMedium))
 
+              // ---- Generate Recap Button ----
               PrimaryButton(
                   modifier = Modifier.fillMaxWidth().testTag(HourRecapTestTags.GENERATE_BUTTON),
                   text = stringResource(R.string.hour_recap_generate),
-                  onClick = { /* later: trigger ViewModel.loadRecap() */},
-                  enabled = startDate != null && endDate != null)
+                  enabled = startDate != null && endDate != null,
+                  onClick = {
+                    calendarViewModel.calculateWorkedHours(
+                        start = startDate!!.atStartOfDay().toInstant(ZoneOffset.UTC),
+                        end = endDate!!.atTime(23, 59).toInstant(ZoneOffset.UTC))
+                  })
+
               Spacer(Modifier.height(SpacingLarge))
 
+              // ---- Title ----
               Text(
                   text = stringResource(R.string.hour_recap_results_title),
                   style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
+
               Spacer(Modifier.height(SpacingMedium))
 
+              // ---- LOADING ----
+              if (uiState.isLoading) {
+                CircularProgressIndicator()
+                return@Column
+              }
+
+              // ---- ERROR ----
+              uiState.errorMsg?.let { error ->
+                Text(text = error, color = MaterialTheme.colorScheme.error)
+              }
+
+              // ---- LIST OF WORKED HOURS ----
               LazyColumn(modifier = Modifier.testTag(HourRecapTestTags.RECAP_LIST)) {
-                fakeRecap.forEach { (name, time) ->
-                  item {
-                    Card(
-                        modifier =
-                            Modifier.fillMaxWidth()
-                                .padding(vertical = PaddingSmall)
-                                .testTag(HourRecapTestTags.RECAP_ITEM),
-                        elevation = CardDefaults.cardElevation(ElevationLow)) {
-                          Row(
-                              modifier = Modifier.fillMaxWidth().padding(PaddingMedium),
-                              horizontalArrangement = Arrangement.SpaceBetween) {
-                                Text(
-                                    text = name,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    modifier = Modifier.weight(Weight))
-                                Text(
-                                    text = time,
-                                    style =
-                                        MaterialTheme.typography.bodyLarge.copy(
-                                            fontWeight = FontWeight.Bold))
-                              }
-                        }
-                  }
+                items(uiState.workedHours) { pair ->
+                  val (name, hours) = pair
+
+                  Card(
+                      modifier =
+                          Modifier.fillMaxWidth()
+                              .padding(vertical = PaddingSmall)
+                              .testTag(HourRecapTestTags.RECAP_ITEM),
+                      elevation = CardDefaults.cardElevation(ElevationLow)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(PaddingMedium),
+                            horizontalArrangement = Arrangement.SpaceBetween) {
+                              Text(
+                                  text = name,
+                                  style = MaterialTheme.typography.bodyLarge,
+                                  modifier = Modifier.weight(Weight))
+                              Text(
+                                  text = "${hours}h",
+                                  style =
+                                      MaterialTheme.typography.bodyLarge.copy(
+                                          fontWeight = FontWeight.Bold))
+                            }
+                      }
                 }
               }
             }
       }
-}
-/** Preview of HourRecapScreen */
-@Preview(showBackground = true)
-@Composable
-fun HourRecapScreenPreview() {
-  HourRecapScreen(onBackClick = {})
 }

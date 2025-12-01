@@ -153,4 +153,9 @@ class CalendarViewModel(
       }
     }
   }
+
+  // For testing purposes: allows setting test data directly
+  internal fun setTestWorkedHours(hours: List<Pair<String, Double>>) {
+    _uiState.value = _uiState.value.copy(workedHours = hours)
+  }
 }

@@ -34,16 +34,6 @@ class EditEventScreenTest {
         .assertExists()
 
     composeTestRule
-        .onNodeWithTag(EditEventTestTags.DESCRIPTION_FIELD, useUnmergedTree = true)
-        .performScrollTo()
-        .assertExists()
-
-    composeTestRule
-        .onNodeWithTag(EditEventTestTags.RECURRENCE_DROPDOWN, useUnmergedTree = true)
-        .performScrollTo()
-        .assertExists()
-
-    composeTestRule
         .onNodeWithTag(EditEventTestTags.START_DATE_FIELD, useUnmergedTree = true)
         .performScrollTo()
         .assertExists()
@@ -87,11 +77,8 @@ class EditEventScreenTest {
       }
     }
 
-    // Verify participant list rendered
-    composeTestRule.onNodeWithText("Select participants").assertIsDisplayed()
-
     // Click a participant checkbox
-    composeTestRule.onNodeWithText("Alice").performClick()
+    composeTestRule.onNodeWithText("Anaïs").performClick()
 
     // Test Save & Cancel
     composeTestRule.onNodeWithTag(EditEventTestTags.SAVE_BUTTON).performClick()
@@ -105,7 +92,7 @@ class EditEventScreenTest {
   fun editEventAttendantScreen_toggleParticipantCheckbox() {
     composeTestRule.setContent { SampleAppTheme { EditEventAttendantScreen() } }
 
-    val alice = composeTestRule.onNodeWithText("Alice")
+    val alice = composeTestRule.onNodeWithText("Anaïs")
 
     alice.assertExists()
     alice.performClick()

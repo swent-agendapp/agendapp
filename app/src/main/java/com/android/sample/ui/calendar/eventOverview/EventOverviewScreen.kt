@@ -122,7 +122,8 @@ fun EventOverviewScreen(
                         contentDescription = stringResource(R.string.delete),
                         tint = MaterialTheme.colorScheme.error)
                   }
-            })
+            },
+            backButtonTestTags = EventOverviewScreenTestTags.BACK_BUTTON)
       },
       bottomBar = {
         if (event != null) {

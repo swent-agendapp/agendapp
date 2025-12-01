@@ -52,10 +52,10 @@ data class MemberSelectionListOptions(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MemberSelectionList(
-    members: List<String>,
-    selectedMembers: Set<String>,
-    onSelectionChanged: (Set<String>) -> Unit,
     modifier: Modifier = Modifier,
+    members: List<String> = emptyList(),
+    selectedMembers: Set<String> = emptySet(),
+    onSelectionChanged: (Set<String>) -> Unit = {},
     options: MemberSelectionListOptions = MemberSelectionListOptions(),
 ) {
   var searchQuery by remember { mutableStateOf("") }

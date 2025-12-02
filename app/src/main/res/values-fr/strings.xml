@@ -22,6 +22,8 @@
     <string name="recurrenceMenuLabel">Récurrence</string>
     <string name="finish">Terminer</string>
     <string name="create">Créer</string>
+    <string name="change">Changer</string>
+    <string name="delete">Supprimer</string>
     <string name="confirmationMessage">Félicitations !\nVotre événement a été créé et ajouté à votre calendrier</string>
     <string name="cancel">Annuler</string>
     <string name="default_web_client_id">423898020035-fu7m7lmtsuu6cn7d3s4ev4mrf0ep68l3.apps.googleusercontent.com</string>
@@ -73,6 +75,7 @@
     <string name="settings_profile_button">Profil</string>
     <string name="settings_admin_info_button">Infos administrateur</string>
     <string name="settings_map_settings_button">Carte</string>
+    <string name="settings_organization_selection_button">Organisation</string>
 
 
     <!-- Profile Screen -->
@@ -122,8 +125,7 @@
     <string name="top_bar_back_content_description">Retour</string>
     <string name="top_bar_logout_content_description">Déconnexion</string>
     <string name="organize_replacement">Organiser un remplacement</string>
-    <string name="process_replacement">Remplacement à traiter</string>
-    <string name="waiting_confirmation_replacement">En attente de confirmation du remplacement</string>
+    <string name="waiting_confirmation_replacement">Demandes de remplacement</string>
     <!-- Map (Translated by AI)-->
     <string name="delimit_organization_title">Délimitez votre organisation</string>
     <string name="create_area_button">Créer une zone</string>
@@ -153,24 +155,18 @@
     <string name="replacement_declined_people_title">Refusé</string>
     <string name="replacement_people_dialog_close">Fermer</string>
     <string name="invalidDateRangeMessage">Invalid date range: end date must be after start date.</string>
-    <string name="select_process_moment">Les traiter maintenant ?</string>
     <string name="process_now">Traiter maintenant</string>
     <string name="process_later">Traiter plus tard</string>
     <string name="select_replacement_date_range">Sélectionnez la plage de dates pour laquelle %1$s a besoin d’un remplacement</string>
     <string name="select_replacement_events">Sélectionnez les événements pour lesquels %1$s a besoin d’un remplacement</string>
     <string name="which_member_to_be_replaced">Quel membre doit être remplacé?</string>
     <string name="search_member">Rechercher un membre…</string>
-    <string name="selected_member">Membre sélectionné : %1$s</string>
     <string name="select_events">Sélectionner les événements</string>
     <string name="select_date_range">Sélectionner la plage de dates</string>
-    <string name="search_icon_content_description">Icône de recherche</string>
     <string name="replacement_title">Remplacement</string>
     <string name="replacement_ask_to_be_replaced">Demander un remplacement</string>
-    <string name="replacement_card_title">Titre : %1$s</string>
-    <string name="replacement_card_description">Description : %1$s</string>
     <string name="replacement_accept_short">Accepter</string>
     <string name="replacement_refuse_short">Refuser</string>
-    <string name="replacement_create_title">Étape précédente</string>
     <string name="replacement_create_select_event">Sélectionner un événement</string>
     <string name="replacement_create_choose_date_range">Choisir une plage de dates</string>
     <string name="event_overview_title">Aperçu de l\'événement</string>
@@ -193,7 +189,6 @@
     <string name="view_mode_5days">5 jours</string>
     <string name="view_mode_7days">7 jours</string>
     <string name="view_mode_month">Mois</string>
-    <string name="delete">Supprimer</string>
     <string name="modify">Modifier</string>
     <string name="delete_event_message">Êtes-vous sûr de vouloir supprimer cet événement?</string>
     <string name="replacement_list_title">Sélectionner un événement</string>
@@ -204,9 +199,26 @@
     <string name="organization_list_title">Vos organisations</string>
     <string name="organization_loading">Chergement des organisations</string>
     <string name="organization_name_label">Nom de l’organisation</string>
+    <string name="organization_none_selected">Aucune organisation sélectionnée</string>
+    <string name="organization_members">Membres</string>
+    <string name="error_no_authenticated_user">Aucun utilisateur authentifié.</string>
+    <string name="error_no_organization_selected">Aucune organisation sélectionnée.</string>
+    <string name="error_organization_not_found">Organisation introuvable.</string>
+    <string name="error_no_organization_to_delete">Aucune organisation sélectionnée pour la suppression.</string>
+
+
     <string name="hour_recap_results_title">Total d\'heures par employé pour la période sélectionnée :</string>
     <string name="hour_recap_title">Total d\'heures par employé</string>
     <string name="hour_recap_generate">Générer le récapitulatif</string>
     <string name="export_excel">Exporter vers Excel</string>
+
+    <!-- Filters -->
+    <string name="filter">Filtrer</string>
+    <string name="close">Fermer</string>
+    <string name="filter_event_type">Type d’événement</string>
+    <string name="filter_location">Lieu</string>
+    <string name="filter_participants">Participants</string>
+    <string name="clear_all">Tout effacer</string>
+    <string name="apply">Appliquer</string>
 
 </resources>

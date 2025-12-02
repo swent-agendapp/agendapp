@@ -5,7 +5,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.GroupAdd
 import androidx.compose.material.icons.filled.QuestionAnswer
-import androidx.compose.material.icons.filled.Work
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -40,14 +39,12 @@ object ReplacementOverviewTestTags {
  * (organize, process, waiting confirmation, or confirmed).
  *
  * @param onOrganizeClick Callback when the "Organize Replacement" card is clicked.
- * @param onProcessClick Callback when the "Process Replacement" card is clicked.
  * @param onWaitingConfirmationClick Callback when the "Waiting Confirmation" card is clicked.
  * @param onConfirmedClick Callback when the "Confirmed Replacements" card is clicked.
  */
 @Composable
 fun ReplacementOverviewScreen(
     onOrganizeClick: () -> Unit = {},
-    onProcessClick: () -> Unit = {},
     onWaitingConfirmationClick: () -> Unit = {},
     onConfirmedClick: () -> Unit = {}
 ) {
@@ -58,11 +55,6 @@ fun ReplacementOverviewScreen(
               Icons.Default.GroupAdd,
               ReplacementOverviewTestTags.CARD_ORGANIZE,
               onClick = onOrganizeClick),
-          ButtonItem(
-              stringResource(R.string.process_replacement),
-              Icons.Default.Work,
-              ReplacementOverviewTestTags.CARD_PROCESS,
-              onClick = onProcessClick),
           ButtonItem(
               stringResource(R.string.waiting_confirmation_replacement),
               Icons.Default.QuestionAnswer,

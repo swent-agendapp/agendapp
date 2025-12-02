@@ -13,18 +13,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import com.android.sample.R
 import com.android.sample.model.calendar.Event
 import com.android.sample.ui.calendar.CalendarEventSelector
-import com.android.sample.ui.calendar.components.TopTitleBar
-import com.android.sample.ui.components.BottomNavigationButtons
+import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeTestTags
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.WeightExtraHeavy
 import com.android.sample.ui.theme.WeightVeryLight
+
+data class ReplacementProcessActions(
+    val onProcessNow: () -> Unit,
+    val onProcessLater: () -> Unit,
+)
 
 /**
  * Screen allowing the admin to **select the events** for which a member needs a replacement.
@@ -49,16 +50,23 @@ import com.android.sample.ui.theme.WeightVeryLight
  */
 @Composable
 fun SelectEventScreen(
-    onNext: () -> Unit = {},
-    onBack: () -> Unit = {},
-    title: String = "",
-    instruction: String = "",
+    onNext: () -> Unit,
+    onBack: () -> Unit,
+    title: String,
+    instruction: String,
+    canGoNext: Boolean = true,
     onEventClick: (Event) -> Unit = {},
-    canGoNext: Boolean = false
+    processActions: ReplacementProcessActions? = null,
 ) {
 
   Scaffold(
-      topBar = { TopTitleBar(title = title) },
+      topBar = {
+        SecondaryPageTopBar(
+            title = title,
+            onClick = onBack,
+            backButtonTestTags = ReplacementOrganizeTestTags.BACK_BUTTON,
+        )
+      },
       content = { paddingValues ->
         Column(
             modifier =
@@ -82,19 +90,12 @@ fun SelectEventScreen(
             }
       },
       bottomBar = {
-        BottomNavigationButtons(
-            onNext = { onNext() },
-            onBack = onBack,
-            backButtonText = stringResource(R.string.goBack),
-            nextButtonText = stringResource(R.string.next),
+        ReplacementBottomBarWithProcessOptions(
             canGoNext = canGoNext,
-            backButtonTestTag = ReplacementOrganizeTestTags.BACK_BUTTON,
-            nextButtonTestTag = ReplacementOrganizeTestTags.NEXT_BUTTON)
+            onBack = onBack,
+            onNext = onNext,
+            onProcessNow = processActions?.onProcessNow,
+            onProcessLater = processActions?.onProcessLater,
+        )
       })
-}
-
-@Preview
-@Composable
-fun SelectEventScreenPreview() {
-  SelectEventScreen(title = "Example Title", instruction = "Example Instruction")
 }

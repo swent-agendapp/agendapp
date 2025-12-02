@@ -1,6 +1,5 @@
 package com.android.sample.ui.calendar.filters.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,10 +38,7 @@ fun FilterCheckbox(
     key: String
 ) {
   Row(
-      modifier =
-          Modifier.fillMaxWidth()
-              .clickable { onCheckedChange(!isChecked) }
-              .testTag(FilterCheckboxTestTags.PREFIX + key),
+      modifier = Modifier.fillMaxWidth().testTag(FilterCheckboxTestTags.PREFIX + key),
       horizontalArrangement = Arrangement.SpaceBetween) {
         Text(label)
 

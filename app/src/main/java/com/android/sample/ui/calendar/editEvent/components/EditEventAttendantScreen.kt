@@ -13,10 +13,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.calendar.editEvent.EditEventTestTags
 import com.android.sample.ui.calendar.editEvent.EditEventViewModel
+import com.android.sample.ui.common.BottomNavigationButtons
+import com.android.sample.ui.common.MemberSelectionList
+import com.android.sample.ui.common.MemberSelectionListOptions
 import com.android.sample.ui.common.SecondaryPageTopBar
-import com.android.sample.ui.components.BottomNavigationButtons
-import com.android.sample.ui.components.MemberSelectionList
-import com.android.sample.ui.components.MemberSelectionListOptions
 import com.android.sample.ui.theme.PaddingHuge
 import com.android.sample.ui.theme.PaddingLarge
 import com.android.sample.ui.theme.PaddingSmall

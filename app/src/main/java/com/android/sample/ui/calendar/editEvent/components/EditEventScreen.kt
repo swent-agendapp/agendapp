@@ -23,9 +23,9 @@ import com.android.sample.ui.calendar.components.eventSummaryComponents.Particip
 import com.android.sample.ui.calendar.editEvent.EditEventTestTags
 import com.android.sample.ui.calendar.editEvent.EditEventViewModel
 import com.android.sample.ui.calendar.utils.DateTimeUtils
+import com.android.sample.ui.common.BottomNavigationButtons
 import com.android.sample.ui.common.SecondaryButton
 import com.android.sample.ui.common.SecondaryPageTopBar
-import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.theme.BorderWidthThick
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingLarge

@@ -15,7 +15,7 @@ object UserMapper : FirestoreMapper<User> {
     val phoneNumber = document.getString("phoneNumber")
 
     val organizations =
-        document.get("organizations")?.let { value ->
+        document["organizations"]?.let { value ->
           when (value) {
             is List<*> -> value.filterIsInstance<String>()
             else -> emptyList()

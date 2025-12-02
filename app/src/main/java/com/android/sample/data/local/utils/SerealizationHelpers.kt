@@ -42,4 +42,11 @@ fun <T> decodeMap(raw: String, stringToValue: (String) -> T?): Map<String, T> =
 fun encodeBooleanMap(map: Map<String, Boolean>): String = encodeMap(map) { it.toString() }
 
 /** Decode a Map<String, Boolean> from a string. */
-fun decodeBooleanMap(raw: String): Map<String, Boolean> = decodeMap(raw) { it.toBoolean() }
+fun decodeBooleanMap(raw: String): Map<String, Boolean> =
+    decodeMap(raw) { value ->
+      when (value.lowercase()) {
+        "true" -> true
+        "false" -> false
+        else -> null
+      }
+    }

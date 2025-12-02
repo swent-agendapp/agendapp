@@ -119,8 +119,7 @@
     <string name="top_bar_back_content_description">Zurück</string>
     <string name="top_bar_logout_content_description">Abmelden</string>
     <string name="organize_replacement">Einen Ersatz organisieren</string>
-    <string name="process_replacement">Ersatz zur Bearbeitung</string>
-    <string name="waiting_confirmation_replacement">Warten auf Bestätigung des Ersatzes</string>
+    <string name="waiting_confirmation_replacement">Einen Ersatz auswählen</string>
 
     <!-- Map (Translated by AI)-->
     <string name="delimit_organization_title">Begrenzen Sie Ihre Organisation</string>
@@ -151,24 +150,18 @@
     <string name="replacement_declined_people_title">Abgelehnt</string>
     <string name="replacement_people_dialog_close">Schließen</string>
     <string name="invalidDateRangeMessage">Ungültiger Zeitraum: Das Enddatum muss nach dem Startdatum liegen.</string>
-    <string name="select_process_moment">Möchten Sie sie jetzt verarbeiten?</string>
     <string name="process_now">Jetzt verarbeiten</string>
     <string name="process_later">Später verarbeiten</string>
     <string name="select_replacement_date_range">Wählen Sie den Datumsbereich aus, für den %1$s eine Vertretung benötigt</string>
     <string name="select_replacement_events">Wählen Sie die Ereignisse aus, für die %1$s eine Vertretung benötigt</string>
     <string name="which_member_to_be_replaced">Welches Mitglied muss ersetzt werden?</string>
     <string name="search_member">Mitglied suchen…</string>
-    <string name="selected_member">Ausgewähltes Mitglied: %1$s</string>
     <string name="select_events">Ereignisse auswählen</string>
     <string name="select_date_range">Datumsbereich auswählen</string>
-    <string name="search_icon_content_description">Suchsymbol</string>
     <string name="replacement_title">Vertretung</string>
     <string name="replacement_ask_to_be_replaced">Vertretung anfordern</string>
-    <string name="replacement_card_title">Titel: %1$s</string>
-    <string name="replacement_card_description">Beschreibung: %1$s</string>
     <string name="replacement_accept_short">Annehmen</string>
     <string name="replacement_refuse_short">Ablehnen</string>
-    <string name="replacement_create_title">Vorheriger Schritt</string>
     <string name="replacement_create_select_event">Ereignis auswählen</string>
     <string name="replacement_create_choose_date_range">Datumsbereich auswählen</string>
     <string name="event_overview_title">Ereignisübersicht</string>

@@ -29,8 +29,7 @@
     <string name="default_web_client_id">423898020035-fu7m7lmtsuu6cn7d3s4ev4mrf0ep68l3.apps.googleusercontent.com</string>
     <string name="replacement">Replacement</string>
     <string name="organize_replacement">Organize a replacement</string>
-    <string name="process_replacement">Replacement to process</string>
-    <string name="waiting_confirmation_replacement">Waiting replacement confirmation</string>
+    <string name="waiting_confirmation_replacement">Replacement request</string>
     <string name="confirmed_replacements">Upcoming replacements</string>
 
     <!-- Common -->
@@ -79,17 +78,14 @@
     <string name="replacement_people_dialog_close">Close</string>
 
     <string name="invalidDateRangeMessage">Invalid date range: end date must be after start date.</string>
-    <string name="select_process_moment">Process them now ?</string>
     <string name="process_now">Process now</string>
     <string name="process_later">Process later</string>
     <string name="select_replacement_date_range">Select the date range for which %1$s needs a replacement</string>
     <string name="select_replacement_events">Select the events for which %1$s needs a replacement</string>
     <string name="which_member_to_be_replaced">Which member needs to be replaced?</string>
     <string name="search_member">Search member…</string>
-    <string name="selected_member">Selected member : %1$s</string>
     <string name="select_events">Select events</string>
     <string name="select_date_range">Select date range</string>
-    <string name="search_icon_content_description">Search icon</string>
     <string name="replacement_upcoming_title">Upcoming replacements</string>
 
     <string name="replacement_process_title">Organize a replacement</string>
@@ -178,11 +174,8 @@
     <!-- Replacement - Employee -->
     <string name="replacement_title">Replacement</string>
     <string name="replacement_ask_to_be_replaced">Ask to be replaced</string>
-    <string name="replacement_card_title">Title: %1$s</string>
-    <string name="replacement_card_description">Description: %1$s</string>
     <string name="replacement_accept_short">Accept</string>
     <string name="replacement_refuse_short">Refuse</string>
-    <string name="replacement_create_title">Previous step</string>
     <string name="replacement_create_select_event">Select an event</string>
     <string name="replacement_create_choose_date_range">Choose a date range</string>
 

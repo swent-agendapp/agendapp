@@ -12,7 +12,14 @@ object UserMapper : FirestoreMapper<User> {
     val email = document.getString("email")
     val phoneNumber = document.getString("phoneNumber")
 
-    return User(id = id, displayName = displayName, email = email, phoneNumber = phoneNumber)
+    val organizations = document.get("organizations") as? List<String> ?: emptyList()
+
+    return User(
+        id = id,
+        displayName = displayName,
+        email = email,
+        phoneNumber = phoneNumber,
+        organizations = organizations)
   }
 
   override fun fromMap(data: Map<String, Any?>): User? {
@@ -21,7 +28,16 @@ object UserMapper : FirestoreMapper<User> {
     val email = data["email"] as? String
     val phoneNumber = data["phoneNumber"] as? String
 
-    return User(id = id, displayName = displayName, email = email, phoneNumber = phoneNumber)
+    // Firestore maps arrays as List<Any?>
+    val organizations =
+        (data["organizations"] as? List<*>)?.filterIsInstance<String>() ?: emptyList()
+
+    return User(
+        id = id,
+        displayName = displayName,
+        email = email,
+        phoneNumber = phoneNumber,
+        organizations = organizations)
   }
 
   override fun toMap(model: User): Map<String, Any?> {
@@ -30,6 +46,6 @@ object UserMapper : FirestoreMapper<User> {
         "displayName" to model.displayName,
         "email" to model.email,
         "phoneNumber" to model.phoneNumber,
-    )
+        "organizations" to model.organizations)
   }
 }

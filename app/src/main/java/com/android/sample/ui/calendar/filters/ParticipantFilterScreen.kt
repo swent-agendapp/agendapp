@@ -10,7 +10,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.android.sample.R
 import com.android.sample.ui.calendar.filters.components.FilterCheckbox
 import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.theme.*
@@ -58,11 +60,13 @@ fun ParticipantFilterScreen(
           IconButton(
               onClick = onBack,
               modifier = Modifier.testTag(ParticipantFilterTestTags.BACK_BUTTON)) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                Icon(
+                    Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(R.string.common_back))
               }
 
           Text(
-              "Participants",
+              stringResource(R.string.filter_participants),
               style = MaterialTheme.typography.titleLarge,
               modifier = Modifier.testTag(ParticipantFilterTestTags.TITLE))
 
@@ -72,7 +76,7 @@ fun ParticipantFilterScreen(
     Spacer(Modifier.height(SpacingMedium))
 
     // ----- Scrollable list -----
-    LazyColumn(modifier = Modifier.weight(1f).testTag(ParticipantFilterTestTags.LIST)) {
+    LazyColumn(modifier = Modifier.weight(Weight).testTag(ParticipantFilterTestTags.LIST)) {
       items(participants) { person ->
         Column(modifier = Modifier.testTag(ParticipantFilterTestTags.ITEM_PREFIX + person)) {
           FilterCheckbox(
@@ -96,8 +100,8 @@ fun ParticipantFilterScreen(
         onNext = { onApply(selections) },
         canGoBack = true,
         canGoNext = true,
-        backButtonText = "Clear",
-        nextButtonText = "Apply",
+        backButtonText = stringResource(R.string.clear_all),
+        nextButtonText = stringResource(R.string.apply),
         backButtonTestTag = ParticipantFilterTestTags.CLEAR,
         nextButtonTestTag = ParticipantFilterTestTags.APPLY)
   }

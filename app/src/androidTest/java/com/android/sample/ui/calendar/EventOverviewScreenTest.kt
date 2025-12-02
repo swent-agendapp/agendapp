@@ -60,9 +60,9 @@ class EventOverviewScreenTest {
 
   // ---------- Tests ----------
 
-  /** Verifies that the bottom bar contains both Delete and Modify buttons. */
+  /** Verifies that the screen contains Delete, Modify and Ask to be replaced buttons. */
   @Test
-  fun deleteAndModifyButtons_exist() {
+  fun allThreeButtons_exist() {
     val (vm, _) = makeViewModelWith(sampleEvent())
 
     composeRule.setContent {
@@ -78,6 +78,7 @@ class EventOverviewScreenTest {
 
     composeRule.onNodeWithTag(EventOverviewScreenTestTags.DELETE_BUTTON).assertExists()
     composeRule.onNodeWithTag(EventOverviewScreenTestTags.MODIFY_BUTTON).assertExists()
+    composeRule.onNodeWithTag(EventOverviewScreenTestTags.ASK_TO_BE_REPLACED_BUTTON).assertExists()
   }
 
   /**

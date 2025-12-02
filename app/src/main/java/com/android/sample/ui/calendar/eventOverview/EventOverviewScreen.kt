@@ -50,6 +50,7 @@ object EventOverviewScreenTestTags {
   const val TOP_BAR = "event_overview_top_bar"
   const val DELETE_BUTTON = "delete_event_button"
   const val MODIFY_BUTTON = "modify_event_button"
+  const val ASK_TO_BE_REPLACED_BUTTON = "ask_to_be_replaced_button"
   const val DIALOG_DELETE_BUTTON = "dialog_delete_button"
   const val DIALOG_CANCEL_BUTTON = "dialog_cancel_button"
 }
@@ -138,6 +139,7 @@ fun EventOverviewScreen(
             // Later : condition to display the Replacement button
             // if (participantNames.contains( current user name )) { PrimaryButton( ... ) }
             PrimaryButton(
+                modifier = Modifier.testTag(EventOverviewScreenTestTags.ASK_TO_BE_REPLACED_BUTTON),
                 text = stringResource(R.string.replacement_ask_to_be_replaced),
                 onClick = { /* later : create a replacement */})
           }

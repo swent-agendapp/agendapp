@@ -16,11 +16,11 @@ object EditEventTestTags {
   const val END_DATE_FIELD = "edit_end_date"
   const val START_TIME_BUTTON = "edit_start_time_button"
   const val END_TIME_BUTTON = "edit_end_time_button"
-  const val RECURRENCE_DROPDOWN = "edit_recurrence_dropdown"
   const val PARTICIPANTS_LIST = "edit_participants_list"
   const val SAVE_BUTTON = "edit_save_button"
   const val CANCEL_BUTTON = "edit_cancel_button"
   const val EDIT_PARTICIPANTS_BUTTON = "edit_participants_button"
+  const val GOT_IT_BUTTON = "got_it_button"
   const val BACK_BUTTON = "edit_back_button"
 }
 

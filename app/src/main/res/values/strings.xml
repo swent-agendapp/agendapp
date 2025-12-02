@@ -106,6 +106,9 @@
     <string name="replacement_requests_sent_success">
     Requests have been sent successfully
 </string>
+    <string name="replacement_pending_empty_message">
+    You have no replacement requests at the moment
+</string>
 
     <!-- Settings Screen -->
     <string name="settings_screen_title">Settings</string>

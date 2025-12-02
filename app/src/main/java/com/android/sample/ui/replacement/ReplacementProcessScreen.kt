@@ -29,7 +29,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import com.android.sample.R
 import com.android.sample.model.replacement.Replacement
-import com.android.sample.model.replacement.mockData.getMockReplacements
 import com.android.sample.ui.calendar.utils.DateTimeUtils.DATE_FORMAT_PATTERN
 import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.common.SecondaryPageTopBar
@@ -154,8 +153,7 @@ fun ProcessReplacementScreen(
                             Toast.LENGTH_SHORT,
                         )
                         .show()
-
-                            },
+                  },
                   enabled = selectedMembers.isNotEmpty(),
                   text =
                       pluralStringResource(

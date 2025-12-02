@@ -359,25 +359,22 @@ class ReplacementEmployeeViewModel(
     }
   }
 
-    fun loadReplacementForProcessing(
-        replacementId: String,
-        onResult: (Replacement?) -> Unit
-    ) {
-        viewModelScope.launch {
-            try {
-                val orgId = getSelectedOrganizationId()
-                val replacement =
-                    replacementRepository.getReplacementById(
-                        orgId = orgId,
-                        itemId = replacementId,
-                    )
-                onResult(replacement)
-            } catch (e: Exception) {
-                Log.e("ReplacementEmployeeVM", "Error loading replacement $replacementId", e)
-                onResult(null)
-            }
-        }
+  fun loadReplacementForProcessing(replacementId: String, onResult: (Replacement?) -> Unit) {
+    viewModelScope.launch {
+      try {
+        val orgId = getSelectedOrganizationId()
+        val replacement =
+            replacementRepository.getReplacementById(
+                orgId = orgId,
+                itemId = replacementId,
+            )
+        onResult(replacement)
+      } catch (e: Exception) {
+        Log.e("ReplacementEmployeeVM", "Error loading replacement $replacementId", e)
+        onResult(null)
+      }
     }
+  }
 
   fun sendRequestsForPendingReplacement(
       replacementId: String,

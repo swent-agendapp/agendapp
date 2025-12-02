@@ -112,51 +112,64 @@ fun ReplacementPendingListScreen(
                     .padding(paddingValues)
                     .padding(PaddingMedium)
                     .testTag(ReplacementPendingTestTags.SCREEN)) {
-              LazyColumn(
-                  modifier = Modifier.fillMaxSize().testTag(ReplacementPendingTestTags.LIST),
-                  verticalArrangement = Arrangement.spacedBy(SpacingMedium)) {
-                    if (replacementsToProcess.isNotEmpty()) {
-                      item {
-                        Text(
-                            text =
-                                stringResource(id = R.string.replacement_to_process_section_title),
-                            style =
-                                MaterialTheme.typography.titleMedium.copy(
-                                    fontWeight = FontWeight.SemiBold))
-                        Spacer(modifier = Modifier.height(SpacingSmall))
+              if (replacementsToProcess.isEmpty() && replacementsWaitingForAnswer.isEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                  Text(
+                      text = stringResource(R.string.replacement_pending_empty_message),
+                      style = MaterialTheme.typography.bodyMedium,
+                  )
+                }
+              } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize().testTag(ReplacementPendingTestTags.LIST),
+                    verticalArrangement = Arrangement.spacedBy(SpacingMedium)) {
+                      if (replacementsToProcess.isNotEmpty()) {
+                        item {
+                          Text(
+                              text =
+                                  stringResource(
+                                      id = R.string.replacement_to_process_section_title),
+                              style =
+                                  MaterialTheme.typography.titleMedium.copy(
+                                      fontWeight = FontWeight.SemiBold))
+                          Spacer(modifier = Modifier.height(SpacingSmall))
+                        }
+
+                        items(replacementsToProcess, key = { it.id }) { replacement ->
+                          ReplacementToProcessCard(
+                              replacement = replacement,
+                              onProcessClick = { onProcessReplacement(replacement) })
+                        }
                       }
 
-                      items(replacementsToProcess, key = { it.id }) { replacement ->
-                        ReplacementToProcessCard(
-                            replacement = replacement,
-                            onProcessClick = { onProcessReplacement(replacement) })
+                      if (replacementsWaitingForAnswer.isNotEmpty()) {
+                        item {
+                          Spacer(modifier = Modifier.height(SpacingLarge))
+                          Text(
+                              text =
+                                  stringResource(
+                                      id = R.string.replacement_waiting_answer_section_title),
+                              style =
+                                  MaterialTheme.typography.titleMedium.copy(
+                                      fontWeight = FontWeight.SemiBold))
+                          Spacer(modifier = Modifier.height(SpacingSmall))
+                        }
+
+                        val groupedWaiting =
+                            replacementsWaitingForAnswer
+                                .groupBy { it.event to it.absentUserId }
+                                .values
+                                .toList()
+
+                        items(groupedWaiting) { group ->
+                          ReplacementWaitingCard(replacements = group)
+                        }
                       }
                     }
-
-                    if (replacementsWaitingForAnswer.isNotEmpty()) {
-                      item {
-                        Spacer(modifier = Modifier.height(SpacingLarge))
-                        Text(
-                            text =
-                                stringResource(
-                                    id = R.string.replacement_waiting_answer_section_title),
-                            style =
-                                MaterialTheme.typography.titleMedium.copy(
-                                    fontWeight = FontWeight.SemiBold))
-                        Spacer(modifier = Modifier.height(SpacingSmall))
-                      }
-
-                      val groupedWaiting =
-                          replacementsWaitingForAnswer
-                              .groupBy { it.event to it.absentUserId }
-                              .values
-                              .toList()
-
-                      items(groupedWaiting) { group ->
-                        ReplacementWaitingCard(replacements = group)
-                      }
-                    }
-                  }
+              }
             }
       }
 }
@@ -382,9 +395,9 @@ private fun PeopleListDialog(title: String, people: List<String>, onDismiss: () 
 @Preview(showBackground = true)
 @Composable
 fun ReplacementPendingListScreenPreview() {
-    ReplacementPendingListScreen(
-        replacementsToProcess = getMockReplacements().toProcessReplacements(),
-        replacementsWaitingForAnswer =
-            getMockReplacements().waitingForAnswerAndDeclinedReplacements(),
-    )
+  ReplacementPendingListScreen(
+      replacementsToProcess = getMockReplacements().toProcessReplacements(),
+      replacementsWaitingForAnswer =
+          getMockReplacements().waitingForAnswerAndDeclinedReplacements(),
+  )
 }

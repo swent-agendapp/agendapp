@@ -17,20 +17,18 @@ fun ReplacementPendingRoute(
     onBack: () -> Unit,
     viewModel: ReplacementPendingViewModel = viewModel(),
 ) {
-    val state by viewModel.uiState.collectAsState()
+  val state by viewModel.uiState.collectAsState()
 
-    LaunchedEffect(Unit) {
-        viewModel.refresh()
-    }
+  LaunchedEffect(Unit) { viewModel.refresh() }
 
-    if (state.isLoading) {
-        CircularProgressIndicator()
-    } else {
-        ReplacementPendingListScreen(
-            replacementsToProcess = state.toProcess,
-            replacementsWaitingForAnswer = state.waitingForAnswer,
-            onProcessReplacement = onProcessReplacement,
-            onBack = onBack,
-        )
-    }
+  if (state.isLoading) {
+    CircularProgressIndicator()
+  } else {
+    ReplacementPendingListScreen(
+        replacementsToProcess = state.toProcess,
+        replacementsWaitingForAnswer = state.waitingForAnswer,
+        onProcessReplacement = onProcessReplacement,
+        onBack = onBack,
+    )
+  }
 }

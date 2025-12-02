@@ -27,35 +27,35 @@ class ReplacementPendingViewModel(
         SelectedOrganizationVMProvider.viewModel,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(ReplacementPendingUiState())
-    val uiState: StateFlow<ReplacementPendingUiState> = _uiState.asStateFlow()
+  private val _uiState = MutableStateFlow(ReplacementPendingUiState())
+  val uiState: StateFlow<ReplacementPendingUiState> = _uiState.asStateFlow()
 
-    private fun getOrgId(): String {
-        val orgId = selectedOrganizationViewModel.selectedOrganizationId.value
-        require(orgId != null) { "Organization must be selected to fetch pending replacements" }
-        return orgId
+  private fun getOrgId(): String {
+    val orgId = selectedOrganizationViewModel.selectedOrganizationId.value
+    require(orgId != null) { "Organization must be selected to fetch pending replacements" }
+    return orgId
+  }
+
+  fun refresh() {
+    viewModelScope.launch {
+      _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
+      try {
+        val orgId = getOrgId()
+        val all = repository.getAllReplacements(orgId)
+
+        _uiState.value =
+            _uiState.value.copy(
+                isLoading = false,
+                toProcess = all.toProcessReplacements(),
+                waitingForAnswer = all.waitingForAnswerAndDeclinedReplacements(),
+                errorMessage = null,
+            )
+      } catch (e: Exception) {
+        _uiState.value =
+            _uiState.value.copy(
+                isLoading = false,
+                errorMessage = "Failed to load pending replacements: ${e.message}")
+      }
     }
-
-    fun refresh() {
-        viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
-            try {
-                val orgId = getOrgId()
-                val all = repository.getAllReplacements(orgId)
-
-                _uiState.value =
-                    _uiState.value.copy(
-                        isLoading = false,
-                        toProcess = all.toProcessReplacements(),
-                        waitingForAnswer = all.waitingForAnswerAndDeclinedReplacements(),
-                        errorMessage = null,
-                    )
-            } catch (e: Exception) {
-                _uiState.value =
-                    _uiState.value.copy(
-                        isLoading = false,
-                        errorMessage = "Failed to load pending replacements: ${e.message}")
-            }
-        }
-    }
+  }
 }

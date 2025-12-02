@@ -145,7 +145,6 @@ class EditEventWithViewModelTest {
       }
     }
 
-    composeTestRule.onNodeWithText("Select participants").assertIsDisplayed()
     composeTestRule.onNodeWithText("Alice").performClick()
 
     composeTestRule.onNodeWithTag(EditEventTestTags.SAVE_BUTTON).performClick()

@@ -78,7 +78,7 @@ class EditEventScreenTest {
     }
 
     // Click a participant checkbox
-    composeTestRule.onNodeWithText("Anaïs").performClick()
+    composeTestRule.onNodeWithText("Alice").performClick()
 
     // Test Save & Cancel
     composeTestRule.onNodeWithTag(EditEventTestTags.SAVE_BUTTON).performClick()
@@ -92,7 +92,7 @@ class EditEventScreenTest {
   fun editEventAttendantScreen_toggleParticipantCheckbox() {
     composeTestRule.setContent { SampleAppTheme { EditEventAttendantScreen() } }
 
-    val alice = composeTestRule.onNodeWithText("Anaïs")
+    val alice = composeTestRule.onNodeWithText("Alice")
 
     alice.assertExists()
     alice.performClick()

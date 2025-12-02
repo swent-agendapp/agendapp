@@ -158,4 +158,9 @@ class CalendarViewModel(
   internal fun setTestWorkedHours(hours: List<Pair<String, Double>>) {
     _uiState.value = _uiState.value.copy(workedHours = hours)
   }
+
+  // For testing: force UI into error state
+  internal fun setTestError(message: String?) {
+    _uiState.value = _uiState.value.copy(errorMsg = message)
+  }
 }

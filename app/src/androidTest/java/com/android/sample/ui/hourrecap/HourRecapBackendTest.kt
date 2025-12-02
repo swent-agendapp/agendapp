@@ -37,4 +37,15 @@ class HourRecapBackendTest {
     // Only 2 recap item
     compose.onAllNodesWithTag(HourRecapTestTags.RECAP_ITEM).assertCountEquals(2)
   }
+
+  @Test
+  fun errorState_displaysErrorMessage() {
+    val vm = CalendarViewModel()
+    val msg = "Test error"
+    vm.setTestError(msg)
+
+    compose.setContent { HourRecapScreen(calendarViewModel = vm) }
+
+    compose.onNodeWithText(msg).assertExists()
+  }
 }

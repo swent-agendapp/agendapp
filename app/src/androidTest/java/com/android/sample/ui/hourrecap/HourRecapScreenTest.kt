@@ -36,6 +36,7 @@ class HourRecapScreenTest {
     compose.onNodeWithTag(HourRecapTestTags.START_DATE).assertExists().assertIsDisplayed()
     compose.onNodeWithTag(HourRecapTestTags.END_DATE).assertExists().assertIsDisplayed()
     compose.onNodeWithTag(HourRecapTestTags.GENERATE_BUTTON).assertExists().assertIsDisplayed()
+    compose.onNodeWithTag(HourRecapTestTags.GENERATE_BUTTON).performClick()
     compose.onNodeWithTag(HourRecapTestTags.EXPORT_BUTTON).assertExists().assertIsDisplayed()
   }
 

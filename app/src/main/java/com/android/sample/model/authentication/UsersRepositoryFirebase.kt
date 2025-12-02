@@ -1,8 +1,11 @@
 package com.android.sample.model.authentication
 
+import com.android.sample.model.constants.FirestoreConstants
+import com.android.sample.model.constants.FirestoreConstants.COLLECTION_ADMINS
 import com.android.sample.model.constants.FirestoreConstants.COLLECTION_USERS
 import com.android.sample.model.firestoreMappers.UserMapper
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.tasks.await
 
 /**
@@ -18,8 +21,23 @@ class UsersRepositoryFirebase(
 
   private fun usersCollection() = db.collection(COLLECTION_USERS)
 
-  override suspend fun getUsers(): List<User> {
-    val snap = usersCollection().get().await()
+  override suspend fun getAdmins(organizationId: String): List<User> {
+    val snap =
+        db.collection(FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH)
+            .document(organizationId)
+            .collection(COLLECTION_ADMINS)
+            .get()
+            .await()
+    return snap.documents.mapNotNull { UserMapper.fromDocument(it) }
+  }
+
+  override suspend fun getUsers(organizationId: String): List<User> {
+    val snap =
+        db.collection(FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH)
+            .document(organizationId)
+            .collection(COLLECTION_USERS)
+            .get()
+            .await()
     return snap.documents.mapNotNull { UserMapper.fromDocument(it) }
   }
 
@@ -28,8 +46,39 @@ class UsersRepositoryFirebase(
     val data = UserMapper.toMap(user)
     usersCollection().document(user.id).set(data).await()
   }
+  // Modify an existing user, only specified fields are updated
+  override suspend fun modifyUser(user: User) {
+    require(user.id.isNotBlank()) { "userId is required" }
 
+    val data = UserMapper.toMap(user)
+
+    usersCollection().document(user.id).set(data, SetOptions.merge()).await()
+  }
+
+  // Delete user from /users and from all organizations they belong to
   override suspend fun deleteUser(userId: String) {
-    usersCollection().document(userId).delete().await()
+    // Load user to know which organizations they belong to
+    val userSnap = usersCollection().document(userId).get().await()
+    val user = UserMapper.fromDocument(userSnap) ?: return
+
+    // Start batch delete
+    val batch = db.batch()
+
+    // Delete user document in /users/{userId}
+    batch.delete(usersCollection().document(userId))
+
+    // Remove from each organization
+    user.organizations.forEach { orgId ->
+      val orgDoc = db.collection(FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH).document(orgId)
+
+      // Delete from users subcollection
+      batch.delete(orgDoc.collection(COLLECTION_USERS).document(userId))
+
+      // Delete from admins subcollection (if present)
+      batch.delete(orgDoc.collection(COLLECTION_ADMINS).document(userId))
+    }
+
+    // Commit all updates
+    batch.commit().await()
   }
 }

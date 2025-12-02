@@ -4,7 +4,10 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.android.sample.model.calendar.Event
+import com.android.sample.model.calendar.EventRepository
+import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.calendar.RecurrenceStatus
+import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreen
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreenTestTags
 import com.android.sample.ui.calendar.eventOverview.EventOverviewViewModel
@@ -14,6 +17,7 @@ import java.time.Duration
 import java.time.Instant.now
 import java.time.temporal.ChronoUnit
 import kotlinx.coroutines.runBlocking
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -30,6 +34,15 @@ class EventOverviewScreenTest {
   @get:Rule val composeRule = createComposeRule()
 
   val selectedOrganizationId = "orgTest"
+  private lateinit var repo: EventRepository
+
+  @Before
+  fun setup() {
+    repo = EventRepositoryProvider.repository
+
+    // Ensure the right organization is selected
+    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
+  }
 
   // ---------- Helpers ----------
   private fun sampleEvent(): Event {

@@ -2,8 +2,20 @@ package com.android.sample.model.authentication
 
 interface UserRepository {
 
-  /** @return The list of users. */
-  suspend fun getUsers(): List<User>
+  /**
+   * @param organizationId the id of the organization we want the list of user
+   * @return The list of users.
+   */
+  suspend fun getUsers(organizationId: String): List<User>
+
+  /**
+   * @param organizationId the id of the organization we want the list of admins
+   * @return The list of admins.
+   */
+  suspend fun getAdmins(organizationId: String): List<User>
+
+  /** Modify an existing user */
+  suspend fun modifyUser(user: User)
 
   /**
    * Create or update an user

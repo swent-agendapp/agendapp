@@ -18,7 +18,15 @@ import org.junit.Test
 private class FakeUserRepository(var users: MutableList<User> = mutableListOf()) : UserRepository {
 
   /** Returns all stored users. */
-  override suspend fun getUsers(): List<User> = users
+  override suspend fun getUsers(organizationId: String): List<User> = users
+
+  override suspend fun getAdmins(organizationId: String): List<User> {
+    TODO("Not yet implemented")
+  }
+
+  override suspend fun modifyUser(user: User) {
+    TODO("Not yet implemented")
+  }
 
   /** Inserts or replaces a user with the same ID. */
   override suspend fun newUser(user: User) {
@@ -49,7 +57,7 @@ class FakeUserRepositoryTest {
 
   @Test
   fun getUsers_returns_empty_list_initially() = runTest {
-    val result = repo.getUsers()
+    val result = repo.getUsers("")
     assertThat(result).isEmpty()
   }
 
@@ -58,7 +66,7 @@ class FakeUserRepositoryTest {
     val user = User(id = "1", email = "a@test.com", displayName = "Alice")
     repo.newUser(user)
 
-    assertThat(repo.getUsers()).containsExactly(user)
+    assertThat(repo.getUsers("")).containsExactly(user)
   }
 
   @Test
@@ -69,7 +77,7 @@ class FakeUserRepositoryTest {
     repo.newUser(user1)
     repo.newUser(user2)
 
-    assertThat(repo.getUsers()).containsExactly(user2)
+    assertThat(repo.getUsers("")).containsExactly(user2)
   }
 
   @Test
@@ -79,6 +87,6 @@ class FakeUserRepositoryTest {
 
     repo.deleteUser("1")
 
-    assertThat(repo.getUsers()).isEmpty()
+    assertThat(repo.getUsers("")).isEmpty()
   }
 }

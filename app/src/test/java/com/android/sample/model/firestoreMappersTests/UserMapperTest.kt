@@ -9,9 +9,15 @@ import org.mockito.Mockito.*
 
 class UserMapperTest {
 
-  private val sampleUser = User("user123", "John Doe", "john@example.com")
+  private val sampleUser =
+      User("user123", "John Doe", "john@example.com", phoneNumber = null, organizations = listOf())
   private val sampleMap =
-      mapOf("id" to "user123", "displayName" to "John Doe", "email" to "john@example.com")
+      mapOf(
+          "id" to "user123",
+          "displayName" to "John Doe",
+          "email" to "john@example.com",
+          "phoneNumber" to null,
+          "organizations" to emptyList<String>())
 
   // --- fromDocument tests ---
   @Test
@@ -120,10 +126,11 @@ class UserMapperTest {
   @Test
   fun toMap_returnsCorrectMap() {
     val map = UserMapper.toMap(sampleUser)
-    assertEquals(4, map.size)
+    assertEquals(5, map.size)
     assertEquals(sampleUser.id, map["id"])
     assertEquals(sampleUser.displayName, map["displayName"])
     assertEquals(sampleUser.email, map["email"])
     assertEquals(sampleUser.phoneNumber, map["phoneNumber"])
+    assertEquals(sampleUser.organizations, map["organizations"])
   }
 }

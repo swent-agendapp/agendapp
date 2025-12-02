@@ -2,6 +2,7 @@ package com.android.sample.data.local.objects
 
 import androidx.compose.ui.graphics.toArgb
 import com.android.sample.data.local.utils.InstantConverter
+import com.android.sample.data.local.utils.encodeBooleanMap
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.ui.theme.EventPalette
 import io.objectbox.annotation.Convert
@@ -43,6 +44,7 @@ data class EventEntity(
     var locallyStoredBy: String = "",
     var personalNotes: String? = null,
     var participants: String = "",
+    var presence: String = encodeBooleanMap(emptyMap()),
     var version: Long = System.currentTimeMillis(),
     var hasBeenDeleted: Boolean = false,
     var recurrenceStatus: String = RecurrenceStatus.OneTime.name,

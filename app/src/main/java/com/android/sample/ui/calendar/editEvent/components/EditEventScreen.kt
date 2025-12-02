@@ -3,6 +3,7 @@ package com.android.sample.ui.calendar.editEvent.components
 import android.app.TimePickerDialog
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
@@ -26,7 +27,9 @@ import com.android.sample.ui.common.SecondaryButton
 import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.theme.BorderWidthThick
+import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingLarge
+import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.SpacingExtraLarge
 import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingMedium
@@ -218,14 +221,17 @@ fun EditEventScreen(
 
               // Participants
               item {
-                Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.Start) {
-                  ParticipantsSection(participantNames = names, showHeader = false)
-                  Spacer(modifier = Modifier.height(SpacingLarge))
-                  SecondaryButton(
-                      modifier = Modifier.testTag(EditEventTestTags.EDIT_PARTICIPANTS_BUTTON),
-                      onClick = onEditParticipants,
-                      text = stringResource(R.string.edit_event_edit_participants_button))
-                  Spacer(modifier = Modifier.height(SpacingLarge))
+                Card(shape = RoundedCornerShape(CornerRadiusLarge)) {
+                  Column(
+                      modifier = Modifier.fillMaxWidth().padding(PaddingMedium),
+                      horizontalAlignment = Alignment.Start) {
+                        ParticipantsSection(participantNames = names, showHeader = false)
+                        Spacer(modifier = Modifier.height(SpacingLarge))
+                        SecondaryButton(
+                            modifier = Modifier.testTag(EditEventTestTags.EDIT_PARTICIPANTS_BUTTON),
+                            onClick = onEditParticipants,
+                            text = stringResource(R.string.edit_event_edit_participants_button))
+                      }
                 }
               }
             }

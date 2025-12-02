@@ -4,15 +4,21 @@ interface UserRepository {
 
   /**
    * @param organizationId the id of the organization we want the list of user
-   * @return The list of users.
+   * @return The list of users of the organization.
    */
-  suspend fun getUsers(organizationId: String): List<User>
+  suspend fun getUsersIds(organizationId: String): List<String>
+
+  /**
+   * @param userIds the list of user IDs to retrieve
+   * @return The list of users corresponding to the provided IDs.
+   */
+  suspend fun getUsersByIds(userIds: List<String>): List<User>
 
   /**
    * @param organizationId the id of the organization we want the list of admins
    * @return The list of admins.
    */
-  suspend fun getAdmins(organizationId: String): List<User>
+  suspend fun getAdminsIds(organizationId: String): List<String>
 
   /** Modify an existing user */
   suspend fun modifyUser(user: User)
@@ -30,4 +36,12 @@ interface UserRepository {
    * @param userId The user ID to delete
    */
   suspend fun deleteUser(userId: String)
+
+  /**
+   * Add a user to an organization
+   *
+   * @param userId The user ID to add
+   * @param orgId The organization ID to which the user will be added
+   */
+  suspend fun addUserToOrganization(userId: String, orgId: String)
 }

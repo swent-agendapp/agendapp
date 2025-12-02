@@ -20,9 +20,13 @@ class FakeEmployeeRepositoryContractTest {
   private class Fake : UserRepository {
     private val storage = mutableListOf<User>()
 
-    override suspend fun getUsers(organizationId: String): List<User> = storage.toList()
+    override suspend fun getUsersIds(organizationId: String): List<String> = storage.map { it.id }
 
-    override suspend fun getAdmins(organizationId: String): List<User> = storage
+    override suspend fun getAdminsIds(organizationId: String): List<String> = storage.map { it.id }
+
+    override suspend fun getUsersByIds(userIds: List<String>): List<User> {
+      return storage.filter { userIds.contains(it.id) }
+    }
 
     override suspend fun modifyUser(user: User) {
       storage.removeAll { it.id == user.id }
@@ -37,6 +41,10 @@ class FakeEmployeeRepositoryContractTest {
     override suspend fun deleteUser(userId: String) {
       storage.removeAll { it.id == userId }
     }
+
+    override suspend fun addUserToOrganization(userId: String, orgId: String) {
+      // No-op for fake
+    }
   }
 
   @Test
@@ -48,12 +56,12 @@ class FakeEmployeeRepositoryContractTest {
     fake.newUser(User(id = "u1", displayName = "Nathan", email = "nathan@rien.com"))
     fake.newUser(User(id = "u2", displayName = "Emilien", email = "emilien@rien.com"))
 
-    assertThat(fake.getUsers(orgId)).hasSize(2)
+    assertThat(fake.getUsersIds(orgId)).hasSize(2)
 
     // Upsert user with ID "u2"
     fake.newUser(User(id = "u2", displayName = "Emi2", email = "emi2@rien.com"))
 
-    val updated = fake.getUsers(orgId).first { it.id == "u2" }
+    val updated = fake.getUsersByIds(listOf("u2")).first()
     assertThat(updated.displayName).isEqualTo("Emi2")
   }
 
@@ -65,6 +73,6 @@ class FakeEmployeeRepositoryContractTest {
     fake.newUser(User(id = "u1", displayName = "Nathan", email = "nathan@rien.com"))
     fake.deleteUser("u1")
 
-    assertThat(fake.getUsers(orgId)).isEmpty()
+    assertThat(fake.getUsersIds(orgId)).isEmpty()
   }
 }

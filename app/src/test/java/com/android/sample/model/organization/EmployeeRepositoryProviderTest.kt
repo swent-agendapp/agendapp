@@ -15,11 +15,13 @@ import org.junit.Test
  */
 private class StubUserRepo : UserRepository {
 
-  override suspend fun getUsers(organizationId: String): List<User> = emptyList()
+  override suspend fun getUsersIds(organizationId: String): List<String> = emptyList()
 
-  override suspend fun getAdmins(organizationId: String): List<User> {
+  override suspend fun getAdminsIds(organizationId: String): List<String> {
     TODO("Not yet implemented")
   }
+
+  override suspend fun getUsersByIds(userIds: List<String>): List<User> = emptyList()
 
   override suspend fun modifyUser(user: User) {
     TODO("Not yet implemented")
@@ -30,6 +32,10 @@ private class StubUserRepo : UserRepository {
   }
 
   override suspend fun deleteUser(userId: String) {
+    // No-op for stub
+  }
+
+  override suspend fun addUserToOrganization(userId: String, orgId: String) {
     // No-op for stub
   }
 }
@@ -45,7 +51,7 @@ class UserRepositoryProviderTest {
     val repo = StubUserRepo()
 
     // getUsers should return an empty list
-    assertThat(repo.getUsers("")).isEmpty()
+    assertThat(repo.getUsersIds("")).isEmpty()
 
     // newUser should not throw
     repo.newUser(User("u1", "Alice", "alice@test.com"))

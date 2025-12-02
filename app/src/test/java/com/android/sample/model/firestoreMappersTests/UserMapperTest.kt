@@ -23,9 +23,11 @@ class UserMapperTest {
   @Test
   fun fromDocument_withValidDocument_returnsUser() {
     val doc = mock(DocumentSnapshot::class.java)
+    `when`(doc.exists()).thenReturn(true)
     `when`(doc.getString("id")).thenReturn(sampleUser.id)
     `when`(doc.getString("displayName")).thenReturn(sampleUser.displayName)
     `when`(doc.getString("email")).thenReturn(sampleUser.email)
+    `when`(doc.get("organizations")).thenReturn(emptyList<String>())
     `when`(doc.id).thenReturn("fallbackId")
 
     val user = UserMapper.fromDocument(doc)
@@ -38,9 +40,11 @@ class UserMapperTest {
   @Test
   fun fromDocument_missingDisplayName_stillCreatesUser() {
     val doc = mock(DocumentSnapshot::class.java)
+    `when`(doc.exists()).thenReturn(true)
     `when`(doc.getString("id")).thenReturn(sampleUser.id)
     `when`(doc.getString("displayName")).thenReturn(null)
     `when`(doc.getString("email")).thenReturn(sampleUser.email)
+    `when`(doc.get("organizations")).thenReturn(emptyList<String>())
     `when`(doc.id).thenReturn("fallbackId")
 
     val user = UserMapper.fromDocument(doc)
@@ -54,9 +58,11 @@ class UserMapperTest {
   @Test
   fun fromDocument_missingEmail_stillCreatesUser() {
     val doc = mock(DocumentSnapshot::class.java)
+    `when`(doc.exists()).thenReturn(true)
     `when`(doc.getString("id")).thenReturn(sampleUser.id)
     `when`(doc.getString("displayName")).thenReturn(sampleUser.displayName)
     `when`(doc.getString("email")).thenReturn(null)
+    `when`(doc.get("organizations")).thenReturn(emptyList<String>())
     `when`(doc.id).thenReturn("fallbackId")
 
     val user = UserMapper.fromDocument(doc)
@@ -70,9 +76,11 @@ class UserMapperTest {
   @Test
   fun fromDocument_missingId_usesDocumentId() {
     val doc = mock(DocumentSnapshot::class.java)
+    `when`(doc.exists()).thenReturn(true)
     `when`(doc.getString("id")).thenReturn(null)
     `when`(doc.getString("displayName")).thenReturn(sampleUser.displayName)
     `when`(doc.getString("email")).thenReturn(sampleUser.email)
+    `when`(doc.get("organizations")).thenReturn(emptyList<String>())
     `when`(doc.id).thenReturn("fallbackId")
 
     val user = UserMapper.fromDocument(doc)
@@ -99,9 +107,11 @@ class UserMapperTest {
   @Test
   fun fromAny_withDocument_returnsUser() {
     val doc = mock(DocumentSnapshot::class.java)
+    `when`(doc.exists()).thenReturn(true)
     `when`(doc.getString("id")).thenReturn(sampleUser.id)
     `when`(doc.getString("displayName")).thenReturn(sampleUser.displayName)
     `when`(doc.getString("email")).thenReturn(sampleUser.email)
+    `when`(doc.get("organizations")).thenReturn(emptyList<String>())
     `when`(doc.id).thenReturn("fallbackId")
 
     val user = UserMapper.fromAny(doc)

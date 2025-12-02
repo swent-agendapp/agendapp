@@ -7,12 +7,20 @@ import com.google.firebase.firestore.DocumentSnapshot
 object UserMapper : FirestoreMapper<User> {
 
   override fun fromDocument(document: DocumentSnapshot): User? {
+    if (!document.exists()) return null
+
     val id = document.getString("id") ?: document.id
     val displayName = document.getString("displayName")
     val email = document.getString("email")
     val phoneNumber = document.getString("phoneNumber")
 
-    val organizations = document.get("organizations") as? List<String> ?: emptyList()
+    val organizations =
+        document.get("organizations")?.let { value ->
+          when (value) {
+            is List<*> -> value.filterIsInstance<String>()
+            else -> emptyList()
+          }
+        } ?: emptyList()
 
     return User(
         id = id,
@@ -24,11 +32,11 @@ object UserMapper : FirestoreMapper<User> {
 
   override fun fromMap(data: Map<String, Any?>): User? {
     val id = data["id"] as? String ?: return null
+
     val displayName = data["displayName"] as? String
     val email = data["email"] as? String
     val phoneNumber = data["phoneNumber"] as? String
 
-    // Firestore maps arrays as List<Any?>
     val organizations =
         (data["organizations"] as? List<*>)?.filterIsInstance<String>() ?: emptyList()
 

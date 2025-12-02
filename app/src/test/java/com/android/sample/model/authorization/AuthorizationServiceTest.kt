@@ -17,11 +17,15 @@ import org.junit.Test
  */
 private class FakeUserRepository(var users: MutableList<User> = mutableListOf()) : UserRepository {
 
-  /** Returns all stored users. */
-  override suspend fun getUsers(organizationId: String): List<User> = users
+  /** Returns all stored user IDs. */
+  override suspend fun getUsersIds(organizationId: String): List<String> = users.map { it.id }
 
-  override suspend fun getAdmins(organizationId: String): List<User> {
+  override suspend fun getAdminsIds(organizationId: String): List<String> {
     TODO("Not yet implemented")
+  }
+
+  override suspend fun getUsersByIds(userIds: List<String>): List<User> {
+    return users.filter { userIds.contains(it.id) }
   }
 
   override suspend fun modifyUser(user: User) {
@@ -37,6 +41,10 @@ private class FakeUserRepository(var users: MutableList<User> = mutableListOf())
   /** Deletes a user by ID. */
   override suspend fun deleteUser(userId: String) {
     users.removeAll { it.id == userId }
+  }
+
+  override suspend fun addUserToOrganization(userId: String, orgId: String) {
+    // No-op for fake
   }
 }
 
@@ -57,7 +65,7 @@ class FakeUserRepositoryTest {
 
   @Test
   fun getUsers_returns_empty_list_initially() = runTest {
-    val result = repo.getUsers("")
+    val result = repo.getUsersIds("")
     assertThat(result).isEmpty()
   }
 
@@ -66,7 +74,7 @@ class FakeUserRepositoryTest {
     val user = User(id = "1", email = "a@test.com", displayName = "Alice")
     repo.newUser(user)
 
-    assertThat(repo.getUsers("")).containsExactly(user)
+    assertThat(repo.getUsersIds("")).containsExactly("1")
   }
 
   @Test
@@ -77,7 +85,7 @@ class FakeUserRepositoryTest {
     repo.newUser(user1)
     repo.newUser(user2)
 
-    assertThat(repo.getUsers("")).containsExactly(user2)
+    assertThat(repo.getUsersIds("")).containsExactly("1")
   }
 
   @Test
@@ -87,6 +95,6 @@ class FakeUserRepositoryTest {
 
     repo.deleteUser("1")
 
-    assertThat(repo.getUsers("")).isEmpty()
+    assertThat(repo.getUsersIds("")).isEmpty()
   }
 }

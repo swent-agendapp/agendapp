@@ -8,47 +8,6 @@ package com.android.sample.model.map
  * source.
  */
 interface MapRepository {
-
-  /**
-   * Add or replace a marker in the repository.
-   *
-   * If a marker with the same id already exists it will be overwritten.
-   *
-   * @param marker The Marker to store.
-   */
-  fun addMarker(orgId: String, marker: Marker)
-
-  /**
-   * Remove a marker by its id.
-   *
-   * If the id does not exist, this is a no-op.
-   *
-   * @param id The identifier of the marker to remove.
-   */
-  fun removeMarker(orgId: String, id: String)
-
-  /**
-   * Retrieve a marker by id.
-   *
-   * @param id The marker id to look up.
-   * @return The Marker if found, or null otherwise.
-   */
-  fun getMarkerById(orgId: String, id: String): Marker?
-
-  /**
-   * Return all markers currently stored.
-   *
-   * A snapshot list is returned to avoid exposing the internal mutable collection.
-   */
-  fun getAllMarkers(orgId: String): List<Marker>
-
-  /**
-   * Return the ids of all stored markers.
-   *
-   * Useful for clients that want to create areas by referencing marker ids.
-   */
-  fun getAllMarkersIds(orgId: String): List<String>
-
   /**
    * Create a new Area from a list of marker ids and add it in the repository.
    *
@@ -61,11 +20,7 @@ interface MapRepository {
    * @param markerIds List of marker ids to include in the area. Defaults to all markers currently
    *   stored.
    */
-  suspend fun createArea(
-      orgId: String,
-      label: String? = null,
-      markerIds: List<String> = getAllMarkersIds(orgId)
-  )
+  suspend fun createArea(orgId: String, label: String, marker: Marker, radius: Double)
 
   /**
    * Return all areas currently stored.
@@ -74,14 +29,10 @@ interface MapRepository {
    */
   suspend fun getAllAreas(orgId: String): List<Area>
 
-  /** Return the ids of all stored areas. */
-  fun getAllAreasIds(orgId: String): List<String>
-
   /**
-   * Retrieve an area by id.
+   * delete a currently stored Area.
    *
-   * @param id The area id to look up.
-   * @return The Area if found, or null otherwise.
+   * @param itemId the item to remove from database
    */
-  fun getAreaById(orgId: String, id: String): Area?
+  suspend fun deleteArea(orgId: String, itemId: String)
 }

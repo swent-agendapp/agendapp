@@ -2,6 +2,7 @@ package com.android.sample.model.map
 
 import com.android.sample.model.constants.FirestoreConstants.MAP_COLLECTION_PATH
 import com.android.sample.model.constants.FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH
+import com.android.sample.model.constants.FirestoreConstants.REPLACEMENTS_COLLECTION_PATH
 import com.android.sample.model.firestoreMappers.AreaMapper
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.concurrent.ConcurrentHashMap
@@ -30,36 +31,26 @@ class MapRepositoryFirebase(private val db: FirebaseFirestore) : MapRepository {
     return mapDataCollection(orgId).document().id
   }
 
-  override fun addMarker(orgId: String, marker: Marker) {
-    getOrCreate(orgId).markers[marker.id] = marker
-  }
-
-  override fun removeMarker(orgId: String, id: String) {
-    getOrCreate(orgId).markers.remove(id)
-  }
-
-  override fun getMarkerById(orgId: String, id: String): Marker? = getOrCreate(orgId).markers[id]
-
-  override fun getAllMarkers(orgId: String): List<Marker> =
-      getOrCreate(orgId).markers.values.toList()
-
-  override fun getAllMarkersIds(orgId: String): List<String> =
-      getOrCreate(orgId).markers.keys.toList()
-
-  override fun getAllAreasIds(orgId: String): List<String> = getOrCreate(orgId).areas.keys.toList()
-
-  override fun getAreaById(orgId: String, id: String): Area? = getOrCreate(orgId).areas[id]
-
   override suspend fun getAllAreas(orgId: String): List<Area> {
     val snapshot = mapDataCollection(orgId).get().await()
     return snapshot.mapNotNull { AreaMapper.fromDocument(it) }
   }
 
-  override suspend fun createArea(orgId: String, label: String?, markerIds: List<String>) {
-    val uid = getNewUid(orgId)
-    val markers = markerIds.mapNotNull { getMarkerById(orgId, it) }
+  override suspend fun deleteArea(orgId: String, itemId: String) {
+    db.collection(ORGANIZATIONS_COLLECTION_PATH)
+        .document(orgId)
+        .collection(REPLACEMENTS_COLLECTION_PATH)
+        .document(itemId)
+        .delete()
+        .await()
 
-    val area = Area(uid, label, markers)
+    getOrCreate(orgId).areas.remove(itemId)
+  }
+
+  override suspend fun createArea(orgId: String, label: String, marker: Marker, radius: Double) {
+    val uid = getNewUid(orgId)
+
+    val area = Area(uid, label, marker, radius)
     val map = AreaMapper.toMap(area)
 
     mapDataCollection(orgId).document(uid).set(map).await()

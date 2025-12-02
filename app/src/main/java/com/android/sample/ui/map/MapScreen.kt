@@ -14,59 +14,50 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.RichTooltip
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TooltipBox
-import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.android.sample.R
-import com.android.sample.ui.common.FloatingButton
+import com.android.sample.model.map.Marker
 import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.map.MapScreenTestTags.CREATE_AREA_BUTTON
-import com.android.sample.ui.map.MapScreenTestTags.CREATE_AREA_FLOATING_BUTTON
-import com.android.sample.ui.map.MapScreenTestTags.DELETE_MARKER_BUTTON
 import com.android.sample.ui.map.MapScreenTestTags.DOWN_SHEET
 import com.android.sample.ui.map.MapScreenTestTags.DOWN_SHEET_FORM
 import com.android.sample.ui.theme.DefaultZoom
 import com.android.sample.ui.theme.MapPalette
 import com.android.sample.ui.theme.PaddingMedium
+import com.android.sample.ui.theme.Palette
 import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingSmall
 import com.android.sample.ui.theme.Weight
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.Circle
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
-import com.google.maps.android.compose.Polygon
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.ktx.MapsExperimentalFeature
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -86,12 +77,6 @@ object MapScreenTestTags {
   const val CREATE_AREA_FLOATING_BUTTON = "create_area_floating_button"
 }
 
-enum class BottomSheetState {
-  HIDE,
-  ADD_AREA,
-  DELETE_MARKER,
-}
-
 /** Displays the Map in a screen composable. */
 @OptIn(MapsExperimentalFeature::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -102,11 +87,10 @@ fun MapScreen(
 ) {
   val uiState by mapViewModel.state.collectAsState()
   val cameraPositionState = rememberCameraPositionState()
+
   val sheetState = rememberModalBottomSheetState()
-  var showBottomSheet by remember { mutableStateOf(BottomSheetState.HIDE) }
-  var deleteMarkerId by remember { mutableStateOf("") }
-  val tooltipState = rememberTooltipState(isPersistent = true)
-  val scope = rememberCoroutineScope()
+  var showBottomSheet by remember { mutableStateOf(false) }
+
   val context = LocalContext.current
 
   LaunchedEffect(uiState.errorMessage) {
@@ -150,127 +134,87 @@ fun MapScreen(
                         imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
                         contentDescription = "Back")
                   }
-            },
-            actions = {
-              TooltipBox(
-                  positionProvider = TooltipDefaults.rememberRichTooltipPositionProvider(8.dp),
-                  tooltip = {
-                    RichTooltip(
-                        caretSize = TooltipDefaults.caretSize,
-                    ) {
-                      Column(modifier = Modifier.testTag(MapScreenTestTags.TOOLTIP_TEXT)) {
-                        Text(
-                            text = stringResource(R.string.tooltip_area_marker_title),
-                            style = MaterialTheme.typography.titleSmall)
-                        Text(text = stringResource(R.string.tooltip_area_marker_text))
-                        Spacer(Modifier.height(SpacingSmall))
-                        Text(
-                            text = stringResource(R.string.tooltip_area_multiple_marker_title),
-                            style = MaterialTheme.typography.titleSmall)
-                        Text(text = stringResource(R.string.tooltip_area_multiple_marker_text))
-                        Spacer(Modifier.height(SpacingSmall))
-                        Text(
-                            text = stringResource(R.string.tooltip_area_delete_marker_title),
-                            style = MaterialTheme.typography.titleSmall)
-                        Text(text = stringResource(R.string.tooltip_area_delete_marker_text))
-                        Spacer(Modifier.height(SpacingSmall))
-                        Text(
-                            text = stringResource(R.string.tooltip_area_create_title),
-                            style = MaterialTheme.typography.titleSmall)
-                        Text(text = stringResource(R.string.tooltip_area_create_text))
-                      }
-                    }
-                  },
-                  state = tooltipState) {
-                    IconButton(
-                        modifier = Modifier.testTag(MapScreenTestTags.TOOLTIP_BUTTON),
-                        onClick = { scope.launch { tooltipState.show() } }) {
-                          Icon(imageVector = Icons.Filled.Info, contentDescription = "Info")
-                        }
-                  }
             })
       },
-      floatingActionButton = {
-        FloatingButton(
-            modifier = Modifier.testTag(CREATE_AREA_FLOATING_BUTTON),
-            text = stringResource(R.string.create_area_button),
-            icon = Icons.Default.Add,
-            onClick = { showBottomSheet = BottomSheetState.ADD_AREA })
-      },
-      floatingActionButtonPosition = FabPosition.Start,
       content = { padding ->
         Column(modifier = Modifier.fillMaxSize()) {
           Box(modifier = Modifier.weight(Weight).fillMaxWidth().padding(padding)) {
             GoogleMap(
                 modifier = Modifier.matchParentSize().testTag(MapScreenTestTags.GOOGLE_MAP_SCREEN),
                 cameraPositionState = cameraPositionState,
-                onMapLongClick = { pos -> mapViewModel.addNewMarker(pos) },
+                onMapLongClick = { pos ->
+                  mapViewModel.selectNewMarker(pos)
+                  showBottomSheet = true
+                },
                 properties =
                     MapProperties(
                         isMyLocationEnabled = uiState.hasPermission, mapType = MapType.NORMAL)) {
-                  uiState.listNewMarker.forEach { marker ->
+                  if (uiState.selectedMarker != null)
+                  {
                     Marker(
-                        state =
-                            MarkerState(
-                                position =
-                                    LatLng(marker.location.latitude, marker.location.longitude)),
-                        draggable = false,
-                        onClick = { _ ->
-                          showBottomSheet = BottomSheetState.DELETE_MARKER
-                          deleteMarkerId = marker.id
-                          true
-                        })
+                      state =
+                        MarkerState(position =
+                          LatLng(uiState.selectedMarker!!.location.latitude, uiState.selectedMarker!!.location.longitude),
+                        )
+                    )
+                    Circle(center =
+                      LatLng(uiState.selectedMarker!!.location.latitude, uiState.selectedMarker!!.location.longitude),
+                      radius = uiState.selectedRadius)
                   }
                   uiState.listArea.forEach { area ->
-                    Polygon(
-                        points =
-                            area.markers.map { marker ->
-                              LatLng(marker.location.latitude, marker.location.longitude)
-                            },
+                    Circle(
+                        center =
+                            LatLng(area.marker.location.latitude, area.marker.location.longitude),
+                        radius = area.radius,
                         strokeColor = MapPalette.Stroke,
-                        fillColor = MapPalette.Fill)
+                        fillColor = MapPalette.Fill,
+                        onClick = { _ ->
+                          mapViewModel.selectArea(area)
+                          showBottomSheet = true
+                        })
                   }
                 }
           }
-          if (showBottomSheet != BottomSheetState.HIDE) {
+          if (showBottomSheet) {
             ModalBottomSheet(
                 modifier = Modifier.testTag(DOWN_SHEET),
-                onDismissRequest = { showBottomSheet = BottomSheetState.HIDE },
+                onDismissRequest = { showBottomSheet = false },
                 sheetState = sheetState) {
-                  if (showBottomSheet == BottomSheetState.ADD_AREA)
-                      Column(Modifier.fillMaxWidth().padding(SpacingLarge)) {
-                        Text(stringResource(R.string.down_sheet_title))
-                        Spacer(Modifier.height(SpacingSmall))
-                        OutlinedTextField(
-                            value = uiState.nextAreaName,
-                            onValueChange = { mapViewModel.setNewAreaName(it) },
-                            label = { Text(stringResource(R.string.down_sheet_text_field)) },
-                            singleLine = true,
-                            modifier =
-                                Modifier.fillMaxWidth()
-                                    .testTag(DOWN_SHEET_FORM)
-                                    .padding(horizontal = PaddingMedium))
-                        Spacer(Modifier.height(SpacingSmall))
-                        PrimaryButton(
-                            modifier = Modifier.testTag(CREATE_AREA_BUTTON),
-                            text = stringResource(R.string.down_sheet_button_create),
-                            onClick = {
-                              mapViewModel.createNewArea()
-                              showBottomSheet = BottomSheetState.HIDE
-                            },
-                        )
-                      }
-                  else if (showBottomSheet == BottomSheetState.DELETE_MARKER) {
-                    Column(Modifier.fillMaxWidth().padding(SpacingLarge)) {
-                      PrimaryButton(
-                          modifier = Modifier.testTag(DELETE_MARKER_BUTTON),
-                          text = stringResource(R.string.down_sheet_button_delete),
-                          onClick = {
-                            mapViewModel.deleteMarker(deleteMarkerId)
-                            showBottomSheet = BottomSheetState.HIDE
-                          },
-                      )
+                  Column(Modifier.fillMaxWidth().padding(SpacingLarge)) {
+                    Text(stringResource(R.string.down_sheet_title))
+                    Spacer(Modifier.height(SpacingSmall))
+                    OutlinedTextField(
+                        value = uiState.selectedAreaName,
+                        onValueChange = { mapViewModel.setNewAreaName(it) },
+                        label = { Text(stringResource(R.string.down_sheet_text_field)) },
+                        singleLine = true,
+                        modifier =
+                            Modifier.fillMaxWidth()
+                                .testTag(DOWN_SHEET_FORM)
+                                .padding(horizontal = PaddingMedium))
+                    Spacer(Modifier.height(SpacingSmall))
+                    Column {
+                      Slider(
+                          value = uiState.selectedRadius.toFloat(),
+                          onValueChange = { it -> mapViewModel.setNewAreaRadius(it.toDouble()) },
+                          colors =
+                              SliderDefaults.colors(
+                                  thumbColor = Palette.PastelOrange,
+                                  activeTrackColor = Palette.Orchid,
+                                  inactiveTrackColor = Palette.LightGray,
+                              ),
+                          steps = 10,
+                          valueRange = 0f..100f)
+                      Text(text = uiState.selectedRadius.toString())
                     }
+                    PrimaryButton(
+                        modifier = Modifier.testTag(CREATE_AREA_BUTTON),
+                        text = stringResource(R.string.down_sheet_button_create),
+                        onClick = {
+                          mapViewModel.createNewArea()
+                          showBottomSheet = false
+                        },
+                    )
                   }
                 }
           }

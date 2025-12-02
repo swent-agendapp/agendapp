@@ -39,7 +39,6 @@
 
     <!-- Edit Event Screen -->
     <string name="edit_event_title">Ereignis bearbeiten</string>
-    <string name="edit_event_instruction">Bearbeiten Sie unten die Ereignisdetails:</string>
 
     <!-- Fields -->
     <string name="edit_event_title_label">Titel</string>
@@ -54,13 +53,10 @@
     <string name="edit_event_end_date_label">Enddatum</string>
     <string name="edit_event_start_time_label">Startzeit:</string>
     <string name="edit_event_end_time_label">Endzeit:</string>
-    <string name="edit_event_recurrence_label">Wiederholung</string>
 
     <!-- Participants -->
-    <string name="edit_event_participants_label">Teilnehmer:</string>
     <string name="edit_event_edit_participants_button">Teilnehmer bearbeiten</string>
     <string name="edit_event_participants_screen_title">Ereignisteilnehmer bearbeiten</string>
-    <string name="edit_event_select_participants_text">Teilnehmer auswählen</string>
 
     <!-- Notifications -->
 

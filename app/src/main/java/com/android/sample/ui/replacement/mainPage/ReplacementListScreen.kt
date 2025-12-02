@@ -122,7 +122,7 @@ fun ReplacementEmployeeListScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(PaddingExtraSmall),
         ) {
-          if (isAdmin) {
+          if (true) { // CHANGE TO SEE ALL THE PAGES ABOUT REPLACEMENT (default is  isAdmin)
             SecondaryButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(R.string.organize_replacement),

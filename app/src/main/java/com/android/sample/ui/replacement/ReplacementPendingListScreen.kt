@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.HelpOutline
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.outlined.Close
@@ -27,12 +26,10 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -54,6 +51,7 @@ import com.android.sample.model.replacement.toProcessReplacements
 import com.android.sample.model.replacement.waitingForAnswerAndDeclinedReplacements
 import com.android.sample.ui.calendar.utils.DateTimeUtils.DATE_FORMAT_PATTERN
 import com.android.sample.ui.common.PrimaryButton
+import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.theme.BarWidthSmall
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingExtraSmall
@@ -102,19 +100,12 @@ fun ReplacementPendingListScreen(
     replacementsWaitingForAnswer: List<Replacement> =
         getMockReplacements().waitingForAnswerAndDeclinedReplacements(),
     onProcessReplacement: (Replacement) -> Unit = {},
-    onNavigateBack: () -> Unit = {}
+    onBack: () -> Unit = {}
 ) {
   Scaffold(
       topBar = {
-        TopAppBar(
-            title = { Text(stringResource(id = R.string.replacement_requests_title)) },
-            navigationIcon = {
-              IconButton(onClick = onNavigateBack) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(R.string.common_back))
-              }
-            })
+        SecondaryPageTopBar(
+            title = stringResource(R.string.replacement_requests_title), onClick = onBack)
       }) { paddingValues ->
         Column(
             modifier =

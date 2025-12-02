@@ -1,5 +1,6 @@
 package com.android.sample.ui.replacement
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -75,6 +77,8 @@ fun ProcessReplacementScreen(
   val timeText =
       "${replacement.event.startLocalTime.format(timeFormatter)} - " +
           replacement.event.endLocalTime.format(timeFormatter)
+
+  val context = LocalContext.current
 
   Scaffold(
       topBar = {
@@ -143,7 +147,17 @@ fun ProcessReplacementScreen(
               Spacer(modifier = Modifier.height(SpacingMedium))
 
               PrimaryButton(
-                  onClick = { onSendRequests(selectedMembers.toList()) },
+                  onClick = {
+                    onSendRequests(selectedMembers.toList())
+                    Toast.makeText(
+                            context,
+                            context.getString(R.string.replacement_requests_sent_success),
+                            Toast.LENGTH_SHORT,
+                        )
+                        .show()
+
+                    onBack()
+                  },
                   enabled = selectedMembers.isNotEmpty(),
                   text =
                       pluralStringResource(

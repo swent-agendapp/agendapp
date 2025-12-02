@@ -282,12 +282,12 @@ private fun NavGraphBuilder.replacementGraph(
               onProcessReplacement = { replacement ->
                 navigationActions.navigateToReplacementProcess(replacement.id)
               },
-              onNavigateBack = { navigationActions.navigateBack() })
+              onBack = { navigationActions.navigateBack() })
         }
 
         // accepted replacement screen
         composable(Screen.ReplacementUpcoming.route) {
-          ReplacementUpcomingListScreen(onNavigateBack = { navigationActions.navigateBack() })
+          ReplacementUpcomingListScreen(onBack = { navigationActions.navigateBack() })
         }
         composable(Screen.ReplacementProcess.route) { navBackStackEntry ->
           val replacementId = navBackStackEntry.arguments?.getString("replacementId")
@@ -298,7 +298,7 @@ private fun NavGraphBuilder.replacementGraph(
           } else {
             ProcessReplacementRoute(
                 replacementId = replacementId,
-                onFinished = { navigationActions.navigateTo(Screen.ReplacementOverview) },
+                onFinished = { navigationActions.navigateBack() },
                 onBack = { navigationActions.navigateBack() },
             )
           }

@@ -394,6 +394,11 @@ class ReplacementEmployeeViewModel(
           )
         }
 
+        replacementRepository.deleteReplacement(
+            orgId = orgId,
+            itemId = replacementId,
+        )
+
         onFinished()
       } catch (e: Exception) {
         Log.e("ReplacementEmployeeVM", "Error sending requests", e)

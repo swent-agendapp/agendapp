@@ -179,6 +179,12 @@
     <string name="replacement_selected_members_none">
     Aucun membre sélectionné
 </string>
+    <string name="replacement_upcoming_empty_message">
+    Il n\'y a aucun remplacement à venir
+</string>
+    <string name="replacement_requests_sent_success">
+    Les demandes ont été envoyées avec succès
+</string>
 
     <string name="view_mode_1day">1 jour</string>
     <string name="view_mode_5days">5 jours</string>

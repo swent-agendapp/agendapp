@@ -61,6 +61,11 @@
     <string name="common_save">Enregistrer</string>
     <string name="common_cancel">Annuler</string>
 
+    <!-- Warnings -->
+    <string name="warning_title">Avertissement</string>
+    <string name="warning_participant_modification">Les modifications de participants effectuées ici ne seront pas notifiées aux personnes concernées\n\nSi vous devez organiser un remplacement pour l’un des participants, utilisez plutôt l’onglet « Remplacements » dans le menu principal</string>
+    <string name="warning_got_it">Compris</string>
+
     <!-- Home Screen -->
 
     <!-- Settings Screen -->

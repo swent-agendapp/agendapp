@@ -96,9 +96,8 @@ private fun ReplacementAssistChip(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReplacementPendingListScreen(
-    replacementsToProcess: List<Replacement> = getMockReplacements().toProcessReplacements(),
-    replacementsWaitingForAnswer: List<Replacement> =
-        getMockReplacements().waitingForAnswerAndDeclinedReplacements(),
+    replacementsToProcess: List<Replacement> = emptyList(),
+    replacementsWaitingForAnswer: List<Replacement> = emptyList(),
     onProcessReplacement: (Replacement) -> Unit = {},
     onBack: () -> Unit = {}
 ) {
@@ -383,5 +382,9 @@ private fun PeopleListDialog(title: String, people: List<String>, onDismiss: () 
 @Preview(showBackground = true)
 @Composable
 fun ReplacementPendingListScreenPreview() {
-  ReplacementPendingListScreen()
+    ReplacementPendingListScreen(
+        replacementsToProcess = getMockReplacements().toProcessReplacements(),
+        replacementsWaitingForAnswer =
+            getMockReplacements().waitingForAnswerAndDeclinedReplacements(),
+    )
 }

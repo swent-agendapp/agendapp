@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import com.android.sample.R
+import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.mockData.getMockReplacements
 import com.android.sample.ui.calendar.utils.DateTimeUtils.DATE_FORMAT_PATTERN
 import com.android.sample.ui.common.PrimaryButton
@@ -60,13 +61,11 @@ private val DefaultCandidates =
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProcessReplacementScreen(
-    replacementId: String,
+    replacement: Replacement,
     candidates: List<String> = DefaultCandidates,
     onSendRequests: (List<String>) -> Unit = {},
     onBack: () -> Unit = {},
 ) {
-  val replacement =
-      remember(replacementId) { getMockReplacements().first { it.id == replacementId } }
 
   var selectedMembers by remember { mutableStateOf(setOf<String>()) }
 
@@ -156,8 +155,7 @@ fun ProcessReplacementScreen(
                         )
                         .show()
 
-                    onBack()
-                  },
+                            },
                   enabled = selectedMembers.isNotEmpty(),
                   text =
                       pluralStringResource(

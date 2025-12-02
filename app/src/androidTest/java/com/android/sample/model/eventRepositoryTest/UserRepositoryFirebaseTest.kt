@@ -39,7 +39,7 @@ class UserRepositoryFirebaseTest : FirebaseEmulatedTest() {
     repository.newUser(user1)
     repository.newUser(user2)
 
-    val users = repository.getUsers()
+    val users = repository.getUsers("")
 
     Assert.assertEquals(2, users.size)
     Assert.assertTrue(users.any { it.id == user1.id && it.email == user1.email })
@@ -52,12 +52,12 @@ class UserRepositoryFirebaseTest : FirebaseEmulatedTest() {
 
     repository.newUser(user)
 
-    var users = repository.getUsers()
+    var users = repository.getUsers("")
     Assert.assertTrue(users.any { it.id == user.id })
 
     repository.deleteUser(user.id)
 
-    users = repository.getUsers()
+    users = repository.getUsers("")
     Assert.assertFalse(users.any { it.id == user.id })
   }
 

@@ -1,9 +1,13 @@
 package com.android.sample.ui.hourrecap
 
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import com.android.sample.ui.calendar.CalendarViewModel
 import org.junit.Rule
 import org.junit.Test
 
@@ -60,5 +64,30 @@ class HourRecapScreenTest {
     compose.setContent { HourRecapScreen(onBackClick = {}) }
 
     compose.onNodeWithTag(HourRecapTestTags.GENERATE_BUTTON).performClick()
+  }
+
+  /**
+   * Tests that the recap list displays the expected worked hours for each employee based on the
+   * test data injected into the CalendarViewModel's UI state.
+   */
+  @Test
+  fun RecapItems_displayWorkedHoursCorrectly() {
+    val calendarViewModel = CalendarViewModel()
+
+    calendarViewModel.setTestWorkedHours(
+        listOf(
+            "Alice" to 12.5,
+            "Bob" to 8.0,
+        ))
+
+    compose.setContent { HourRecapScreen(calendarViewModel = calendarViewModel) }
+    compose.onNodeWithText("Alice").assertExists()
+    compose.onNodeWithText("12h 30min").assertExists()
+
+    compose.onNodeWithText("Bob").assertExists()
+    compose.onNodeWithText("8h").assertExists()
+
+    // Only 2 recap item
+    compose.onAllNodesWithTag(HourRecapTestTags.RECAP_ITEM).assertCountEquals(2)
   }
 }

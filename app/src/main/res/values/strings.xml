@@ -223,6 +223,11 @@
     <string name="clear_all">Clear all</string>
     <string name="apply">Apply</string>
 
+    <!-- hourRecap -->
+    <string name="loading_hours">Loading…</string>
+    <string name="work_duration_hours">%1$dh</string>
+    <string name="work_duration_hours_minutes">%1$dh %2$dmin</string>
+
 </resources>
 
 

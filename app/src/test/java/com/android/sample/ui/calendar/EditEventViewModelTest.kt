@@ -3,7 +3,7 @@ package com.android.sample.ui.calendar
 import androidx.compose.ui.graphics.Color
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
-import com.android.sample.model.calendar.EventRepositoryLocal
+import com.android.sample.model.calendar.EventRepositoryInMemory
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.ui.calendar.editEvent.EditEventStep
 import com.android.sample.ui.calendar.editEvent.EditEventViewModel
@@ -31,7 +31,7 @@ class EditEventViewModelTest {
   @Before
   fun setUp() {
     Dispatchers.setMain(testDispatcher)
-    repository = EventRepositoryLocal()
+    repository = EventRepositoryInMemory()
 
     // Set the selected organization in the provider
     // SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationID)

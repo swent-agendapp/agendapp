@@ -41,7 +41,7 @@ class CalendarViewModelTest {
     // Set the selected organization for the tests.
     SelectedOrganizationRepository.changeSelectedOrganization(orgId)
 
-    repository = EventRepositoryLocal()
+    repository = EventRepositoryInMemory()
     viewModel = CalendarViewModel(eventRepository = repository)
 
     // Create two sample events for testing.

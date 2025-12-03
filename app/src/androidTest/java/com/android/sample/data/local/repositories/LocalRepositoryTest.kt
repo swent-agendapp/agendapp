@@ -1,18 +1,28 @@
-package com.android.sample.model.calendar
+package com.android.sample.data.local.repositories
 
+import com.android.sample.data.local.objects.EventEntity
+import com.android.sample.data.local.objects.MyObjectBox
+import com.android.sample.model.calendar.Event
+import com.android.sample.model.calendar.EventRepositoryLocal
+import com.android.sample.model.calendar.createEvent
+import io.objectbox.Box
+import io.objectbox.BoxStore
 import java.time.Instant
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.*
+import org.junit.After
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
 /**
- * Unit tests for [EventRepositoryLocal].
+ * Unit tests for [com.android.sample.model.calendar.EventRepositoryLocal].
  *
  * These tests verify expected repository contract behaviors using an in-memory fake implementation.
  */
 class LocalRepositoryTest {
 
+  private lateinit var boxStore: BoxStore
+  private lateinit var eventBox: Box<EventEntity>
   private lateinit var repository: EventRepositoryLocal
   private lateinit var sampleEvent: Event
 
@@ -20,7 +30,14 @@ class LocalRepositoryTest {
 
   @Before
   fun setup() {
-    repository = EventRepositoryLocal()
+    boxStore =
+        MyObjectBox.builder()
+            // Unique name for each test run with timestamp of the run
+            .inMemory("test-store-${System.nanoTime()}")
+            .build()
+    eventBox = boxStore.boxFor(EventEntity::class.java)
+    repository = EventRepositoryLocal(eventBox = eventBox)
+
     sampleEvent =
         createEvent(
             organizationId = orgId,
@@ -32,20 +49,26 @@ class LocalRepositoryTest {
             participants = setOf("userB"))[0]
   }
 
+  @After
+  fun tearDown() {
+    // Close BoxStore after each test
+    boxStore.close()
+  }
+
   @Test
   fun insertEvent_shouldAddEvent() = runBlocking {
     repository.insertEvent(orgId = orgId, item = sampleEvent)
     val events = repository.getAllEvents(orgId = orgId)
-    assertEquals(1, events.size)
-    assertEquals(sampleEvent.id, events.first().id)
+    Assert.assertEquals(1, events.size)
+    Assert.assertEquals(sampleEvent.id, events.first().id)
   }
 
   @Test
   fun getEventById_shouldReturnCorrectEvent() = runBlocking {
     repository.insertEvent(orgId = orgId, item = sampleEvent)
     val fetched = repository.getEventById(orgId = orgId, itemId = sampleEvent.id)
-    assertNotNull(fetched)
-    assertEquals(sampleEvent.title, fetched?.title)
+    Assert.assertNotNull(fetched)
+    Assert.assertEquals(sampleEvent.title, fetched?.title)
   }
 
   @Test
@@ -55,7 +78,7 @@ class LocalRepositoryTest {
     repository.updateEvent(orgId = orgId, itemId = sampleEvent.id, item = updated)
 
     val fetched = repository.getEventById(orgId = orgId, itemId = sampleEvent.id)
-    assertEquals("Updated Meeting", fetched?.title)
+    Assert.assertEquals("Updated Meeting", fetched?.title)
   }
 
   @Test(expected = IllegalArgumentException::class)
@@ -91,7 +114,7 @@ class LocalRepositoryTest {
     repository.deleteEvent(orgId = orgId, itemId = sampleEvent.id)
 
     val all = repository.getAllEvents(orgId = orgId)
-    assertTrue(all.isEmpty())
+    Assert.assertTrue(all.isEmpty())
   }
 
   @Test
@@ -111,8 +134,8 @@ class LocalRepositoryTest {
             startDate = Instant.parse("2025-02-01T00:00:00Z"),
             endDate = Instant.parse("2025-02-28T23:59:59Z"))
 
-    assertEquals(1, results.size)
-    assertEquals("in-range", results.first().id)
+    Assert.assertEquals(1, results.size)
+    Assert.assertEquals("in-range", results.first().id)
   }
 
   @Test
@@ -132,7 +155,7 @@ class LocalRepositoryTest {
             startDate = Instant.parse("2025-02-01T00:00:00Z"),
             endDate = Instant.parse("2025-02-28T23:59:59Z"))
 
-    assertTrue(results.isEmpty())
+    Assert.assertTrue(results.isEmpty())
   }
 
   @Test
@@ -152,7 +175,7 @@ class LocalRepositoryTest {
             startDate = Instant.parse("2025-02-01T00:00:00Z"),
             endDate = Instant.parse("2025-02-28T23:59:59Z"))
 
-    assertTrue(results.isEmpty())
+    Assert.assertTrue(results.isEmpty())
   }
 
   @Test
@@ -172,8 +195,8 @@ class LocalRepositoryTest {
             startDate = Instant.parse("2025-02-01T00:00:00Z"),
             endDate = Instant.parse("2025-02-28T23:59:59Z"))
 
-    assertEquals(1, results.size)
-    assertEquals("overlap-start", results.first().id)
+    Assert.assertEquals(1, results.size)
+    Assert.assertEquals("overlap-start", results.first().id)
   }
 
   @Test
@@ -193,8 +216,8 @@ class LocalRepositoryTest {
             startDate = Instant.parse("2025-02-01T00:00:00Z"),
             endDate = Instant.parse("2025-02-28T23:59:59Z"))
 
-    assertEquals(1, results.size)
-    assertEquals("overlap-end", results.first().id)
+    Assert.assertEquals(1, results.size)
+    Assert.assertEquals("overlap-end", results.first().id)
   }
 
   @Test
@@ -214,8 +237,8 @@ class LocalRepositoryTest {
             startDate = Instant.parse("2025-02-01T00:00:00Z"),
             endDate = Instant.parse("2025-02-28T23:59:59Z"))
 
-    assertEquals(1, results.size)
-    assertEquals("end-at-start", results.first().id)
+    Assert.assertEquals(1, results.size)
+    Assert.assertEquals("end-at-start", results.first().id)
   }
 
   @Test
@@ -235,8 +258,8 @@ class LocalRepositoryTest {
             startDate = Instant.parse("2025-02-01T00:00:00Z"),
             endDate = Instant.parse("2025-02-28T23:59:59Z"))
 
-    assertEquals(1, results.size)
-    assertEquals("end-at-end", results.first().id)
+    Assert.assertEquals(1, results.size)
+    Assert.assertEquals("end-at-end", results.first().id)
   }
 
   @Test
@@ -256,8 +279,8 @@ class LocalRepositoryTest {
             startDate = Instant.parse("2025-02-01T00:00:00Z"),
             endDate = Instant.parse("2025-02-28T23:59:59Z"))
 
-    assertEquals(1, results.size)
-    assertEquals("covering", results.first().id)
+    Assert.assertEquals(1, results.size)
+    Assert.assertEquals("covering", results.first().id)
   }
 
   @Test(expected = IllegalArgumentException::class)

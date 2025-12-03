@@ -6,7 +6,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import com.android.sample.model.calendar.Event
-import com.android.sample.model.calendar.EventRepositoryLocal
+import com.android.sample.model.calendar.EventRepositoryInMemory
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.CalendarScreenTestTags.DAY_HEADER_DAY_PREFIX
@@ -42,7 +42,7 @@ class CalendarEventSelectorTests : BaseCalendarScreenTest() {
    *   **Selector** instead of the full screen.
    */
   private fun setSelectorContentWithLocalRepo(events: List<Event> = buildTestEvents()) {
-    val repo = EventRepositoryLocal()
+    val repo = EventRepositoryInMemory()
     populateRepo(repo, events)
     val owner = TestOwner(CalendarVMFactory(repo))
 
@@ -177,7 +177,7 @@ class CalendarEventSelectorTests : BaseCalendarScreenTest() {
                 cloudStorageStatuses = emptySet(),
                 participants = emptySet())
 
-    val repo = EventRepositoryLocal()
+    val repo = EventRepositoryInMemory()
 
     SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
     populateRepo(repo, allowedEvents, selectedOrganizationId)

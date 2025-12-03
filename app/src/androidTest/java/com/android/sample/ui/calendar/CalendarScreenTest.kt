@@ -22,7 +22,7 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
-import com.android.sample.model.calendar.EventRepositoryLocal
+import com.android.sample.model.calendar.EventRepositoryInMemory
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.style.CalendarDefaults.DEFAULT_SWIPE_THRESHOLD
@@ -274,7 +274,7 @@ abstract class BaseCalendarScreenTest {
    * events before composing the screen.
    */
   protected fun populateRepo(
-      repo: EventRepositoryLocal,
+      repo: EventRepositoryInMemory,
       events: List<Event>,
       orgId: String = selectedOrganizationId
   ) = runBlocking {
@@ -316,7 +316,7 @@ abstract class BaseCalendarScreenTest {
    */
   protected fun setContentWithLocalRepo(events: List<Event> = buildTestEvents()) {
     // Create an in-memory repository instance for tests
-    val repo = EventRepositoryLocal()
+    val repo = EventRepositoryInMemory()
     // Preload repository with our test events
     populateRepo(repo, events)
     // Provide a ViewModel factory that uses this repo

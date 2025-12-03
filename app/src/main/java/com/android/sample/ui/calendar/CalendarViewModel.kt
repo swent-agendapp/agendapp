@@ -174,10 +174,8 @@ class CalendarViewModel(
                 locationStatus =
                     if (isInside) LocationStatus.INSIDE_AREA else LocationStatus.OUTSIDE_AREA)
       } catch (e: SecurityException) {
-        // No permission granted
         _uiState.value = _uiState.value.copy(locationStatus = LocationStatus.NO_PERMISSION)
       } catch (e: Exception) {
-        // Other errors - keep current status or set to NO_PERMISSION
         _uiState.value = _uiState.value.copy(locationStatus = LocationStatus.NO_PERMISSION)
       }
     }

@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.android.sample.model.authorization.AuthorizationService
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
@@ -18,26 +17,25 @@ import java.time.Instant
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
-// Assisted by AI
 
 /**
  * UI state representing the current draft of an event being created.
  *
- * This data class is used by [AddEventViewModel] and observed by the composables to render the Add
- * Event multi-step flow. All fields have sensible defaults so a fresh state represents a new event
- * draft.
+ * This state is consumed by composables and mutated only via [AddEventViewModel].
  *
- * @property title User-entered event title.
- * @property description User-entered event description.
- * @property startInstant The start instant (date + time) of the event. Defaults to now.
- * @property endInstant The end instant (date + time) of the event. Defaults to one hour after now.
- * @property recurrenceEndInstant The end instant for a recurrence rule (if any).
- * @property recurrenceMode The recurrence mode for the event (OneTime, Weekly, ...).
- * @property participants The set of selected participant identifiers (currently `String` names).
- * @property errorMsg Optional error message surfaced to the UI (e.g., permission errors).
- * @property step The current step in the multi-step Add Event flow.
+ * @property title The title of the event.
+ * @property description The event description.
+ * @property startInstant The selected start date/time of the event.
+ * @property endInstant The selected end date/time of the event.
+ * @property recurrenceEndInstant End date/time of the recurrence rule (if applicable).
+ * @property recurrenceMode Defines recurrence type (one-time, weekly, etc.).
+ * @property participants Set of selected participant identifiers.
+ * @property color Visual tag color of the event.
+ * @property errorMsg Optional error message for UI display.
+ * @property draftEvent Event instance used for preview/confirmation before saving.
+ * @property step Current UI step in the event creation wizard.
  */
 data class AddCalendarEventUIState(
     val title: String = "",
@@ -53,6 +51,7 @@ data class AddCalendarEventUIState(
     val step: AddEventStep = AddEventStep.TITLE_AND_DESC
 )
 
+/** Steps in the multi-screen Add Event flow. */
 enum class AddEventStep {
   TITLE_AND_DESC,
   TIME_AND_RECURRENCE,
@@ -61,243 +60,204 @@ enum class AddEventStep {
 }
 
 /**
- * ViewModel that manages the UI state for the Add Event flow.
+ * ViewModel responsible for managing the multi-step Add Event flow.
  *
  * Responsibilities:
- * - Holds all event draft data (`AddCalendarEventUIState`)
- * - Exposes validation helpers (e.g., `titleIsBlank()`, `allFieldsValid()`)
- * - Builds the domain `Event` object when `addEvent()` is called
- * - Persists the event through `EventRepository`
+ * - Maintain draft event state
+ * - Validate user input
+ * - Build `Event` objects via [createEvent]
+ * - Persist events using [EventRepository]
  *
- * UI Components only interact with the ViewModel through its exposed methods:
- * - setTitle(), setDescription(), setStartInstant(), setEndInstant(), ...
- * - addParticipant() / removeParticipant()
- *
- * State updates are exposed as StateFlow and automatically recomposed in UI.
+ * The UI interacts with this ViewModel exclusively through exposed methods such as [setTitle],
+ * [setStartInstant], and [addEvent].
  */
 class AddEventViewModel(
     private val repository: EventRepository = EventRepositoryProvider.repository,
-    private val authServ: AuthorizationService = AuthorizationService(),
     selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel
 ) : ViewModel() {
 
-  /** Public immutable state that the UI observes. */
   private val _uiState = MutableStateFlow(AddCalendarEventUIState())
+  /** Public immutable UI state observed by composables. */
   val uiState: StateFlow<AddCalendarEventUIState> = _uiState.asStateFlow()
 
+  /** Currently selected organization ID. Required for saving events. */
   val selectedOrganizationId: StateFlow<String?> =
       selectedOrganizationViewModel.selectedOrganizationId
 
   /**
-   * Builds and returns the draft `Event` used for the summary/confirmation screen.
+   * Loads a draft event instance based on the current UI field values.
    *
-   * This method extracts all fields from the current [AddCalendarEventUIState] and constructs the
-   * corresponding `Event` using `createEvent()`.
-   *
-   * This method is used for previewing the event details before the final confirmation step.
-   *
-   * @return The first `Event` instance representing the current draft for preview.
+   * This method is used when preparing a preview before final confirmation.
    */
   fun loadDraftEvent() {
+    val state = _uiState.value
 
-    val currentState = _uiState.value
-    val newDraftEvent =
+    val draftEvent =
         createEvent(
                 repository = repository,
-                title = currentState.title,
-                description = currentState.description,
-                startDate = currentState.startInstant,
-                endDate = currentState.endInstant,
+                title = state.title,
+                description = state.description,
+                startDate = state.startInstant,
+                endDate = state.endInstant,
                 cloudStorageStatuses = emptySet(),
                 personalNotes = "",
-                participants = currentState.participants,
-                recurrence = currentState.recurrenceMode,
+                participants = state.participants,
+                recurrence = state.recurrenceMode,
                 organizationId = "",
-                endRecurrence = currentState.recurrenceEndInstant)
+                endRecurrence = state.recurrenceEndInstant)
             .first()
 
-    _uiState.value = _uiState.value.copy(draftEvent = newDraftEvent)
+    _uiState.update { it.copy(draftEvent = draftEvent) }
   }
+
   /**
-   * Builds a new event from the current UI state and delegates storage. Calls
-   * `addEventToRepository()` to persist the event.
+   * Creates and persists one or more events based on the current UI state.
+   *
+   * Some recurrence types produce multiple physical events, all returned by [createEvent]. Each
+   * resulting event is persisted independently.
+   *
+   * A valid organization must be selected; otherwise an exception is thrown.
    */
   fun addEvent() {
     val orgId = selectedOrganizationId.value
     require(orgId != null) { "Organization must be selected to create an event" }
 
-    val currentState = _uiState.value
+    val state = _uiState.value
+
     val newEvents =
         createEvent(
             organizationId = orgId,
             repository = repository,
-            title = currentState.title,
-            description = currentState.description,
-            startDate = currentState.startInstant,
-            endDate = currentState.endInstant,
+            title = state.title,
+            description = state.description,
+            startDate = state.startInstant,
+            endDate = state.endInstant,
             cloudStorageStatuses = emptySet(),
             personalNotes = "",
-            participants = currentState.participants,
-            recurrence = currentState.recurrenceMode,
-            endRecurrence = currentState.recurrenceEndInstant,
-            color = currentState.color)
-    newEvents.forEach { event -> addEventToRepository(event) }
+            participants = state.participants,
+            recurrence = state.recurrenceMode,
+            endRecurrence = state.recurrenceEndInstant,
+            color = state.color)
+
+    newEvents.forEach { addEventToRepository(it) }
   }
 
   /**
-   * Inserts the event into the repository after checking authorization.
+   * Persists a single [Event] into the repository.
    *
-   * If the user is not authorized, the state is updated with an error message instead of throwing
-   * an exception.
-   *
-   * Any unexpected error is caught and surfaced to the UI through `errorMsg`.
-   *
-   * @param event The event to persist.
+   * Errors are caught and surfaced to the UI through [errorMsg].
    */
   fun addEventToRepository(event: Event) {
     viewModelScope.launch {
       try {
-        val allowed = runCatching { authServ.requireAdmin() }.isSuccess
-        if (!allowed) {
-          _uiState.value = _uiState.value.copy(errorMsg = "You are not allowed to create events")
-          return@launch
-        }
-
         val orgId = selectedOrganizationId.value
         require(orgId != null) { "Organization must be selected to create an event" }
 
         repository.insertEvent(orgId = orgId, item = event)
       } catch (e: Exception) {
         Log.e("AddEventViewModel", "Error adding event: ${e.message}")
-        _uiState.value = _uiState.value.copy(errorMsg = "Unexpected error while creating the event")
+        _uiState.update { it.copy(errorMsg = "Unexpected error while creating the event") }
       }
     }
   }
 
-  /** @return `true` if the title field is empty or blank. */
+  /** @return `true` if the event title field is empty. */
   fun titleIsBlank() = _uiState.value.title.isBlank()
 
-  /** @return `true` if the description field is empty or blank. */
+  /** @return `true` if the event description field is empty. */
   fun descriptionIsBlank() = _uiState.value.description.isBlank()
 
-  /** @return `true` if start time is strictly after end time (invalid state). */
+  /** @return `true` if the start time occurs after the end time. */
   fun startTimeIsAfterEndTime() = _uiState.value.startInstant.isAfter(_uiState.value.endInstant)
 
-  /** @return `true` if start time is strictly after end recurrence time (invalid state). */
+  /**
+   * @return `true` if the recurrence mode is active and the start time occurs after the recurrence
+   *   end time.
+   */
   fun startTimeIsAfterEndRecurrenceTime() =
       _uiState.value.recurrenceMode != RecurrenceStatus.OneTime &&
           _uiState.value.startInstant.isAfter(_uiState.value.recurrenceEndInstant)
 
   /**
-   * @return `true` only when all event fields are valid.
+   * @return `true` if all essential fields are valid.
    *
    * Validation rules:
    * - Title must not be blank
    * - Description must not be blank
-   * - Start time must be before or equal to end time
+   * - Start time must precede end time
    */
   fun allFieldsValid() = !(titleIsBlank() || descriptionIsBlank() || startTimeIsAfterEndTime())
 
-  /**
-   * Advances the Add Event flow to the next step.
-   *
-   * This updates the UI state to the next value of [AddEventStep], if one exists. If the current
-   * step is already the last step, the state remains unchanged.
-   *
-   * Typical trigger: user presses a "Next" button in the current step of the flow.
-   */
+  /** Advances the add-event wizard to the next step, if any. */
   fun nextStep() {
     val steps = AddEventStep.entries
-    val currentIndex = steps.indexOf(_uiState.value.step)
-
-    if (currentIndex < steps.lastIndex) {
-      _uiState.value = _uiState.value.copy(step = steps[currentIndex + 1])
+    val index = steps.indexOf(_uiState.value.step)
+    if (index < steps.lastIndex) {
+      _uiState.update { it.copy(step = steps[index + 1]) }
     }
   }
 
-  /**
-   * Moves the Add Event flow back to the previous step.
-   *
-   * This updates the UI state to the previous value of [AddEventStep], if one exists. If the
-   * current step is already the first step, the state remains unchanged.
-   *
-   * Typical trigger: user presses Back (either UI back button or physical back button).
-   */
+  /** Moves the add-event wizard to the previous step, if applicable. */
   fun previousStep() {
     val steps = AddEventStep.entries
-    val currentIndex = steps.indexOf(_uiState.value.step)
-
-    if (currentIndex > 0) {
-      _uiState.value = _uiState.value.copy(step = steps[currentIndex - 1])
+    val index = steps.indexOf(_uiState.value.step)
+    if (index > 0) {
+      _uiState.update { it.copy(step = steps[index - 1]) }
     }
   }
 
-  /** Updates the recurrence mode for the event. */
+  /** Sets a new recurrence mode for the event draft. */
   fun setRecurrenceMode(mode: RecurrenceStatus) {
-    _uiState.value = _uiState.value.copy(recurrenceMode = mode)
+    _uiState.update { it.copy(recurrenceMode = mode) }
   }
 
-  /** Sets or updates the event title. */
+  /** Updates the event title. */
   fun setTitle(title: String) {
-    _uiState.value = _uiState.value.copy(title = title)
+    _uiState.update { it.copy(title = title) }
   }
 
-  /** Sets or updates the event description. */
+  /** Updates the event description. */
   fun setDescription(description: String) {
-    _uiState.value = _uiState.value.copy(description = description)
+    _uiState.update { it.copy(description = description) }
   }
 
-  /** Updates the start date/time of the event. */
+  /** Updates the event start time. */
   fun setStartInstant(instant: Instant) {
-    _uiState.value = _uiState.value.copy(startInstant = instant)
+    _uiState.update { it.copy(startInstant = instant) }
   }
 
-  /** Updates the end date/time of the event. */
+  /** Updates the event end time. */
   fun setEndInstant(instant: Instant) {
-    _uiState.value = _uiState.value.copy(endInstant = instant)
+    _uiState.update { it.copy(endInstant = instant) }
   }
 
-  /** Sets the end date for the recurrence rule. Ignored when recurrence mode is OneTime. */
-  fun setRecurrenceEndTime(recurrenceEndTime: Instant) {
-    _uiState.value = _uiState.value.copy(recurrenceEndInstant = recurrenceEndTime)
+  /** Updates the recurrence end time. */
+  fun setRecurrenceEndTime(instant: Instant) {
+    _uiState.update { it.copy(recurrenceEndInstant = instant) }
   }
 
-  /** Updates the color of the event. */
+  /** Updates the visual color tag for the event. */
   fun setColor(color: Color) {
-    _uiState.value = _uiState.value.copy(color = color)
+    _uiState.update { it.copy(color = color) }
   }
 
-  /**
-   * Adds a participant to the event.
-   *
-   * If the participant already exists in the set, it is ignored.
-   *
-   * @param participant Unique participant identifier (currently String username).
-   */
+  /** Adds a participant to the event draft. */
   fun addParticipant(participant: String) {
-    val updatedParticipants =
-        _uiState.value.participants.toMutableSet().apply { add(participant) }.toSet()
-    _uiState.value = _uiState.value.copy(participants = updatedParticipants)
+    val updated = _uiState.value.participants + participant
+    _uiState.update { it.copy(participants = updated) }
   }
 
-  /**
-   * Removes a participant from the event.
-   *
-   * @param participant The participant to remove.
-   */
+  /** Removes a participant from the event draft. */
   fun removeParticipant(participant: String) {
-    val updatedParticipants =
-        _uiState.value.participants.toMutableSet().apply { remove(participant) }.toSet()
-    _uiState.value = _uiState.value.copy(participants = updatedParticipants)
+    val updated = _uiState.value.participants - participant
+    _uiState.update { it.copy(participants = updated) }
   }
 
   /**
-   * Resets all fields to the default event draft.
+   * Resets the entire event draft to its initial state.
    *
-   * Useful when:
-   * - A new event creation starts
-   * - User cancels the flow
+   * Useful when the user cancels or restarts the creation flow.
    */
   fun resetUiState() {
     _uiState.value = AddCalendarEventUIState()

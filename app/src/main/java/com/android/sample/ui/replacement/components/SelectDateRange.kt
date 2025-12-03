@@ -21,11 +21,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
 import com.android.sample.ui.calendar.components.DatePickerFieldToModal
-import com.android.sample.ui.calendar.components.TopTitleBar
-import com.android.sample.ui.components.BottomNavigationButtons
+import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeTestTags
 import com.android.sample.ui.theme.CornerRadiusMedium
 import com.android.sample.ui.theme.PaddingExtraLarge
@@ -66,20 +64,27 @@ import java.time.LocalDate
  */
 @Composable
 fun SelectDateRangeScreen(
-    onNext: () -> Unit = {},
-    onBack: () -> Unit = {},
-    title: String = "",
-    instruction: String = "",
-    initialStartInstant: Instant = Instant.now(),
-    initialEndInstant: Instant = Instant.now(),
-    onStartDateSelected: (LocalDate) -> Unit = {},
-    onEndDateSelected: (LocalDate) -> Unit = {},
-    errorMessage: String = "",
-    canGoNext: Boolean = false,
+    onNext: () -> Unit,
+    onBack: () -> Unit,
+    title: String,
+    instruction: String,
+    onStartDateSelected: (LocalDate) -> Unit,
+    onEndDateSelected: (LocalDate) -> Unit,
+    initialStartInstant: Instant? = null,
+    initialEndInstant: Instant? = null,
+    errorMessage: String? = null,
+    canGoNext: Boolean = true,
+    onProcessNow: (() -> Unit)? = null,
+    onProcessLater: (() -> Unit)? = null,
 ) {
-
   Scaffold(
-      topBar = { TopTitleBar(title = title) },
+      topBar = {
+        SecondaryPageTopBar(
+            title = title,
+            onClick = onBack,
+            backButtonTestTags = ReplacementOrganizeTestTags.BACK_BUTTON,
+        )
+      },
       content = { paddingValues ->
         Column(
             modifier =
@@ -104,19 +109,22 @@ fun SelectDateRangeScreen(
                 DatePickerFieldToModal(
                     label = stringResource(R.string.startDatePickerLabel),
                     modifier = Modifier.testTag(ReplacementOrganizeTestTags.START_DATE_FIELD),
-                    onDateSelected = { date -> onStartDateSelected(date) },
+                    onDateSelected = onStartDateSelected,
                     enabled = true,
-                    initialInstant = initialStartInstant)
+                    initialInstant = initialStartInstant,
+                )
 
                 Spacer(modifier = Modifier.height(SpacingExtraLarge))
 
                 DatePickerFieldToModal(
                     label = stringResource(R.string.endDatePickerLabel),
                     modifier = Modifier.testTag(ReplacementOrganizeTestTags.END_DATE_FIELD),
-                    onDateSelected = { date -> onEndDateSelected(date) },
+                    onDateSelected = onEndDateSelected,
                     enabled = true,
-                    initialInstant = initialEndInstant)
+                    initialInstant = initialEndInstant,
+                )
               }
+
               AnimatedVisibility(visible = !canGoNext) {
                 Box(
                     modifier =
@@ -128,28 +136,24 @@ fun SelectDateRangeScreen(
                             .padding(vertical = PaddingMedium, horizontal = PaddingMedium)
                             .testTag(ReplacementOrganizeTestTags.DATE_RANGE_INVALID_TEXT),
                     contentAlignment = Alignment.Center) {
-                      Text(
-                          text = errorMessage,
-                          style = MaterialTheme.typography.bodyMedium,
-                          textAlign = TextAlign.Center)
+                      if (errorMessage != null) {
+                        Text(
+                            text = errorMessage,
+                            style = MaterialTheme.typography.bodyMedium,
+                            textAlign = TextAlign.Center)
+                      }
                     }
               }
             }
       },
       bottomBar = {
-        BottomNavigationButtons(
-            onNext = onNext,
-            onBack = onBack,
-            backButtonText = stringResource(R.string.goBack),
-            nextButtonText = stringResource(R.string.next),
+        ReplacementBottomBarWithProcessOptions(
             canGoNext = canGoNext,
-            backButtonTestTag = ReplacementOrganizeTestTags.BACK_BUTTON,
-            nextButtonTestTag = ReplacementOrganizeTestTags.NEXT_BUTTON)
-      })
-}
-
-@Preview(showBackground = true)
-@Composable
-fun SelectDateRangeScreenPreview() {
-  SelectDateRangeScreen(title = "Example Title", instruction = "Example Instruction")
+            onBack = onBack,
+            onNext = onNext,
+            onProcessNow = onProcessNow,
+            onProcessLater = onProcessLater,
+        )
+      },
+  )
 }

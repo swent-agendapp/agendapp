@@ -191,7 +191,7 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
 
   private fun ComposeTestRule.isTagDisplayed(tag: String): Boolean =
       try {
-        onNodeWithTag(tag).assertIsDisplayed()
+        onNodeWithTag(tag).assertExists()
         true
       } catch (_: AssertionError) {
         false

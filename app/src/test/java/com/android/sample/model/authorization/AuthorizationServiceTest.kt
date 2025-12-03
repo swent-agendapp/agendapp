@@ -1,73 +1,84 @@
 package com.android.sample.model.authorization
 
-import com.android.sample.model.organization.data.Employee
-import com.android.sample.model.organization.data.Role
-import com.android.sample.model.organization.repository.EmployeeRepository
+import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepository
 import com.google.common.truth.Truth.assertThat
-import kotlin.test.Ignore
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
-private class FakeEmployeeRepository(
-    var roleForCurrentUser: Role? = null,
-    var employees: MutableList<Employee> = mutableListOf()
-) : EmployeeRepository {
+/**
+ * Simple in-memory fake implementation of [UserRepository] used for unit testing.
+ *
+ * This fake:
+ * - Stores users inside a mutable list
+ * - Overrides CRUD methods without side effects
+ * - Allows quick assertions without hitting any database or backend
+ */
+private class FakeUserRepository(var users: MutableList<User> = mutableListOf()) : UserRepository {
 
-  override suspend fun getEmployees(): List<Employee> = employees
+  /** Returns all stored users. */
+  override suspend fun getUsers(): List<User> = users
 
-  override suspend fun newEmployee(employee: Employee) {
-    employees.removeAll { it.user.id == employee.user.id }
-    employees.add(employee)
+  /** Inserts or replaces a user with the same ID. */
+  override suspend fun newUser(user: User) {
+    users.removeAll { it.id == user.id }
+    users.add(user)
   }
 
-  override suspend fun deleteEmployee(userId: String) {
-    employees.removeAll { it.user.id == userId }
+  /** Deletes a user by ID. */
+  override suspend fun deleteUser(userId: String) {
+    users.removeAll { it.id == userId }
   }
-
-  override suspend fun getMyRole(): Role? = roleForCurrentUser
 }
 
-class AuthorizationServiceTest {
+/**
+ * Unit tests for [FakeUserRepository].
+ *
+ * These tests ensure that the fake repository behaves consistently and can be used in other
+ * ViewModel or domain tests without unexpected behavior.
+ */
+class FakeUserRepositoryTest {
 
-  private lateinit var fakeRepo: FakeEmployeeRepository
-  private lateinit var authz: AuthorizationService
+  private lateinit var repo: FakeUserRepository
 
   @Before
   fun setUp() {
-    fakeRepo = FakeEmployeeRepository()
-    authz = AuthorizationService(repo = fakeRepo)
+    repo = FakeUserRepository()
   }
 
   @Test
-  fun getMyRole_returns_null_when_user_not_registered() = runTest {
-    fakeRepo.roleForCurrentUser = null
-    val role = authz.getMyRole()
-    assertThat(role).isNull()
+  fun getUsers_returns_empty_list_initially() = runTest {
+    val result = repo.getUsers()
+    assertThat(result).isEmpty()
   }
 
   @Test
-  fun canEditCourses_is_true_for_ADMIN() = runTest {
-    fakeRepo.roleForCurrentUser = Role.ADMIN
-    assertThat(authz.canEditCourses()).isTrue()
+  fun newUser_adds_user_to_repository() = runTest {
+    val user = User(id = "1", email = "a@test.com", displayName = "Alice")
+    repo.newUser(user)
+
+    assertThat(repo.getUsers()).containsExactly(user)
   }
 
   @Test
-  fun canEditCourses_is_false_for_EMPLOYEE() = runTest {
-    fakeRepo.roleForCurrentUser = Role.EMPLOYEE
-    assertThat(authz.canEditCourses()).isFalse()
-  }
+  fun newUser_replaces_existing_user_with_same_id() = runTest {
+    val user1 = User(id = "1", email = "a@test.com", displayName = "Alice")
+    val user2 = User(id = "1", email = "b@test.com", displayName = "Bob")
 
-  /** We have to ignore the test for the M2 as this feature is not fully ready yet */
-  @Ignore
-  fun requireAdmin_throws_when_not_admin() = runTest {
-    fakeRepo.roleForCurrentUser = Role.EMPLOYEE
-    authz.requireAdmin()
+    repo.newUser(user1)
+    repo.newUser(user2)
+
+    assertThat(repo.getUsers()).containsExactly(user2)
   }
 
   @Test
-  fun requireAdmin_does_not_throw_for_admin() = runTest {
-    fakeRepo.roleForCurrentUser = Role.ADMIN
-    authz.requireAdmin()
+  fun deleteUser_removes_user_with_matching_id() = runTest {
+    val user = User(id = "1", email = "a@test.com", displayName = "Alice")
+    repo.newUser(user)
+
+    repo.deleteUser("1")
+
+    assertThat(repo.getUsers()).isEmpty()
   }
 }

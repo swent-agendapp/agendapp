@@ -30,8 +30,8 @@ import com.android.sample.model.replacement.mockData.getMockReplacements
 import com.android.sample.ui.calendar.utils.DateTimeUtils.DATE_FORMAT_PATTERN
 import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.common.SecondaryPageTopBar
-import com.android.sample.ui.components.MemberSelectionList
-import com.android.sample.ui.components.MemberSelectionListOptions
+import com.android.sample.ui.replacement.components.MemberSelectionList
+import com.android.sample.ui.replacement.components.MemberSelectionListOptions
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.DefaultCardElevation
 import com.android.sample.ui.theme.PaddingExtraLarge
@@ -52,17 +52,19 @@ object ProcessReplacementTestTags {
   fun memberTag(name: String): String = MEMBER_PREFIX + name
 }
 
+private val DefaultCandidates =
+    listOf("Emilien", "Haobin", "Noa", "Weifeng", "Timael", "Méline", "Nathan")
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProcessReplacementScreen(
     replacementId: String,
+    candidates: List<String> = DefaultCandidates,
     onSendRequests: (List<String>) -> Unit = {},
     onBack: () -> Unit = {},
 ) {
   val replacement =
       remember(replacementId) { getMockReplacements().first { it.id == replacementId } }
-
-  val candidates = listOf("Emilien", "Haobin", "Noa", "Weifeng", "Timael", "Méline", "Nathan")
 
   var selectedMembers by remember { mutableStateOf(setOf<String>()) }
 
@@ -84,7 +86,7 @@ fun ProcessReplacementScreen(
         Column(
             modifier =
                 Modifier.fillMaxSize()
-                    .padding(horizontal = PaddingExtraLarge)
+                    .padding(horizontal = PaddingExtraLarge, vertical = PaddingMedium)
                     .padding(paddingValues)
                     .testTag(ProcessReplacementTestTags.ROOT),
             horizontalAlignment = Alignment.CenterHorizontally) {

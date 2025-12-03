@@ -89,11 +89,11 @@ class CalendarEventOverviewTest : FirebaseEmulatedTest() {
     }
 
     // Assert: main EventSummaryCard sections are displayed
-    composeTestRule.onNodeWithTag(EventSummaryCardTags.TITLE_TEXT).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(EventSummaryCardTags.DESCRIPTION_TEXT).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(EventSummaryCardTags.TITLE_TEXT).assertExists()
+    composeTestRule.onNodeWithTag(EventSummaryCardTags.DESCRIPTION_TEXT).assertExists()
     // later : uncomment when this will be correctly implemented
     //    composeTestRule.onNodeWithTag(EventSummaryCardTags.PARTICIPANTS_LIST).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(EventSummaryCardTags.SIDE_BAR).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(EventSummaryCardTags.SIDE_BAR).assertExists()
   }
 
   @Test

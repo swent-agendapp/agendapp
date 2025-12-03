@@ -19,7 +19,7 @@ val CornerRadiusExtraLarge = 16.dp
 val CornerRadiusHuge = 24.dp
 
 // Button Elevation
-val ButtonElevationMedium = 10.dp
+val ButtonElevationMedium = 7.dp
 
 // Spacing
 val SpacingExtraSmall = 4.dp
@@ -51,6 +51,7 @@ const val AlphaVeryHigh = 1f
 const val DefaultZoom = 16f
 
 // Elevation
+val ElevationNull = 0.dp
 val ElevationExtraLow = 2.dp
 val ElevationLow = 4.dp
 val ElevationMedium = 8.dp
@@ -101,7 +102,7 @@ val CalendarColumnWidth = 64.dp
 val CalendarRowHeight = 60.dp
 
 // Border
-val BorderWidthThin = 1.dp
+val BorderWidthThin = 1.2.dp
 val BorderWidthThick = 2.dp
 val BorderWidthExtraThick = 4.dp
 

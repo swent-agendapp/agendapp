@@ -18,7 +18,7 @@ class EventMapperTest {
 
   private val start = Instant.parse("2025-10-29T10:00:00Z")
   private val end = Instant.parse("2025-10-29T12:00:00Z")
-  private val eventColor = EventPalette.Black
+  private val eventColor = EventPalette.Blue
 
   private val sampleEvent =
       Event(

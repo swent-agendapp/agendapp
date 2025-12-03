@@ -22,6 +22,7 @@ fun MainPageTopBar(
     modifier: Modifier = Modifier,
     title: String = "Untitled",
     actions: @Composable () -> Unit = {},
+    pastille: @Composable () -> Unit = {},
 ) {
   TopAppBar(
       title = {
@@ -29,7 +30,7 @@ fun MainPageTopBar(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(PaddingExtraSmall),
         ) {
-          actions()
+          pastille()
           Text(text = title, modifier = modifier)
         }
       },
@@ -38,5 +39,5 @@ fun MainPageTopBar(
               containerColor = TopBarPalette.Background,
               titleContentColor = TopBarPalette.Font,
           ),
-  )
+      actions = { actions() })
 }

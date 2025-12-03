@@ -9,6 +9,9 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.model.calendar.Event
+import com.android.sample.ui.calendar.filters.FilterBottomSheet
 import com.android.sample.ui.calendar.style.CalendarDefaults.DefaultDateRange
 import com.android.sample.ui.common.FloatingButton
 import com.android.sample.ui.common.MainPageTopBar
@@ -64,6 +68,10 @@ object CalendarScreenTestTags {
   // FAB / actions
   const val ADD_EVENT_BUTTON = "AddEventButton"
 
+  // Filtering
+  const val FILTER_BUTTON = "CalendarFilterButton"
+  const val FILTER_BOTTOM_SHEET = "CalendarFilterBottomSheet"
+
   // Location status chip
   const val LOCATION_STATUS_CHIP = "LocationStatusChip"
 }
@@ -87,6 +95,8 @@ fun CalendarScreen(
   val configuration = LocalConfiguration.current
   val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
+  var showFilterSheet by remember { mutableStateOf(false) }
+
   // Fetch events when the screen is recomposed
   LaunchedEffect(currentDateRange, selectedOrgId) {
     if (selectedOrgId != null) {
@@ -108,6 +118,15 @@ fun CalendarScreen(
           MainPageTopBar(
               title = stringResource(R.string.calendar_screen_title),
               modifier = Modifier.testTag(CalendarScreenTestTags.TOP_BAR_TITLE),
+              actions = {
+                IconButton(
+                    onClick = { showFilterSheet = true },
+                    modifier = Modifier.testTag(CalendarScreenTestTags.FILTER_BUTTON)) {
+                      Icon(
+                          imageVector = Icons.Default.FilterList,
+                          contentDescription = stringResource(R.string.filter))
+                    }
+              },
               actions = { LocationStatusChip(locationStatus = uiState.locationStatus) })
         }
       },
@@ -124,6 +143,14 @@ fun CalendarScreen(
                     .testTag(CalendarScreenTestTags.SCREEN_ROOT),
             calendarViewModel = calendarViewModel,
             onEventClick = onEventClick)
+        if (showFilterSheet) {
+          FilterBottomSheet(
+              onDismiss = { showFilterSheet = false },
+              onApply = { filters ->
+                calendarViewModel.applyFilters(filters)
+                showFilterSheet = false
+              })
+        }
       }
 }
 

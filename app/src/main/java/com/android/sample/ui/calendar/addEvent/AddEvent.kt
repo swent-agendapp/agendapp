@@ -29,6 +29,7 @@ object AddEventTestTags {
   const val INSTRUCTION_TEXT = "instruction_text"
   const val LIST_USER = "list_user"
   const val TITLE_TEXT_FIELD = "title_text_field"
+  const val COLOR_SELECTOR = "color_selector"
   const val DESCRIPTION_TEXT_FIELD = "description_text_field"
   const val START_DATE_FIELD = "start_date_field"
   const val END_DATE_FIELD = "end_date_field"
@@ -41,7 +42,6 @@ object AddEventTestTags {
   const val BACK_BUTTON = "back_button"
   const val CANCEL_BUTTON = "cancel_button"
   const val CREATE_BUTTON = "create_button"
-  const val FINISH_BUTTON = "finish_button"
   const val ERROR_MESSAGE = "error_message"
 
   fun recurrenceTag(status: RecurrenceStatus): String =
@@ -101,6 +101,7 @@ fun AddEventScreen(
           AddEventStep.CONFIRMATION ->
               AddEventConfirmationScreen(
                   modifier = Modifier.padding(padding),
+                  addEventViewModel = addEventViewModel,
               )
         }
       },
@@ -119,18 +120,18 @@ fun AddEventScreen(
           AddEventStep.ATTENDEES ->
               AddEventAttendantBottomBar(
                   addEventViewModel = addEventViewModel,
-                  onCreate = {
-                    addEventViewModel.addEvent()
-                    addEventViewModel.nextStep()
-                  },
+                  onNext = { addEventViewModel.nextStep() },
                   onBack = { addEventViewModel.previousStep() },
               )
           AddEventStep.CONFIRMATION ->
               AddEventConfirmationBottomBar(
-                  onFinish = {
+                  onCreate = {
+                    addEventViewModel.addEvent()
                     onFinish()
                     addEventViewModel.resetUiState()
-                  })
+                  },
+                  onBack = { addEventViewModel.previousStep() },
+              )
         }
       })
 }

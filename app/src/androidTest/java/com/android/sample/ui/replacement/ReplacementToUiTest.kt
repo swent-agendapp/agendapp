@@ -5,8 +5,8 @@ import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementStatus
-import com.android.sample.ui.calendar.replacementEmployee.components.ReplacementRequestUi
-import com.android.sample.ui.calendar.replacementEmployee.toUi
+import com.android.sample.ui.replacement.mainPage.ReplacementRequestUi
+import com.android.sample.ui.replacement.mainPage.toUi
 import com.android.sample.ui.theme.EventPalette
 import java.time.Instant
 import java.time.ZoneId

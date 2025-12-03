@@ -21,6 +21,6 @@ class AddEventAttendantBottomBarTest {
   @Test
   fun displayAllComponents() {
     composeTestRule.onNodeWithTag(AddEventTestTags.BACK_BUTTON).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(AddEventTestTags.CREATE_BUTTON).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertIsDisplayed()
   }
 }

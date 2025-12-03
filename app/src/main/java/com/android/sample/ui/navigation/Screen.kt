@@ -44,4 +44,6 @@ sealed class Screen(val route: String, val name: String) {
   }
 
   data object ReplacementUpcoming : Screen("replacement/upcoming", name = "Replacement Upcoming")
+
+  data object InvitationOverview : Screen("invitation/overview", name = "Invitation Overview")
 }

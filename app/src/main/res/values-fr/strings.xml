@@ -205,9 +205,12 @@
     <string name="export_excel">Exporter vers Excel</string>
 
     <!-- Invitations -->
+    <string name="invitation_codes_title">Codes d’invitation</string>
+    <string name="no_invitation_code_available">Aucun code d’invitation disponible</string>
     <plurals name="create_invitation_button_text" tools:ignore="MissingQuantity">
         <item quantity="one" tools:ignore="ImpliedQuantity">Créer une invitation</item>
         <item quantity="other">Créer %d invitations</item>
     </plurals>
-
+    <string name="accepted_by">Accepté par %1$s</string>
+    <string name="accepted_on">Accepté le %1$s</string>
 </resources>

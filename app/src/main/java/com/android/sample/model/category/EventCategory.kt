@@ -2,33 +2,25 @@ package com.android.sample.model.category
 
 import androidx.compose.ui.graphics.Color
 import com.android.sample.ui.theme.EventPalette
+import java.util.UUID
 
 /**
- * Represents a category for an event.
+ * Represents a category that can be assigned to an event.
  *
- * A category has:
- * - a label (String)
- * - a color (Color)
+ * @property id Unique identifier for the category. Defaults to a randomly generated UUID string.
+ * @property label Human‑readable name of the category.
+ * @property color Visual color associated with this category.
+ * @property isDefault Indicates whether this is the special default category used when no category
+ *   is selected.
  *
- * The user can create custom categories with any label and color. There is also a special default
- * category used when no category is selected.
- *
- * The label of the default category can be localized in the UI layer. For this reason, we store a
- * simple String here and add a flag isDefault.
+ * The user can create custom categories with any label and color. A default category also exists
+ * and is used when the user does not explicitly choose one. When `isDefault` is true, the UI layer
+ * is expected to display a localized name (using stringResource) instead of the stored label.
  */
 data class EventCategory(
-    /** Label of the category. For example "Work" or "Personal". */
+    val id: String = UUID.randomUUID().toString(),
     val label: String,
-
-    /** Color used to visually represent this category. */
     val color: Color,
-
-    /**
-     * True if this category is the special default category.
-     *
-     * When this flag is true, the UI should normally ignore the label and display a localized
-     * string instead (using stringResource).
-     */
     val isDefault: Boolean = false,
 ) {
 

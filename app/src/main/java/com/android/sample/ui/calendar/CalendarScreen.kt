@@ -127,7 +127,7 @@ fun CalendarScreen(
                           contentDescription = stringResource(R.string.filter))
                     }
               },
-              actions = { LocationStatusChip(locationStatus = uiState.locationStatus) })
+              pastille = { LocationStatusChip(locationStatus = uiState.locationStatus, onClick = { calendarViewModel.checkUserLocationStatus() }) })
         }
       },
       floatingActionButton = {
@@ -167,7 +167,7 @@ fun CalendarScreen(
  * @param locationStatus The current location status.
  */
 @Composable
-fun LocationStatusChip(locationStatus: LocationStatus) {
+fun LocationStatusChip(locationStatus: LocationStatus, onClick: () ->Unit = {}) {
   val chipColor =
       when (locationStatus) {
         LocationStatus.INSIDE_AREA -> Palette.DarkSeaGreen
@@ -183,7 +183,7 @@ fun LocationStatusChip(locationStatus: LocationStatus) {
       }
 
   AssistChip(
-      onClick = {},
+      onClick = { onClick() },
       label = { Text(text = chipText) },
       colors =
           AssistChipDefaults.assistChipColors(containerColor = chipColor, labelColor = Color.White),

@@ -4,11 +4,14 @@ package com.android.sample.model.map
 import android.Manifest
 import android.app.Application
 import android.content.pm.PackageManager
+import android.os.Looper
 import androidx.core.content.ContextCompat
+import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import kotlinx.coroutines.tasks.await
+
 
 /**
  * Android implementation of LocationRepository using Google Play Services' Fused Location Provider.
@@ -31,7 +34,7 @@ class LocationRepositoryAndroid(private val app: Application) : LocationReposito
    * @throws SecurityException if location permissions are not granted.
    * @throws Exception if location cannot be fetched.
    */
-  override suspend fun getUserLocation(): Location {
+  override suspend fun getUserLocation(askNewLocation: Boolean): Location {
     // Check for location permissions
     val fine = Manifest.permission.ACCESS_FINE_LOCATION
     val coarse = Manifest.permission.ACCESS_COARSE_LOCATION
@@ -47,15 +50,15 @@ class LocationRepositoryAndroid(private val app: Application) : LocationReposito
     // Try to get last known location first (faster and uses less battery)
     val lastLocation = fusedClient.lastLocation.await()
 
-    return if (lastLocation != null) {
+    return if (lastLocation != null && !askNewLocation) {
       Location(latitude = lastLocation.latitude, longitude = lastLocation.longitude)
     } else {
-      // If no cached location, get current location
       val cancellationTokenSource = CancellationTokenSource()
+
       val currentLocation =
           fusedClient
               .getCurrentLocation(
-                  Priority.PRIORITY_BALANCED_POWER_ACCURACY, cancellationTokenSource.token)
+                  Priority.PRIORITY_HIGH_ACCURACY, cancellationTokenSource.token)
               .await()
 
       currentLocation?.let { Location(latitude = it.latitude, longitude = it.longitude) }
@@ -75,13 +78,12 @@ class LocationRepositoryAndroid(private val app: Application) : LocationReposito
    * @throws SecurityException if location permissions are not granted.
    * @throws Exception if location cannot be fetched.
    */
-  override suspend fun isUserLocationInAreas(areas: List<Area>): Boolean {
-    val userLocation = getUserLocation()
-
-    // Check if user location is inside any of the provided areas
-    return areas.any { area ->
+  override suspend fun isUserLocationInAreas(areas: List<Area>, askNewLocation: Boolean): Boolean {
+    val userLocation = getUserLocation(askNewLocation)
+    val res = areas.any { area ->
       val userMarker = Marker(location = userLocation)
       area.contains(userMarker)
     }
+    return res
   }
 }

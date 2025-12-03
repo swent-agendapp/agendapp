@@ -15,6 +15,7 @@ import com.android.sample.model.map.MapRepository
 import com.android.sample.model.map.MapRepositoryProvider
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
+import kotlinx.coroutines.delay
 import java.time.Instant
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -197,7 +198,7 @@ class CalendarViewModel(
 
       try {
         val areas = mapRepository.getAllAreas(orgId = orgId)
-        val isInside = locationRepository.isUserLocationInAreas(areas)
+        val isInside = locationRepository.isUserLocationInAreas(areas, true)
         _uiState.value =
             _uiState.value.copy(
                 locationStatus =

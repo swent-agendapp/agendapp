@@ -21,6 +21,8 @@ import com.android.sample.R
 import com.android.sample.model.organization.invitation.Invitation
 import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.invitation.components.InvitationCardList
+import com.android.sample.ui.invitation.createInvitation.CreateInvitationBottomSheet
+import kotlinx.coroutines.launch
 
 const val DEFAULT_SWIPE_OFFSET = 0f
 
@@ -69,12 +71,11 @@ fun InvitationOverviewScreen(
       })
   if (showSheet) {
     ModalBottomSheet(sheetState = sheetState, onDismissRequest = { showSheet = false }) {
-      //            CreateInvitationBottomSheet(
-      //                onCancel = {
-      //                    scope.launch { sheetState.hide() }
-      //                    showSheet = false
-      //                }
-      //            )
+      CreateInvitationBottomSheet(
+          onCancel = {
+            scope.launch { sheetState.hide() }
+            showSheet = false
+          })
     }
   }
 }

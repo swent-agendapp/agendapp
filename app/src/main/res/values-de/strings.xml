@@ -243,4 +243,6 @@
     <!-- Category -->
     <string name="default_category_label">Ohne Kategorie</string>
 
+    <string name="settings_hour_recap_button">Stundenübersicht</string>
+
 </resources>

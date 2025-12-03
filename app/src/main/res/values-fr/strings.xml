@@ -243,4 +243,6 @@
     <!-- Category -->
     <string name="default_category_label">Sans catégorie</string>
 
+    <string name="settings_hour_recap_button">Récapitulatif des heures</string>
+
 </resources>

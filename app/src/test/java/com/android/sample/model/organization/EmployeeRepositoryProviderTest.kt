@@ -35,7 +35,11 @@ private class StubUserRepo : UserRepository {
     // No-op for stub
   }
 
-  override suspend fun addUserToOrganization(userId: String, orgId: String) {
+  override suspend fun addUserToOrganization(userId: String, organizationId: String) {
+    // No-op for stub
+  }
+
+  override suspend fun addAdminToOrganization(userId: String, organizationId: String) {
     // No-op for stub
   }
 }

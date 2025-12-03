@@ -97,4 +97,20 @@ class UsersRepositoryFirebase(
         .update("organizations", FieldValue.arrayUnion(organizationId))
         .await()
   }
+
+  override suspend fun addAdminToOrganization(userId: String, organizationId: String) {
+    // 1. Add user to organization admins subcollection
+    db.collection(FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH)
+        .document(organizationId)
+        .collection(FirestoreConstants.COLLECTION_ADMINS)
+        .document(userId)
+        .set(mapOf("exists" to true))
+        .await()
+
+    // 2. Add organization to user.organizations array
+    db.collection(FirestoreConstants.COLLECTION_USERS)
+        .document(userId)
+        .update("organizations", FieldValue.arrayUnion(organizationId))
+        .await()
+  }
 }

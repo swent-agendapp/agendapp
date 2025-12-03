@@ -42,7 +42,11 @@ class FakeEmployeeRepositoryContractTest {
       storage.removeAll { it.id == userId }
     }
 
-    override suspend fun addUserToOrganization(userId: String, orgId: String) {
+    override suspend fun addUserToOrganization(userId: String, organizationId: String) {
+      // No-op for fake
+    }
+
+    override suspend fun addAdminToOrganization(userId: String, organizationId: String) {
       // No-op for fake
     }
   }

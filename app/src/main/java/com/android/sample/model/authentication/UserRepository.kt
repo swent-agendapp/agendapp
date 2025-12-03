@@ -43,5 +43,13 @@ interface UserRepository {
    * @param userId The user ID to add
    * @param orgId The organization ID to which the user will be added
    */
-  suspend fun addUserToOrganization(userId: String, orgId: String)
+  suspend fun addUserToOrganization(userId: String, organizationId: String)
+
+  /**
+   * Add a user as an admin to an organization
+   *
+   * @param userId The user ID to add as admin
+   * @param organizationId The organization ID to which the admin will be added
+   */
+  suspend fun addAdminToOrganization(userId: String, organizationId: String)
 }

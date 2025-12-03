@@ -6,10 +6,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -18,6 +20,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,38 +31,53 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import com.android.sample.R
+import com.android.sample.model.category.EventCategory
+import com.android.sample.model.category.mockData.getMockEventCategory
 import com.android.sample.ui.theme.BorderWidthThick
 import com.android.sample.ui.theme.BorderWidthThin
 import com.android.sample.ui.theme.CornerRadiusLarge
-import com.android.sample.ui.theme.EventPalette
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.PaddingSmall
 import com.android.sample.ui.theme.SizeMedium
+import com.android.sample.ui.theme.SpacingMedium
+import com.android.sample.ui.theme.SpacingSmall
+import com.android.sample.ui.theme.WeightExtraHeavy
 import com.android.sample.ui.theme.heightMedium
 
 // Assisted by AI
 
 /**
- * A color selector displayed as a form field.
- * - The parent controls the selected color via [selectedColor] and [onColorSelected].
- * - When closed, it looks like an OutlinedTextField-like box showing a single color circle.
- * - When opened, it shows a dropdown menu with all available colors as circles in a vertical list.
+ * A category selector displayed as a form field.
+ * - The parent controls the selected category via [selectedCategory] and [onCategorySelected].
+ * - When closed, it looks like an OutlinedTextField-like box showing the selected category label
+ *   together with its color.
+ * - When opened, it shows a dropdown menu listing all [categories] with their label and color.
  *
- * This composable is intentionally built around [Color] only. Later, it can easily be adapted to
- * work with "tags" (label + color) instead of plain colors:
- * - Replace the [colors] list with a list of tag objects (e.g. EventTag(label, color)).
- * - Update the field content and the menu items to display both the circle and the label.
+ * The selector works with [EventCategory] objects:
+ * - The [EventCategory.color] is rendered as the colored circle.
+ * - The [EventCategory.label] is shown next to the circle, except for the default category where a
+ *   localized string (see `R.string.default_category_label`) is displayed instead.
+ *
+ * For now, [categories] are populated with mock data of our stakeholder.
  */
 @Composable
-fun ColorSelector(
+fun CategorySelector(
     modifier: Modifier = Modifier,
-    selectedColor: Color = EventPalette.Blue,
-    onColorSelected: (Color) -> Unit = {},
+    selectedCategory: EventCategory = EventCategory.defaultCategory(),
+    onCategorySelected: (EventCategory) -> Unit = {},
     testTag: String = "",
-    colors: List<Color> = EventPalette.defaultColors
+    categories: List<EventCategory> = getMockEventCategory()
 ) {
   // Local state only controls whether the dropdown menu is open or closed.
   var expanded by remember { mutableStateOf(false) }
+
+  val categoryLabel =
+      if (selectedCategory.isDefault) {
+        stringResource(R.string.default_category_label)
+      } else selectedCategory.label
 
   Box(modifier = modifier) {
     // This Box is styled to look like an OutlinedTextField-like form field.
@@ -79,16 +97,19 @@ fun ColorSelector(
                 .testTag(testTag),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween) {
-          // Center area shows the currently selected color.
-          // Later, when using tags, this can show both the color circle and the tag label.
-          Box(modifier = modifier.height(heightMedium), contentAlignment = Alignment.Center) {
-            ColorCircle(
-                color = selectedColor,
-                isSelected =
-                    false, // The field already shows the selection, no extra emphasis needed here.
-            )
-          }
-
+          Row(
+              modifier = Modifier.fillMaxWidth().height(heightMedium).weight(WeightExtraHeavy),
+              horizontalArrangement = Arrangement.Start,
+              verticalAlignment = Alignment.CenterVertically) {
+                ColorCircle(
+                    color = selectedCategory.color,
+                    isSelected =
+                        false, // The field already shows the selection, no extra emphasis needed
+                    // here.
+                )
+                Spacer(modifier = Modifier.width(SpacingMedium))
+                Text(text = categoryLabel)
+              }
           // Small arrow on the right to indicate it is a dropdown field.
           Icon(
               imageVector = Icons.Filled.ArrowDropDown,
@@ -100,28 +121,37 @@ fun ColorSelector(
         expanded = expanded,
         onDismissRequest = { expanded = false },
     ) {
-      colors.forEachIndexed { index, color ->
+      categories.forEachIndexed { index, category ->
         DropdownMenuItem(
             // The whole row is clickable and represents one color option.
             text = {
+              val isSelectedCategory = category == selectedCategory
+              val fontWeight =
+                  if (isSelectedCategory) {
+                    FontWeight.ExtraBold
+                  } else {
+                    FontWeight.Medium
+                  }
+              val categoryLabel =
+                  if (category.isDefault) {
+                    stringResource(R.string.default_category_label)
+                  } else category.label
               Row(
                   modifier = Modifier.fillMaxWidth(),
-                  horizontalArrangement = Arrangement.Center,
+                  horizontalArrangement = Arrangement.Start,
                   verticalAlignment = Alignment.CenterVertically) {
-                    // For the selected color, we draw a thicker border to highlight it.
+                    // For the selected category, we draw a thicker border to highlight it.
                     ColorCircle(
-                        color = color,
-                        isSelected = color == selectedColor,
+                        color = category.color,
+                        isSelected = isSelectedCategory,
                     )
-
-                    // When switching to tags later, a tag label Text can be placed next to the
-                    // circle:
-                    // Text(text = tag.label) for example.
+                    Spacer(modifier = Modifier.width(SpacingSmall))
+                    Text(text = categoryLabel, fontWeight = fontWeight)
                   }
             },
             onClick = {
               // Delegate the new color to the parent.
-              onColorSelected(color)
+              onCategorySelected(category)
               expanded = false
             },
             modifier =

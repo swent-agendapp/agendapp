@@ -228,7 +228,7 @@ fun InvitationCardPreview() {
       Invitation(
           id = "id",
           code = "123456",
-          organization = org,
+          organizationId = org.id,
           inviteeEmail = "alice@example.com",
           acceptedAt = Instant.now(),
           status = InvitationStatus.Used)

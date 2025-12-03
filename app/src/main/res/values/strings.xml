@@ -234,6 +234,8 @@
     <string name="work_duration_hours_minutes">%1$dh %2$dmin</string>
     <string name="location_status_inside">Present</string>
 
+    <string name="settings_hour_recap_button">Hour Recap</string>
+
 </resources>
 
 

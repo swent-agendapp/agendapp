@@ -216,6 +216,9 @@
     <string name="clear_all">Clear all</string>
     <string name="apply">Apply</string>
 
+    <!-- Category -->
+    <string name="default_category_label">Uncategorized</string>
+
 </resources>
 
 

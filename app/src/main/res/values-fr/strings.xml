@@ -216,4 +216,7 @@
     <string name="clear_all">Tout effacer</string>
     <string name="apply">Appliquer</string>
 
+    <!-- Category -->
+    <string name="default_category_label">Sans catégorie</string>
+
 </resources>

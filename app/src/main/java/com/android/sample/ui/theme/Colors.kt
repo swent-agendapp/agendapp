@@ -122,6 +122,7 @@ object EventPalette {
   val Blue = Palette.BlueJeans
   val Green = Palette.DarkSeaGreen
   val Brown = Palette.LightBrown
+  val NoCategory = Palette.Gray
 
   val defaultColors: List<Color> =
       listOf(

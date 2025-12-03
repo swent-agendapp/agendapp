@@ -1,4 +1,4 @@
-package com.android.sample.ui.hourrecap
+package com.android.sample.ui.hourRecap
 
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed

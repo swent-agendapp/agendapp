@@ -1,4 +1,4 @@
-package com.android.sample.ui.hourrecap
+package com.android.sample.ui.hourRecap
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.*

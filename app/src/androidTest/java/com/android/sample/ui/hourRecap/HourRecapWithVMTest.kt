@@ -1,4 +1,4 @@
-package com.android.sample.ui.hourrecap
+package com.android.sample.ui.hourRecap
 
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.junit4.createAndroidComposeRule

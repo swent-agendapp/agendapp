@@ -36,8 +36,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -70,10 +72,11 @@ fun InvitationCard(
     invitation: Invitation,
     modifier: Modifier = Modifier,
     onClickDelete: () -> Unit = {},
-    onCopy: (String) -> Unit = {}
 ) {
   val cardShape = RoundedCornerShape(CornerRadiusLarge)
   val scope = rememberCoroutineScope()
+
+  val clipboard = LocalClipboardManager.current
 
   val swipeOffset = remember { Animatable(DEFAULT_SWIPE_OFFSET) }
   var cardHeight by remember { mutableFloatStateOf(0f) }
@@ -150,11 +153,12 @@ fun InvitationCard(
                                 style = MaterialTheme.typography.titleLarge,
                                 letterSpacing = LetterSpacingLarge,
                                 fontSize = FontSizeExtraHuge)
-                            IconButton(onClick = { onCopy(invitation.code) }) {
-                              Icon(
-                                  imageVector = Icons.Default.ContentCopy,
-                                  contentDescription = null)
-                            }
+                            IconButton(
+                                onClick = { clipboard.setText(AnnotatedString(invitation.code)) }) {
+                                  Icon(
+                                      imageVector = Icons.Default.ContentCopy,
+                                      contentDescription = null)
+                                }
                           }
 
                           Column {

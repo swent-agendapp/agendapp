@@ -88,9 +88,7 @@ class CreateInvitationViewModel(
 
   /** Returns true if the current state allows creating invitations. */
   fun canCreateInvitations() =
-      _uiState.value.errorMsg == null &&
-          _uiState.value.count >= MIN_INVITATION_COUNT &&
-          _uiState.value.count <= MAX_INVITATION_COUNT
+      _uiState.value.count >= MIN_INVITATION_COUNT && _uiState.value.count <= MAX_INVITATION_COUNT
 
   /** Increments the invitation count by 1, if not greater than [MAX_INVITATION_COUNT] */
   fun increment() {

@@ -148,14 +148,6 @@ class CreateInvitationViewModelTest {
     vm.addInvitations()
   }
 
-  @Test
-  fun `canCreateInvitations returns false when errorMsg is not null`() {
-    val vm = makeVm(hasAuthenticatedUser = false)
-    vm.setCount(-5) // Invalid count to set error message
-    assertFalse(vm.canCreateInvitations())
-    assertEquals(INVALID_INVITATION_COUNT_ERROR_MSG, vm.uiState.value.errorMsg)
-  }
-
   private fun makeVm(
       isAdminVm: Boolean = false,
       hasAuthenticatedUser: Boolean = true,

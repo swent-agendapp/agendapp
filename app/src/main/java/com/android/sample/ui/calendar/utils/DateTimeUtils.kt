@@ -17,6 +17,10 @@ object DateTimeUtils {
     return instant.atZone(zoneId).toLocalTime().format(timeFormatter)
   }
 
+  fun formatInstantToDateAndTime(instant: Instant): String {
+    return formatInstantToDate(instant) + " " + formatInstantToTime(instant)
+  }
+
   fun parseDateTimeToInstant(date: String, time: String): Instant {
     val localDate = LocalDate.parse(date, dateFormatter)
     val localTime = LocalTime.parse(time, timeFormatter)

@@ -6,19 +6,25 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import com.android.sample.model.organization.repository.SelectedOrganizationRepository
+import com.android.sample.utils.FirebaseEmulatedTest
 import java.time.Instant
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class ReplacementOrganizeFlowTest {
+class ReplacementOrganizeFlowTest : FirebaseEmulatedTest() {
 
   @get:Rule val composeTestRule = createComposeRule()
+
+  val selectedOrganizationId = "orgTest"
 
   private lateinit var fakeViewModel: ReplacementOrganizeViewModel
 
   @Before
-  fun setUp() {
+  override fun setUp() {
+    super.setUp()
+    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
     fakeViewModel = ReplacementOrganizeViewModel()
     composeTestRule.setContent {
       ReplacementOrganizeScreen(

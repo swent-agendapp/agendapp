@@ -66,6 +66,14 @@ import java.time.Instant
 import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
 
+// Assisted by AI
+
+/**
+ * Contains test tag constants for UI testing of [InvitationCard].
+ *
+ * Each tag corresponds to a UI element that may need to be asserted or interacted with in automated
+ * Compose tests.
+ */
 object InvitationCardTestTags {
   const val CODE_FIELD = "codeField"
   const val ACCEPTED_AT_FIELD = "acceptedAtField"
@@ -76,6 +84,38 @@ object InvitationCardTestTags {
   const val DELETE_INVITATION_BUTTON = "deleteInvitationButton"
 }
 
+/**
+ * A composable card representing a single invitation inside the invitation overview list.
+ *
+ * This component displays:
+ * - The invitation code (always visible)
+ * - A button to copy the invitation code to the clipboard
+ * - "Accepted by" (visible only when the invitation has been accepted)
+ * - "Accepted on" (visible only when the invitation has been accepted)
+ * - The invitation status
+ * - A swipe-to-reveal delete action behind the card
+ *
+ * ## Swipe behavior
+ *
+ * The card can be dragged horizontally to the left:
+ * - If the drag does **not** exceed half the card's height, it snaps back to its initial position.
+ * - If the drag exceeds the threshold, it animates fully to the left, revealing a delete button.
+ * - The delete button remains available until swiped back.
+ *
+ * ## Accessibility & Testing
+ *
+ * All critical elements receive semantic test tags via [InvitationCardTestTags].
+ *
+ * ## clipboard
+ *
+ * The invitation code can be copied using the system clipboard via [LocalClipboardManager].
+ *
+ * ## Parameters
+ *
+ * @param invitation The invitation data used to populate UI fields.
+ * @param modifier Modifier applied to the root composable.
+ * @param onClickDelete Callback invoked when the delete button is pressed.
+ */
 @Composable
 fun InvitationCard(
     invitation: Invitation,

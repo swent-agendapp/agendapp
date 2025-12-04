@@ -24,8 +24,16 @@ import com.android.sample.ui.invitation.components.InvitationCardList
 import com.android.sample.ui.invitation.createInvitation.CreateInvitationBottomSheet
 import kotlinx.coroutines.launch
 
+// Assisted by AI
+
 const val DEFAULT_SWIPE_OFFSET = 0f
 
+/**
+ * Contains the test tags used across the invitation overview screen.
+ *
+ * These tags allow UI tests to reliably locate and interact with top-level layout elements, the
+ * invitation list, the FAB that opens the creation sheet, and the bottom sheet itself.
+ */
 object InvitationOverviewScreenTestTags {
   const val ROOT = "invitationOverviewScreenRoot"
   const val TITLE = "title"
@@ -34,6 +42,19 @@ object InvitationOverviewScreenTestTags {
   const val CREATE_INVITATION_BOTTOM_SHEET = "createInvitationBottomSheet"
 }
 
+/**
+ * Displays the overview screen for invitation codes of a given organization.
+ *
+ * This screen shows:
+ * - A top bar with a title and a back button.
+ * - A list of existing invitation codes (currently provided as an empty list).
+ * - A floating action button that opens a modal bottom sheet to create new invitations.
+ *
+ * The creation UI is presented using a [ModalBottomSheet].
+ *
+ * @param organizationId The ID of the organization whose invitation codes are being managed.
+ * @param onBack Callback invoked when the user presses the back button in the top bar.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InvitationOverviewScreen(

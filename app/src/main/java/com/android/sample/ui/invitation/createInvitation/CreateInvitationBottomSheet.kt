@@ -27,7 +27,12 @@ import com.android.sample.ui.theme.SpacingSmall
 
 private val TEXT_FIELD_WIDTH = 100.dp
 
-/** Contains the test tags used across the invitation creation screen UI. */
+/**
+ * Contains UI test tags used throughout the Create Invitation bottom sheet.
+ *
+ * These tags are applied to interactive components such as buttons and text fields to allow UI
+ * tests to reliably identify and interact with them.
+ */
 object InvitationCreationTestTags {
   const val COUNT_TEXT_FIELD = "count_text_field"
   const val PLUS_BUTTON = "plus_button"
@@ -36,6 +41,19 @@ object InvitationCreationTestTags {
   const val CREATE_INVITATION_BUTTON = "create_invitation_button"
 }
 
+/**
+ * A bottom-sheet UI component that allows the user to configure and create multiple invitation
+ * codes.
+ *
+ * This composable displays:
+ * - A counter for selecting how many invitations to create.
+ * - Optional error messages provided by the [CreateInvitationViewModel].
+ * - Navigation buttons to cancel or confirm creation.
+ *
+ * @param createInvitationViewModel The ViewModel providing state and creation logic. Defaults to
+ *   the current `viewModel()` scoped to the composition.
+ * @param onCancel Callback invoked when the user presses the cancel button.
+ */
 @Composable
 fun CreateInvitationBottomSheet(
     createInvitationViewModel: CreateInvitationViewModel = viewModel(),

@@ -19,6 +19,13 @@ import com.android.sample.model.organization.invitation.Invitation
 import com.android.sample.ui.theme.PaddingSmall
 import com.android.sample.ui.theme.SpacingSmall
 
+/**
+ * Contains test tags for UI testing of [InvitationCardList].
+ *
+ * These tags allow automated Compose tests to detect:
+ * - The empty-list message
+ * - Individual invitation cards, identified by their invitation ID
+ */
 object InvitationCardListTestTags {
   const val EMPTY_INVITATION_LIST_MSG = "emptyInvitationListMessage"
 
@@ -26,6 +33,27 @@ object InvitationCardListTestTags {
       "invitationCard_${invitation.id}"
 }
 
+/**
+ * Displays a scrollable list of [InvitationCard] items or an empty-state message if no invitations
+ * are available.
+ *
+ * This composable supports two main UI states:
+ *
+ * ### 1. **Empty List**
+ * If [invitations] is empty:
+ * - A centered message is displayed.
+ * - The message text uses `R.string.no_invitation_code_available`.
+ *
+ * ### 2. **Non-Empty List**
+ * When invitations are provided:
+ * - A vertically spaced [LazyColumn] renders an [InvitationCard] for each item.
+ * - The `onClickDelete` callback is passed through to each card and receives the corresponding
+ *   [Invitation] when triggered.
+ *
+ * @param invitations A list of invitations to display. If empty, an empty-state message is shown.
+ * @param modifier Optional layout modifier applied to the root container.
+ * @param onClickDelete Callback invoked when the delete action is triggered for an invitation.
+ */
 @Composable
 fun InvitationCardList(
     invitations: List<Invitation>,

@@ -161,7 +161,7 @@ class CalendarViewModelTest {
             participants = setOf("user1", "user2"),
             presence = mapOf("user1" to true, "user2" to false))[0]
 
-    repository.insertEvent(orgId, pastEvent)
+    repositoryEvent.insertEvent(orgId, pastEvent)
 
     viewModel.calculateWorkedHours(pastStart.minusSeconds(1), pastEnd.plusSeconds(1))
     testDispatcher.scheduler.advanceUntilIdle()
@@ -192,7 +192,7 @@ class CalendarViewModelTest {
             presence = emptyMap() // Presence shouldn't matter for future events
             )[0]
 
-    repository.insertEvent(orgId, futureEvent)
+    repositoryEvent.insertEvent(orgId, futureEvent)
 
     viewModel.calculateWorkedHours(futureStart.minusSeconds(1), futureEnd.plusSeconds(1))
     testDispatcher.scheduler.advanceUntilIdle()
@@ -230,8 +230,8 @@ class CalendarViewModelTest {
             participants = setOf("user1"),
             presence = mapOf("user1" to true))[0]
 
-    repository.insertEvent(orgId, event1)
-    repository.insertEvent(orgId, event2)
+    repositoryEvent.insertEvent(orgId, event1)
+    repositoryEvent.insertEvent(orgId, event2)
 
     viewModel.calculateWorkedHours(start, end)
     testDispatcher.scheduler.advanceUntilIdle()

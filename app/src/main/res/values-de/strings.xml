@@ -150,6 +150,10 @@
     <string name="replacement_requests_sent_success">
     Die Anfragen wurden erfolgreich gesendet
 </string>
+    <string name="replacement_no_incoming_requests">
+    Sie haben derzeit keine Vertretungsanfragen.
+</string>
+
     <string name="replacement_requests_title">Vertretungsanfragen</string>
     <string name="replacement_substituted_label">Abwesende Person: %1$s</string>
     <string name="replacement_substitute_label">Vertretende Person: %1$s</string>

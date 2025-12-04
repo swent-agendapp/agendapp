@@ -166,12 +166,80 @@ class ReplacementEmployeeViewModel(
   //  List actions: accept / refuse
   // ---------------------------------------------------------------------------
 
-  /** Mark a replacement as **Accepted**. */
-  fun acceptRequest(id: String) {
-    updateRequestStatus(id, ReplacementStatus.Accepted)
-  }
+    /** Mark a replacement as Accepted, update the event with the new teacher, and close other requests. */
+    fun acceptRequest(id: String) {
+        viewModelScope.launch {
+            try {
+                val orgId = getSelectedOrganizationId()
 
-  /** Mark a replacement as **Declined**. */
+                val replacement =
+                    replacementRepository.getReplacementById(
+                        orgId = orgId,
+                        itemId = id,
+                    )
+                        ?: return@launch
+
+                val event = replacement.event
+
+                val updatedParticipants =
+                    event.participants
+                        .minus(replacement.absentUserId)
+                        .plus(currentUserId)
+
+                val updatedEvent =
+                    event.copy(
+                        participants = updatedParticipants,
+                        version = System.currentTimeMillis(),
+                    )
+
+                eventRepository.updateEvent(
+                    orgId = orgId,
+                    itemId = event.id,
+                    item = updatedEvent,
+                )
+
+                val accepted =
+                    replacement.copy(
+                        substituteUserId = currentUserId,
+                        status = ReplacementStatus.Accepted,
+                    )
+
+                replacementRepository.updateReplacement(
+                    orgId = orgId,
+                    itemId = accepted.id,
+                    item = accepted,
+                )
+
+                val allReplacements = replacementRepository.getAllReplacements(orgId)
+                val othersForSameEvent =
+                    allReplacements.filter {
+                        it.event.id == event.id &&
+                                it.id != id &&
+                                it.status == ReplacementStatus.WaitingForAnswer
+                    }
+
+                othersForSameEvent.forEach { other ->
+                    val declined = other.copy(status = ReplacementStatus.Declined)
+                    replacementRepository.updateReplacement(
+                        orgId = orgId,
+                        itemId = other.id,
+                        item = declined,
+                    )
+                }
+
+                refreshIncomingRequests()
+            } catch (e: Exception) {
+                Log.e("ReplacementEmployeeVM", "Error accepting replacement", e)
+                _uiState.value =
+                    _uiState.value.copy(
+                        errorMessage = "Could not accept replacement: ${e.message}")
+            }
+        }
+    }
+
+
+
+    /** Mark a replacement as **Declined**. */
   fun refuseRequest(id: String) {
     updateRequestStatus(id, ReplacementStatus.Declined)
   }

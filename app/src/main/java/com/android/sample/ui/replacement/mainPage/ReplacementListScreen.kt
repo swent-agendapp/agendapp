@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
@@ -178,32 +179,47 @@ fun ReplacementEmployeeListScreen(
           )
         }
       }) { inner ->
-        LazyColumn(
-            modifier =
-                Modifier.fillMaxSize()
-                    .padding(inner)
-                    .padding(horizontal = PaddingSmall, vertical = PaddingMedium)
-                    .testTag(ReplacementEmployeeListTestTags.ROOT),
-            contentPadding =
-                PaddingValues(
-                    top = PaddingMedium,
-                    bottom = PaddingExtraLarge,
-                ),
-            verticalArrangement = Arrangement.spacedBy(PaddingSmall)) {
-              items(visibleRequests, key = { it.id }) { req ->
-                ReplacementRequestCard(
-                    data = req,
-                    onAccept = { callbacks.onAccept(req.id) },
-                    onRefuse = { callbacks.onRefuse(req.id) },
-                    testTag = ReplacementEmployeeListTestTags.card(req.id),
-                    acceptTag = ReplacementEmployeeListTestTags.accept(req.id),
-                    refuseTag = ReplacementEmployeeListTestTags.refuse(req.id),
-                )
-              }
+      LazyColumn(
+          modifier =
+              Modifier.fillMaxSize()
+                  .padding(inner)
+                  .padding(horizontal = PaddingSmall, vertical = PaddingMedium)
+                  .testTag(ReplacementEmployeeListTestTags.ROOT),
+          contentPadding =
+              PaddingValues(
+                  top = PaddingMedium,
+                  bottom = PaddingExtraLarge,
+              ),
+          verticalArrangement = Arrangement.spacedBy(PaddingSmall)
+      ) {
 
-              item { Spacer(Modifier.height(SpacingMedium)) }
-            }
+          if (requests.isEmpty()) {
+              item {
+                  Text(
+                      text =
+                          stringResource(
+                              R.string.replacement_no_incoming_requests),
+                      style = MaterialTheme.typography.bodyMedium,
+                      textAlign = TextAlign.Center,
+                  )
+                  Spacer(Modifier.height(SpacingMedium))
+              }
+          } else {
+              items(requests, key = { it.id }) { req ->
+                  ReplacementRequestCard(
+                      data = req,
+                      onAccept = { callbacks.onAccept(req.id) },
+                      onRefuse = { callbacks.onRefuse(req.id) },
+                      testTag = ReplacementEmployeeListTestTags.card(req.id),
+                      acceptTag = ReplacementEmployeeListTestTags.accept(req.id),
+                      refuseTag = ReplacementEmployeeListTestTags.refuse(req.id),
+                  )
+              }
+          }
+
+          item { Spacer(Modifier.height(SpacingMedium)) }
       }
+  }
 }
 
 @Composable

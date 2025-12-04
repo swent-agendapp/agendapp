@@ -109,6 +109,9 @@
     <string name="replacement_request_sent_success">
     Your replacement request has been sent.
 </string>
+    <string name="replacement_no_incoming_requests">
+    You have no replacement requests at the moment
+</string>
     <string name="replacement_pending_empty_message">
     You have no replacement requests at the moment
 </string>

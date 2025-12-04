@@ -84,7 +84,25 @@ object Palette {
 
 // General Color Scheme
 object GeneralPalette {
+  // Surfaces
+  val Surface = Color(0xFFFFFBFE)
+  val SurfaceVariant = Color(0xFFE7E0EC)
+
+  // Utility
+  val Transparent = Color(0x00000000)
+
+  // Card / containers
+  val CardContainer = Color(0xFFE6E4E9)
+
+  // Text / content
   val Font = Black
+  val OnSurface = Color(0xFF1C1B1F)
+  val OnSurfaceVariant = Color(0xFF49454F)
+
+  // Outline
+  val Outline = Color(0xFF79747E)
+
+  // App Colors
   val Primary = CircusPalette.Primary
   val Secondary = CircusPalette.Secondary
   val Tertiary = CircusPalette.Tertiary
@@ -92,6 +110,25 @@ object GeneralPalette {
 
 // General Color Scheme for Dark Mode
 object GeneralPaletteDark {
+  // Surfaces
+  val Surface = Color(0xFF1C1B1F)
+  val SurfaceVariant = Color(0xFF49454F)
+
+  // Utility
+  val Transparent = Color(0x00000000)
+
+  // Card / containers
+  val CardContainer = Color(0xFF1C1B1F)
+
+  // Text / content
+  val Font = Black
+  val OnSurface = Color(0xFFE6E1E5)
+  val OnSurfaceVariant = Color(0xFFCAC4D0)
+
+  // Outline
+  val Outline = Color(0xFF938F99)
+
+  // App Colors
   val Primary = Palette.CadmiumBlue
   val Secondary = Palette.RichLilac
   val Tertiary = Palette.DarkSeaGreen

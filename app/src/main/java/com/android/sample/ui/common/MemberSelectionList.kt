@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -74,6 +75,12 @@ fun MemberSelectionList(
 
   Card(
       modifier = modifier.fillMaxWidth(),
+      colors =
+          CardColors(
+              containerColor = GeneralPalette.CardContainer,
+              contentColor = GeneralPalette.OnSurface,
+              disabledContainerColor = GeneralPalette.CardContainer,
+              disabledContentColor = GeneralPalette.OnSurface),
       elevation = CardDefaults.cardElevation(defaultElevation = DefaultCardElevation),
       shape = RoundedCornerShape(CornerRadiusLarge)) {
         Column(modifier = modifier.fillMaxSize()) {
@@ -205,7 +212,7 @@ private fun MemberSelectionSummary(
           modifier
               .fillMaxWidth()
               .background(
-                  color = CardDefaults.cardColors().containerColor,
+                  color = GeneralPalette.CardContainer,
                   shape = RoundedCornerShape(CornerRadiusLarge))
               .padding(horizontal = PaddingMedium, vertical = PaddingMedium)
               .onSizeChanged { boxWidth = it.width }) {
@@ -230,8 +237,7 @@ private fun MemberSelectionSummary(
                             Brush.horizontalGradient(
                                 colors =
                                     listOf(
-                                        Color.Transparent,
-                                        CardDefaults.cardColors().containerColor),
+                                        GeneralPalette.Transparent, GeneralPalette.CardContainer),
                                 startX = boxWidth * WeightFadeEffect)))
       }
 }

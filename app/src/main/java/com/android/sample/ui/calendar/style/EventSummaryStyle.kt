@@ -1,8 +1,5 @@
 package com.android.sample.ui.calendar.style
 
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import com.android.sample.ui.calendar.components.ToggleLabels
 import com.android.sample.ui.theme.*
@@ -20,21 +17,6 @@ data class EventSummaryCardStyle(
     val descHasToggleSpacer: Dp = SpacingSmall,
     val participantsRowHeight: Dp = RowHeightMedium,
     val participantsVisibleRows: Int = 5,
-    val participantsBorderColor: @Composable () -> Color = {
-      MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = AlphaLow)
-    },
-    val participantsHeaderColor: @Composable () -> Color = {
-      MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaHigh)
-    },
-    val participantsRowColorEvenLine: @Composable () -> Color = {
-      MaterialTheme.colorScheme.surface
-    },
-    val participantsRowColorOddLine: @Composable () -> Color = {
-      MaterialTheme.colorScheme.surfaceVariant
-    },
-    val participantsNameTextColor: @Composable () -> Color = {
-      MaterialTheme.colorScheme.onSurface
-    },
 )
 
 /** Labels and collapsed line limits. */

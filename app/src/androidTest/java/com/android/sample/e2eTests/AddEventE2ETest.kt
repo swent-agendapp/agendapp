@@ -191,7 +191,7 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
 
   private fun ComposeTestRule.isTagDisplayed(tag: String): Boolean =
       try {
-        onNodeWithTag(tag).assertExists()
+        onNodeWithTag(tag).assertIsDisplayed()
         true
       } catch (_: AssertionError) {
         false
@@ -204,7 +204,6 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
       maxUpScrolls: Int = 60
   ) {
     if (isTagDisplayed(eventTag)) return
-
     val calendarNode = onNodeWithTag(calendarTag)
 
     repeat(maxDownScrolls) {

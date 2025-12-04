@@ -1,8 +1,12 @@
 package com.android.sample.ui.common
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.android.sample.ui.theme.PaddingExtraSmall
 import com.android.sample.ui.theme.TopBarPalette
 
 /**
@@ -10,20 +14,30 @@ import com.android.sample.ui.theme.TopBarPalette
  *
  * @param modifier The modifier to be applied to the top bar.
  * @param title The text to display in the top bar.
+ * @param actions Optional composable actions to display in the top bar (e.g., icons, chips).
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainPageTopBar(
     modifier: Modifier = Modifier,
     title: String = "Untitled",
-    actions: @Composable (() -> Unit)? = null,
+    actions: @Composable () -> Unit = {},
+    pastille: @Composable () -> Unit = {},
 ) {
   TopAppBar(
-      title = { Text(text = title, modifier = modifier) },
+      title = {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(PaddingExtraSmall),
+        ) {
+          pastille()
+          Text(text = title, modifier = modifier)
+        }
+      },
       colors =
           TopAppBarDefaults.topAppBarColors(
               containerColor = TopBarPalette.Background,
               titleContentColor = TopBarPalette.Font,
           ),
-      actions = { actions?.invoke() })
+      actions = { actions() })
 }

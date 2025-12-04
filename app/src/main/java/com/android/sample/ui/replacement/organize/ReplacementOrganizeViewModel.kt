@@ -57,8 +57,7 @@ data class ReplacementOrganizeUIState(
 enum class ReplacementOrganizeStep {
   SelectSubstitute,
   SelectEvents,
-  SelectDateRange,
-  SelectProcessMoment
+  SelectDateRange
 }
 
 /**

@@ -1,17 +1,22 @@
 package com.android.sample.ui.replacement
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,6 +27,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
@@ -32,6 +38,7 @@ import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementStatus
 import com.android.sample.model.replacement.mockData.getMockReplacements
 import com.android.sample.ui.calendar.utils.DateTimeUtils.DATE_FORMAT_PATTERN
+import com.android.sample.ui.theme.BarWidthSmall
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.SmallCardElevation
@@ -114,28 +121,63 @@ private fun ReplacementUpcomingCard(replacement: Replacement) {
           Modifier.fillMaxWidth().testTag(ReplacementUpcomingTestTags.itemTag(replacement.id)),
       shape = RoundedCornerShape(CornerRadiusLarge),
       elevation = CardDefaults.cardElevation(defaultElevation = SmallCardElevation)) {
-        Column(modifier = Modifier.fillMaxWidth().padding(PaddingMedium)) {
-          Text(
-              text = replacement.event.title,
-              style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
-              maxLines = 1,
-              overflow = TextOverflow.Ellipsis)
-          Spacer(modifier = Modifier.height(SpacingSmall))
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(PaddingMedium),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+          Box(
+              modifier =
+                  Modifier.fillMaxHeight().width(BarWidthSmall).background(replacement.event.color),
+          )
 
-          Text(text = "$dateText • $timeText", style = MaterialTheme.typography.bodyMedium)
-          Spacer(modifier = Modifier.height(SpacingSmall))
+          Spacer(modifier = Modifier.width(SpacingMedium))
 
-          Text(
-              text =
-                  androidx.compose.ui.res.stringResource(
-                      id = R.string.replacement_substituted_label, replacement.absentUserId),
-              style = MaterialTheme.typography.bodySmall)
+          Column(
+              modifier = Modifier.fillMaxWidth(),
+              verticalArrangement = Arrangement.spacedBy(SpacingSmall),
+          ) {
+            Text(
+                text = replacement.event.title,
+                style =
+                    MaterialTheme.typography.bodyLarge.copy(
+                        fontWeight = FontWeight.SemiBold,
+                    ),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
 
-          Text(
-              text =
-                  androidx.compose.ui.res.stringResource(
-                      id = R.string.replacement_substitute_label, replacement.substituteUserId),
-              style = MaterialTheme.typography.bodySmall)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+              Icon(
+                  imageVector = Icons.Filled.AccessTime,
+                  contentDescription = null,
+                  modifier = Modifier.padding(end = SpacingSmall),
+              )
+              Text(
+                  text = "$dateText • $timeText",
+                  style = MaterialTheme.typography.bodyMedium,
+              )
+            }
+
+            Text(
+                text =
+                    androidx.compose.ui.res.stringResource(
+                        id = R.string.replacement_substituted_label,
+                        replacement.absentUserId,
+                    ),
+                style = MaterialTheme.typography.bodySmall,
+            )
+
+            Text(
+                text =
+                    androidx.compose.ui.res.stringResource(
+                        id = R.string.replacement_substitute_label,
+                        replacement.substituteUserId,
+                    ),
+                style = MaterialTheme.typography.bodySmall,
+            )
+          }
         }
       }
 }

@@ -1,21 +1,22 @@
 package com.android.sample.ui.map
 
-import android.Manifest
 import android.app.Application
-import android.content.pm.PackageManager
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.android.sample.BuildConfig
 import com.android.sample.model.map.Area
+import com.android.sample.model.map.Location
+import com.android.sample.model.map.LocationRepository
+import com.android.sample.model.map.LocationRepositoryAndroid
 import com.android.sample.model.map.MapRepository
 import com.android.sample.model.map.MapRepositoryProvider
 import com.android.sample.model.map.Marker
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.libraries.places.api.Places
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -57,8 +58,9 @@ data class MapUiState(
 
 class MapViewModel(
     app: Application,
-    private val mapRepository: MapRepository = MapRepositoryProvider.repository
-) : AndroidViewModel(app) {
+    private val mapRepository: MapRepository = MapRepositoryProvider.repository,
+    private val locationRepository: LocationRepository = LocationRepositoryAndroid(app)
+) : ViewModel() {
 
   /** Provider for android GPS */
   private val fusedClient = LocationServices.getFusedLocationProviderClient(app)
@@ -80,6 +82,7 @@ class MapViewModel(
     val apiKey = BuildConfig.MAPS_API_KEY
     Places.initializeWithNewPlacesApiEnabled(app, apiKey)
     fetchAllArea()
+    fetchUserLocation()
   }
 
   /**
@@ -183,64 +186,41 @@ class MapViewModel(
   }
 
   /**
-   * Verify that the user has given the right to get his location
+   * Fetches the user's current location using the LocationRepository.
    *
-   * then fetch the User Location, if another app has already fetch it, it get this cached value
-   * with lastLocation
-   *
-   * if there is no cached location, it ask the GPS to compute a new one with getCurrentLocation
-   *
-   * if the provider make an error, it update the State to an error State
+   * This method attempts to get the user's location. If successful, it updates the UI state with
+   * the new location. If it fails (due to missing permissions or other errors), it updates the
+   * state with an appropriate error message.
    */
   fun fetchUserLocation() {
-    val app = getApplication<Application>()
-    val fine = Manifest.permission.ACCESS_FINE_LOCATION
-    val coarse = Manifest.permission.ACCESS_COARSE_LOCATION
-    val cancellationTokenSource = CancellationTokenSource()
-
-    val hasLocationPermission =
-        ContextCompat.checkSelfPermission(app, fine) == PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(app, coarse) == PackageManager.PERMISSION_GRANTED
-
-    if (!hasLocationPermission) {
-      _state.value =
-          _state.value.copy(
-              errorMessage =
-                  "Location permission required\nTo show your position on the map, we need access to your location. Please enable it in your device settings.",
-              hasPermission = false)
-      return
+    viewModelScope.launch {
+      try {
+        val location = locationRepository.getUserLocation()
+        _state.value =
+            _state.value.copy(
+                currentLocation = LatLng(location.latitude, location.longitude),
+                hasPermission = true)
+      } catch (e: SecurityException) {
+        _state.value =
+            _state.value.copy(
+                errorMessage =
+                    "Location permission required\nTo show your position on the map, we need access to your location. Please enable it in your device settings.",
+                hasPermission = false)
+      } catch (e: Exception) {
+        _state.value =
+            _state.value.copy(
+                errorMessage = e.message ?: "Error: Cannot fetch your location",
+                hasPermission = true)
+      }
     }
+  }
 
-    fusedClient.lastLocation
-        .addOnSuccessListener { lastLocation ->
-          if (lastLocation == null) {
-            fusedClient
-                .getCurrentLocation(
-                    Priority.PRIORITY_BALANCED_POWER_ACCURACY, cancellationTokenSource.token)
-                .addOnSuccessListener { location ->
-                  if (location == null) {
-                    _state.value =
-                        _state.value.copy(
-                            errorMessage = "Error: Cannot fetch you location", hasPermission = true)
-                  } else {
-                    _state.value =
-                        _state.value.copy(
-                            currentLocation = LatLng(location.latitude, location.longitude),
-                            hasPermission = true)
-                  }
-                }
-                .addOnFailureListener { e ->
-                  _state.value = _state.value.copy(errorMessage = e.message, hasPermission = true)
-                }
-          } else {
-            _state.value =
-                _state.value.copy(
-                    currentLocation = LatLng(lastLocation.latitude, lastLocation.longitude),
-                    hasPermission = true)
-          }
-        }
-        .addOnFailureListener { e ->
-          _state.value = _state.value.copy(errorMessage = e.message, hasPermission = true)
-        }
+  companion object {
+    val Factory: ViewModelProvider.Factory = viewModelFactory {
+      initializer {
+        val app = this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application
+        MapViewModel(app = app)
+      }
+    }
   }
 }

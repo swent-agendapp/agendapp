@@ -358,4 +358,48 @@ class ReplacementEmployeeViewModel(
       }
     }
   }
+
+  fun sendRequestsForPendingReplacement(
+      replacementId: String,
+      selectedSubstitutes: List<String>,
+      onFinished: () -> Unit,
+  ) {
+    viewModelScope.launch {
+      try {
+        val orgId = getSelectedOrganizationId()
+
+        val original =
+            replacementRepository.getReplacementById(
+                orgId = orgId,
+                itemId = replacementId,
+            )
+
+        if (original == null) {
+          Log.e("ReplacementEmployeeVM", "Original replacement not found for id=$replacementId")
+          return@launch
+        }
+
+        selectedSubstitutes.forEach { substituteId ->
+          val request =
+              Replacement(
+                  absentUserId = original.absentUserId,
+                  substituteUserId = substituteId,
+                  event = original.event,
+                  status = ReplacementStatus.WaitingForAnswer,
+              )
+
+          replacementRepository.insertReplacement(
+              orgId = orgId,
+              item = request,
+          )
+        }
+
+        onFinished()
+      } catch (e: Exception) {
+        Log.e("ReplacementEmployeeVM", "Error sending requests", e)
+        _uiState.value =
+            _uiState.value.copy(errorMessage = "Could not send replacement requests: ${e.message}")
+      }
+    }
+  }
 }

@@ -1,5 +1,6 @@
 package com.android.sample.ui.calendar
 
+import android.Manifest
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertHasNoClickAction
 import androidx.compose.ui.test.assertIsDisplayed
@@ -9,11 +10,17 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeLeft
 import androidx.compose.ui.test.swipeRight
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.rule.GrantPermissionRule
+import com.android.sample.model.calendar.EventRepositoryLocal
+import com.android.sample.model.map.MapRepositoryLocal
+import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.components.ViewMode
 import java.time.DayOfWeek
 import java.time.LocalDate
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.RuleChain
 
 // Assisted by AI
 
@@ -32,8 +39,15 @@ import org.junit.Test
  * - Espresso is used to interact with the platform DatePicker dialog.
  */
 class CalendarContainerTest {
+  val selectedOrganizationId = "orgTest"
 
-  @get:Rule val composeRule = createComposeRule()
+  private val permissionRule: GrantPermissionRule =
+      GrantPermissionRule.grant(
+          Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+
+  private val composeRule = createComposeRule()
+
+  @get:Rule val ruleChain: RuleChain = RuleChain.outerRule(permissionRule).around(composeRule)
 
   // ---------------------------------------------------------------------------
   // Helpers
@@ -41,7 +55,17 @@ class CalendarContainerTest {
 
   /** Sets the content with a default [CalendarContainer]. */
   private fun setCalendarContent() {
-    composeRule.setContent { CalendarContainer() }
+    val eventRepo = EventRepositoryLocal()
+    val mapRepo = MapRepositoryLocal()
+    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
+
+    val viewModel =
+        CalendarViewModel(
+            app = ApplicationProvider.getApplicationContext(),
+            eventRepository = eventRepo,
+            mapRepository = mapRepo)
+
+    composeRule.setContent { CalendarContainer(calendarViewModel = viewModel) }
   }
 
   /**

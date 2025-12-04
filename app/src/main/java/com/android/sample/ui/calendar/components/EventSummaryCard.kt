@@ -20,6 +20,7 @@ import java.util.Locale
 object EventSummaryCardTags {
   const val TITLE_TEXT = "EventCard_Title"
   const val TOGGLE_TITLE = "EventCard_ToggleTitle"
+  const val CATEGORY = "EventCard_Category"
   const val DATE_LINE1 = "EventCard_DateLine1"
   const val DATE_LINE2 = "EventCard_DateLine2"
   const val MULTI_FROM_LABEL = "EventCard_Multi_FromLabel"
@@ -87,6 +88,8 @@ fun EventSummaryCard(
       onTitleToggle = { isTitleExpanded = !isTitleExpanded },
       onTitleOverflowChange = { didTitleOverflow = it },
       showTitleToggle = didTitleOverflow || isTitleExpanded,
+      // Category
+      category = event.category,
       // Dates
       datePresentation = dateModel,
       // Recurrence

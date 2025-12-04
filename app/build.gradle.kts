@@ -155,6 +155,7 @@ dependencies {
     implementation(libs.googleid)
     implementation(libs.play.services.location)
     implementation(libs.places)
+    implementation(libs.androidx.compose.animation)
     androidTestImplementation(libs.core.ktx)
     testImplementation(libs.junit)
     globalTestImplementation(libs.androidx.junit)

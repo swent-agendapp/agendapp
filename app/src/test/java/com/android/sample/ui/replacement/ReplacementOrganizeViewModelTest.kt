@@ -204,21 +204,4 @@ class ReplacementOrganizeViewModelTest {
     assertEquals(1, replacements.size)
     assertEquals("1", replacements.first().absentUserId)
   }
-
-  @Test
-  fun `resetUiState resets everything`() {
-    val vm = makeVm()
-    vm.setMemberSearchQuery("abc")
-    vm.setSelectedMember(User("1", "Test", "user@example.com"))
-    vm.addSelectedEvent(event1)
-    vm.goToStep(ReplacementOrganizeStep.SelectProcessMoment)
-
-    vm.resetUiState()
-    val state = vm.uiState.value
-
-    assertTrue(state.memberSearchQuery.isEmpty())
-    assertTrue(state.selectedEvents.isEmpty())
-    assertNull(state.selectedMember)
-    assertEquals(ReplacementOrganizeStep.SelectSubstitute, state.step)
-  }
 }

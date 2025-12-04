@@ -127,7 +127,7 @@ fun EditEventAttendantScreen(
             onBack = onBack,
             backButtonText = stringResource(R.string.common_cancel),
             nextButtonText = stringResource(R.string.common_save),
-            canGoNext = true,
+            canGoNext = !showWarningDialog,
             backButtonTestTag = EditEventTestTags.BACK_BUTTON,
             nextButtonTestTag = EditEventTestTags.SAVE_BUTTON)
       })

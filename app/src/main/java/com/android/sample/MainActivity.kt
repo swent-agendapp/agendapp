@@ -1,11 +1,12 @@
 package com.android.sample
 
-import android.app.Application
+import android.Manifest
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -38,7 +39,6 @@ import com.android.sample.ui.common.BottomBar
 import com.android.sample.ui.common.BottomBarItem
 import com.android.sample.ui.common.BottomBarTestTags
 import com.android.sample.ui.map.MapScreen
-import com.android.sample.ui.map.MapViewModel
 import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
 import com.android.sample.ui.organization.AddOrganizationScreen
@@ -62,8 +62,15 @@ object MainActivityTestTags {
  * navigation.
  */
 class MainActivity : ComponentActivity() {
+
+  private val locationPermissionLauncher =
+      registerForActivityResult(ActivityResultContracts.RequestPermission()) { _ -> }
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+
+    // Request location permission when app starts
+    locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
 
     setContent {
       SampleAppTheme {
@@ -319,7 +326,10 @@ private fun NavGraphBuilder.settingsGraph(
       SettingsScreen(
           onNavigateToUserProfile = { navigationActions.navigateTo(Screen.Profile) },
           onNavigateToAdminInfo = { navigationActions.navigateTo(Screen.AdminContact) },
-          onNavigateToMapSettings = { navigationActions.navigateTo(Screen.Map) })
+          onNavigateToMapSettings = { navigationActions.navigateTo(Screen.Map) },
+          onNavigateToOrganizationList = {
+            navigationActions.navigateTo(Screen.OrganizationOverview)
+          })
     }
     // User profile Screen
     composable(Screen.Profile.route) {
@@ -334,11 +344,7 @@ private fun NavGraphBuilder.settingsGraph(
     }
 
     // Map Settings Screen
-    composable(Screen.Map.route) {
-      MapScreen(
-          mapViewModel = MapViewModel(LocalContext.current.applicationContext as Application),
-          onGoBack = { navigationActions.navigateBack() })
-    }
+    composable(Screen.Map.route) { MapScreen(onGoBack = { navigationActions.navigateBack() }) }
 
     // Organization Overview Screen
     composable(Screen.OrganizationOverview.route) {

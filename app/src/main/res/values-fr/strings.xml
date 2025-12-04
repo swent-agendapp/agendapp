@@ -92,7 +92,9 @@
     <string name="admin_contact_email_subject">Contact depuis Agendapp</string>
 
     <!-- Calendar -->
-    <string name="calendar_screen_title">Calendrier</string>
+    <string name="location_status_inside">Présent</string>
+    <string name="location_status_outside">Absent</string>
+    <string name="location_status_no_permission">Pas de localisation</string>
     <string name="replacement">Remplacement</string>
 
     <!-- Date Picker -->

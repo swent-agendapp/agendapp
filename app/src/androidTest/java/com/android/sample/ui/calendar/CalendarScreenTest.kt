@@ -5,7 +5,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
-import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
@@ -20,10 +19,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.test.core.app.ApplicationProvider
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryLocal
 import com.android.sample.model.calendar.createEvent
+import com.android.sample.model.map.MapRepository
+import com.android.sample.model.map.MapRepositoryLocal
+import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.style.CalendarDefaults.DEFAULT_SWIPE_THRESHOLD
 import com.android.sample.ui.calendar.utils.DateTimeUtils
@@ -283,14 +287,22 @@ abstract class BaseCalendarScreenTest {
   }
 
   /**
-   * Minimal factory that builds a `CalendarViewModel` backed by [repo]. Create the ViewModel using
-   * our test repository.
+   * Minimal factory that builds a `CalendarViewModel` backed by [eventRepo] and [mapRepo]. Create
+   * the ViewModel using our test repositories.
    */
-  protected class CalendarVMFactory(private val repo: EventRepository) : ViewModelProvider.Factory {
+  protected class CalendarVMFactory(
+      private val eventRepo: EventRepository,
+      private val mapRepo: MapRepository
+  ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T =
         when {
-          // Provide CalendarViewModel wired to the local repo for tests
-          modelClass.isAssignableFrom(CalendarViewModel::class.java) -> CalendarViewModel(repo) as T
+          // Provide CalendarViewModel wired to the local repos for tests
+          modelClass.isAssignableFrom(CalendarViewModel::class.java) ->
+              CalendarViewModel(
+                  app = ApplicationProvider.getApplicationContext(),
+                  eventRepository = eventRepo,
+                  mapRepository = mapRepo)
+                  as T
           else -> error("Unknown ViewModel class: $modelClass")
         }
   }
@@ -309,21 +321,31 @@ abstract class BaseCalendarScreenTest {
   }
 
   /**
-   * Composes `CalendarScreen()` with an in-memory local repository pre-populated with [events].
+   * Composes `CalendarScreen()` with in-memory local repositories pre-populated with [events].
    * Keeps `CalendarScreen` and its `ViewModel` unchanged by providing a custom
    * `ViewModelStoreOwner` exposing a default factory that builds the real `CalendarViewModel` with
-   * our local repo. Mount the real screen, but make it read from our test data.
+   * our local repos. Mount the real screen, but make it read from our test data.
    */
   protected fun setContentWithLocalRepo(events: List<Event> = buildTestEvents()) {
-    // Create an in-memory repository instance for tests
-    val repo = EventRepositoryLocal()
-    // Preload repository with our test events
-    populateRepo(repo, events)
-    // Provide a ViewModel factory that uses this repo
-    val owner = TestOwner(CalendarVMFactory(repo))
+    // Create in-memory repository instances for tests
+    val eventRepo = EventRepositoryLocal()
+    val mapRepo = MapRepositoryLocal()
+    // Preload event repository with our test events
+    populateRepo(eventRepo, events)
+    // Provide a ViewModel factory that uses these repos
+    val owner = TestOwner(CalendarVMFactory(eventRepo, mapRepo))
+    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
+
+    val viewModel =
+        CalendarViewModel(
+            app = ApplicationProvider.getApplicationContext(),
+            eventRepository = eventRepo,
+            mapRepository = mapRepo)
     composeTestRule.setContent {
       // Compose CalendarScreen, viewModel() will resolve using our TestOwner factory
-      CompositionLocalProvider(LocalViewModelStoreOwner provides owner) { CalendarScreen() }
+      CompositionLocalProvider(LocalViewModelStoreOwner provides owner) {
+        CalendarScreen(calendarViewModel = viewModel)
+      }
     }
   }
 
@@ -347,7 +369,7 @@ class CalendarSanityTests : BaseCalendarScreenTest() {
   fun testTagsAreCorrectlySet() {
     composeTestRule.setContent { CalendarScreen() }
 
-    composeTestRule.onNodeWithTag(CalendarScreenTestTags.TOP_BAR_TITLE).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(CalendarScreenTestTags.LOCATION_STATUS_CHIP).assertIsDisplayed()
     composeTestRule.onNodeWithTag(CalendarScreenTestTags.EVENT_GRID).assertIsDisplayed()
     composeTestRule.onNodeWithTag(CalendarScreenTestTags.TIME_AXIS_COLUMN).assertIsDisplayed()
     composeTestRule.onNodeWithTag(CalendarScreenTestTags.DAY_ROW).assertIsDisplayed()
@@ -361,12 +383,18 @@ class CalendarSanityTests : BaseCalendarScreenTest() {
     composeTestRule.onNodeWithTag(CalendarScreenTestTags.SCREEN_ROOT).assertIsDisplayed()
     composeTestRule.onNodeWithTag(CalendarScreenTestTags.ROOT).assertIsDisplayed()
     composeTestRule.onNodeWithTag(CalendarScreenTestTags.SCREEN_ROOT).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(CalendarScreenTestTags.TOP_BAR_TITLE).assertTextEquals("Calendar")
+    composeTestRule.onNodeWithTag(CalendarScreenTestTags.LOCATION_STATUS_CHIP)
   }
 
   @Test
   fun calendarContainerComposesWithoutCrash() {
-    composeTestRule.setContent { CalendarContainer() }
+    val repoEvent = EventRepositoryLocal()
+    val repoMap = MapRepositoryLocal()
+    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
+    composeTestRule.setContent {
+      CalendarContainer(
+          calendarViewModel = viewModel(factory = CalendarVMFactory(repoEvent, repoMap)))
+    }
   }
 
   @Test
@@ -376,7 +404,13 @@ class CalendarSanityTests : BaseCalendarScreenTest() {
 
   @Test
   fun calendarContainerComposes() {
-    composeTestRule.setContent { CalendarContainer() }
+    val repoEvent = EventRepositoryLocal()
+    val repoMap = MapRepositoryLocal()
+    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
+    composeTestRule.setContent {
+      CalendarContainer(
+          calendarViewModel = viewModel(factory = CalendarVMFactory(repoEvent, repoMap)))
+    }
     composeTestRule.onNodeWithTag(CalendarScreenTestTags.ROOT).assertIsDisplayed()
   }
 }

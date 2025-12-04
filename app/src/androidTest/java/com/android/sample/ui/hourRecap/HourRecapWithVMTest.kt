@@ -2,6 +2,7 @@ package com.android.sample.ui.hourRecap
 
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.test.core.app.ApplicationProvider
 import com.android.sample.ui.calendar.CalendarViewModel
 import junit.framework.TestCase.assertNull
 import org.junit.Rule
@@ -20,7 +21,10 @@ class HourRecapWithVMTest {
    */
   @Test
   fun errorState_triggersToastAndClearsError() {
-    val vm = CalendarViewModel()
+    val vm =
+        CalendarViewModel(
+            app = ApplicationProvider.getApplicationContext(),
+        )
     val msg = "Test error"
 
     // Inject error

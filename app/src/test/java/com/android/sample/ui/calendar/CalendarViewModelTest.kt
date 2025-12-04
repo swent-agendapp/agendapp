@@ -1,7 +1,11 @@
 package com.android.sample.ui.calendar
 
+import android.app.Application
 import com.android.sample.model.calendar.*
+import com.android.sample.model.map.MapRepository
+import com.android.sample.model.map.MapRepositoryLocal
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
+import io.mockk.mockk
 import java.time.Instant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,7 +28,9 @@ class CalendarViewModelTest {
 
   // StandardTestDispatcher allows manual control over coroutine execution in tests.
   private val testDispatcher = StandardTestDispatcher()
-  private lateinit var repository: EventRepository
+  private lateinit var repositoryEvent: EventRepository
+  private lateinit var repositoryMap: MapRepository
+  private lateinit var app: Application
   private lateinit var viewModel: CalendarViewModel
 
   private lateinit var event1: Event
@@ -41,8 +47,15 @@ class CalendarViewModelTest {
     // Set the selected organization for the tests.
     SelectedOrganizationRepository.changeSelectedOrganization(orgId)
 
-    repository = EventRepositoryLocal()
-    viewModel = CalendarViewModel(eventRepository = repository)
+    // Mock Application for CalendarViewModel
+    app = mockk<Application>(relaxed = true)
+
+    repositoryEvent = EventRepositoryLocal()
+    repositoryMap = MapRepositoryLocal()
+
+    viewModel =
+        CalendarViewModel(
+            app = app, eventRepository = repositoryEvent, mapRepository = repositoryMap)
 
     // Create two sample events for testing.
     event1 =
@@ -65,8 +78,8 @@ class CalendarViewModelTest {
 
     // Insert the sample events into the repository before each test.
     runTest {
-      repository.insertEvent(orgId = orgId, item = event1)
-      repository.insertEvent(orgId = orgId, item = event2)
+      repositoryEvent.insertEvent(orgId = orgId, item = event1)
+      repositoryEvent.insertEvent(orgId = orgId, item = event2)
     }
   }
 
@@ -148,7 +161,7 @@ class CalendarViewModelTest {
             participants = setOf("user1", "user2"),
             presence = mapOf("user1" to true, "user2" to false))[0]
 
-    repository.insertEvent(orgId, pastEvent)
+    repositoryEvent.insertEvent(orgId, pastEvent)
 
     viewModel.calculateWorkedHours(pastStart.minusSeconds(1), pastEnd.plusSeconds(1))
     testDispatcher.scheduler.advanceUntilIdle()
@@ -179,7 +192,7 @@ class CalendarViewModelTest {
             presence = emptyMap() // Presence shouldn't matter for future events
             )[0]
 
-    repository.insertEvent(orgId, futureEvent)
+    repositoryEvent.insertEvent(orgId, futureEvent)
 
     viewModel.calculateWorkedHours(futureStart.minusSeconds(1), futureEnd.plusSeconds(1))
     testDispatcher.scheduler.advanceUntilIdle()
@@ -217,8 +230,8 @@ class CalendarViewModelTest {
             participants = setOf("user1"),
             presence = mapOf("user1" to true))[0]
 
-    repository.insertEvent(orgId, event1)
-    repository.insertEvent(orgId, event2)
+    repositoryEvent.insertEvent(orgId, event1)
+    repositoryEvent.insertEvent(orgId, event2)
 
     viewModel.calculateWorkedHours(start, end)
     testDispatcher.scheduler.advanceUntilIdle()

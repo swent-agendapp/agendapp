@@ -65,7 +65,7 @@ object HourRecapTestTags {
  */
 @Composable
 fun HourRecapScreen(
-    calendarViewModel: CalendarViewModel = viewModel(),
+    calendarViewModel: CalendarViewModel = viewModel(factory = CalendarViewModel.Factory),
     onBackClick: () -> Unit = {}
 ) {
   val uiState by calendarViewModel.uiState.collectAsState()

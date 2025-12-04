@@ -51,7 +51,7 @@ import com.android.sample.model.organization.data.getMockOrganizations
 import com.android.sample.model.organization.invitation.Invitation
 import com.android.sample.model.organization.invitation.InvitationStatus
 import com.android.sample.model.organization.invitation.displayColor
-import com.android.sample.model.organization.invitation.displayString
+import com.android.sample.model.organization.invitation.getStringId
 import com.android.sample.ui.calendar.utils.DateTimeUtils
 import com.android.sample.ui.invitation.DEFAULT_SWIPE_OFFSET
 import com.android.sample.ui.theme.CornerRadiusLarge
@@ -370,7 +370,7 @@ fun InvitationStatusRowAndSwipeButton(
       verticalAlignment = Alignment.CenterVertically,
       horizontalArrangement = Arrangement.spacedBy(SpacingExtraSmall)) {
         Text(
-            text = invitation.status.displayString(),
+            text = stringResource(invitation.status.getStringId()),
             style = MaterialTheme.typography.titleMedium,
             color = invitation.status.displayColor(),
             fontWeight = FontWeight.Bold,

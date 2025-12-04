@@ -20,9 +20,7 @@ import com.android.sample.ui.theme.IconSizeMedium
 import com.android.sample.ui.theme.SpacingSmall
 
 @Composable
-fun CategorySection(
-    category: EventCategory = EventCategory.defaultCategory()
-) {
+fun CategorySection(category: EventCategory = EventCategory.defaultCategory()) {
   Row(verticalAlignment = Alignment.CenterVertically) {
     Icon(
         imageVector = Icons.Filled.SubdirectoryArrowRight,

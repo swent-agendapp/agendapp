@@ -21,15 +21,19 @@ private class FakeUserRepository(var users: MutableList<User> = mutableListOf())
   override suspend fun getUsersIds(organizationId: String): List<String> = users.map { it.id }
 
   override suspend fun getAdminsIds(organizationId: String): List<String> {
-    TODO("Not yet implemented")
+    TODO("No need to implement for current tests")
   }
 
   override suspend fun getUsersByIds(userIds: List<String>): List<User> {
     return users.filter { userIds.contains(it.id) }
   }
 
+  override suspend fun getUserById(userId: String): User? {
+    TODO("No need to implement for current tests")
+  }
+
   override suspend fun modifyUser(user: User) {
-    TODO("Not yet implemented")
+    TODO("No need to implement for current tests")
   }
 
   /** Inserts or replaces a user with the same ID. */

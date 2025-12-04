@@ -16,8 +16,8 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import com.android.sample.R
 import com.android.sample.model.organization.invitation.Invitation
-import com.android.sample.ui.theme.PaddingSmall
-import com.android.sample.ui.theme.SpacingSmall
+import com.android.sample.ui.theme.PaddingMedium
+import com.android.sample.ui.theme.SpacingLarge
 
 /**
  * Contains test tags for UI testing of [InvitationCardList].
@@ -56,8 +56,8 @@ object InvitationCardListTestTags {
  */
 @Composable
 fun InvitationCardList(
-    invitations: List<Invitation>,
     modifier: Modifier = Modifier,
+    invitations: List<Invitation> = listOf(),
     onClickDelete: (Invitation) -> Unit = {}
 ) {
   if (invitations.isEmpty()) {
@@ -74,8 +74,8 @@ fun InvitationCardList(
   } else {
     LazyColumn(
         modifier = modifier.fillMaxSize().background(Color.White),
-        verticalArrangement = Arrangement.spacedBy(SpacingSmall),
-        contentPadding = PaddingValues(PaddingSmall),
+        verticalArrangement = Arrangement.spacedBy(SpacingLarge),
+        contentPadding = PaddingValues(PaddingMedium),
     ) {
       items(invitations, key = { it.id }) { invitation ->
         InvitationCard(

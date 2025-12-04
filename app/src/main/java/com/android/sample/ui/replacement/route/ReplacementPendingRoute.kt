@@ -7,7 +7,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.model.replacement.Replacement
-import com.android.sample.ui.organization.SelectedOrganizationVMProvider.viewModel
 import com.android.sample.ui.replacement.ReplacementPendingListScreen
 import com.android.sample.ui.replacement.ReplacementPendingViewModel
 

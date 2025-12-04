@@ -273,6 +273,9 @@ private fun NavGraphBuilder.replacementGraph(
         composable(Screen.ReplacementOrganize.route) {
           ReplacementOrganizeScreen(
               onCancel = { navigationActions.navigateBack() },
+              onProcessNow = { replacement ->
+                navigationActions.navigateToReplacementProcess(replacement.id)
+              },
               onProcessLater = { navigationActions.navigateTo(Screen.ReplacementOverview) },
           )
         }

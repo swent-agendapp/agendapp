@@ -141,6 +141,9 @@
     <string name="replacement_pending_empty_message">
     Sie haben derzeit keine Vertretungsanfragen.
 </string>
+    <string name="replacement_request_sent_success">
+    Ihre Vertretungsanfrage wurde erfolgreich gesendet
+</string>
     <string name="replacement_upcoming_empty_message">
     Sie haben keine anstehenden Vertretungen
 </string>

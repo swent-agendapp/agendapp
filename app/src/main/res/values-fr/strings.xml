@@ -188,6 +188,10 @@
     <string name="replacement_pending_empty_message">
     Vous n\'avez aucune demande de remplacement pour le moment
 </string>
+    <string name="replacement_request_sent_success">
+    Votre demande de remplacement a bien été envoyée.
+</string>
+
 
     <string name="view_mode_1day">1 jour</string>
     <string name="view_mode_5days">5 jours</string>

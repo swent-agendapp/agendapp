@@ -106,6 +106,9 @@
     <string name="replacement_requests_sent_success">
     Requests have been sent successfully
 </string>
+    <string name="replacement_request_sent_success">
+    Your replacement request has been sent.
+</string>
     <string name="replacement_pending_empty_message">
     You have no replacement requests at the moment
 </string>

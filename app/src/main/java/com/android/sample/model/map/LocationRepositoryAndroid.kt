@@ -4,14 +4,11 @@ package com.android.sample.model.map
 import android.Manifest
 import android.app.Application
 import android.content.pm.PackageManager
-import android.os.Looper
 import androidx.core.content.ContextCompat
-import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import kotlinx.coroutines.tasks.await
-
 
 /**
  * Android implementation of LocationRepository using Google Play Services' Fused Location Provider.
@@ -57,8 +54,7 @@ class LocationRepositoryAndroid(private val app: Application) : LocationReposito
 
       val currentLocation =
           fusedClient
-              .getCurrentLocation(
-                  Priority.PRIORITY_HIGH_ACCURACY, cancellationTokenSource.token)
+              .getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, cancellationTokenSource.token)
               .await()
 
       currentLocation?.let { Location(latitude = it.latitude, longitude = it.longitude) }
@@ -80,10 +76,11 @@ class LocationRepositoryAndroid(private val app: Application) : LocationReposito
    */
   override suspend fun isUserLocationInAreas(areas: List<Area>, askNewLocation: Boolean): Boolean {
     val userLocation = getUserLocation(askNewLocation)
-    val res = areas.any { area ->
-      val userMarker = Marker(location = userLocation)
-      area.contains(userMarker)
-    }
+    val res =
+        areas.any { area ->
+          val userMarker = Marker(location = userLocation)
+          area.contains(userMarker)
+        }
     return res
   }
 }

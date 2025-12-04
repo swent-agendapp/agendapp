@@ -6,10 +6,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -127,7 +127,11 @@ fun CalendarScreen(
                           contentDescription = stringResource(R.string.filter))
                     }
               },
-              pastille = { LocationStatusChip(locationStatus = uiState.locationStatus, onClick = { calendarViewModel.checkUserLocationStatus() }) })
+              pastille = {
+                LocationStatusChip(
+                    locationStatus = uiState.locationStatus,
+                    onClick = { calendarViewModel.checkUserLocationStatus() })
+              })
         }
       },
       floatingActionButton = {
@@ -167,7 +171,7 @@ fun CalendarScreen(
  * @param locationStatus The current location status.
  */
 @Composable
-fun LocationStatusChip(locationStatus: LocationStatus, onClick: () ->Unit = {}) {
+fun LocationStatusChip(locationStatus: LocationStatus, onClick: () -> Unit = {}) {
   val chipColor =
       when (locationStatus) {
         LocationStatus.INSIDE_AREA -> Palette.DarkSeaGreen

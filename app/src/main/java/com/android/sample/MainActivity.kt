@@ -326,7 +326,10 @@ private fun NavGraphBuilder.settingsGraph(
       SettingsScreen(
           onNavigateToUserProfile = { navigationActions.navigateTo(Screen.Profile) },
           onNavigateToAdminInfo = { navigationActions.navigateTo(Screen.AdminContact) },
-          onNavigateToMapSettings = { navigationActions.navigateTo(Screen.Map) })
+          onNavigateToMapSettings = { navigationActions.navigateTo(Screen.Map) },
+          onNavigateToOrganizationList = {
+            navigationActions.navigateTo(Screen.OrganizationOverview)
+          })
     }
     // User profile Screen
     composable(Screen.Profile.route) {
@@ -341,9 +344,7 @@ private fun NavGraphBuilder.settingsGraph(
     }
 
     // Map Settings Screen
-    composable(Screen.Map.route) {
-        MapScreen(onGoBack = { navigationActions.navigateBack() })
-    }
+    composable(Screen.Map.route) { MapScreen(onGoBack = { navigationActions.navigateBack() }) }
 
     // Organization Overview Screen
     composable(Screen.OrganizationOverview.route) {

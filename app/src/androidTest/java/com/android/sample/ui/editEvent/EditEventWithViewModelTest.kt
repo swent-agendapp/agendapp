@@ -168,6 +168,9 @@ class EditEventWithViewModelTest {
       SampleAppTheme { EditEventAttendantScreen(editEventViewModel = fakeViewModel) }
     }
 
+    // Click on the "Got it" button of the first pop-up
+    composeTestRule.onNodeWithTag(EditEventTestTags.ATTENDANCE_WARNING_ACK_BUTTON).performClick()
+
     val alice = composeTestRule.onNodeWithText("Alice")
 
     alice.assertExists()

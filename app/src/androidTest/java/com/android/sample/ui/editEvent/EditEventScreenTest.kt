@@ -77,6 +77,9 @@ class EditEventScreenTest {
       }
     }
 
+    // Click on the "Got it" button of the first pop-up
+    composeTestRule.onNodeWithTag(EditEventTestTags.ATTENDANCE_WARNING_ACK_BUTTON).performClick()
+
     // Click a participant checkbox
     composeTestRule.onNodeWithText("Alice").performClick()
 

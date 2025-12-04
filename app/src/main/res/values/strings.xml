@@ -223,6 +223,11 @@
     <string name="create_invitation_button_text">Create</string>
     <string name="accepted_by">Accepted by %1$s</string>
     <string name="accepted_on">Accepted on %1$s</string>
+    <!-- hourRecap -->
+    <string name="loading_hours">Loading…</string>
+    <string name="work_duration_hours">%1$dh</string>
+    <string name="work_duration_hours_minutes">%1$dh %2$dmin</string>
+
 </resources>
 
 

@@ -1,10 +1,13 @@
-package com.android.sample.ui.hourrecap
+package com.android.sample.ui.hourRecap
 
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import com.android.sample.ui.calendar.CalendarViewModel
 import org.junit.Rule
 import org.junit.Test
 
@@ -37,26 +40,8 @@ class HourRecapScreenTest {
     compose.onNodeWithTag(HourRecapTestTags.START_DATE).assertExists().assertIsDisplayed()
     compose.onNodeWithTag(HourRecapTestTags.END_DATE).assertExists().assertIsDisplayed()
     compose.onNodeWithTag(HourRecapTestTags.GENERATE_BUTTON).assertExists().assertIsDisplayed()
+    compose.onNodeWithTag(HourRecapTestTags.GENERATE_BUTTON).performClick()
     compose.onNodeWithTag(HourRecapTestTags.EXPORT_BUTTON).assertExists().assertIsDisplayed()
-  }
-
-  /**
-   * Ensures that the recap list is rendered and that at least one recap item exists. (Uses the fake
-   * data in HourRecapScreen.)
-   */
-  @Test
-  fun recapList_displaysRecapItems() {
-    compose.setContent { HourRecapScreen() }
-
-    // verify list exists
-    compose.onNodeWithTag(HourRecapTestTags.RECAP_LIST).assertExists()
-
-    // get all recap items
-    val items = compose.onAllNodesWithTag(HourRecapTestTags.RECAP_ITEM)
-
-    // assert at least 1 item is rendered
-    val count = items.fetchSemanticsNodes().size
-    assert(count > 0)
   }
 
   /**
@@ -68,5 +53,41 @@ class HourRecapScreenTest {
     compose.setContent { HourRecapScreen() }
 
     compose.onNodeWithTag(HourRecapTestTags.EXPORT_BUTTON).assertExists().performClick()
+  }
+
+  /**
+   * Tests clicking the generate button (UI only — no data generation yet). This ensures that the
+   * button exists and is clickable without crashing.
+   */
+  @Test
+  fun generateButton_isClickable() {
+    compose.setContent { HourRecapScreen(onBackClick = {}) }
+
+    compose.onNodeWithTag(HourRecapTestTags.GENERATE_BUTTON).performClick()
+  }
+
+  /**
+   * Tests that the recap list displays the expected worked hours for each employee based on the
+   * test data injected into the CalendarViewModel's UI state.
+   */
+  @Test
+  fun RecapItems_displayWorkedHoursCorrectly() {
+    val calendarViewModel = CalendarViewModel()
+
+    calendarViewModel.setTestWorkedHours(
+        listOf(
+            "Alice" to 12.5,
+            "Bob" to 8.0,
+        ))
+
+    compose.setContent { HourRecapScreen(calendarViewModel = calendarViewModel) }
+    compose.onNodeWithText("Alice").assertExists()
+    compose.onNodeWithText("12h 30min").assertExists()
+
+    compose.onNodeWithText("Bob").assertExists()
+    compose.onNodeWithText("8h").assertExists()
+
+    // Only 2 recap item
+    compose.onAllNodesWithTag(HourRecapTestTags.RECAP_ITEM).assertCountEquals(2)
   }
 }

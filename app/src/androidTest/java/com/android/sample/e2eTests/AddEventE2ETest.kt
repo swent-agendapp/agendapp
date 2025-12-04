@@ -1,5 +1,6 @@
 package com.android.sample.e2eTests
 
+import android.util.Log
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -191,7 +192,7 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
 
   private fun ComposeTestRule.isTagDisplayed(tag: String): Boolean =
       try {
-        onNodeWithTag(tag).assertExists()
+        onNodeWithTag(tag).assertIsDisplayed()
         true
       } catch (_: AssertionError) {
         false
@@ -203,8 +204,8 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
       maxDownScrolls: Int = 30,
       maxUpScrolls: Int = 60
   ) {
+    Log.e("toto", "tot")
     if (isTagDisplayed(eventTag)) return
-
     val calendarNode = onNodeWithTag(calendarTag)
 
     repeat(maxDownScrolls) {

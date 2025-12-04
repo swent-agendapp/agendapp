@@ -128,9 +128,7 @@
     <string name="admin_contact_email_subject">Contact from Agendapp</string>
 
     <!-- Calendar -->
-    <string name="calendar_screen_title">Calendar</string>
-    <string name="location_status_inside">Inside</string>
-    <string name="location_status_outside">Outside</string>
+    <string name="location_status_outside">Absent</string>
     <string name="location_status_no_permission">No Location</string>
 
     <!-- Date Picker -->
@@ -223,6 +221,7 @@
     <string name="loading_hours">Loading…</string>
     <string name="work_duration_hours">%1$dh</string>
     <string name="work_duration_hours_minutes">%1$dh %2$dmin</string>
+    <string name="location_status_inside">Present</string>
 
 </resources>
 

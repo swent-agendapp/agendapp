@@ -1,7 +1,7 @@
 package com.android.sample.ui.calendar
 
-import androidx.annotation.VisibleForTesting
 import android.app.Application
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope

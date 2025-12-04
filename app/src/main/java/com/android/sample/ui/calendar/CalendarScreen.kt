@@ -116,7 +116,7 @@ fun CalendarScreen(
       topBar = {
         if (isPortrait) {
           MainPageTopBar(
-              title = stringResource(R.string.calendar_screen_title),
+              title = "",
               modifier = Modifier.testTag(CalendarScreenTestTags.TOP_BAR_TITLE),
               actions = {
                 IconButton(

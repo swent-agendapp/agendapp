@@ -218,6 +218,16 @@
     <string name="clear_all">Tout effacer</string>
     <string name="apply">Appliquer</string>
 
+    <!-- Invitations -->
+    <string name="invitation_codes_title">Codes d’invitation</string>
+    <string name="no_invitation_code_available">Aucun code d’invitation disponible</string>
+    <string name="create_invitation_button_text">Créer</string>
+    <string name="accepted_by">Accepté par %1$s</string>
+    <string name="accepted_on">Accepté le %1$s</string>
+    <string name="status_active">Actif</string>
+    <string name="status_used">Utilisé</string>
+    <string name="status_expired">Expiré</string>
+
     <!-- hourRecap -->
     <string name="loading_hours">Chargement…</string>
     <string name="work_duration_hours">%1$dh</string>

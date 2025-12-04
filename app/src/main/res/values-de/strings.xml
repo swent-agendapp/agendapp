@@ -218,6 +218,16 @@
     <string name="clear_all">Alles löschen</string>
     <string name="apply">Anwenden</string>
 
+    <!-- Invitations -->
+    <string name="invitation_codes_title">Einladungscodes</string>
+    <string name="no_invitation_code_available">Kein Einladungscode verfügbar</string>
+    <string name="create_invitation_button_text">Erstellen</string>
+    <string name="accepted_by">Akzeptiert von %1$s</string>
+    <string name="accepted_on">Akzeptiert am %1$s</string>
+    <string name="status_active">Aktiv</string>
+    <string name="status_used">Verwendet</string>
+    <string name="status_expired">Abgelaufen</string>
+
     <!-- hourRecap -->
     <string name="loading_hours">Laden…</string>
     <string name="work_duration_hours">%1$d Std.</string>

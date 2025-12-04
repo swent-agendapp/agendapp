@@ -20,8 +20,7 @@ class ReplacementEmployeeFlowTest {
   private val selectedOrganizationId = "orgTest"
 
   @Before
-  fun init()
-  {
+  fun init() {
     SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
   }
 

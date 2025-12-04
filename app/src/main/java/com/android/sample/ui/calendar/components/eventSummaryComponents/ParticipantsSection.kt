@@ -29,8 +29,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import com.android.sample.ui.calendar.components.EventSummaryCardTags
 import com.android.sample.ui.calendar.style.EventSummaryCardStyle
-import com.android.sample.ui.theme.AlphaHigh
-import com.android.sample.ui.theme.AlphaLow
 import com.android.sample.ui.theme.BorderWidthThin
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.IconSizeMedium
@@ -55,7 +53,7 @@ fun ParticipantsSection(
     showHeader: Boolean = true,
     rowHeight: Dp = RowHeightMedium,
     visibleRows: Int = EventSummaryCardStyle().participantsVisibleRows,
-    borderColor: Color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = AlphaLow),
+    borderColor: Color = EventSummaryCardStyle().participantsBorderColor(),
 ) {
   if (participantNames.isNotEmpty()) {
     if (showHeader) {
@@ -65,12 +63,12 @@ fun ParticipantsSection(
             imageVector = Icons.Filled.Group,
             contentDescription = "Participants",
             modifier = Modifier.size(IconSizeMedium),
-            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaHigh))
+            tint = EventSummaryCardStyle().participantsHeaderColor())
         Spacer(Modifier.width(SpacingSmall))
         Text(
             text = "Participants",
             style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaHigh))
+            color = EventSummaryCardStyle().participantsHeaderColor())
       }
       Spacer(Modifier.height(SpacingSmall))
     }
@@ -142,8 +140,8 @@ private fun ParticipantRow(
 ) {
   // Gentle zebra striping improves scan-ability for long lists
   val bg =
-      if (index % 2 == 0) MaterialTheme.colorScheme.surface
-      else MaterialTheme.colorScheme.surfaceVariant
+      if (index % 2 == 0) EventSummaryCardStyle().participantsRowColorEvenLine()
+      else EventSummaryCardStyle().participantsRowColorOddLine()
 
   Box(
       modifier = Modifier.fillMaxWidth().height(rowHeight).background(bg),
@@ -151,7 +149,7 @@ private fun ParticipantRow(
         Text(
             text = name,
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface,
+            color = EventSummaryCardStyle().participantsNameTextColor(),
             modifier = Modifier.padding(horizontal = PaddingMedium))
       }
 }

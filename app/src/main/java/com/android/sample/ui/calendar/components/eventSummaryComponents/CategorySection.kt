@@ -13,6 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
+import com.android.sample.R
 import com.android.sample.model.category.EventCategory
 import com.android.sample.ui.calendar.components.EventSummaryCardTags
 import com.android.sample.ui.theme.AlphaMedium
@@ -21,6 +23,11 @@ import com.android.sample.ui.theme.SpacingSmall
 
 @Composable
 fun CategorySection(category: EventCategory = EventCategory.defaultCategory()) {
+  val categoryLabel =
+      if (category.isDefault) {
+        stringResource(R.string.default_category_label)
+      } else category.label
+
   Row(verticalAlignment = Alignment.CenterVertically) {
     Icon(
         imageVector = Icons.Filled.SubdirectoryArrowRight,
@@ -29,9 +36,11 @@ fun CategorySection(category: EventCategory = EventCategory.defaultCategory()) {
         tint = category.color) // .copy(alpha = AlphaLow))
     Spacer(Modifier.width(SpacingSmall))
     Text(
-        text = category.label,
+        text = categoryLabel,
         style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaMedium),
+        color =
+            MaterialTheme.colorScheme.onSurface.copy(
+                alpha = AlphaMedium), // todo : adapt colors to palette
         modifier = Modifier.testTag(EventSummaryCardTags.CATEGORY))
   }
 }

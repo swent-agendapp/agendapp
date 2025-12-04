@@ -302,7 +302,7 @@ private fun NavGraphBuilder.replacementGraph(
           } else {
             ProcessReplacementRoute(
                 replacementId = replacementId,
-                onFinished = { navigationActions.navigateBack() },
+                onFinished = { navigationActions.navigateTo(Screen.ReplacementPending) },
                 onBack = { navigationActions.navigateBack() },
             )
           }

@@ -38,9 +38,7 @@ fun CategorySection(category: EventCategory = EventCategory.defaultCategory()) {
     Text(
         text = categoryLabel,
         style = MaterialTheme.typography.bodyMedium,
-        color =
-            MaterialTheme.colorScheme.onSurface.copy(
-                alpha = AlphaMedium), // todo : adapt colors to palette
+        color = MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaMedium),
         modifier = Modifier.testTag(EventSummaryCardTags.CATEGORY))
   }
 }

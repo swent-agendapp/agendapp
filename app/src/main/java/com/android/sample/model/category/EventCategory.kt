@@ -18,7 +18,11 @@ import java.util.UUID
  * is expected to display a localized name (using stringResource) instead of the stored label.
  */
 data class EventCategory(
+    // to be used soon when the EventCategory will be customizable, so that the Event depends only
+    // on the id and the label or color can freely change
     val id: String = UUID.randomUUID().toString(),
+    // to be used soon when the EventCategory will be associated to an organization
+    // val organizationId: String,
     val label: String,
     val color: Color,
     val isDefault: Boolean = false,

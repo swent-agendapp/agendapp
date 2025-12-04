@@ -38,7 +38,7 @@ import com.android.sample.ui.calendar.eventOverview.EventOverviewScreen
 import com.android.sample.ui.common.BottomBar
 import com.android.sample.ui.common.BottomBarItem
 import com.android.sample.ui.common.BottomBarTestTags
-import com.android.sample.ui.hourrecap.HourRecapScreen
+import com.android.sample.ui.hourRecap.HourRecapScreen
 import com.android.sample.ui.map.MapScreen
 import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
@@ -328,8 +328,7 @@ private fun NavGraphBuilder.settingsGraph(
           onNavigateToUserProfile = { navigationActions.navigateTo(Screen.Profile) },
           onNavigateToAdminInfo = { navigationActions.navigateTo(Screen.AdminContact) },
           onNavigateToMapSettings = { navigationActions.navigateTo(Screen.Map) },
-          onNavigateToHourRecap = { navigationActions.navigateTo(Screen.HourRecap) })
-          onNavigateToMapSettings = { navigationActions.navigateTo(Screen.Map) },
+          onNavigateToHourRecap = { navigationActions.navigateTo(Screen.HourRecap) },
           onNavigateToOrganizationList = {
             navigationActions.navigateTo(Screen.OrganizationOverview)
           })

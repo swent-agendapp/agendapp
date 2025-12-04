@@ -12,7 +12,6 @@ import kotlinx.coroutines.tasks.await
 
 class UsersRepositoryFirebase(
     private val db: FirebaseFirestore,
-    private val authRepository: AuthRepository
 ) : UserRepository {
 
   private fun usersCollection() = db.collection(COLLECTION_USERS)
@@ -84,9 +83,9 @@ class UsersRepositoryFirebase(
 
   override suspend fun addUserToOrganization(userId: String, organizationId: String) {
     // 1. Add user to organization subcollection
-    db.collection(FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH)
+    db.collection(ORGANIZATIONS_COLLECTION_PATH)
         .document(organizationId)
-        .collection(FirestoreConstants.COLLECTION_USERS)
+        .collection(COLLECTION_USERS)
         .document(userId)
         .set(mapOf("exists" to true))
         .await()
@@ -100,17 +99,22 @@ class UsersRepositoryFirebase(
 
   override suspend fun addAdminToOrganization(userId: String, organizationId: String) {
     // 1. Add user to organization admins subcollection
-    db.collection(FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH)
+    db.collection(ORGANIZATIONS_COLLECTION_PATH)
         .document(organizationId)
-        .collection(FirestoreConstants.COLLECTION_ADMINS)
+        .collection(COLLECTION_ADMINS)
         .document(userId)
         .set(mapOf("exists" to true))
         .await()
 
     // 2. Add organization to user.organizations array
-    db.collection(FirestoreConstants.COLLECTION_USERS)
+    db.collection(COLLECTION_USERS)
         .document(userId)
         .update("organizations", FieldValue.arrayUnion(organizationId))
         .await()
+  }
+
+  override suspend fun getUserById(userId: String): User? {
+    val all = usersCollection().get().await().documents.mapNotNull { UserMapper.fromDocument(it) }
+    return all.firstOrNull { it.id == userId }
   }
 }

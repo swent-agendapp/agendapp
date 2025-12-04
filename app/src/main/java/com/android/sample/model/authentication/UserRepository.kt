@@ -14,6 +14,9 @@ interface UserRepository {
    */
   suspend fun getUsersByIds(userIds: List<String>): List<User>
 
+  /** Get a user by its ID */
+  suspend fun getUserById(userId: String): User?
+
   /**
    * @param organizationId the id of the organization we want the list of admins
    * @return The list of admins.

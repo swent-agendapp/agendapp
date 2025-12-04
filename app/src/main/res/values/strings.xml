@@ -220,10 +220,7 @@
     <!-- Invitations -->
     <string name="invitation_codes_title">Invitation codes</string>
     <string name="no_invitation_code_available">No invitation code available</string>
-    <plurals name="create_invitation_button_text">
-        <item quantity="one">Create invitation</item>
-        <item quantity="other">Create %d invitations</item>
-    </plurals>
+    <string name="create_invitation_button_text">Create</string>
     <string name="accepted_by">Accepted by %1$s</string>
     <string name="accepted_on">Accepted on %1$s</string>
 </resources>

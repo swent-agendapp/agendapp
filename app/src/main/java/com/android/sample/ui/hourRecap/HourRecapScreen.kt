@@ -12,9 +12,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
-import com.android.sample.ui.calendar.CalendarViewModel
 import com.android.sample.ui.calendar.components.DatePickerFieldToModal
 import com.android.sample.ui.calendar.utils.formatDecimalHoursToTime
 import com.android.sample.ui.common.Loading
@@ -65,17 +63,17 @@ object HourRecapTestTags {
  */
 @Composable
 fun HourRecapScreen(
-    calendarViewModel: CalendarViewModel = viewModel(factory = CalendarViewModel.Factory),
-    onBackClick: () -> Unit = {}
+    onBackClick: () -> Unit = {},
+    hourRecapViewModel: HourRecapViewModel = HourRecapViewModel(),
 ) {
-  val uiState by calendarViewModel.uiState.collectAsState()
+  val uiState by hourRecapViewModel.uiState.collectAsState()
   val context = LocalContext.current
 
   // ---- ERROR HANDLING (Project standard) ----
   LaunchedEffect(uiState.errorMsg) {
     uiState.errorMsg?.let { message ->
       Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-      calendarViewModel.clearErrorMsg()
+      hourRecapViewModel.clearErrorMsg()
     }
   }
 
@@ -130,7 +128,7 @@ fun HourRecapScreen(
                   text = stringResource(R.string.hour_recap_generate),
                   enabled = startDate != null && endDate != null && !startDate!!.isAfter(endDate!!),
                   onClick = {
-                    calendarViewModel.calculateWorkedHours(
+                    hourRecapViewModel.calculateWorkedHours(
                         start = startDate!!.atStartOfDay().toInstant(ZoneOffset.UTC),
                         end = endDate!!.atTime(23, 59).toInstant(ZoneOffset.UTC))
                   })

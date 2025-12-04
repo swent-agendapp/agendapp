@@ -1,7 +1,6 @@
 package com.android.sample.ui.calendar
 
 import android.app.Application
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -164,22 +163,6 @@ class CalendarViewModel(
    * @param start The start of the time range.
    * @param end The end of the time range.
    */
-  fun calculateWorkedHours(start: Instant, end: Instant) {
-    val orgId = selectedOrganizationId.value
-    if (orgId == null) {
-      setErrorMsg("No organization selected")
-      return
-    }
-
-    viewModelScope.launch {
-      try {
-        val workedHours = eventRepository.calculateWorkedHours(orgId, start, end)
-        _uiState.value = _uiState.value.copy(workedHours = workedHours)
-      } catch (e: Exception) {
-        setErrorMsg("Failed to calculate worked hours: ${e.message}")
-      }
-    }
-  }
 
   /**
    * Checks if the user's current location is inside any of the defined areas and updates the
@@ -209,11 +192,6 @@ class CalendarViewModel(
         _uiState.value = _uiState.value.copy(locationStatus = LocationStatus.NO_PERMISSION)
       }
     }
-  }
-
-  @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-  internal fun setTestWorkedHours(hours: List<Pair<String, Double>>) {
-    _uiState.value = _uiState.value.copy(workedHours = hours)
   }
 
   companion object {

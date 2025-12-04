@@ -37,5 +37,10 @@ class ReplacementEmployeeListScreenTest {
     composeTestRule
         .onNodeWithTag(ReplacementEmployeeListTestTags.refuse("req1"))
         .assertIsDisplayed()
+
+    // Check that both left side-bar are displayed (for now, with mock Replacements)
+    composeTestRule
+        .onAllNodesWithTag(ReplacementEmployeeListTestTags.CARD_SIDE_BAR)
+        .assertCountEquals(2)
   }
 }

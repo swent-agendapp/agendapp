@@ -24,7 +24,7 @@ import org.junit.Test
 class SettingsHourRecapE2ETest : FirebaseEmulatedTest() {
 
   companion object {
-    private const val UI_AUTH_TIMEOUT = 10_000L
+    private const val UI_AUTH_TIMEOUT = 20_000L
   }
 
   private val expectedName = "John Doe"

@@ -16,9 +16,15 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import com.android.sample.R
 import com.android.sample.model.organization.invitation.Invitation
-import com.android.sample.ui.invitation.InvitationOverviewScreenTestTags
 import com.android.sample.ui.theme.PaddingSmall
 import com.android.sample.ui.theme.SpacingSmall
+
+object InvitationCardListTestTags {
+  const val EMPTY_INVITATION_LIST_MSG = "emptyInvitationListMessage"
+
+  fun getTestTagForInvitationCard(invitation: Invitation): String =
+      "invitationCard_${invitation.id}"
+}
 
 @Composable
 fun InvitationCardList(
@@ -35,15 +41,11 @@ fun InvitationCardList(
               modifier =
                   modifier
                       .background(Color.White)
-                      .testTag(InvitationOverviewScreenTestTags.EMPTY_INVITATION_LIST_MSG))
+                      .testTag(InvitationCardListTestTags.EMPTY_INVITATION_LIST_MSG))
         }
   } else {
     LazyColumn(
-        modifier =
-            modifier
-                .fillMaxSize()
-                .background(Color.White)
-                .testTag(InvitationOverviewScreenTestTags.INVITATION_LIST),
+        modifier = modifier.fillMaxSize().background(Color.White),
         verticalArrangement = Arrangement.spacedBy(SpacingSmall),
         contentPadding = PaddingValues(PaddingSmall),
     ) {
@@ -53,7 +55,7 @@ fun InvitationCardList(
             onClickDelete = { onClickDelete(invitation) },
             modifier =
                 Modifier.testTag(
-                    InvitationOverviewScreenTestTags.getTestTagForInvitationCard(invitation)))
+                    InvitationCardListTestTags.getTestTagForInvitationCard(invitation)))
       }
     }
   }

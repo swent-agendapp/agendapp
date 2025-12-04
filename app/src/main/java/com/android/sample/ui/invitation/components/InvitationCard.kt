@@ -52,7 +52,6 @@ import com.android.sample.model.organization.invitation.displayColor
 import com.android.sample.model.organization.invitation.displayString
 import com.android.sample.ui.calendar.utils.DateTimeUtils
 import com.android.sample.ui.invitation.DEFAULT_SWIPE_OFFSET
-import com.android.sample.ui.invitation.InvitationOverviewScreenTestTags
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.ElevationLow
 import com.android.sample.ui.theme.FontSizeExtraHuge
@@ -66,6 +65,16 @@ import com.android.sample.ui.theme.WeightExtraHeavy
 import java.time.Instant
 import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
+
+object InvitationCardTestTags {
+  const val CODE_FIELD = "codeField"
+  const val ACCEPTED_AT_FIELD = "acceptedAtField"
+  const val ACCEPTED_ON_FIELD = "acceptedOnField"
+  const val COPY_TO_CLIPBOARD_BUTTON = "copyToClipBoardButton"
+  const val INVITATION_STATUS_FIELD = "invitationStatusField"
+  const val SWIPE_CARD_BUTTON = "swipeCardButton"
+  const val DELETE_INVITATION_BUTTON = "deleteInvitationButton"
+}
 
 @Composable
 fun InvitationCard(
@@ -101,7 +110,7 @@ fun InvitationCard(
                       }
                     },
                     onDragCancel = { scope.launch { swipeOffset.animateTo(DEFAULT_SWIPE_OFFSET) } },
-                    onDrag = { change, dragAmount ->
+                    onDrag = { _, dragAmount ->
                       scope.launch {
                         val newValue =
                             (swipeOffset.value + dragAmount.x).coerceIn(
@@ -121,7 +130,7 @@ fun InvitationCard(
                   onClick = onClickDelete,
                   modifier =
                       Modifier.padding(end = PaddingExtraLarge)
-                          .testTag(InvitationOverviewScreenTestTags.DELETE_INVITATION_BUTTON)) {
+                          .testTag(InvitationCardTestTags.DELETE_INVITATION_BUTTON)) {
                     Icon(
                         imageVector = Icons.Outlined.Delete,
                         contentDescription = stringResource(R.string.delete),
@@ -152,9 +161,13 @@ fun InvitationCard(
                                 text = invitation.code,
                                 style = MaterialTheme.typography.titleLarge,
                                 letterSpacing = LetterSpacingLarge,
-                                fontSize = FontSizeExtraHuge)
+                                fontSize = FontSizeExtraHuge,
+                                modifier = Modifier.testTag(InvitationCardTestTags.CODE_FIELD))
                             IconButton(
-                                onClick = { clipboard.setText(AnnotatedString(invitation.code)) }) {
+                                onClick = { clipboard.setText(AnnotatedString(invitation.code)) },
+                                modifier =
+                                    Modifier.testTag(
+                                        InvitationCardTestTags.COPY_TO_CLIPBOARD_BUTTON)) {
                                   Icon(
                                       imageVector = Icons.Default.ContentCopy,
                                       contentDescription = null)
@@ -169,7 +182,9 @@ fun InvitationCard(
                                         .orEmpty(),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                fontStyle = FontStyle.Italic)
+                                fontStyle = FontStyle.Italic,
+                                modifier =
+                                    Modifier.testTag(InvitationCardTestTags.ACCEPTED_AT_FIELD))
 
                             Spacer(modifier = Modifier.width(SpacingMedium))
 
@@ -184,7 +199,9 @@ fun InvitationCard(
                                         .orEmpty(),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                fontStyle = FontStyle.Italic)
+                                fontStyle = FontStyle.Italic,
+                                modifier =
+                                    Modifier.testTag(InvitationCardTestTags.ACCEPTED_ON_FIELD))
                           }
                         }
                     Row(
@@ -194,7 +211,9 @@ fun InvitationCard(
                               text = invitation.status.displayString(),
                               style = MaterialTheme.typography.titleMedium,
                               color = invitation.status.displayColor(),
-                              fontWeight = FontWeight.Bold)
+                              fontWeight = FontWeight.Bold,
+                              modifier =
+                                  Modifier.testTag(InvitationCardTestTags.INVITATION_STATUS_FIELD))
                           IconButton(
                               onClick = {
                                 scope.launch {
@@ -206,9 +225,7 @@ fun InvitationCard(
                                 }
                               },
                               modifier =
-                                  Modifier.testTag(
-                                      InvitationOverviewScreenTestTags
-                                          .SWIPE_INVITATION_CARD_BUTTON)) {
+                                  Modifier.testTag(InvitationCardTestTags.SWIPE_CARD_BUTTON)) {
                                 Icon(
                                     imageVector =
                                         if (swipeOffset.value > -swipeThresholds) {

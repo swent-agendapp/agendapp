@@ -20,7 +20,7 @@ object EditEventTestTags {
   const val SAVE_BUTTON = "edit_save_button"
   const val CANCEL_BUTTON = "edit_cancel_button"
   const val EDIT_PARTICIPANTS_BUTTON = "edit_participants_button"
-  const val GOT_IT_BUTTON = "got_it_button"
+  const val ATTENDANCE_WARNING_ACK_BUTTON = "attendance_warning_ack_button"
   const val BACK_BUTTON = "edit_back_button"
 }
 

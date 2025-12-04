@@ -68,7 +68,7 @@ fun EditEventAttendantScreen(
               },
               confirmButton = {
                 TextButton(
-                    modifier = Modifier.testTag(EditEventTestTags.GOT_IT_BUTTON),
+                    modifier = Modifier.testTag(EditEventTestTags.ATTENDANCE_WARNING_ACK_BUTTON),
                     onClick = {
                       // When user presses OK, we hide the dialog.
                       showWarningDialog = false

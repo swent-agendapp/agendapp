@@ -1,5 +1,6 @@
 package com.android.sample.ui.calendar
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.sample.model.calendar.Event
@@ -52,7 +53,7 @@ class CalendarViewModel(
       selectedOrganizationViewModel.selectedOrganizationId
 
   /** Sets an error message in the UI state. */
-  private fun setErrorMsg(errorMsg: String) {
+  fun setErrorMsg(errorMsg: String) {
     _uiState.value = _uiState.value.copy(errorMsg = errorMsg)
   }
 
@@ -152,5 +153,11 @@ class CalendarViewModel(
         setErrorMsg("Failed to calculate worked hours: ${e.message}")
       }
     }
+  }
+
+  // For testing purposes: allows setting test data directly
+  @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+  internal fun setTestWorkedHours(hours: List<Pair<String, Double>>) {
+    _uiState.value = _uiState.value.copy(workedHours = hours)
   }
 }

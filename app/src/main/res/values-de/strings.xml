@@ -216,4 +216,9 @@
     <string name="clear_all">Alles löschen</string>
     <string name="apply">Anwenden</string>
 
+    <!-- hourRecap -->
+    <string name="loading_hours">Laden…</string>
+    <string name="work_duration_hours">%1$d Std.</string>
+    <string name="work_duration_hours_minutes">%1$d Std. %2$d Min.</string>
+
 </resources>

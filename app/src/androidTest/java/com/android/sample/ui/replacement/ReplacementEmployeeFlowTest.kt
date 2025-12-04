@@ -7,14 +7,23 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.sample.R
+import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.ui.replacement.mainPage.ReplacementEmployeeFlow
 import com.android.sample.ui.replacement.mainPage.ReplacementEmployeeListTestTags
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 class ReplacementEmployeeFlowTest {
 
   @get:Rule val compose = createComposeRule()
+  private val selectedOrganizationId = "orgTest"
+
+  @Before
+  fun init()
+  {
+    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
+  }
 
   private fun setContent() {
     compose.setContent {

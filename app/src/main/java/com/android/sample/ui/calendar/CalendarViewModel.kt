@@ -1,5 +1,6 @@
 package com.android.sample.ui.calendar
 
+import androidx.annotation.VisibleForTesting
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -78,7 +79,7 @@ class CalendarViewModel(
   }
 
   /** Sets an error message in the UI state. */
-  private fun setErrorMsg(errorMsg: String) {
+  fun setErrorMsg(errorMsg: String) {
     _uiState.value = _uiState.value.copy(errorMsg = errorMsg)
   }
 
@@ -208,6 +209,11 @@ class CalendarViewModel(
         _uiState.value = _uiState.value.copy(locationStatus = LocationStatus.NO_PERMISSION)
       }
     }
+  }
+
+  @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+  internal fun setTestWorkedHours(hours: List<Pair<String, Double>>) {
+    _uiState.value = _uiState.value.copy(workedHours = hours)
   }
 
   companion object {

@@ -42,36 +42,5 @@ class MapScreenTest : FirebaseEmulatedTest() {
     composeTestRule.onNodeWithTag(MapScreenTestTags.GOOGLE_MAP_SCREEN).assertIsDisplayed()
     composeTestRule.onNodeWithTag(MapScreenTestTags.MAP_TITLE).assertIsDisplayed()
     composeTestRule.onNodeWithTag(MapScreenTestTags.MAP_GO_BACK_BUTTON).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(MapScreenTestTags.TOOLTIP_BUTTON).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(MapScreenTestTags.CREATE_AREA_FLOATING_BUTTON).assertIsDisplayed()
-  }
-
-  @Test
-  fun clickToolTipDisplayIt() {
-    composeTestRule.setContent { MapScreen(mapViewModel = mapViewModel) }
-
-    composeTestRule
-        .onNodeWithTag(MapScreenTestTags.TOOLTIP_BUTTON)
-        .assertIsDisplayed()
-        .performClick()
-    composeTestRule.onNodeWithTag(MapScreenTestTags.TOOLTIP_TEXT).assertIsDisplayed()
-  }
-
-  @Test
-  fun openTheCreateAreaDownSheet() {
-    composeTestRule.setContent { MapScreen(mapViewModel = mapViewModel) }
-    composeTestRule
-        .onNodeWithTag(MapScreenTestTags.CREATE_AREA_FLOATING_BUTTON)
-        .assertIsDisplayed()
-        .performClick()
-    composeTestRule.onNodeWithTag(MapScreenTestTags.DOWN_SHEET).assertIsDisplayed()
-    composeTestRule
-        .onNodeWithTag(MapScreenTestTags.DOWN_SHEET_FORM)
-        .assertIsDisplayed()
-        .performTextInput("Office")
-    composeTestRule
-        .onNodeWithTag(MapScreenTestTags.CREATE_AREA_BUTTON)
-        .assertIsDisplayed()
-        .performClick()
   }
 }

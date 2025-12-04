@@ -1,4 +1,4 @@
-package com.android.sample.model.eventRepositoryTest
+package com.android.sample.model.userRepositoryTest
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.authentication.FakeAuthRepository
@@ -129,5 +129,104 @@ class UserRepositoryFirebaseTest : FirebaseEmulatedTest() {
     } catch (_: IllegalArgumentException) {
       // expected
     }
+  }
+
+  @Test
+  fun getAdminsIds_shouldWork() = runBlocking {
+    // Prepare organization
+    FirebaseEmulator.firestore
+        .collection(FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH)
+        .document(organizationId)
+        .set(mapOf("name" to "Test Org"))
+        .await()
+
+    val user1 = User(id = "admin-1", displayName = "Admin1", email = "a1@e.com")
+    val user2 = User(id = "admin-2", displayName = "Admin2", email = "a2@e.com")
+
+    repository.newUser(user1)
+    repository.newUser(user2)
+
+    // Add admins
+    repository.addAdminToOrganization("admin-1", organizationId)
+    repository.addAdminToOrganization("admin-2", organizationId)
+
+    flushUser("admin-1")
+    flushUser("admin-2")
+
+    val adminIds = repository.getAdminsIds(organizationId)
+
+    Assert.assertEquals(2, adminIds.size)
+    Assert.assertTrue(adminIds.contains("admin-1"))
+    Assert.assertTrue(adminIds.contains("admin-2"))
+  }
+
+  @Test
+  fun modifyUser_shouldUpdateFields() = runBlocking {
+    val user = User(id = "mod-1", displayName = "Original", email = "orig@e.com")
+    repository.newUser(user)
+
+    // Modify the user
+    val updated = user.copy(displayName = "Updated Name")
+    repository.modifyUser(updated)
+
+    flushUser("mod-1")
+
+    val result = repository.getUsersByIds(listOf("mod-1")).first()
+    Assert.assertEquals("Updated Name", result.displayName)
+  }
+
+  @Test
+  fun addAdminToOrganization_shouldWork() = runBlocking {
+    // Prepare organization
+    FirebaseEmulator.firestore
+        .collection(FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH)
+        .document(organizationId)
+        .set(mapOf("name" to "Test Org"))
+        .await()
+
+    val user = User(id = "new-admin", displayName = "NA", email = "na@e.com")
+    repository.newUser(user)
+
+    repository.addAdminToOrganization("new-admin", organizationId)
+    flushUser("new-admin")
+
+    val adminIds = repository.getAdminsIds(organizationId)
+    Assert.assertEquals(1, adminIds.size)
+    Assert.assertTrue(adminIds.contains("new-admin"))
+
+    // Ensure user contains organization in org array
+    val updatedUser = repository.getUsersByIds(listOf("new-admin")).first()
+    Assert.assertTrue(updatedUser.organizations.contains(organizationId))
+  }
+
+  @Test
+  fun deleteUser_shouldRemoveAdminEverywhere() = runBlocking {
+    // Prepare organization
+    FirebaseEmulator.firestore
+        .collection(FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH)
+        .document(organizationId)
+        .set(mapOf("name" to "Test Org"))
+        .await()
+
+    val admin =
+        User(
+            id = "admin-del",
+            displayName = "AdminDel",
+            email = "ad@e.com",
+            organizations = listOf(organizationId))
+
+    repository.newUser(admin)
+    repository.addAdminToOrganization("admin-del", organizationId)
+    flushUser("admin-del")
+
+    // Ensure exists before deletion
+    Assert.assertTrue(repository.getAdminsIds(organizationId).contains("admin-del"))
+
+    repository.deleteUser("admin-del")
+    flushUser("admin-del")
+
+    // Should no longer be admin
+    val adminIds = repository.getAdminsIds(organizationId)
+    Assert.assertFalse(adminIds.contains("admin-del"))
   }
 }

@@ -80,91 +80,138 @@ fun CategorySelector(
       } else selectedCategory.label
 
   Box(modifier = modifier) {
-    // This Box is styled to look like an OutlinedTextField-like form field.
-    Row(
-        modifier =
-            Modifier.fillMaxWidth()
-                .clip(RoundedCornerShape(CornerRadiusLarge))
-                .border(
-                    width = BorderWidthThin,
-                    color = MaterialTheme.colorScheme.outline,
-                    shape = RoundedCornerShape(CornerRadiusLarge))
-                .background(
-                    color = MaterialTheme.colorScheme.surface,
-                    shape = RoundedCornerShape(CornerRadiusLarge))
-                .clickable { expanded = true }
-                .padding(horizontal = PaddingMedium, vertical = PaddingSmall)
-                .testTag(testTag),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween) {
-          Row(
-              modifier = Modifier.fillMaxWidth().height(heightMedium).weight(WeightExtraHeavy),
-              horizontalArrangement = Arrangement.Start,
-              verticalAlignment = Alignment.CenterVertically) {
-                ColorCircle(
-                    color = selectedCategory.color,
-                    isSelected =
-                        false, // The field already shows the selection, no extra emphasis needed
-                    // here.
-                )
-                Spacer(modifier = Modifier.width(SpacingMedium))
-                Text(text = categoryLabel)
-              }
-          // Small arrow on the right to indicate it is a dropdown field.
-          Icon(
-              imageVector = Icons.Filled.ArrowDropDown,
-              contentDescription = null,
-          )
-        }
+    // Top-level field that always stays visible.
+    CategorySelectorField(
+        selectedCategory = selectedCategory,
+        categoryLabel = categoryLabel,
+        onClick = { expanded = true },
+        testTag = testTag,
+    )
 
-    DropdownMenu(
+    // Dropdown menu that shows all available categories.
+    CategoryDropdownMenu(
         expanded = expanded,
         onDismissRequest = { expanded = false },
-    ) {
-      categories.forEachIndexed { index, category ->
-        DropdownMenuItem(
-            // The whole row is clickable and represents one color option.
-            text = {
-              val isSelectedCategory = category == selectedCategory
-              val fontWeight =
-                  if (isSelectedCategory) {
-                    FontWeight.ExtraBold
-                  } else {
-                    FontWeight.Medium
-                  }
-              val categoryLabel =
-                  if (category.isDefault) {
-                    stringResource(R.string.default_category_label)
-                  } else category.label
-              Row(
-                  modifier = Modifier.fillMaxWidth(),
-                  horizontalArrangement = Arrangement.Start,
-                  verticalAlignment = Alignment.CenterVertically) {
-                    // For the selected category, we draw a thicker border to highlight it.
-                    ColorCircle(
-                        color = category.color,
-                        isSelected = isSelectedCategory,
-                    )
-                    Spacer(modifier = Modifier.width(SpacingSmall))
-                    Text(text = categoryLabel, fontWeight = fontWeight)
-                  }
-            },
-            onClick = {
-              // Delegate the new color to the parent.
-              onCategorySelected(category)
-              expanded = false
-            },
-            modifier =
-                if (testTag.isNotEmpty()) {
-                  // Pattern to make it easy to have one test tag per option.
-                  Modifier.testTag("${testTag}_option_$index")
-                } else {
-                  Modifier
-                },
+        categories = categories,
+        selectedCategory = selectedCategory,
+        onCategorySelected = { category ->
+          // Delegate the new category to the parent and close the menu.
+          onCategorySelected(category)
+          expanded = false
+        },
+        testTag = testTag,
+    )
+  }
+}
+
+@Composable
+private fun CategorySelectorField(
+    selectedCategory: EventCategory,
+    categoryLabel: String,
+    onClick: () -> Unit,
+    testTag: String,
+) {
+  // This Row is styled to look like an OutlinedTextField-like form field.
+  Row(
+      modifier =
+          Modifier.fillMaxWidth()
+              .clip(RoundedCornerShape(CornerRadiusLarge))
+              .border(
+                  width = BorderWidthThin,
+                  color = MaterialTheme.colorScheme.outline,
+                  shape = RoundedCornerShape(CornerRadiusLarge))
+              .background(
+                  color = MaterialTheme.colorScheme.surface,
+                  shape = RoundedCornerShape(CornerRadiusLarge))
+              .clickable { onClick() }
+              .padding(horizontal = PaddingMedium, vertical = PaddingSmall)
+              .testTag(testTag),
+      verticalAlignment = Alignment.CenterVertically,
+      horizontalArrangement = Arrangement.SpaceBetween) {
+        CategorySelectorValue(
+            selectedCategory = selectedCategory,
+            categoryLabel = categoryLabel,
+            modifier = Modifier.fillMaxWidth().height(heightMedium).weight(WeightExtraHeavy),
+        )
+        // Small arrow on the right to indicate it is a dropdown field.
+        Icon(
+            imageVector = Icons.Filled.ArrowDropDown,
+            contentDescription = null,
         )
       }
+}
+
+@Composable
+private fun CategorySelectorValue(
+    selectedCategory: EventCategory,
+    categoryLabel: String,
+    modifier: Modifier = Modifier,
+) {
+  Row(
+      modifier = modifier,
+      horizontalArrangement = Arrangement.Start,
+      verticalAlignment = Alignment.CenterVertically) {
+        ColorCircle(
+            color = selectedCategory.color,
+            isSelected =
+                false, // The field already shows the selection, no extra emphasis needed here.
+        )
+        Spacer(modifier = Modifier.width(SpacingMedium))
+        Text(text = categoryLabel)
+      }
+}
+
+@Composable
+private fun CategoryDropdownMenu(
+    expanded: Boolean,
+    onDismissRequest: () -> Unit,
+    categories: List<EventCategory>,
+    selectedCategory: EventCategory,
+    onCategorySelected: (EventCategory) -> Unit,
+    testTag: String,
+) {
+  DropdownMenu(
+      expanded = expanded,
+      onDismissRequest = onDismissRequest,
+  ) {
+    categories.forEachIndexed { index, category ->
+      val isSelectedCategory = category == selectedCategory
+      CategoryDropdownMenuItem(
+          category = category,
+          isSelected = isSelectedCategory,
+          index = index,
+          testTag = testTag,
+          onClick = { onCategorySelected(category) },
+      )
     }
   }
+}
+
+@Composable
+private fun CategoryDropdownMenuItem(
+    category: EventCategory,
+    isSelected: Boolean,
+    index: Int,
+    testTag: String,
+    onClick: () -> Unit,
+) {
+  DropdownMenuItem(
+      // The whole row is clickable and represents one color option.
+      text = {
+        CategoryDropdownItemContent(
+            category = category,
+            isSelected = isSelected,
+        )
+      },
+      onClick = onClick,
+      modifier =
+          if (testTag.isNotEmpty()) {
+            // Pattern to make it easy to have one test tag per option.
+            Modifier.testTag("${testTag}_option_$index")
+          } else {
+            Modifier
+          },
+  )
 }
 
 /**
@@ -175,6 +222,37 @@ fun CategorySelector(
  * In the future, this helper can stay the same even if the selector becomes a "tag selector": only
  * the callers need to change, not this drawing logic.
  */
+@Composable
+private fun CategoryDropdownItemContent(
+    category: EventCategory,
+    isSelected: Boolean,
+) {
+  val fontWeight =
+      if (isSelected) {
+        FontWeight.ExtraBold
+      } else {
+        FontWeight.Medium
+      }
+
+  val categoryLabel =
+      if (category.isDefault) {
+        stringResource(R.string.default_category_label)
+      } else category.label
+
+  Row(
+      modifier = Modifier.fillMaxWidth(),
+      horizontalArrangement = Arrangement.Start,
+      verticalAlignment = Alignment.CenterVertically) {
+        // For the selected category, we draw a thicker border to highlight it.
+        ColorCircle(
+            color = category.color,
+            isSelected = isSelected,
+        )
+        Spacer(modifier = Modifier.width(SpacingSmall))
+        Text(text = categoryLabel, fontWeight = fontWeight)
+      }
+}
+
 @Composable
 private fun ColorCircle(
     color: Color,

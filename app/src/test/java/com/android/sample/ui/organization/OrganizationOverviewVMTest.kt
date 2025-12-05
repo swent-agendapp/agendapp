@@ -70,7 +70,7 @@ class OrganizationOverviewViewModelTest {
     vmNoUser.fillSelectedOrganizationDetails("org1")
 
     val state = vmNoUser.uiState.value
-    assertEquals(R.string.error_no_authenticated_user, state.errorMessageId)
+    assertEquals(ERROR_MESSAGE_NO_AUTHENTICATED_USER, state.errorMessageId)
   }
 
   @Test

@@ -2,7 +2,6 @@ package com.android.sample.ui.organization
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.android.sample.R
 import com.android.sample.model.authentication.AuthRepository
 import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.organization.repository.OrganizationRepository
@@ -90,7 +89,7 @@ class OrganizationOverviewViewModel(
 
     // Ensure the current user is not null
     if (currentUser == null) {
-      setError(Context.getS(R.string.error_no_authenticated_user))
+      setError(ERROR_MESSAGE_NO_AUTHENTICATED_USER)
       return
     }
 

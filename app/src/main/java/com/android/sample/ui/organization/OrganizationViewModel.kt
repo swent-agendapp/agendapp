@@ -2,7 +2,6 @@ package com.android.sample.ui.organization
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.android.sample.R
 import com.android.sample.model.authentication.AuthRepository
 import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.authentication.User
@@ -45,9 +44,7 @@ open class OrganizationViewModel(
   private fun loadOrganizations() {
     viewModelScope.launch {
       // Get the current authenticated user
-      val user =
-          userState.value
-              ?: throw IllegalStateException(R.string.error_no_authenticated_user.toString())
+      val user = userState.value ?: throw IllegalStateException(ERROR_MESSAGE_NO_AUTHENTICATED_USER)
 
       // Update UI state to loading and fetch organizations
       _uiState.update { it.copy(isLoading = true) }
@@ -63,8 +60,7 @@ open class OrganizationViewModel(
       try {
         // Get the current authenticated user
         val user =
-            userState.value
-                ?: throw IllegalStateException(R.string.error_no_authenticated_user.toString())
+            userState.value ?: throw IllegalStateException(ERROR_MESSAGE_NO_AUTHENTICATED_USER)
 
         // Update UI state to refreshing
         _uiState.update { it.copy(isRefreshing = true) }
@@ -93,8 +89,7 @@ open class OrganizationViewModel(
   fun addOrganizationFromName(name: String) {
     viewModelScope.launch {
       val currentUser =
-          userState.value
-              ?: throw IllegalStateException(R.string.error_no_authenticated_user.toString())
+          userState.value ?: throw IllegalStateException(ERROR_MESSAGE_NO_AUTHENTICATED_USER)
 
       try {
         // Create a new organization with the current user as the only admin and member

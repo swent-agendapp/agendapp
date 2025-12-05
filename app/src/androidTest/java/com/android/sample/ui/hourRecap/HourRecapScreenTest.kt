@@ -104,4 +104,26 @@ class HourRecapScreenTest : FirebaseEmulatedTest() {
     // Only 2 recap item
     compose.onAllNodesWithTag(HourRecapTestTags.RECAP_ITEM).assertCountEquals(2)
   }
+
+  @Test
+  fun emptyWorkedHours_showsEmptyList() {
+    val vm = CalendarViewModel(app = ApplicationProvider.getApplicationContext())
+
+    vm.setTestWorkedHours(emptyList()) // 空数据
+
+    compose.setContent { HourRecapScreen(calendarViewModel = vm) }
+
+    compose.onAllNodesWithTag(HourRecapTestTags.RECAP_ITEM).assertCountEquals(0)
+  }
+
+  @Test
+  fun backButton_triggersCallback() {
+    var backPressed = false
+
+    compose.setContent { HourRecapScreen(onBackClick = { backPressed = true }) }
+
+    compose.onNodeWithTag(HourRecapTestTags.BACK_BUTTON).assertExists().performClick()
+
+    assert(backPressed)
+  }
 }

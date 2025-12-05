@@ -1,6 +1,7 @@
 package com.android.sample.ui.invitation
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -8,6 +9,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -19,9 +21,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.common.FloatingButton
+import com.android.sample.ui.common.Loading
 import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.invitation.components.InvitationCardList
 import com.android.sample.ui.invitation.createInvitation.CreateInvitationBottomSheet
+import com.android.sample.ui.organization.SelectedOrganizationVMProvider
+import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import kotlinx.coroutines.launch
 
 // Assisted by AI
@@ -38,6 +43,7 @@ object InvitationOverviewScreenTestTags {
   const val ROOT = "invitationOverviewScreenRoot"
   const val TITLE = "title"
   const val INVITATION_LIST = "invitationList"
+  const val INVITATION_LOADING_INDICATOR = "invitationLoadingIndicator"
   const val CREATE_INVITATION_BUTTON = "createInvitationButton"
   const val CREATE_INVITATION_BOTTOM_SHEET = "createInvitationBottomSheet"
 }

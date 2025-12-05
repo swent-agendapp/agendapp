@@ -21,6 +21,8 @@ import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.theme.PaddingLarge
 import com.android.sample.ui.theme.PaddingSmall
 import com.android.sample.ui.theme.SpacingSmall
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 // Assisted by AI
 
@@ -56,6 +58,7 @@ object InvitationCreationTestTags {
 @Composable
 fun CreateInvitationBottomSheet(
     createInvitationViewModel: CreateInvitationViewModel = viewModel(),
+    scope: CoroutineScope,
     onCancel: () -> Unit = {},
     onCreate: () -> Unit = {}
 ) {
@@ -76,15 +79,15 @@ fun CreateInvitationBottomSheet(
                 Icon(Icons.Default.Remove, contentDescription = "Decrease count")
               }
 
-          OutlinedTextField(
-              value = uiState.count.toString(),
-              onValueChange = { createInvitationViewModel.setCount(it.toInt()) },
-              modifier =
-                  Modifier.width(TEXT_FIELD_WIDTH)
-                      .padding(horizontal = PaddingSmall)
-                      .testTag(InvitationCreationTestTags.COUNT_TEXT_FIELD),
-              singleLine = true,
-              keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
+                OutlinedTextField(
+                    value = uiState.count.toString(),
+                    onValueChange = { createInvitationViewModel.setCount(it.toInt()) },
+                    modifier =
+                        Modifier.width(TEXT_FIELD_WIDTH)
+                            .padding(horizontal = PaddingSmall)
+                            .testTag(InvitationCreationTestTags.COUNT_TEXT_FIELD),
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
 
           IconButton(
               onClick = { createInvitationViewModel.increment() },
@@ -93,25 +96,27 @@ fun CreateInvitationBottomSheet(
               }
         }
 
-    uiState.errorMsg?.let {
-      Text(
-          text = it,
-          color = MaterialTheme.colorScheme.error,
-          style = MaterialTheme.typography.bodySmall)
-    }
+        uiState.errorMsg?.let {
+          Text(
+              text = it,
+              color = MaterialTheme.colorScheme.error,
+              style = MaterialTheme.typography.bodySmall)
+        }
 
-    Spacer(Modifier.height(SpacingSmall))
+        Spacer(Modifier.height(SpacingSmall))
 
-    BottomNavigationButtons(
-        onNext = {
-          createInvitationViewModel.addInvitations()
-          onCreate()
-        },
-        onBack = onCancel,
-        backButtonText = stringResource(R.string.cancel),
-        nextButtonText = stringResource(R.string.create_invitation_button_text),
-        canGoNext = createInvitationViewModel.canCreateInvitations(),
-        backButtonTestTag = InvitationCreationTestTags.CANCEL_BUTTON,
-        nextButtonTestTag = InvitationCreationTestTags.CREATE_INVITATION_BUTTON)
-  }
+        BottomNavigationButtons(
+            onNext = {
+              scope.launch {
+                createInvitationViewModel.addInvitations()
+                onCreate()
+              }
+            },
+            onBack = onCancel,
+            backButtonText = stringResource(R.string.cancel),
+            nextButtonText = stringResource(R.string.create_invitation_button_text),
+            canGoNext = createInvitationViewModel.canCreateInvitations(),
+            backButtonTestTag = InvitationCreationTestTags.CANCEL_BUTTON,
+            nextButtonTestTag = InvitationCreationTestTags.CREATE_INVITATION_BUTTON)
+      }
 }

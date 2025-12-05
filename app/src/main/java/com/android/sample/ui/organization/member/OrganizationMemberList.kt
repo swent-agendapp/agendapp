@@ -18,13 +18,16 @@ object OrganizationMemberListTestTags {
 fun OrganizationMemberList(organizationId: String, onInvitationCodesClick: () -> Unit = {}) {
   // Placeholder for a future member management screen for an organization
   Scaffold(
-    modifier = Modifier.testTag(OrganizationMemberListTestTags.ROOT),
-    content = { innerPadding ->
-      Button(
-        onClick = onInvitationCodesClick, modifier = Modifier.padding(innerPadding).testTag(
-          // Hardcoded string for now, since it is temporary and for testing purpose
-          OrganizationMemberListTestTags.CREATE_INVITATION_BUTTON
-        )
-      ) { Text("Create Invitation") }
-    })
+      modifier = Modifier.testTag(OrganizationMemberListTestTags.ROOT),
+      content = { innerPadding ->
+        Button(
+            onClick = onInvitationCodesClick,
+            modifier =
+                Modifier.padding(innerPadding)
+                    .testTag(
+                        // Hardcoded string for now, since it is temporary and for testing purpose
+                        OrganizationMemberListTestTags.CREATE_INVITATION_BUTTON)) {
+              Text("Create Invitation")
+            }
+      })
 }

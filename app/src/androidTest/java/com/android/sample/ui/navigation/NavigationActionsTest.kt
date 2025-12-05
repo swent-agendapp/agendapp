@@ -173,28 +173,31 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
 
   @Test
   fun goToInvitationCodesScreen() {
-      composeTestRule.setContent { Agendapp() }
+    composeTestRule.setContent { Agendapp() }
 
-      createOrganizationAndNavigateToCalendar()
+    createOrganizationAndNavigateToCalendar()
 
-      composeTestRule.onNodeWithTag(BottomBarTestTags.BOTTOM_BAR).assertIsDisplayed()
-      composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_SETTINGS).assertIsDisplayed()
-      composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_SETTINGS).assertExists().performClick()
+    composeTestRule.onNodeWithTag(BottomBarTestTags.BOTTOM_BAR).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_SETTINGS).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_SETTINGS).assertExists().performClick()
 
-      composeTestRule.onNodeWithTag(SettingsScreenTestTags.ORGANIZATION_BUTTON)
-          .assertIsDisplayed()
-          .performClick()
+    composeTestRule
+        .onNodeWithTag(SettingsScreenTestTags.ORGANIZATION_BUTTON)
+        .assertIsDisplayed()
+        .performClick()
 
-      composeTestRule.onNodeWithTag(OrganizationListScreenTestTags.organizationItemTag("Test Organization"))
-          .assertIsDisplayed()
-          .performClick()
+    composeTestRule
+        .onNodeWithTag(OrganizationListScreenTestTags.organizationItemTag("Test Organization"))
+        .assertIsDisplayed()
+        .performClick()
 
-      composeTestRule.onNodeWithTag(OrganizationMemberListTestTags.ROOT).assertIsDisplayed()
-      composeTestRule.onNodeWithTag(OrganizationMemberListTestTags.CREATE_INVITATION_BUTTON)
-          .assertIsDisplayed()
-          .performClick()
+    composeTestRule.onNodeWithTag(OrganizationMemberListTestTags.ROOT).assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag(OrganizationMemberListTestTags.CREATE_INVITATION_BUTTON)
+        .assertIsDisplayed()
+        .performClick()
 
-      composeTestRule.onNodeWithTag(InvitationOverviewScreenTestTags.ROOT).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(InvitationOverviewScreenTestTags.ROOT).assertIsDisplayed()
   }
 
   // Helper function to create an organization and navigate to its calendar

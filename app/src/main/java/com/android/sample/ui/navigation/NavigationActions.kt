@@ -27,14 +27,6 @@ class NavigationActions(val navController: NavHostController) {
     navController.navigate(Screen.ReplacementProcess.createRoute(replacementId))
   }
 
-  fun navigateToOrganizationMemberList(organizationId: String) {
-    navController.navigate(Screen.OrganizationMemberList.createRoute(organizationId))
-  }
-
-  fun navigateToInvitationOverview(organizationId: String) {
-    navController.navigate(Screen.InvitationOverview.createRoute(organizationId))
-  }
-
   /** Navigate back to previous screen. */
   fun navigateBack() {
     navController.popBackStack()

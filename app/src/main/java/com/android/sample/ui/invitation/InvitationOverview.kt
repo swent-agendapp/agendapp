@@ -60,11 +60,14 @@ object InvitationOverviewScreenTestTags {
 @Composable
 fun InvitationOverviewScreen(
     invitationOverviewViewModel: InvitationOverviewViewModel = viewModel(),
-    organizationId: String,
+    selectedOrganizationViewModel: SelectedOrganizationViewModel =
+        SelectedOrganizationVMProvider.viewModel,
     onBack: () -> Unit = {},
 ) {
-  LaunchedEffect(organizationId) { invitationOverviewViewModel.loadInvitations(organizationId) }
-
+  val selectedOrgId by selectedOrganizationViewModel.selectedOrganizationId.collectAsState()
+  selectedOrgId?.let { orgId ->
+    LaunchedEffect(orgId) { invitationOverviewViewModel.loadInvitations(orgId) }
+  }
   val uiState by invitationOverviewViewModel.uiState.collectAsStateWithLifecycle()
 
   val sheetState = rememberModalBottomSheetState()
@@ -109,12 +112,15 @@ fun InvitationOverviewScreen(
                 invitationOverviewViewModel.dismissBottomSheet()
               },
               onCreate = {
-                scope.launch {
-                  sheetState.hide()
-                  invitationOverviewViewModel.dismissBottomSheet()
-                  invitationOverviewViewModel.loadInvitations(organizationId)
+                selectedOrgId?.let { orgId ->
+                  scope.launch {
+                    sheetState.hide()
+                    invitationOverviewViewModel.dismissBottomSheet()
+                    invitationOverviewViewModel.loadInvitations(orgId)
+                  }
                 }
-              })
+              },
+              scope = scope)
         }
   }
 }
@@ -122,5 +128,5 @@ fun InvitationOverviewScreen(
 @Preview
 @Composable
 fun InvitationOverviewScreenPreview() {
-  InvitationOverviewScreen(organizationId = "org1")
+  InvitationOverviewScreen()
 }

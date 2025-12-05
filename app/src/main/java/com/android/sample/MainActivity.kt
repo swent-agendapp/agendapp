@@ -45,7 +45,6 @@ import com.android.sample.ui.navigation.Screen
 import com.android.sample.ui.organization.AddOrganizationScreen
 import com.android.sample.ui.organization.OrganizationListScreen
 import com.android.sample.ui.organization.OrganizationOverViewScreen
-import com.android.sample.ui.organization.member.OrganizationMemberList
 import com.android.sample.ui.profile.AdminContactScreen
 import com.android.sample.ui.profile.ProfileScreen
 import com.android.sample.ui.replacement.ReplacementPendingListScreen
@@ -107,7 +106,7 @@ fun Agendapp(
   val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
   val startDestination =
-      if (authRepository.getCurrentUser() != null) Screen.Organizations.route
+      if (authRepository.getCurrentUser() != null) Screen.SelectOrganization.route
       else Screen.Authentication.route
 
   val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
@@ -162,7 +161,6 @@ fun Agendapp(
               editEventGraph(navigationActions)
               addEventGraph(navigationActions)
               replacementGraph(navigationActions, credentialManager)
-              organizationMemberList(navigationActions)
               invitationGraph(navigationActions)
             }
       }
@@ -188,27 +186,28 @@ private fun NavGraphBuilder.authenticationGraph(
   composable(Screen.Authentication.route) {
     SignInScreen(
         credentialManager = credentialManager,
-        onSignedIn = { navigationActions.navigateTo(Screen.Organizations) })
+        onSignedIn = { navigationActions.navigateTo(Screen.SelectOrganization) })
   }
 }
 
 private fun NavGraphBuilder.organizationsGraph(navigationActions: NavigationActions) {
   // Organization Selection Graph
-  navigation(startDestination = Screen.Organizations.route, route = Screen.Organizations.name) {
-    // Organization List Screen
-    composable(Screen.Organizations.route) {
-      OrganizationListScreen(
-          onOrganizationSelected = { navigationActions.navigateTo(Screen.Calendar) },
-          onAddOrganizationClicked = { navigationActions.navigateTo(Screen.AddOrganization) })
-    }
+  navigation(
+      startDestination = Screen.SelectOrganization.route, route = Screen.SelectOrganization.name) {
+        // Organization List Screen
+        composable(Screen.SelectOrganization.route) {
+          OrganizationListScreen(
+              onOrganizationSelected = { navigationActions.navigateTo(Screen.Calendar) },
+              onAddOrganizationClicked = { navigationActions.navigateTo(Screen.AddOrganization) })
+        }
 
-    // Add Organization Screen
-    composable(Screen.AddOrganization.route) {
-      AddOrganizationScreen(
-          onNavigateBack = { navigationActions.navigateBack() },
-          onFinish = { navigationActions.navigateTo(Screen.Organizations) })
-    }
-  }
+        // Add Organization Screen
+        composable(Screen.AddOrganization.route) {
+          AddOrganizationScreen(
+              onNavigateBack = { navigationActions.navigateBack() },
+              onFinish = { navigationActions.navigateTo(Screen.SelectOrganization) })
+        }
+      }
 }
 
 private fun NavGraphBuilder.calendarGraph(navigationActions: NavigationActions) {
@@ -332,7 +331,7 @@ private fun NavGraphBuilder.settingsGraph(
           onNavigateToAdminInfo = { navigationActions.navigateTo(Screen.AdminContact) },
           onNavigateToMapSettings = { navigationActions.navigateTo(Screen.Map) },
           onNavigateToOrganizationList = {
-            navigationActions.navigateTo(Screen.ManageOrganizations)
+            navigationActions.navigateTo(Screen.OrganizationOverview)
           })
     }
     // User profile Screen
@@ -354,45 +353,23 @@ private fun NavGraphBuilder.settingsGraph(
     composable(Screen.OrganizationOverview.route) {
       OrganizationOverViewScreen(
           onNavigateBack = { navigationActions.navigateBack() },
-          onChangeOrganization = { navigationActions.navigateTo(Screen.InvitationOverview) },
-          onDeleteOrganization = { navigationActions.navigateTo(Screen.Organizations) })
+          onChangeOrganization = { navigationActions.navigateTo(Screen.ChangeOrganization) },
+          onDeleteOrganization = { navigationActions.navigateTo(Screen.SelectOrganization) },
+          onInvitationClick = { navigationActions.navigateTo(Screen.InvitationOverview) })
     }
-    composable(Screen.ManageOrganizations.route) {
+    composable(Screen.ChangeOrganization.route) {
       OrganizationListScreen(
-          onOrganizationSelected = { organization ->
-            navigationActions.navigateToOrganizationMemberList(organization.id)
-          })
+          onOrganizationSelected = { navigationActions.navigateTo(Screen.Settings) },
+          onAddOrganizationClicked = { navigationActions.navigateTo(Screen.AddOrganization) })
     }
   }
-}
-
-private fun NavGraphBuilder.organizationMemberList(navigationActions: NavigationActions) {
-  // Organization member list screen
-  navigation(
-      startDestination = Screen.OrganizationMemberList.route,
-      route = Screen.OrganizationMemberList.name) {
-        composable(Screen.OrganizationMemberList.route) { navBackStackEntry ->
-          val organizationId = navBackStackEntry.arguments?.getString("organizationId")
-          organizationId?.let {
-            OrganizationMemberList(
-                organizationId = it,
-                onInvitationCodesClick = {
-                  navigationActions.navigateToInvitationOverview(organizationId)
-                })
-          } ?: run { Log.e("OrganizationMemberList", "Organization id is null") }
-        }
-      }
 }
 
 private fun NavGraphBuilder.invitationGraph(navigationActions: NavigationActions) {
   navigation(
       startDestination = Screen.InvitationOverview.route, route = Screen.InvitationOverview.name) {
         composable(route = Screen.InvitationOverview.route) { navBackStackEntry ->
-          val organizationId = navBackStackEntry.arguments?.getString("organizationId")
-          organizationId?.let {
-            InvitationOverviewScreen(
-                organizationId = it, onBack = { navigationActions.navigateBack() })
-          } ?: run { Log.e("InvitationOverview", "Organization id is null") }
+          InvitationOverviewScreen(onBack = { navigationActions.navigateBack() })
         }
       }
 }

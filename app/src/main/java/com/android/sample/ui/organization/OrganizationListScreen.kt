@@ -49,7 +49,7 @@ fun OrganizationListScreen(
     organizationViewModel: OrganizationViewModel = viewModel(),
     selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel,
-    onOrganizationSelected: (Organization) -> Unit = {},
+    onOrganizationSelected: () -> Unit = {},
     onAddOrganizationClicked: () -> Unit = {},
 ) {
   val uiState by organizationViewModel.uiState.collectAsState()
@@ -96,7 +96,7 @@ fun OrganizationListScreen(
                   // Update selected organization in ViewModel
                   selectedOrganizationViewModel.selectOrganization(orgId = organization.id)
                   // Invoke given callback after selection
-                  onOrganizationSelected(organization)
+                  onOrganizationSelected()
                 })
           }
         }

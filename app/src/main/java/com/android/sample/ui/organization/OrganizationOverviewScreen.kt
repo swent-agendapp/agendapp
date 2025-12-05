@@ -1,6 +1,7 @@
 package com.android.sample.ui.organization
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -17,6 +18,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
+import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.theme.PaddingMedium
@@ -45,6 +47,7 @@ fun OrganizationOverViewScreen(
     onNavigateBack: () -> Unit = {},
     onChangeOrganization: () -> Unit = {},
     onDeleteOrganization: () -> Unit = {},
+    onInvitationClick: () -> Unit = {},
     organizationOverviewViewModel: OrganizationOverviewViewModel = viewModel(),
     selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel,
@@ -104,6 +107,9 @@ fun OrganizationOverViewScreen(
           Text(
               modifier = Modifier.testTag(OrganizationOverviewScreenTestTags.MEMBER_COUNT_TEXT),
               text = stringResource(R.string.organization_members) + ": ${uiState.memberCount}")
+
+          PrimaryButton(
+              text = "Invitations", onClick = onInvitationClick, modifier = Modifier.fillMaxWidth())
 
           // Bottom buttons (Change / Delete)
           BottomNavigationButtons(

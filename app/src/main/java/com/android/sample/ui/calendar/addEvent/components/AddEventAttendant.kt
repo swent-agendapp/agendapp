@@ -56,6 +56,7 @@ import com.android.sample.ui.theme.WeightExtraHeavy
 fun AddEventAttendantScreen(
     modifier: Modifier = Modifier,
     addEventViewModel: AddEventViewModel = viewModel(),
+
 ) {
   val newEventUIState by addEventViewModel.uiState.collectAsState()
 
@@ -111,7 +112,7 @@ fun AddEventAttendantScreen(
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
               // Scrollable list
               LazyColumn(modifier = Modifier.fillMaxSize().padding(PaddingMedium)) {
-                items(allParticipants) { participant ->
+                items(newEventUIState.users) { participant ->
                   Row(
                       verticalAlignment = Alignment.CenterVertically,
                       modifier =
@@ -134,7 +135,7 @@ fun AddEventAttendantScreen(
                               action(participant)
                             })
                         Spacer(modifier = Modifier.width(SpacingSmall))
-                        Text(text = participant)
+                        Text(text = participant.displayName?:participant.email?:"No Name")
                       }
                   HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
                 }

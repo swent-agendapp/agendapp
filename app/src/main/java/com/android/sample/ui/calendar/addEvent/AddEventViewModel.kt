@@ -4,6 +4,9 @@ import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
@@ -44,11 +47,12 @@ data class AddCalendarEventUIState(
     val endInstant: Instant = Instant.now().plus(Duration.ofHours(1)),
     val recurrenceEndInstant: Instant = Instant.now().plus(Duration.ofHours(1)),
     val recurrenceMode: RecurrenceStatus = RecurrenceStatus.OneTime,
-    val participants: Set<String> = emptySet(),
+    val participants: Set<User> = emptySet(),
     val color: Color = EventPalette.Blue,
     val errorMsg: String? = null,
     val draftEvent: Event = createEvent(organizationId = "").first(),
-    val step: AddEventStep = AddEventStep.TITLE_AND_DESC
+    val step: AddEventStep = AddEventStep.TITLE_AND_DESC,
+    val users : List<User> = emptyList(),
 )
 
 /** Steps in the multi-screen Add Event flow. */
@@ -72,7 +76,8 @@ enum class AddEventStep {
  * [setStartInstant], and [addEvent].
  */
 class AddEventViewModel(
-    private val repository: EventRepository = EventRepositoryProvider.repository,
+    private val userRepository: UserRepository = UserRepositoryProvider.repository,
+    private val eventRepository: EventRepository = EventRepositoryProvider.repository,
     selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel
 ) : ViewModel() {
@@ -85,6 +90,21 @@ class AddEventViewModel(
   val selectedOrganizationId: StateFlow<String?> =
       selectedOrganizationViewModel.selectedOrganizationId
 
+    // Helper function to get the selected organization ID or throw an exception if none is selected
+    fun getSelectedOrganizationId(): String {
+        val orgId = selectedOrganizationId.value
+        require(orgId != null) { "No organization selected" }
+        return orgId
+    }
+
+    init {
+        viewModelScope.launch {
+            val selectedOrga = getSelectedOrganizationId()
+            val userIds = userRepository.getUsersIds(selectedOrga)
+            val users = userRepository.getUsersByIds(userIds)
+            _uiState.update { it.copy(users = users) }
+        }
+    }
   /**
    * Loads a draft event instance based on the current UI field values.
    *
@@ -95,14 +115,14 @@ class AddEventViewModel(
 
     val draftEvent =
         createEvent(
-                repository = repository,
+                repository = eventRepository,
                 title = state.title,
                 description = state.description,
                 startDate = state.startInstant,
                 endDate = state.endInstant,
                 cloudStorageStatuses = emptySet(),
                 personalNotes = "",
-                participants = state.participants,
+                participants = state.participants.map { it -> it.displayName?: it.email ?: "No Name" }.toSet(),
                 recurrence = state.recurrenceMode,
                 organizationId = "",
                 endRecurrence = state.recurrenceEndInstant)
@@ -128,14 +148,14 @@ class AddEventViewModel(
     val newEvents =
         createEvent(
             organizationId = orgId,
-            repository = repository,
+            repository = eventRepository,
             title = state.title,
             description = state.description,
             startDate = state.startInstant,
             endDate = state.endInstant,
             cloudStorageStatuses = emptySet(),
             personalNotes = "",
-            participants = state.participants,
+            participants = state.participants.map { it -> it.displayName?: it.email ?: "No Name" }.toSet(),
             recurrence = state.recurrenceMode,
             endRecurrence = state.recurrenceEndInstant,
             color = state.color)
@@ -154,7 +174,7 @@ class AddEventViewModel(
         val orgId = selectedOrganizationId.value
         require(orgId != null) { "Organization must be selected to create an event" }
 
-        repository.insertEvent(orgId = orgId, item = event)
+        eventRepository.insertEvent(orgId = orgId, item = event)
       } catch (e: Exception) {
         Log.e("AddEventViewModel", "Error adding event: ${e.message}")
         _uiState.update { it.copy(errorMsg = "Unexpected error while creating the event") }
@@ -243,13 +263,13 @@ class AddEventViewModel(
   }
 
   /** Adds a participant to the event draft. */
-  fun addParticipant(participant: String) {
+  fun addParticipant(participant: User) {
     val updated = _uiState.value.participants + participant
     _uiState.update { it.copy(participants = updated) }
   }
 
   /** Removes a participant from the event draft. */
-  fun removeParticipant(participant: String) {
+  fun removeParticipant(participant: User) {
     val updated = _uiState.value.participants - participant
     _uiState.update { it.copy(participants = updated) }
   }

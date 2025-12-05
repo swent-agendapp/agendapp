@@ -85,6 +85,7 @@ open class OrganizationViewModel(
   open fun clearErrorMsg() {
     _uiState.update { it.copy(errorMsg = null) }
   }
+
   fun addUserToOrganization(organizationId: String) {
     viewModelScope.launch {
       try {
@@ -94,7 +95,9 @@ open class OrganizationViewModel(
         loadOrganizations()
       } catch (e: Exception) {
         // Update the UI state with the error message
-        _uiState.update { it.copy(errorMsg = "Failed to add user to organization: ${e.localizedMessage}") }
+        _uiState.update {
+          it.copy(errorMsg = "Failed to add user to organization: ${e.localizedMessage}")
+        }
       }
     }
   }

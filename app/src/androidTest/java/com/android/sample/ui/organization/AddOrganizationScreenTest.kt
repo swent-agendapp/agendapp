@@ -49,8 +49,7 @@ class AddOrganizationScreenTest {
 
     composeTestRule.setContent {
       AddOrganizationScreen(
-          onNavigateBack = { backClicked = true },
-          onFinish = { finishClicked = true })
+          onNavigateBack = { backClicked = true }, onFinish = { finishClicked = true })
     }
 
     // Fill in the organization name to enable the Create button

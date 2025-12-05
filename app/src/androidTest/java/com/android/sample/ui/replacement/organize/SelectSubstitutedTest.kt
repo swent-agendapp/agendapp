@@ -26,14 +26,11 @@ class SelectSubstitutedScreenTest : FirebaseEmulatedTest() {
   @Before
   override fun setUp() = runBlocking {
     super.setUp()
-    
+
     val helper = OrganizationTestHelper()
     helper.setupOrganizationWithUsers(
-        organizationId = "testOrg",
-        organizationName = "name",
-        userCount = 4
-    )
-    
+        organizationId = "testOrg", organizationName = "name", userCount = 4)
+
     fakeViewModel = ReplacementOrganizeViewModel()
     fakeViewModel.loadOrganizationMembers()
     composeTestRule.setContent {

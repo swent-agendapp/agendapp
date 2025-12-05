@@ -103,8 +103,7 @@ class SignInViewModel(
             .fold(
                 { user ->
                   userRepository.newUser(user)
-                  _uiState.update { it.copy(isLoading = false, user = user, signedOut = false)
-                  }
+                  _uiState.update { it.copy(isLoading = false, user = user, signedOut = false) }
                 },
                 { failure ->
                   _uiState.update {

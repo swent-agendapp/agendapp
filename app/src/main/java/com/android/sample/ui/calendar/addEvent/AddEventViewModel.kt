@@ -12,7 +12,6 @@ import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.model.category.EventCategory
-import com.android.sample.model.category.EventCategory
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import java.time.Duration
@@ -52,7 +51,7 @@ data class AddCalendarEventUIState(
     val errorMsg: String? = null,
     val draftEvent: Event = createEvent(organizationId = "").first(),
     val step: AddEventStep = AddEventStep.TITLE_AND_DESC,
-    val users : List<User> = emptyList(),
+    val users: List<User> = emptyList(),
 )
 
 /** Steps in the multi-screen Add Event flow. */
@@ -90,21 +89,21 @@ class AddEventViewModel(
   val selectedOrganizationId: StateFlow<String?> =
       selectedOrganizationViewModel.selectedOrganizationId
 
-    // Helper function to get the selected organization ID or throw an exception if none is selected
-    fun getSelectedOrganizationId(): String {
-        val orgId = selectedOrganizationId.value
-        require(orgId != null) { "No organization selected" }
-        return orgId
-    }
+  // Helper function to get the selected organization ID or throw an exception if none is selected
+  fun getSelectedOrganizationId(): String {
+    val orgId = selectedOrganizationId.value
+    require(orgId != null) { "No organization selected" }
+    return orgId
+  }
 
-    init {
-        viewModelScope.launch {
-            val selectedOrga = getSelectedOrganizationId()
-            val userIds = userRepository.getUsersIds(selectedOrga)
-            val users = userRepository.getUsersByIds(userIds)
-            _uiState.update { it.copy(users = users) }
-        }
+  init {
+    viewModelScope.launch {
+      val selectedOrga = getSelectedOrganizationId()
+      val userIds = userRepository.getUsersIds(selectedOrga)
+      val users = userRepository.getUsersByIds(userIds)
+      _uiState.update { it.copy(users = users) }
     }
+  }
   /**
    * Loads a draft event instance based on the current UI field values.
    *
@@ -123,7 +122,10 @@ class AddEventViewModel(
                 endDate = state.endInstant,
                 cloudStorageStatuses = emptySet(),
                 personalNotes = "",
-                participants = state.participants.map { it -> it.displayName?: it.email ?: "No Name" }.toSet(),
+                participants =
+                    state.participants
+                        .map { it -> it.displayName ?: it.email ?: "No Name" }
+                        .toSet(),
                 category = state.category,
                 recurrence = state.recurrenceMode,
                 endRecurrence = state.recurrenceEndInstant)
@@ -157,7 +159,8 @@ class AddEventViewModel(
             cloudStorageStatuses = emptySet(),
             personalNotes = "",
             category = state.category,
-            participants = state.participants.map { it -> it.displayName?: it.email ?: "No Name" }.toSet(),
+            participants =
+                state.participants.map { it -> it.displayName ?: it.email ?: "No Name" }.toSet(),
             recurrence = state.recurrenceMode,
             endRecurrence = state.recurrenceEndInstant)
 

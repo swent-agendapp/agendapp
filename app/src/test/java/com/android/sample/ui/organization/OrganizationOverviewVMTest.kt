@@ -43,7 +43,8 @@ class OrganizationOverviewViewModelTest {
   fun `fillSelectedOrganizationDetails fills UI state correctly`() = runTest {
     val orgId = "org1"
     val org =
-        Organization(id = orgId, name = "My Organization", members = listOf(user1.id, user2.id, user3.id))
+        Organization(
+            id = orgId, name = "My Organization", members = listOf(user1.id, user2.id, user3.id))
     organizationRepository.insertOrganization(org)
 
     vm.fillSelectedOrganizationDetails(orgId)

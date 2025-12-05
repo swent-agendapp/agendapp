@@ -56,7 +56,6 @@ import com.android.sample.ui.theme.WeightExtraHeavy
 fun AddEventAttendantScreen(
     modifier: Modifier = Modifier,
     addEventViewModel: AddEventViewModel = viewModel(),
-
 ) {
   val newEventUIState by addEventViewModel.uiState.collectAsState()
 
@@ -135,7 +134,7 @@ fun AddEventAttendantScreen(
                               action(participant)
                             })
                         Spacer(modifier = Modifier.width(SpacingSmall))
-                        Text(text = participant.displayName?:participant.email?:"No Name")
+                        Text(text = participant.displayName ?: participant.email ?: "No Name")
                       }
                   HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
                 }

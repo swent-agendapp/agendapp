@@ -38,12 +38,14 @@ import com.android.sample.ui.calendar.eventOverview.EventOverviewScreen
 import com.android.sample.ui.common.BottomBar
 import com.android.sample.ui.common.BottomBarItem
 import com.android.sample.ui.common.BottomBarTestTags
+import com.android.sample.ui.invitation.InvitationOverviewScreen
 import com.android.sample.ui.map.MapScreen
 import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
 import com.android.sample.ui.organization.AddOrganizationScreen
 import com.android.sample.ui.organization.OrganizationListScreen
 import com.android.sample.ui.organization.OrganizationOverViewScreen
+import com.android.sample.ui.organization.member.OrganizationMemberList
 import com.android.sample.ui.profile.AdminContactScreen
 import com.android.sample.ui.profile.ProfileScreen
 import com.android.sample.ui.replacement.ReplacementPendingListScreen
@@ -160,6 +162,8 @@ fun Agendapp(
               editEventGraph(navigationActions)
               addEventGraph(navigationActions)
               replacementGraph(navigationActions, credentialManager)
+              organizationMemberList(navigationActions)
+              invitationGraph(navigationActions)
             }
       }
 }
@@ -328,7 +332,7 @@ private fun NavGraphBuilder.settingsGraph(
           onNavigateToAdminInfo = { navigationActions.navigateTo(Screen.AdminContact) },
           onNavigateToMapSettings = { navigationActions.navigateTo(Screen.Map) },
           onNavigateToOrganizationList = {
-            navigationActions.navigateTo(Screen.OrganizationOverview)
+            navigationActions.navigateTo(Screen.ManageOrganizations)
           })
     }
     // User profile Screen
@@ -350,8 +354,45 @@ private fun NavGraphBuilder.settingsGraph(
     composable(Screen.OrganizationOverview.route) {
       OrganizationOverViewScreen(
           onNavigateBack = { navigationActions.navigateBack() },
-          onChangeOrganization = { navigationActions.navigateTo(Screen.Organizations) },
+          onChangeOrganization = { navigationActions.navigateTo(Screen.InvitationOverview) },
           onDeleteOrganization = { navigationActions.navigateTo(Screen.Organizations) })
     }
+    composable(Screen.ManageOrganizations.route) {
+      OrganizationListScreen(
+          onOrganizationSelected = { organization ->
+            navigationActions.navigateToOrganizationMemberList(organization.id)
+          })
+    }
   }
+}
+
+private fun NavGraphBuilder.organizationMemberList(navigationActions: NavigationActions) {
+  // Organization member list screen
+  navigation(
+      startDestination = Screen.OrganizationMemberList.route,
+      route = Screen.OrganizationMemberList.name) {
+        composable(Screen.OrganizationMemberList.route) { navBackStackEntry ->
+          val organizationId = navBackStackEntry.arguments?.getString("organizationId")
+          organizationId?.let {
+            OrganizationMemberList(
+                organizationId = it,
+                onInvitationCodesClick = {
+                  navigationActions.navigateToInvitationOverview(organizationId)
+                })
+          } ?: run { Log.e("OrganizationMemberList", "Organization id is null") }
+        }
+      }
+}
+
+private fun NavGraphBuilder.invitationGraph(navigationActions: NavigationActions) {
+  navigation(
+      startDestination = Screen.InvitationOverview.route, route = Screen.InvitationOverview.name) {
+        composable(route = Screen.InvitationOverview.route) { navBackStackEntry ->
+          val organizationId = navBackStackEntry.arguments?.getString("organizationId")
+          organizationId?.let {
+            InvitationOverviewScreen(
+                organizationId = it, onBack = { navigationActions.navigateBack() })
+          } ?: run { Log.e("InvitationOverview", "Organization id is null") }
+        }
+      }
 }

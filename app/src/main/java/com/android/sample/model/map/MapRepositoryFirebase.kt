@@ -59,11 +59,11 @@ class MapRepositoryFirebase(private val db: FirebaseFirestore) : MapRepository {
   }
 
   override suspend fun updateArea(
-    areaId: String,
-    orgId: String,
-    label: String,
-    marker: Marker,
-    radius: Double
+      areaId: String,
+      orgId: String,
+      label: String,
+      marker: Marker,
+      radius: Double
   ) {
     val area = Area(areaId, label, marker, radius)
     val map = AreaMapper.toMap(area)

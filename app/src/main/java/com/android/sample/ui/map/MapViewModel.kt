@@ -123,12 +123,11 @@ class MapViewModel(
     viewModelScope.launch {
       try {
         mapRepository.updateArea(
-          areaId = _state.value.selectedId!!,
-          orgId = getSelectedOrganizationId(),
-          label = _state.value.selectedAreaName,
-          marker = _state.value.selectedMarker!!,
-          radius = _state.value.selectedRadius
-        )
+            areaId = _state.value.selectedId!!,
+            orgId = getSelectedOrganizationId(),
+            label = _state.value.selectedAreaName,
+            marker = _state.value.selectedMarker!!,
+            radius = _state.value.selectedRadius)
         unselectArea()
         fetchAllArea()
       } catch (e: IllegalArgumentException) {
@@ -165,7 +164,6 @@ class MapViewModel(
       } catch (e: IllegalArgumentException) {
         _state.value = _state.value.copy(errorMessage = e.message)
       }
-
     }
   }
 

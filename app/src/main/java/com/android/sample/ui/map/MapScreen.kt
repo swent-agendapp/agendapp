@@ -43,7 +43,6 @@ import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.map.MapScreenTestTags.CREATE_AREA_BUTTON
 import com.android.sample.ui.map.MapScreenTestTags.DOWN_SHEET
 import com.android.sample.ui.map.MapScreenTestTags.DOWN_SHEET_FORM
-import com.android.sample.ui.profile.ProfileScreenTestTags
 import com.android.sample.ui.theme.DefaultZoom
 import com.android.sample.ui.theme.MapPalette
 import com.android.sample.ui.theme.PaddingMedium
@@ -67,8 +66,8 @@ import kotlinx.coroutines.flow.filterNotNull
 // Assisted by AI
 
 /**
- * Calculates dynamic slider range based on map zoom level.
- * Higher zoom = smaller, more precise ranges.
+ * Calculates dynamic slider range based on map zoom level. Higher zoom = smaller, more precise
+ * ranges.
  */
 private fun getSliderRangeForZoom(zoom: Float): ClosedFloatingPointRange<Float> {
   return when {
@@ -147,7 +146,9 @@ private fun AreaBottomSheet(
               label = { Text(stringResource(R.string.down_sheet_text_field)) },
               singleLine = true,
               modifier =
-                  Modifier.fillMaxWidth().testTag(DOWN_SHEET_FORM).padding(horizontal = PaddingMedium))
+                  Modifier.fillMaxWidth()
+                      .testTag(DOWN_SHEET_FORM)
+                      .padding(horizontal = PaddingMedium))
 
           Spacer(Modifier.height(SpacingSmall))
 
@@ -277,7 +278,7 @@ fun MapScreen(
                   showBottomSheet = false
                 },
                 onCreate = {
-                  if(uiState.selectedId == null) {
+                  if (uiState.selectedId == null) {
                     mapViewModel.createNewArea()
                   } else {
                     mapViewModel.updateArea()

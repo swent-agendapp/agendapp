@@ -22,11 +22,11 @@ class MapRepositoryLocal : MapRepository {
   }
 
   override suspend fun updateArea(
-    areaId: String,
-    orgId: String,
-    label: String,
-    marker: Marker,
-    radius: Double
+      areaId: String,
+      orgId: String,
+      label: String,
+      marker: Marker,
+      radius: Double
   ) {
     val org = getOrCreate(orgId)
     val area = Area(id = areaId, label = label, marker = marker, radius = radius)

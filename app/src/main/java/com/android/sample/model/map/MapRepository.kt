@@ -21,7 +21,14 @@ interface MapRepository {
    *   stored.
    */
   suspend fun createArea(orgId: String, label: String, marker: Marker, radius: Double)
-  suspend fun updateArea(areaId: String, orgId: String, label: String, marker: Marker, radius: Double)
+
+  suspend fun updateArea(
+      areaId: String,
+      orgId: String,
+      label: String,
+      marker: Marker,
+      radius: Double
+  )
 
   /**
    * Return all areas currently stored.

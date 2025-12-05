@@ -20,21 +20,27 @@ import kotlinx.coroutines.tasks.await
  */
 class OrganizationRepositoryFirebase(private val db: FirebaseFirestore) : OrganizationRepository {
 
-  /** Correct version of the code */
   override suspend fun getAllOrganizations(user: User): List<Organization> {
-    val userDoc = db.collection(COLLECTION_USERS).document(user.id).get().await()
-
-    val orgIds = userDoc.get("organizations") as? List<String> ?: emptyList()
-
-    if (orgIds.isEmpty()) return emptyList()
 
       val orgsSnapshot =
           db.collection(ORGANIZATIONS_COLLECTION_PATH)
-              .whereIn(FieldPath.documentId(), orgIds)
               .get()
               .await()
 
-    return orgsSnapshot.documents.mapNotNull { OrganizationMapper.fromDocument(it) }
+      return orgsSnapshot.documents.mapNotNull { OrganizationMapper.fromDocument(it) }
+//    val userDoc = db.collection(COLLECTION_USERS).document(user.id).get().await()
+//
+//    val orgIds = userDoc.get("organizations") as? List<String> ?: emptyList()
+//
+//    if (orgIds.isEmpty()) return emptyList()
+//
+//      val orgsSnapshot =
+//          db.collection(ORGANIZATIONS_COLLECTION_PATH)
+//              .whereIn(FieldPath.documentId(), orgIds)
+//              .get()
+//              .await()
+//
+//    return orgsSnapshot.documents.mapNotNull { OrganizationMapper.fromDocument(it) }
   }
 
   override suspend fun insertOrganization(organization: Organization) {

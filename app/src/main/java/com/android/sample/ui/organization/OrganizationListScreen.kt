@@ -92,6 +92,11 @@ fun OrganizationListScreen(
                 onOrganizationSelected = { organization ->
                   // Update selected organization in ViewModel
                   selectedOrganizationViewModel.selectOrganization(orgId = organization.id)
+
+                    //Add the user to the organization in the User view model
+                    organizationViewModel.addUserToOrganization(
+                        organizationId = organization.id
+                    )
                   // Invoke given callback after selection
                   onOrganizationSelected()
                 })

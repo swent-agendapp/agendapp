@@ -19,7 +19,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.testTag
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.model.calendar.Event
-import com.android.sample.ui.calendar.CalendarScreenTestTags.PULL_TO_REFRESH
 import com.android.sample.ui.calendar.components.DatePickerModal
 import com.android.sample.ui.calendar.components.ViewMode
 import com.android.sample.ui.calendar.components.ViewModeSelector
@@ -100,7 +99,7 @@ fun CalendarContainer(
               localDateTimeToInstant(currentDateRange.start, LocalTime.MIDNIGHT),
               localDateTimeToInstant(currentDateRange.endInclusive, LocalTime.MAX))
         },
-        modifier = Modifier.testTag(PULL_TO_REFRESH)) {
+        modifier = Modifier.testTag("CalendarPullToRefresh")) {
           // When the mode is not MONTH, we show the week/day grid.
           if (currentMode != ViewMode.MONTH) {
             CalendarGridContent(

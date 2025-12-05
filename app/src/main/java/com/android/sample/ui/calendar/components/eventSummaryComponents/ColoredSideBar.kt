@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.android.sample.ui.calendar.components.EventSummaryCardTags
 import com.android.sample.ui.calendar.style.EventSummaryCardStyle
-import com.android.sample.ui.theme.BarWidthMedium
+import com.android.sample.ui.theme.BarWidthLarge
 import com.android.sample.ui.theme.EventPalette
 
 /**
@@ -29,9 +29,10 @@ import com.android.sample.ui.theme.EventPalette
  */
 @Composable
 fun ColoredSideBar(
-    width: Dp = BarWidthMedium,
+    width: Dp = BarWidthLarge,
     color: Color = EventPalette.Blue,
-    shape: RoundedCornerShape = RoundedCornerShape(EventSummaryCardStyle().cornerRadiusDp)
+    shape: RoundedCornerShape = RoundedCornerShape(EventSummaryCardStyle().cornerRadiusDp),
+    testTag: String = EventSummaryCardTags.SIDE_BAR
 ) {
   Box(
       modifier =
@@ -46,5 +47,5 @@ fun ColoredSideBar(
                           bottomStart = shape.bottomStart,
                           topEnd = CornerSize(0.dp),
                           bottomEnd = CornerSize(0.dp)))
-              .testTag(EventSummaryCardTags.SIDE_BAR))
+              .testTag(testTag))
 }

@@ -1,7 +1,8 @@
 package com.android.sample.ui.calendar
 
-import androidx.compose.ui.graphics.Color
 import com.android.sample.model.calendar.*
+import com.android.sample.model.category.EventCategory
+import com.android.sample.model.category.mockData.getMockEventCategory
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
 import java.time.Duration
@@ -52,6 +53,9 @@ class AddEventViewModelTest {
     assertTrue(state.description.isEmpty())
     assertEquals(0, state.participants.size)
     assertEquals(RecurrenceStatus.OneTime, state.recurrenceMode)
+    assertEquals(EventCategory.defaultCategory().label, state.category.label)
+    assertEquals(EventCategory.defaultCategory().color, state.category.color)
+    assertEquals(EventCategory.defaultCategory().isDefault, state.category.isDefault)
   }
 
   @Test
@@ -62,13 +66,14 @@ class AddEventViewModelTest {
   }
 
   @Test
-  fun `setColor updates the color in UI state`() {
+  fun `setCategory updates the category in UI state`() {
     val vm = makeVm()
-    val newColor = Color(0xFFFF0000)
+    val mockCategories = getMockEventCategory()
+    val newCategory = mockCategories.first()
 
-    vm.setColor(newColor)
+    vm.setCategory(newCategory)
 
-    assertEquals(newColor, vm.uiState.value.color)
+    assertEquals(newCategory, vm.uiState.value.category)
   }
 
   @Test
@@ -154,6 +159,9 @@ class AddEventViewModelTest {
     assertTrue(state.description.isEmpty())
     assertEquals(0, state.participants.size)
     assertEquals(RecurrenceStatus.OneTime, state.recurrenceMode)
+    assertEquals(EventCategory.defaultCategory().label, state.category.label)
+    assertEquals(EventCategory.defaultCategory().color, state.category.color)
+    assertEquals(EventCategory.defaultCategory().isDefault, state.category.isDefault)
   }
 
   // ------------------------------------------------------------

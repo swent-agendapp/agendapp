@@ -2,9 +2,9 @@ package com.android.sample.model.replacement.mockData
 
 import com.android.sample.model.calendar.CloudStorageStatus
 import com.android.sample.model.calendar.createEvent
+import com.android.sample.model.category.EventCategory
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementStatus
-import com.android.sample.ui.theme.EventPalette
 import java.time.Instant
 
 const val DEFAULT_NAME = "timael"
@@ -18,7 +18,7 @@ fun getMockReplacements(): List<Replacement> {
           startDate = Instant.parse("2025-10-14T08:00:00Z"),
           endDate = Instant.parse("2025-10-14T10:45:00Z"),
           cloudStorageStatuses = setOf(CloudStorageStatus.FIRESTORE),
-          color = EventPalette.Blue)
+          category = EventCategory.defaultCategory())
 
   val eventB =
       createEvent(
@@ -28,7 +28,7 @@ fun getMockReplacements(): List<Replacement> {
           startDate = Instant.parse("2025-10-18T09:15:00Z"),
           endDate = Instant.parse("2025-10-18T13:45:00Z"),
           cloudStorageStatuses = setOf(CloudStorageStatus.FIRESTORE),
-          color = EventPalette.Green)
+          category = EventCategory.defaultCategory())
 
   val eventC =
       createEvent(
@@ -38,7 +38,7 @@ fun getMockReplacements(): List<Replacement> {
           startDate = Instant.parse("2025-12-03T14:00:00Z"),
           endDate = Instant.parse("2025-12-03T16:00:00Z"),
           cloudStorageStatuses = setOf(CloudStorageStatus.FIRESTORE),
-          color = EventPalette.Orange)
+          category = EventCategory.defaultCategory())
 
   return listOf(
       Replacement(

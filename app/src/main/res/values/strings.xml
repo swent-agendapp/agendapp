@@ -168,6 +168,7 @@
     <string name="tooltip_area_create_title">Create your area :</string>
     <string name="tooltip_area_create_text">Once you have at least 3 markers, tap "Create area" to generate it automatically.</string>
     <string name="down_sheet_title">Name your area</string>
+    <string name="down_sheet_area_size">Size of your area : </string>
     <string name="down_sheet_text_field">Area name</string>
     <string name="down_sheet_button_create">Save area</string>
     <string name="down_sheet_button_delete">Delete Marker</string>

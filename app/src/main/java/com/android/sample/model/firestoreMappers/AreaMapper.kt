@@ -13,7 +13,7 @@ object AreaMapper : FirestoreMapper<Area> {
 
     val radius = document.getDouble("radius") ?: return null
 
-    val markerData = document["marker"] as? Marker ?: return null
+    val markerData = document["marker"] ?: return null
     val marker = MarkerMapper.fromAny(markerData) ?: return null
 
     return try {

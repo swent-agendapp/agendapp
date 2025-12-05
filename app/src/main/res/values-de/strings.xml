@@ -135,6 +135,7 @@
     <string name="tooltip_area_create_title">Bearbeiten oder löschen :</string>
     <string name="tooltip_area_create_text">Du kannst Markierungen verschieben oder löschen, um die Form anzupassen.</string>
     <string name="down_sheet_title">Benenne dein Gebiet</string>
+    <string name="down_sheet_area_size">Größe Ihres Bereichs : </string>
     <string name="down_sheet_text_field">Gebietsname</string>
     <string name="down_sheet_button_create">Gebiet speichern</string>
     <string name="down_sheet_button_delete">Markierung löschen</string>

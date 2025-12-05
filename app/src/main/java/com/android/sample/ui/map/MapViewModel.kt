@@ -32,7 +32,7 @@ object DefaultLocation {
 
 /** EPFL Location for default value */
 object DefaultMarkerValue {
-  const val RADIUS = 1.0
+  const val RADIUS = 10.0
   const val LABEL = "Untitled"
 }
 
@@ -61,9 +61,6 @@ class MapViewModel(
     private val mapRepository: MapRepository = MapRepositoryProvider.repository,
     private val locationRepository: LocationRepository = LocationRepositoryAndroid(app)
 ) : ViewModel() {
-
-  /** Provider for android GPS */
-  private val fusedClient = LocationServices.getFusedLocationProviderClient(app)
 
   private val _state = MutableStateFlow(MapUiState())
   val state: StateFlow<MapUiState> = _state

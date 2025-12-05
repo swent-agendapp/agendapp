@@ -88,6 +88,16 @@ fun MapScreen(
   val sheetState = rememberModalBottomSheetState()
   var showBottomSheet by remember { mutableStateOf(false) }
 
+  // Dynamic slider range based on zoom level
+  val zoom = cameraPositionState.position.zoom
+  val sliderRange = when {
+    zoom >= 17f -> 10f..200f      // Very zoomed in: 10-200m
+    zoom >= 15f -> 50f..500f       // Zoomed in: 50-500m
+    zoom >= 13f -> 100f..1000f     // Medium zoom: 100-1000m
+    zoom >= 11f -> 200f..2000f     // Zoomed out: 200-2000m
+    else -> 500f..5000f            // Very zoomed out: 500-5000m
+  }
+
   val context = LocalContext.current
 
   LaunchedEffect(uiState.errorMessage) {
@@ -184,8 +194,10 @@ fun MapScreen(
                                 .padding(horizontal = PaddingMedium))
                     Spacer(Modifier.height(SpacingSmall))
                     Column {
+                      Text(text = stringResource(R.string.down_sheet_area_size) + "${uiState.selectedRadius.toInt()} m")
                       Slider(
-                          value = uiState.selectedRadius.toFloat(),
+                          modifier = Modifier.padding(horizontal = PaddingMedium),
+                          value = uiState.selectedRadius.toFloat().coerceIn(sliderRange),
                           onValueChange = { it -> mapViewModel.setNewAreaRadius(it.toDouble()) },
                           colors =
                               SliderDefaults.colors(
@@ -194,8 +206,7 @@ fun MapScreen(
                                   inactiveTrackColor = Palette.LightGray,
                               ),
                           steps = 10,
-                          valueRange = 0f..100f)
-                      Text(text = uiState.selectedRadius.toString())
+                          valueRange = sliderRange)
                     }
                     PrimaryButton(
                         modifier = Modifier.testTag(CREATE_AREA_BUTTON),

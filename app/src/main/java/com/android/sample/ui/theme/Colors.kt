@@ -25,24 +25,18 @@ object Palette {
   // ----------------------------------------
   // Base / Neutrals
   // ----------------------------------------
+  val Magnolia = Color(color = 0xFFFFFBFE)
   val Platinum = Color(color = 0xFFE6E4E9)
-  val Gray = Color(color = 0xFF888888)
+  val LavenderMist = Color(color = 0xFFE7E0EC)
+  val LavenderGray = Color(color = 0xFFE6E1E5)
+  val FrenchGray = Color(color = 0xFFCAC4D0)
   val LightGray = Color(color = 0xFFCCCCCC)
+  val Gray = Color(color = 0xFF888888)
+  val SpanishGray = Color(color = 0xFF938F99)
+  val Rhythm = Color(color = 0xFF79747E)
+  val RaisinBlack = Color(color = 0xFF49454F)
+  val EerieBlack = Color(color = 0xFF1C1B1F)
   val Black = Color(color = 0xFF000000)
-
-  // Surfaces / Material-like neutrals
-  val Magnolia = Color(color = 0xFFFFFBFE) // Surface light
-  val LavenderMist = Color(color = 0xFFE7E0EC) // SurfaceVariant light
-  val EerieBlack = Color(color = 0xFF1C1B1F) // Surface dark / OnSurface light
-  val RaisinBlack = Color(color = 0xFF49454F) // SurfaceVariant dark / OnSurfaceVariant light
-
-  // Text / outline neutrals
-  val Rhythm = Color(color = 0xFF79747E) // Outline light
-  val LavenderGray = Color(color = 0xFFE6E1E5) // OnSurface dark
-  val FrenchGray = Color(color = 0xFFCAC4D0) // OnSurfaceVariant dark
-  val SpanishGray = Color(color = 0xFF938F99) // Outline dark
-
-  // Utility
   val Transparent = Color(color = 0x00000000)
 
   // ----------------------------------------

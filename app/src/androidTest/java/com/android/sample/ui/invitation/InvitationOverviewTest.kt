@@ -23,7 +23,7 @@ class InvitationOverviewScreenTest : FirebaseEmulatedTest() {
 
     orgId = "orgId"
 
-    composeTestRule.setContent { InvitationOverviewScreen(orgId) }
+    composeTestRule.setContent { InvitationOverviewScreen(organizationId = orgId) }
   }
   // -------------------------------------------------------
   // ROOT + BASIC STRUCTURE

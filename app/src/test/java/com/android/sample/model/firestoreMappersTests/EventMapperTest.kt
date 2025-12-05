@@ -1,9 +1,9 @@
 package com.android.sample.model.firestoreMappersTests
 
-import androidx.compose.ui.graphics.toArgb
 import com.android.sample.model.calendar.CloudStorageStatus
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
+import com.android.sample.model.category.EventCategory
 import com.android.sample.model.firestoreMappers.EventMapper
 import com.android.sample.ui.theme.EventPalette
 import com.google.common.truth.Truth.assertThat
@@ -18,7 +18,14 @@ class EventMapperTest {
 
   private val start = Instant.parse("2025-10-29T10:00:00Z")
   private val end = Instant.parse("2025-10-29T12:00:00Z")
-  private val eventColor = EventPalette.Blue
+
+  private val sampleCategory =
+      EventCategory(
+          id = "category123",
+          label = "Test Category",
+          color = EventPalette.Blue,
+          isDefault = false,
+      )
 
   private val sampleEvent =
       Event(
@@ -34,7 +41,8 @@ class EventMapperTest {
           version = 5L,
           presence = mapOf("participant1" to true, "participant2" to false),
           recurrenceStatus = RecurrenceStatus.OneTime,
-          color = eventColor)
+          category = sampleCategory,
+      )
 
   private val sampleMap: Map<String, Any?> =
       mapOf(
@@ -50,7 +58,14 @@ class EventMapperTest {
           "version" to 5L,
           "presence" to mapOf("participant1" to true, "participant2" to false),
           "recurrenceStatus" to "OneTime",
-          "eventColor" to eventColor.toArgb().toLong())
+          "eventCategory" to
+              mapOf(
+                  "id" to sampleCategory.id,
+                  "label" to sampleCategory.label,
+                  "color" to sampleCategory.color.value.toLong(),
+                  "isDefault" to sampleCategory.isDefault,
+              ),
+      )
 
   // --- fromDocument tests ---
   @Test
@@ -67,8 +82,15 @@ class EventMapperTest {
     `when`(doc.get("storageStatus")).thenReturn(listOf("FIRESTORE"))
     `when`(doc.getString("recurrenceStatus")).thenReturn("OneTime")
     `when`(doc.getLong("version")).thenReturn(5L)
-    `when`(doc.getLong("eventColor")).thenReturn(eventColor.toArgb().toLong())
     `when`(doc.get("presence")).thenReturn(mapOf("participant1" to true, "participant2" to false))
+    `when`(doc.get("eventCategory"))
+        .thenReturn(
+            mapOf(
+                "id" to sampleCategory.id,
+                "label" to sampleCategory.label,
+                "color" to sampleCategory.color.value.toLong(),
+                "isDefault" to sampleCategory.isDefault,
+            ))
 
     val event = EventMapper.fromDocument(doc)
     assertThat(event).isNotNull()
@@ -158,6 +180,11 @@ class EventMapperTest {
     assertThat(map["version"]).isEqualTo(sampleEvent.version)
     assertThat(map["presence"]).isEqualTo(sampleEvent.presence)
     assertThat(map["recurrenceStatus"]).isEqualTo(sampleEvent.recurrenceStatus.name)
-    assertThat(map["eventColor"]).isEqualTo(sampleEvent.color.toArgb().toLong())
+
+    val categoryMap = map["eventCategory"] as Map<*, *>
+    assertThat(categoryMap["id"]).isEqualTo(sampleEvent.category.id)
+    assertThat(categoryMap["label"]).isEqualTo(sampleEvent.category.label)
+    assertThat(categoryMap["color"]).isEqualTo(sampleEvent.category.color.value.toLong())
+    assertThat(categoryMap["isDefault"]).isEqualTo(sampleEvent.category.isDefault)
   }
 }

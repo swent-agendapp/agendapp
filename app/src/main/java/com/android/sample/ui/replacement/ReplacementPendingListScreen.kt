@@ -201,7 +201,9 @@ private fun ReplacementToProcessCard(
     ) {
       Box(
           modifier =
-              Modifier.fillMaxHeight().width(BarWidthSmall).background(replacement.event.color),
+              Modifier.fillMaxHeight()
+                  .width(BarWidthSmall)
+                  .background(replacement.event.category.color),
       )
 
       Spacer(modifier = Modifier.width(SpacingMedium))
@@ -293,7 +295,7 @@ fun ReplacementWaitingCard(replacements: List<Replacement>) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
       Box(
-          modifier = Modifier.fillMaxHeight().width(BarWidthSmall).background(event.color),
+          modifier = Modifier.fillMaxHeight().width(BarWidthSmall).background(event.category.color),
       )
 
       Spacer(modifier = Modifier.width(SpacingMedium))

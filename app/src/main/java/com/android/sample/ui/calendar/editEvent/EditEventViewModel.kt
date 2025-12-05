@@ -1,16 +1,15 @@
 package com.android.sample.ui.calendar.editEvent
 
 import android.util.Log
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.calendar.RecurrenceStatus
+import com.android.sample.model.category.EventCategory
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
-import com.android.sample.ui.theme.EventPalette
 import java.time.Duration
 import java.time.Instant
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,7 +26,7 @@ data class EditCalendarEventUIState(
     val endInstant: Instant = Instant.now().plus(Duration.ofHours(1)),
     val recurrenceMode: RecurrenceStatus = RecurrenceStatus.OneTime,
     val participants: Set<String> = emptySet(),
-    val color: Color = EventPalette.Blue,
+    val category: EventCategory = EventCategory.defaultCategory(),
     val notifications: List<String> = emptyList(),
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
@@ -88,7 +87,7 @@ class EditEventViewModel(
                 version = System.currentTimeMillis(),
                 recurrenceStatus = state.recurrenceMode,
                 hasBeenDeleted = false,
-                color = state.color)
+                category = state.category)
         repository.updateEvent(orgId = orgId, itemId = updated.id, item = updated)
       } catch (e: Exception) {
         Log.e("EditEventViewModel", "Error saving event changes: ${e.message}")
@@ -114,7 +113,7 @@ class EditEventViewModel(
                   endInstant = event.endDate,
                   recurrenceMode = event.recurrenceStatus,
                   participants = event.participants,
-                  color = event.color,
+                  category = event.category,
                   isLoading = false)
         } else {
           _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = "Event not found.")
@@ -133,8 +132,8 @@ class EditEventViewModel(
     _uiState.value = _uiState.value.copy(title = value)
   }
 
-  fun setColor(color: Color) {
-    _uiState.value = _uiState.value.copy(color = color)
+  fun setCategory(category: EventCategory) {
+    _uiState.value = _uiState.value.copy(category = category)
   }
 
   fun setDescription(value: String) {

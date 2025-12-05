@@ -50,7 +50,7 @@ class CalendarViewModelTest {
     // Mock Application for CalendarViewModel
     app = mockk<Application>(relaxed = true)
 
-    repositoryEvent = EventRepositoryLocal()
+    repositoryEvent = EventRepositoryInMemory()
     repositoryMap = MapRepositoryLocal()
 
     viewModel =

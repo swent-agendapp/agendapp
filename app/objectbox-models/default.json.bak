@@ -1,0 +1,102 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:8567047882002894516",
+      "lastPropertyId": "15:1698775154728145695",
+      "name": "EventEntity",
+      "properties": [
+        {
+          "id": "1:2336770677037052933",
+          "name": "objectId",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:7227858084526638990",
+          "name": "id",
+          "type": 9
+        },
+        {
+          "id": "3:4595300980606502285",
+          "name": "organizationId",
+          "type": 9
+        },
+        {
+          "id": "4:1193645074272084154",
+          "name": "title",
+          "type": 9
+        },
+        {
+          "id": "5:3427193530842933624",
+          "name": "description",
+          "type": 9
+        },
+        {
+          "id": "6:3296170730320804854",
+          "name": "startDate",
+          "type": 6
+        },
+        {
+          "id": "7:7424009762548139532",
+          "name": "endDate",
+          "type": 6
+        },
+        {
+          "id": "8:8230409952935506206",
+          "name": "cloudStorageStatuses",
+          "type": 9
+        },
+        {
+          "id": "9:7258869059898524746",
+          "name": "locallyStoredBy",
+          "type": 9
+        },
+        {
+          "id": "10:3923070837451692102",
+          "name": "personalNotes",
+          "type": 9
+        },
+        {
+          "id": "11:7395752668681870198",
+          "name": "participants",
+          "type": 9
+        },
+        {
+          "id": "12:6381142676332922806",
+          "name": "version",
+          "type": 6
+        },
+        {
+          "id": "13:3249814704305735950",
+          "name": "hasBeenDeleted",
+          "type": 1
+        },
+        {
+          "id": "14:6709260133914342253",
+          "name": "recurrenceStatus",
+          "type": 9
+        },
+        {
+          "id": "15:1698775154728145695",
+          "name": "color",
+          "type": 5
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "1:8567047882002894516",
+  "lastIndexId": "0:0",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}

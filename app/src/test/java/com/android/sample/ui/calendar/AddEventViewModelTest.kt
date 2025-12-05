@@ -29,7 +29,7 @@ class AddEventViewModelTest {
   @Before
   fun setUp() {
     Dispatchers.setMain(testDispatcher)
-    repository = EventRepositoryLocal()
+    repository = EventRepositoryInMemory()
 
     // Set a selected organization
     SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationID)

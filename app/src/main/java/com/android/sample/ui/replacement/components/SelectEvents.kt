@@ -60,6 +60,7 @@ fun SelectEventScreen(
     canGoNext: Boolean = true,
     onEventClick: (Event) -> Unit = {},
     processActions: ReplacementProcessActions? = null,
+    eventFilter: (Event) -> Boolean = { true },
 ) {
   val context = LocalContext.current
   Scaffold(
@@ -88,7 +89,7 @@ fun SelectEventScreen(
                         modifier = Modifier.testTag(ReplacementOrganizeTestTags.INSTRUCTION_TEXT))
                   }
               Box(modifier = Modifier.weight(WeightExtraHeavy).fillMaxWidth()) {
-                CalendarEventSelector(onEventClick = onEventClick)
+                CalendarEventSelector(onEventClick = onEventClick, eventFilter = eventFilter,)
               }
             }
       },

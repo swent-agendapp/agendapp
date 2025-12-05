@@ -390,22 +390,25 @@ class ReplacementEmployeeViewModel(
         val startInstant = start.atStartOfDay(ZoneId.systemDefault()).toInstant()
         val endInstant = end.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant()
 
-        val eventsInRange =
-            eventRepository.getEventsBetweenDates(
-                orgId = orgId, startDate = startInstant, endDate = endInstant)
+          val eventsInRange =
+              eventRepository.getEventsBetweenDates(
+                  orgId = orgId, startDate = startInstant, endDate = endInstant)
 
-        val created =
-            eventsInRange.map { event ->
-              Replacement(
-                  absentUserId = currentUserId,
-                  substituteUserId = "",
-                  event = event,
-                  status = ReplacementStatus.ToProcess)
-            }
+          val eligibleEvents = eventsInRange.filter { event ->
+                  event.participants.contains(currentUserId)
+              }
 
-        val orgId = getSelectedOrganizationId()
+          val created = eligibleEvents.map { event ->
+                  Replacement(
+                      absentUserId = currentUserId,
+                      substituteUserId = "",
+                      event = event,
+                      status = ReplacementStatus.ToProcess)
+              }
 
-        created.forEach { replacementRepository.insertReplacement(orgId = orgId, item = it) }
+          val orgId = getSelectedOrganizationId()
+
+          created.forEach { replacementRepository.insertReplacement(orgId = orgId, item = it) }
 
         _uiState.value =
             _uiState.value.copy(
@@ -489,4 +492,10 @@ class ReplacementEmployeeViewModel(
       }
     }
   }
+    fun isEventEligibleForReplacement(event: Event): Boolean {
+        val now = Instant.now()
+        return event.participants.contains(currentUserId) &&
+                event.startDate.isAfter(now)
+    }
+
 }

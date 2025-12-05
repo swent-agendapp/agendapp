@@ -53,13 +53,19 @@ fun ReplacementEmployeeFlow(
       )
     }
     ReplacementEmployeeStep.SELECT_EVENT -> {
-      SelectEventScreen(
-          onNext = { viewModel.confirmSelectedEventAndCreateReplacement() },
-          onBack = { viewModel.backToList() },
-          title = stringResource(R.string.replacement_list_title),
-          instruction = stringResource(R.string.replacement_list_instruction),
-          canGoNext = uiState.selectedEventId != null,
-          onEventClick = { event -> viewModel.setSelectedEvent(event.id) })
+        SelectEventScreen(
+            onNext = { viewModel.confirmSelectedEventAndCreateReplacement() },
+            onBack = { viewModel.backToList() },
+            title = stringResource(R.string.replacement_list_title),
+            instruction = stringResource(R.string.replacement_list_instruction),
+            canGoNext = uiState.selectedEventId != null,
+            onEventClick = { event ->
+                viewModel.setSelectedEvent(event.id)
+            },
+            eventFilter = { event ->
+                viewModel.isEventEligibleForReplacement(event)
+            },
+        )
     }
     ReplacementEmployeeStep.SELECT_DATE_RANGE -> {
       val start = uiState.startDate

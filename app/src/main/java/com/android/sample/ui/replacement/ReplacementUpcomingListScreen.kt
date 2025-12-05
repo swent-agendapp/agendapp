@@ -15,22 +15,21 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
@@ -38,6 +37,7 @@ import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementStatus
 import com.android.sample.model.replacement.mockData.getMockReplacements
 import com.android.sample.ui.calendar.utils.DateTimeUtils.DATE_FORMAT_PATTERN
+import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.theme.BarWidthSmall
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingMedium
@@ -69,24 +69,14 @@ object ReplacementUpcomingTestTags {
 @Composable
 fun ReplacementUpcomingListScreen(
     replacements: List<Replacement> = getMockReplacements().filterUpcomingAccepted(),
-    onNavigateBack: () -> Unit = {},
+    onBack: () -> Unit = {},
 ) {
   Scaffold(
       topBar = {
-        TopAppBar(
-            title = {
-              Text(
-                  text =
-                      androidx.compose.ui.res.stringResource(R.string.replacement_upcoming_title))
-            },
-            navigationIcon = {
-              IconButton(onClick = onNavigateBack) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription =
-                        androidx.compose.ui.res.stringResource(R.string.common_back))
-              }
-            })
+        SecondaryPageTopBar(
+            title = stringResource(R.string.replacement_upcoming_title),
+            onClick = onBack,
+        )
       }) { paddingValues ->
         Column(
             modifier =
@@ -94,13 +84,28 @@ fun ReplacementUpcomingListScreen(
                     .padding(paddingValues)
                     .padding(PaddingMedium)
                     .testTag(ReplacementUpcomingTestTags.SCREEN)) {
-              LazyColumn(
-                  modifier = Modifier.fillMaxSize().testTag(ReplacementUpcomingTestTags.LIST),
-                  verticalArrangement = Arrangement.spacedBy(SpacingMedium)) {
-                    items(replacements, key = { it.id }) { replacement ->
-                      ReplacementUpcomingCard(replacement = replacement)
+              if (replacements.isEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                  Text(
+                      text =
+                          androidx.compose.ui.res.stringResource(
+                              R.string.replacement_upcoming_empty_message),
+                      style = MaterialTheme.typography.bodyMedium,
+                      textAlign = TextAlign.Center,
+                  )
+                }
+              } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize().testTag(ReplacementUpcomingTestTags.LIST),
+                    verticalArrangement = Arrangement.spacedBy(SpacingMedium)) {
+                      items(replacements, key = { it.id }) { replacement ->
+                        ReplacementUpcomingCard(replacement = replacement)
+                      }
                     }
-                  }
+              }
             }
       }
 }

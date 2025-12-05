@@ -50,6 +50,7 @@ import java.time.ZoneId
 fun CalendarContainer(
     modifier: Modifier = Modifier,
     calendarViewModel: CalendarViewModel = viewModel(),
+    eventFilter: (Event) -> Boolean = { true },
     onEventClick: (Event) -> Unit = {}
 ) {
   // "Today" is used to compute the initial view mode and initial date range.

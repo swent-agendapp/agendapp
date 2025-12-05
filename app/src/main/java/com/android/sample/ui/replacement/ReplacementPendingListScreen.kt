@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.HelpOutline
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.outlined.Close
@@ -27,12 +26,10 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -54,6 +51,7 @@ import com.android.sample.model.replacement.toProcessReplacements
 import com.android.sample.model.replacement.waitingForAnswerAndDeclinedReplacements
 import com.android.sample.ui.calendar.utils.DateTimeUtils.DATE_FORMAT_PATTERN
 import com.android.sample.ui.common.PrimaryButton
+import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.theme.BarWidthSmall
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingExtraSmall
@@ -98,23 +96,15 @@ private fun ReplacementAssistChip(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReplacementPendingListScreen(
-    replacementsToProcess: List<Replacement> = getMockReplacements().toProcessReplacements(),
-    replacementsWaitingForAnswer: List<Replacement> =
-        getMockReplacements().waitingForAnswerAndDeclinedReplacements(),
+    replacementsToProcess: List<Replacement> = emptyList(),
+    replacementsWaitingForAnswer: List<Replacement> = emptyList(),
     onProcessReplacement: (Replacement) -> Unit = {},
-    onNavigateBack: () -> Unit = {}
+    onBack: () -> Unit = {}
 ) {
   Scaffold(
       topBar = {
-        TopAppBar(
-            title = { Text(stringResource(id = R.string.replacement_requests_title)) },
-            navigationIcon = {
-              IconButton(onClick = onNavigateBack) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(R.string.common_back))
-              }
-            })
+        SecondaryPageTopBar(
+            title = stringResource(R.string.replacement_requests_title), onClick = onBack)
       }) { paddingValues ->
         Column(
             modifier =
@@ -122,51 +112,64 @@ fun ReplacementPendingListScreen(
                     .padding(paddingValues)
                     .padding(PaddingMedium)
                     .testTag(ReplacementPendingTestTags.SCREEN)) {
-              LazyColumn(
-                  modifier = Modifier.fillMaxSize().testTag(ReplacementPendingTestTags.LIST),
-                  verticalArrangement = Arrangement.spacedBy(SpacingMedium)) {
-                    if (replacementsToProcess.isNotEmpty()) {
-                      item {
-                        Text(
-                            text =
-                                stringResource(id = R.string.replacement_to_process_section_title),
-                            style =
-                                MaterialTheme.typography.titleMedium.copy(
-                                    fontWeight = FontWeight.SemiBold))
-                        Spacer(modifier = Modifier.height(SpacingSmall))
+              if (replacementsToProcess.isEmpty() && replacementsWaitingForAnswer.isEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                  Text(
+                      text = stringResource(R.string.replacement_pending_empty_message),
+                      style = MaterialTheme.typography.bodyMedium,
+                  )
+                }
+              } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize().testTag(ReplacementPendingTestTags.LIST),
+                    verticalArrangement = Arrangement.spacedBy(SpacingMedium)) {
+                      if (replacementsToProcess.isNotEmpty()) {
+                        item {
+                          Text(
+                              text =
+                                  stringResource(
+                                      id = R.string.replacement_to_process_section_title),
+                              style =
+                                  MaterialTheme.typography.titleMedium.copy(
+                                      fontWeight = FontWeight.SemiBold))
+                          Spacer(modifier = Modifier.height(SpacingSmall))
+                        }
+
+                        items(replacementsToProcess, key = { it.id }) { replacement ->
+                          ReplacementToProcessCard(
+                              replacement = replacement,
+                              onProcessClick = { onProcessReplacement(replacement) })
+                        }
                       }
 
-                      items(replacementsToProcess, key = { it.id }) { replacement ->
-                        ReplacementToProcessCard(
-                            replacement = replacement,
-                            onProcessClick = { onProcessReplacement(replacement) })
+                      if (replacementsWaitingForAnswer.isNotEmpty()) {
+                        item {
+                          Spacer(modifier = Modifier.height(SpacingLarge))
+                          Text(
+                              text =
+                                  stringResource(
+                                      id = R.string.replacement_waiting_answer_section_title),
+                              style =
+                                  MaterialTheme.typography.titleMedium.copy(
+                                      fontWeight = FontWeight.SemiBold))
+                          Spacer(modifier = Modifier.height(SpacingSmall))
+                        }
+
+                        val groupedWaiting =
+                            replacementsWaitingForAnswer
+                                .groupBy { it.event to it.absentUserId }
+                                .values
+                                .toList()
+
+                        items(groupedWaiting) { group ->
+                          ReplacementWaitingCard(replacements = group)
+                        }
                       }
                     }
-
-                    if (replacementsWaitingForAnswer.isNotEmpty()) {
-                      item {
-                        Spacer(modifier = Modifier.height(SpacingLarge))
-                        Text(
-                            text =
-                                stringResource(
-                                    id = R.string.replacement_waiting_answer_section_title),
-                            style =
-                                MaterialTheme.typography.titleMedium.copy(
-                                    fontWeight = FontWeight.SemiBold))
-                        Spacer(modifier = Modifier.height(SpacingSmall))
-                      }
-
-                      val groupedWaiting =
-                          replacementsWaitingForAnswer
-                              .groupBy { it.event to it.absentUserId }
-                              .values
-                              .toList()
-
-                      items(groupedWaiting) { group ->
-                        ReplacementWaitingCard(replacements = group)
-                      }
-                    }
-                  }
+              }
             }
       }
 }
@@ -394,5 +397,9 @@ private fun PeopleListDialog(title: String, people: List<String>, onDismiss: () 
 @Preview(showBackground = true)
 @Composable
 fun ReplacementPendingListScreenPreview() {
-  ReplacementPendingListScreen()
+  ReplacementPendingListScreen(
+      replacementsToProcess = getMockReplacements().toProcessReplacements(),
+      replacementsWaitingForAnswer =
+          getMockReplacements().waitingForAnswerAndDeclinedReplacements(),
+  )
 }

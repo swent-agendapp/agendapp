@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
@@ -100,6 +101,7 @@ fun ReplacementEmployeeListScreen(
     isAdmin: Boolean = false,
     adminActions: ReplacementAdminActions = ReplacementAdminActions(),
     createRequestActions: ReplacementCreateRequestActions = ReplacementCreateRequestActions(),
+    processingRequestIds: Set<String> = emptySet(),
     onBack: () -> Unit = {},
 ) {
   var showCreateOptions by remember { mutableStateOf(false) }
@@ -129,7 +131,7 @@ fun ReplacementEmployeeListScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(PaddingExtraSmall),
         ) {
-          if (isAdmin) {
+          if (true) { // CHANGE TO SEE ALL THE PAGES ABOUT REPLACEMENT (default is  isAdmin)
             SecondaryButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(R.string.organize_replacement),
@@ -197,15 +199,28 @@ fun ReplacementEmployeeListScreen(
                     bottom = PaddingExtraLarge,
                 ),
             verticalArrangement = Arrangement.spacedBy(PaddingSmall)) {
-              items(visibleRequests, key = { it.id }) { req ->
-                ReplacementRequestCard(
-                    data = req,
-                    onAccept = { callbacks.onAccept(req.id) },
-                    onRefuse = { callbacks.onRefuse(req.id) },
-                    testTag = ReplacementEmployeeListTestTags.card(req.id),
-                    acceptTag = ReplacementEmployeeListTestTags.accept(req.id),
-                    refuseTag = ReplacementEmployeeListTestTags.refuse(req.id),
-                )
+              if (requests.isEmpty()) {
+                item {
+                  Text(
+                      text = stringResource(R.string.replacement_no_incoming_requests),
+                      style = MaterialTheme.typography.bodyMedium,
+                      textAlign = TextAlign.Center,
+                  )
+                  Spacer(Modifier.height(SpacingMedium))
+                }
+              } else {
+                items(requests, key = { it.id }) { req ->
+                  val isProcessing = processingRequestIds.contains(req.id)
+                  ReplacementRequestCard(
+                      data = req,
+                      onAccept = { callbacks.onAccept(req.id) },
+                      onRefuse = { callbacks.onRefuse(req.id) },
+                      enabled = !isProcessing,
+                      testTag = ReplacementEmployeeListTestTags.card(req.id),
+                      acceptTag = ReplacementEmployeeListTestTags.accept(req.id),
+                      refuseTag = ReplacementEmployeeListTestTags.refuse(req.id),
+                  )
+                }
               }
 
               item { Spacer(Modifier.height(SpacingMedium)) }
@@ -218,6 +233,7 @@ private fun ReplacementRequestCard(
     data: ReplacementRequestUi,
     onAccept: () -> Unit,
     onRefuse: () -> Unit,
+    enabled: Boolean,
     testTag: String,
     acceptTag: String,
     refuseTag: String,

@@ -46,11 +46,11 @@ import com.android.sample.ui.organization.OrganizationListScreen
 import com.android.sample.ui.organization.OrganizationOverViewScreen
 import com.android.sample.ui.profile.AdminContactScreen
 import com.android.sample.ui.profile.ProfileScreen
-import com.android.sample.ui.replacement.ReplacementPendingListScreen
 import com.android.sample.ui.replacement.ReplacementUpcomingListScreen
-import com.android.sample.ui.replacement.mainPage.ProcessReplacementRoute
 import com.android.sample.ui.replacement.mainPage.ReplacementEmployeeFlow
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeScreen
+import com.android.sample.ui.replacement.route.ProcessReplacementRoute
+import com.android.sample.ui.replacement.route.ReplacementPendingRoute
 import com.android.sample.ui.settings.SettingsScreen
 import com.android.sample.ui.theme.SampleAppTheme
 
@@ -280,21 +280,25 @@ private fun NavGraphBuilder.replacementGraph(
         composable(Screen.ReplacementOrganize.route) {
           ReplacementOrganizeScreen(
               onCancel = { navigationActions.navigateBack() },
+              onProcessNow = { replacement ->
+                navigationActions.navigateToReplacementProcess(replacement.id)
+              },
               onProcessLater = { navigationActions.navigateTo(Screen.ReplacementOverview) },
           )
         }
         // Pending Replacement Screen
         composable(Screen.ReplacementPending.route) {
-          ReplacementPendingListScreen(
+          ReplacementPendingRoute(
               onProcessReplacement = { replacement ->
                 navigationActions.navigateToReplacementProcess(replacement.id)
               },
-              onNavigateBack = { navigationActions.navigateBack() })
+              onBack = { navigationActions.navigateBack() },
+          )
         }
 
         // accepted replacement screen
         composable(Screen.ReplacementUpcoming.route) {
-          ReplacementUpcomingListScreen(onNavigateBack = { navigationActions.navigateBack() })
+          ReplacementUpcomingListScreen(onBack = { navigationActions.navigateBack() })
         }
         composable(Screen.ReplacementProcess.route) { navBackStackEntry ->
           val replacementId = navBackStackEntry.arguments?.getString("replacementId")
@@ -305,7 +309,7 @@ private fun NavGraphBuilder.replacementGraph(
           } else {
             ProcessReplacementRoute(
                 replacementId = replacementId,
-                onFinished = { navigationActions.navigateTo(Screen.ReplacementOverview) },
+                onFinished = { navigationActions.navigateTo(Screen.ReplacementPending) },
                 onBack = { navigationActions.navigateBack() },
             )
           }

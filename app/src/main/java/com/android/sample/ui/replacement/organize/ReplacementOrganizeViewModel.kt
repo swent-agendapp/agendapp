@@ -11,9 +11,12 @@ import com.android.sample.model.organization.data.getMockOrganizations
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementRepository
 import com.android.sample.model.replacement.ReplacementRepositoryProvider
+import com.android.sample.model.replacement.ReplacementStatus
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -117,7 +120,10 @@ class ReplacementOrganizeViewModel(
    *
    * For each event found, a [Replacement] object is constructed and stored.
    */
-  fun addReplacement() {
+  fun addReplacement(
+      status: ReplacementStatus = ReplacementStatus.ToProcess,
+      onReplacementsCreated: (List<Replacement>) -> Unit = {}
+  ) {
     viewModelScope.launch {
       val state = uiState.value
       val absentMember = state.selectedMember
@@ -148,14 +154,19 @@ class ReplacementOrganizeViewModel(
         return@launch
       }
 
-      events.forEach { event ->
-        val replacement =
+      val replacements =
+          events.map { event ->
             Replacement(
                 absentUserId = absentMember.id,
-                substituteUserId = "", // selected in next steps
-                event = event)
-        addReplacementToRepository(replacement)
-      }
+                substituteUserId = "",
+                event = event,
+                status = status,
+            )
+          }
+
+      replacements.forEach { replacement -> addReplacementToRepository(replacement) }
+
+      onReplacementsCreated(replacements)
     }
   }
 
@@ -176,9 +187,16 @@ class ReplacementOrganizeViewModel(
     }
   }
 
-  /** @return `true` if the date range is valid (end instant strictly after start instant). */
-  fun dateRangeValid() = uiState.value.endInstant.isAfter(uiState.value.startInstant)
+  /** @return `true` if the date range is valid and not in the past. */
+  fun dateRangeValid(): Boolean {
+    val state = uiState.value
 
+    val startDate = state.startInstant.atZone(ZoneId.systemDefault()).toLocalDate()
+    val endDate = state.endInstant.atZone(ZoneId.systemDefault()).toLocalDate()
+    val today = LocalDate.now()
+
+    return !startDate.isBefore(today) && !endDate.isBefore(today) && !endDate.isBefore(startDate)
+  }
   /** Navigates to a specific step in the multi-step flow. */
   fun goToStep(step: ReplacementOrganizeStep) {
     _uiState.update { it.copy(step = step) }

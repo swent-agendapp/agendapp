@@ -45,6 +45,7 @@ object CalendarEventSelectorTestTags {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalendarEventSelector(
+    eventFilter: (Event) -> Boolean = { true },
     calendarViewModel: CalendarViewModel = viewModel(factory = CalendarViewModel.Factory),
     onEventClick: (Event) -> Unit = {}
 ) {
@@ -69,6 +70,7 @@ fun CalendarEventSelector(
                 .padding(horizontal = PaddingSmall)
                 .testTag(CalendarEventSelectorTestTags.SCREEN_ROOT),
         calendarViewModel = calendarViewModel,
+        eventFilter = eventFilter,
         onEventClick = onEventClick)
   }
 }

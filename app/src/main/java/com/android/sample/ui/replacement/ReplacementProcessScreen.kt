@@ -1,5 +1,6 @@
 package com.android.sample.ui.replacement
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,13 +21,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import com.android.sample.R
-import com.android.sample.model.replacement.mockData.getMockReplacements
+import com.android.sample.model.replacement.Replacement
 import com.android.sample.ui.calendar.utils.DateTimeUtils.DATE_FORMAT_PATTERN
 import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.common.SecondaryPageTopBar
@@ -58,13 +60,11 @@ private val DefaultCandidates =
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProcessReplacementScreen(
-    replacementId: String,
+    replacement: Replacement,
     candidates: List<String> = DefaultCandidates,
     onSendRequests: (List<String>) -> Unit = {},
     onBack: () -> Unit = {},
 ) {
-  val replacement =
-      remember(replacementId) { getMockReplacements().first { it.id == replacementId } }
 
   var selectedMembers by remember { mutableStateOf(setOf<String>()) }
 
@@ -75,6 +75,8 @@ fun ProcessReplacementScreen(
   val timeText =
       "${replacement.event.startLocalTime.format(timeFormatter)} - " +
           replacement.event.endLocalTime.format(timeFormatter)
+
+  val context = LocalContext.current
 
   Scaffold(
       topBar = {
@@ -143,7 +145,15 @@ fun ProcessReplacementScreen(
               Spacer(modifier = Modifier.height(SpacingMedium))
 
               PrimaryButton(
-                  onClick = { onSendRequests(selectedMembers.toList()) },
+                  onClick = {
+                    onSendRequests(selectedMembers.toList())
+                    Toast.makeText(
+                            context,
+                            context.getString(R.string.replacement_requests_sent_success),
+                            Toast.LENGTH_SHORT,
+                        )
+                        .show()
+                  },
                   enabled = selectedMembers.isNotEmpty(),
                   text =
                       pluralStringResource(

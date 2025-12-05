@@ -21,7 +21,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 // Assisted by AI
-
+enum class ReplacementEmployeeLastAction {
+  ACCEPTED,
+  REFUSED,
+}
 /**
  * Steps for the employee-side replacement flow.
  *
@@ -51,7 +54,11 @@ data class ReplacementEmployeeUiState(
     val endDate: LocalDate? = null,
 
     // For debugging / future UI feedback
-    val lastCreatedReplacements: List<Replacement> = emptyList()
+    val lastCreatedReplacements: List<Replacement> = emptyList(),
+    // Requests currently being processed (accept/refuse in progress)
+    val processingRequestIds: Set<String> = emptySet(),
+    // Last user action on a request (for UI feedback)
+    val lastAction: ReplacementEmployeeLastAction? = null,
 )
 
 /**
@@ -166,14 +173,124 @@ class ReplacementEmployeeViewModel(
   //  List actions: accept / refuse
   // ---------------------------------------------------------------------------
 
-  /** Mark a replacement as **Accepted**. */
+  /**
+   * Mark a replacement as Accepted, update the event with the new teacher, and close other
+   * requests.
+   */
   fun acceptRequest(id: String) {
-    updateRequestStatus(id, ReplacementStatus.Accepted)
+    viewModelScope.launch {
+      _uiState.value =
+          _uiState.value.copy(
+              processingRequestIds = _uiState.value.processingRequestIds + id,
+          )
+      try {
+        val orgId = getSelectedOrganizationId()
+
+        val replacement =
+            replacementRepository.getReplacementById(
+                orgId = orgId,
+                itemId = id,
+            ) ?: return@launch
+
+        val event = replacement.event
+
+        val updatedParticipants =
+            event.participants.minus(replacement.absentUserId).plus(currentUserId)
+
+        val updatedEvent =
+            event.copy(
+                participants = updatedParticipants,
+                version = System.currentTimeMillis(),
+            )
+
+        eventRepository.updateEvent(
+            orgId = orgId,
+            itemId = event.id,
+            item = updatedEvent,
+        )
+
+        val accepted =
+            replacement.copy(
+                substituteUserId = currentUserId,
+                status = ReplacementStatus.Accepted,
+            )
+
+        replacementRepository.updateReplacement(
+            orgId = orgId,
+            itemId = accepted.id,
+            item = accepted,
+        )
+
+        val allReplacements = replacementRepository.getAllReplacements(orgId)
+        val othersForSameEvent =
+            allReplacements.filter {
+              it.event.id == event.id &&
+                  it.id != id &&
+                  it.status == ReplacementStatus.WaitingForAnswer
+            }
+
+        othersForSameEvent.forEach { other ->
+          val declined = other.copy(status = ReplacementStatus.Declined)
+          replacementRepository.updateReplacement(
+              orgId = orgId,
+              itemId = other.id,
+              item = declined,
+          )
+        }
+
+        refreshIncomingRequests()
+
+        _uiState.value =
+            _uiState.value.copy(
+                lastAction = ReplacementEmployeeLastAction.ACCEPTED,
+            )
+      } catch (e: Exception) {
+        Log.e("ReplacementEmployeeVM", "Error accepting replacement", e)
+        _uiState.value =
+            _uiState.value.copy(
+                errorMessage = "Could not accept replacement: ${e.message}",
+            )
+      } finally {
+        _uiState.value =
+            _uiState.value.copy(
+                processingRequestIds = _uiState.value.processingRequestIds - id,
+            )
+      }
+    }
   }
 
   /** Mark a replacement as **Declined**. */
   fun refuseRequest(id: String) {
-    updateRequestStatus(id, ReplacementStatus.Declined)
+    viewModelScope.launch {
+      _uiState.value =
+          _uiState.value.copy(
+              processingRequestIds = _uiState.value.processingRequestIds + id,
+          )
+      try {
+        updateRequestStatus(id, ReplacementStatus.Declined)
+        refreshIncomingRequests()
+
+        _uiState.value =
+            _uiState.value.copy(
+                lastAction = ReplacementEmployeeLastAction.REFUSED,
+            )
+      } catch (e: Exception) {
+        Log.e("ReplacementEmployeeVM", "Error refusing replacement", e)
+        _uiState.value =
+            _uiState.value.copy(
+                errorMessage = "Could not update replacement: ${e.message}",
+            )
+      } finally {
+        _uiState.value =
+            _uiState.value.copy(
+                processingRequestIds = _uiState.value.processingRequestIds - id,
+            )
+      }
+    }
+  }
+
+  fun clearLastAction() {
+    _uiState.value = _uiState.value.copy(lastAction = null)
   }
 
   private fun updateRequestStatus(id: String, newStatus: ReplacementStatus) {
@@ -329,8 +446,11 @@ class ReplacementEmployeeViewModel(
             eventRepository.getEventsBetweenDates(
                 orgId = orgId, startDate = startInstant, endDate = endInstant)
 
+        val eligibleEvents =
+            eventsInRange.filter { event -> event.participants.contains(currentUserId) }
+
         val created =
-            eventsInRange.map { event ->
+            eligibleEvents.map { event ->
               Replacement(
                   absentUserId = currentUserId,
                   substituteUserId = "",
@@ -355,6 +475,23 @@ class ReplacementEmployeeViewModel(
         Log.e("ReplacementEmployeeVM", "Error creating replacements for date range", e)
         _uiState.value =
             _uiState.value.copy(errorMessage = "Could not create replacements: ${e.message}")
+      }
+    }
+  }
+
+  fun loadReplacementForProcessing(replacementId: String, onResult: (Replacement?) -> Unit) {
+    viewModelScope.launch {
+      try {
+        val orgId = getSelectedOrganizationId()
+        val replacement =
+            replacementRepository.getReplacementById(
+                orgId = orgId,
+                itemId = replacementId,
+            )
+        onResult(replacement)
+      } catch (e: Exception) {
+        Log.e("ReplacementEmployeeVM", "Error loading replacement $replacementId", e)
+        onResult(null)
       }
     }
   }
@@ -394,6 +531,11 @@ class ReplacementEmployeeViewModel(
           )
         }
 
+        replacementRepository.deleteReplacement(
+            orgId = orgId,
+            itemId = replacementId,
+        )
+
         onFinished()
       } catch (e: Exception) {
         Log.e("ReplacementEmployeeVM", "Error sending requests", e)
@@ -401,5 +543,10 @@ class ReplacementEmployeeViewModel(
             _uiState.value.copy(errorMessage = "Could not send replacement requests: ${e.message}")
       }
     }
+  }
+
+  fun isEventEligibleForReplacement(event: Event): Boolean {
+    val now = Instant.now()
+    return event.participants.contains(currentUserId) && event.startDate.isAfter(now)
   }
 }

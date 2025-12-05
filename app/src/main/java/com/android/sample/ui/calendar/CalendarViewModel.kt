@@ -42,7 +42,8 @@ data class CalendarUIState(
     val errorMsg: String? = null,
     val isLoading: Boolean = false,
     val workedHours: List<Pair<String, Double>> = emptyList(),
-    val locationStatus: LocationStatus = LocationStatus.NO_PERMISSION
+    val locationStatus: LocationStatus = LocationStatus.NO_PERMISSION,
+    val isRefreshing: Boolean = false
 )
 
 /**
@@ -156,6 +157,28 @@ class CalendarViewModel(
   // Placeholder for applying filters to the events
   fun applyFilters(filters: Any) {
     // Implementation for applying filters goes here
+  }
+
+  /**
+   * Refreshes events for the current date range (pull-to-refresh functionality).
+   *
+   * @param start The start date of the current visible range.
+   * @param end The end date of the current visible range.
+   */
+  fun refreshEvents(start: Instant, end: Instant) {
+    val orgId = selectedOrganizationId.value
+    if (orgId == null) return
+
+    viewModelScope.launch {
+      _uiState.value = _uiState.value.copy(isRefreshing = true)
+      try {
+        val events = eventRepository.getEventsBetweenDates(orgId = orgId, startDate = start, endDate = end)
+        _uiState.value = _uiState.value.copy(events = events, isRefreshing = false)
+      } catch (e: Exception) {
+        setErrorMsg("Failed to refresh events: ${e.message}")
+        _uiState.value = _uiState.value.copy(isRefreshing = false)
+      }
+    }
   }
 
   /**

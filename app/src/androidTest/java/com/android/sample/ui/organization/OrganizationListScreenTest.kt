@@ -94,4 +94,16 @@ class OrganizationListScreenTest {
     // Check that the error message is shown
     composeTestRule.onNodeWithText(errorMessage).assertExists().assertIsDisplayed()
   }
+
+  @Test
+  fun pullToRefreshIsDisplayedWhenRefreshing() {
+    // Mock refreshing state
+    fakeViewModel.setOrganizations(organizations)
+    fakeViewModel.setRefreshing(true)
+
+    composeTestRule.setContent { OrganizationListScreen(organizationViewModel = fakeViewModel) }
+
+    // Assert pull-to-refresh component exists
+    composeTestRule.onNodeWithTag(OrganizationListScreenTestTags.PULL_TO_REFRESH).assertExists()
+  }
 }

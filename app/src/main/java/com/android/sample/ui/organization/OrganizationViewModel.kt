@@ -16,7 +16,8 @@ import kotlinx.coroutines.launch
 data class OrganizationUIState(
     val isLoading: Boolean = true,
     val organizations: List<Organization> = emptyList(),
-    val errorMsg: String? = null
+    val errorMsg: String? = null,
+    val isRefreshing: Boolean = false
 )
 
 // ViewModel for managing organization data for the current user
@@ -49,6 +50,28 @@ open class OrganizationViewModel(
       _uiState.update { it.copy(isLoading = true) }
       _uiState.update {
         it.copy(organizations = organizationRepository.getAllOrganizations(user), isLoading = false)
+      }
+    }
+  }
+
+  // Refresh organizations for pull-to-refresh functionality
+  fun refreshOrganizations() {
+    viewModelScope.launch {
+      try {
+        // Get the current authenticated user
+        val user = userState.value ?: throw IllegalStateException("No authenticated user found.")
+
+        // Update UI state to refreshing
+        _uiState.update { it.copy(isRefreshing = true) }
+
+        // Fetch fresh organizations from repository
+        val freshOrganizations = organizationRepository.getAllOrganizations(user)
+        _uiState.update { it.copy(organizations = freshOrganizations, isRefreshing = false) }
+      } catch (e: Exception) {
+        // Update the UI state with the error message and stop refreshing
+        _uiState.update {
+          it.copy(errorMsg = "Failed to refresh organizations: ${e.localizedMessage}", isRefreshing = false)
+        }
       }
     }
   }

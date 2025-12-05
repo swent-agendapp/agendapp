@@ -70,7 +70,9 @@ open class OrganizationViewModel(
       } catch (e: Exception) {
         // Update the UI state with the error message and stop refreshing
         _uiState.update {
-          it.copy(errorMsg = "Failed to refresh organizations: ${e.localizedMessage}", isRefreshing = false)
+          it.copy(
+              errorMsg = "Failed to refresh organizations: ${e.localizedMessage}",
+              isRefreshing = false)
         }
       }
     }

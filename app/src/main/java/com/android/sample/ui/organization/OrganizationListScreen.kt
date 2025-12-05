@@ -1,6 +1,5 @@
 package com.android.sample.ui.organization
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -112,7 +111,8 @@ fun OrganizationListScreen(
                           organizations = uiState.organizations,
                           onOrganizationSelected = { organization ->
                             // Update selected organization in ViewModel
-                            selectedOrganizationViewModel.selectOrganization(orgId = organization.id)
+                            selectedOrganizationViewModel.selectOrganization(
+                                orgId = organization.id)
                             // Invoke given callback after selection
                             onOrganizationSelected()
                           })

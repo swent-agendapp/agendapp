@@ -172,7 +172,8 @@ class CalendarViewModel(
     viewModelScope.launch {
       _uiState.value = _uiState.value.copy(isRefreshing = true)
       try {
-        val events = eventRepository.getEventsBetweenDates(orgId = orgId, startDate = start, endDate = end)
+        val events =
+            eventRepository.getEventsBetweenDates(orgId = orgId, startDate = start, endDate = end)
         _uiState.value = _uiState.value.copy(events = events, isRefreshing = false)
       } catch (e: Exception) {
         setErrorMsg("Failed to refresh events: ${e.message}")

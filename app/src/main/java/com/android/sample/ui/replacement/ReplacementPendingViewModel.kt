@@ -43,11 +43,19 @@ class ReplacementPendingViewModel(
         val orgId = getOrgId()
         val all = repository.getAllReplacements(orgId)
 
+        val rawToProcess = all.toProcessReplacements()
+        val waiting = all.waitingForAnswerAndDeclinedReplacements()
+
+        val alreadyProcessedKeys = waiting.map { it.event.id to it.absentUserId }.toSet()
+
+        val filteredToProcess =
+            rawToProcess.filter { (it.event.id to it.absentUserId) !in alreadyProcessedKeys }
+
         _uiState.value =
             _uiState.value.copy(
                 isLoading = false,
-                toProcess = all.toProcessReplacements(),
-                waitingForAnswer = all.waitingForAnswerAndDeclinedReplacements(),
+                toProcess = filteredToProcess,
+                waitingForAnswer = waiting,
                 errorMessage = null,
             )
       } catch (e: Exception) {

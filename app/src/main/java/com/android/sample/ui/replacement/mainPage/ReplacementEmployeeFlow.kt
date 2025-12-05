@@ -11,6 +11,7 @@ import com.android.sample.ui.calendar.replacementEmployee.ReplacementEmployeeSte
 import com.android.sample.ui.calendar.replacementEmployee.ReplacementEmployeeViewModel
 import com.android.sample.ui.replacement.components.SelectDateRangeScreen
 import com.android.sample.ui.replacement.components.SelectEventScreen
+import java.time.LocalDate
 import java.time.ZoneId
 
 // Assisted by AI
@@ -18,11 +19,6 @@ import java.time.ZoneId
 /**
  * Entry point for the **Employee Replacement Flow**.
  *
- * It orchestrates which screen to show based on [ReplacementEmployeeUiState.step]:
- * - LIST → [ReplacementEmployeeListScreen]
- * - CREATE_OPTIONS → [ReplacementCreateScreen]
- * - SELECT_EVENT → [SelectEventScreen] (calendar event selection)
- * - SELECT_DATE_RANGE → [SelectDateRangeScreen] (date interval)
  */
 @Composable
 fun ReplacementEmployeeFlow(
@@ -65,16 +61,38 @@ fun ReplacementEmployeeFlow(
           onBack = { viewModel.backToList() },
           title = stringResource(R.string.replacement_list_title),
           instruction = stringResource(R.string.replacement_list_instruction),
-          canGoNext = uiState.selectedEventId != null)
+          canGoNext = uiState.selectedEventId != null,
+          onEventClick = { event -> viewModel.setSelectedEvent(event.id) })
     }
     ReplacementEmployeeStep.SELECT_DATE_RANGE -> {
+      val start = uiState.startDate
+      val end = uiState.endDate
+      val today = LocalDate.now()
+
+      val isValidRange =
+          start != null &&
+              end != null &&
+              !start.isBefore(today) &&
+              !end.isBefore(today) &&
+              !end.isBefore(start)
+
       SelectDateRangeScreen(
-          onNext = { viewModel.confirmDateRangeAndCreateReplacements() },
+          onNext = {
+            if (isValidRange) {
+              viewModel.confirmDateRangeAndCreateReplacements()
+            }
+          },
           onBack = { viewModel.backToList() },
           title = stringResource(R.string.replacement_create_choose_date_range),
           instruction = stringResource(R.string.select_date_range_instruction),
           onStartDateSelected = { viewModel.setStartDate(it) },
-          onEndDateSelected = { viewModel.setEndDate(it) })
+          onEndDateSelected = { viewModel.setEndDate(it) },
+          canGoNext = isValidRange,
+          errorMessage =
+              if (!isValidRange && start != null && end != null)
+                  stringResource(R.string.invalidDateRangeMessage)
+              else null,
+      )
     }
   }
 }

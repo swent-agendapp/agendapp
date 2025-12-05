@@ -179,33 +179,29 @@ fun ReplacementEmployeeListScreen(
           )
         }
       }) { inner ->
-      LazyColumn(
-          modifier =
-              Modifier.fillMaxSize()
-                  .padding(inner)
-                  .padding(horizontal = PaddingSmall, vertical = PaddingMedium)
-                  .testTag(ReplacementEmployeeListTestTags.ROOT),
-          contentPadding =
-              PaddingValues(
-                  top = PaddingMedium,
-                  bottom = PaddingExtraLarge,
-              ),
-          verticalArrangement = Arrangement.spacedBy(PaddingSmall)
-      ) {
-
-          if (requests.isEmpty()) {
-              item {
+        LazyColumn(
+            modifier =
+                Modifier.fillMaxSize()
+                    .padding(inner)
+                    .padding(horizontal = PaddingSmall, vertical = PaddingMedium)
+                    .testTag(ReplacementEmployeeListTestTags.ROOT),
+            contentPadding =
+                PaddingValues(
+                    top = PaddingMedium,
+                    bottom = PaddingExtraLarge,
+                ),
+            verticalArrangement = Arrangement.spacedBy(PaddingSmall)) {
+              if (requests.isEmpty()) {
+                item {
                   Text(
-                      text =
-                          stringResource(
-                              R.string.replacement_no_incoming_requests),
+                      text = stringResource(R.string.replacement_no_incoming_requests),
                       style = MaterialTheme.typography.bodyMedium,
                       textAlign = TextAlign.Center,
                   )
                   Spacer(Modifier.height(SpacingMedium))
-              }
-          } else {
-              items(requests, key = { it.id }) { req ->
+                }
+              } else {
+                items(requests, key = { it.id }) { req ->
                   ReplacementRequestCard(
                       data = req,
                       onAccept = { callbacks.onAccept(req.id) },
@@ -214,12 +210,12 @@ fun ReplacementEmployeeListScreen(
                       acceptTag = ReplacementEmployeeListTestTags.accept(req.id),
                       refuseTag = ReplacementEmployeeListTestTags.refuse(req.id),
                   )
+                }
               }
-          }
 
-          item { Spacer(Modifier.height(SpacingMedium)) }
+              item { Spacer(Modifier.height(SpacingMedium)) }
+            }
       }
-  }
 }
 
 @Composable

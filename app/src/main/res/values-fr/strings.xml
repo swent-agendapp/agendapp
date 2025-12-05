@@ -149,7 +149,7 @@
     <string name="replacement_pending_people_title">Sans réponse</string>
     <string name="replacement_declined_people_title">Refusé</string>
     <string name="replacement_people_dialog_close">Fermer</string>
-    <string name="invalidDateRangeMessage">Invalid date range: end date must be after start date.</string>
+    <string name="invalid_date_range_message">Invalid date range: end date must be after start date.</string>
     <string name="process_now">Traiter maintenant</string>
     <string name="process_later">Traiter plus tard</string>
     <string name="select_replacement_date_range">Sélectionnez la plage de dates pour laquelle %1$s a besoin d’un remplacement</string>
@@ -193,6 +193,9 @@
 </string>
     <string name="replacement_no_incoming_requests">
     Vous n\'avez aucune demande de remplacement pour le moment.
+</string>
+    <string name="invalid_date_range_past_message">
+    Plage de dates invalide : les dates ne peuvent pas être dans le passé.
 </string>
 
     <string name="view_mode_1day">1 jour</string>

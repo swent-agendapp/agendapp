@@ -16,10 +16,7 @@ import java.time.ZoneId
 
 // Assisted by AI
 
-/**
- * Entry point for the **Employee Replacement Flow**.
- *
- */
+/** Entry point for the **Employee Replacement Flow**. */
 @Composable
 fun ReplacementEmployeeFlow(
     onOrganizeClick: () -> Unit,
@@ -69,12 +66,22 @@ fun ReplacementEmployeeFlow(
       val end = uiState.endDate
       val today = LocalDate.now()
 
-      val isValidRange =
-          start != null &&
-              end != null &&
-              !start.isBefore(today) &&
-              !end.isBefore(today) &&
-              !end.isBefore(start)
+      val hasBothDates = start != null && end != null
+
+      val hasPastDate =
+          (start != null && start.isBefore(today)) || (end != null && end.isBefore(today))
+
+      val hasOrderError = start != null && end != null && end.isBefore(start)
+
+      val isValidRange = hasBothDates && !hasPastDate && !hasOrderError
+
+      val errorMessage =
+          when {
+            !hasBothDates -> null
+            hasPastDate -> stringResource(R.string.invalid_date_range_past_message)
+            hasOrderError -> stringResource(R.string.invalid_date_range_message)
+            else -> null
+          }
 
       SelectDateRangeScreen(
           onNext = {
@@ -88,10 +95,7 @@ fun ReplacementEmployeeFlow(
           onStartDateSelected = { viewModel.setStartDate(it) },
           onEndDateSelected = { viewModel.setEndDate(it) },
           canGoNext = isValidRange,
-          errorMessage =
-              if (!isValidRange && start != null && end != null)
-                  stringResource(R.string.invalidDateRangeMessage)
-              else null,
+          errorMessage = errorMessage,
       )
     }
   }

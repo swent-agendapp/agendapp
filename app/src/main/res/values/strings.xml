@@ -77,7 +77,8 @@
     <string name="replacement_declined_people_title">Declined</string>
     <string name="replacement_people_dialog_close">Close</string>
 
-    <string name="invalidDateRangeMessage">Invalid date range: end date must be after start date.</string>
+    <string name="invalid_date_range_message">Invalid date range: end date must be after start date.</string>
+    <string name="invalid_date_range_past_message">Invalid date range: dates cannot be in the past</string>
     <string name="process_now">Process now</string>
     <string name="process_later">Process later</string>
     <string name="select_replacement_date_range">Select the date range for which %1$s needs a replacement</string>

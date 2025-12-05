@@ -153,7 +153,9 @@
     <string name="replacement_no_incoming_requests">
     Sie haben derzeit keine Vertretungsanfragen.
 </string>
-
+    <string name="invalid_date_range_past_message">
+    Ungültiger Datumsbereich: Daten dürfen nicht in der Vergangenheit liegen.
+</string>
     <string name="replacement_requests_title">Vertretungsanfragen</string>
     <string name="replacement_substituted_label">Abwesende Person: %1$s</string>
     <string name="replacement_substitute_label">Vertretende Person: %1$s</string>
@@ -165,7 +167,7 @@
     <string name="replacement_pending_people_title">Ohne Antwort</string>
     <string name="replacement_declined_people_title">Abgelehnt</string>
     <string name="replacement_people_dialog_close">Schließen</string>
-    <string name="invalidDateRangeMessage">Ungültiger Zeitraum: Das Enddatum muss nach dem Startdatum liegen.</string>
+    <string name="invalid_date_range_message">Ungültiger Zeitraum: Das Enddatum muss nach dem Startdatum liegen.</string>
     <string name="process_now">Jetzt verarbeiten</string>
     <string name="process_later">Später verarbeiten</string>
     <string name="select_replacement_date_range">Wählen Sie den Datumsbereich aus, für den %1$s eine Vertretung benötigt</string>

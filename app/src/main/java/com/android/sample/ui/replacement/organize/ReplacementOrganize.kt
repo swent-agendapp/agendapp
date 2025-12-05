@@ -117,7 +117,7 @@ fun ReplacementOrganizeScreen(
                     R.string.select_replacement_date_range,
                     memberLabel ?: "",
                 ),
-            errorMessage = stringResource(R.string.invalidDateRangeMessage),
+            errorMessage = stringResource(R.string.invalid_date_range_message),
             canGoNext = replacementOrganizeViewModel.dateRangeValid(),
             onProcessNow = {
               replacementOrganizeViewModel.addReplacement(

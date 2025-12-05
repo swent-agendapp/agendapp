@@ -166,7 +166,6 @@
     <string name="replacement_refuse_short">Ablehnen</string>
     <string name="replacement_create_select_event">Ereignis auswählen</string>
     <string name="replacement_create_choose_date_range">Datumsbereich auswählen</string>
-    <string name="no_authenticated_user_found.">Kein authentifizierter Benutzer gefunden.</string>
     <string name="event_overview_title">Ereignisübersicht</string>
     <string name="replacement_upcoming_title">Bevorstehende Vertretungen</string>
     <string name="replacement_process_title">Vertretung organisieren</string>

@@ -108,6 +108,8 @@ fun OrganizationOverViewScreen(
               modifier = Modifier.testTag(OrganizationOverviewScreenTestTags.MEMBER_COUNT_TEXT),
               text = stringResource(R.string.organization_members) + ": ${uiState.memberCount}")
 
+          // Here is an hardcoded string, but this button is only here temporarily, so we do not
+          // need to write "Invitations" in strings.xml
           PrimaryButton(
               text = "Invitations", onClick = onInvitationClick, modifier = Modifier.fillMaxWidth())
 

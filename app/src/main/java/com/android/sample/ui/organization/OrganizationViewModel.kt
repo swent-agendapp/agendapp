@@ -18,7 +18,8 @@ import kotlinx.coroutines.launch
 data class OrganizationUIState(
     val isLoading: Boolean = true,
     val organizations: List<Organization> = emptyList(),
-    val errorMsg: String? = null
+    val errorMsg: String? = null,
+    val isRefreshing: Boolean = false
 )
 
 // ViewModel for managing organization data for the current user
@@ -28,7 +29,7 @@ open class OrganizationViewModel(
         OrganizationRepositoryProvider.repository,
     private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
 ) : ViewModel() {
-
+  private val errorMessageNoAuthenticated = "No authenticated user found."
   // State holding the UI state of the organizations of the current user
   private val _uiState = MutableStateFlow(OrganizationUIState())
   open val uiState: StateFlow<OrganizationUIState> = _uiState
@@ -46,12 +47,36 @@ open class OrganizationViewModel(
   private fun loadOrganizations() {
     viewModelScope.launch {
       // Get the current authenticated user
-      val user = userState.value ?: throw IllegalStateException("No authenticated user found.")
+      val user = userState.value ?: throw IllegalStateException(errorMessageNoAuthenticated)
 
       // Update UI state to loading and fetch organizations
       _uiState.update { it.copy(isLoading = true) }
       _uiState.update {
         it.copy(organizations = organizationRepository.getAllOrganizations(user), isLoading = false)
+      }
+    }
+  }
+
+  // Refresh organizations for pull-to-refresh functionality
+  fun refreshOrganizations() {
+    viewModelScope.launch {
+      try {
+        // Get the current authenticated user
+        val user = userState.value ?: throw IllegalStateException(errorMessageNoAuthenticated)
+
+        // Update UI state to refreshing
+        _uiState.update { it.copy(isRefreshing = true) }
+
+        // Fetch fresh organizations from repository
+        val freshOrganizations = organizationRepository.getAllOrganizations(user)
+        _uiState.update { it.copy(organizations = freshOrganizations, isRefreshing = false) }
+      } catch (e: Exception) {
+        // Update the UI state with the error message and stop refreshing
+        _uiState.update {
+          it.copy(
+              errorMsg = "Failed to refresh organizations: ${e.localizedMessage}",
+              isRefreshing = false)
+        }
       }
     }
   }
@@ -78,8 +103,7 @@ open class OrganizationViewModel(
   // member)
   fun addOrganizationFromName(name: String) {
     viewModelScope.launch {
-      val currentUser =
-          userState.value ?: throw IllegalStateException("No authenticated user found.")
+      val currentUser = userState.value ?: throw IllegalStateException(errorMessageNoAuthenticated)
 
       try {
         // Create a new organization with the current user as the only admin and member

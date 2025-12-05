@@ -1,7 +1,6 @@
 package com.android.sample.ui.calendar.addEvent
 
 import android.util.Log
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.sample.model.authentication.User
@@ -12,9 +11,10 @@ import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.calendar.createEvent
+import com.android.sample.model.category.EventCategory
+import com.android.sample.model.category.EventCategory
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
-import com.android.sample.ui.theme.EventPalette
 import java.time.Duration
 import java.time.Instant
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,7 +48,7 @@ data class AddCalendarEventUIState(
     val recurrenceEndInstant: Instant = Instant.now().plus(Duration.ofHours(1)),
     val recurrenceMode: RecurrenceStatus = RecurrenceStatus.OneTime,
     val participants: Set<User> = emptySet(),
-    val color: Color = EventPalette.Blue,
+    val category: EventCategory = EventCategory.defaultCategory(),
     val errorMsg: String? = null,
     val draftEvent: Event = createEvent(organizationId = "").first(),
     val step: AddEventStep = AddEventStep.TITLE_AND_DESC,
@@ -116,6 +116,7 @@ class AddEventViewModel(
     val draftEvent =
         createEvent(
                 repository = eventRepository,
+                organizationId = "",
                 title = state.title,
                 description = state.description,
                 startDate = state.startInstant,
@@ -123,8 +124,8 @@ class AddEventViewModel(
                 cloudStorageStatuses = emptySet(),
                 personalNotes = "",
                 participants = state.participants.map { it -> it.displayName?: it.email ?: "No Name" }.toSet(),
+                category = state.category,
                 recurrence = state.recurrenceMode,
-                organizationId = "",
                 endRecurrence = state.recurrenceEndInstant)
             .first()
 
@@ -155,10 +156,10 @@ class AddEventViewModel(
             endDate = state.endInstant,
             cloudStorageStatuses = emptySet(),
             personalNotes = "",
+            category = state.category,
             participants = state.participants.map { it -> it.displayName?: it.email ?: "No Name" }.toSet(),
             recurrence = state.recurrenceMode,
-            endRecurrence = state.recurrenceEndInstant,
-            color = state.color)
+            endRecurrence = state.recurrenceEndInstant)
 
     newEvents.forEach { addEventToRepository(it) }
   }
@@ -258,8 +259,8 @@ class AddEventViewModel(
   }
 
   /** Updates the visual color tag for the event. */
-  fun setColor(color: Color) {
-    _uiState.update { it.copy(color = color) }
+  fun setCategory(category: EventCategory) {
+    _uiState.update { it.copy(category = category) }
   }
 
   /** Adds a participant to the event draft. */

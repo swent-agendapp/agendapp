@@ -17,8 +17,10 @@ import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.common.BottomBarTestTags
+import com.android.sample.ui.invitation.InvitationOverviewScreenTestTags
 import com.android.sample.ui.organization.AddOrganizationScreenTestTags
 import com.android.sample.ui.organization.OrganizationListScreenTestTags
+import com.android.sample.ui.organization.member.OrganizationMemberListTestTags
 import com.android.sample.ui.settings.SettingsScreenTestTags
 import com.android.sample.utils.FakeCredentialManager
 import com.android.sample.utils.FakeJwtGenerator
@@ -167,6 +169,32 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
 
     composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_CALENDAR).performClick()
     composeTestRule.onNodeWithTag(CalendarScreenTestTags.ROOT).assertIsDisplayed()
+  }
+
+  @Test
+  fun goToInvitationCodesScreen() {
+      composeTestRule.setContent { Agendapp() }
+
+      createOrganizationAndNavigateToCalendar()
+
+      composeTestRule.onNodeWithTag(BottomBarTestTags.BOTTOM_BAR).assertIsDisplayed()
+      composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_SETTINGS).assertIsDisplayed()
+      composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_SETTINGS).assertExists().performClick()
+
+      composeTestRule.onNodeWithTag(SettingsScreenTestTags.ORGANIZATION_BUTTON)
+          .assertIsDisplayed()
+          .performClick()
+
+      composeTestRule.onNodeWithTag(OrganizationListScreenTestTags.organizationItemTag("Test Organization"))
+          .assertIsDisplayed()
+          .performClick()
+
+      composeTestRule.onNodeWithTag(OrganizationMemberListTestTags.ROOT).assertIsDisplayed()
+      composeTestRule.onNodeWithTag(OrganizationMemberListTestTags.CREATE_INVITATION_BUTTON)
+          .assertIsDisplayed()
+          .performClick()
+
+      composeTestRule.onNodeWithTag(InvitationOverviewScreenTestTags.ROOT).assertIsDisplayed()
   }
 
   // Helper function to create an organization and navigate to its calendar

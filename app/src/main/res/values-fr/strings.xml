@@ -70,7 +70,7 @@
     <string name="settings_profile_button">Profil</string>
     <string name="settings_admin_info_button">Infos administrateur</string>
     <string name="settings_map_settings_button">Carte</string>
-    <string name="settings_organization_selection_button">Organisation</string>
+    <string name="settings_organization_selection_button">Autres organisations</string>
 
 
     <!-- Profile Screen -->
@@ -199,7 +199,6 @@
     <string name="organization_name_label">Nom de l’organisation</string>
     <string name="organization_none_selected">Aucune organisation sélectionnée</string>
     <string name="organization_members">Membres</string>
-    <string name="error_no_authenticated_user">Aucun utilisateur authentifié.</string>
     <string name="error_no_organization_selected">Aucune organisation sélectionnée.</string>
     <string name="error_organization_not_found">Organisation introuvable.</string>
     <string name="error_no_organization_to_delete">Aucune organisation sélectionnée pour la suppression.</string>

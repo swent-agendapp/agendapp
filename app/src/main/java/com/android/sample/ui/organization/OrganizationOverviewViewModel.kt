@@ -1,7 +1,9 @@
 package com.android.sample.ui.organization
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.sample.R
 import com.android.sample.model.authentication.AuthRepository
 import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.organization.repository.OrganizationRepository
@@ -21,7 +23,7 @@ const val ERROR_MESSAGE_NO_AUTHENTICATED_USER = "No authenticated user found."
 data class OrganizationOverviewUIState(
     val organizationName: String = "",
     val memberCount: Int = 0,
-    val errorMessageId: String? = null
+    @StringRes val errorMessageId: Int? = null
 )
 
 /** ViewModel for managing the state and logic of the Organization Overview screen. */
@@ -30,7 +32,6 @@ class OrganizationOverviewViewModel(
         OrganizationRepositoryProvider.repository,
     private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
 ) : ViewModel() {
-
   // State holding the UI state for organization overview
   private val _uiState = MutableStateFlow(OrganizationOverviewUIState())
   val uiState: StateFlow<OrganizationOverviewUIState> = _uiState
@@ -39,8 +40,8 @@ class OrganizationOverviewViewModel(
   private val currentUser = authRepository.getCurrentUser()
 
   /** Sets an error message in the UI state using a string resource ID. */
-  fun setError(error: String) {
-    _uiState.value = _uiState.value.copy(errorMessageId = error)
+  fun setError(@StringRes resId: Int) {
+    _uiState.value = _uiState.value.copy(errorMessageId = resId)
   }
   /** Clears any error message from the UI state. */
   fun clearError() {
@@ -51,13 +52,13 @@ class OrganizationOverviewViewModel(
   fun fillSelectedOrganizationDetails(orgId: String) {
     // Ensure the current user is not null
     if (currentUser == null) {
-      setError(ERROR_MESSAGE_NO_AUTHENTICATED_USER)
+      setError(R.string.error_no_authenticated_user)
       return
     }
 
     // Ensure an organization ID is provided
     if (orgId.isEmpty()) {
-      setError(ERROR_MESSAGE_NO_AUTHENTICATED_USER)
+      setError(R.string.error_no_organization_selected)
       return
     }
 
@@ -83,13 +84,13 @@ class OrganizationOverviewViewModel(
   fun deleteSelectedOrganization(orgId: String?) {
     // Ensure an organization ID is provided
     if (orgId.isNullOrEmpty()) {
-      setError(ERROR_MESSAGE_NO_AUTHENTICATED_USER)
+      setError(R.string.error_no_organization_to_delete)
       return
     }
 
     // Ensure the current user is not null
     if (currentUser == null) {
-      setError(ERROR_MESSAGE_NO_AUTHENTICATED_USER)
+      setError(R.string.error_no_authenticated_user)
       return
     }
 

@@ -107,7 +107,7 @@
     <string name="settings_profile_button">Profile</string>
     <string name="settings_admin_info_button">Admin info</string>
     <string name="settings_map_settings_button">Map</string>
-    <string name="settings_organization_selection_button">Others organizations</string>
+    <string name="settings_organization_selection_button">Organization</string>
 
     <!-- Profile Screen -->
     <string name="profile_screen_title">Profile</string>
@@ -186,6 +186,7 @@
     <string name="organization_name_label">Name of organization</string>
     <string name="organization_none_selected">No organization selected</string>
     <string name="organization_members">Members</string>
+    <string name="error_no_authenticated_user">No authenticated user found.</string>
     <string name="error_no_organization_selected">No organization selected.</string>
     <string name="error_organization_not_found">Organization not found.</string>
     <string name="error_no_organization_to_delete">No organization selected to delete.</string>

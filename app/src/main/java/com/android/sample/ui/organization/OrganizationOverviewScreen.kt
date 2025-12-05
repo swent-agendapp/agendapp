@@ -59,7 +59,7 @@ fun OrganizationOverViewScreen(
   val uiState by organizationOverviewViewModel.uiState.collectAsState()
 
   // Get error message string if available
-  val errorMessage = uiState.errorMessageId
+  val errorMessage = uiState.errorMessageId?.let { id -> stringResource(id) }
 
   // Load organization details when selectedOrgId changes
   LaunchedEffect(Unit) {

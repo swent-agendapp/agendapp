@@ -166,6 +166,7 @@
     <string name="replacement_refuse_short">Refuser</string>
     <string name="replacement_create_select_event">Sélectionner un événement</string>
     <string name="replacement_create_choose_date_range">Choisir une plage de dates</string>
+    <string name="no_authenticated_user_found.">Aucun utilisateur authentifié trouvé.</string>
     <string name="event_overview_title">Aperçu de l\'événement</string>
     <string name="replacement_upcoming_title">Remplacements à venir</string>
     <string name="replacement_process_title">Organiser un remplacement</string>

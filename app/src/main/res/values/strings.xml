@@ -190,6 +190,7 @@
     <string name="error_no_organization_selected">No organization selected.</string>
     <string name="error_organization_not_found">Organization not found.</string>
     <string name="error_no_organization_to_delete">No organization selected to delete.</string>
+    <string name="no_authenticated_user_found.">No authenticated user found.</string>
 
 
     <!-- Event Overview -->

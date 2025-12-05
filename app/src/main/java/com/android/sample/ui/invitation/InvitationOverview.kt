@@ -12,7 +12,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -97,13 +96,21 @@ fun InvitationOverviewScreen(
             })
       },
       content = { innerPadding ->
-        Box(modifier = Modifier.testTag(InvitationOverviewScreenTestTags.INVITATION_LIST)) {
-          InvitationCardList(
-              invitations = uiState.invitations,
-              onClickDelete = { invitation ->
-                invitationOverviewViewModel.deleteInvitation(invitationId = invitation.id)
-              },
-              modifier = Modifier.padding(innerPadding))
+        if (uiState.isLoading) {
+          Loading(
+              label = stringResource(R.string.invitations_loading),
+              modifier =
+                  Modifier.fillMaxSize()
+                      .testTag(InvitationOverviewScreenTestTags.INVITATION_LOADING_INDICATOR))
+        } else {
+          Box(modifier = Modifier.testTag(InvitationOverviewScreenTestTags.INVITATION_LIST)) {
+            InvitationCardList(
+                invitations = uiState.invitations,
+                onClickDelete = { invitation ->
+                  invitationOverviewViewModel.deleteInvitation(invitationId = invitation.id)
+                },
+                modifier = Modifier.padding(innerPadding))
+          }
         }
       })
   if (uiState.showBottomSheet) {

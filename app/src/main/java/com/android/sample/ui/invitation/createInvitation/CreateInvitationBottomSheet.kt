@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
+import com.android.sample.ui.common.Loading
 import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.theme.PaddingLarge
 import com.android.sample.ui.theme.PaddingSmall
@@ -35,11 +36,12 @@ private val TEXT_FIELD_WIDTH = 100.dp
  * tests to reliably identify and interact with them.
  */
 object InvitationCreationTestTags {
-  const val COUNT_TEXT_FIELD = "count_text_field"
-  const val PLUS_BUTTON = "plus_button"
-  const val MINUS_BUTTON = "minus_button"
-  const val CANCEL_BUTTON = "cancel_button"
-  const val CREATE_INVITATION_BUTTON = "create_invitation_button"
+  const val COUNT_TEXT_FIELD = "countTextField"
+  const val PLUS_BUTTON = "plusButton"
+  const val MINUS_BUTTON = "minusButton"
+  const val CANCEL_BUTTON = "cancelButton"
+  const val INVITATION_ADDING_INDICATOR = "addingInvitationIndicator"
+  const val CREATE_INVITATION_BUTTON = "createInvitationButton"
 }
 
 /**
@@ -65,19 +67,25 @@ fun CreateInvitationBottomSheet(
 
   val uiState by createInvitationViewModel.uiState.collectAsStateWithLifecycle()
 
-  Column(modifier = Modifier.fillMaxWidth().padding(PaddingLarge)) {
+  Column(
+      modifier = Modifier.fillMaxWidth().padding(PaddingLarge),
+      horizontalAlignment = Alignment.CenterHorizontally) {
 
-    // --- Count selector row ---
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxWidth()) {
-          IconButton(
-              onClick = { createInvitationViewModel.decrement() },
-              modifier = Modifier.testTag(InvitationCreationTestTags.MINUS_BUTTON)) {
-                Icon(Icons.Default.Remove, contentDescription = "Decrease count")
-              }
+        // --- Count selector row ---
+        if (uiState.isLoading) {
+          Loading(
+              modifier = Modifier.testTag(InvitationCreationTestTags.INVITATION_ADDING_INDICATOR),
+              label = stringResource(R.string.invitations_creating))
+        } else {
+          Row(
+              verticalAlignment = Alignment.CenterVertically,
+              horizontalArrangement = Arrangement.Center,
+              modifier = Modifier.fillMaxWidth()) {
+                IconButton(
+                    onClick = { createInvitationViewModel.decrement() },
+                    modifier = Modifier.testTag(InvitationCreationTestTags.MINUS_BUTTON)) {
+                      Icon(Icons.Default.Remove, contentDescription = null)
+                    }
 
                 OutlinedTextField(
                     value = uiState.count.toString(),
@@ -89,10 +97,11 @@ fun CreateInvitationBottomSheet(
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
 
-          IconButton(
-              onClick = { createInvitationViewModel.increment() },
-              modifier = Modifier.testTag(InvitationCreationTestTags.PLUS_BUTTON)) {
-                Icon(Icons.Default.Add, contentDescription = "Increase count")
+                IconButton(
+                    onClick = { createInvitationViewModel.increment() },
+                    modifier = Modifier.testTag(InvitationCreationTestTags.PLUS_BUTTON)) {
+                      Icon(Icons.Default.Add, contentDescription = null)
+                    }
               }
         }
 

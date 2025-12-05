@@ -174,7 +174,7 @@ class CalendarViewModel(
       try {
         val events =
             eventRepository.getEventsBetweenDates(orgId = orgId, startDate = start, endDate = end)
-        _uiState.value = _uiState.value.copy(events = events, isRefreshing = false)
+        _uiState.value = _uiState.value.copy(events = events, isRefreshing = false, errorMsg = null)
       } catch (e: Exception) {
         setErrorMsg("Failed to refresh events: ${e.message}")
         _uiState.value = _uiState.value.copy(isRefreshing = false)

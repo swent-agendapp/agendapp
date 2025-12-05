@@ -77,8 +77,8 @@ class OrganizationOverviewScreenTest {
             id = "org1",
             name = "Test Organization",
             admins = emptyList(),
-            members = listOf(user1, user2, user3))
-    fakeOrgRepo.addOrganization(org)
+            members = listOf(user1.id, user2.id, user3.id))
+    fakeOrgRepo.insertOrganization(org)
     selectedOrgVM.selectOrganization(org.id)
 
     composeTestRule.setContent {
@@ -118,8 +118,9 @@ class OrganizationOverviewScreenTest {
   @OptIn(ExperimentalCoroutinesApi::class)
   @Test
   fun clickingChangeButtonClearsOrganization() = runTest {
-    val org = Organization(id = "org1", name = "Org", admins = emptyList(), members = listOf(user1))
-    fakeOrgRepo.addOrganization(org)
+    val org =
+        Organization(id = "org1", name = "Org", admins = emptyList(), members = listOf(user1.id))
+    fakeOrgRepo.insertOrganization(org)
     selectedOrgVM.selectOrganization(org.id)
 
     var changeClicked = false
@@ -142,7 +143,7 @@ class OrganizationOverviewScreenTest {
   fun clickingDeleteButtonDeletesOrganizationAndCallsCallback() = runTest {
     val org =
         Organization(id = "org1", name = "To Delete", admins = emptyList(), members = emptyList())
-    fakeOrgRepo.addOrganization(org)
+    fakeOrgRepo.insertOrganization(org)
     selectedOrgVM.selectOrganization(org.id)
 
     var deleteCallbackCalled = false

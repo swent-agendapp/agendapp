@@ -32,9 +32,7 @@ interface OrganizationRepository {
    * @param user The current user performing the action.
    * @throws IllegalArgumentException if the user is not an admin of the organization.
    */
-  suspend fun insertOrganization(organization: Organization, user: User) {
-    require(organization.admins.contains(user)) { "Only admins can insert a new organization." }
-  }
+  suspend fun insertOrganization(organization: Organization)
 
   /**
    * Updates an existing organization in the repository.
@@ -51,7 +49,7 @@ interface OrganizationRepository {
    * @throws IllegalArgumentException if the user is not an admin of the organization.
    */
   suspend fun updateOrganization(organizationId: String, organization: Organization, user: User) {
-    require(organization.admins.contains(user)) { "Only admins can update the organization." }
+    require(organization.admins.contains(user.id)) { "Only admins can update the organization." }
   }
 
   /**
@@ -90,7 +88,7 @@ interface OrganizationRepository {
    * @param user The current user performing the action.
    * @return A list of users who are members of the organization.
    */
-  suspend fun getMembersOfOrganization(organizationId: String, user: User): List<User> {
+  suspend fun getMembersOfOrganization(organizationId: String, user: User): List<String> {
     val organization =
         getOrganizationById(organizationId, user)
             ?: throw IllegalArgumentException(

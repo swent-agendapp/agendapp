@@ -24,7 +24,7 @@ interface InvitationRepository {
    * @throws IllegalArgumentException if the user is not an organization admin.
    */
   suspend fun insertInvitation(organization: Organization, user: User) {
-    require(organization.admins.contains(user)) {
+    require(organization.admins.contains(user.id)) {
       "Only organization admins can create invitations."
     }
   }
@@ -64,7 +64,7 @@ interface InvitationRepository {
       "New invitation organizationId ${item.organizationId} does not match organization id ${organization.id}"
     }
     if (item.status == InvitationStatus.Active) {
-      require(organization.admins.contains(user)) {
+      require(organization.admins.contains(user.id)) {
         "Only organization admins can activate invitations."
       }
     }
@@ -83,7 +83,7 @@ interface InvitationRepository {
         getInvitationById(itemId)?.organizationId
             ?: throw IllegalArgumentException("Invitation with id $itemId does not exist.")
 
-    require(organization.admins.contains(user)) {
+    require(organization.admins.contains(user.id)) {
       "Only organization admins can delete invitations."
     }
     require(organizationId == organization.id) {

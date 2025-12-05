@@ -10,6 +10,7 @@ import java.util.UUID
  *   generator by default.
  * @property email Email address of the User.
  * @property phoneNumber Phone number of the User.
+ * @property organizations List of organization IDs the User is associated with.
  *
  * Note : `User.id` uses `UUID.randomUUID()` as a default value, so each time a User object is
  * created without specifying an id, it will have a unique identifier. Hence Equality between two
@@ -20,4 +21,5 @@ data class User(
     val displayName: String? = UsernameGenerator.generate(),
     val email: String? = null,
     val phoneNumber: String? = null,
+    val organizations: List<String> = emptyList()
 )

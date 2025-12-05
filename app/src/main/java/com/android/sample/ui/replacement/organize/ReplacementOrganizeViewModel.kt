@@ -4,10 +4,12 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
-import com.android.sample.model.organization.data.getMockOrganizations
+import com.android.sample.model.organization.repository.SelectedOrganizationRepository.selectedOrganizationId
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementRepository
 import com.android.sample.model.replacement.ReplacementRepositoryProvider
@@ -79,6 +81,7 @@ enum class ReplacementOrganizeStep {
  * All ViewModel state is exposed through a [StateFlow] of [ReplacementOrganizeUIState].
  */
 class ReplacementOrganizeViewModel(
+    private val userRepository: UserRepository = UserRepositoryProvider.repository,
     private val eventRepository: EventRepository = EventRepositoryProvider.repository,
     private val replacementRepository: ReplacementRepository =
         ReplacementRepositoryProvider.repository,
@@ -92,6 +95,12 @@ class ReplacementOrganizeViewModel(
   /** Public immutable UI state observed by the UI. */
   val uiState: StateFlow<ReplacementOrganizeUIState> = _uiState.asStateFlow()
 
+  // Helper function to get the selected organization ID or throw an exception if none is selected
+  fun getSelectedOrganizationId(): String {
+    val orgId = selectedOrganizationId.value
+    require(orgId != null) { "No organization selected" }
+    return orgId
+  }
   /**
    * Loads all members from the selected organization.
    *
@@ -99,8 +108,12 @@ class ReplacementOrganizeViewModel(
    */
   fun loadOrganizationMembers() {
     viewModelScope.launch {
-      val currentOrganization = getMockOrganizations().last()
-      _uiState.update { it.copy(memberList = currentOrganization.members) }
+      _uiState.update {
+        val orgId = getSelectedOrganizationId()
+        val listUserIdOrg = userRepository.getUsersIds(orgId)
+        val listUsers = userRepository.getUsersByIds(listUserIdOrg)
+        it.copy(memberList = listUsers)
+      }
     }
   }
 

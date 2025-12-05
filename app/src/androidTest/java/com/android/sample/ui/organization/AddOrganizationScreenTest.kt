@@ -15,9 +15,7 @@ class AddOrganizationScreenTest {
 
   @Composable
   fun TestScreen() {
-    val fakeOrganizationViewModel = FakeOrganizationViewModel()
-
-    AddOrganizationScreen(organizationViewModel = fakeOrganizationViewModel)
+    AddOrganizationScreen()
   }
 
   @Test
@@ -50,12 +48,8 @@ class AddOrganizationScreenTest {
     var finishClicked = false
 
     composeTestRule.setContent {
-      val fakeOrganizationViewModel = FakeOrganizationViewModel()
-
       AddOrganizationScreen(
-          organizationViewModel = fakeOrganizationViewModel,
-          onNavigateBack = { backClicked = true },
-          onFinish = { finishClicked = true })
+          onNavigateBack = { backClicked = true }, onFinish = { finishClicked = true })
     }
 
     // Fill in the organization name to enable the Create button

@@ -43,8 +43,9 @@ class OrganizationOverviewViewModelTest {
   fun `fillSelectedOrganizationDetails fills UI state correctly`() = runTest {
     val orgId = "org1"
     val org =
-        Organization(id = orgId, name = "My Organization", members = listOf(user1, user2, user3))
-    organizationRepository.addOrganization(org)
+        Organization(
+            id = orgId, name = "My Organization", members = listOf(user1.id, user2.id, user3.id))
+    organizationRepository.insertOrganization(org)
 
     vm.fillSelectedOrganizationDetails(orgId)
 
@@ -88,8 +89,8 @@ class OrganizationOverviewViewModelTest {
   @Test
   fun `deleteSelectedOrganization removes org and clears selection`() = runTest {
     val orgId = "orgToDelete"
-    val org = Organization(id = orgId, name = "Deletable Org", members = listOf(user1))
-    organizationRepository.addOrganization(org)
+    val org = Organization(id = orgId, name = "Deletable Org", members = listOf(user1.id))
+    organizationRepository.insertOrganization(org)
 
     vm.deleteSelectedOrganization(orgId)
 

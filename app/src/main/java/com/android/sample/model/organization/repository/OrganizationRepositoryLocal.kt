@@ -17,14 +17,11 @@ class OrganizationRepositoryLocal : OrganizationRepository {
 
   override suspend fun getAllOrganizations(user: User): List<Organization> {
     return organizations.filter { organization ->
-      organization.admins.contains(user) || organization.members.contains(user)
+      organization.admins.contains(user.id) || organization.members.contains(user.id)
     }
   }
 
-  override suspend fun insertOrganization(organization: Organization, user: User) {
-    // Calls the interface check to ensure the user is an admin
-    super.insertOrganization(organization, user)
-
+  override suspend fun insertOrganization(organization: Organization) {
     require(organizations.indexOfFirst { it.id == organization.id } == -1) {
       "Organization with id ${organization.id} already exists."
     }
@@ -47,14 +44,14 @@ class OrganizationRepositoryLocal : OrganizationRepository {
   override suspend fun deleteOrganization(organizationId: String, user: User) {
     val organization = organizations.find { it.id == organizationId }
     require(organization != null) { "Organization with id $organizationId does not exist." }
-    require(organization.admins.contains(user)) { "Only admins can delete the organization." }
+    require(organization.admins.contains(user.id)) { "Only admins can delete the organization." }
     organizations.removeIf { it.id == organizationId }
   }
 
   override suspend fun getOrganizationById(organizationId: String, user: User): Organization? {
     val organization = organizations.find { it.id == organizationId }
     if (organization != null) {
-      require(organization.admins.contains(user) || organization.members.contains(user)) {
+      require(organization.admins.contains(user.id) || organization.members.contains(user.id)) {
         "User does not have access to this organization."
       }
     }

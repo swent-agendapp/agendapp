@@ -21,14 +21,18 @@ class OrganizationMapperTest {
   fun fromDocument_withValidData_returnsOrganization() {
     // Admins & members
     val adminDoc = mock(DocumentSnapshot::class.java)
+    `when`(adminDoc.exists()).thenReturn(true)
     `when`(adminDoc.getString("id")).thenReturn("admin1")
     `when`(adminDoc.getString("displayName")).thenReturn("Admin One")
     `when`(adminDoc.getString("email")).thenReturn("admin1@example.com")
+    `when`(adminDoc.get("organizations")).thenReturn(emptyList<String>())
 
     val memberDoc = mock(DocumentSnapshot::class.java)
+    `when`(memberDoc.exists()).thenReturn(true)
     `when`(memberDoc.getString("id")).thenReturn("member1")
     `when`(memberDoc.getString("displayName")).thenReturn("Member One")
     `when`(memberDoc.getString("email")).thenReturn("member1@example.com")
+    `when`(memberDoc.get("organizations")).thenReturn(emptyList<String>())
 
     // Marker locations
     val locDoc1 = mock(DocumentSnapshot::class.java)

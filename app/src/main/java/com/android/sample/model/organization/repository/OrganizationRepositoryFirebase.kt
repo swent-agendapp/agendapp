@@ -2,6 +2,7 @@ package com.android.sample.model.organization.repository
 
 import com.android.sample.model.authentication.User
 import com.android.sample.model.constants.FirestoreConstants
+import com.android.sample.model.constants.FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH
 import com.android.sample.model.firestoreMappers.OrganizationMapper
 import com.android.sample.model.organization.data.Organization
 import com.google.firebase.firestore.FirebaseFirestore
@@ -17,24 +18,27 @@ import kotlinx.coroutines.tasks.await
  */
 class OrganizationRepositoryFirebase(private val db: FirebaseFirestore) : OrganizationRepository {
 
-  /** Correct version of the code */
   override suspend fun getAllOrganizations(user: User): List<Organization> {
-    val snapshot = db.collection(FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH).get().await()
 
-    val organizations = snapshot.mapNotNull { OrganizationMapper.fromDocument(document = it) }
-    if (organizations.isNotEmpty()) {
-      return organizations.filter { organization ->
-        organization.admins.any { it.id == user.id } ||
-            organization.members.any { it.id == user.id }
-      }
-    }
-    return organizations
+    val orgsSnapshot = db.collection(ORGANIZATIONS_COLLECTION_PATH).get().await()
+
+    return orgsSnapshot.documents.mapNotNull { OrganizationMapper.fromDocument(it) }
+    //    val userDoc = db.collection(COLLECTION_USERS).document(user.id).get().await()
+    //
+    //    val orgIds = userDoc.get("organizations") as? List<String> ?: emptyList()
+    //
+    //    if (orgIds.isEmpty()) return emptyList()
+    //
+    //      val orgsSnapshot =
+    //          db.collection(ORGANIZATIONS_COLLECTION_PATH)
+    //              .whereIn(FieldPath.documentId(), orgIds)
+    //              .get()
+    //              .await()
+    //
+    //    return orgsSnapshot.documents.mapNotNull { OrganizationMapper.fromDocument(it) }
   }
 
-  override suspend fun insertOrganization(organization: Organization, user: User) {
-    // Calls the interface check to ensure the user is an admin
-    super.insertOrganization(organization, user)
-
+  override suspend fun insertOrganization(organization: Organization) {
     db.collection(FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH)
         .document(organization.id)
         .set(OrganizationMapper.toMap(model = organization))
@@ -65,7 +69,7 @@ class OrganizationRepositoryFirebase(private val db: FirebaseFirestore) : Organi
         OrganizationMapper.fromDocument(document = document)
             ?: throw IllegalArgumentException("Organization does not exist")
 
-    require(user.id in org.admins.map { it.id }) { "Only admins can delete the organization." }
+    require(user.id in org.admins.map { it }) { "Only admins can delete the organization." }
 
     db.collection(FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH)
         .document(organizationId)
@@ -83,8 +87,7 @@ class OrganizationRepositoryFirebase(private val db: FirebaseFirestore) : Organi
 
     if (organization != null) {
       require(
-          user.id in organization.admins.map { it.id } ||
-              user.id in organization.members.map { it.id }) {
+          user.id in organization.admins.map { it } || user.id in organization.members.map { it }) {
             "User does not have access to this organization."
           }
     }

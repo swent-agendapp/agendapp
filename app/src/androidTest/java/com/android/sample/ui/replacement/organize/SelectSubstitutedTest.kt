@@ -10,21 +10,29 @@ import com.android.sample.model.authentication.User
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeTestTags
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeViewModel
 import com.android.sample.ui.replacement.organize.components.SelectSubstitutedScreen
+import com.android.sample.utils.FirebaseEmulatedTest
+import com.android.sample.utils.OrganizationTestHelper
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class SelectSubstitutedScreenTest {
+class SelectSubstitutedScreenTest : FirebaseEmulatedTest() {
 
   @get:Rule val composeTestRule = createComposeRule()
   private lateinit var members: List<User>
   private lateinit var fakeViewModel: ReplacementOrganizeViewModel
 
   @Before
-  fun setUp() {
+  override fun setUp() = runBlocking {
+    super.setUp()
+
+    val helper = OrganizationTestHelper()
+    helper.setupOrganizationWithUsers(
+        organizationId = "testOrg", organizationName = "name", userCount = 4)
+
     fakeViewModel = ReplacementOrganizeViewModel()
     fakeViewModel.loadOrganizationMembers()
-
     composeTestRule.setContent {
       SelectSubstitutedScreen(
           replacementOrganizeViewModel = fakeViewModel,
@@ -62,6 +70,7 @@ class SelectSubstitutedScreenTest {
 
   @Test
   fun buttons_areDisabled_whenNoMemberSelected() {
+
     composeTestRule
         .onNodeWithTag(ReplacementOrganizeTestTags.SELECT_EVENT_BUTTON)
         .assertIsNotEnabled()

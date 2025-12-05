@@ -41,24 +41,30 @@ class OrganizationFirebaseRepositoryTest : FirebaseEmulatedTest() {
     // --- Create organizations ---
     orgA =
         Organization(
-            id = "orgA", name = "Org A", admins = listOf(adminA), members = listOf(memberA, adminA))
+            id = "orgA",
+            name = "Org A",
+            admins = listOf(adminA.id),
+            members = listOf(memberA.id, adminA.id))
 
     orgB =
         Organization(
-            id = "orgB", name = "Org B", admins = listOf(adminB), members = listOf(memberB, adminB))
+            id = "orgB",
+            name = "Org B",
+            admins = listOf(adminB.id),
+            members = listOf(memberB.id, adminB.id))
 
     orgC =
         Organization(
             id = "orgC",
             name = "Org C",
-            admins = listOf(adminA, adminB),
-            members = listOf(memberA, memberB))
+            admins = listOf(adminA.id, adminB.id),
+            members = listOf(memberA.id, memberB.id))
   }
 
   // --- Insertion tests ---
   @Test
   fun insertOrganization_asAdmin_shouldSucceed() = runBlocking {
-    repository.insertOrganization(orgA, adminA)
+    repository.insertOrganization(orgA)
     val fetched = repository.getOrganizationById("orgA", adminA)
     assertNotNull(fetched)
     assertEquals("Org A", fetched!!.name)
@@ -67,7 +73,7 @@ class OrganizationFirebaseRepositoryTest : FirebaseEmulatedTest() {
   @Test
   fun insertOrganization_asNonAdmin_shouldThrow() = runBlocking {
     try {
-      repository.insertOrganization(orgA, memberA)
+      repository.insertOrganization(orgA)
       fail("Expected IllegalArgumentException")
     } catch (_: IllegalArgumentException) {}
   }
@@ -75,9 +81,9 @@ class OrganizationFirebaseRepositoryTest : FirebaseEmulatedTest() {
   // --- Fetching & visibility ---
   @Test
   fun getAllOrganizations_shouldReturnAllInsertedAndAccessible() = runBlocking {
-    repository.insertOrganization(orgA, adminA)
-    repository.insertOrganization(orgB, adminB)
-    repository.insertOrganization(orgC, adminA)
+    repository.insertOrganization(orgA)
+    repository.insertOrganization(orgB)
+    repository.insertOrganization(orgC)
 
     val all =
         (repository.getAllOrganizations(adminA) + repository.getAllOrganizations(memberB)).toSet()
@@ -86,8 +92,8 @@ class OrganizationFirebaseRepositoryTest : FirebaseEmulatedTest() {
 
   @Test
   fun getOrganizationById_shouldWorkForAdminsAndMembers() = runBlocking {
-    repository.insertOrganization(orgA, adminA)
-    repository.insertOrganization(orgB, adminB)
+    repository.insertOrganization(orgA)
+    repository.insertOrganization(orgB)
 
     val adminResult = repository.getOrganizationById("orgA", adminA)
     val memberResult = repository.getOrganizationById("orgB", memberB)
@@ -100,7 +106,7 @@ class OrganizationFirebaseRepositoryTest : FirebaseEmulatedTest() {
 
   @Test
   fun getOrganizationById_asOutsider_shouldThrow() = runBlocking {
-    repository.insertOrganization(orgA, adminA)
+    repository.insertOrganization(orgA)
     try {
       repository.getOrganizationById("orgA", outsider)
       fail("Expected IllegalArgumentException for outsider")
@@ -110,7 +116,7 @@ class OrganizationFirebaseRepositoryTest : FirebaseEmulatedTest() {
   // --- Update tests ---
   @Test
   fun updateOrganization_asAdmin_shouldModifyIt() = runBlocking {
-    repository.insertOrganization(orgA, adminA)
+    repository.insertOrganization(orgA)
     val updated = orgA.copy(name = "Org A Updated", geoCheckEnabled = true)
     repository.updateOrganization(orgA.id, updated, adminA)
 
@@ -121,7 +127,7 @@ class OrganizationFirebaseRepositoryTest : FirebaseEmulatedTest() {
 
   @Test
   fun updateOrganization_asNonAdmin_shouldThrow() = runBlocking {
-    repository.insertOrganization(orgA, adminA)
+    repository.insertOrganization(orgA)
     val updated = orgA.copy(name = "Illegal Update")
     try {
       repository.updateOrganization(orgA.id, updated, memberA)
@@ -132,8 +138,8 @@ class OrganizationFirebaseRepositoryTest : FirebaseEmulatedTest() {
   // --- Deletion tests ---
   @Test
   fun deleteOrganization_asAdmin_shouldRemoveIt() = runBlocking {
-    repository.insertOrganization(orgA, adminA)
-    repository.insertOrganization(orgB, adminB)
+    repository.insertOrganization(orgA)
+    repository.insertOrganization(orgB)
 
     repository.deleteOrganization("orgA", adminA)
     val fetched = repository.getOrganizationById("orgA", adminA)
@@ -142,7 +148,7 @@ class OrganizationFirebaseRepositoryTest : FirebaseEmulatedTest() {
 
   @Test
   fun deleteOrganization_asNonAdmin_shouldThrow() = runBlocking {
-    repository.insertOrganization(orgA, adminA)
+    repository.insertOrganization(orgA)
     try {
       repository.deleteOrganization("orgA", memberA)
       fail("Expected IllegalArgumentException")
@@ -152,9 +158,9 @@ class OrganizationFirebaseRepositoryTest : FirebaseEmulatedTest() {
   // --- Complex scenario ---
   @Test
   fun complexScenario_multipleAdminsAndMembers_shouldStayConsistent() = runBlocking {
-    repository.insertOrganization(orgA, adminA)
-    repository.insertOrganization(orgB, adminB)
-    repository.insertOrganization(orgC, adminA)
+    repository.insertOrganization(orgA)
+    repository.insertOrganization(orgB)
+    repository.insertOrganization(orgC)
 
     val updatedC = orgC.copy(name = "Org C Updated", geoCheckEnabled = true)
     repository.updateOrganization("orgC", updatedC, adminB)
@@ -172,15 +178,15 @@ class OrganizationFirebaseRepositoryTest : FirebaseEmulatedTest() {
 
   @Test
   fun getMembersOfOrganization_asMember_shouldReturnMembers() = runBlocking {
-    repository.insertOrganization(orgA, adminA)
+    repository.insertOrganization(orgA)
     val members = repository.getMembersOfOrganization(orgA.id, memberA)
-    val memberIds = members.map { it.id }.toSet()
+    val memberIds = members.map { it }.toSet()
     assertEquals(setOf("memberA", "adminA"), memberIds)
   }
 
   @Test
   fun getMembersOfOrganization_asOutsider_shouldThrow() = runBlocking {
-    repository.insertOrganization(orgA, adminA)
+    repository.insertOrganization(orgA)
     try {
       repository.getMembersOfOrganization(orgA.id, outsider)
       fail("Expected IllegalArgumentException for outsider")

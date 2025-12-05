@@ -23,6 +23,7 @@ class NavigationActions(val navController: NavHostController) {
     navController.navigate(Screen.EventOverview.createRoute(eventId))
   }
 
+  /** Navigate to ReplacementProcess screen with replacementId parameter. */
   fun navigateToReplacementProcess(replacementId: String) {
     navController.navigate(Screen.ReplacementProcess.createRoute(replacementId))
   }

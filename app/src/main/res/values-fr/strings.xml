@@ -205,7 +205,6 @@
 
 
     <string name="hour_recap_results_title">Total d\'heures par employé pour la période sélectionnée :</string>
-    <string name="hour_recap_title">Total d\'heures par employé</string>
     <string name="hour_recap_generate">Générer le récapitulatif</string>
     <string name="export_excel">Exporter vers Excel</string>
 
@@ -232,5 +231,7 @@
     <string name="loading_hours">Chargement…</string>
     <string name="work_duration_hours">%1$dh</string>
     <string name="work_duration_hours_minutes">%1$dh %2$dmin</string>
+
+    <string name="settings_hour_recap_button">Récapitulatif des heures</string>
 
 </resources>

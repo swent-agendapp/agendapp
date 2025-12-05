@@ -57,6 +57,7 @@ object InvitationCreationTestTags {
 fun CreateInvitationBottomSheet(
     createInvitationViewModel: CreateInvitationViewModel = viewModel(),
     onCancel: () -> Unit = {},
+    onCreate: () -> Unit = {}
 ) {
 
   val uiState by createInvitationViewModel.uiState.collectAsStateWithLifecycle()
@@ -102,7 +103,10 @@ fun CreateInvitationBottomSheet(
     Spacer(Modifier.height(SpacingSmall))
 
     BottomNavigationButtons(
-        onNext = { createInvitationViewModel.addInvitations() },
+        onNext = {
+          createInvitationViewModel.addInvitations()
+          onCreate()
+        },
         onBack = onCancel,
         backButtonText = stringResource(R.string.cancel),
         nextButtonText = stringResource(R.string.create_invitation_button_text),

@@ -1,4 +1,4 @@
-package com.android.sample.ui.invitation.useInvitation
+package com.android.sample.ui.invitation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,6 +11,7 @@ import com.android.sample.model.organization.repository.OrganizationRepository
 import com.android.sample.model.organization.repository.OrganizationRepositoryProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 /**
@@ -23,6 +24,7 @@ import kotlinx.coroutines.launch
 data class InvitationOverviewUIState(
     val invitations: List<Invitation> = emptyList(),
     val isLoading: Boolean = false,
+    val showBottomSheet: Boolean = false,
     val error: String? = null
 )
 
@@ -110,5 +112,23 @@ class InvitationOverviewViewModel(
         _uiState.value = _uiState.value.copy(error = e.message)
       }
     }
+  }
+  /**
+   * Updates the UI state to show the bottom sheet.
+   *
+   * When called, the [InvitationOverviewUIState.showBottomSheet] property is set to `true`, which
+   * triggers the Compose UI to display the bottom sheet.
+   */
+  fun showBottomSheet() {
+    _uiState.update { it.copy(showBottomSheet = true) }
+  }
+  /**
+   * Updates the UI state to hide the bottom sheet.
+   *
+   * When called, the [InvitationOverviewUIState.showBottomSheet] property is set to `false`, which
+   * triggers the Compose UI to dismiss the bottom sheet.
+   */
+  fun dismissBottomSheet() {
+    _uiState.update { it.copy(showBottomSheet = false) }
   }
 }

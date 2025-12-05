@@ -7,17 +7,17 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
-import com.android.sample.model.organization.invitation.Invitation
 import com.android.sample.ui.common.FloatingButton
 import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.invitation.components.InvitationCardList
@@ -52,19 +52,23 @@ object InvitationOverviewScreenTestTags {
  *
  * The creation UI is presented using a [ModalBottomSheet].
  *
+ * @param invitationOverviewViewModel The ViewModel holding the UI state of the screen
  * @param organizationId The ID of the organization whose invitation codes are being managed.
  * @param onBack Callback invoked when the user presses the back button in the top bar.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InvitationOverviewScreen(
+    invitationOverviewViewModel: InvitationOverviewViewModel = viewModel(),
     organizationId: String,
     onBack: () -> Unit = {},
 ) {
+  LaunchedEffect(organizationId) { invitationOverviewViewModel.loadInvitations(organizationId) }
+
+  val uiState by invitationOverviewViewModel.uiState.collectAsStateWithLifecycle()
+
   val sheetState = rememberModalBottomSheetState()
   val scope = rememberCoroutineScope()
-  val invitationList: List<Invitation> = listOf()
-  var showSheet by remember { mutableStateOf(false) }
 
   Scaffold(
       modifier = Modifier.testTag(InvitationOverviewScreenTestTags.ROOT),
@@ -78,26 +82,38 @@ fun InvitationOverviewScreen(
       floatingActionButton = {
         FloatingButton(
             modifier = Modifier.testTag(InvitationOverviewScreenTestTags.CREATE_INVITATION_BUTTON),
-            onClick = { showSheet = true })
+            onClick = {
+              scope.launch { sheetState.hide() }
+              invitationOverviewViewModel.showBottomSheet()
+            })
       },
       content = { innerPadding ->
         Box(modifier = Modifier.testTag(InvitationOverviewScreenTestTags.INVITATION_LIST)) {
           InvitationCardList(
-              invitations = invitationList,
-              onClickDelete = {},
+              invitations = uiState.invitations,
+              onClickDelete = { invitation ->
+                invitationOverviewViewModel.deleteInvitation(invitationId = invitation.id)
+              },
               modifier = Modifier.padding(innerPadding))
         }
       })
-  if (showSheet) {
+  if (uiState.showBottomSheet) {
     ModalBottomSheet(
         modifier =
             Modifier.testTag(InvitationOverviewScreenTestTags.CREATE_INVITATION_BOTTOM_SHEET),
         sheetState = sheetState,
-        onDismissRequest = { showSheet = false }) {
+        onDismissRequest = { invitationOverviewViewModel.dismissBottomSheet() }) {
           CreateInvitationBottomSheet(
               onCancel = {
                 scope.launch { sheetState.hide() }
-                showSheet = false
+                invitationOverviewViewModel.dismissBottomSheet()
+              },
+              onCreate = {
+                scope.launch {
+                  sheetState.hide()
+                  invitationOverviewViewModel.dismissBottomSheet()
+                  invitationOverviewViewModel.loadInvitations(organizationId)
+                }
               })
         }
   }
@@ -106,5 +122,5 @@ fun InvitationOverviewScreen(
 @Preview
 @Composable
 fun InvitationOverviewScreenPreview() {
-  InvitationOverviewScreen("org1")
+  InvitationOverviewScreen(organizationId = "org1")
 }

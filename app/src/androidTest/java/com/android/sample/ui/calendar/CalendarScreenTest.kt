@@ -648,3 +648,15 @@ class CalendarHeaderTests : BaseCalendarScreenTest() {
     }
   }
 }
+
+/** Pull-to-refresh functionality tests. */
+class CalendarPullToRefreshTests : BaseCalendarScreenTest() {
+
+  @Test
+  fun pullToRefreshComponentExists() {
+    setContentWithLocalRepo()
+
+    // Assert that pull-to-refresh component is present
+    composeTestRule.onNodeWithTag("CalendarPullToRefresh").assertExists()
+  }
+}

@@ -4,6 +4,8 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -43,6 +45,7 @@ import java.time.ZoneId
  * @param calendarViewModel ViewModel used to fetch events for the visible date range.
  * @param onEventClick Callback invoked when the user taps on an [Event].
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalendarContainer(
     modifier: Modifier = Modifier,
@@ -89,31 +92,40 @@ fun CalendarContainer(
       remember(currentDateRange, currentMode) { computeSelectedDate(currentDateRange, currentMode) }
 
   Box(modifier = modifier) {
-    // When the mode is not MONTH, we show the week/day grid.
-    if (currentMode != ViewMode.MONTH) {
-      CalendarGridContent(
-          modifier =
-              Modifier.fillMaxSize()
-                  .testTag(CalendarScreenTestTags.ROOT)
-                  // Handle horizontal swipes to navigate between days/weeks.
-                  .calendarSwipeGestures(
-                      currentDateRange = currentDateRange,
-                      currentMode = currentMode,
-                      onRangeChanged = { newRange -> currentDateRange = newRange }),
-          dateRange = currentDateRange,
-          headerDateRange = headerDateRange,
-          events = events,
-          today = today,
-          selectedDate = selectedDate,
-          // Header is clickable only in ONE_DAY mode.
-          onHeaderDayClick =
-              buildOnHeaderDayClick(currentMode) { clickedDate ->
-                // When the user clicks a day in the header while in ONE_DAY mode,
-                // we update the visible range to show that single day.
-                currentDateRange = LocalDateRange(clickedDate, clickedDate)
-              },
-          onEventClick = onEventClick)
-    }
+    PullToRefreshBox(
+        isRefreshing = uiState.isRefreshing,
+        onRefresh = {
+          calendarViewModel.refreshEvents(
+              localDateTimeToInstant(currentDateRange.start, LocalTime.MIDNIGHT),
+              localDateTimeToInstant(currentDateRange.endInclusive, LocalTime.MAX))
+        },
+        modifier = Modifier.testTag("CalendarPullToRefresh")) {
+          // When the mode is not MONTH, we show the week/day grid.
+          if (currentMode != ViewMode.MONTH) {
+            CalendarGridContent(
+                modifier =
+                    Modifier.fillMaxSize()
+                        .testTag(CalendarScreenTestTags.ROOT)
+                        // Handle horizontal swipes to navigate between days/weeks.
+                        .calendarSwipeGestures(
+                            currentDateRange = currentDateRange,
+                            currentMode = currentMode,
+                            onRangeChanged = { newRange -> currentDateRange = newRange }),
+                dateRange = currentDateRange,
+                headerDateRange = headerDateRange,
+                events = events,
+                today = today,
+                selectedDate = selectedDate,
+                // Header is clickable only in ONE_DAY mode.
+                onHeaderDayClick =
+                    buildOnHeaderDayClick(currentMode) { clickedDate ->
+                      // When the user clicks a day in the header while in ONE_DAY mode,
+                      // we update the visible range to show that single day.
+                      currentDateRange = LocalDateRange(clickedDate, clickedDate)
+                    },
+                onEventClick = onEventClick)
+          }
+        }
 
     // Floating button to change the view mode.
     ViewModeSelector(

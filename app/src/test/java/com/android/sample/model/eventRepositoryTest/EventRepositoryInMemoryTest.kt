@@ -1,5 +1,8 @@
-package com.android.sample.model.calendar
+package com.android.sample.model.eventRepositoryTest
 
+import com.android.sample.model.calendar.Event
+import com.android.sample.model.calendar.EventRepositoryInMemory
+import com.android.sample.model.calendar.createEvent
 import java.time.Instant
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
@@ -7,20 +10,20 @@ import org.junit.Before
 import org.junit.Test
 
 /**
- * Unit tests for [EventRepositoryLocal].
+ * Unit tests for [EventRepositoryInMemory].
  *
  * These tests verify expected repository contract behaviors using an in-memory fake implementation.
  */
-class LocalRepositoryTest {
+class EventRepositoryInMemoryTest {
 
-  private lateinit var repository: EventRepositoryLocal
+  private lateinit var repository: EventRepositoryInMemory
   private lateinit var sampleEvent: Event
 
   private val orgId: String = "org123"
 
   @Before
   fun setup() {
-    repository = EventRepositoryLocal()
+    repository = EventRepositoryInMemory()
     sampleEvent =
         createEvent(
             organizationId = orgId,

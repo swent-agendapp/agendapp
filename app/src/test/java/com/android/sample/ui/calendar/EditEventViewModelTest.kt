@@ -1,10 +1,11 @@
 package com.android.sample.ui.calendar
 
-import androidx.compose.ui.graphics.Color
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
-import com.android.sample.model.calendar.EventRepositoryLocal
+import com.android.sample.model.calendar.EventRepositoryInMemory
 import com.android.sample.model.calendar.RecurrenceStatus
+import com.android.sample.model.category.EventCategory
+import com.android.sample.model.category.mockData.getMockEventCategory
 import com.android.sample.ui.calendar.editEvent.EditEventStep
 import com.android.sample.ui.calendar.editEvent.EditEventViewModel
 import java.time.Duration
@@ -31,9 +32,9 @@ class EditEventViewModelTest {
   @Before
   fun setUp() {
     Dispatchers.setMain(testDispatcher)
-    repository = EventRepositoryLocal()
+    repository = EventRepositoryInMemory()
 
-    // Set the selected organization in the provider
+    // Set the selected organization in the provider (if needed by the app)
     // SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationID)
   }
 
@@ -54,6 +55,9 @@ class EditEventViewModelTest {
     assertEquals(EditEventStep.MAIN, state.step)
     assertFalse(state.isLoading)
     assertNull(state.errorMessage)
+    assertEquals(EventCategory.defaultCategory().label, state.category.label)
+    assertEquals(EventCategory.defaultCategory().color, state.category.color)
+    assertEquals(EventCategory.defaultCategory().isDefault, state.category.isDefault)
   }
 
   @Test
@@ -75,13 +79,14 @@ class EditEventViewModelTest {
   }
 
   @Test
-  fun `setColor updates the color in UI state`() {
+  fun `setCategory updates the category in UI state`() {
     val vm = makeVm()
-    val newColor = Color(0xFFFF0000)
+    val mockCategories = getMockEventCategory()
+    val newCategory = mockCategories.first()
 
-    vm.setColor(newColor)
+    vm.setCategory(newCategory)
 
-    assertEquals(newColor, vm.uiState.value.color)
+    assertEquals(newCategory, vm.uiState.value.category)
   }
 
   @Test
@@ -194,6 +199,7 @@ class EditEventViewModelTest {
     val eventId = "event-1"
     val start = Instant.parse("2025-03-01T10:00:00Z")
     val end = Instant.parse("2025-03-01T11:00:00Z")
+    val category = getMockEventCategory().first()
 
     val event =
         Event(
@@ -210,7 +216,7 @@ class EditEventViewModelTest {
             version = 1L,
             recurrenceStatus = RecurrenceStatus.Weekly,
             hasBeenDeleted = false,
-            color = Color(0xFF00FF00))
+            category = category)
 
     repository.insertEvent(orgId = selectedOrganizationID, item = event)
 
@@ -225,7 +231,7 @@ class EditEventViewModelTest {
     assertEquals(end, state.endInstant)
     assertEquals(RecurrenceStatus.Weekly, state.recurrenceMode)
     assertEquals(setOf("user1"), state.participants)
-    assertEquals(Color(0xFF00FF00), state.color)
+    assertEquals(category, state.category)
     assertFalse(state.isLoading)
     assertNull(state.errorMessage)
   }
@@ -248,6 +254,9 @@ class EditEventViewModelTest {
     val eventId = "event-2"
     val start = Instant.parse("2025-03-01T10:00:00Z")
     val end = Instant.parse("2025-03-01T11:00:00Z")
+    val mockCategories = getMockEventCategory()
+    val originalCategory = mockCategories.first()
+    val newCategory = mockCategories[1]
 
     val originalEvent =
         Event(
@@ -264,7 +273,7 @@ class EditEventViewModelTest {
             version = 1L,
             recurrenceStatus = RecurrenceStatus.OneTime,
             hasBeenDeleted = false,
-            color = Color(0xFF0000FF))
+            category = originalCategory)
 
     repository.insertEvent(orgId = selectedOrganizationID, item = originalEvent)
 
@@ -274,7 +283,7 @@ class EditEventViewModelTest {
     vm.setTitle("New title")
     vm.setDescription("New description")
     vm.setRecurrenceMode(RecurrenceStatus.Weekly)
-    vm.setColor(Color(0xFFFF0000))
+    vm.setCategory(newCategory)
 
     vm.saveEditEventChanges()
     testDispatcher.scheduler.advanceUntilIdle()
@@ -286,7 +295,7 @@ class EditEventViewModelTest {
     assertEquals("New title", updated.title)
     assertEquals("New description", updated.description)
     assertEquals(RecurrenceStatus.Weekly, updated.recurrenceStatus)
-    assertEquals(Color(0xFFFF0000), updated.color)
+    assertEquals(newCategory, updated.category)
   }
 
   /* Helper functions */

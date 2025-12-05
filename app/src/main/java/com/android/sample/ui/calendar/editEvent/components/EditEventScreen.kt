@@ -17,7 +17,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.calendar.labelRes
-import com.android.sample.ui.calendar.components.ColorSelector
+import com.android.sample.ui.calendar.components.CategorySelector
 import com.android.sample.ui.calendar.components.DatePickerFieldToModal
 import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.calendar.components.ValidatingTextField
@@ -106,10 +106,10 @@ fun EditEventScreen(
 
               // Color
               item {
-                ColorSelector(
-                    selectedColor = uiState.color,
-                    onColorSelected = { editEventViewModel.setColor(it) },
-                    testTag = EditEventTestTags.COLOR_SELECTOR,
+                CategorySelector(
+                    selectedCategory = uiState.category,
+                    onCategorySelected = { editEventViewModel.setCategory(it) },
+                    testTag = EditEventTestTags.CATEGORY_SELECTOR,
                 )
               }
 

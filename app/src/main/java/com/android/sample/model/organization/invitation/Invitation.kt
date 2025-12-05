@@ -1,5 +1,8 @@
 package com.android.sample.model.organization.invitation
 
+import androidx.compose.ui.graphics.Color
+import com.android.sample.R
+import com.android.sample.ui.theme.Palette
 import java.time.Instant
 import java.util.UUID
 
@@ -76,4 +79,19 @@ enum class InvitationStatus {
   Active,
   Used,
   Expired,
+}
+
+fun InvitationStatus.getStringId(): Int =
+    when (this) {
+      InvitationStatus.Active -> R.string.status_active
+      InvitationStatus.Used -> R.string.status_used
+      InvitationStatus.Expired -> R.string.status_expired
+    }
+
+fun InvitationStatus.displayColor(): Color {
+  return when (this) {
+    InvitationStatus.Active -> Palette.MistyMoss
+    InvitationStatus.Used -> Palette.Gray
+    InvitationStatus.Expired -> Palette.Firebrick
+  }
 }

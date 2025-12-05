@@ -7,9 +7,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -18,6 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -32,6 +37,7 @@ import com.android.sample.ui.common.FloatingButton
 import com.android.sample.ui.common.MainPageTopBar
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
+import com.android.sample.ui.theme.Palette
 
 object CalendarScreenTestTags {
   // Top-level calendar screen tags
@@ -65,11 +71,15 @@ object CalendarScreenTestTags {
   // Filtering
   const val FILTER_BUTTON = "CalendarFilterButton"
   const val FILTER_BOTTOM_SHEET = "CalendarFilterBottomSheet"
+
+  // Location status chip
+  const val LOCATION_STATUS_CHIP = "LocationStatusChip"
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalendarScreen(
-    calendarViewModel: CalendarViewModel = viewModel(),
+    calendarViewModel: CalendarViewModel = viewModel(factory = CalendarViewModel.Factory),
     selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel,
     onCreateEvent: () -> Unit = {},
@@ -106,7 +116,7 @@ fun CalendarScreen(
       topBar = {
         if (isPortrait) {
           MainPageTopBar(
-              title = stringResource(R.string.calendar_screen_title),
+              title = "",
               modifier = Modifier.testTag(CalendarScreenTestTags.TOP_BAR_TITLE),
               actions = {
                 IconButton(
@@ -116,6 +126,11 @@ fun CalendarScreen(
                           imageVector = Icons.Default.FilterList,
                           contentDescription = stringResource(R.string.filter))
                     }
+              },
+              pastille = {
+                LocationStatusChip(
+                    locationStatus = uiState.locationStatus,
+                    onClick = { calendarViewModel.checkUserLocationStatus() })
               })
         }
       },
@@ -141,6 +156,42 @@ fun CalendarScreen(
               })
         }
       }
+}
+
+/**
+ * Composable function to display a location status chip.
+ *
+ * The chip changes color based on the location status:
+ * - Green: User is inside an area
+ * - Red: User is outside all areas
+ * - Grey: User hasn't granted location permission
+ *
+ * assisted by AI
+ *
+ * @param locationStatus The current location status.
+ */
+@Composable
+fun LocationStatusChip(locationStatus: LocationStatus, onClick: () -> Unit = {}) {
+  val chipColor =
+      when (locationStatus) {
+        LocationStatus.INSIDE_AREA -> Palette.DarkSeaGreen
+        LocationStatus.OUTSIDE_AREA -> Palette.Firebrick
+        LocationStatus.NO_PERMISSION -> Palette.LightGray
+      }
+
+  val chipText =
+      when (locationStatus) {
+        LocationStatus.INSIDE_AREA -> stringResource(R.string.location_status_inside)
+        LocationStatus.OUTSIDE_AREA -> stringResource(R.string.location_status_outside)
+        LocationStatus.NO_PERMISSION -> stringResource(R.string.location_status_no_permission)
+      }
+
+  AssistChip(
+      onClick = { onClick() },
+      label = { Text(text = chipText) },
+      colors =
+          AssistChipDefaults.assistChipColors(containerColor = chipColor, labelColor = Color.White),
+      modifier = Modifier.testTag(CalendarScreenTestTags.LOCATION_STATUS_CHIP))
 }
 
 @Preview

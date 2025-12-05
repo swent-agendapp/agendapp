@@ -88,6 +88,9 @@ val FontSizeHuge = 32.sp
 val FontSizeExtraHuge = 40.sp
 val FontSizeMassive = 48.sp
 
+// Letter spacing
+val LetterSpacingLarge = 5.sp
+
 // Line height
 val LineHeightSmall = 8.sp
 val LineHeightLarge = 22.sp

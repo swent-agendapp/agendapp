@@ -30,6 +30,21 @@ object Palette {
   val LightGray = Color(color = 0xFFCCCCCC)
   val Black = Color(color = 0xFF000000)
 
+  // Surfaces / Material-like neutrals
+  val Magnolia = Color(color = 0xFFFFFBFE) // Surface light
+  val LavenderMist = Color(color = 0xFFE7E0EC) // SurfaceVariant light
+  val EerieBlack = Color(color = 0xFF1C1B1F) // Surface dark / OnSurface light
+  val RaisinBlack = Color(color = 0xFF49454F) // SurfaceVariant dark / OnSurfaceVariant light
+
+  // Text / outline neutrals
+  val Rhythm = Color(color = 0xFF79747E) // Outline light
+  val LavenderGray = Color(color = 0xFFE6E1E5) // OnSurface dark
+  val FrenchGray = Color(color = 0xFFCAC4D0) // OnSurfaceVariant dark
+  val SpanishGray = Color(color = 0xFF938F99) // Outline dark
+
+  // Utility
+  val Transparent = Color(color = 0x00000000)
+
   // ----------------------------------------
   // Purples / Violets / Indigo
   // ----------------------------------------
@@ -85,22 +100,22 @@ object Palette {
 // General Color Scheme
 object GeneralPalette {
   // Surfaces
-  val Surface = Color(0xFFFFFBFE)
-  val SurfaceVariant = Color(0xFFE7E0EC)
+  val Surface = Palette.Magnolia
+  val SurfaceVariant = Palette.LavenderMist
 
   // Utility
-  val Transparent = Color(0x00000000)
+  val Transparent = Palette.Transparent
 
   // Card / containers
-  val CardContainer = Color(0xFFE6E4E9)
+  val CardContainer = Palette.Platinum
 
   // Text / content
   val Font = Black
-  val OnSurface = Color(0xFF1C1B1F)
-  val OnSurfaceVariant = Color(0xFF49454F)
+  val OnSurface = Palette.EerieBlack
+  val OnSurfaceVariant = Palette.RaisinBlack
 
   // Outline
-  val Outline = Color(0xFF79747E)
+  val Outline = Palette.Rhythm
 
   // App Colors
   val Primary = CircusPalette.Primary
@@ -111,22 +126,22 @@ object GeneralPalette {
 // General Color Scheme for Dark Mode
 object GeneralPaletteDark {
   // Surfaces
-  val Surface = Color(0xFF1C1B1F)
-  val SurfaceVariant = Color(0xFF49454F)
+  val Surface = Palette.EerieBlack
+  val SurfaceVariant = Palette.RaisinBlack
 
   // Utility
-  val Transparent = Color(0x00000000)
+  val Transparent = Palette.Transparent
 
   // Card / containers
-  val CardContainer = Color(0xFF1C1B1F)
+  val CardContainer = Palette.EerieBlack
 
   // Text / content
   val Font = Black
-  val OnSurface = Color(0xFFE6E1E5)
-  val OnSurfaceVariant = Color(0xFFCAC4D0)
+  val OnSurface = Palette.LavenderGray
+  val OnSurfaceVariant = Palette.FrenchGray
 
   // Outline
-  val Outline = Color(0xFF938F99)
+  val Outline = Palette.SpanishGray
 
   // App Colors
   val Primary = Palette.CadmiumBlue

@@ -135,6 +135,7 @@
     <string name="tooltip_area_create_title">Modifiez ou supprimez :</string>
     <string name="tooltip_area_create_text">Vous pouvez déplacer ou supprimer des marqueurs si vous souhaitez ajuster la forme.</string>
     <string name="down_sheet_title">Nommez votre zone</string>
+    <string name="down_sheet_area_size">Taille de votre zone : </string>
     <string name="down_sheet_text_field">Nom de la zone</string>
     <string name="down_sheet_button_create">Enregistrer la zone</string>
     <string name="down_sheet_button_delete">Supprimer le marqueur</string>

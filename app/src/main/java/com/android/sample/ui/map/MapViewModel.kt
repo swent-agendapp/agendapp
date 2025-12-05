@@ -8,14 +8,12 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.android.sample.BuildConfig
 import com.android.sample.model.map.Area
-import com.android.sample.model.map.Location
 import com.android.sample.model.map.LocationRepository
 import com.android.sample.model.map.LocationRepositoryAndroid
 import com.android.sample.model.map.MapRepository
 import com.android.sample.model.map.MapRepositoryProvider
 import com.android.sample.model.map.Marker
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
-import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,6 +28,12 @@ object DefaultLocation {
   const val LONGITUDE = 6.5668
 }
 
+/** EPFL Location for default value */
+object DefaultMarkerValue {
+  const val RADIUS = 10.0
+  const val LABEL = "Untitled"
+}
+
 /**
  * Represents the Stat of the screen UI .
  *
@@ -42,11 +46,13 @@ object DefaultLocation {
  */
 data class MapUiState(
     val currentLocation: LatLng = LatLng(DefaultLocation.LATITUDE, DefaultLocation.LONGITUDE),
-    val listNewMarker: List<Marker> = emptyList(),
     val listArea: List<Area> = emptyList(),
     val hasPermission: Boolean = false,
     val errorMessage: String? = null,
-    val nextAreaName: String = "Untitled",
+    val selectedAreaName: String = DefaultMarkerValue.LABEL,
+    val selectedRadius: Double = DefaultMarkerValue.RADIUS,
+    val selectedMarker: Marker? = null,
+    val selectedId: String? = null,
 )
 
 class MapViewModel(
@@ -54,9 +60,6 @@ class MapViewModel(
     private val mapRepository: MapRepository = MapRepositoryProvider.repository,
     private val locationRepository: LocationRepository = LocationRepositoryAndroid(app)
 ) : ViewModel() {
-
-  /** Provider for android GPS */
-  private val fusedClient = LocationServices.getFusedLocationProviderClient(app)
 
   private val _state = MutableStateFlow(MapUiState())
   val state: StateFlow<MapUiState> = _state
@@ -99,16 +102,33 @@ class MapViewModel(
    * [IllegalArgumentException] and updates the state with the corresponding error message.
    */
   fun createNewArea() {
+    require(_state.value.selectedMarker != null)
     viewModelScope.launch {
-      _state.value.listNewMarker.forEach { marker ->
-        mapRepository.addMarker(getSelectedOrganizationId(), marker)
-      }
       try {
         mapRepository.createArea(
             orgId = getSelectedOrganizationId(),
-            label = _state.value.nextAreaName,
-            markerIds = _state.value.listNewMarker.map { it.id })
-        _state.value = _state.value.copy(listNewMarker = emptyList(), nextAreaName = "Untitled")
+            label = _state.value.selectedAreaName,
+            marker = _state.value.selectedMarker!!,
+            radius = _state.value.selectedRadius)
+        unselectArea()
+        fetchAllArea()
+      } catch (e: IllegalArgumentException) {
+        _state.value = _state.value.copy(errorMessage = e.message)
+      }
+    }
+  }
+
+  fun updateArea() {
+    require(_state.value.selectedMarker != null)
+    viewModelScope.launch {
+      try {
+        mapRepository.updateArea(
+            areaId = _state.value.selectedId!!,
+            orgId = getSelectedOrganizationId(),
+            label = _state.value.selectedAreaName,
+            marker = _state.value.selectedMarker!!,
+            radius = _state.value.selectedRadius)
+        unselectArea()
         fetchAllArea()
       } catch (e: IllegalArgumentException) {
         _state.value = _state.value.copy(errorMessage = e.message)
@@ -121,14 +141,13 @@ class MapViewModel(
    *
    * @param coordinate The geographical position (latitude and longitude) of the new marker.
    */
-  fun addNewMarker(coordinate: LatLng) {
-    viewModelScope.launch {
-      _state.value =
-          _state.value.copy(
-              listNewMarker =
-                  listOf(Marker(location = Location(coordinate.latitude, coordinate.longitude))) +
-                      _state.value.listNewMarker)
-    }
+  fun selectNewMarker(coordinate: LatLng) {
+    _state.value =
+        _state.value.copy(
+            selectedMarker =
+                Marker(latitude = coordinate.latitude, longitude = coordinate.longitude),
+            selectedRadius = DefaultMarkerValue.RADIUS,
+            selectedAreaName = DefaultMarkerValue.LABEL)
   }
 
   /**
@@ -136,10 +155,16 @@ class MapViewModel(
    *
    * @param markerId The unique identifier of the marker to be removed.
    */
-  fun deleteMarker(markerId: String) {
-    _state.value =
-        _state.value.copy(
-            listNewMarker = _state.value.listNewMarker.filter { marker -> marker.id != markerId })
+  fun deleteArea() {
+    viewModelScope.launch {
+      try {
+        mapRepository.deleteArea(orgId = getSelectedOrganizationId(), _state.value.selectedId!!)
+        unselectArea()
+        fetchAllArea()
+      } catch (e: IllegalArgumentException) {
+        _state.value = _state.value.copy(errorMessage = e.message)
+      }
+    }
   }
 
   /**
@@ -148,12 +173,49 @@ class MapViewModel(
    * @param areaName The new name to assign to the area.
    */
   fun setNewAreaName(areaName: String) {
-    _state.value = _state.value.copy(nextAreaName = areaName)
+    _state.value = _state.value.copy(selectedAreaName = areaName)
+  }
+
+  /**
+   * Set or update the radius of the area currently being created.
+   *
+   * @param areaRadius The new name to assign to the area.
+   */
+  fun setNewAreaRadius(areaRadius: Double) {
+    _state.value = _state.value.copy(selectedRadius = areaRadius)
   }
 
   /** Clear the current error message in the state, if any, to reset the UI to a neutral state. */
   fun cleanMessageError() {
     _state.value = _state.value.copy(errorMessage = null)
+  }
+
+  /**
+   * Set or update the name of the area currently being created.
+   *
+   * @param areaName The new name to assign to the area.
+   */
+  fun selectArea(area: Area) {
+    _state.value =
+        _state.value.copy(
+            selectedAreaName = area.label,
+            selectedRadius = area.radius,
+            selectedMarker = area.marker,
+            selectedId = area.id)
+  }
+
+  /**
+   * Set or update the name of the area currently being created.
+   *
+   * @param areaName The new name to assign to the area.
+   */
+  fun unselectArea() {
+    _state.value =
+        _state.value.copy(
+            selectedMarker = null,
+            selectedAreaName = DefaultMarkerValue.LABEL,
+            selectedRadius = DefaultMarkerValue.RADIUS,
+            selectedId = null)
   }
 
   /**

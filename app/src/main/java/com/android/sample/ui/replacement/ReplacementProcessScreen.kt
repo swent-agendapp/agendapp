@@ -28,10 +28,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import com.android.sample.R
 import com.android.sample.model.replacement.mockData.getMockReplacements
 import com.android.sample.ui.calendar.utils.DateTimeUtils.DATE_FORMAT_PATTERN
+import com.android.sample.ui.common.MemberSelectionList
+import com.android.sample.ui.common.MemberSelectionListOptions
 import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.common.SecondaryPageTopBar
-import com.android.sample.ui.replacement.components.MemberSelectionList
-import com.android.sample.ui.replacement.components.MemberSelectionListOptions
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.DefaultCardElevation
 import com.android.sample.ui.theme.PaddingExtraLarge

@@ -42,7 +42,7 @@ import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
 import com.android.sample.ui.calendar.components.DatePickerFieldToModal
 import com.android.sample.ui.calendar.utils.DateTimeUtils
-import com.android.sample.ui.components.BottomNavigationButtons
+import com.android.sample.ui.common.BottomNavigationButtons
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.SpacingLarge

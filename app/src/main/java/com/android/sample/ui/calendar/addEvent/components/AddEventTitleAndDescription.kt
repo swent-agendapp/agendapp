@@ -30,7 +30,7 @@ import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
 import com.android.sample.ui.calendar.components.ColorSelector
 import com.android.sample.ui.calendar.components.ValidatingTextField
-import com.android.sample.ui.components.BottomNavigationButtons
+import com.android.sample.ui.common.BottomNavigationButtons
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.SpacingExtraLarge
 import com.android.sample.ui.theme.WeightExtraHeavy

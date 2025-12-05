@@ -32,9 +32,13 @@
     <string name="confirmed_replacements">Bestätigte Ersetzungen</string>
     <string name="common_back">Zurück</string>
 
+    <!-- Warnings -->
+    <string name="warning_title">Warnung</string>
+    <string name="warning_participant_modification">Änderungen der Teilnehmenden, die Sie hier vornehmen, werden den betroffenen Personen nicht mitgeteilt\n\nWenn Sie einen Ersatz für eine der teilnehmenden Personen organisieren müssen, verwenden Sie stattdessen den Tab “Ersatzplan” im Hauptmenü</string>
+    <string name="warning_got_it">Verstanden</string>
+
     <!-- Edit Event Screen -->
     <string name="edit_event_title">Ereignis bearbeiten</string>
-    <string name="edit_event_instruction">Bearbeiten Sie unten die Ereignisdetails:</string>
 
     <!-- Fields -->
     <string name="edit_event_title_label">Titel</string>
@@ -49,13 +53,10 @@
     <string name="edit_event_end_date_label">Enddatum</string>
     <string name="edit_event_start_time_label">Startzeit:</string>
     <string name="edit_event_end_time_label">Endzeit:</string>
-    <string name="edit_event_recurrence_label">Wiederholung</string>
 
     <!-- Participants -->
-    <string name="edit_event_participants_label">Teilnehmer:</string>
     <string name="edit_event_edit_participants_button">Teilnehmer bearbeiten</string>
     <string name="edit_event_participants_screen_title">Ereignisteilnehmer bearbeiten</string>
-    <string name="edit_event_select_participants_text">Teilnehmer auswählen</string>
 
     <!-- Notifications -->
 

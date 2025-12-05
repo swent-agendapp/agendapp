@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.android.sample.R
 import com.android.sample.ui.calendar.CalendarScreenTestTags
-import com.android.sample.ui.components.BottomNavigationButtons
+import com.android.sample.ui.common.BottomNavigationButtons
 import com.android.sample.ui.theme.AlphaLow
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingLarge

@@ -1,27 +1,24 @@
 package com.android.sample.ui.calendar.editEvent.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
-import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.calendar.editEvent.EditEventTestTags
 import com.android.sample.ui.calendar.editEvent.EditEventViewModel
-import com.android.sample.ui.components.BottomNavigationButtons
-import com.android.sample.ui.theme.CornerRadiusLarge
-import com.android.sample.ui.theme.ElevationLow
+import com.android.sample.ui.common.BottomNavigationButtons
+import com.android.sample.ui.common.MemberSelectionList
+import com.android.sample.ui.common.MemberSelectionListOptions
+import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.theme.PaddingHuge
-import com.android.sample.ui.theme.PaddingMedium
+import com.android.sample.ui.theme.PaddingLarge
 import com.android.sample.ui.theme.PaddingSmall
 import com.android.sample.ui.theme.WeightExtraHeavy
 
@@ -46,60 +43,79 @@ fun EditEventAttendantScreen(
     onBack: () -> Unit = {},
 ) {
   val uiState by editEventViewModel.uiState.collectAsState()
+  val eventParticipants = uiState.participants
   // Placeholder for all possible participants
   // This would come from a repository or service
   val allParticipants = listOf("Alice", "Bob", "Charlie", "David", "Eve", "Frank")
 
+  // This state controls if the warning dialog is visible.
+  // It starts as true so the dialog is shown when the screen is first displayed.
+  var showWarningDialog by remember { mutableStateOf(true) }
+
   Scaffold(
       topBar = {
-        TopTitleBar(title = stringResource(R.string.edit_event_participants_screen_title))
+        SecondaryPageTopBar(
+            title = stringResource(R.string.edit_event_participants_screen_title),
+            canGoBack = false)
       },
       content = { paddingValues ->
+        // Show the warning dialog when the screen is first displayed.
+        if (showWarningDialog) {
+          AlertDialog(
+              onDismissRequest = {
+                // When user presses back, we navigate back.
+                onBack
+              },
+              confirmButton = {
+                TextButton(
+                    modifier = Modifier.testTag(EditEventTestTags.ATTENDANCE_WARNING_ACK_BUTTON),
+                    onClick = {
+                      // When user presses OK, we hide the dialog.
+                      showWarningDialog = false
+                    }) {
+                      Text(
+                          text = stringResource(R.string.warning_got_it),
+                          fontWeight = FontWeight.Bold)
+                    }
+              },
+              title = { Text(stringResource(R.string.warning_title)) },
+              text = { Text(stringResource(R.string.warning_participant_modification)) },
+          )
+        }
         Column(
             modifier =
-                Modifier.fillMaxSize().padding(horizontal = PaddingHuge).padding(paddingValues),
+                Modifier.fillMaxSize()
+                    .padding(horizontal = PaddingHuge, vertical = PaddingLarge)
+                    .padding(paddingValues),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround) {
-              Box(
-                  modifier = Modifier.weight(WeightExtraHeavy).fillMaxWidth(),
-                  contentAlignment = Alignment.Center) {
-                    Text(
-                        stringResource(R.string.edit_event_select_participants_text),
-                        style = MaterialTheme.typography.headlineMedium)
-                  }
-
-              Card(
+              MemberSelectionList(
                   modifier =
                       Modifier.weight(WeightExtraHeavy)
                           .fillMaxWidth()
-                          .padding(vertical = PaddingSmall),
-                  shape = RoundedCornerShape(CornerRadiusLarge),
-                  elevation = CardDefaults.cardElevation(defaultElevation = ElevationLow)) {
-                    LazyColumn(modifier = Modifier.fillMaxSize().padding(PaddingMedium)) {
-                      items(allParticipants) { name ->
-                        val isSelected = uiState.participants.contains(name)
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier =
-                                Modifier.fillMaxWidth()
-                                    .clickable {
-                                      if (isSelected) editEventViewModel.removeParticipant(name)
-                                      else editEventViewModel.addParticipant(name)
-                                    }
-                                    .padding(vertical = PaddingSmall)
-                                    .testTag("${EditEventTestTags.PARTICIPANTS_LIST}_$name")) {
-                              Checkbox(
-                                  checked = isSelected,
-                                  onCheckedChange = { checked ->
-                                    if (checked) editEventViewModel.addParticipant(name)
-                                    else editEventViewModel.removeParticipant(name)
-                                  })
-                              Spacer(modifier = Modifier.width(PaddingSmall))
-                              Text(name)
-                            }
-                      }
+                          .padding(vertical = PaddingSmall)
+                          .testTag(EditEventTestTags.PARTICIPANTS_LIST),
+                  members = allParticipants,
+                  selectedMembers = eventParticipants,
+                  onSelectionChanged = { newSelection ->
+                    val oldParticipants = eventParticipants
+                    val newParticipants = newSelection
+
+                    // With the set of removed participants (was in old but disappeared in new),
+                    // remove them of the Event
+                    (oldParticipants - newParticipants).forEach { removedParticipant ->
+                      editEventViewModel.removeParticipant(removedParticipant)
                     }
-                  }
+
+                    // With the set of added participants (is in new but not already in old),
+                    // add them to the Event
+                    (newParticipants - oldParticipants).forEach { addedParticipant ->
+                      editEventViewModel.addParticipant(addedParticipant)
+                    }
+                  },
+                  options =
+                      MemberSelectionListOptions(
+                          memberTagBuilder = { "${EditEventTestTags.PARTICIPANTS_LIST}_$it" }))
             }
       },
       bottomBar = {
@@ -111,7 +127,7 @@ fun EditEventAttendantScreen(
             onBack = onBack,
             backButtonText = stringResource(R.string.common_cancel),
             nextButtonText = stringResource(R.string.common_save),
-            canGoNext = true,
+            canGoNext = !showWarningDialog,
             backButtonTestTag = EditEventTestTags.BACK_BUTTON,
             nextButtonTestTag = EditEventTestTags.SAVE_BUTTON)
       })

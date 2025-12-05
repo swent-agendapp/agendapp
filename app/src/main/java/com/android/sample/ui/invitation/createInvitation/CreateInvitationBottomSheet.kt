@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
-import com.android.sample.ui.components.BottomNavigationButtons
+import com.android.sample.ui.common.BottomNavigationButtons
 import com.android.sample.ui.theme.PaddingLarge
 import com.android.sample.ui.theme.PaddingSmall
 import com.android.sample.ui.theme.SpacingSmall

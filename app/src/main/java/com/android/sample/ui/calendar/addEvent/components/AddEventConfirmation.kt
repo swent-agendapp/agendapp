@@ -13,7 +13,7 @@ import com.android.sample.R
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
 import com.android.sample.ui.calendar.components.EventSummaryCard
-import com.android.sample.ui.components.BottomNavigationButtons
+import com.android.sample.ui.common.BottomNavigationButtons
 import com.android.sample.ui.theme.PaddingExtraLarge
 
 /**

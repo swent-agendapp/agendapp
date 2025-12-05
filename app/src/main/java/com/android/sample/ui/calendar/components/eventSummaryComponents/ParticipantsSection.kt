@@ -3,6 +3,7 @@ package com.android.sample.ui.calendar.components.eventSummaryComponents
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,9 +30,10 @@ import androidx.compose.ui.unit.Dp
 import com.android.sample.ui.calendar.components.EventSummaryCardTags
 import com.android.sample.ui.calendar.style.EventSummaryCardStyle
 import com.android.sample.ui.theme.AlphaHigh
+import com.android.sample.ui.theme.AlphaLow
 import com.android.sample.ui.theme.BorderWidthThin
 import com.android.sample.ui.theme.CornerRadiusLarge
-import com.android.sample.ui.theme.EventPalette
+import com.android.sample.ui.theme.GeneralPalette
 import com.android.sample.ui.theme.IconSizeMedium
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.RowHeightMedium
@@ -51,30 +53,28 @@ import com.android.sample.ui.theme.SpacingSmall
 @Composable
 fun ParticipantsSection(
     participantNames: List<String> = emptyList(),
+    showHeader: Boolean = true,
     rowHeight: Dp = RowHeightMedium,
     visibleRows: Int = EventSummaryCardStyle().participantsVisibleRows,
-    borderColor: Color = EventPalette.Blue,
+    borderColor: Color = GeneralPalette.OnSurfaceVariant.copy(alpha = AlphaLow),
 ) {
   if (participantNames.isNotEmpty()) {
-    // Section header with "Participants" label and people icon
-    Row(verticalAlignment = Alignment.CenterVertically) {
-      Icon(
-          imageVector = Icons.Filled.Group,
-          contentDescription = "Participants",
-          modifier = Modifier.size(IconSizeMedium),
-          tint = MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaHigh))
-      Spacer(Modifier.width(SpacingSmall))
-      Text(
-          text = "Participants",
-          style = MaterialTheme.typography.labelLarge,
-          color = MaterialTheme.colorScheme.onSurface.copy(alpha = AlphaHigh))
+    if (showHeader) {
+      // Section header with "Participants" label and people icon
+      Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(
+            imageVector = Icons.Filled.Group,
+            contentDescription = "Participants",
+            modifier = Modifier.size(IconSizeMedium),
+            tint = GeneralPalette.OnSurface.copy(alpha = AlphaHigh))
+        Spacer(Modifier.width(SpacingSmall))
+        Text(
+            text = "Participants",
+            style = MaterialTheme.typography.labelLarge,
+            color = GeneralPalette.OnSurface.copy(alpha = AlphaHigh))
+      }
+      Spacer(Modifier.height(SpacingSmall))
     }
-    Spacer(Modifier.height(SpacingSmall))
-
-    val listState = rememberLazyListState()
-    val totalItems = participantNames.size
-    // Add a small extra (~0.6 row) so the next item peeks into view and hints scrollability
-    val containerHeight = rowHeight * visibleRows + rowHeight * 3 / 5
 
     Box(
         modifier =
@@ -84,28 +84,73 @@ fun ParticipantsSection(
                     color = borderColor,
                     shape = RoundedCornerShape(CornerRadiusLarge))
                 .clip(RoundedCornerShape(CornerRadiusLarge))) {
-          LazyColumn(
-              state = listState,
-              modifier =
-                  Modifier.height(if (totalItems > visibleRows) containerHeight else Dp.Unspecified)
-                      .fillMaxWidth()
-                      .testTag(EventSummaryCardTags.PARTICIPANTS_LIST)) {
-                itemsIndexed(participantNames) { idx, name ->
-                  // Gentle zebra striping improves scan-ability for long lists
-                  val bg =
-                      if (idx % 2 == 0) MaterialTheme.colorScheme.surface
-                      else MaterialTheme.colorScheme.surfaceVariant
-                  Box(
-                      modifier = Modifier.fillMaxWidth().height(rowHeight).background(bg),
-                      contentAlignment = Alignment.CenterStart) {
-                        Text(
-                            text = name,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.padding(horizontal = PaddingMedium))
-                      }
-                }
-              }
+          // Delegate the scrollable vs non-scrollable logic to a helper.
+          ParticipantsList(
+              participantNames = participantNames,
+              rowHeight = rowHeight,
+              visibleRows = visibleRows,
+          )
         }
   }
+}
+
+@Composable
+private fun ParticipantsList(
+    participantNames: List<String>,
+    rowHeight: Dp,
+    visibleRows: Int,
+) {
+  val totalItems = participantNames.size
+  // Add a small extra (~0.6 row) so the next item peeks into view and hints scrollability
+  val containerHeight = rowHeight * visibleRows + rowHeight * 3 / 5
+
+  if (totalItems > visibleRows) {
+    // long list : we fix the height and scroll inside
+    val listState = rememberLazyListState()
+    LazyColumn(
+        state = listState,
+        modifier =
+            Modifier.height(containerHeight)
+                .fillMaxWidth()
+                .testTag(EventSummaryCardTags.PARTICIPANTS_LIST)) {
+          itemsIndexed(participantNames) { idx, name ->
+            ParticipantRow(
+                name = name,
+                index = idx,
+                rowHeight = rowHeight,
+            )
+          }
+        }
+  } else {
+    // short list : no scrollable component
+    Column(modifier = Modifier.fillMaxWidth().testTag(EventSummaryCardTags.PARTICIPANTS_LIST)) {
+      participantNames.forEachIndexed { idx, name ->
+        ParticipantRow(
+            name = name,
+            index = idx,
+            rowHeight = rowHeight,
+        )
+      }
+    }
+  }
+}
+
+@Composable
+private fun ParticipantRow(
+    name: String,
+    index: Int,
+    rowHeight: Dp,
+) {
+  // Gentle zebra striping improves scan-ability for long lists
+  val bg = if (index % 2 == 0) GeneralPalette.Surface else GeneralPalette.SurfaceVariant
+
+  Box(
+      modifier = Modifier.fillMaxWidth().height(rowHeight).background(bg),
+      contentAlignment = Alignment.CenterStart) {
+        Text(
+            text = name,
+            style = MaterialTheme.typography.bodyMedium,
+            color = GeneralPalette.OnSurface,
+            modifier = Modifier.padding(horizontal = PaddingMedium))
+      }
 }

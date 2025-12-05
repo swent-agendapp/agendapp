@@ -20,8 +20,6 @@ data class OrganizationUIState(
     val isRefreshing: Boolean = false
 )
 
-
-
 // ViewModel for managing organization data for the current user
 open class OrganizationViewModel(
     private val organizationRepository: OrganizationRepository =
@@ -89,8 +87,7 @@ open class OrganizationViewModel(
   // member)
   fun addOrganizationFromName(name: String) {
     viewModelScope.launch {
-      val currentUser =
-          userState.value ?: throw IllegalStateException(errorMessageNoAuthenticated)
+      val currentUser = userState.value ?: throw IllegalStateException(errorMessageNoAuthenticated)
 
       try {
         // Create a new organization with the current user as the only admin and member

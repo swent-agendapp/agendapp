@@ -99,7 +99,7 @@ fun CalendarContainer(
               localDateTimeToInstant(currentDateRange.start, LocalTime.MIDNIGHT),
               localDateTimeToInstant(currentDateRange.endInclusive, LocalTime.MAX))
         },
-        modifier = Modifier.testTag("CalendarPullToRefresh")) {
+        modifier = Modifier.testTag(CalendarScreenTestTags.PULL_TO_REFRESH)) {
           // When the mode is not MONTH, we show the week/day grid.
           if (currentMode != ViewMode.MONTH) {
             CalendarGridContent(

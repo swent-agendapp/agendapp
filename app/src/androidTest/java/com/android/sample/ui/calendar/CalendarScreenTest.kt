@@ -657,6 +657,6 @@ class CalendarPullToRefreshTests : BaseCalendarScreenTest() {
     setContentWithLocalRepo()
 
     // Assert that pull-to-refresh component is present
-    composeTestRule.onNodeWithTag("CalendarPullToRefresh").assertExists()
+    composeTestRule.onNodeWithTag(CalendarScreenTestTags.PULL_TO_REFRESH).assertExists()
   }
 }

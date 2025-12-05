@@ -74,6 +74,9 @@ object CalendarScreenTestTags {
 
   // Location status chip
   const val LOCATION_STATUS_CHIP = "LocationStatusChip"
+
+  // Pull-to-refresh
+  const val PULL_TO_REFRESH = "CalendarPullToRefresh"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

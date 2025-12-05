@@ -94,6 +94,7 @@ fun ReplacementEmployeeListScreen(
     isAdmin: Boolean = false,
     adminActions: ReplacementAdminActions = ReplacementAdminActions(),
     createRequestActions: ReplacementCreateRequestActions = ReplacementCreateRequestActions(),
+    processingRequestIds: Set<String> = emptySet(),
     onBack: () -> Unit = {},
 ) {
   var showCreateOptions by remember { mutableStateOf(false) }
@@ -202,10 +203,12 @@ fun ReplacementEmployeeListScreen(
                 }
               } else {
                 items(requests, key = { it.id }) { req ->
+                  val isProcessing = processingRequestIds.contains(req.id)
                   ReplacementRequestCard(
                       data = req,
                       onAccept = { callbacks.onAccept(req.id) },
                       onRefuse = { callbacks.onRefuse(req.id) },
+                      enabled = !isProcessing,
                       testTag = ReplacementEmployeeListTestTags.card(req.id),
                       acceptTag = ReplacementEmployeeListTestTags.accept(req.id),
                       refuseTag = ReplacementEmployeeListTestTags.refuse(req.id),
@@ -223,6 +226,7 @@ private fun ReplacementRequestCard(
     data: ReplacementRequestUi,
     onAccept: () -> Unit,
     onRefuse: () -> Unit,
+    enabled: Boolean,
     testTag: String,
     acceptTag: String,
     refuseTag: String,
@@ -289,6 +293,7 @@ private fun ReplacementRequestCard(
       ) {
         OutlinedButton(
             onClick = onRefuse,
+            enabled = enabled,
             modifier = Modifier.weight(1f).testTag(refuseTag),
             shape = androidx.compose.foundation.shape.RoundedCornerShape(CornerRadiusLarge),
             border = BorderStroke(BorderWidthThin, CircusPalette.Primary),
@@ -303,6 +308,7 @@ private fun ReplacementRequestCard(
 
         OutlinedButton(
             onClick = onAccept,
+            enabled = enabled,
             modifier = Modifier.weight(1f).testTag(acceptTag),
             shape = androidx.compose.foundation.shape.RoundedCornerShape(CornerRadiusLarge),
             border = BorderStroke(BorderWidthThin, accentColor),

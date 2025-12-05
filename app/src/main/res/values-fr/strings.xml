@@ -197,6 +197,12 @@
     <string name="invalid_date_range_past_message">
     Plage de dates invalide : les dates ne peuvent pas être dans le passé.
 </string>
+    <string name="replacement_accept_success">
+    Vous avez accepté cette demande de remplacement avec succès.
+</string>
+    <string name="replacement_refuse_success">
+    Vous avez refusé cette demande de remplacement avec succès.
+</string>
 
     <string name="view_mode_1day">1 jour</string>
     <string name="view_mode_5days">5 jours</string>

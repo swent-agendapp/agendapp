@@ -156,6 +156,12 @@
     <string name="invalid_date_range_past_message">
     Ungültiger Datumsbereich: Daten dürfen nicht in der Vergangenheit liegen.
 </string>
+    <string name="replacement_accept_success">
+    Sie haben diese Vertretungsanfrage erfolgreich angenommen.
+</string>
+    <string name="replacement_refuse_success">
+    Sie haben diese Vertretungsanfrage erfolgreich abgelehnt.
+</string>
     <string name="replacement_requests_title">Vertretungsanfragen</string>
     <string name="replacement_substituted_label">Abwesende Person: %1$s</string>
     <string name="replacement_substitute_label">Vertretende Person: %1$s</string>

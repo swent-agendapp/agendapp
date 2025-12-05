@@ -1,12 +1,16 @@
 package com.android.sample.ui.replacement.mainPage
 
+import android.widget.Toast
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.model.replacement.Replacement
+import com.android.sample.ui.calendar.replacementEmployee.ReplacementEmployeeLastAction
 import com.android.sample.ui.calendar.replacementEmployee.ReplacementEmployeeStep
 import com.android.sample.ui.calendar.replacementEmployee.ReplacementEmployeeViewModel
 import com.android.sample.ui.replacement.components.SelectDateRangeScreen
@@ -26,6 +30,32 @@ fun ReplacementEmployeeFlow(
     onBack: () -> Unit = {},
 ) {
   val uiState by viewModel.uiState.collectAsState()
+
+  val context = LocalContext.current
+
+  LaunchedEffect(uiState.lastAction) {
+    when (uiState.lastAction) {
+      ReplacementEmployeeLastAction.ACCEPTED ->
+          Toast.makeText(
+                  context,
+                  context.getString(R.string.replacement_accept_success),
+                  Toast.LENGTH_SHORT,
+              )
+              .show()
+      ReplacementEmployeeLastAction.REFUSED ->
+          Toast.makeText(
+                  context,
+                  context.getString(R.string.replacement_refuse_success),
+                  Toast.LENGTH_SHORT,
+              )
+              .show()
+      null -> Unit
+    }
+
+    if (uiState.lastAction != null) {
+      viewModel.clearLastAction()
+    }
+  }
 
   when (uiState.step) {
     ReplacementEmployeeStep.LIST,
@@ -49,23 +79,20 @@ fun ReplacementEmployeeFlow(
                   onSelectEvent = { viewModel.goToSelectEvent() },
                   onChooseDateRange = { viewModel.goToSelectDateRange() },
               ),
+          processingRequestIds = uiState.processingRequestIds,
           onBack = onBack,
       )
     }
     ReplacementEmployeeStep.SELECT_EVENT -> {
-        SelectEventScreen(
-            onNext = { viewModel.confirmSelectedEventAndCreateReplacement() },
-            onBack = { viewModel.backToList() },
-            title = stringResource(R.string.replacement_list_title),
-            instruction = stringResource(R.string.replacement_list_instruction),
-            canGoNext = uiState.selectedEventId != null,
-            onEventClick = { event ->
-                viewModel.setSelectedEvent(event.id)
-            },
-            eventFilter = { event ->
-                viewModel.isEventEligibleForReplacement(event)
-            },
-        )
+      SelectEventScreen(
+          onNext = { viewModel.confirmSelectedEventAndCreateReplacement() },
+          onBack = { viewModel.backToList() },
+          title = stringResource(R.string.replacement_list_title),
+          instruction = stringResource(R.string.replacement_list_instruction),
+          canGoNext = uiState.selectedEventId != null,
+          onEventClick = { event -> viewModel.setSelectedEvent(event.id) },
+          eventFilter = { event -> viewModel.isEventEligibleForReplacement(event) },
+      )
     }
     ReplacementEmployeeStep.SELECT_DATE_RANGE -> {
       val start = uiState.startDate

@@ -21,7 +21,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 // Assisted by AI
-
+enum class ReplacementEmployeeLastAction {
+  ACCEPTED,
+  REFUSED,
+}
 /**
  * Steps for the employee-side replacement flow.
  *
@@ -51,7 +54,11 @@ data class ReplacementEmployeeUiState(
     val endDate: LocalDate? = null,
 
     // For debugging / future UI feedback
-    val lastCreatedReplacements: List<Replacement> = emptyList()
+    val lastCreatedReplacements: List<Replacement> = emptyList(),
+    // Requests currently being processed (accept/refuse in progress)
+    val processingRequestIds: Set<String> = emptySet(),
+    // Last user action on a request (for UI feedback)
+    val lastAction: ReplacementEmployeeLastAction? = null,
 )
 
 /**
@@ -172,6 +179,10 @@ class ReplacementEmployeeViewModel(
    */
   fun acceptRequest(id: String) {
     viewModelScope.launch {
+      _uiState.value =
+          _uiState.value.copy(
+              processingRequestIds = _uiState.value.processingRequestIds + id,
+          )
       try {
         val orgId = getSelectedOrganizationId()
 
@@ -228,17 +239,58 @@ class ReplacementEmployeeViewModel(
         }
 
         refreshIncomingRequests()
+
+        _uiState.value =
+            _uiState.value.copy(
+                lastAction = ReplacementEmployeeLastAction.ACCEPTED,
+            )
       } catch (e: Exception) {
         Log.e("ReplacementEmployeeVM", "Error accepting replacement", e)
         _uiState.value =
-            _uiState.value.copy(errorMessage = "Could not accept replacement: ${e.message}")
+            _uiState.value.copy(
+                errorMessage = "Could not accept replacement: ${e.message}",
+            )
+      } finally {
+        _uiState.value =
+            _uiState.value.copy(
+                processingRequestIds = _uiState.value.processingRequestIds - id,
+            )
       }
     }
   }
 
   /** Mark a replacement as **Declined**. */
   fun refuseRequest(id: String) {
-    updateRequestStatus(id, ReplacementStatus.Declined)
+    viewModelScope.launch {
+      _uiState.value =
+          _uiState.value.copy(
+              processingRequestIds = _uiState.value.processingRequestIds + id,
+          )
+      try {
+        updateRequestStatus(id, ReplacementStatus.Declined)
+        refreshIncomingRequests()
+
+        _uiState.value =
+            _uiState.value.copy(
+                lastAction = ReplacementEmployeeLastAction.REFUSED,
+            )
+      } catch (e: Exception) {
+        Log.e("ReplacementEmployeeVM", "Error refusing replacement", e)
+        _uiState.value =
+            _uiState.value.copy(
+                errorMessage = "Could not update replacement: ${e.message}",
+            )
+      } finally {
+        _uiState.value =
+            _uiState.value.copy(
+                processingRequestIds = _uiState.value.processingRequestIds - id,
+            )
+      }
+    }
+  }
+
+  fun clearLastAction() {
+    _uiState.value = _uiState.value.copy(lastAction = null)
   }
 
   private fun updateRequestStatus(id: String, newStatus: ReplacementStatus) {
@@ -390,25 +442,25 @@ class ReplacementEmployeeViewModel(
         val startInstant = start.atStartOfDay(ZoneId.systemDefault()).toInstant()
         val endInstant = end.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant()
 
-          val eventsInRange =
-              eventRepository.getEventsBetweenDates(
-                  orgId = orgId, startDate = startInstant, endDate = endInstant)
+        val eventsInRange =
+            eventRepository.getEventsBetweenDates(
+                orgId = orgId, startDate = startInstant, endDate = endInstant)
 
-          val eligibleEvents = eventsInRange.filter { event ->
-                  event.participants.contains(currentUserId)
-              }
+        val eligibleEvents =
+            eventsInRange.filter { event -> event.participants.contains(currentUserId) }
 
-          val created = eligibleEvents.map { event ->
-                  Replacement(
-                      absentUserId = currentUserId,
-                      substituteUserId = "",
-                      event = event,
-                      status = ReplacementStatus.ToProcess)
-              }
+        val created =
+            eligibleEvents.map { event ->
+              Replacement(
+                  absentUserId = currentUserId,
+                  substituteUserId = "",
+                  event = event,
+                  status = ReplacementStatus.ToProcess)
+            }
 
-          val orgId = getSelectedOrganizationId()
+        val orgId = getSelectedOrganizationId()
 
-          created.forEach { replacementRepository.insertReplacement(orgId = orgId, item = it) }
+        created.forEach { replacementRepository.insertReplacement(orgId = orgId, item = it) }
 
         _uiState.value =
             _uiState.value.copy(
@@ -492,10 +544,9 @@ class ReplacementEmployeeViewModel(
       }
     }
   }
-    fun isEventEligibleForReplacement(event: Event): Boolean {
-        val now = Instant.now()
-        return event.participants.contains(currentUserId) &&
-                event.startDate.isAfter(now)
-    }
 
+  fun isEventEligibleForReplacement(event: Event): Boolean {
+    val now = Instant.now()
+    return event.participants.contains(currentUserId) && event.startDate.isAfter(now)
+  }
 }

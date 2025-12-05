@@ -26,12 +26,12 @@ class ProcessReplacementScreenTest {
 
   @get:Rule val composeTestRule = createComposeRule()
 
-  private val replacementId = getMockReplacements().first().id
+  private val replacement = getMockReplacements().first()
 
   @Test
   fun screen_displaysBasicElements() {
     composeTestRule.setContent {
-      SampleAppTheme { ProcessReplacementScreen(replacementId = replacementId) }
+      SampleAppTheme { ProcessReplacementScreen(replacement = replacement) }
     }
 
     composeTestRule
@@ -57,7 +57,7 @@ class ProcessReplacementScreenTest {
     val noneText = context.getString(R.string.replacement_selected_members_none)
 
     composeTestRule.setContent {
-      SampleAppTheme { ProcessReplacementScreen(replacementId = replacementId) }
+      SampleAppTheme { ProcessReplacementScreen(replacement = replacement) }
     }
 
     composeTestRule.onNodeWithTag(ProcessReplacementTestTags.SEND_BUTTON).assertIsNotEnabled()
@@ -75,7 +75,7 @@ class ProcessReplacementScreenTest {
     composeTestRule.setContent {
       SampleAppTheme {
         ProcessReplacementScreen(
-            replacementId = replacementId,
+            replacement = replacement,
             onSendRequests = { sentMembers = it },
         )
       }
@@ -99,7 +99,7 @@ class ProcessReplacementScreenTest {
   @Test
   fun searchFilter_filtersList() {
     composeTestRule.setContent {
-      SampleAppTheme { ProcessReplacementScreen(replacementId = replacementId) }
+      SampleAppTheme { ProcessReplacementScreen(replacement = replacement) }
     }
 
     composeTestRule

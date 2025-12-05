@@ -89,7 +89,10 @@ fun SelectEventScreen(
                         modifier = Modifier.testTag(ReplacementOrganizeTestTags.INSTRUCTION_TEXT))
                   }
               Box(modifier = Modifier.weight(WeightExtraHeavy).fillMaxWidth()) {
-                CalendarEventSelector(onEventClick = onEventClick, eventFilter = eventFilter,)
+                CalendarEventSelector(
+                    onEventClick = onEventClick,
+                    eventFilter = eventFilter,
+                )
               }
             }
       },

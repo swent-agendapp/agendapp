@@ -88,6 +88,12 @@
     <string name="select_events">Select events</string>
     <string name="select_date_range">Select date range</string>
     <string name="replacement_upcoming_title">Upcoming replacements</string>
+    <string name="replacement_accept_success">
+    You have successfully accepted this replacement request.
+</string>
+    <string name="replacement_refuse_success">
+    You have successfully refused this replacement request.
+</string>
 
     <string name="replacement_process_title">Organize a replacement</string>
     <plurals name="replacement_send_requests_button">

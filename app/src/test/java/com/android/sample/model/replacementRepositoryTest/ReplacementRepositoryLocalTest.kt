@@ -2,6 +2,7 @@ package com.android.sample.model.replacementRepositoryTest
 
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
+import com.android.sample.model.category.EventCategory
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementRepositoryLocal
 import com.android.sample.model.replacement.ReplacementStatus
@@ -29,6 +30,13 @@ class ReplacementRepositoryLocalTest {
   @Before
   fun setup() {
     repository = ReplacementRepositoryLocal()
+
+    val eventCategory =
+        EventCategory(
+            label = "Test Category",
+            color = EventPalette.Blue,
+        )
+
     sampleEvent =
         Event(
             id = "E001",
@@ -40,7 +48,7 @@ class ReplacementRepositoryLocalTest {
             participants = setOf("Alice", "Bob"),
             recurrenceStatus = RecurrenceStatus.OneTime,
             hasBeenDeleted = false,
-            color = EventPalette.Blue,
+            category = eventCategory,
             version = System.currentTimeMillis(),
             locallyStoredBy = listOf("LOCAL_USER"),
             cloudStorageStatuses = emptySet(),

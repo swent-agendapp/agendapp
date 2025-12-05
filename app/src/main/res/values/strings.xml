@@ -236,6 +236,9 @@
     <string name="work_duration_hours_minutes">%1$dh %2$dmin</string>
     <string name="location_status_inside">Present</string>
 
+    <!-- Category -->
+    <string name="default_category_label">Uncategorized</string>
+
 </resources>
 
 

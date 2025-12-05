@@ -2,12 +2,12 @@ package com.android.sample.ui.replacement
 
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
+import com.android.sample.model.category.EventCategory
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementStatus
 import com.android.sample.ui.replacement.mainPage.ReplacementRequestUi
 import com.android.sample.ui.replacement.mainPage.toUi
-import com.android.sample.ui.theme.EventPalette
 import java.time.Instant
 import java.time.ZoneId
 import org.junit.Assert.assertEquals
@@ -40,7 +40,7 @@ class ReplacementToUiTest {
             participants = setOf("A", "B"),
             recurrenceStatus = RecurrenceStatus.OneTime,
             hasBeenDeleted = false,
-            color = EventPalette.Blue,
+            category = EventCategory.defaultCategory(),
             version = 1L,
             locallyStoredBy = emptyList(),
             cloudStorageStatuses = emptySet(),

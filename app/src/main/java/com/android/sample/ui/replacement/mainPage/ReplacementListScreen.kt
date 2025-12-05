@@ -5,6 +5,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material3.*
@@ -15,12 +16,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
+import com.android.sample.ui.calendar.components.eventSummaryComponents.ColoredSideBar
 import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.common.SecondaryButton
 import com.android.sample.ui.common.SecondaryPageTopBar
@@ -34,6 +37,7 @@ object ReplacementEmployeeListTestTags {
   const val ASK_BUTTON = "replacement_employee_ask_button"
   const val SELECT_EVENT_BUTTON = "replacement_employee_select_event_button"
   const val DATE_RANGE_BUTTON = "replacement_employee_date_range_button"
+  const val CARD_SIDE_BAR = "card_side_bar"
 
   fun card(id: String) = "replacement_employee_card_$id"
 
@@ -49,7 +53,8 @@ data class ReplacementRequestUi(
     val timeRange: String,
     val title: String,
     val description: String,
-    val absentDisplayName: String
+    val absentDisplayName: String,
+    val color: Color
 )
 
 /** Sample Requests List (only for preview) */
@@ -61,14 +66,16 @@ private val sampleRequests =
             timeRange = "10:00 - 12:00",
             title = "Meeting 123",
             description = "Meeting about 123",
-            absentDisplayName = "Emilien"),
+            absentDisplayName = "Emilien",
+            color = EventPalette.Blue),
         ReplacementRequestUi(
             id = "req2",
             weekdayAndDay = "Friday 7",
             timeRange = "14:00 - 16:00",
             title = "Meeting 321",
             description = "Meeting about 321",
-            absentDisplayName = "Emilien"))
+            absentDisplayName = "Emilien",
+            color = EventPalette.Purple))
 
 data class ReplacementEmployeeCallbacks(
     val onAccept: (String) -> Unit = {},
@@ -224,83 +231,92 @@ private fun ReplacementRequestCard(
       colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
       border = CardDefaults.outlinedCardBorder(),
   ) {
-    Column(
-        modifier =
-            Modifier.fillMaxWidth().padding(horizontal = PaddingMedium, vertical = PaddingSmall),
-        verticalArrangement = Arrangement.spacedBy(SpacingSmall),
-    ) {
-      Text(
-          text = data.title,
-          style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-          maxLines = 1,
-          overflow = TextOverflow.Ellipsis,
-      )
-
-      Row(
-          verticalAlignment = Alignment.CenterVertically,
-          horizontalArrangement = Arrangement.spacedBy(PaddingSmall),
+    Row(modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
+      ColoredSideBar(
+          width = BarWidthMedium,
+          color = data.color,
+          shape = RoundedCornerShape(CornerRadiusLarge),
+          testTag = ReplacementEmployeeListTestTags.CARD_SIDE_BAR)
+      Column(
+          modifier =
+              Modifier.weight(WeightExtraHeavy)
+                  .fillMaxWidth()
+                  .padding(horizontal = PaddingMedium, vertical = PaddingSmall),
+          verticalArrangement = Arrangement.spacedBy(SpacingSmall),
       ) {
-        Icon(
-            imageVector = Icons.Filled.AccessTime,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
         Text(
-            text = "${data.weekdayAndDay} • ${data.timeRange}",
-            style = MaterialTheme.typography.bodyMedium,
-        )
-      }
-
-      Text(
-          text =
-              stringResource(
-                  R.string.replacement_substituted_label,
-                  data.absentDisplayName,
-              ),
-          style = MaterialTheme.typography.bodySmall,
-      )
-
-      if (data.description.isNotBlank()) {
-        Text(
-            text = data.description,
-            style = MaterialTheme.typography.bodySmall,
+            text = data.title,
+            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
-      }
 
-      Spacer(Modifier.height(PaddingExtraSmall))
-
-      Row(
-          modifier = Modifier.fillMaxWidth(),
-          horizontalArrangement = Arrangement.spacedBy(PaddingSmall),
-      ) {
-        OutlinedButton(
-            onClick = onRefuse,
-            modifier = Modifier.weight(1f).testTag(refuseTag),
-            shape = androidx.compose.foundation.shape.RoundedCornerShape(CornerRadiusLarge),
-            border = BorderStroke(BorderWidthThin, CircusPalette.Primary),
-            colors =
-                ButtonDefaults.outlinedButtonColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    contentColor = MaterialTheme.colorScheme.onSurface,
-                ),
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(PaddingSmall),
         ) {
-          Text(text = androidx.compose.ui.res.stringResource(R.string.replacement_refuse_short))
+          Icon(
+              imageVector = Icons.Filled.AccessTime,
+              contentDescription = null,
+              tint = MaterialTheme.colorScheme.onSurfaceVariant,
+          )
+          Text(
+              text = "${data.weekdayAndDay} • ${data.timeRange}",
+              style = MaterialTheme.typography.bodyMedium,
+          )
         }
 
-        OutlinedButton(
-            onClick = onAccept,
-            modifier = Modifier.weight(1f).testTag(acceptTag),
-            shape = androidx.compose.foundation.shape.RoundedCornerShape(CornerRadiusLarge),
-            border = BorderStroke(BorderWidthThin, accentColor),
-            colors =
-                ButtonDefaults.outlinedButtonColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    contentColor = MaterialTheme.colorScheme.onSurface,
+        Text(
+            text =
+                stringResource(
+                    R.string.replacement_substituted_label,
+                    data.absentDisplayName,
                 ),
+            style = MaterialTheme.typography.bodySmall,
+        )
+
+        if (data.description.isNotBlank()) {
+          Text(
+              text = data.description,
+              style = MaterialTheme.typography.bodySmall,
+              maxLines = 1,
+              overflow = TextOverflow.Ellipsis,
+          )
+        }
+
+        Spacer(Modifier.height(PaddingExtraSmall))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(PaddingSmall),
         ) {
-          Text(text = androidx.compose.ui.res.stringResource(R.string.replacement_accept_short))
+          OutlinedButton(
+              onClick = onRefuse,
+              modifier = Modifier.weight(1f).testTag(refuseTag),
+              shape = androidx.compose.foundation.shape.RoundedCornerShape(CornerRadiusLarge),
+              border = BorderStroke(BorderWidthThin, CircusPalette.Primary),
+              colors =
+                  ButtonDefaults.outlinedButtonColors(
+                      containerColor = MaterialTheme.colorScheme.background,
+                      contentColor = MaterialTheme.colorScheme.onSurface,
+                  ),
+          ) {
+            Text(text = androidx.compose.ui.res.stringResource(R.string.replacement_refuse_short))
+          }
+
+          OutlinedButton(
+              onClick = onAccept,
+              modifier = Modifier.weight(1f).testTag(acceptTag),
+              shape = androidx.compose.foundation.shape.RoundedCornerShape(CornerRadiusLarge),
+              border = BorderStroke(BorderWidthThin, accentColor),
+              colors =
+                  ButtonDefaults.outlinedButtonColors(
+                      containerColor = MaterialTheme.colorScheme.background,
+                      contentColor = MaterialTheme.colorScheme.onSurface,
+                  ),
+          ) {
+            Text(text = androidx.compose.ui.res.stringResource(R.string.replacement_accept_short))
+          }
         }
       }
     }

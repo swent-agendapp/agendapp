@@ -3,10 +3,10 @@ package com.android.sample.ui.calendar
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.RecurrenceStatus
+import com.android.sample.model.category.EventCategory
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.model.replacement.*
 import com.android.sample.ui.calendar.replacementEmployee.ReplacementEmployeeViewModel
-import com.android.sample.ui.theme.EventPalette
 import java.time.Instant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -201,7 +201,7 @@ class ReplacementEmployeeViewModelTest {
           participants = emptySet(),
           recurrenceStatus = RecurrenceStatus.OneTime,
           hasBeenDeleted = false,
-          color = EventPalette.Blue,
+          category = EventCategory.defaultCategory(),
           version = 1L,
           locallyStoredBy = emptyList(),
           cloudStorageStatuses = emptySet(),

@@ -100,5 +100,6 @@ fun Replacement.toUi(): ReplacementRequestUi {
       timeRange = timeRange,
       title = event.title,
       description = event.description,
-      absentDisplayName = absentUserId)
+      absentDisplayName = absentUserId,
+      color = event.category.color)
 }

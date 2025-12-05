@@ -3,6 +3,7 @@ package com.android.sample.model.event
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.calendar.createEvent
+import com.android.sample.model.category.EventCategory
 import com.android.sample.ui.theme.EventPalette
 import java.time.*
 import org.junit.Assert.*
@@ -17,6 +18,12 @@ class EventTest {
 
   private val selectedOrganizationID: String = "org123"
 
+  private val testCategory: EventCategory =
+      EventCategory(
+          label = "Test Category",
+          color = EventPalette.Green,
+      )
+
   @Before
   fun setUp() {
     // Initialize an Event with specific start and end times for testing
@@ -30,7 +37,7 @@ class EventTest {
             description = "Team sync",
             startDate = startLocal.atZone(ZoneId.systemDefault()).toInstant(),
             endDate = endLocal.atZone(ZoneId.systemDefault()).toInstant(),
-            color = EventPalette.Green)[0]
+            category = testCategory)[0]
   }
 
   @Test
@@ -58,15 +65,18 @@ class EventTest {
   }
 
   @Test
-  fun defaultColor_shouldBeUsedWhenNotSpecified() {
+  fun defaultCategory_shouldBeUsedWhenNotSpecified() {
     val defaultEvent = createEvent(organizationId = selectedOrganizationID)[0]
-    assertEquals(EventPalette.Blue, defaultEvent.color)
+    assertEquals(EventCategory.defaultCategory().isDefault, defaultEvent.category.isDefault)
+    assertEquals(EventCategory.defaultCategory().label, defaultEvent.category.label)
+    assertEquals(EventCategory.defaultCategory().color, defaultEvent.category.color)
     assertTrue(defaultEvent.presence.isEmpty())
   }
 
   @Test
-  fun customColor_shouldBeUsedWhenSpecified() {
-    assertEquals(EventPalette.Green, event.color)
+  fun customCategory_shouldBeUsedWhenSpecified() {
+    assertEquals(testCategory, event.category)
+    assertEquals(EventPalette.Green, event.category.color)
   }
 
   @Test
@@ -76,7 +86,7 @@ class EventTest {
     assertEquals(event.description, copy.description)
     assertEquals(event.startDate, copy.startDate)
     assertEquals(event.endDate, copy.endDate)
-    assertEquals(event.color, copy.color)
+    assertEquals(event.category, copy.category)
   }
 
   @Test
@@ -92,7 +102,7 @@ class EventTest {
             description = "Team sync",
             startDate = startLocal.atZone(ZoneId.systemDefault()).toInstant(),
             endDate = endLocal.atZone(ZoneId.systemDefault()).toInstant(),
-            color = EventPalette.Green,
+            category = testCategory,
             endRecurrence = endRecurrenceLocal.atZone(ZoneId.systemDefault()).toInstant(),
             recurrence = RecurrenceStatus.Daily)
     assertEquals(events.size, 7)
@@ -111,7 +121,7 @@ class EventTest {
             description = "Team sync",
             startDate = startLocal.atZone(ZoneId.systemDefault()).toInstant(),
             endDate = endLocal.atZone(ZoneId.systemDefault()).toInstant(),
-            color = EventPalette.Green,
+            category = testCategory,
             endRecurrence = endRecurrenceLocal.atZone(ZoneId.systemDefault()).toInstant(),
             recurrence = RecurrenceStatus.Weekly)
     assertEquals(events.size, 5)
@@ -130,7 +140,7 @@ class EventTest {
             description = "Team sync",
             startDate = startLocal.atZone(ZoneId.systemDefault()).toInstant(),
             endDate = endLocal.atZone(ZoneId.systemDefault()).toInstant(),
-            color = EventPalette.Green,
+            category = testCategory,
             endRecurrence = endRecurrenceLocal.atZone(ZoneId.systemDefault()).toInstant(),
             recurrence = RecurrenceStatus.Weekly)
     assertEquals(events.size, 5)
@@ -149,7 +159,7 @@ class EventTest {
             description = "Team sync",
             startDate = startLocal.atZone(ZoneId.systemDefault()).toInstant(),
             endDate = endLocal.atZone(ZoneId.systemDefault()).toInstant(),
-            color = EventPalette.Green,
+            category = testCategory,
             endRecurrence = endRecurrenceLocal.atZone(ZoneId.systemDefault()).toInstant(),
             recurrence = RecurrenceStatus.Weekly)
     assertEquals(events.size, 4)
@@ -168,7 +178,7 @@ class EventTest {
             description = "Team sync",
             startDate = startLocal.atZone(ZoneId.systemDefault()).toInstant(),
             endDate = endLocal.atZone(ZoneId.systemDefault()).toInstant(),
-            color = EventPalette.Green,
+            category = testCategory,
             endRecurrence = endRecurrenceLocal.atZone(ZoneId.systemDefault()).toInstant(),
             recurrence = RecurrenceStatus.Monthly)
     assertEquals(events.size, 13)
@@ -187,7 +197,7 @@ class EventTest {
             description = "Team sync",
             startDate = startLocal.atZone(ZoneId.systemDefault()).toInstant(),
             endDate = endLocal.atZone(ZoneId.systemDefault()).toInstant(),
-            color = EventPalette.Green,
+            category = testCategory,
             endRecurrence = endRecurrenceLocal.atZone(ZoneId.systemDefault()).toInstant(),
             recurrence = RecurrenceStatus.Yearly)
     assertEquals(events.size, 2)

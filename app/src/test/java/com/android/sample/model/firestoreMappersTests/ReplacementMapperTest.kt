@@ -2,6 +2,7 @@ package com.android.sample.model.firestoreMappersTests
 
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
+import com.android.sample.model.category.EventCategory
 import com.android.sample.model.firestoreMappers.EventMapper
 import com.android.sample.model.firestoreMappers.ReplacementMapper
 import com.android.sample.model.replacement.Replacement
@@ -17,6 +18,12 @@ import org.mockito.Mockito.*
 
 class ReplacementMapperTest {
 
+  private val sampleEventCategory =
+      EventCategory(
+          label = "Meeting",
+          color = EventPalette.Blue,
+      )
+
   private val sampleEvent =
       Event(
           id = "event1",
@@ -30,7 +37,7 @@ class ReplacementMapperTest {
           participants = emptySet(),
           version = 0L,
           recurrenceStatus = RecurrenceStatus.OneTime,
-          color = EventPalette.Blue)
+          category = sampleEventCategory)
 
   private val sampleReplacement =
       Replacement(
@@ -144,7 +151,7 @@ class ReplacementMapperTest {
             "absentUserId" to "u1",
             "substituteUserId" to "u2",
             "status" to "Pending",
-            // you don't mention "event" intentionally
+            // "event" is intentionally missing
         )
 
     val result = ReplacementMapper.fromMap(data)

@@ -4,3 +4,16 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid) apply false
     alias(libs.plugins.gms) apply false
 }
+
+// ObjectBox configuration
+buildscript {
+    val objectboxVersion by extra("5.0.1")
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("io.objectbox:objectbox-gradle-plugin:$objectboxVersion")
+    }
+}

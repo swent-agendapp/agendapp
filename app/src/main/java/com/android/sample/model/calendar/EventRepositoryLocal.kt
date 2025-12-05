@@ -1,90 +1,107 @@
 package com.android.sample.model.calendar
 
+import com.android.sample.data.local.BoxProvider
+import com.android.sample.data.local.mappers.EventMapper.toEntity
+import com.android.sample.data.local.mappers.EventMapper.toEvent
+import com.android.sample.data.local.objects.EventEntity
+import com.android.sample.data.local.objects.EventEntity_
+import com.android.sample.data.local.utils.encodeSet
+import io.objectbox.Box
 import java.time.Instant
 
-class EventRepositoryLocal() : BaseEventRepository() {
-
-  // In-memory storage for events : map of organization ID to list of events
-  private val eventsByOrganization: MutableMap<String, MutableList<Event>> = mutableMapOf()
-
-  override suspend fun getAllEvents(orgId: String): List<Event> {
-    return eventsByOrganization[orgId]?.filter { !it.hasBeenDeleted } ?: emptyList()
-  }
+class EventRepositoryLocal(private val eventBox: Box<EventEntity> = BoxProvider.eventBox()) :
+    BaseEventRepository() {
 
   override fun getNewUid(): String {
     return java.util.UUID.randomUUID().toString()
+  }
+
+  override suspend fun getAllEvents(orgId: String): List<Event> {
+    return eventBox
+        .query(
+            EventEntity_.organizationId.equal(orgId).and(EventEntity_.hasBeenDeleted.equal(false)))
+        .build()
+        .find()
+        .map { it.toEvent() }
   }
 
   override suspend fun insertEvent(orgId: String, item: Event) {
     // Calls the interface check to ensure the organizationId matches
     super.insertEvent(orgId, item)
 
-    val list = eventsByOrganization.getOrPut(orgId) { mutableListOf() }
-    require(list.indexOfFirst { it.id == item.id } == -1) {
-      "Item with id ${item.id} already exists."
-    }
+    val existing =
+        eventBox
+            .query(EventEntity_.id.equal(item.id).and(EventEntity_.organizationId.equal(orgId)))
+            .build()
+            .findFirst()
+
+    require(existing == null) { "Item with id ${item.id} already exists." }
 
     val currentUserId = "LOCAL_USER" // later get current user id from auth when implemented
-    val updatedItem =
+
+    val updated =
         item.copy(
             locallyStoredBy = item.locallyStoredBy + currentUserId,
             version = System.currentTimeMillis())
-    list.add(updatedItem)
+
+    eventBox.put(updated.toEntity())
   }
 
   override suspend fun updateEvent(orgId: String, itemId: String, item: Event) {
     // Calls the interface check to ensure the organizationId matches
     super.updateEvent(orgId, itemId, item)
 
-    val list =
-        eventsByOrganization[orgId] ?: throw IllegalArgumentException("Organization not found")
-    val index = list.indexOfFirst { it.id == itemId }
-    require(index != -1) { "Item with id $itemId does not exist." }
-    require(!list[index].hasBeenDeleted) { "Cannot update a deleted event." }
+    val existing = eventBox.query(EventEntity_.id.equal(itemId)).build().findFirst()
+
+    require(existing != null) { "Item with id $itemId and organizationId $orgId does not exist." }
+    require(!existing.hasBeenDeleted) { "Cannot update a deleted event." }
+    require(existing.organizationId == orgId) {
+      "Item's organizationId ${existing.organizationId} does not match the provided orgId $orgId."
+    }
 
     val currentUserId = "LOCAL_USER" // later get current user id from auth when implemented
-    val newEvent =
-        item.copy(
-            locallyStoredBy = listOf(currentUserId),
-            version = System.currentTimeMillis(),
-            cloudStorageStatuses = emptySet())
-    list[index] = newEvent
+
+    val updated =
+        item
+            .copy(
+                locallyStoredBy = item.locallyStoredBy + currentUserId,
+                version = System.currentTimeMillis(),
+                cloudStorageStatuses = emptySet())
+            .toEntity()
+
+    // Preserve ObjectBox internal ID
+    updated.objectId = existing.objectId
+
+    eventBox.put(updated)
   }
 
   override suspend fun deleteEvent(orgId: String, itemId: String) {
-    val list =
-        eventsByOrganization[orgId] ?: throw IllegalArgumentException("Organization not found")
-    val index = list.indexOfFirst { it.id == itemId }
-    require(index != -1) { "Item with id $itemId does not exist." }
-    require(!list[index].hasBeenDeleted) { "Item with id $itemId has already been deleted." }
 
-    val oldEvent = list[index]
+    val existing = eventBox.query(EventEntity_.id.equal(itemId)).build().findFirst()
 
-    require(oldEvent.organizationId == orgId) {
-      "Event's organizationId ${oldEvent.organizationId} does not match the provided orgId $orgId."
+    require(existing != null) { "Item with id $itemId does not exist." }
+
+    require(!existing.hasBeenDeleted) { "Item with id $itemId already deleted." }
+    require(existing.organizationId == orgId) {
+      "Item's organizationId ${existing.organizationId} does not match the provided orgId $orgId."
     }
 
-    val newEvent =
-        oldEvent.copy(
-            version = System.currentTimeMillis(),
-            hasBeenDeleted = true,
-            cloudStorageStatuses = emptySet())
-    list[index] = newEvent
+    // Soft delete: mark as deleted and update version
+    existing.version = System.currentTimeMillis()
+    existing.hasBeenDeleted = true
+    existing.cloudStorageStatuses = encodeSet(emptySet())
+
+    eventBox.put(existing)
   }
 
   override suspend fun getEventById(orgId: String, itemId: String): Event? {
-    val retrievedEvent = eventsByOrganization[orgId]?.find { it.id == itemId }
 
-    // Return null if the event does not exist or has been deleted
-    if (retrievedEvent == null || retrievedEvent.hasBeenDeleted) {
-      return null
-    }
+    val existing = eventBox.query(EventEntity_.id.equal(itemId)).build().findFirst() ?: return null
 
-    require(retrievedEvent.organizationId == orgId) {
-      "Event's organizationId ${retrievedEvent.organizationId} does not match the provided orgId $orgId."
-    }
+    if (existing.hasBeenDeleted) return null
+    if (existing.organizationId != orgId) return null
 
-    return retrievedEvent
+    return existing.toEvent()
   }
 
   override suspend fun getEventsBetweenDates(
@@ -93,19 +110,28 @@ class EventRepositoryLocal() : BaseEventRepository() {
       endDate: Instant
   ): List<Event> {
     require(startDate <= endDate) { "start date must be before or equal to end date" }
-    val retrievedEvents =
-        eventsByOrganization[orgId]?.filter {
-          it.startDate <= endDate && it.endDate >= startDate && !it.hasBeenDeleted
-        } ?: emptyList()
 
-    require(retrievedEvents.all { event -> event.organizationId == orgId }) {
-      "One or more events' organizationId do not match the provided orgId $orgId."
-    }
+    val results =
+        eventBox
+            .query(
+                EventEntity_.organizationId
+                    .equal(orgId)
+                    .and(EventEntity_.hasBeenDeleted.equal(false))
+                    .and(EventEntity_.startDate.lessOrEqual(endDate.toEpochMilli()))
+                    .and(EventEntity_.endDate.greaterOrEqual(startDate.toEpochMilli())))
+            .build()
+            .find()
 
-    return retrievedEvents
+    return results.map { it.toEvent() }
   }
 
   override suspend fun ensureOrganizationExists(orgId: String) {
-    require(eventsByOrganization.containsKey(orgId)) { "Organization with id $orgId not found" }
+
+    val exists =
+        eventBox.query(EventEntity_.organizationId.equal(orgId)).build().find().isNotEmpty()
+
+    require(exists) {
+      "Organization with id $orgId not found (no events associated with this organization)"
+    }
   }
 }

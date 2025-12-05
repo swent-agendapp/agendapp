@@ -36,6 +36,11 @@ class FakeOrganizationViewModel(
     _uiState.value = OrganizationUIState(isLoading = false, organizations = organizations)
   }
 
+  /** Simulate refreshing state */
+  fun setRefreshing(refreshing: Boolean = true) {
+    _uiState.value = _uiState.value.copy(isRefreshing = refreshing)
+  }
+
   /** Clear error message */
   override fun clearErrorMsg() {
     _uiState.value = _uiState.value.copy(errorMsg = null)

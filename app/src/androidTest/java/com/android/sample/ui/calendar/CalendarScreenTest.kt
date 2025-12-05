@@ -28,6 +28,7 @@ import com.android.sample.model.calendar.createEvent
 import com.android.sample.model.map.MapRepository
 import com.android.sample.model.map.MapRepositoryLocal
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
+import com.android.sample.ui.calendar.CalendarScreenTestTags.PULL_TO_REFRESH
 import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.style.CalendarDefaults.DEFAULT_SWIPE_THRESHOLD
 import com.android.sample.ui.calendar.utils.DateTimeUtils
@@ -657,6 +658,6 @@ class CalendarPullToRefreshTests : BaseCalendarScreenTest() {
     setContentWithLocalRepo()
 
     // Assert that pull-to-refresh component is present
-    composeTestRule.onNodeWithTag("CalendarPullToRefresh").assertExists()
+    composeTestRule.onNodeWithTag(PULL_TO_REFRESH).assertExists()
   }
 }

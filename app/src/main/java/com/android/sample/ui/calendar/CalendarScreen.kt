@@ -41,6 +41,7 @@ import com.android.sample.ui.theme.Palette
 
 object CalendarScreenTestTags {
   // Top-level calendar screen tags
+  const val PULL_TO_REFRESH = "CalendarPullToRefresh"
   const val TOP_BAR_TITLE = "CalendarTopBarTitle"
   const val SCREEN_ROOT = "CalendarScreenRoot"
 

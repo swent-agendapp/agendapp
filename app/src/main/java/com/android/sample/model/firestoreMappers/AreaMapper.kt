@@ -1,7 +1,6 @@
 package com.android.sample.model.firestoreMappers
 
 import com.android.sample.model.map.Area
-import com.android.sample.model.map.Marker
 import com.google.firebase.firestore.DocumentSnapshot
 
 /** Maps Firestore documents to [Area] objects and vice versa. */

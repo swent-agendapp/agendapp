@@ -21,6 +21,18 @@ class MapRepositoryLocal : MapRepository {
     org.areas[area.id] = area
   }
 
+  override suspend fun updateArea(
+    areaId: String,
+    orgId: String,
+    label: String,
+    marker: Marker,
+    radius: Double
+  ) {
+    val org = getOrCreate(orgId)
+    val area = Area(id = areaId, label = label, marker = marker, radius = radius)
+    org.areas[area.id] = area
+  }
+
   override suspend fun getAllAreas(orgId: String): List<Area> =
       getOrCreate(orgId).areas.values.toList()
 

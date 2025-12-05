@@ -2,7 +2,6 @@ package com.android.sample.model.map
 
 import com.android.sample.model.constants.FirestoreConstants.MAP_COLLECTION_PATH
 import com.android.sample.model.constants.FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH
-import com.android.sample.model.constants.FirestoreConstants.REPLACEMENTS_COLLECTION_PATH
 import com.android.sample.model.firestoreMappers.AreaMapper
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.concurrent.ConcurrentHashMap
@@ -39,7 +38,7 @@ class MapRepositoryFirebase(private val db: FirebaseFirestore) : MapRepository {
   override suspend fun deleteArea(orgId: String, itemId: String) {
     db.collection(ORGANIZATIONS_COLLECTION_PATH)
         .document(orgId)
-        .collection(REPLACEMENTS_COLLECTION_PATH)
+        .collection(MAP_COLLECTION_PATH)
         .document(itemId)
         .delete()
         .await()
@@ -57,5 +56,21 @@ class MapRepositoryFirebase(private val db: FirebaseFirestore) : MapRepository {
 
     // Update local cache
     getOrCreate(orgId).areas[uid] = area
+  }
+
+  override suspend fun updateArea(
+    areaId: String,
+    orgId: String,
+    label: String,
+    marker: Marker,
+    radius: Double
+  ) {
+    val area = Area(areaId, label, marker, radius)
+    val map = AreaMapper.toMap(area)
+
+    mapDataCollection(orgId).document(areaId).set(map).await()
+
+    // Update local cache
+    getOrCreate(orgId).areas[areaId] = area
   }
 }

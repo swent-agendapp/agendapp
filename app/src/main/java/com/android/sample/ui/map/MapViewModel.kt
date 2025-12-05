@@ -8,14 +8,12 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.android.sample.BuildConfig
 import com.android.sample.model.map.Area
-import com.android.sample.model.map.Location
 import com.android.sample.model.map.LocationRepository
 import com.android.sample.model.map.LocationRepositoryAndroid
 import com.android.sample.model.map.MapRepository
 import com.android.sample.model.map.MapRepositoryProvider
 import com.android.sample.model.map.Marker
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
-import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -54,6 +52,7 @@ data class MapUiState(
     val selectedAreaName: String = DefaultMarkerValue.LABEL,
     val selectedRadius: Double = DefaultMarkerValue.RADIUS,
     val selectedMarker: Marker? = null,
+    val selectedId: String? = null,
 )
 
 class MapViewModel(
@@ -111,11 +110,26 @@ class MapViewModel(
             label = _state.value.selectedAreaName,
             marker = _state.value.selectedMarker!!,
             radius = _state.value.selectedRadius)
-        _state.value =
-            _state.value.copy(
-                selectedMarker = null,
-                selectedAreaName = DefaultMarkerValue.LABEL,
-                selectedRadius = DefaultMarkerValue.RADIUS)
+        unselectArea()
+        fetchAllArea()
+      } catch (e: IllegalArgumentException) {
+        _state.value = _state.value.copy(errorMessage = e.message)
+      }
+    }
+  }
+
+  fun updateArea() {
+    require(_state.value.selectedMarker != null)
+    viewModelScope.launch {
+      try {
+        mapRepository.updateArea(
+          areaId = _state.value.selectedId!!,
+          orgId = getSelectedOrganizationId(),
+          label = _state.value.selectedAreaName,
+          marker = _state.value.selectedMarker!!,
+          radius = _state.value.selectedRadius
+        )
+        unselectArea()
         fetchAllArea()
       } catch (e: IllegalArgumentException) {
         _state.value = _state.value.copy(errorMessage = e.message)
@@ -131,10 +145,10 @@ class MapViewModel(
   fun selectNewMarker(coordinate: LatLng) {
     _state.value =
         _state.value.copy(
-          selectedMarker = Marker(latitude = coordinate.latitude, longitude = coordinate.longitude),
-          selectedRadius = DefaultMarkerValue.RADIUS,
-          selectedAreaName = DefaultMarkerValue.LABEL
-        )
+            selectedMarker =
+                Marker(latitude = coordinate.latitude, longitude = coordinate.longitude),
+            selectedRadius = DefaultMarkerValue.RADIUS,
+            selectedAreaName = DefaultMarkerValue.LABEL)
   }
 
   /**
@@ -142,8 +156,17 @@ class MapViewModel(
    *
    * @param markerId The unique identifier of the marker to be removed.
    */
-  fun deleteArea(area: Area) {
-    viewModelScope.launch { mapRepository.deleteArea(orgId = getSelectedOrganizationId(), area.id) }
+  fun deleteArea() {
+    viewModelScope.launch {
+      try {
+        mapRepository.deleteArea(orgId = getSelectedOrganizationId(), _state.value.selectedId!!)
+        unselectArea()
+        fetchAllArea()
+      } catch (e: IllegalArgumentException) {
+        _state.value = _state.value.copy(errorMessage = e.message)
+      }
+
+    }
   }
 
   /**
@@ -179,7 +202,22 @@ class MapViewModel(
         _state.value.copy(
             selectedAreaName = area.label,
             selectedRadius = area.radius,
-            selectedMarker = area.marker)
+            selectedMarker = area.marker,
+            selectedId = area.id)
+  }
+
+  /**
+   * Set or update the name of the area currently being created.
+   *
+   * @param areaName The new name to assign to the area.
+   */
+  fun unselectArea() {
+    _state.value =
+        _state.value.copy(
+            selectedMarker = null,
+            selectedAreaName = DefaultMarkerValue.LABEL,
+            selectedRadius = DefaultMarkerValue.RADIUS,
+            selectedId = null)
   }
 
   /**

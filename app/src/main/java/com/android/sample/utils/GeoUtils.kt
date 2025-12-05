@@ -20,9 +20,9 @@ object GeoUtils {
     val dLat = Math.toRadians(lat2 - lat1)
     val dLon = Math.toRadians(lon2 - lon1)
 
-    val a = sin(dLat / 2).pow(2) +
-            cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2)) *
-            sin(dLon / 2).pow(2)
+    val a =
+        sin(dLat / 2).pow(2) +
+            cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2)) * sin(dLon / 2).pow(2)
 
     val c = 2 * atan2(sqrt(a), sqrt(1 - a))
 
@@ -38,10 +38,9 @@ object GeoUtils {
    * @return true if the point is inside the circle, false otherwise
    */
   fun isPointInCircle(latitude: Double, longitude: Double, area: Area): Boolean {
-    val distance = haversineDistance(
-        latitude, longitude,
-        area.marker.location.latitude, area.marker.location.longitude
-    )
+    val distance =
+        haversineDistance(
+            latitude, longitude, area.marker.location.latitude, area.marker.location.longitude)
     return distance <= area.radius
   }
 }

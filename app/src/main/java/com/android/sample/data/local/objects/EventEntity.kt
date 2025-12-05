@@ -1,10 +1,10 @@
 package com.android.sample.data.local.objects
 
-import androidx.compose.ui.graphics.toArgb
+import com.android.sample.data.local.utils.EventCategoryConverter
 import com.android.sample.data.local.utils.InstantConverter
 import com.android.sample.data.local.utils.encodeBooleanMap
 import com.android.sample.model.calendar.RecurrenceStatus
-import com.android.sample.ui.theme.EventPalette
+import com.android.sample.model.category.EventCategory
 import io.objectbox.annotation.Convert
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
@@ -27,7 +27,7 @@ import java.time.Instant
  * @param version The version timestamp of the event.
  * @param hasBeenDeleted Flag indicating if the event has been deleted.
  * @param recurrenceStatus The recurrence status of the event.
- * @param color The color associated with the event.
+ * @param category The category of the event.
  */
 @Entity
 data class EventEntity(
@@ -48,5 +48,6 @@ data class EventEntity(
     var version: Long = System.currentTimeMillis(),
     var hasBeenDeleted: Boolean = false,
     var recurrenceStatus: String = RecurrenceStatus.OneTime.name,
-    var color: Int = EventPalette.Blue.toArgb()
+    @Convert(converter = EventCategoryConverter::class, dbType = String::class)
+    var category: EventCategory = EventCategory.defaultCategory()
 )

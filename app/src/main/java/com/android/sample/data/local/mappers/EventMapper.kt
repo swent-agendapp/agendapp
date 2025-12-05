@@ -1,7 +1,5 @@
 package com.android.sample.data.local.mappers
 
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import com.android.sample.data.local.objects.EventEntity
 import com.android.sample.data.local.utils.decodeBooleanMap
 import com.android.sample.data.local.utils.decodeList
@@ -33,7 +31,7 @@ object EventMapper {
         version = version,
         hasBeenDeleted = hasBeenDeleted,
         recurrenceStatus = recurrenceStatus.name,
-        color = color.toArgb())
+        category = category)
   }
 
   /* Maps an EventEntity from local database storage to an Event domain model. */
@@ -58,6 +56,6 @@ object EventMapper {
         recurrenceStatus =
             runCatching { RecurrenceStatus.valueOf(recurrenceStatus) }
                 .getOrDefault(RecurrenceStatus.OneTime),
-        color = Color(color))
+        category = category)
   }
 }

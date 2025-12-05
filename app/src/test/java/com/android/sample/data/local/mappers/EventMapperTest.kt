@@ -6,6 +6,7 @@ import com.android.sample.data.local.objects.EventEntity
 import com.android.sample.model.calendar.CloudStorageStatus
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
+import com.android.sample.model.category.EventCategory
 import com.android.sample.ui.theme.EventPalette
 import java.time.Instant
 import org.junit.Assert.*
@@ -18,8 +19,14 @@ class EventMapperTest {
   private lateinit var emptyEvent: Event
   private lateinit var eventWithMalformedPresence: EventEntity
 
+  private lateinit var testCategory: EventCategory
+
   @Before
   fun setUp() {
+    testCategory =
+        EventCategory(
+            id = "test-category-id", label = "Work", color = EventPalette.Red, isDefault = false)
+
     baseEvent =
         Event(
             id = "event1",
@@ -36,7 +43,7 @@ class EventMapperTest {
             version = 12345L,
             hasBeenDeleted = false,
             recurrenceStatus = RecurrenceStatus.OneTime,
-            color = EventPalette.Blue)
+            category = testCategory)
 
     emptyEvent =
         baseEvent.copy(
@@ -62,7 +69,7 @@ class EventMapperTest {
     assertEquals(baseEvent.version, mappedBack.version)
     assertEquals(baseEvent.hasBeenDeleted, mappedBack.hasBeenDeleted)
     assertEquals(baseEvent.recurrenceStatus, mappedBack.recurrenceStatus)
-    assertEquals(baseEvent.color, mappedBack.color)
+    assertEquals(baseEvent.category, mappedBack.category)
 
     assertEquals(baseEvent.cloudStorageStatuses, mappedBack.cloudStorageStatuses)
     assertEquals(baseEvent.locallyStoredBy, mappedBack.locallyStoredBy)
@@ -91,9 +98,9 @@ class EventMapperTest {
   fun `Event color is correctly mapped via toArgb and back`() {
     val entity = baseEvent.toEntity()
     val mappedBack = entity.toEvent()
-    assertEquals(baseEvent.color, mappedBack.color)
+    assertEquals(baseEvent.category, mappedBack.category)
     // Check ARGB integer representation
-    assertEquals(baseEvent.color.value.toInt(), mappedBack.color.value.toInt())
+    assertEquals(baseEvent.category.color.value.toInt(), mappedBack.category.color.value.toInt())
   }
 
   @Test

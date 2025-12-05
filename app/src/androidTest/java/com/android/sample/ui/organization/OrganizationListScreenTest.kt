@@ -106,4 +106,29 @@ class OrganizationListScreenTest {
     // Assert pull-to-refresh component exists
     composeTestRule.onNodeWithTag(OrganizationListScreenTestTags.PULL_TO_REFRESH).assertExists()
   }
+
+  @Test
+  fun organizationsAreUpdatedAfterRefresh() {
+    // Start with initial organizations
+    fakeViewModel.setOrganizations(organizations)
+
+    composeTestRule.setContent { OrganizationListScreen(organizationViewModel = fakeViewModel) }
+
+    // Verify initial organizations are displayed
+    composeTestRule
+        .onNodeWithTag(OrganizationListScreenTestTags.organizationItemTag(organizations[0].name))
+        .assertIsDisplayed()
+
+    // Simulate refresh with new data
+    val newOrganizations =
+        listOf(
+            Organization(name = "New Org 1", admins = emptyList(), members = emptyList()),
+            Organization(name = "New Org 2", admins = emptyList(), members = emptyList()))
+    fakeViewModel.setOrganizations(newOrganizations)
+
+    // Verify new organizations are displayed
+    composeTestRule
+        .onNodeWithTag(OrganizationListScreenTestTags.organizationItemTag("New Org 1"))
+        .assertIsDisplayed()
+  }
 }

@@ -39,7 +39,10 @@ class InvitationRepositoryFirebaseTest : FirebaseEmulatedTest() {
     // --- Create organization ---
     organization =
         Organization(
-            id = "orgA", name = "Org A", admins = listOf(admin), members = listOf(member, admin))
+            id = "orgA",
+            name = "Org A",
+            admins = listOf(admin.id),
+            members = listOf(member.id, admin.id))
   }
 
   @Test

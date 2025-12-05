@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.android.sample.model.authentication.AuthRepository
 import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.repository.OrganizationRepository
 import com.android.sample.model.organization.repository.OrganizationRepositoryProvider
@@ -21,6 +23,7 @@ data class OrganizationUIState(
 
 // ViewModel for managing organization data for the current user
 open class OrganizationViewModel(
+    private val userRepository: UserRepository = UserRepositoryProvider.repository,
     private val organizationRepository: OrganizationRepository =
         OrganizationRepositoryProvider.repository,
     private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
@@ -67,10 +70,10 @@ open class OrganizationViewModel(
 
       try {
         // Create a new organization with the current user as the only admin and member
-        val newOrganization =
-            Organization(name = name, admins = listOf(currentUser), members = listOf(currentUser))
+        val newOrganization = Organization(name = name)
         // Add the new organization to the repository
-        organizationRepository.insertOrganization(newOrganization, currentUser)
+        organizationRepository.insertOrganization(newOrganization)
+        userRepository.addAdminToOrganization(currentUser.id, newOrganization.id)
 
         // Load organizations again to ensure consistency
         loadOrganizations()

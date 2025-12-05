@@ -65,7 +65,7 @@ class UserRepositoryFirebaseTest : FirebaseEmulatedTest() {
   fun deleteUser_shouldRemoveUser_everywhere() = runBlocking {
     val userAdmin = User(id = "user-admin")
     OrganizationRepositoryProvider.repository.insertOrganization(
-        Organization(id = organizationId, name = "Test Org", admins = listOf(userAdmin)), userAdmin)
+        Organization(id = organizationId, name = "Test Org", admins = listOf(userAdmin.id)))
 
     val user =
         User(
@@ -113,7 +113,7 @@ class UserRepositoryFirebaseTest : FirebaseEmulatedTest() {
     // Prepare organization
     val userAdmin = User(id = "user-admin")
     OrganizationRepositoryProvider.repository.insertOrganization(
-        Organization(id = organizationId, name = "Test Org", admins = listOf(userAdmin)), userAdmin)
+        Organization(id = organizationId, name = "Test Org", admins = listOf(userAdmin.id)))
 
     val user1 = User(id = "admin-1", displayName = "Admin1", email = "a1@e.com")
     val user2 = User(id = "admin-2", displayName = "Admin2", email = "a2@e.com")
@@ -155,7 +155,7 @@ class UserRepositoryFirebaseTest : FirebaseEmulatedTest() {
     // Prepare organization
     val userAdmin = User(id = "user-admin")
     OrganizationRepositoryProvider.repository.insertOrganization(
-        Organization(id = organizationId, name = "Test Org", admins = listOf(userAdmin)), userAdmin)
+        Organization(id = organizationId, name = "Test Org", admins = listOf(userAdmin.id)))
 
     val user = User(id = "new-admin", displayName = "NA", email = "na@e.com")
     UserRepositoryProvider.repository.newUser(user)
@@ -177,7 +177,7 @@ class UserRepositoryFirebaseTest : FirebaseEmulatedTest() {
     // Prepare organization
     val userAdmin = User(id = "user-admin")
     OrganizationRepositoryProvider.repository.insertOrganization(
-        Organization(id = organizationId, name = "Test Org", admins = listOf(userAdmin)), userAdmin)
+        Organization(id = organizationId, name = "Test Org", admins = listOf(userAdmin.id)))
 
     val admin =
         User(

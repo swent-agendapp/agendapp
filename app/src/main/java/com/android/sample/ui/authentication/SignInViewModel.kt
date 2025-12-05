@@ -12,6 +12,8 @@ import com.android.sample.R
 import com.android.sample.model.authentication.AuthRepository
 import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UserRepositoryProvider
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -36,10 +38,11 @@ data class AuthUIState(
 /**
  * ViewModel for the Sign-In view.
  *
- * @property repository The repository used to perform authentication operations.
+ * @property authRepository The repository used to perform authentication operations.
  */
 class SignInViewModel(
-    private val repository: AuthRepository = AuthRepositoryProvider.repository,
+    private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
+    private val userRepository: UserRepository = UserRepositoryProvider.repository,
 ) : ViewModel() {
 
   private val _uiState = MutableStateFlow(AuthUIState())
@@ -51,7 +54,7 @@ class SignInViewModel(
 
   /** Checks if there's a persisted user session and restores it. */
   private fun checkCurrentUser() {
-    val user = repository.getCurrentUser()
+    val user = authRepository.getCurrentUser()
 
     if (user == null) {
       _uiState.update { it.copy(signedOut = true, isLoading = false, user = null) }
@@ -95,11 +98,13 @@ class SignInViewModel(
         val credential = getCredential(context, signInRequest, credentialManager)
 
         // Pass the credential to your repository
-        repository
+        authRepository
             .signInWithGoogle(credential)
             .fold(
                 { user ->
-                  _uiState.update { it.copy(isLoading = false, user = user, signedOut = false) }
+                  userRepository.newUser(user)
+                  _uiState.update { it.copy(isLoading = false, user = user, signedOut = false)
+                  }
                 },
                 { failure ->
                   _uiState.update {
@@ -138,7 +143,7 @@ class SignInViewModel(
   /** Initiates sign-out and updates the UI state on success or failure. */
   fun signOut(credentialManager: CredentialManager) {
     viewModelScope.launch {
-      repository
+      authRepository
           .signOut()
           .fold(
               onSuccess = {

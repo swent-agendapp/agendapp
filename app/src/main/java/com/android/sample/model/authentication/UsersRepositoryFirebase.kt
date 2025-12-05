@@ -98,18 +98,13 @@ class UsersRepositoryFirebase(
   }
 
   override suspend fun addAdminToOrganization(userId: String, organizationId: String) {
+    addUserToOrganization(userId, organizationId)
     // 1. Add user to organization admins subcollection
     db.collection(ORGANIZATIONS_COLLECTION_PATH)
         .document(organizationId)
         .collection(COLLECTION_ADMINS)
         .document(userId)
         .set(mapOf("exists" to true))
-        .await()
-
-    // 2. Add organization to user.organizations array
-    db.collection(COLLECTION_USERS)
-        .document(userId)
-        .update("organizations", FieldValue.arrayUnion(organizationId))
         .await()
   }
 

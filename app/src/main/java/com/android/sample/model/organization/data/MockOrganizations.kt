@@ -39,24 +39,24 @@ fun getMockOrganizations(): MutableList<Organization> {
       Organization(
           id = "O1",
           name = "Organization Alpha",
-          admins = listOf(adminA),
-          members = listOf(adminA, memberC),
+          admins = listOf(adminA.id),
+          members = listOf(adminA.id, memberC.id),
           geoCheckEnabled = false)
 
   val orgB =
       Organization(
           id = "O2",
           name = "Organization Beta",
-          admins = listOf(adminB),
-          members = listOf(adminB, memberD),
+          admins = listOf(adminB.id),
+          members = listOf(adminB.id, memberD.id),
           geoCheckEnabled = false)
 
   val orgC =
       Organization(
           id = "O3",
           name = "Organization Gamma",
-          admins = listOf(adminA, adminB),
-          members = listOf(adminA, adminB, memberC, memberD),
+          admins = listOf(adminA.id, adminB.id),
+          members = listOf(adminA.id, adminB.id, memberC.id, memberD.id),
           geoCheckEnabled = false)
 
   return mutableListOf(orgA, orgB, orgC)

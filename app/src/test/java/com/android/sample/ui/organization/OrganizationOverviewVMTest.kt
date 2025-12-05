@@ -44,7 +44,7 @@ class OrganizationOverviewViewModelTest {
     val orgId = "org1"
     val org =
         Organization(id = orgId, name = "My Organization", members = listOf(user1, user2, user3))
-    organizationRepository.addOrganization(org)
+    organizationRepository.insertOrganization(org)
 
     vm.fillSelectedOrganizationDetails(orgId)
 
@@ -89,7 +89,7 @@ class OrganizationOverviewViewModelTest {
   fun `deleteSelectedOrganization removes org and clears selection`() = runTest {
     val orgId = "orgToDelete"
     val org = Organization(id = orgId, name = "Deletable Org", members = listOf(user1))
-    organizationRepository.addOrganization(org)
+    organizationRepository.insertOrganization(org)
 
     vm.deleteSelectedOrganization(orgId)
 

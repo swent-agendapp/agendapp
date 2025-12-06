@@ -327,9 +327,7 @@ private fun NavGraphBuilder.settingsGraph(
           onNavigateToUserProfile = { navigationActions.navigateTo(Screen.Profile) },
           onNavigateToAdminInfo = { navigationActions.navigateTo(Screen.AdminContact) },
           onNavigateToMapSettings = { navigationActions.navigateTo(Screen.Map) },
-          onNavigateToOrganizationList = {
-            navigationActions.navigateTo(Screen.OrganizationOverview)
-          })
+          onNavigateToOrganizationList = { navigationActions.navigateTo(Screen.Organizations) })
     }
     // User profile Screen
     composable(Screen.Profile.route) {

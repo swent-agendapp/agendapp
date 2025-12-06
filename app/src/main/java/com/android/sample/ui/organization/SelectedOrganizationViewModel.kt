@@ -16,4 +16,14 @@ class SelectedOrganizationViewModel : ViewModel() {
   fun clearSelection() {
     SelectedOrganizationRepository.clearSelection()
   }
+
+  /**
+   * Returns the currently selected organization ID as a non-null String.
+   *
+   * @throws IllegalStateException if no organization is currently selected.
+   */
+  fun getSelectedOrganizationId(): String {
+    return selectedOrganizationId.value
+        ?: throw IllegalStateException("No organization is currently selected.")
+  }
 }

@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:8567047882002894516",
-      "lastPropertyId": "15:1698775154728145695",
+      "lastPropertyId": "16:6131044006357806497",
       "name": "EventEntity",
       "properties": [
         {
@@ -83,6 +83,11 @@
           "id": "15:1698775154728145695",
           "name": "color",
           "type": 5
+        },
+        {
+          "id": "16:6131044006357806497",
+          "name": "presence",
+          "type": 9
         }
       ],
       "relations": []

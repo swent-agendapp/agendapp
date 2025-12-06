@@ -227,6 +227,8 @@
     <string name="status_active">Actif</string>
     <string name="status_used">Utilisé</string>
     <string name="status_expired">Expiré</string>
+    <string name="enter_invitation_code">Entrez le code d\'invitation</string>
+    <string name="join_button_text">Rejoindre</string>
 
     <!-- hourRecap -->
     <string name="loading_hours">Chargement…</string>

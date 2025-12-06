@@ -1,7 +1,6 @@
 package com.android.sample.ui.invitation.createInvitation
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.android.sample.model.authentication.AuthRepository
 import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.organization.invitation.InvitationRepository
@@ -13,7 +12,7 @@ import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.update
 
 const val MIN_INVITATION_COUNT = 1
 const val MAX_INVITATION_COUNT = 99
@@ -27,6 +26,7 @@ const val INVALID_INVITATION_COUNT_ERROR_MSG =
  */
 data class CreateInvitationUIState(
     val count: Int = MIN_INVITATION_COUNT,
+    val isLoading: Boolean = false,
     val errorMsg: String? = null
 )
 
@@ -69,21 +69,21 @@ class CreateInvitationViewModel(
    * This function is typically called after the user confirms the creation from the invitation
    * creation bottom sheet.
    */
-  fun addInvitations() {
-    viewModelScope.launch {
-      val user =
-          authRepository.getCurrentUser()
-              ?: throw IllegalStateException("No authenticated user found.")
-      val selectedOrganizationId =
-          selectedOrganizationViewModel.selectedOrganizationId.value
-              ?: throw IllegalStateException("No organization selected.")
-      val selectedOrganization =
-          organizationRepository.getOrganizationById(selectedOrganizationId, user)
-              ?: throw IllegalStateException("Selected organization not found.")
-      repeat(_uiState.value.count) {
-        invitationRepository.insertInvitation(organization = selectedOrganization, user = user)
-      }
+  suspend fun addInvitations() {
+    val user =
+        authRepository.getCurrentUser()
+            ?: throw IllegalStateException("No authenticated user found.")
+    val selectedOrganizationId =
+        selectedOrganizationViewModel.selectedOrganizationId.value
+            ?: throw IllegalStateException("No organization selected.")
+    val selectedOrganization =
+        organizationRepository.getOrganizationById(selectedOrganizationId, user)
+            ?: throw IllegalStateException("Selected organization not found.")
+    _uiState.update { it.copy(isLoading = true) }
+    repeat(_uiState.value.count) {
+      invitationRepository.insertInvitation(organization = selectedOrganization, user = user)
     }
+    _uiState.update { it.copy(isLoading = false) }
   }
 
   /** Returns true if the current state allows creating invitations. */

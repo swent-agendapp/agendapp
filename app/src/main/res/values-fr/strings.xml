@@ -227,6 +227,8 @@
     <string name="status_active">Actif</string>
     <string name="status_used">Utilisé</string>
     <string name="status_expired">Expiré</string>
+    <string name="invitations_loading">Chargement des invitations</string>
+    <string name="invitations_creating">Création des invitations</string>
 
     <!-- hourRecap -->
     <string name="loading_hours">Chargement…</string>

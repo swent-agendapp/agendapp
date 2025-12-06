@@ -1,27 +1,31 @@
 package com.android.sample.ui.invitation
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
-import com.android.sample.model.organization.invitation.Invitation
 import com.android.sample.ui.common.FloatingButton
+import com.android.sample.ui.common.Loading
 import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.invitation.components.InvitationCardList
 import com.android.sample.ui.invitation.createInvitation.CreateInvitationBottomSheet
+import com.android.sample.ui.organization.SelectedOrganizationVMProvider
+import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import kotlinx.coroutines.launch
 
 // Assisted by AI
@@ -38,6 +42,7 @@ object InvitationOverviewScreenTestTags {
   const val ROOT = "invitationOverviewScreenRoot"
   const val TITLE = "title"
   const val INVITATION_LIST = "invitationList"
+  const val INVITATION_LOADING_INDICATOR = "invitationLoadingIndicator"
   const val CREATE_INVITATION_BUTTON = "createInvitationButton"
   const val CREATE_INVITATION_BOTTOM_SHEET = "createInvitationBottomSheet"
 }
@@ -52,19 +57,26 @@ object InvitationOverviewScreenTestTags {
  *
  * The creation UI is presented using a [ModalBottomSheet].
  *
+ * @param invitationOverviewViewModel The ViewModel holding the UI state of the screen
  * @param organizationId The ID of the organization whose invitation codes are being managed.
  * @param onBack Callback invoked when the user presses the back button in the top bar.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InvitationOverviewScreen(
-    organizationId: String,
+    invitationOverviewViewModel: InvitationOverviewViewModel = viewModel(),
+    selectedOrganizationViewModel: SelectedOrganizationViewModel =
+        SelectedOrganizationVMProvider.viewModel,
     onBack: () -> Unit = {},
 ) {
+  val selectedOrgId by selectedOrganizationViewModel.selectedOrganizationId.collectAsState()
+  selectedOrgId?.let { orgId ->
+    LaunchedEffect(orgId) { invitationOverviewViewModel.loadInvitations(orgId) }
+  }
+  val uiState by invitationOverviewViewModel.uiState.collectAsStateWithLifecycle()
+
   val sheetState = rememberModalBottomSheetState()
   val scope = rememberCoroutineScope()
-  val invitationList: List<Invitation> = listOf()
-  var showSheet by remember { mutableStateOf(false) }
 
   Scaffold(
       modifier = Modifier.testTag(InvitationOverviewScreenTestTags.ROOT),
@@ -78,27 +90,50 @@ fun InvitationOverviewScreen(
       floatingActionButton = {
         FloatingButton(
             modifier = Modifier.testTag(InvitationOverviewScreenTestTags.CREATE_INVITATION_BUTTON),
-            onClick = { showSheet = true })
+            onClick = {
+              scope.launch { sheetState.hide() }
+              invitationOverviewViewModel.showBottomSheet()
+            })
       },
       content = { innerPadding ->
-        Box(modifier = Modifier.testTag(InvitationOverviewScreenTestTags.INVITATION_LIST)) {
-          InvitationCardList(
-              invitations = invitationList,
-              onClickDelete = {},
-              modifier = Modifier.padding(innerPadding))
+        if (uiState.isLoading) {
+          Loading(
+              label = stringResource(R.string.invitations_loading),
+              modifier =
+                  Modifier.fillMaxSize()
+                      .testTag(InvitationOverviewScreenTestTags.INVITATION_LOADING_INDICATOR))
+        } else {
+          Box(modifier = Modifier.testTag(InvitationOverviewScreenTestTags.INVITATION_LIST)) {
+            InvitationCardList(
+                invitations = uiState.invitations,
+                onClickDelete = { invitation ->
+                  invitationOverviewViewModel.deleteInvitation(invitationId = invitation.id)
+                },
+                modifier = Modifier.padding(innerPadding))
+          }
         }
       })
-  if (showSheet) {
+  if (uiState.showBottomSheet) {
     ModalBottomSheet(
         modifier =
             Modifier.testTag(InvitationOverviewScreenTestTags.CREATE_INVITATION_BOTTOM_SHEET),
         sheetState = sheetState,
-        onDismissRequest = { showSheet = false }) {
+        onDismissRequest = { invitationOverviewViewModel.dismissBottomSheet() }) {
           CreateInvitationBottomSheet(
               onCancel = {
                 scope.launch { sheetState.hide() }
-                showSheet = false
-              })
+                invitationOverviewViewModel.dismissBottomSheet()
+              },
+              onCreate = {
+                selectedOrgId?.let { orgId ->
+                  scope.launch {
+                    sheetState.hide()
+                    invitationOverviewViewModel.dismissBottomSheet()
+                    invitationOverviewViewModel.loadInvitations(orgId)
+                  }
+                }
+              },
+              scope = scope)
         }
   }
 }
@@ -106,5 +141,5 @@ fun InvitationOverviewScreen(
 @Preview
 @Composable
 fun InvitationOverviewScreenPreview() {
-  InvitationOverviewScreen("org1")
+  InvitationOverviewScreen()
 }

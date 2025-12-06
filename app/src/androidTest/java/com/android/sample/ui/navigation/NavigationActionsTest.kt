@@ -20,7 +20,7 @@ import com.android.sample.ui.common.BottomBarTestTags
 import com.android.sample.ui.invitation.InvitationOverviewScreenTestTags
 import com.android.sample.ui.organization.AddOrganizationScreenTestTags
 import com.android.sample.ui.organization.OrganizationListScreenTestTags
-import com.android.sample.ui.organization.member.OrganizationMemberListTestTags
+import com.android.sample.ui.organization.OrganizationOverviewScreenTestTags
 import com.android.sample.ui.settings.SettingsScreenTestTags
 import com.android.sample.utils.FakeCredentialManager
 import com.android.sample.utils.FakeJwtGenerator
@@ -191,9 +191,9 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
         .assertIsDisplayed()
         .performClick()
 
-    composeTestRule.onNodeWithTag(OrganizationMemberListTestTags.ROOT).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(OrganizationOverviewScreenTestTags.ROOT).assertIsDisplayed()
     composeTestRule
-        .onNodeWithTag(OrganizationMemberListTestTags.CREATE_INVITATION_BUTTON)
+        .onNodeWithTag(OrganizationOverviewScreenTestTags.INVITATION_BUTTON)
         .assertIsDisplayed()
         .performClick()
 

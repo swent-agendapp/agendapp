@@ -16,14 +16,10 @@ class InvitationOverviewScreenTest : FirebaseEmulatedTest() {
 
   @get:Rule val composeTestRule = createComposeRule()
 
-  private lateinit var orgId: String
-
   @Before
   override fun setUp() {
 
-    orgId = "orgId"
-
-    composeTestRule.setContent { InvitationOverviewScreen(organizationId = orgId) }
+    composeTestRule.setContent { InvitationOverviewScreen() }
   }
   // -------------------------------------------------------
   // ROOT + BASIC STRUCTURE

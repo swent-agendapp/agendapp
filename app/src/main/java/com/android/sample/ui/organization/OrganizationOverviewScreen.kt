@@ -30,6 +30,7 @@ object OrganizationOverviewScreenTestTags {
   const val MEMBER_COUNT_TEXT = "memberCountText"
   const val CHANGE_BUTTON = "changeButton"
   const val DELETE_BUTTON = "deleteButton"
+  const val INVITATION_BUTTON = "invitationButton"
   const val ERROR_SNACKBAR = "errorSnackBar"
 }
 
@@ -111,7 +112,11 @@ fun OrganizationOverViewScreen(
           // Here is an hardcoded string, but this button is only here temporarily, so we do not
           // need to write "Invitations" in strings.xml
           PrimaryButton(
-              text = "Invitations", onClick = onInvitationClick, modifier = Modifier.fillMaxWidth())
+              text = "Invitations",
+              onClick = onInvitationClick,
+              modifier =
+                  Modifier.fillMaxWidth()
+                      .testTag(OrganizationOverviewScreenTestTags.INVITATION_BUTTON))
 
           // Bottom buttons (Change / Delete)
           BottomNavigationButtons(

@@ -58,7 +58,7 @@ object InvitationOverviewScreenTestTags {
  * The creation UI is presented using a [ModalBottomSheet].
  *
  * @param invitationOverviewViewModel The ViewModel holding the UI state of the screen
- * @param organizationId The ID of the organization whose invitation codes are being managed.
+ * @param selectedOrganizationViewModel The ViewModel holding the selected organization object
  * @param onBack Callback invoked when the user presses the back button in the top bar.
  */
 @OptIn(ExperimentalMaterial3Api::class)

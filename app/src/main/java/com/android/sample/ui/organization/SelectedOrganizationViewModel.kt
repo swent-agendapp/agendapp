@@ -4,15 +4,19 @@ import androidx.lifecycle.ViewModel
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import kotlinx.coroutines.flow.StateFlow
 
+/** ViewModel to manage the selected organization state across the app. */
 class SelectedOrganizationViewModel : ViewModel() {
 
+  /** StateFlow holding the currently selected organization ID, or null if none is selected. */
   val selectedOrganizationId: StateFlow<String?> =
       SelectedOrganizationRepository.selectedOrganizationId
 
+  /* Change the selected organization with the given organization ID. */
   fun selectOrganization(orgId: String) {
     SelectedOrganizationRepository.changeSelectedOrganization(orgId)
   }
 
+  /** Clear the currently selected organization ID. */
   fun clearSelection() {
     SelectedOrganizationRepository.clearSelection()
   }

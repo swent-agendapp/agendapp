@@ -92,7 +92,11 @@ fun SelectEventScreen(
                 CalendarEventSelector(
                     selectedEvent = selectedEvent,
                     onEventClick = { event ->
-                        selectedEvent = event
+                        selectedEvent = if (selectedEvent == event) {
+                            null
+                        } else {
+                            event
+                        }
                         onEventClick(event)
                     })
               }

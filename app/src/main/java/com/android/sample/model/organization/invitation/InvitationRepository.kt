@@ -98,4 +98,12 @@ interface InvitationRepository {
    * @return The invitation if found, otherwise null.
    */
   suspend fun getInvitationById(itemId: String): Invitation?
+
+  /**
+   * Retrieves an invitation by its unique identifier.
+   *
+   * @param organizationId The unique identifier.
+   * @return The list of invitation belonging to the given organization.
+   */
+  suspend fun getInvitationByOrganization(organizationId: String): List<Invitation>
 }

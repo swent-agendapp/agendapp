@@ -66,10 +66,9 @@ class InvitationOverviewViewModel(
     _uiState.value = _uiState.value.copy(isLoading = true, error = null)
     viewModelScope.launch {
       try {
-        val allInvitations = invitationRepository.getAllInvitations()
-        val filtered = allInvitations.filter { it.organizationId == organizationId }
+        val invitations = invitationRepository.getInvitationByOrganization(organizationId)
         _uiState.value =
-            _uiState.value.copy(invitations = filtered, isLoading = false, error = null)
+            _uiState.value.copy(invitations = invitations, isLoading = false, error = null)
       } catch (e: Exception) {
         _uiState.value = _uiState.value.copy(isLoading = false, error = e.message)
       }

@@ -44,6 +44,7 @@ object Palette {
   val LightCarminePink = Color(color = 0xFFED6B6D)
   val CandyPink = Color(color = 0xFFEF6C6C)
   val Orchid = Color(color = 0xFFCE93D8)
+  val LightPink = Color(color = 0xFFFFB6C1)
 
   // ----------------------------------------
   // Greens
@@ -56,7 +57,8 @@ object Palette {
   // ----------------------------------------
   val CadmiumBlue = Color(color = 0xFF09099D)
   val CadmiumBlue_50 = Color(color = 0x8009099D)
-  val BlueJeans = Color(color = 0xFF64B5F6)
+  val BlueJeans = Color(color = 0xFF4495D6)
+  val SkyBlue = Color(color = 0xFF87CEEB)
   val MediumAquamarine = Color(color = 0xFF4DB6AC)
 
   // ----------------------------------------
@@ -65,10 +67,12 @@ object Palette {
   val Coral = Color(color = 0xFFFF8A65)
   val PastelOrange = Color(color = 0xFFFFB74D)
   val Maize = Color(color = 0xFFFFF176)
+  val PeachPuff = Color(color = 0xFFFFDAB9)
 
   // ----------------------------------------
   // Browns
   // ----------------------------------------
+  val BurlyWood = Color(color = 0xFFDEB887)
   val LightBrown = Color(color = 0xFF8D6E63)
 
   // ----------------------------------------
@@ -116,23 +120,32 @@ object EventPalette {
   val Yellow = Palette.Maize
   val Orange = Palette.PastelOrange
   val Red = Palette.CandyPink
+  val Pink = Palette.LightPink
   val PinkViolet = Palette.Orchid
   val Purple = Palette.RichLilac
   val Indigo = Palette.SteelBlue
   val Blue = Palette.BlueJeans
+  val LightBlue = Palette.SkyBlue
   val Green = Palette.DarkSeaGreen
+  val BeigeSalmon = Palette.PeachPuff
+  val BrownOrange = Palette.BurlyWood
   val Brown = Palette.LightBrown
+  val NoCategory = Palette.Gray
 
   val defaultColors: List<Color> =
       listOf(
           Indigo,
           Blue,
+          LightBlue,
           Green,
           Yellow,
           Orange,
           Red,
-          PinkViolet,
           Purple,
+          PinkViolet,
+          Pink,
+          BeigeSalmon,
+          BrownOrange,
           Brown,
       )
 }

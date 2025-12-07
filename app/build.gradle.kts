@@ -8,7 +8,7 @@ plugins {
     alias(libs.plugins.sonar)
     alias(libs.plugins.gms)
     id("jacoco")
-
+    id("io.objectbox") // ObjectBox plugin
 }
 
 android {

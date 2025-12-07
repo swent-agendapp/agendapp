@@ -66,8 +66,7 @@ class EventOverviewViewModel(
   fun deleteEvent(eventId: String) {
     viewModelScope.launch {
       try {
-        val orgId = selectedOrganizationViewModel.selectedOrganizationId.value
-        require(orgId != null) { "Organization must be selected to delete an event" }
+        val orgId = selectedOrganizationViewModel.getSelectedOrganizationId()
 
         eventRepository.deleteEvent(orgId = orgId, itemId = eventId)
         _uiState.value = _uiState.value.copy(isDeleteSuccessful = true)
@@ -91,8 +90,7 @@ class EventOverviewViewModel(
     viewModelScope.launch {
       setLoading(true)
       try {
-        val orgId = selectedOrganizationViewModel.selectedOrganizationId.value
-        require(orgId != null) { "Organization must be selected to delete an event" }
+        val orgId = selectedOrganizationViewModel.getSelectedOrganizationId()
 
         val event =
             eventRepository.getEventById(orgId = orgId, itemId = eventId)

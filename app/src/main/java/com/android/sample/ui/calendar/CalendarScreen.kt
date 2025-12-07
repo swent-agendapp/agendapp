@@ -99,8 +99,12 @@ fun CalendarScreen(
 
   // Fetch events when the screen is recomposed
   LaunchedEffect(currentDateRange, selectedOrgId) {
-    if (selectedOrgId != null) {
+    try {
+      // Getting organization ID will throw IllegalStateException if none is selected
+      selectedOrganizationViewModel.getSelectedOrganizationId()
       loadEventsForDateRange(calendarViewModel, currentDateRange)
+    } catch (_: IllegalStateException) {
+      // No organization selected, do nothing
     }
   }
 

@@ -72,17 +72,13 @@ enum class AddEventStep {
  */
 class AddEventViewModel(
     private val repository: EventRepository = EventRepositoryProvider.repository,
-    selectedOrganizationViewModel: SelectedOrganizationViewModel =
+    private val selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel
 ) : ViewModel() {
 
   private val _uiState = MutableStateFlow(AddCalendarEventUIState())
   /** Public immutable UI state observed by composables. */
   val uiState: StateFlow<AddCalendarEventUIState> = _uiState.asStateFlow()
-
-  /** Currently selected organization ID. Required for saving events. */
-  val selectedOrganizationId: StateFlow<String?> =
-      selectedOrganizationViewModel.selectedOrganizationId
 
   /**
    * Loads a draft event instance based on the current UI field values.
@@ -120,8 +116,7 @@ class AddEventViewModel(
    * A valid organization must be selected; otherwise an exception is thrown.
    */
   fun addEvent() {
-    val orgId = selectedOrganizationId.value
-    require(orgId != null) { "Organization must be selected to create an event" }
+    val orgId = selectedOrganizationViewModel.getSelectedOrganizationId()
 
     val state = _uiState.value
 
@@ -151,8 +146,7 @@ class AddEventViewModel(
   fun addEventToRepository(event: Event) {
     viewModelScope.launch {
       try {
-        val orgId = selectedOrganizationId.value
-        require(orgId != null) { "Organization must be selected to create an event" }
+        val orgId = selectedOrganizationViewModel.getSelectedOrganizationId()
 
         repository.insertEvent(orgId = orgId, item = event)
       } catch (e: Exception) {

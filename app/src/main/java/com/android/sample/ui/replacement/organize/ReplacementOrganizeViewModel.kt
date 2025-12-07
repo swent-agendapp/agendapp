@@ -128,16 +128,13 @@ class ReplacementOrganizeViewModel(
       }
 
       val events: List<Event> =
-          if (state.selectedEvents.isNotEmpty()) {
-            state.selectedEvents
-          } else {
+          state.selectedEvents.ifEmpty {
             if (!dateRangeValid()) {
               _uiState.update { it.copy(errorMsg = "Invalid date range. End must be after start.") }
               return@launch
             }
 
-            val orgId = selectedOrganizationViewModel.selectedOrganizationId.value
-            require(orgId != null) { "Organization must be selected to fetch events." }
+            val orgId = selectedOrganizationViewModel.getSelectedOrganizationId()
 
             eventRepository.getEventsBetweenDates(
                 orgId = orgId, startDate = state.startInstant, endDate = state.endInstant)
@@ -166,8 +163,7 @@ class ReplacementOrganizeViewModel(
    */
   private suspend fun addReplacementToRepository(replacement: Replacement) {
     try {
-      val orgId = selectedOrganizationViewModel.selectedOrganizationId.value
-      require(orgId != null) { "Organization must be selected to create a replacement." }
+      val orgId = selectedOrganizationViewModel.getSelectedOrganizationId()
 
       replacementRepository.insertReplacement(orgId = orgId, item = replacement)
     } catch (e: Exception) {

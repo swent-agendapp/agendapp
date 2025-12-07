@@ -85,13 +85,6 @@ class ReplacementEmployeeViewModel(
   private val selectedOrganizationId: StateFlow<String?> =
       selectedOrganizationViewModel.selectedOrganizationId
 
-  // Helper to get non-null organization ID or throw
-  private fun getSelectedOrganizationId(): String {
-    val orgId = selectedOrganizationViewModel.selectedOrganizationId.value
-    require(orgId != null) { "Organization must be selected to fetch replacements" }
-    return orgId
-  }
-
   init {
     refreshIncomingRequests()
   }
@@ -115,7 +108,7 @@ class ReplacementEmployeeViewModel(
               event = event,
               status = ReplacementStatus.ToProcess)
 
-      val orgId = getSelectedOrganizationId()
+      val orgId = selectedOrganizationViewModel.getSelectedOrganizationId()
       replacementRepository.insertReplacement(orgId = orgId, item = r)
       refreshIncomingRequests()
     }
@@ -123,7 +116,7 @@ class ReplacementEmployeeViewModel(
 
   fun createReplacementsForDateRange(start: Instant, end: Instant) {
 
-    val orgId = getSelectedOrganizationId()
+    val orgId = selectedOrganizationViewModel.getSelectedOrganizationId()
 
     viewModelScope.launch {
       val events =
@@ -147,7 +140,7 @@ class ReplacementEmployeeViewModel(
     viewModelScope.launch {
       _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
       try {
-        val orgId = getSelectedOrganizationId()
+        val orgId = selectedOrganizationViewModel.getSelectedOrganizationId()
         val list =
             replacementRepository.getReplacementsBySubstituteUser(
                 orgId = orgId, userId = currentUserId) // Substitute side
@@ -179,7 +172,7 @@ class ReplacementEmployeeViewModel(
   private fun updateRequestStatus(id: String, newStatus: ReplacementStatus) {
     viewModelScope.launch {
       try {
-        val orgId = getSelectedOrganizationId()
+        val orgId = selectedOrganizationViewModel.getSelectedOrganizationId()
 
         val existing =
             replacementRepository.getReplacementById(orgId = orgId, itemId = id) ?: return@launch
@@ -276,7 +269,7 @@ class ReplacementEmployeeViewModel(
                 event = event,
                 status = ReplacementStatus.ToProcess)
 
-        val orgId = getSelectedOrganizationId()
+        val orgId = selectedOrganizationViewModel.getSelectedOrganizationId()
 
         replacementRepository.insertReplacement(orgId = orgId, item = replacement)
 
@@ -338,7 +331,7 @@ class ReplacementEmployeeViewModel(
                   status = ReplacementStatus.ToProcess)
             }
 
-        val orgId = getSelectedOrganizationId()
+        val orgId = selectedOrganizationViewModel.getSelectedOrganizationId()
 
         created.forEach { replacementRepository.insertReplacement(orgId = orgId, item = it) }
 
@@ -366,7 +359,7 @@ class ReplacementEmployeeViewModel(
   ) {
     viewModelScope.launch {
       try {
-        val orgId = getSelectedOrganizationId()
+        val orgId = selectedOrganizationViewModel.getSelectedOrganizationId()
 
         val original =
             replacementRepository.getReplacementById(

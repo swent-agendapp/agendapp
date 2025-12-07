@@ -74,9 +74,8 @@ class CreateInvitationViewModel(
       val user =
           authRepository.getCurrentUser()
               ?: throw IllegalStateException("No authenticated user found.")
-      val selectedOrganizationId =
-          selectedOrganizationViewModel.selectedOrganizationId.value
-              ?: throw IllegalStateException("No organization selected.")
+      // getSelectedOrganizationId() will throw if no organization is selected
+      val selectedOrganizationId = selectedOrganizationViewModel.getSelectedOrganizationId()
       val selectedOrganization =
           organizationRepository.getOrganizationById(selectedOrganizationId, user)
               ?: throw IllegalStateException("Selected organization not found.")

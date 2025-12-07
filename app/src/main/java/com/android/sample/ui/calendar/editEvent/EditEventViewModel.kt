@@ -55,22 +55,18 @@ enum class EditEventStep {
  */
 class EditEventViewModel(
     private val repository: EventRepository = EventRepositoryProvider.repository,
-    selectedOrganizationViewModel: SelectedOrganizationViewModel =
+    private val selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel
 ) : ViewModel() {
 
   private val _uiState = MutableStateFlow(EditCalendarEventUIState())
   val uiState: StateFlow<EditCalendarEventUIState> = _uiState.asStateFlow()
 
-  val selectedOrganizationId: StateFlow<String?> =
-      selectedOrganizationViewModel.selectedOrganizationId
-
   fun saveEditEventChanges() {
     viewModelScope.launch {
       val state = _uiState.value
       try {
-        val orgId = selectedOrganizationId.value
-        require(orgId != null) { "No organization selected." }
+        val orgId = selectedOrganizationViewModel.getSelectedOrganizationId()
 
         val updated =
             Event(
@@ -99,8 +95,7 @@ class EditEventViewModel(
     viewModelScope.launch {
       _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
       try {
-        val orgId = selectedOrganizationId.value
-        require(orgId != null) { "No organization selected." }
+        val orgId = selectedOrganizationViewModel.getSelectedOrganizationId()
 
         val event = repository.getEventById(orgId = orgId, itemId = eventId)
         if (event != null) {

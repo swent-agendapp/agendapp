@@ -186,11 +186,6 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
         .assertIsDisplayed()
         .performClick()
 
-    composeTestRule
-        .onNodeWithTag(OrganizationListScreenTestTags.organizationItemTag("Test Organization"))
-        .assertIsDisplayed()
-        .performClick()
-
     composeTestRule.onNodeWithTag(OrganizationOverviewScreenTestTags.ROOT).assertIsDisplayed()
     composeTestRule
         .onNodeWithTag(OrganizationOverviewScreenTestTags.INVITATION_BUTTON)

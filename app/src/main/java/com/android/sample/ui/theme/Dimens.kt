@@ -75,7 +75,7 @@ val SizeSmall = 16.dp
 val SizeMedium = 24.dp
 val SizeLarge = 32.dp
 val SizeExtraLarge = 48.dp
-val SizeHuge = 64.dp
+val SizeHuge = 58.dp
 val SizeExtraHuge = 80.dp
 val SizeMassive = 96.dp
 

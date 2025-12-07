@@ -42,9 +42,11 @@ import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.theme.AlphaExtraLow
 import com.android.sample.ui.theme.CornerRadiusExtraLarge
 import com.android.sample.ui.theme.PaddingMedium
+import com.android.sample.ui.theme.SizeHuge
 import com.android.sample.ui.theme.SpacingExtraLarge
 import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingSmall
+import com.android.sample.ui.theme.WeightExtraHeavy
 
 object ProfileScreenTestTags {
     const val PROFILE_SCREEN = "profile_screen"
@@ -109,7 +111,6 @@ fun ProfileScreen(
     }
 }
 
-/** State holder for ProfileScreen to reduce cognitive complexity */
 @Stable
 class ProfileScreenState(
     val uiState: ProfileUIState,
@@ -257,7 +258,7 @@ private fun ProfileContent(
             }
         }
 
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.weight(WeightExtraHeavy))
 
         LogoutRow(
             text = stringResource(R.string.sign_in_logout_content_description),
@@ -377,12 +378,12 @@ private fun ProfileHeader(
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.weight(1f)) {
+            modifier = Modifier.weight(WeightExtraHeavy)) {
 
             Box(
                 modifier =
                     Modifier
-                        .size(56.dp)
+                        .size(SizeHuge)
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.primaryContainer),
                 contentAlignment = Alignment.Center) {

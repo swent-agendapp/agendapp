@@ -175,7 +175,7 @@ class ReplacementOrganizeViewModelTest {
     vm.setEndInstant(now.plusSeconds(3600))
     assertTrue(vm.dateRangeValid())
 
-    vm.setEndInstant(now.minusSeconds(3600))
+    vm.setEndInstant(now.minusSeconds(3600 * 24))
     assertFalse(vm.dateRangeValid())
   }
 

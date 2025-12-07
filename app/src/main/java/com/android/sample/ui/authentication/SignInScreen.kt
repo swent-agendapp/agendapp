@@ -124,7 +124,7 @@ fun SignInScreen(
 
           // Authenticate With Google Button
           if (uiState.isLoading) {
-            Loading(modifier = Modifier.size(SizeExtraLarge).fillMaxSize())
+            Loading(modifier = Modifier.size(SizeExtraLarge))
           } else if (uiState.signedOut) {
             GoogleSignInButton(onSignInClick = { authViewModel.signIn(context, credentialManager) })
           }

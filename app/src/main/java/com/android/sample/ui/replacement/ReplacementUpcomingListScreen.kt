@@ -49,10 +49,9 @@ object ReplacementUpcomingTestTags {
   const val SCREEN = "replacement_upcoming_screen"
   const val LIST = "replacement_upcoming_list"
   private const val ITEM_PREFIX = "replacement_upcoming_item_"
-    const val BACK_BUTTON = "replacement_upcoming_back_button"
+  const val BACK_BUTTON = "replacement_upcoming_back_button"
 
-
-    fun itemTag(id: String): String = ITEM_PREFIX + id
+  fun itemTag(id: String): String = ITEM_PREFIX + id
 }
 
 /**
@@ -73,27 +72,28 @@ fun ReplacementUpcomingListScreen(
 ) {
   Scaffold(
       topBar = {
-          SecondaryPageTopBar(
-              title = androidx.compose.ui.res.stringResource(R.string.replacement_upcoming_title),
-              onClick = onNavigateBack,
-              backButtonTestTags = ReplacementUpcomingTestTags.BACK_BUTTON,
-          )
-      },) { paddingValues ->
-        Column(
-            modifier =
-                Modifier.fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(PaddingMedium)
-                    .testTag(ReplacementUpcomingTestTags.SCREEN)) {
-              LazyColumn(
-                  modifier = Modifier.fillMaxSize().testTag(ReplacementUpcomingTestTags.LIST),
-                  verticalArrangement = Arrangement.spacedBy(SpacingMedium)) {
-                    items(replacements, key = { it.id }) { replacement ->
-                      ReplacementUpcomingCard(replacement = replacement)
-                    }
-                  }
-            }
-      }
+        SecondaryPageTopBar(
+            title = androidx.compose.ui.res.stringResource(R.string.replacement_upcoming_title),
+            onClick = onNavigateBack,
+            backButtonTestTags = ReplacementUpcomingTestTags.BACK_BUTTON,
+        )
+      },
+  ) { paddingValues ->
+    Column(
+        modifier =
+            Modifier.fillMaxSize()
+                .padding(paddingValues)
+                .padding(PaddingMedium)
+                .testTag(ReplacementUpcomingTestTags.SCREEN)) {
+          LazyColumn(
+              modifier = Modifier.fillMaxSize().testTag(ReplacementUpcomingTestTags.LIST),
+              verticalArrangement = Arrangement.spacedBy(SpacingMedium)) {
+                items(replacements, key = { it.id }) { replacement ->
+                  ReplacementUpcomingCard(replacement = replacement)
+                }
+              }
+        }
+  }
 }
 
 /** Card for a future confirmed replacement. */

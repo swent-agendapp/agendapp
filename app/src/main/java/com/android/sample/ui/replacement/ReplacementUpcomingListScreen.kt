@@ -15,17 +15,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,6 +35,7 @@ import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementStatus
 import com.android.sample.model.replacement.mockData.getMockReplacements
 import com.android.sample.ui.calendar.utils.DateTimeUtils.DATE_FORMAT_PATTERN
+import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.theme.BarWidthSmall
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingMedium
@@ -51,8 +49,10 @@ object ReplacementUpcomingTestTags {
   const val SCREEN = "replacement_upcoming_screen"
   const val LIST = "replacement_upcoming_list"
   private const val ITEM_PREFIX = "replacement_upcoming_item_"
+    const val BACK_BUTTON = "replacement_upcoming_back_button"
 
-  fun itemTag(id: String): String = ITEM_PREFIX + id
+
+    fun itemTag(id: String): String = ITEM_PREFIX + id
 }
 
 /**
@@ -73,21 +73,12 @@ fun ReplacementUpcomingListScreen(
 ) {
   Scaffold(
       topBar = {
-        TopAppBar(
-            title = {
-              Text(
-                  text =
-                      androidx.compose.ui.res.stringResource(R.string.replacement_upcoming_title))
-            },
-            navigationIcon = {
-              IconButton(onClick = onNavigateBack) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription =
-                        androidx.compose.ui.res.stringResource(R.string.common_back))
-              }
-            })
-      }) { paddingValues ->
+          SecondaryPageTopBar(
+              title = androidx.compose.ui.res.stringResource(R.string.replacement_upcoming_title),
+              onClick = onNavigateBack,
+              backButtonTestTags = ReplacementUpcomingTestTags.BACK_BUTTON,
+          )
+      },) { paddingValues ->
         Column(
             modifier =
                 Modifier.fillMaxSize()

@@ -75,7 +75,7 @@
     <!-- Profile Screen -->
     <string name="profile_screen_title">Profil</string>
     <string name="profile_email_error">Bitte geben Sie eine gültige E-Mail-Adresse ein</string>
-    <string name="profile_phone_error">Bitte geben Sie eine gültige Telefonnummer ein (mindestens 7 Ziffern)</string>
+    <string name="profile_phone_error">Bitte geben Sie eine gültige Telefonnummer ein</string>
     <string name="profile_display_name_label">Anzeigename</string>
     <string name="profile_email_label">E-Mail</string>
     <string name="profile_phone_label">Telefonnummer</string>

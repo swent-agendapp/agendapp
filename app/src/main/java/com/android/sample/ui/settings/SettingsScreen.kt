@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.AdminPanelSettings
 import androidx.compose.material.icons.filled.Business
-import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
@@ -27,11 +27,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.android.sample.R
 import com.android.sample.ui.common.MainPageTopBar
 import com.android.sample.ui.replacement.ReplacementOverviewTestTags
 import com.android.sample.ui.theme.*
+import com.android.sample.ui.theme.Palette
 
 object SettingsScreenTestTags {
     const val ROOT = "settings_screen"
@@ -137,12 +137,12 @@ private fun SettingsItemRow(
                     .size(heightMedium)
                     .clip(CircleShape)
                     .background(
-                        MaterialTheme.colorScheme.primary.copy(AlphaExtraLow)),
+                        MaterialTheme.colorScheme.surface),
             contentAlignment = Alignment.Center) {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary)
+                tint = CircusPalette.Primary)
         }
 
         Spacer(modifier = Modifier.width(SpacingMedium))
@@ -153,9 +153,9 @@ private fun SettingsItemRow(
             modifier = Modifier.weight(WeightExtraHeavy))
 
         Icon(
-            imageVector = Icons.Default.KeyboardArrowRight,
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.outline)
+            tint = Palette.Gray)
     }
 }
 
@@ -167,5 +167,5 @@ private fun DividerSpacer() {
                 .fillMaxWidth()
                 .padding(horizontal = PaddingMedium)
                 .height(heightExtraSmall)
-                .background(MaterialTheme.colorScheme.outline.copy(alpha = AlphaLow)))
+                .background(Palette.LightGray.copy(alpha = AlphaLow)))
 }

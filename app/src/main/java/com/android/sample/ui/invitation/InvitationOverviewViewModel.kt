@@ -1,7 +1,9 @@
 package com.android.sample.ui.invitation
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.sample.R
 import com.android.sample.model.authentication.AuthRepository
 import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.organization.invitation.Invitation
@@ -25,7 +27,7 @@ data class InvitationOverviewUIState(
     val invitations: List<Invitation> = emptyList(),
     val isLoading: Boolean = false,
     val showBottomSheet: Boolean = false,
-    val error: String? = null
+    @StringRes val errorMessageId: Int? = null
 )
 
 /**
@@ -71,8 +73,8 @@ class InvitationOverviewViewModel(
         setInvitations(invitations)
         setError(null)
         setLoading(false)
-      } catch (e: Exception) {
-        setError(e.message)
+      } catch (_: Exception) {
+        setError(R.string.error_loading_invitations)
         setLoading(false)
       }
     }
@@ -91,26 +93,39 @@ class InvitationOverviewViewModel(
    *
    * @param invitationId The ID of the invitation to be deleted.
    */
-  fun deleteInvitation(
-      invitationId: String,
-  ) {
+  fun deleteInvitation(invitationId: String) {
     viewModelScope.launch {
-      try {
-        val user =
-            authRepository.getCurrentUser()
-                ?: throw IllegalStateException("No authenticated user found.")
-        val invitation =
-            invitationRepository.getInvitationById(invitationId)
-                ?: throw IllegalStateException("Invitation with ID = \"$invitationId\" not found.")
-        val organization =
-            organizationRepository.getOrganizationById(invitation.organizationId, user)
-                ?: throw IllegalStateException(
-                    "Organization with ID = \"${invitation.organizationId}\" not found.")
-        invitationRepository.deleteInvitation(invitationId, organization, user)
-        setInvitations(_uiState.value.invitations.filterNot { it.id == invitationId })
-      } catch (e: Exception) {
-        setError(e.message)
+      val user = authRepository.getCurrentUser()
+      if (user == null) {
+        setError(R.string.error_no_authenticated_user)
+        return@launch
       }
+      val invitation = invitationRepository.getInvitationById(invitationId)
+      if (invitation == null) {
+        setError(R.string.error_invitation_not_found)
+        return@launch
+      }
+      val organization = organizationRepository.getOrganizationById(invitation.organizationId, user)
+      if (organization == null) {
+        setError(R.string.error_organization_not_found)
+        return@launch
+      }
+      val success =
+          try {
+            invitationRepository.deleteInvitation(invitationId, organization, user)
+            true
+          } catch (_: Exception) {
+            setError(R.string.error_invitation_not_found)
+            false
+          }
+
+      if (!success) {
+        setError(R.string.error_deleting_invitations)
+        return@launch
+      }
+
+      // Update UI list on success
+      setInvitations(_uiState.value.invitations.filterNot { it.id == invitationId })
     }
   }
   /**
@@ -158,9 +173,10 @@ class InvitationOverviewViewModel(
   /**
    * Updates the UI state's error message.
    *
-   * @param message The error message to display, or `null` to clear the current error.
+   * @param resId The string ID of the error message to display, or `null` to clear the current
+   *   error.
    */
-  fun setError(message: String?) {
-    _uiState.update { it.copy(error = message) }
+  fun setError(resId: Int?) {
+    _uiState.update { it.copy(errorMessageId = resId) }
   }
 }

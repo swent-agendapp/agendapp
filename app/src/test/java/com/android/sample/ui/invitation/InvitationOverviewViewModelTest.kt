@@ -78,7 +78,7 @@ class InvitationOverviewViewModelTest {
     assertTrue(state.invitations.any { it.id == "id1" })
     assertTrue(state.invitations.any { it.id == "id2" })
     assertFalse(state.isLoading)
-    assertNull(state.error)
+    assertNull(state.errorMessageId)
   }
 
   @Test
@@ -92,7 +92,7 @@ class InvitationOverviewViewModelTest {
     val state = vm.uiState.value
     assertEquals(1, state.invitations.size)
     assertEquals("id2", state.invitations.first().id)
-    assertNull(state.error)
+    assertNull(state.errorMessageId)
   }
 
   @Test
@@ -100,8 +100,7 @@ class InvitationOverviewViewModelTest {
     vm.deleteInvitation("unknown-id")
     testDispatcher.scheduler.advanceUntilIdle()
     val state = vm.uiState.value
-    assertNotNull(state.error)
-    assertTrue(state.error!!.contains("Invitation with ID"))
+    assertNotNull(state.errorMessageId)
   }
 
   @Test
@@ -114,10 +113,10 @@ class InvitationOverviewViewModelTest {
 
   @Test
   fun `setError correctly sets`() = runTest {
-    val newError = "error"
+    val newError = 1
     vm.setError(newError)
     val state = vm.uiState.value
-    assertEquals(state.error, newError)
+    assertEquals(state.errorMessageId, newError)
   }
 
   @Test

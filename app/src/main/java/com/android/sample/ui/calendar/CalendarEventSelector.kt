@@ -46,6 +46,7 @@ object CalendarEventSelectorTestTags {
 @Composable
 fun CalendarEventSelector(
     calendarViewModel: CalendarViewModel = viewModel(factory = CalendarViewModel.Factory),
+    selectedEvent: Event? = null,
     onEventClick: (Event) -> Unit = {}
 ) {
   val context = LocalContext.current
@@ -69,6 +70,7 @@ fun CalendarEventSelector(
                 .padding(horizontal = PaddingSmall)
                 .testTag(CalendarEventSelectorTestTags.SCREEN_ROOT),
         calendarViewModel = calendarViewModel,
+        selectedEvent = selectedEvent,
         onEventClick = onEventClick)
   }
 }

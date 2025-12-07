@@ -35,6 +35,7 @@ fun EventsPane(
     gridHeightDp: Dp = defaultGridContentStyle().dimensions.rowHeightDp,
     gridStartTime: LocalTime = CalendarDefaults.DefaultStartTime,
     effectiveEndTime: LocalTime = CalendarDefaults.DefaultEndTime,
+    selectedEvent: Event? = null,
     onEventClick: (Event) -> Unit = {}
 ) {
   days.forEachIndexed { dayIndex, date ->
@@ -54,6 +55,7 @@ fun EventsPane(
                 startTime = gridStartTime,
                 endTime = effectiveEndTime,
                 columnWidthDp = columnWidthDp,
+                selectedEvent = selectedEvent,
                 onEventClick = onEventClick)
           }
     }

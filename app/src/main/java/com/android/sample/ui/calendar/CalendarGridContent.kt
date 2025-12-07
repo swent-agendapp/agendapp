@@ -58,6 +58,7 @@ fun CalendarGridContent(
     style: GridContentStyle = defaultGridContentStyle(),
     today: LocalDate = LocalDate.now(),
     selectedDate: LocalDate? = null,
+    selectedEvent: Event? = null,
     onHeaderDayClick: ((LocalDate) -> Unit)? = null,
     onEventClick: (Event) -> Unit = {}
 ) {
@@ -149,6 +150,7 @@ fun CalendarGridContent(
                       gridHeightDp = metrics.gridHeightDp,
                       gridStartTime = metrics.gridStartTime,
                       effectiveEndTime = metrics.effectiveEndTime,
+                      selectedEvent = selectedEvent,
                       onEventClick = onEventClick)
 
                   // Render the "now" indicator line

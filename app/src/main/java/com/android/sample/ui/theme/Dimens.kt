@@ -80,6 +80,7 @@ val SizeExtraHuge = 80.dp
 val SizeMassive = 96.dp
 
 // Font size
+val FontSizeExtraExtraSmall = 9.sp
 val FontSizeExtraSmall = 10.sp
 val FontSizeSmall = 12.sp
 val FontSizeMediumSmall = 14.sp

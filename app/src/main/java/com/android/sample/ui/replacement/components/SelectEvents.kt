@@ -10,6 +10,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -58,7 +62,7 @@ fun SelectEventScreen(
     onEventClick: (Event) -> Unit = {},
     processActions: ReplacementProcessActions? = null,
 ) {
-
+    var selectedEvent by remember { mutableStateOf<Event?>(null) }
   Scaffold(
       topBar = {
         SecondaryPageTopBar(
@@ -85,13 +89,18 @@ fun SelectEventScreen(
                         modifier = Modifier.testTag(ReplacementOrganizeTestTags.INSTRUCTION_TEXT))
                   }
               Box(modifier = Modifier.weight(WeightExtraHeavy).fillMaxWidth()) {
-                CalendarEventSelector(onEventClick = onEventClick)
+                CalendarEventSelector(
+                    selectedEvent = selectedEvent,
+                    onEventClick = { event ->
+                        selectedEvent = event
+                        onEventClick(event)
+                    })
               }
             }
       },
       bottomBar = {
         ReplacementBottomBarWithProcessOptions(
-            canGoNext = canGoNext,
+            canGoNext = canGoNext && selectedEvent != null,
             onBack = onBack,
             onNext = onNext,
             onProcessNow = processActions?.onProcessNow,

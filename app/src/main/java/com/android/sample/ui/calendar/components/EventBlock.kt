@@ -24,8 +24,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.ui.calendar.CalendarScreenTestTags
@@ -40,6 +38,10 @@ import com.android.sample.ui.theme.AlphaLow
 import com.android.sample.ui.theme.BorderWidthThin
 import com.android.sample.ui.theme.CornerRadiusSmall
 import com.android.sample.ui.theme.ElevationExtraLow
+import com.android.sample.ui.theme.ElevationNull
+import com.android.sample.ui.theme.FontSizeExtraExtraSmall
+import com.android.sample.ui.theme.FontSizeExtraSmall
+import com.android.sample.ui.theme.FontSizeSmall
 import com.android.sample.ui.theme.PaddingExtraSmall
 import com.android.sample.ui.theme.widthLarge
 import java.time.Instant
@@ -92,6 +94,7 @@ fun EventBlock(
     startTime: LocalTime = CalendarDefaults.DefaultStartTime,
     endTime: LocalTime = CalendarDefaults.DefaultEndTime,
     columnWidthDp: Dp = defaultGridContentDimensions().defaultColumnWidthDp,
+    selectedEvent: Event? = null,
     onEventClick: (Event) -> Unit = {}
 ) {
   // Filter events for the current day and time range using the helper
@@ -127,7 +130,7 @@ fun EventBlock(
         if (layout != null) {
           columnWidthDp * layout.offsetFraction
         } else {
-          0.dp
+            ElevationNull
         }
 
     DrawEventBlock(
@@ -138,6 +141,7 @@ fun EventBlock(
         eventWidthDp = eventWidthDp,
         horizontalOffsetDp = horizontalOffsetDp,
         onEventClick = onEventClick,
+        isSelected = (selectedEvent == event)
     )
   }
 }
@@ -160,17 +164,28 @@ fun EventBlock(
 private fun DrawEventBlock(
     modifier: Modifier = Modifier,
     event: Event,
-    topOffset: Dp = 0.dp,
+    topOffset: Dp = ElevationNull,
     eventHeight: Dp = widthLarge, // squared
     eventWidthDp: Dp = widthLarge,
-    horizontalOffsetDp: Dp = 0.dp,
+    horizontalOffsetDp: Dp = ElevationNull,
     onEventClick: (Event) -> Unit = {},
+    isSelected: Boolean = false,
 ) {
   // Event styling
-  val backgroundColor = event.category.color
+  val baseBackgroundColor = event.category.color
+    val backgroundColor = baseBackgroundColor
   val textColor = Color.Black
+    val borderColor =
+        if (isSelected) Color.Black.copy(alpha = AlphaHigh)
+        else Color.Black.copy(alpha = AlphaExtraLow)
+    val elevation =
+        if (isSelected) ElevationExtraLow * 2 else ElevationExtraLow
 
-  // Later : add logic to adapt the view when orientation (portrait or not)
+    val titleFontWeight =
+        if (isSelected) FontWeight.SemiBold else FontWeight.Medium
+
+
+    // Later : add logic to adapt the view when orientation (portrait or not)
 
   Box(
       modifier =
@@ -184,14 +199,14 @@ private fun DrawEventBlock(
                   height = eventHeight,
               )
               .shadow(
-                  elevation = ElevationExtraLow,
+                  elevation = elevation,
                   shape = RoundedCornerShape(CornerRadiusSmall),
                   clip = true)
               .clip(RoundedCornerShape(CornerRadiusSmall))
               .background(backgroundColor)
               .border(
                   width = BorderWidthThin,
-                  color = Color.Black.copy(alpha = AlphaExtraLow),
+                  color = borderColor,
                   shape = RoundedCornerShape(CornerRadiusSmall))
               .padding(start = PaddingExtraSmall, top = PaddingExtraSmall, end = PaddingExtraSmall)
               .clickable(onClick = { onEventClick(event) })
@@ -207,8 +222,8 @@ private fun DrawEventBlock(
       Text(
           text = event.title,
           color = textColor,
-          fontSize = 12.sp,
-          fontWeight = FontWeight.Medium,
+          fontSize = FontSizeSmall,
+          fontWeight = titleFontWeight,
           maxLines = 2,
           overflow = TextOverflow.Ellipsis,
       )
@@ -223,7 +238,7 @@ private fun DrawEventBlock(
       Text(
           text = timeText,
           color = textColor.copy(alpha = AlphaHigh),
-          fontSize = 9.sp,
+          fontSize = FontSizeExtraExtraSmall,
           maxLines = 2,
           overflow = TextOverflow.Ellipsis,
       )
@@ -236,7 +251,7 @@ private fun DrawEventBlock(
         Text(
             text = participantsText,
             color = textColor.copy(alpha = AlphaLow),
-            fontSize = 10.sp,
+            fontSize = FontSizeExtraSmall,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
         )

@@ -105,7 +105,7 @@
     <!-- Settings Screen -->
     <string name="settings_screen_title">Settings</string>
     <string name="settings_profile_button">Profile</string>
-    <string name="settings_admin_info_button">Admin info</string>
+    <string name="settings_admin_info_button">Admin contact</string>
     <string name="settings_map_settings_button">Map</string>
     <string name="settings_organization_selection_button">Organization</string>
 

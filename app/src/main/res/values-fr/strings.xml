@@ -68,7 +68,7 @@
     <!-- Settings Screen -->
     <string name="settings_screen_title">Paramètres</string>
     <string name="settings_profile_button">Profil</string>
-    <string name="settings_admin_info_button">Infos administrateur</string>
+    <string name="settings_admin_info_button">Contact de l\'administrateur</string>
     <string name="settings_map_settings_button">Carte</string>
     <string name="settings_organization_selection_button">Organisation</string>
 

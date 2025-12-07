@@ -103,4 +103,34 @@ class InvitationOverviewViewModelTest {
     assertNotNull(state.error)
     assertTrue(state.error!!.contains("Invitation with ID"))
   }
+
+  @Test
+  fun `setInvitations correctly sets`() = runTest {
+    val newInvitationList = listOf(inv2)
+    vm.setInvitations(newInvitationList)
+    val state = vm.uiState.value
+    assertEquals(state.invitations, newInvitationList)
+  }
+
+  @Test
+  fun `setError correctly sets`() = runTest {
+    val newError = "error"
+    vm.setError(newError)
+    val state = vm.uiState.value
+    assertEquals(state.error, newError)
+  }
+
+  @Test
+  fun `setLoading correctly sets to true`() = runTest {
+    vm.setLoading(true)
+    val state = vm.uiState.value
+    assertTrue(state.isLoading)
+  }
+
+  @Test
+  fun `setLoading correctly sets to false`() = runTest {
+    vm.setLoading(false)
+    val state = vm.uiState.value
+    assertFalse(state.isLoading)
+  }
 }

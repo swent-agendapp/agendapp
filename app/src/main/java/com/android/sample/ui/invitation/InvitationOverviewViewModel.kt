@@ -63,14 +63,17 @@ class InvitationOverviewViewModel(
    * @param organizationId ID of the organization whose invitations should be fetched.
    */
   fun loadInvitations(organizationId: String) {
-    _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+    setLoading(true)
+    setError(null)
     viewModelScope.launch {
       try {
         val invitations = invitationRepository.getInvitationByOrganization(organizationId)
-        _uiState.value =
-            _uiState.value.copy(invitations = invitations, isLoading = false, error = null)
+        setInvitations(invitations)
+        setError(null)
+        setLoading(false)
       } catch (e: Exception) {
-        _uiState.value = _uiState.value.copy(isLoading = false, error = e.message)
+        setError(e.message)
+        setLoading(false)
       }
     }
   }
@@ -104,11 +107,9 @@ class InvitationOverviewViewModel(
                 ?: throw IllegalStateException(
                     "Organization with ID = \"${invitation.organizationId}\" not found.")
         invitationRepository.deleteInvitation(invitationId, organization, user)
-        _uiState.value =
-            _uiState.value.copy(
-                invitations = _uiState.value.invitations.filterNot { it.id == invitationId })
+        setInvitations(_uiState.value.invitations.filterNot { it.id == invitationId })
       } catch (e: Exception) {
-        _uiState.value = _uiState.value.copy(error = e.message)
+        setError(e.message)
       }
     }
   }
@@ -129,5 +130,37 @@ class InvitationOverviewViewModel(
    */
   fun dismissBottomSheet() {
     _uiState.update { it.copy(showBottomSheet = false) }
+  }
+
+  /**
+   * Replaces the current list of invitations in the UI state.
+   *
+   * Call this to manually update the invitations displayed in the UI, for example after creating,
+   * editing, or reloading data.
+   *
+   * @param invitations The new list of invitations to display.
+   */
+  fun setInvitations(invitations: List<Invitation>) {
+    _uiState.update { it.copy(invitations = invitations) }
+  }
+
+  /**
+   * Updates the loading state flag.
+   *
+   * Call this to explicitly set whether the UI should display a loading indicator.
+   *
+   * @param isLoading `true` to show loading state, `false` to hide it.
+   */
+  fun setLoading(isLoading: Boolean) {
+    _uiState.update { it.copy(isLoading = isLoading) }
+  }
+
+  /**
+   * Updates the UI state's error message.
+   *
+   * @param message The error message to display, or `null` to clear the current error.
+   */
+  fun setError(message: String?) {
+    _uiState.update { it.copy(error = message) }
   }
 }

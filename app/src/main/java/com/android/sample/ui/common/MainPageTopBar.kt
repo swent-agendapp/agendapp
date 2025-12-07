@@ -6,6 +6,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import com.android.sample.ui.theme.DefaultCardElevation
 import com.android.sample.ui.theme.PaddingExtraSmall
 import com.android.sample.ui.theme.TopBarPalette
 
@@ -24,20 +26,32 @@ fun MainPageTopBar(
     actions: @Composable () -> Unit = {},
     pastille: @Composable () -> Unit = {},
 ) {
-  TopAppBar(
-      title = {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(PaddingExtraSmall),
-        ) {
-          pastille()
-          Text(text = title, modifier = modifier)
-        }
-      },
-      colors =
-          TopAppBarDefaults.topAppBarColors(
-              containerColor = TopBarPalette.Background,
-              titleContentColor = TopBarPalette.Font,
-          ),
-      actions = { actions() })
+    Surface(
+        color = TopBarPalette.Background,
+        shadowElevation = DefaultCardElevation,
+    ) {
+        CenterAlignedTopAppBar(
+            modifier = modifier,
+            title = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(PaddingExtraSmall),
+                ) {
+                    pastille()
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleLarge,
+                        color = TopBarPalette.Font
+                    )
+                }
+            },
+            colors =
+                TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.Transparent,
+                    titleContentColor = TopBarPalette.Font,
+                    navigationIconContentColor = TopBarPalette.Font,
+                    actionIconContentColor = TopBarPalette.Font,
+                ),
+            actions = { actions() })
+    }
 }

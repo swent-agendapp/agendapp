@@ -29,37 +29,37 @@ fun SecondaryPageTopBar(
     backButtonTestTags: String = "",
     actions: @Composable RowScope.() -> Unit = {}
 ) {
-    Surface(
-        color = TopBarPalette.Background,
-        shadowElevation = DefaultCardElevation,
-    ) {
-        CenterAlignedTopAppBar(
-            modifier = modifier,
-            title = {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleLarge,
-                    color = TopBarPalette.Font,
-                )
-            },
-            navigationIcon = {
-                if (canGoBack) {
-                    IconButton(onClick = onClick, modifier = Modifier.testTag(backButtonTestTags)) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.common_back),
-                            tint = TopBarPalette.Font,
-                        )
-                    }
-                }
-            },
-            actions = actions,
-            colors =
-                TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Transparent,
-                    titleContentColor = TopBarPalette.Font,
-                    navigationIconContentColor = TopBarPalette.Font,
-                    actionIconContentColor = TopBarPalette.Font,
-                ))
-    }
+  Surface(
+      color = TopBarPalette.Background,
+      shadowElevation = DefaultCardElevation,
+  ) {
+    CenterAlignedTopAppBar(
+        modifier = modifier,
+        title = {
+          Text(
+              text = title,
+              style = MaterialTheme.typography.titleLarge,
+              color = TopBarPalette.Font,
+          )
+        },
+        navigationIcon = {
+          if (canGoBack) {
+            IconButton(onClick = onClick, modifier = Modifier.testTag(backButtonTestTags)) {
+              Icon(
+                  imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                  contentDescription = stringResource(R.string.common_back),
+                  tint = TopBarPalette.Font,
+              )
+            }
+          }
+        },
+        actions = actions,
+        colors =
+            TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = Color.Transparent,
+                titleContentColor = TopBarPalette.Font,
+                navigationIconContentColor = TopBarPalette.Font,
+                actionIconContentColor = TopBarPalette.Font,
+            ))
+  }
 }

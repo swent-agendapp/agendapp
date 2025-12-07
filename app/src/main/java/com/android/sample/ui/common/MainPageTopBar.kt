@@ -26,32 +26,31 @@ fun MainPageTopBar(
     actions: @Composable () -> Unit = {},
     pastille: @Composable () -> Unit = {},
 ) {
-    Surface(
-        color = TopBarPalette.Background,
-        shadowElevation = DefaultCardElevation,
-    ) {
-        CenterAlignedTopAppBar(
-            modifier = modifier,
-            title = {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(PaddingExtraSmall),
-                ) {
-                    pastille()
-                    Text(
-                        text = title,
-                        style = MaterialTheme.typography.titleLarge,
-                        color = TopBarPalette.Font
-                    )
-                }
-            },
-            colors =
-                TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Transparent,
-                    titleContentColor = TopBarPalette.Font,
-                    navigationIconContentColor = TopBarPalette.Font,
-                    actionIconContentColor = TopBarPalette.Font,
-                ),
-            actions = { actions() })
-    }
+  Surface(
+      color = TopBarPalette.Background,
+      shadowElevation = DefaultCardElevation,
+  ) {
+    CenterAlignedTopAppBar(
+        modifier = modifier,
+        title = {
+          Row(
+              verticalAlignment = Alignment.CenterVertically,
+              horizontalArrangement = Arrangement.spacedBy(PaddingExtraSmall),
+          ) {
+            pastille()
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleLarge,
+                color = TopBarPalette.Font)
+          }
+        },
+        colors =
+            TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = Color.Transparent,
+                titleContentColor = TopBarPalette.Font,
+                navigationIconContentColor = TopBarPalette.Font,
+                actionIconContentColor = TopBarPalette.Font,
+            ),
+        actions = { actions() })
+  }
 }

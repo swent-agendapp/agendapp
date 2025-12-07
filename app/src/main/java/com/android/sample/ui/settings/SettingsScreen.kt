@@ -34,11 +34,11 @@ import com.android.sample.ui.theme.*
 import com.android.sample.ui.theme.Palette
 
 object SettingsScreenTestTags {
-    const val ROOT = "settings_screen"
-    const val PROFILE_BUTTON = "profile_button"
-    const val ADMIN_BUTTON = "admin_info_button"
-    const val MAP_SETTINGS_BUTTON = "map_settings_button"
-    const val ORGANIZATION_BUTTON = "organization_selection_button"
+  const val ROOT = "settings_screen"
+  const val PROFILE_BUTTON = "profile_button"
+  const val ADMIN_BUTTON = "admin_info_button"
+  const val MAP_SETTINGS_BUTTON = "map_settings_button"
+  const val ORGANIZATION_BUTTON = "organization_selection_button"
 }
 
 /** Settings screen with navigation to profile. */
@@ -52,67 +52,57 @@ fun SettingsScreen(
     onNavigateToOrganizationList: () -> Unit = {}
 ) {
 
-    Scaffold(
-        topBar = {
-            MainPageTopBar(
-                title = stringResource(R.string.settings_screen_title),
-            )
-        }) { innerPadding ->
+  Scaffold(
+      topBar = {
+        MainPageTopBar(
+            title = stringResource(R.string.settings_screen_title),
+        )
+      }) { innerPadding ->
         Column(
             modifier =
-                Modifier
-                    .padding(innerPadding)
-                    .padding(PaddingMedium)
-                    .fillMaxSize()
-                    .semantics { testTag = SettingsScreenTestTags.ROOT },
+                Modifier.padding(innerPadding).padding(PaddingMedium).fillMaxSize().semantics {
+                  testTag = SettingsScreenTestTags.ROOT
+                },
             horizontalAlignment = Alignment.CenterHorizontally) {
+              Card(
+                  modifier = Modifier.fillMaxWidth().testTag(ReplacementOverviewTestTags.CARD_LIST),
+                  shape = RoundedCornerShape(CornerRadiusExtraLarge),
+                  colors =
+                      CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+                    Column(modifier = Modifier.padding(vertical = SpacingSmall)) {
+                      SettingsItemRow(
+                          title = stringResource(R.string.settings_profile_button),
+                          icon = Icons.Default.Person,
+                          testTag = SettingsScreenTestTags.PROFILE_BUTTON,
+                          onClick = onNavigateToUserProfile)
 
-            Card(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .testTag(ReplacementOverviewTestTags.CARD_LIST),
-                shape = RoundedCornerShape(CornerRadiusExtraLarge),
-                colors =
-                    CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surface)) {
+                      DividerSpacer()
 
-                Column(
-                    modifier = Modifier.padding(vertical = SpacingSmall)) {
+                      SettingsItemRow(
+                          title = stringResource(R.string.settings_admin_info_button),
+                          icon = Icons.Default.AdminPanelSettings,
+                          testTag = SettingsScreenTestTags.ADMIN_BUTTON,
+                          onClick = onNavigateToAdminInfo)
 
-                    SettingsItemRow(
-                        title = stringResource(R.string.settings_profile_button),
-                        icon = Icons.Default.Person,
-                        testTag = SettingsScreenTestTags.PROFILE_BUTTON,
-                        onClick = onNavigateToUserProfile)
+                      DividerSpacer()
 
-                    DividerSpacer()
+                      SettingsItemRow(
+                          title = stringResource(R.string.settings_map_settings_button),
+                          icon = Icons.Default.Map,
+                          testTag = SettingsScreenTestTags.MAP_SETTINGS_BUTTON,
+                          onClick = onNavigateToMapSettings)
 
-                    SettingsItemRow(
-                        title = stringResource(R.string.settings_admin_info_button),
-                        icon = Icons.Default.AdminPanelSettings,
-                        testTag = SettingsScreenTestTags.ADMIN_BUTTON,
-                        onClick = onNavigateToAdminInfo)
+                      DividerSpacer()
 
-                    DividerSpacer()
-
-                    SettingsItemRow(
-                        title = stringResource(R.string.settings_map_settings_button),
-                        icon = Icons.Default.Map,
-                        testTag = SettingsScreenTestTags.MAP_SETTINGS_BUTTON,
-                        onClick = onNavigateToMapSettings)
-
-                    DividerSpacer()
-
-                    SettingsItemRow(
-                        title = stringResource(R.string.settings_organization_selection_button),
-                        icon = Icons.Default.Business,
-                        testTag = SettingsScreenTestTags.ORGANIZATION_BUTTON,
-                        onClick = onNavigateToOrganizationList)
-                }
+                      SettingsItemRow(
+                          title = stringResource(R.string.settings_organization_selection_button),
+                          icon = Icons.Default.Business,
+                          testTag = SettingsScreenTestTags.ORGANIZATION_BUTTON,
+                          onClick = onNavigateToOrganizationList)
+                    }
+                  }
             }
-        }
-    }
+      }
 }
 
 @Composable
@@ -122,28 +112,21 @@ private fun SettingsItemRow(
     testTag: String,
     onClick: () -> Unit,
 ) {
-    Row(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .testTag(testTag)
-                .clickable(onClick = onClick)
-                .padding(horizontal = PaddingMedium, vertical = SpacingMedium),
-        verticalAlignment = Alignment.CenterVertically) {
-
+  Row(
+      modifier =
+          Modifier.fillMaxWidth()
+              .testTag(testTag)
+              .clickable(onClick = onClick)
+              .padding(horizontal = PaddingMedium, vertical = SpacingMedium),
+      verticalAlignment = Alignment.CenterVertically) {
         Box(
             modifier =
-                Modifier
-                    .size(heightMedium)
+                Modifier.size(heightMedium)
                     .clip(CircleShape)
-                    .background(
-                        MaterialTheme.colorScheme.surface),
+                    .background(MaterialTheme.colorScheme.surface),
             contentAlignment = Alignment.Center) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = CircusPalette.Primary)
-        }
+              Icon(imageVector = icon, contentDescription = null, tint = CircusPalette.Primary)
+            }
 
         Spacer(modifier = Modifier.width(SpacingMedium))
 
@@ -156,16 +139,15 @@ private fun SettingsItemRow(
             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
             contentDescription = null,
             tint = Palette.Gray)
-    }
+      }
 }
 
 @Composable
 private fun DividerSpacer() {
-    Spacer(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = PaddingMedium)
-                .height(heightExtraSmall)
-                .background(Palette.LightGray.copy(alpha = AlphaLow)))
+  Spacer(
+      modifier =
+          Modifier.fillMaxWidth()
+              .padding(horizontal = PaddingMedium)
+              .height(heightExtraSmall)
+              .background(Palette.LightGray.copy(alpha = AlphaLow)))
 }

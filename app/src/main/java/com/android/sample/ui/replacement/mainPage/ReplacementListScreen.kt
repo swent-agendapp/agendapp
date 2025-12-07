@@ -109,7 +109,7 @@ fun ReplacementEmployeeListScreen(
 
   Scaffold(
       topBar = {
-          MainPageTopBar(
+        MainPageTopBar(
             title = stringResource(R.string.replacement_title),
         )
       },

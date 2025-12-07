@@ -62,7 +62,7 @@ fun SelectEventScreen(
     onEventClick: (Event) -> Unit = {},
     processActions: ReplacementProcessActions? = null,
 ) {
-    var selectedEvent by remember { mutableStateOf<Event?>(null) }
+  var selectedEvent by remember { mutableStateOf<Event?>(null) }
   Scaffold(
       topBar = {
         SecondaryPageTopBar(
@@ -92,12 +92,13 @@ fun SelectEventScreen(
                 CalendarEventSelector(
                     selectedEvent = selectedEvent,
                     onEventClick = { event ->
-                        selectedEvent = if (selectedEvent == event) {
+                      selectedEvent =
+                          if (selectedEvent == event) {
                             null
-                        } else {
+                          } else {
                             event
-                        }
-                        onEventClick(event)
+                          }
+                      onEventClick(event)
                     })
               }
             }

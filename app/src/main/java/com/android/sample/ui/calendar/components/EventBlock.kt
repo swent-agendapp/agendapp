@@ -130,7 +130,7 @@ fun EventBlock(
         if (layout != null) {
           columnWidthDp * layout.offsetFraction
         } else {
-            ElevationNull
+          ElevationNull
         }
 
     DrawEventBlock(
@@ -141,8 +141,7 @@ fun EventBlock(
         eventWidthDp = eventWidthDp,
         horizontalOffsetDp = horizontalOffsetDp,
         onEventClick = onEventClick,
-        isSelected = (selectedEvent == event)
-    )
+        isSelected = (selectedEvent == event))
   }
 }
 
@@ -173,19 +172,16 @@ private fun DrawEventBlock(
 ) {
   // Event styling
   val baseBackgroundColor = event.category.color
-    val backgroundColor = baseBackgroundColor
+  val backgroundColor = baseBackgroundColor
   val textColor = Color.Black
-    val borderColor =
-        if (isSelected) Color.Black.copy(alpha = AlphaHigh)
-        else Color.Black.copy(alpha = AlphaExtraLow)
-    val elevation =
-        if (isSelected) ElevationExtraLow * 2 else ElevationExtraLow
+  val borderColor =
+      if (isSelected) Color.Black.copy(alpha = AlphaHigh)
+      else Color.Black.copy(alpha = AlphaExtraLow)
+  val elevation = if (isSelected) ElevationExtraLow * 2 else ElevationExtraLow
 
-    val titleFontWeight =
-        if (isSelected) FontWeight.SemiBold else FontWeight.Medium
+  val titleFontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium
 
-
-    // Later : add logic to adapt the view when orientation (portrait or not)
+  // Later : add logic to adapt the view when orientation (portrait or not)
 
   Box(
       modifier =
@@ -199,9 +195,7 @@ private fun DrawEventBlock(
                   height = eventHeight,
               )
               .shadow(
-                  elevation = elevation,
-                  shape = RoundedCornerShape(CornerRadiusSmall),
-                  clip = true)
+                  elevation = elevation, shape = RoundedCornerShape(CornerRadiusSmall), clip = true)
               .clip(RoundedCornerShape(CornerRadiusSmall))
               .background(backgroundColor)
               .border(

@@ -44,61 +44,55 @@ object AdminInformation {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdminContactScreen(onNavigateBack: () -> Unit = {}) {
-    val context = LocalContext.current
+  val context = LocalContext.current
 
-    Scaffold(
-        topBar = {
-            SecondaryPageTopBar(
-                title = stringResource(R.string.admin_contact_title),
-                onClick = onNavigateBack,
-                backButtonTestTags = AdminContactScreenTestTags.BACK_BUTTON)
-        }) { innerPadding ->
+  Scaffold(
+      topBar = {
+        SecondaryPageTopBar(
+            title = stringResource(R.string.admin_contact_title),
+            onClick = onNavigateBack,
+            backButtonTestTags = AdminContactScreenTestTags.BACK_BUTTON)
+      }) { innerPadding ->
         Column(
             modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(PaddingMedium)
-                    .semantics { testTag = AdminContactScreenTestTags.ADMIN_SCREEN_PROFILE },
+                Modifier.fillMaxSize().padding(innerPadding).padding(PaddingMedium).semantics {
+                  testTag = AdminContactScreenTestTags.ADMIN_SCREEN_PROFILE
+                },
             horizontalAlignment = Alignment.CenterHorizontally) {
 
-            // Email admin
-            AdminInfoRow(
-                label = stringResource(R.string.admin_contact_email_label),
-                value = AdminInformation.EMAIL,
-                testTag = AdminContactScreenTestTags.ADMIN_EMAIL_TEXT,
-                onClick = {
+              // Email admin
+              AdminInfoRow(
+                  label = stringResource(R.string.admin_contact_email_label),
+                  value = AdminInformation.EMAIL,
+                  testTag = AdminContactScreenTestTags.ADMIN_EMAIL_TEXT,
+                  onClick = {
                     val intent =
-                        Intent(
-                            Intent.ACTION_SENDTO,
-                            "mailto:${AdminInformation.EMAIL}".toUri())
+                        Intent(Intent.ACTION_SENDTO, "mailto:${AdminInformation.EMAIL}".toUri())
                             .apply {
-                                putExtra(
-                                    Intent.EXTRA_EMAIL, arrayOf(AdminInformation.EMAIL))
-                                putExtra(
-                                    Intent.EXTRA_SUBJECT,
-                                    context.getString(
-                                        R.string.admin_contact_email_subject))
+                              putExtra(Intent.EXTRA_EMAIL, arrayOf(AdminInformation.EMAIL))
+                              putExtra(
+                                  Intent.EXTRA_SUBJECT,
+                                  context.getString(R.string.admin_contact_email_subject))
                             }
                     context.startActivity(intent)
-                })
+                  })
 
-            Spacer(modifier = Modifier.height(SpacingLarge))
+              Spacer(modifier = Modifier.height(SpacingLarge))
 
-            // Phone number admin
-            AdminInfoRow(
-                label = stringResource(R.string.admin_contact_phone_label),
-                value = AdminInformation.PHONE,
-                testTag = AdminContactScreenTestTags.ADMIN_PHONE_TEXT,
-                onClick = {
+              // Phone number admin
+              AdminInfoRow(
+                  label = stringResource(R.string.admin_contact_phone_label),
+                  value = AdminInformation.PHONE,
+                  testTag = AdminContactScreenTestTags.ADMIN_PHONE_TEXT,
+                  onClick = {
                     val intent =
                         Intent(
                             Intent.ACTION_DIAL,
                             "tel:${AdminInformation.PHONE.replace(" ", "")}".toUri())
                     context.startActivity(intent)
-                })
-        }
-    }
+                  })
+            }
+      }
 }
 
 @Composable
@@ -108,17 +102,14 @@ private fun AdminInfoRow(
     testTag: String,
     onClick: () -> Unit,
 ) {
-    Column(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(CornerRadiusExtraLarge))
-                .background(
-                    MaterialTheme.colorScheme.surfaceVariant.copy(alpha = AlphaExtraLow))
-                .clickable(onClick = onClick)
-                .padding(PaddingMedium)
-                .testTag(testTag)) {
-
+  Column(
+      modifier =
+          Modifier.fillMaxWidth()
+              .clip(RoundedCornerShape(CornerRadiusExtraLarge))
+              .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = AlphaExtraLow))
+              .clickable(onClick = onClick)
+              .padding(PaddingMedium)
+              .testTag(testTag)) {
         Text(
             text = label,
             style = MaterialTheme.typography.labelMedium,
@@ -130,5 +121,5 @@ private fun AdminInfoRow(
             text = value,
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurface)
-    }
+      }
 }

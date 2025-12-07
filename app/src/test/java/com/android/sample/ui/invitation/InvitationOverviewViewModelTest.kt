@@ -103,12 +103,4 @@ class InvitationOverviewViewModelTest {
     assertNotNull(state.error)
     assertTrue(state.error!!.contains("Invitation with ID"))
   }
-
-  /* Helper */
-  private fun makeVm(): InvitationOverviewViewModel {
-    return InvitationOverviewViewModel(
-        invitationRepository = fakeInvitationRepository,
-        organizationRepository = fakeOrganizationRepository,
-        authRepository = fakeAuthRepository)
-  }
 }

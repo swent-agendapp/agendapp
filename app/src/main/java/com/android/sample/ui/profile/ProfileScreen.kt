@@ -272,34 +272,86 @@ private fun ProfileContent(
 @Composable
 private fun ProfileFieldsSection(screenState: ProfileScreenState) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        ProfileTextField(
-            label = stringResource(R.string.profile_display_name_label),
-            value = screenState.displayName,
-            isEditMode = screenState.isEditMode,
-            onValueChange = screenState::onDisplayNameChange,
-            testTag = ProfileScreenTestTags.DISPLAY_NAME_FIELD)
 
-        Spacer(Modifier.height(SpacingLarge))
+        if (screenState.isEditMode) {
+            ProfileTextField(
+                label = stringResource(R.string.profile_display_name_label),
+                value = screenState.displayName,
+                isEditMode = screenState.isEditMode,
+                onValueChange = screenState::onDisplayNameChange,
+                testTag = ProfileScreenTestTags.DISPLAY_NAME_FIELD)
 
-        ProfileTextField(
-            label = stringResource(R.string.profile_email_label),
-            value = screenState.email,
-            isEditMode = screenState.isEditMode,
-            onValueChange = screenState::onEmailChange,
-            error = screenState.emailError,
-            keyboardType = KeyboardType.Email,
-            testTag = ProfileScreenTestTags.EMAIL_FIELD)
+            Spacer(Modifier.height(SpacingLarge))
 
-        Spacer(Modifier.height(SpacingLarge))
+            ProfileTextField(
+                label = stringResource(R.string.profile_email_label),
+                value = screenState.email,
+                isEditMode = screenState.isEditMode,
+                onValueChange = screenState::onEmailChange,
+                error = screenState.emailError,
+                keyboardType = KeyboardType.Email,
+                testTag = ProfileScreenTestTags.EMAIL_FIELD)
 
-        ProfileTextField(
-            label = stringResource(R.string.profile_phone_label),
-            value = screenState.phone,
-            isEditMode = screenState.isEditMode,
-            onValueChange = screenState::onPhoneChange,
-            error = screenState.phoneError,
-            keyboardType = KeyboardType.Phone,
-            testTag = ProfileScreenTestTags.PHONE_FIELD)
+            Spacer(Modifier.height(SpacingLarge))
+
+            ProfileTextField(
+                label = stringResource(R.string.profile_phone_label),
+                value = screenState.phone,
+                isEditMode = screenState.isEditMode,
+                onValueChange = screenState::onPhoneChange,
+                error = screenState.phoneError,
+                keyboardType = KeyboardType.Phone,
+                testTag = ProfileScreenTestTags.PHONE_FIELD)
+
+        } else {
+            ProfileInfoRow(
+                label = stringResource(R.string.profile_display_name_label),
+                value = screenState.displayName,
+                testTag = ProfileScreenTestTags.DISPLAY_NAME_FIELD)
+
+            Spacer(Modifier.height(SpacingLarge))
+
+            ProfileInfoRow(
+                label = stringResource(R.string.profile_email_label),
+                value = screenState.email,
+                testTag = ProfileScreenTestTags.EMAIL_FIELD)
+
+            Spacer(Modifier.height(SpacingLarge))
+
+            ProfileInfoRow(
+                label = stringResource(R.string.profile_phone_label),
+                value = screenState.phone,
+                testTag = ProfileScreenTestTags.PHONE_FIELD)
+        }
+    }
+}
+@Composable
+private fun ProfileInfoRow(
+    label: String,
+    value: String,
+    testTag: String,
+) {
+    Column(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(CornerRadiusExtraLarge))
+                .background(
+                    MaterialTheme.colorScheme.surfaceVariant.copy(alpha = AlphaExtraLow))
+                .padding(PaddingMedium)
+                .testTag(testTag)) {
+
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant)
+
+        Spacer(Modifier.height(SpacingSmall))
+
+        Text(
+            text = if (value.isBlank()) "-" else value,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface)
     }
 }
 

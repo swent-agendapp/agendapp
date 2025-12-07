@@ -1,10 +1,9 @@
 package com.android.sample.model.calendar
 
 import androidx.annotation.StringRes
-import androidx.compose.ui.graphics.Color
 import com.android.sample.R
+import com.android.sample.model.category.EventCategory
 import com.android.sample.ui.calendar.utils.DateTimeUtils
-import com.android.sample.ui.theme.EventPalette
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
@@ -30,7 +29,7 @@ import java.util.UUID
  * @property presence Map of user IDs to their presence status at the event.
  * @property hasBeenDeleted Flag indicating if the event has been deleted.
  * @property recurrenceStatus Recurrence pattern of the event (e.g., one-time, weekly).
- * @property color Color used to display the event in the UI.
+ * @property category Category used to display the event in the UI.
  * @property locallyStoredBy List of user IDs who have the event stored locally.
  */
 data class Event(
@@ -48,7 +47,7 @@ data class Event(
     val presence: Map<String, Boolean> = emptyMap(),
     val recurrenceStatus: RecurrenceStatus,
     val hasBeenDeleted: Boolean = false,
-    val color: Color
+    val category: EventCategory = EventCategory.defaultCategory()
 ) {
   // Returns the start date as a LocalDate in the system's default time zone
   val startLocalDate: LocalDate
@@ -92,8 +91,8 @@ enum class CloudStorageStatus {
  * @param cloudStorageStatuses Set of storage locations for the event.
  * @param personalNotes Optional personal notes.
  * @param participants Set of user IDs participating in the event.
- * @param color Color used to display the event in the UI.
  * @return A new Event instance.
+ * @property category Category used to display the event in the UI.
  */
 fun createEvent(
     organizationId: String,
@@ -106,7 +105,7 @@ fun createEvent(
     personalNotes: String? = null,
     participants: Set<String> = emptySet(),
     presence: Map<String, Boolean> = emptyMap(),
-    color: Color = EventPalette.Blue,
+    category: EventCategory = EventCategory.defaultCategory(),
     recurrence: RecurrenceStatus = RecurrenceStatus.OneTime,
     endRecurrence: Instant = Instant.now(),
 ): List<Event> {
@@ -129,7 +128,7 @@ fun createEvent(
                 version = System.currentTimeMillis(),
                 presence = presence,
                 recurrenceStatus = recurrence,
-                color = color))
+                category = category))
     RecurrenceStatus.Daily -> {
       val days =
           1 +
@@ -148,7 +147,7 @@ fun createEvent(
             participants = participants,
             version = System.currentTimeMillis(),
             recurrenceStatus = recurrence,
-            color = color)
+            category = category)
       }
     }
     RecurrenceStatus.Weekly -> {
@@ -170,7 +169,7 @@ fun createEvent(
             version = System.currentTimeMillis(),
             presence = presence,
             recurrenceStatus = recurrence,
-            color = color)
+            category = category)
       }
     }
     RecurrenceStatus.Monthly -> {
@@ -192,7 +191,7 @@ fun createEvent(
             version = System.currentTimeMillis(),
             presence = presence,
             recurrenceStatus = recurrence,
-            color = color)
+            category = category)
       }
     }
     RecurrenceStatus.Yearly -> {
@@ -214,7 +213,7 @@ fun createEvent(
             version = System.currentTimeMillis(),
             presence = presence,
             recurrenceStatus = recurrence,
-            color = color)
+            category = category)
       }
     }
   }

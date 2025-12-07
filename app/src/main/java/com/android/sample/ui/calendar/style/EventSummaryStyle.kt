@@ -7,7 +7,7 @@ import com.android.sample.ui.theme.*
 /** Style knobs grouped in one place to centralize all layout parameters. */
 data class EventSummaryCardStyle(
     val cornerRadiusDp: Dp = CornerRadiusHuge,
-    val leftBarWidthDp: Dp = BarWidthMedium,
+    val leftBarWidthDp: Dp = BarWidthLarge,
     val paddingH: Dp = PaddingLarge,
     val paddingV: Dp = PaddingMedium,
     val titleSpacer: Dp = PaddingMedium,

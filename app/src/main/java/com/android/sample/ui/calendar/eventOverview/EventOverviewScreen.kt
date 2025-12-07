@@ -33,6 +33,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
+import com.android.sample.model.category.EventCategory
 import com.android.sample.ui.calendar.components.EventSummaryCard
 import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.common.SecondaryButton
@@ -212,7 +213,7 @@ private fun EventOverviewScreenPreview() {
           version = 1L,
           recurrenceStatus = RecurrenceStatus.Weekly,
           hasBeenDeleted = false,
-          color = EventPalette.Green)
+          category = EventCategory(label = "Category A", color = EventPalette.Blue))
 
   EventOverviewScreen(eventId = event.id, onBackClick = {})
 }

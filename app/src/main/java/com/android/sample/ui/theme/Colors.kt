@@ -174,10 +174,10 @@ object EventPalette {
   val Blue = Palette.BlueJeans
   val LightBlue = Palette.SkyBlue
   val Green = Palette.DarkSeaGreen
-  val DarkGreen = Palette.Mantis
   val BeigeSalmon = Palette.PeachPuff
   val BrownOrange = Palette.BurlyWood
   val Brown = Palette.LightBrown
+  val NoCategory = Palette.Gray
 
   val defaultColors: List<Color> =
       listOf(
@@ -185,13 +185,12 @@ object EventPalette {
           Blue,
           LightBlue,
           Green,
-          DarkGreen,
           Yellow,
           Orange,
           Red,
-          Pink,
-          PinkViolet,
           Purple,
+          PinkViolet,
+          Pink,
           BeigeSalmon,
           BrownOrange,
           Brown,

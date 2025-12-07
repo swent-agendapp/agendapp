@@ -154,7 +154,7 @@ class EditEventScreenTest {
     }
 
     composeTestRule
-        .onNodeWithTag(EditEventTestTags.COLOR_SELECTOR, useUnmergedTree = true)
+        .onNodeWithTag(EditEventTestTags.CATEGORY_SELECTOR, useUnmergedTree = true)
         .performScrollTo()
         .assertExists()
         .assertIsDisplayed()
@@ -173,13 +173,13 @@ class EditEventScreenTest {
 
     // Scroll to the ColorSelector and open the menu
     composeTestRule
-        .onNodeWithTag(EditEventTestTags.COLOR_SELECTOR, useUnmergedTree = true)
+        .onNodeWithTag(EditEventTestTags.CATEGORY_SELECTOR, useUnmergedTree = true)
         .performScrollTo()
         .performClick()
 
     // At least the first option should be visible when the menu is open
     composeTestRule
-        .onNodeWithTag(EditEventTestTags.COLOR_SELECTOR + "_option_0", useUnmergedTree = true)
+        .onNodeWithTag(EditEventTestTags.CATEGORY_SELECTOR + "_option_0", useUnmergedTree = true)
         .assertExists()
         .assertIsDisplayed()
   }
@@ -200,12 +200,12 @@ class EditEventScreenTest {
 
     // Open the ColorSelector and select the first color
     composeTestRule
-        .onNodeWithTag(EditEventTestTags.COLOR_SELECTOR, useUnmergedTree = true)
+        .onNodeWithTag(EditEventTestTags.CATEGORY_SELECTOR, useUnmergedTree = true)
         .performScrollTo()
         .performClick()
 
     composeTestRule
-        .onNodeWithTag(EditEventTestTags.COLOR_SELECTOR + "_option_0", useUnmergedTree = true)
+        .onNodeWithTag(EditEventTestTags.CATEGORY_SELECTOR + "_option_0", useUnmergedTree = true)
         .performClick()
 
     // Changing only the color should not make the form valid,

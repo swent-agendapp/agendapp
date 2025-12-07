@@ -127,7 +127,9 @@ private fun ReplacementUpcomingCard(replacement: Replacement) {
         ) {
           Box(
               modifier =
-                  Modifier.fillMaxHeight().width(BarWidthSmall).background(replacement.event.color),
+                  Modifier.fillMaxHeight()
+                      .width(BarWidthSmall)
+                      .background(replacement.event.category.color),
           )
 
           Spacer(modifier = Modifier.width(SpacingMedium))

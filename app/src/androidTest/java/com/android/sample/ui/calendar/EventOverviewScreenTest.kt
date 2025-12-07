@@ -7,11 +7,11 @@ import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.calendar.RecurrenceStatus
+import com.android.sample.model.category.EventCategory
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreen
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreenTestTags
 import com.android.sample.ui.calendar.eventOverview.EventOverviewViewModel
-import com.android.sample.ui.theme.EventPalette
 import com.android.sample.utils.FakeEventRepository
 import java.time.Duration
 import java.time.Instant.now
@@ -61,7 +61,7 @@ class EventOverviewScreenTest {
         version = 1L,
         recurrenceStatus = RecurrenceStatus.OneTime,
         hasBeenDeleted = false,
-        color = EventPalette.Blue)
+        category = EventCategory.defaultCategory())
   }
 
   private fun makeViewModelWith(event: Event): Pair<EventOverviewViewModel, FakeEventRepository> {

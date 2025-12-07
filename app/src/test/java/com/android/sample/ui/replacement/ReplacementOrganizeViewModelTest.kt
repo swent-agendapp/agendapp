@@ -3,7 +3,7 @@ package com.android.sample.ui.replacement
 import com.android.sample.model.authentication.User
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
-import com.android.sample.model.calendar.EventRepositoryLocal
+import com.android.sample.model.calendar.EventRepositoryInMemory
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.model.organization.repository.OrganizationRepository
 import com.android.sample.model.organization.repository.OrganizationRepositoryLocal
@@ -39,7 +39,7 @@ class ReplacementOrganizeViewModelTest {
   @Before
   fun setUp() {
     Dispatchers.setMain(testDispatcher)
-    eventRepo = EventRepositoryLocal()
+    eventRepo = EventRepositoryInMemory()
     orgRepo = OrganizationRepositoryLocal()
     replacementRepo = ReplacementRepositoryLocal()
 

@@ -23,7 +23,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.test.core.app.ApplicationProvider
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
-import com.android.sample.model.calendar.EventRepositoryLocal
+import com.android.sample.model.calendar.EventRepositoryInMemory
 import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.model.map.MapRepository
@@ -289,7 +289,7 @@ abstract class BaseCalendarScreenTest {
    * events before composing the screen.
    */
   protected fun populateRepo(
-      repo: EventRepositoryLocal,
+      repo: EventRepositoryInMemory,
       events: List<Event>,
       orgId: String = selectedOrganizationId
   ) = runBlocking {
@@ -339,7 +339,7 @@ abstract class BaseCalendarScreenTest {
    */
   protected fun setContentWithLocalRepo(events: List<Event> = buildTestEvents()) {
     // Create in-memory repository instances for tests
-    val eventRepo = EventRepositoryLocal()
+    val eventRepo = EventRepositoryInMemory()
     val mapRepo = MapRepositoryLocal()
     // Preload event repository with our test events
     populateRepo(eventRepo, events)
@@ -399,7 +399,7 @@ class CalendarSanityTests : BaseCalendarScreenTest() {
 
   @Test
   fun calendarContainerComposesWithoutCrash() {
-    val repoEvent = EventRepositoryLocal()
+    val repoEvent = EventRepositoryInMemory()
     val repoMap = MapRepositoryLocal()
     SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
     composeTestRule.setContent {
@@ -415,7 +415,7 @@ class CalendarSanityTests : BaseCalendarScreenTest() {
 
   @Test
   fun calendarContainerComposes() {
-    val repoEvent = EventRepositoryLocal()
+    val repoEvent = EventRepositoryInMemory()
     val repoMap = MapRepositoryLocal()
     SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
     composeTestRule.setContent {
@@ -657,5 +657,17 @@ class CalendarHeaderTests : BaseCalendarScreenTest() {
     expectedLabelsCurrent.forEach { label ->
       composeTestRule.onNodeWithText(label, substring = true).assertIsDisplayed()
     }
+  }
+}
+
+/** Pull-to-refresh functionality tests. */
+class CalendarPullToRefreshTests : BaseCalendarScreenTest() {
+
+  @Test
+  fun pullToRefreshComponentExists() {
+    setContentWithLocalRepo()
+
+    // Assert that pull-to-refresh component is present
+    composeTestRule.onNodeWithTag("CalendarPullToRefresh").assertExists()
   }
 }

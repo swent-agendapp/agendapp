@@ -35,7 +35,7 @@ class AddEventTitleScreenTest {
   @Test
   fun displayAllComponents() {
     composeTestRule.onNodeWithTag(AddEventTestTags.TITLE_TEXT_FIELD).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(AddEventTestTags.COLOR_SELECTOR).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(AddEventTestTags.CATEGORY_SELECTOR).assertIsDisplayed()
     composeTestRule.onNodeWithTag(AddEventTestTags.DESCRIPTION_TEXT_FIELD).assertIsDisplayed()
   }
 
@@ -103,8 +103,8 @@ class AddEventTitleScreenTest {
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertIsNotEnabled()
 
     // Open the color selector and pick the first color option
-    composeTestRule.onNodeWithTag(AddEventTestTags.COLOR_SELECTOR).performClick()
-    composeTestRule.onNodeWithTag(AddEventTestTags.COLOR_SELECTOR + "_option_0").performClick()
+    composeTestRule.onNodeWithTag(AddEventTestTags.CATEGORY_SELECTOR).performClick()
+    composeTestRule.onNodeWithTag(AddEventTestTags.CATEGORY_SELECTOR + "_option_0").performClick()
 
     // Changing only the color should not enable the Next button
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertIsNotEnabled()
@@ -123,8 +123,8 @@ class AddEventTitleScreenTest {
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertIsEnabled()
 
     // Change the color using the ColorSelector
-    composeTestRule.onNodeWithTag(AddEventTestTags.COLOR_SELECTOR).performClick()
-    composeTestRule.onNodeWithTag(AddEventTestTags.COLOR_SELECTOR + "_option_0").performClick()
+    composeTestRule.onNodeWithTag(AddEventTestTags.CATEGORY_SELECTOR).performClick()
+    composeTestRule.onNodeWithTag(AddEventTestTags.CATEGORY_SELECTOR + "_option_0").performClick()
 
     // Next button should remain enabled after changing the color
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertIsEnabled()

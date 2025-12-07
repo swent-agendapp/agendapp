@@ -88,25 +88,6 @@ fun OrganizationListScreen(
             hostState = snackBarHostState,
             modifier = Modifier.testTag(OrganizationListScreenTestTags.SNACK_BAR))
       }) { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding).padding(PaddingMedium)) {
-          if (uiState.isLoading) {
-            Loading(
-                label = stringResource(R.string.organization_loading),
-                modifier =
-                    Modifier.fillMaxSize()
-                        .testTag(OrganizationListScreenTestTags.LOADING_INDICATOR))
-          } else {
-            Spacer(modifier = Modifier.height(SpacingMedium))
-            OrganizationList(
-                organizations = uiState.organizations,
-                onOrganizationSelected = { organization ->
-                  // Update selected organization in ViewModel
-                  selectedOrganizationViewModel.selectOrganization(orgId = organization.id)
-                  // Invoke given callback after selection
-                  onOrganizationSelected()
-                })
-          }
-        }
         PullToRefreshBox(
             isRefreshing = uiState.isRefreshing,
             onRefresh = { organizationViewModel.refreshOrganizations() },

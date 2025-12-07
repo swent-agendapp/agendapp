@@ -134,10 +134,10 @@ private fun SettingsItemRow(
         Box(
             modifier =
                 Modifier
-                    .size(40.dp)
+                    .size(heightMedium)
                     .clip(CircleShape)
                     .background(
-                        MaterialTheme.colorScheme.primary.copy(alpha = 0.10f)),
+                        MaterialTheme.colorScheme.primary.copy(AlphaExtraLow)),
             contentAlignment = Alignment.Center) {
             Icon(
                 imageVector = icon,
@@ -150,7 +150,7 @@ private fun SettingsItemRow(
         Text(
             text = title,
             style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.weight(1f))
+            modifier = Modifier.weight(WeightExtraHeavy))
 
         Icon(
             imageVector = Icons.Default.KeyboardArrowRight,
@@ -166,6 +166,6 @@ private fun DividerSpacer() {
             Modifier
                 .fillMaxWidth()
                 .padding(horizontal = PaddingMedium)
-                .height(0.5.dp)
-                .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)))
+                .height(heightExtraSmall)
+                .background(MaterialTheme.colorScheme.outline.copy(alpha = AlphaLow)))
 }

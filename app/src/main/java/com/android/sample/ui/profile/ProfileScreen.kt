@@ -271,7 +271,7 @@ private fun ProfileFieldsSection(screenState: ProfileScreenState) {
       ProfileTextField(
           label = stringResource(R.string.profile_display_name_label),
           value = screenState.displayName,
-          isEditMode = screenState.isEditMode,
+          isEditMode = true,
           onValueChange = screenState::onDisplayNameChange,
           testTag = ProfileScreenTestTags.DISPLAY_NAME_FIELD)
 
@@ -280,7 +280,7 @@ private fun ProfileFieldsSection(screenState: ProfileScreenState) {
       ProfileTextField(
           label = stringResource(R.string.profile_email_label),
           value = screenState.email,
-          isEditMode = screenState.isEditMode,
+          isEditMode = true,
           onValueChange = screenState::onEmailChange,
           error = screenState.emailError,
           keyboardType = KeyboardType.Email,
@@ -291,7 +291,7 @@ private fun ProfileFieldsSection(screenState: ProfileScreenState) {
       ProfileTextField(
           label = stringResource(R.string.profile_phone_label),
           value = screenState.phone,
-          isEditMode = screenState.isEditMode,
+          isEditMode = true,
           onValueChange = screenState::onPhoneChange,
           error = screenState.phoneError,
           keyboardType = KeyboardType.Phone,
@@ -330,8 +330,7 @@ private fun ProfileInfoRow(
           Modifier.fillMaxWidth()
               .clip(RoundedCornerShape(CornerRadiusExtraLarge))
               .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = AlphaExtraLow))
-              .padding(PaddingMedium)
-              .testTag(testTag)) {
+              .padding(PaddingMedium)) {
         Text(
             text = label,
             style = MaterialTheme.typography.labelMedium,
@@ -342,7 +341,9 @@ private fun ProfileInfoRow(
         Text(
             text = if (value.isBlank()) "-" else value,
             style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurface)
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.testTag(testTag),
+        )
       }
 }
 

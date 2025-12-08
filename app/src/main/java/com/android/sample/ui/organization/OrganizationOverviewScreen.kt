@@ -86,28 +86,23 @@ fun OrganizationOverViewScreen(
     }
   }
 
-    Scaffold(
-        topBar = {
-            SecondaryPageTopBar(
-                title = stringResource(R.string.settings_organization_selection_button),
-                onClick = onNavigateBack,
-                backButtonTestTags = "")
-        },
-        snackbarHost = {
-            SnackbarHost(
-                hostState = snackBarHostState,
-                modifier = Modifier.testTag(OrganizationOverviewScreenTestTags.ERROR_SNACKBAR))
-        },
-        modifier = Modifier.testTag(OrganizationOverviewScreenTestTags.ROOT)) { innerPadding ->
+  Scaffold(
+      topBar = {
+        SecondaryPageTopBar(
+            title = stringResource(R.string.settings_organization_selection_button),
+            onClick = onNavigateBack,
+            backButtonTestTags = "")
+      },
+      snackbarHost = {
+        SnackbarHost(
+            hostState = snackBarHostState,
+            modifier = Modifier.testTag(OrganizationOverviewScreenTestTags.ERROR_SNACKBAR))
+      },
+      modifier = Modifier.testTag(OrganizationOverviewScreenTestTags.ROOT)) { innerPadding ->
         Column(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(PaddingMedium),
+            modifier = Modifier.fillMaxSize().padding(innerPadding).padding(PaddingMedium),
             verticalArrangement = Arrangement.SpaceBetween) {
-
-            Column {
+              Column {
                 Spacer(modifier = Modifier.height(SpacingSmall))
 
                 Card(
@@ -118,54 +113,51 @@ fun OrganizationOverViewScreen(
                             containerColor = MaterialTheme.colorScheme.surface,
                         ),
                     elevation = CardDefaults.cardElevation(defaultElevation = ElevationExtraLow)) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(PaddingMedium),
-                        verticalArrangement = Arrangement.spacedBy(SpacingSmall)) {
+                      Column(
+                          modifier = Modifier.fillMaxWidth().padding(PaddingMedium),
+                          verticalArrangement = Arrangement.spacedBy(SpacingSmall)) {
+                            Text(
+                                modifier =
+                                    Modifier.testTag(
+                                        OrganizationOverviewScreenTestTags.ORGANIZATION_NAME_TEXT),
+                                text =
+                                    uiState.organizationName.ifEmpty {
+                                      stringResource(R.string.organization_none_selected)
+                                    },
+                                style = MaterialTheme.typography.titleMedium,
+                            )
 
-                        Text(
-                            modifier =
-                                Modifier.testTag(
-                                    OrganizationOverviewScreenTestTags.ORGANIZATION_NAME_TEXT),
-                            text =
-                                uiState.organizationName.ifEmpty {
-                                    stringResource(R.string.organization_none_selected)
-                                },
-                            style = MaterialTheme.typography.titleMedium,
-                        )
-
-                        Text(
-                            modifier =
-                                Modifier.testTag(
-                                    OrganizationOverviewScreenTestTags.MEMBER_COUNT_TEXT),
-                            text =
-                                stringResource(R.string.organization_members) +
+                            Text(
+                                modifier =
+                                    Modifier.testTag(
+                                        OrganizationOverviewScreenTestTags.MEMBER_COUNT_TEXT),
+                                text =
+                                    stringResource(R.string.organization_members) +
                                         ": ${uiState.memberCount}",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                          }
                     }
-                }
-            }
+              }
 
-            BottomNavigationButtons(
-                onNext = {
+              BottomNavigationButtons(
+                  onNext = {
                     coroutineScope.launch {
-                        organizationOverviewViewModel.deleteSelectedOrganization(selectedOrgId)
-                        onDeleteOrganization()
+                      organizationOverviewViewModel.deleteSelectedOrganization(selectedOrgId)
+                      onDeleteOrganization()
                     }
-                },
-                onBack = {
+                  },
+                  onBack = {
                     organizationOverviewViewModel.clearSelectedOrganization()
                     onChangeOrganization()
-                },
-                canGoNext = true,
-                canGoBack = true,
-                nextButtonText = stringResource(R.string.delete),
-                backButtonText = stringResource(R.string.change),
-                nextButtonTestTag = OrganizationOverviewScreenTestTags.DELETE_BUTTON,
-                backButtonTestTag = OrganizationOverviewScreenTestTags.CHANGE_BUTTON)
-        }
-    }
+                  },
+                  canGoNext = true,
+                  canGoBack = true,
+                  nextButtonText = stringResource(R.string.delete),
+                  backButtonText = stringResource(R.string.change),
+                  nextButtonTestTag = OrganizationOverviewScreenTestTags.DELETE_BUTTON,
+                  backButtonTestTag = OrganizationOverviewScreenTestTags.CHANGE_BUTTON)
+            }
+      }
 }

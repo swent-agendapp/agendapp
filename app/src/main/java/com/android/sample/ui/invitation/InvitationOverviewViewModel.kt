@@ -163,7 +163,7 @@ class InvitationOverviewViewModel(
       try {
         invitationRepository.deleteInvitation(invitationId, organization, user)
       } catch (_: Exception) {
-        setError(R.string.error_invitation_not_found)
+        setError(R.string.error_deleting_invitations)
       }
       // Update UI list on success
       setInvitations(_uiState.value.invitations.filterNot { it.id == invitationId })

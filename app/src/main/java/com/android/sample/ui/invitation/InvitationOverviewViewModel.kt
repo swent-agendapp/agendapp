@@ -79,6 +79,55 @@ class InvitationOverviewViewModel(
   }
 
   /**
+   * Creates multiple invitations and inserts them into the repository.
+   *
+   * This method:
+   * - Retrieves the currently authenticated user (required to assign creator/issuer info).
+   * - Creates `count` new invitations using `Invitation.create(...)`.
+   * - Persists each invitation through the `invitationRepository`.
+   *
+   * @param count The number of invitations to generate and store.
+   * @param organizationId ID of the organization for which invitation should be added.
+   *
+   * This function is typically called after the user confirms the creation from the invitation
+   * creation bottom sheet.
+   */
+  fun addInvitations(organizationId: String, count: Int) {
+    setLoading(true)
+    viewModelScope.launch {
+      val user = authRepository.getCurrentUser()
+      if (user == null) {
+        setError(R.string.error_no_authenticated_user)
+        setLoading(false)
+        return@launch
+      }
+      val organization = organizationRepository.getOrganizationById(organizationId, user)
+      if (organization == null) {
+        setError(R.string.error_organization_not_found)
+        setLoading(false)
+        return@launch
+      }
+      val success =
+          try {
+            repeat(count) {
+              invitationRepository.insertInvitation(organization = organization, user = user)
+            }
+            loadInvitations(organizationId)
+            true
+          } catch (_: Exception) {
+            setError(R.string.error_inserting_invitation)
+            false
+          }
+
+      if (!success) {
+        setError(R.string.error_inserting_invitation)
+        setLoading(false)
+        return@launch
+      }
+    }
+  }
+
+  /**
    * Deletes an invitation and updates the UI state.
    *
    * Steps:

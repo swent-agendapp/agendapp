@@ -229,6 +229,7 @@
     <string name="status_expired">Expired</string>
     <string name="invitations_loading">Loading Invitations</string>
     <string name="invitations_creating">Creating Invitations</string>
+    <string name="error_inserting_invitation">Error inserting invitation</string>
     <string name="error_loading_invitations">Failed to load invitations</string>
     <string name="error_invitation_not_found">Invitation not found</string>
     <string name="error_deleting_invitations">Failed to delete invitation</string>

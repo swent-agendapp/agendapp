@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,11 +20,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.common.Loading
 import com.android.sample.ui.components.BottomNavigationButtons
+import com.android.sample.ui.invitation.InvitationOverviewViewModel
+import com.android.sample.ui.organization.SelectedOrganizationVMProvider
+import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import com.android.sample.ui.theme.PaddingLarge
 import com.android.sample.ui.theme.PaddingSmall
 import com.android.sample.ui.theme.SpacingSmall
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 // Assisted by AI
 
@@ -60,12 +62,15 @@ object InvitationCreationTestTags {
 @Composable
 fun CreateInvitationBottomSheet(
     createInvitationViewModel: CreateInvitationViewModel = viewModel(),
-    scope: CoroutineScope,
+    invitationOverviewViewModel: InvitationOverviewViewModel = viewModel(),
+    selectedOrganizationViewModel: SelectedOrganizationViewModel =
+        SelectedOrganizationVMProvider.viewModel,
     onCancel: () -> Unit = {},
     onCreate: () -> Unit = {}
 ) {
 
   val uiState by createInvitationViewModel.uiState.collectAsStateWithLifecycle()
+  val selectedOrgId by selectedOrganizationViewModel.selectedOrganizationId.collectAsState()
 
   Column(
       modifier = Modifier.fillMaxWidth().padding(PaddingLarge),
@@ -116,8 +121,8 @@ fun CreateInvitationBottomSheet(
 
         BottomNavigationButtons(
             onNext = {
-              scope.launch {
-                createInvitationViewModel.addInvitations()
+              selectedOrgId?.let { orgId ->
+                invitationOverviewViewModel.addInvitations(orgId, uiState.count)
                 onCreate()
               }
             },

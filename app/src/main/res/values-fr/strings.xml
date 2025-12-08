@@ -229,6 +229,7 @@
     <string name="status_expired">Expiré</string>
     <string name="invitations_loading">Chargement des invitations</string>
     <string name="invitations_creating">Création des invitations</string>
+    <string name="error_inserting_invitation">Erreur lors de l’ajout de l\’invitation</string>
     <string name="error_loading_invitations">Échec du chargement des invitations</string>
     <string name="error_invitation_not_found">Invitation introuvable</string>
     <string name="error_deleting_invitations">Échec de la suppression de l\'invitation</string>

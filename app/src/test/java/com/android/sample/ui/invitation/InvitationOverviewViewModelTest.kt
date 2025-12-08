@@ -1,5 +1,6 @@
 package com.android.sample.ui.invitation
 
+import com.android.sample.R
 import com.android.sample.model.authentication.FakeAuthRepository
 import com.android.sample.model.authentication.User
 import com.android.sample.model.organization.data.Organization
@@ -26,15 +27,19 @@ class InvitationOverviewViewModelTest {
   private lateinit var fakeAuthRepository: FakeAuthRepository
   private lateinit var vm: InvitationOverviewViewModel
   private val user = User(id = "user1", displayName = "Test User", email = "test@example.com")
-  private val org =
-      Organization(id = "org1", name = "Test Org", admins = listOf(user), members = listOf(user))
-  private val inv1 = Invitation(id = "id1", organizationId = org.id, code = "123456")
-  private val inv2 = Invitation(id = "id2", organizationId = org.id, code = "654321")
+  private val org1 =
+      Organization(id = "org1", name = "Test Org 1", admins = listOf(user), members = listOf(user))
+  private val org2 =
+      Organization(id = "org2", name = "Test Org 2", admins = listOf(), members = listOf(user))
+  private val inv1 = Invitation(id = "id1", organizationId = org1.id, code = "123456")
+  private val inv2 = Invitation(id = "id2", organizationId = org1.id, code = "654321")
 
   @Before
   fun setUp() {
+
     fakeOrganizationRepository = FakeOrganizationRepository()
-    fakeOrganizationRepository.addOrganization(org)
+    fakeOrganizationRepository.addOrganization(org1)
+    fakeOrganizationRepository.addOrganization(org2)
 
     fakeInvitationRepository = FakeInvitationRepository()
     fakeInvitationRepository.addInvitation(inv1)
@@ -71,7 +76,7 @@ class InvitationOverviewViewModelTest {
 
   @Test
   fun `loadInvitations fetches invitations for organization`() = runTest {
-    vm.loadInvitations(org.id)
+    vm.loadInvitations(org1.id)
     testDispatcher.scheduler.advanceUntilIdle()
     val state = vm.uiState.value
     assertEquals(2, state.invitations.size)
@@ -82,8 +87,43 @@ class InvitationOverviewViewModelTest {
   }
 
   @Test
+  fun `admin user can add invitation`() = runTest {
+    vm.addInvitations(org1.id, 2)
+
+    testDispatcher.scheduler.advanceUntilIdle()
+    val invitations = fakeInvitationRepository.getAllInvitations()
+    assertEquals(4, invitations.size)
+  }
+
+  @Test
+  fun `non-admin user cannot add invitation`() = runTest {
+    vm.addInvitations(org2.id, 1)
+    testDispatcher.scheduler.advanceUntilIdle()
+    val state = vm.uiState.value
+    assertEquals(R.string.error_inserting_invitation, state.errorMessageId)
+  }
+
+  @Test
+  fun `adding invitation without authenticated user throws exception`() = runTest {
+    fakeAuthRepository.clearCurrentUser()
+    vm.addInvitations(org1.id, 1)
+    testDispatcher.scheduler.advanceUntilIdle()
+    val state = vm.uiState.value
+    assertEquals(R.string.error_no_authenticated_user, state.errorMessageId)
+  }
+
+  @Test
+  fun `adding invitation without selected organization throws exception`() = runTest {
+    fakeOrganizationRepository.deleteOrganization(org1.id, user)
+    vm.addInvitations(org1.id, 1)
+    testDispatcher.scheduler.advanceUntilIdle()
+    val state = vm.uiState.value
+    assertEquals(R.string.error_organization_not_found, state.errorMessageId)
+  }
+
+  @Test
   fun `deleteInvitation removes invitation from UI state`() = runTest {
-    vm.loadInvitations(org.id)
+    vm.loadInvitations(org1.id)
     testDispatcher.scheduler.advanceUntilIdle()
     assertEquals(2, vm.uiState.value.invitations.size)
 

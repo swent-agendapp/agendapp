@@ -152,8 +152,7 @@ fun InvitationOverviewScreen(
                     invitationOverviewViewModel.loadInvitations(orgId)
                   }
                 }
-              },
-              scope = scope)
+              })
         }
   }
 }

@@ -7,6 +7,7 @@ package com.android.sample.model.constants
  */
 object FirestoreConstants {
   const val EVENTS_COLLECTION_PATH = "events"
+  const val CATEGORIES_COLLECTION_PATH = "categories"
   const val ORGANIZATIONS_COLLECTION_PATH = "organizations"
   const val COLLECTION_USERS = "users"
   const val REPLACEMENTS_COLLECTION_PATH = "replacements"
@@ -17,6 +18,7 @@ object FirestoreConstants {
   val ALL_COLLECTIONS =
       listOf(
           EVENTS_COLLECTION_PATH,
+          CATEGORIES_COLLECTION_PATH,
           ORGANIZATIONS_COLLECTION_PATH,
           COLLECTION_USERS,
           REPLACEMENTS_COLLECTION_PATH,

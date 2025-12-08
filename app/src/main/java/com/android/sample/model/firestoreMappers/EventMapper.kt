@@ -127,6 +127,7 @@ object EventMapper : FirestoreMapper<Event> {
         "eventCategory" to
             mapOf(
                 "id" to model.category.id,
+                "organizationId" to model.category.organizationId,
                 "label" to model.category.label,
                 "color" to model.category.color.value.toLong(), // Color -> Long
                 "isDefault" to model.category.isDefault,
@@ -147,13 +148,14 @@ object EventMapper : FirestoreMapper<Event> {
     val map = rawCategory as? Map<*, *> ?: return EventCategory.defaultCategory()
 
     val id = map["id"] as? String ?: UUID.randomUUID().toString()
+    val organizationId = map["organizationId"] as? String ?: return EventCategory.defaultCategory()
     val label = map["label"] as? String ?: "Uncategorized"
-    val isDefault = map["isDefault"] as? Boolean ?: false
-
     val colorLong = (map["color"] as? Number)?.toLong() ?: EventPalette.NoCategory.value.toLong()
+    val isDefault = map["isDefault"] as? Boolean ?: false
 
     return EventCategory(
         id = id,
+        organizationId = organizationId,
         label = label,
         color = Color(colorLong.toULong()),
         isDefault = isDefault,

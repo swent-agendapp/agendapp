@@ -93,12 +93,12 @@ fun SelectEventScreen(
                     selectedEvent = selectedEvent,
                     onEventClick = { event ->
                       selectedEvent =
-                          if (selectedEvent == event) {
+                          if (selectedEvent?.id == event.id) {
                             null
                           } else {
                             event
                           }
-                      onEventClick(event)
+                      selectedEvent?.let { onEventClick(it) }
                     })
               }
             }

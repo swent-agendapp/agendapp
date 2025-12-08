@@ -33,6 +33,7 @@ class InvitationOverviewViewModelTest {
       Organization(id = "org2", name = "Test Org 2", admins = listOf(), members = listOf(user))
   private val inv1 = Invitation(id = "id1", organizationId = org1.id, code = "123456")
   private val inv2 = Invitation(id = "id2", organizationId = org1.id, code = "654321")
+  private val inv3 = Invitation(id = "id3", organizationId = org2.id, code = "132435")
 
   @Before
   fun setUp() {
@@ -44,6 +45,7 @@ class InvitationOverviewViewModelTest {
     fakeInvitationRepository = FakeInvitationRepository()
     fakeInvitationRepository.addInvitation(inv1)
     fakeInvitationRepository.addInvitation(inv2)
+    fakeInvitationRepository.addInvitation(inv3)
 
     fakeAuthRepository = FakeAuthRepository(user)
     vm =
@@ -87,12 +89,30 @@ class InvitationOverviewViewModelTest {
   }
 
   @Test
+  fun `load invitation without authenticated user sets error message`() = runTest {
+    fakeAuthRepository.clearCurrentUser()
+    vm.loadInvitations(org1.id)
+    testDispatcher.scheduler.advanceUntilIdle()
+    val state = vm.uiState.value
+    assertEquals(R.string.error_no_authenticated_user, state.errorMessageId)
+  }
+
+  @Test
+  fun `load invitation sets error message when organization does not exist`() = runTest {
+    fakeOrganizationRepository.deleteOrganization(org1.id, user)
+    vm.loadInvitations(org1.id)
+    testDispatcher.scheduler.advanceUntilIdle()
+    val state = vm.uiState.value
+    assertEquals(R.string.error_organization_not_found, state.errorMessageId)
+  }
+
+  @Test
   fun `admin user can add invitation`() = runTest {
     vm.addInvitations(org1.id, 2)
 
     testDispatcher.scheduler.advanceUntilIdle()
-    val invitations = fakeInvitationRepository.getAllInvitations()
-    assertEquals(4, invitations.size)
+    val state = vm.uiState.value
+    assertEquals(4, state.invitations.size)
   }
 
   @Test
@@ -104,7 +124,7 @@ class InvitationOverviewViewModelTest {
   }
 
   @Test
-  fun `adding invitation without authenticated user throws exception`() = runTest {
+  fun `adding invitation without authenticated user sets error message`() = runTest {
     fakeAuthRepository.clearCurrentUser()
     vm.addInvitations(org1.id, 1)
     testDispatcher.scheduler.advanceUntilIdle()
@@ -113,7 +133,7 @@ class InvitationOverviewViewModelTest {
   }
 
   @Test
-  fun `adding invitation without selected organization throws exception`() = runTest {
+  fun `adding invitation sets error message when organization does not exist`() = runTest {
     fakeOrganizationRepository.deleteOrganization(org1.id, user)
     vm.addInvitations(org1.id, 1)
     testDispatcher.scheduler.advanceUntilIdle()
@@ -125,22 +145,52 @@ class InvitationOverviewViewModelTest {
   fun `deleteInvitation removes invitation from UI state`() = runTest {
     vm.loadInvitations(org1.id)
     testDispatcher.scheduler.advanceUntilIdle()
-    assertEquals(2, vm.uiState.value.invitations.size)
 
-    vm.deleteInvitation("id1")
+    vm.deleteInvitation(inv1.id)
     testDispatcher.scheduler.advanceUntilIdle()
     val state = vm.uiState.value
     assertEquals(1, state.invitations.size)
-    assertEquals("id2", state.invitations.first().id)
+    assertEquals(inv2.id, state.invitations.first().id)
     assertNull(state.errorMessageId)
   }
 
   @Test
-  fun `deleteInvitation sets error when invitation not found`() = runTest {
+  fun `non-admin user cannot delete invitation`() = runTest {
+    vm.deleteInvitation(inv3.id)
+    testDispatcher.scheduler.advanceUntilIdle()
+    val state = vm.uiState.value
+    assertEquals(R.string.error_deleting_invitations, state.errorMessageId)
+  }
+
+  @Test
+  fun `deleteInvitation without authenticated user sets error message`() = runTest {
+    // first load with an authenticated user otherwise load fails
+    vm.loadInvitations(org1.id)
+    testDispatcher.scheduler.advanceUntilIdle()
+
+    fakeAuthRepository.clearCurrentUser()
+    vm.deleteInvitation(inv1.id)
+    testDispatcher.scheduler.advanceUntilIdle()
+    val state = vm.uiState.value
+    assertEquals(2, state.invitations.size)
+    assertEquals(R.string.error_no_authenticated_user, state.errorMessageId)
+  }
+
+  @Test
+  fun `deleteInvitation sets error when invitation sets error message`() = runTest {
     vm.deleteInvitation("unknown-id")
     testDispatcher.scheduler.advanceUntilIdle()
     val state = vm.uiState.value
     assertNotNull(state.errorMessageId)
+  }
+
+  @Test
+  fun `deleteInvitation sets error message when organization does not exist`() = runTest {
+    fakeOrganizationRepository.deleteOrganization(org1.id, user)
+    vm.deleteInvitation(inv1.id)
+    testDispatcher.scheduler.advanceUntilIdle()
+    val state = vm.uiState.value
+    assertEquals(R.string.error_organization_not_found, state.errorMessageId)
   }
 
   @Test

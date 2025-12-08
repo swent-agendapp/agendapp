@@ -79,9 +79,12 @@ class InvitationOverviewViewModel(
         setLoading(false)
         return@launch
       }
-
-      val invitations = invitationRepository.getInvitationByOrganization(organizationId)
-      setInvitations(invitations)
+      try {
+        val invitations = invitationRepository.getInvitationByOrganization(organizationId)
+        setInvitations(invitations)
+      } catch (_: Exception) {
+        setError(R.string.error_loading_invitations)
+      }
       setLoading(false)
     }
   }
@@ -115,23 +118,15 @@ class InvitationOverviewViewModel(
         setLoading(false)
         return@launch
       }
-      val success =
-          try {
-            repeat(count) {
-              invitationRepository.insertInvitation(organization = organization, user = user)
-            }
-            loadInvitations(organizationId)
-            true
-          } catch (_: Exception) {
-            setError(R.string.error_inserting_invitation)
-            false
-          }
-
-      if (!success) {
+      try {
+        repeat(count) {
+          invitationRepository.insertInvitation(organization = organization, user = user)
+        }
+        loadInvitations(organizationId)
+      } catch (_: Exception) {
         setError(R.string.error_inserting_invitation)
-        setLoading(false)
-        return@launch
       }
+      setLoading(false)
     }
   }
 
@@ -165,20 +160,11 @@ class InvitationOverviewViewModel(
         setError(R.string.error_organization_not_found)
         return@launch
       }
-      val success =
-          try {
-            invitationRepository.deleteInvitation(invitationId, organization, user)
-            true
-          } catch (_: Exception) {
-            setError(R.string.error_invitation_not_found)
-            false
-          }
-
-      if (!success) {
-        setError(R.string.error_deleting_invitations)
-        return@launch
+      try {
+        invitationRepository.deleteInvitation(invitationId, organization, user)
+      } catch (_: Exception) {
+        setError(R.string.error_invitation_not_found)
       }
-
       // Update UI list on success
       setInvitations(_uiState.value.invitations.filterNot { it.id == invitationId })
     }

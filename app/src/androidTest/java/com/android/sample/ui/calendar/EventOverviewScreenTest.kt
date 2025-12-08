@@ -3,9 +3,9 @@ package com.android.sample.ui.calendar
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import com.android.sample.data.global.providers.EventRepositoryProvider
 import com.android.sample.data.global.repositories.EventRepository
 import com.android.sample.model.calendar.Event
-import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.category.EventCategory
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository

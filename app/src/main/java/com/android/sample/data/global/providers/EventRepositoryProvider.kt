@@ -1,4 +1,4 @@
-package com.android.sample.model.calendar
+package com.android.sample.data.global.providers
 
 import com.android.sample.data.firebase.repositories.EventRepositoryFirebase
 import com.android.sample.data.global.repositories.EventRepository

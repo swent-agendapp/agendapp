@@ -149,7 +149,6 @@ fun InvitationOverviewScreen(
                   scope.launch {
                     sheetState.hide()
                     invitationOverviewViewModel.dismissBottomSheet()
-                    invitationOverviewViewModel.loadInvitations(orgId)
                   }
                 }
               })

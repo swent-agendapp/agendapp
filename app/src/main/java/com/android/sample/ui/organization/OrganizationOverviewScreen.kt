@@ -1,7 +1,16 @@
 package com.android.sample.ui.organization
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -19,7 +28,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.components.BottomNavigationButtons
+import com.android.sample.ui.theme.CornerRadiusLarge
+import com.android.sample.ui.theme.ElevationExtraLow
 import com.android.sample.ui.theme.PaddingMedium
+import com.android.sample.ui.theme.SpacingSmall
 import kotlinx.coroutines.launch
 
 object OrganizationOverviewScreenTestTags {
@@ -74,55 +86,86 @@ fun OrganizationOverViewScreen(
     }
   }
 
-  Scaffold(
-      topBar = {
-        SecondaryPageTopBar(
-            title = stringResource(R.string.settings_organization_selection_button),
-            onClick = onNavigateBack,
-            backButtonTestTags = "")
-      },
-      snackbarHost = {
-        SnackbarHost(
-            hostState = snackBarHostState,
-            modifier = Modifier.testTag(OrganizationOverviewScreenTestTags.ERROR_SNACKBAR))
-      },
-      modifier = Modifier.testTag(OrganizationOverviewScreenTestTags.ROOT)) { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding).padding(PaddingMedium)) {
+    Scaffold(
+        topBar = {
+            SecondaryPageTopBar(
+                title = stringResource(R.string.settings_organization_selection_button),
+                onClick = onNavigateBack,
+                backButtonTestTags = "")
+        },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackBarHostState,
+                modifier = Modifier.testTag(OrganizationOverviewScreenTestTags.ERROR_SNACKBAR))
+        },
+        modifier = Modifier.testTag(OrganizationOverviewScreenTestTags.ROOT)) { innerPadding ->
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(PaddingMedium),
+            verticalArrangement = Arrangement.SpaceBetween) {
 
-          // Later: Add other organization details as needed and management options
+            Column {
+                Spacer(modifier = Modifier.height(SpacingSmall))
 
-          // Display selected organization name
-          Text(
-              modifier =
-                  Modifier.testTag(OrganizationOverviewScreenTestTags.ORGANIZATION_NAME_TEXT),
-              text =
-                  uiState.organizationName.ifEmpty {
-                    stringResource(R.string.organization_none_selected)
-                  })
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(CornerRadiusLarge),
+                    colors =
+                        CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                        ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = ElevationExtraLow)) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(PaddingMedium),
+                        verticalArrangement = Arrangement.spacedBy(SpacingSmall)) {
 
-          // Display member count
-          Text(
-              modifier = Modifier.testTag(OrganizationOverviewScreenTestTags.MEMBER_COUNT_TEXT),
-              text = stringResource(R.string.organization_members) + ": ${uiState.memberCount}")
+                        Text(
+                            modifier =
+                                Modifier.testTag(
+                                    OrganizationOverviewScreenTestTags.ORGANIZATION_NAME_TEXT),
+                            text =
+                                uiState.organizationName.ifEmpty {
+                                    stringResource(R.string.organization_none_selected)
+                                },
+                            style = MaterialTheme.typography.titleMedium,
+                        )
 
-          // Bottom buttons (Change / Delete)
-          BottomNavigationButtons(
-              onNext = {
-                coroutineScope.launch {
-                  organizationOverviewViewModel.deleteSelectedOrganization(selectedOrgId)
-                  onDeleteOrganization()
+                        Text(
+                            modifier =
+                                Modifier.testTag(
+                                    OrganizationOverviewScreenTestTags.MEMBER_COUNT_TEXT),
+                            text =
+                                stringResource(R.string.organization_members) +
+                                        ": ${uiState.memberCount}",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                 }
-              },
-              onBack = {
-                organizationOverviewViewModel.clearSelectedOrganization()
-                onChangeOrganization()
-              },
-              canGoNext = true,
-              canGoBack = true,
-              nextButtonText = stringResource(R.string.delete),
-              backButtonText = stringResource(R.string.change),
-              nextButtonTestTag = OrganizationOverviewScreenTestTags.DELETE_BUTTON,
-              backButtonTestTag = OrganizationOverviewScreenTestTags.CHANGE_BUTTON)
+            }
+
+            BottomNavigationButtons(
+                onNext = {
+                    coroutineScope.launch {
+                        organizationOverviewViewModel.deleteSelectedOrganization(selectedOrgId)
+                        onDeleteOrganization()
+                    }
+                },
+                onBack = {
+                    organizationOverviewViewModel.clearSelectedOrganization()
+                    onChangeOrganization()
+                },
+                canGoNext = true,
+                canGoBack = true,
+                nextButtonText = stringResource(R.string.delete),
+                backButtonText = stringResource(R.string.change),
+                nextButtonTestTag = OrganizationOverviewScreenTestTags.DELETE_BUTTON,
+                backButtonTestTag = OrganizationOverviewScreenTestTags.CHANGE_BUTTON)
         }
-      }
+    }
 }

@@ -1,8 +1,8 @@
 package com.android.sample.model.calendar
 
+import com.android.sample.data.firebase.mappers.EventMapper
 import com.android.sample.model.constants.FirestoreConstants.EVENTS_COLLECTION_PATH
 import com.android.sample.model.constants.FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH
-import com.android.sample.model.firestoreMappers.EventMapper
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import java.time.Instant

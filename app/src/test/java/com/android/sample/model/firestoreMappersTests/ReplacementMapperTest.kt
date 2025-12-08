@@ -1,10 +1,10 @@
 package com.android.sample.model.firestoreMappersTests
 
+import com.android.sample.data.firebase.mappers.EventMapper
+import com.android.sample.data.firebase.mappers.ReplacementMapper
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.category.EventCategory
-import com.android.sample.model.firestoreMappers.EventMapper
-import com.android.sample.model.firestoreMappers.ReplacementMapper
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementStatus
 import com.android.sample.ui.theme.EventPalette

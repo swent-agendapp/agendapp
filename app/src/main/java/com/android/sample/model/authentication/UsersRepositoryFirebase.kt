@@ -1,7 +1,7 @@
 package com.android.sample.model.authentication
 
+import com.android.sample.data.firebase.mappers.UserMapper
 import com.android.sample.model.constants.FirestoreConstants.COLLECTION_USERS
-import com.android.sample.model.firestoreMappers.UserMapper
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 

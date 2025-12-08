@@ -1,4 +1,4 @@
-package com.android.sample.model.firestoreMappers
+package com.android.sample.data.firebase.mappers
 
 import com.android.sample.model.organization.invitation.Invitation
 import com.android.sample.model.organization.invitation.InvitationStatus

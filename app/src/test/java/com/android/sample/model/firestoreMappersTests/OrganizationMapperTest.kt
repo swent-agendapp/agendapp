@@ -1,8 +1,8 @@
 package com.android.sample.model.firestoreMappersTests
 
+import com.android.sample.data.firebase.mappers.OrganizationMapper
 import com.android.sample.model.authentication.User
 import com.android.sample.model.calendar.createEvent
-import com.android.sample.model.firestoreMappers.OrganizationMapper
 import com.android.sample.model.map.Area
 import com.android.sample.model.map.Location
 import com.android.sample.model.map.Marker

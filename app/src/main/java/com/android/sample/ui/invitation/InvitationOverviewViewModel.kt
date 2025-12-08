@@ -67,14 +67,22 @@ class InvitationOverviewViewModel(
   fun loadInvitations(organizationId: String) {
     setLoading(true)
     viewModelScope.launch {
-      try {
-        val invitations = invitationRepository.getInvitationByOrganization(organizationId)
-        setInvitations(invitations)
+      val user = authRepository.getCurrentUser()
+      if (user == null) {
+        setError(R.string.error_no_authenticated_user)
         setLoading(false)
-      } catch (_: Exception) {
-        setError(R.string.error_loading_invitations)
-        setLoading(false)
+        return@launch
       }
+      val organization = organizationRepository.getOrganizationById(organizationId, user)
+      if (organization == null) {
+        setError(R.string.error_organization_not_found)
+        setLoading(false)
+        return@launch
+      }
+
+      val invitations = invitationRepository.getInvitationByOrganization(organizationId)
+      setInvitations(invitations)
+      setLoading(false)
     }
   }
 

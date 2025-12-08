@@ -6,11 +6,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -45,6 +48,7 @@ object InvitationOverviewScreenTestTags {
   const val INVITATION_LOADING_INDICATOR = "invitationLoadingIndicator"
   const val CREATE_INVITATION_BUTTON = "createInvitationButton"
   const val CREATE_INVITATION_BOTTOM_SHEET = "createInvitationBottomSheet"
+  const val INVITATION_ERROR_SNACKBAR = "invitationErrorSnackBar"
 }
 
 /**
@@ -69,14 +73,25 @@ fun InvitationOverviewScreen(
         SelectedOrganizationVMProvider.viewModel,
     onBack: () -> Unit = {},
 ) {
+
+  val sheetState = rememberModalBottomSheetState()
+  val scope = rememberCoroutineScope()
+  val snackBarHostState = remember { SnackbarHostState() }
+
+  val uiState by invitationOverviewViewModel.uiState.collectAsStateWithLifecycle()
+
   val selectedOrgId by selectedOrganizationViewModel.selectedOrganizationId.collectAsState()
   selectedOrgId?.let { orgId ->
     LaunchedEffect(orgId) { invitationOverviewViewModel.loadInvitations(orgId) }
   }
-  val uiState by invitationOverviewViewModel.uiState.collectAsStateWithLifecycle()
 
-  val sheetState = rememberModalBottomSheetState()
-  val scope = rememberCoroutineScope()
+  val errorMessage = uiState.errorMessageId?.let { id -> stringResource(id) }
+  LaunchedEffect(errorMessage) {
+    errorMessage?.let { errorMessage ->
+      snackBarHostState.showSnackbar(errorMessage)
+      invitationOverviewViewModel.setError(null)
+    }
+  }
 
   Scaffold(
       modifier = Modifier.testTag(InvitationOverviewScreenTestTags.ROOT),
@@ -86,6 +101,11 @@ fun InvitationOverviewScreen(
             title = stringResource(R.string.invitation_codes_title),
             canGoBack = true,
             onClick = onBack)
+      },
+      snackbarHost = {
+        SnackbarHost(
+            hostState = snackBarHostState,
+            modifier = Modifier.testTag(InvitationOverviewScreenTestTags.INVITATION_ERROR_SNACKBAR))
       },
       floatingActionButton = {
         FloatingButton(

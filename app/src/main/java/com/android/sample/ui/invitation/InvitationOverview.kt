@@ -145,11 +145,9 @@ fun InvitationOverviewScreen(
                 invitationOverviewViewModel.dismissBottomSheet()
               },
               onCreate = {
-                selectedOrgId?.let { orgId ->
-                  scope.launch {
-                    sheetState.hide()
-                    invitationOverviewViewModel.dismissBottomSheet()
-                  }
+                scope.launch {
+                  sheetState.hide()
+                  invitationOverviewViewModel.dismissBottomSheet()
                 }
               })
         }

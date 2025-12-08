@@ -25,7 +25,7 @@ class EventMapperTest {
   fun setUp() {
     testCategory =
         EventCategory(
-            id = "test-category-id", label = "Work", color = EventPalette.Red, isDefault = false)
+            id = "test-category-id", organizationId = "test-organization-id", label = "Work", color = EventPalette.Red, isDefault = false)
 
     baseEvent =
         Event(

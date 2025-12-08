@@ -22,6 +22,7 @@ class EventMapperTest {
   private val sampleCategory =
       EventCategory(
           id = "category123",
+          organizationId = "testOrg",
           label = "Test Category",
           color = EventPalette.Blue,
           isDefault = false,
@@ -61,6 +62,7 @@ class EventMapperTest {
           "eventCategory" to
               mapOf(
                   "id" to sampleCategory.id,
+                  "organizationId" to sampleCategory.organizationId,
                   "label" to sampleCategory.label,
                   "color" to sampleCategory.color.value.toLong(),
                   "isDefault" to sampleCategory.isDefault,
@@ -87,6 +89,7 @@ class EventMapperTest {
         .thenReturn(
             mapOf(
                 "id" to sampleCategory.id,
+                "organizationId" to sampleCategory.organizationId,
                 "label" to sampleCategory.label,
                 "color" to sampleCategory.color.value.toLong(),
                 "isDefault" to sampleCategory.isDefault,

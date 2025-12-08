@@ -33,6 +33,7 @@ class ReplacementRepositoryLocalTest {
 
     val eventCategory =
         EventCategory(
+            organizationId = testOrgId,
             label = "Test Category",
             color = EventPalette.Blue,
         )

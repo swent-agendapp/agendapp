@@ -1,7 +1,7 @@
 package com.android.sample.ui.calendar
 
+import com.android.sample.data.global.repositories.EventRepository
 import com.android.sample.model.calendar.Event
-import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.category.EventCategory
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository

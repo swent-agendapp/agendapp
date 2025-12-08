@@ -1,6 +1,7 @@
 package com.android.sample.model.calendar
 
 import com.android.sample.data.firebase.repositories.EventRepositoryFirebase
+import com.android.sample.data.global.repositories.EventRepository
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 

@@ -1,7 +1,7 @@
 package com.android.sample.utils
 
+import com.android.sample.data.global.repositories.EventRepository
 import com.android.sample.model.calendar.Event
-import com.android.sample.model.calendar.EventRepository
 import java.time.Instant
 import java.util.UUID
 

@@ -1,5 +1,6 @@
 package com.android.sample.model.calendar
 
+import com.android.sample.data.global.repositories.EventRepository
 import java.time.Instant
 
 /**

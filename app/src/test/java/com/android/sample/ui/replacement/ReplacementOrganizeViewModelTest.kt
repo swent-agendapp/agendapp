@@ -1,9 +1,9 @@
 package com.android.sample.ui.replacement
 
+import com.android.sample.data.global.repositories.EventRepository
 import com.android.sample.data.local.repositories.EventRepositoryInMemory
 import com.android.sample.model.authentication.User
 import com.android.sample.model.calendar.Event
-import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.model.organization.repository.OrganizationRepository
 import com.android.sample.model.organization.repository.OrganizationRepositoryLocal

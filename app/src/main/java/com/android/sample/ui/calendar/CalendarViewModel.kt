@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.android.sample.data.global.repositories.EventRepository
 import com.android.sample.model.calendar.Event
-import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.map.LocationRepository
 import com.android.sample.model.map.LocationRepositoryAndroid

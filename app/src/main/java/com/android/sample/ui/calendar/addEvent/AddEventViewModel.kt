@@ -3,8 +3,8 @@ package com.android.sample.ui.calendar.addEvent
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.sample.data.global.repositories.EventRepository
 import com.android.sample.model.calendar.Event
-import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.calendar.createEvent

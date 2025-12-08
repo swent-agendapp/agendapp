@@ -76,7 +76,7 @@ interface InvitationRepository {
    * @param itemId The unique identifier of the invitation.
    * @param organization The organization associated with the invitation.
    * @param user The user attempting to perform the deletion.
-   * @throws IllegalArgumentException if the itemId does not exist.
+   * @throws IllegalArgumentException if the itemId does not exist or if the user is not admin.
    */
   suspend fun deleteInvitation(itemId: String, organization: Organization, user: User) {
     val organizationId =

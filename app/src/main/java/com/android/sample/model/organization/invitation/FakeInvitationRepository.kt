@@ -1,5 +1,8 @@
 package com.android.sample.model.organization.invitation
 
+import com.android.sample.model.authentication.User
+import com.android.sample.model.organization.data.Organization
+
 class FakeInvitationRepository : InvitationRepository {
 
   private val invitations = mutableListOf<Invitation>()
@@ -10,6 +13,15 @@ class FakeInvitationRepository : InvitationRepository {
 
   override suspend fun getAllInvitations(): List<Invitation> {
     return invitations.toList()
+  }
+
+  override suspend fun insertInvitation(organization: Organization, user: User) {
+    super.insertInvitation(organization, user)
+    val item = Invitation.create(organizationId = organization.id)
+    require(invitations.none { it.id == item.id }) {
+      "Invitation with id ${item.id} already exists."
+    }
+    invitations.add(item)
   }
 
   override suspend fun getInvitationById(itemId: String): Invitation? {

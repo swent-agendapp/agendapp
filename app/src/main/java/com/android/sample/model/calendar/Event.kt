@@ -79,6 +79,7 @@ enum class RecurrenceStatus {
 /** Enum representing the cloud storage location of an event. */
 enum class CloudStorageStatus {
   FIRESTORE,
+  LOCAL
 }
 
 /**

@@ -22,6 +22,8 @@ import com.android.sample.ui.common.FloatingButton
 import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.invitation.components.InvitationCardList
 import com.android.sample.ui.invitation.createInvitation.CreateInvitationBottomSheet
+import com.android.sample.ui.organization.SelectedOrganizationVMProvider
+import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import kotlinx.coroutines.launch
 
 // Assisted by AI
@@ -52,13 +54,14 @@ object InvitationOverviewScreenTestTags {
  *
  * The creation UI is presented using a [ModalBottomSheet].
  *
- * @param organizationId The ID of the organization whose invitation codes are being managed.
+ * @param selectedOrganizationViewModel ViewModel to retrieve the selected organization context.
  * @param onBack Callback invoked when the user presses the back button in the top bar.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InvitationOverviewScreen(
-    organizationId: String,
+    selectedOrganizationViewModel: SelectedOrganizationViewModel =
+        SelectedOrganizationVMProvider.viewModel,
     onBack: () -> Unit = {},
 ) {
   val sheetState = rememberModalBottomSheetState()
@@ -106,5 +109,7 @@ fun InvitationOverviewScreen(
 @Preview
 @Composable
 fun InvitationOverviewScreenPreview() {
-  InvitationOverviewScreen("org1")
+  val selectedOrganizationViewModel = SelectedOrganizationVMProvider.viewModel
+  selectedOrganizationViewModel.selectOrganization("org1")
+  InvitationOverviewScreen()
 }

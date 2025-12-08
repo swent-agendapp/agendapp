@@ -1,7 +1,7 @@
 package com.android.sample.data.local.repositories
 
+import com.android.sample.data.global.providers.BoxProvider
 import com.android.sample.data.global.repositories.BaseEventRepository
-import com.android.sample.data.local.BoxProvider
 import com.android.sample.data.local.mappers.EventMapper.toEntity
 import com.android.sample.data.local.mappers.EventMapper.toEvent
 import com.android.sample.data.local.objects.EventEntity

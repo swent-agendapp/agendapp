@@ -1,7 +1,7 @@
 package com.android.sample
 
 import android.app.Application
-import com.android.sample.data.local.BoxProvider
+import com.android.sample.data.global.providers.BoxProvider
 
 class MainApplication : Application() {
 

@@ -66,12 +66,10 @@ class InvitationOverviewViewModel(
    */
   fun loadInvitations(organizationId: String) {
     setLoading(true)
-    setError(null)
     viewModelScope.launch {
       try {
         val invitations = invitationRepository.getInvitationByOrganization(organizationId)
         setInvitations(invitations)
-        setError(null)
         setLoading(false)
       } catch (_: Exception) {
         setError(R.string.error_loading_invitations)

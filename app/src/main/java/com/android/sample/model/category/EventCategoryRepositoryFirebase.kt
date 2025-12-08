@@ -21,9 +21,7 @@ open class EventCategoryRepositoryFirebase(private val db: FirebaseFirestore) :
             .whereEqualTo("organizationId", orgId)
             .get()
             .await()
-    return snapshot.mapNotNull {
-      EventCategoryMapper.fromDocument(document = it)
-    }
+    return snapshot.mapNotNull { EventCategoryMapper.fromDocument(document = it) }
   }
 
   override suspend fun insertCategory(orgId: String, item: EventCategory) {

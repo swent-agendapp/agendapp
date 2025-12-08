@@ -24,7 +24,7 @@ class CreateInvitationBottomSheetTest : FirebaseEmulatedTest() {
 
   @Before
   override fun setUp() {
-    composeTestRule.setContent { CreateInvitationBottomSheet(onCancel = {}, scope = testScope) }
+    composeTestRule.setContent { CreateInvitationBottomSheet(onCancel = {}) }
   }
 
   // -------------------------------------------------------

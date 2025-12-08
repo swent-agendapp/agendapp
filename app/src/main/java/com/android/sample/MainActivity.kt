@@ -368,7 +368,7 @@ private fun NavGraphBuilder.settingsGraph(
 private fun NavGraphBuilder.invitationGraph(navigationActions: NavigationActions) {
   navigation(
       startDestination = Screen.InvitationOverview.route, route = Screen.InvitationOverview.name) {
-        composable(route = Screen.InvitationOverview.route) { navBackStackEntry ->
+        composable(route = Screen.InvitationOverview.route) {
           InvitationOverviewScreen(onBack = { navigationActions.navigateBack() })
         }
       }

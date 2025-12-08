@@ -37,7 +37,6 @@
 
     <!-- Edit Event Screen -->
     <string name="edit_event_title">Edit Event</string>
-    <string name="edit_event_instruction">Modify event details below:</string>
 
     <!-- Fields -->
     <string name="edit_event_title_label">Title</string>
@@ -52,17 +51,19 @@
     <string name="edit_event_end_date_label">End Date</string>
     <string name="edit_event_start_time_label">Start Time:</string>
     <string name="edit_event_end_time_label">End Time:</string>
-    <string name="edit_event_recurrence_label">Recurrence</string>
 
     <!-- Participants -->
-    <string name="edit_event_participants_label">Participants:</string>
     <string name="edit_event_edit_participants_button">Edit Participants</string>
     <string name="edit_event_participants_screen_title">Edit Event Participants</string>
-    <string name="edit_event_select_participants_text">Select participants</string>
 
     <!-- Buttons -->
     <string name="common_save">Save</string>
     <string name="common_cancel">Cancel</string>
+
+    <!-- Warnings -->
+    <string name="warning_title">Warning</string>
+    <string name="warning_participant_modification">Changes to participants made here will not be notified to the people concerned\n\nIf you need to arrange a replacement for one of the participants, please use the “Replacements” tab in the main menu instead</string>
+    <string name="warning_got_it">Got it</string>
 
     <!-- Replacements screen -->
     <string name="replacement_requests_title">Replacement requests</string>

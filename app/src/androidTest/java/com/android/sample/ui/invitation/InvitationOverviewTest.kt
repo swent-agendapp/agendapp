@@ -6,24 +6,25 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.android.sample.ui.invitation.createInvitation.InvitationCreationTestTags
 import com.android.sample.utils.FirebaseEmulatedTest
+import com.android.sample.utils.RequiresSelectedOrganizationTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 // Tests written by AI
 
-class InvitationOverviewScreenTest : FirebaseEmulatedTest() {
+class InvitationOverviewScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganizationTest {
 
   @get:Rule val composeTestRule = createComposeRule()
 
-  private lateinit var orgId: String
+  override val organizationId = "test_org"
 
   @Before
   override fun setUp() {
 
-    orgId = "orgId"
+    setSelectedOrganization()
 
-    composeTestRule.setContent { InvitationOverviewScreen(orgId) }
+    composeTestRule.setContent { InvitationOverviewScreen() }
   }
   // -------------------------------------------------------
   // ROOT + BASIC STRUCTURE

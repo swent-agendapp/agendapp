@@ -7,6 +7,8 @@ import com.android.sample.ui.calendar.editEvent.EditEventFlow
 import com.android.sample.ui.calendar.editEvent.EditEventStep
 import com.android.sample.ui.calendar.editEvent.EditEventTestTags
 import com.android.sample.ui.calendar.editEvent.EditEventViewModel
+import com.android.sample.utils.RequiresSelectedOrganizationTest
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -18,9 +20,16 @@ import org.junit.runner.RunWith
  * Verifies that the correct UI elements are displayed depending on the current EditEventStep.
  */
 @RunWith(AndroidJUnit4::class)
-class EditEventFlowUITest {
+class EditEventFlowUITest : RequiresSelectedOrganizationTest {
 
   @get:Rule val composeTestRule = createComposeRule()
+
+  override val organizationId = "test_org_id"
+
+  @Before
+  fun setup() {
+    setSelectedOrganization()
+  }
 
   @Test
   fun editEventFlow_displaysMainScreen_byDefault() {

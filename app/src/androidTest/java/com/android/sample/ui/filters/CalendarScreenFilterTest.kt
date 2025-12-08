@@ -6,13 +6,22 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.android.sample.ui.calendar.CalendarScreen
 import com.android.sample.ui.calendar.CalendarScreenTestTags
+import com.android.sample.utils.RequiresSelectedOrganizationTest
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 // Assisted by AI
-class CalendarScreenFilterTest {
+class CalendarScreenFilterTest : RequiresSelectedOrganizationTest {
 
   @get:Rule val compose = createComposeRule()
+
+  override val organizationId = "test_org"
+
+  @Before
+  fun setUp() {
+    setSelectedOrganization()
+  }
 
   /**
    * Test to verify that the filter button is displayed and opens the filter bottom sheet when

@@ -31,6 +31,7 @@ import com.android.sample.model.organization.repository.SelectedOrganizationRepo
 import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.style.CalendarDefaults.DEFAULT_SWIPE_THRESHOLD
 import com.android.sample.ui.calendar.utils.DateTimeUtils
+import com.android.sample.utils.RequiresSelectedOrganizationTest
 import java.time.DayOfWeek
 import java.time.Duration
 import java.time.LocalDate
@@ -39,6 +40,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import kotlinx.coroutines.runBlocking
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -48,11 +50,16 @@ import org.junit.Test
  * Rationale: Smaller focused subclasses improve maintainability (grouped by concern) while reusing
  * a single set of utilities.
  */
-abstract class BaseCalendarScreenTest {
+abstract class BaseCalendarScreenTest : RequiresSelectedOrganizationTest {
 
   @get:Rule open val composeTestRule = createComposeRule()
 
-  val selectedOrganizationId = "orgTest"
+  override val organizationId = "orgTest"
+
+  @Before
+  fun setUp() {
+    setSelectedOrganization()
+  }
 
   /** Converts a (LocalDate, LocalTime) to an Instant in the system zone for concise test setup. */
   protected fun at(date: LocalDate, time: LocalTime) =
@@ -196,7 +203,7 @@ abstract class BaseCalendarScreenTest {
     val current =
         // Current week
         createEvent(
-            organizationId = selectedOrganizationId,
+            organizationId = organizationId,
             title = "First Event",
             startDate = at(thisWeekMonday.plusDays(1), LocalTime.of(9, 30)), // Tue 09:30–11:30
             endDate = at(thisWeekMonday.plusDays(1), LocalTime.of(9, 30)).plus(Duration.ofHours(2)),
@@ -204,7 +211,7 @@ abstract class BaseCalendarScreenTest {
             participants = setOf("Alice", "Bob"),
         ) +
             createEvent(
-                organizationId = selectedOrganizationId,
+                organizationId = organizationId,
                 title = "Nice Event",
                 startDate = at(thisWeekMonday.plusDays(2), LocalTime.of(14, 0)), // Wed 14:00–18:00
                 endDate =
@@ -213,7 +220,7 @@ abstract class BaseCalendarScreenTest {
                 participants = setOf("Charlie", "David"),
             ) +
             createEvent(
-                organizationId = selectedOrganizationId,
+                organizationId = organizationId,
                 title = "Top Event",
                 startDate = at(thisWeekMonday.plusDays(3), LocalTime.of(11, 0)), // Thu 11:00–13:00
                 endDate =
@@ -226,7 +233,7 @@ abstract class BaseCalendarScreenTest {
     val next =
         // Next week
         createEvent(
-            organizationId = selectedOrganizationId,
+            organizationId = organizationId,
             title = "Next Event",
             startDate = at(thisWeekMonday.plusWeeks(1), LocalTime.of(10, 0)), // Mon 10:00–13:00
             endDate =
@@ -235,7 +242,7 @@ abstract class BaseCalendarScreenTest {
             participants = setOf("Alice", "Bob"),
         ) +
             createEvent(
-                organizationId = selectedOrganizationId,
+                organizationId = organizationId,
                 title = "Later Event",
                 startDate = at(thisWeekMonday.plusWeeks(1).plusDays(3), LocalTime.of(16, 0)), // Thu
                 endDate =
@@ -249,7 +256,7 @@ abstract class BaseCalendarScreenTest {
     val previous =
         // Previous week
         createEvent(
-            organizationId = selectedOrganizationId,
+            organizationId = organizationId,
             title = "Previous Event",
             startDate = at(thisWeekMonday.minusWeeks(1).plusDays(1), LocalTime.of(17, 0)),
             endDate =
@@ -259,7 +266,7 @@ abstract class BaseCalendarScreenTest {
             participants = setOf("Alice", "Bob"),
         ) +
             createEvent(
-                organizationId = selectedOrganizationId,
+                organizationId = organizationId,
                 title = "Earlier Event",
                 startDate = at(thisWeekMonday.minusWeeks(1).plusDays(4), LocalTime.of(8, 0)),
                 endDate =
@@ -280,7 +287,7 @@ abstract class BaseCalendarScreenTest {
   protected fun populateRepo(
       repo: EventRepositoryInMemory,
       events: List<Event>,
-      orgId: String = selectedOrganizationId
+      orgId: String = organizationId
   ) = runBlocking {
     // Synchronously insert events so data is ready when the UI composes
     events.forEach { repo.insertEvent(orgId = orgId, item = it) }
@@ -334,7 +341,6 @@ abstract class BaseCalendarScreenTest {
     populateRepo(eventRepo, events)
     // Provide a ViewModel factory that uses these repos
     val owner = TestOwner(CalendarVMFactory(eventRepo, mapRepo))
-    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
 
     val viewModel =
         CalendarViewModel(
@@ -390,7 +396,6 @@ class CalendarSanityTests : BaseCalendarScreenTest() {
   fun calendarContainerComposesWithoutCrash() {
     val repoEvent = EventRepositoryInMemory()
     val repoMap = MapRepositoryLocal()
-    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
     composeTestRule.setContent {
       CalendarContainer(
           calendarViewModel = viewModel(factory = CalendarVMFactory(repoEvent, repoMap)))
@@ -406,7 +411,7 @@ class CalendarSanityTests : BaseCalendarScreenTest() {
   fun calendarContainerComposes() {
     val repoEvent = EventRepositoryInMemory()
     val repoMap = MapRepositoryLocal()
-    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
+    SelectedOrganizationRepository.changeSelectedOrganization(organizationId)
     composeTestRule.setContent {
       CalendarContainer(
           calendarViewModel = viewModel(factory = CalendarVMFactory(repoEvent, repoMap)))

@@ -3,24 +3,24 @@ package com.android.sample.ui.replacement
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.category.EventCategory
-import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementStatus
 import com.android.sample.ui.replacement.mainPage.ReplacementRequestUi
 import com.android.sample.ui.replacement.mainPage.toUi
+import com.android.sample.utils.RequiresSelectedOrganizationTest
 import java.time.Instant
 import java.time.ZoneId
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
-class ReplacementToUiTest {
+class ReplacementToUiTest : RequiresSelectedOrganizationTest {
 
-  private val selectedOrganizationId = "ORG1"
+  override val organizationId = "ORG1"
 
   @Before
   fun setup() {
-    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
+    setSelectedOrganization()
   }
 
   @Test
@@ -32,7 +32,7 @@ class ReplacementToUiTest {
     val event =
         Event(
             id = "E123",
-            organizationId = selectedOrganizationId,
+            organizationId = organizationId,
             title = "Team Sync",
             description = "Daily standup",
             startDate = start,

@@ -10,10 +10,12 @@ import com.android.sample.ui.calendar.eventOverview.EventOverviewScreen
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreenTestTags
 import com.android.sample.ui.calendar.eventOverview.EventOverviewViewModel
 import com.android.sample.utils.FakeEventRepository
+import com.android.sample.utils.RequiresSelectedOrganizationTest
 import java.time.Duration
 import java.time.Instant.now
 import java.time.temporal.ChronoUnit
 import kotlinx.coroutines.runBlocking
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -25,18 +27,23 @@ import org.junit.Test
  * - Clicking Modify calls the onEditClick callback.
  * - Clicking Delete opens the confirmation dialog and calls onDeleteClick after confirmation.
  */
-class EventOverviewScreenTest {
+class EventOverviewScreenTest : RequiresSelectedOrganizationTest {
 
   @get:Rule val composeRule = createComposeRule()
 
-  val selectedOrganizationId = "orgTest"
+  override val organizationId = "orgTest"
+
+  @Before
+  fun setup() {
+    setSelectedOrganization()
+  }
 
   // ---------- Helpers ----------
   private fun sampleEvent(): Event {
     val start = now().truncatedTo(ChronoUnit.HOURS)
     return Event(
         id = "E123",
-        organizationId = selectedOrganizationId,
+        organizationId = organizationId,
         title = "Test Event",
         description = "Desc",
         startDate = start,

@@ -5,16 +5,21 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.components.AddEventAttendantBottomBar
+import com.android.sample.utils.RequiresSelectedOrganizationTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class AddEventAttendantBottomBarTest {
+class AddEventAttendantBottomBarTest : RequiresSelectedOrganizationTest {
+
+  override val organizationId: String = "org_123"
 
   @get:Rule val composeTestRule = createComposeRule()
 
   @Before
   fun setUp() {
+    setSelectedOrganization()
+
     composeTestRule.setContent { AddEventAttendantBottomBar() }
   }
 

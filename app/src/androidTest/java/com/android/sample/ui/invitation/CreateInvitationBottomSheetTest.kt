@@ -6,18 +6,22 @@ import androidx.compose.ui.test.onNodeWithTag
 import com.android.sample.ui.invitation.createInvitation.CreateInvitationBottomSheet
 import com.android.sample.ui.invitation.createInvitation.InvitationCreationTestTags
 import com.android.sample.utils.FirebaseEmulatedTest
+import com.android.sample.utils.RequiresSelectedOrganizationTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 // Tests written by AI
 
-class CreateInvitationBottomSheetTest : FirebaseEmulatedTest() {
+class CreateInvitationBottomSheetTest : FirebaseEmulatedTest(), RequiresSelectedOrganizationTest {
 
   @get:Rule val composeTestRule = createComposeRule()
 
+  override val organizationId = "test_org"
+
   @Before
   override fun setUp() {
+    setSelectedOrganization()
     composeTestRule.setContent { CreateInvitationBottomSheet(onCancel = {}) }
   }
 

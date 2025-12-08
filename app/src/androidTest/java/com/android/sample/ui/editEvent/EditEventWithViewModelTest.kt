@@ -6,13 +6,13 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.category.EventCategory
-import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.editEvent.EditEventTestTags
 import com.android.sample.ui.calendar.editEvent.EditEventViewModel
 import com.android.sample.ui.calendar.editEvent.components.EditEventAttendantScreen
 import com.android.sample.ui.calendar.editEvent.components.EditEventScreen
 import com.android.sample.ui.theme.SampleAppTheme
 import com.android.sample.utils.FakeEventRepository
+import com.android.sample.utils.RequiresSelectedOrganizationTest
 import java.time.Duration
 import java.time.Instant.now
 import java.time.temporal.ChronoUnit
@@ -27,23 +27,29 @@ import org.junit.runner.RunWith
  * verify UI + ViewModel interaction consistency.
  */
 @RunWith(AndroidJUnit4::class)
-class EditEventWithViewModelTest {
+class EditEventWithViewModelTest : RequiresSelectedOrganizationTest {
 
   @get:Rule val composeTestRule = createComposeRule()
+
+  override val organizationId = "orgTest"
+
+  @Before
+  fun setUp() {
+    setSelectedOrganization()
+  }
 
   private lateinit var sampleEvent: Event
   private lateinit var fakeViewModel: EditEventViewModel
 
   @Before
   fun setup() {
-    val orgId = "orgTest"
-    SelectedOrganizationRepository.changeSelectedOrganization(orgId)
+    setSelectedOrganization()
 
     val start = now().truncatedTo(ChronoUnit.HOURS)
     sampleEvent =
         Event(
             id = "E123",
-            organizationId = orgId,
+            organizationId = organizationId,
             title = "Test Event",
             description = "Desc",
             startDate = start,

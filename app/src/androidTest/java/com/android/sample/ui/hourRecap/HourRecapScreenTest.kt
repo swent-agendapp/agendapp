@@ -8,9 +8,9 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
-import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.CalendarViewModel
 import com.android.sample.utils.FirebaseEmulatedTest
+import com.android.sample.utils.RequiresSelectedOrganizationTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -25,16 +25,17 @@ import org.junit.Test
  * - The recap list renders the expected recap items.
  * - Clicking the export button triggers the UI action (placeholder).
  */
-class HourRecapScreenTest : FirebaseEmulatedTest() {
+class HourRecapScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganizationTest {
 
   @get:Rule val compose = createComposeRule()
-  val selectedOrganizationId = "orgTest"
+
+  override val organizationId = "test_org"
 
   @Before
   override fun setUp() {
     super.setUp()
     // Set selected organization in the VM provider
-    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
+    setSelectedOrganization()
   }
   /**
    * Ensures that the main UI components are displayed:

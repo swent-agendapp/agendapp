@@ -7,17 +7,22 @@ import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
 import com.android.sample.ui.calendar.addEvent.components.AddEventTimeAndRecurrenceScreen
+import com.android.sample.utils.RequiresSelectedOrganizationTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class AddEventTimeScreenTest {
+class AddEventTimeScreenTest : RequiresSelectedOrganizationTest {
+
+  override val organizationId: String = "test-org-id"
 
   @get:Rule val composeTestRule = createComposeRule()
   private lateinit var fakeViewModel: AddEventViewModel
 
   @Before
   fun setUp() {
+    setSelectedOrganization()
+
     fakeViewModel = AddEventViewModel()
     composeTestRule.setContent {
       AddEventTimeAndRecurrenceScreen(addEventViewModel = fakeViewModel)

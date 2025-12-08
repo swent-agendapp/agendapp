@@ -10,18 +10,23 @@ import com.android.sample.model.authentication.User
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeTestTags
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeViewModel
 import com.android.sample.ui.replacement.organize.components.SelectSubstitutedScreen
+import com.android.sample.utils.RequiresSelectedOrganizationTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class SelectSubstitutedScreenTest {
+class SelectSubstitutedScreenTest : RequiresSelectedOrganizationTest {
 
   @get:Rule val composeTestRule = createComposeRule()
+
+  override val organizationId = "test_org_id"
   private lateinit var members: List<User>
   private lateinit var fakeViewModel: ReplacementOrganizeViewModel
 
   @Before
   fun setUp() {
+    setSelectedOrganization()
+
     fakeViewModel = ReplacementOrganizeViewModel()
     fakeViewModel.loadOrganizationMembers()
 

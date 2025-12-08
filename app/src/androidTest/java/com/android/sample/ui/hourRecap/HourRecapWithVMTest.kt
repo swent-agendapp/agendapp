@@ -4,7 +4,9 @@ import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.core.app.ApplicationProvider
 import com.android.sample.ui.calendar.CalendarViewModel
+import com.android.sample.utils.RequiresSelectedOrganizationTest
 import junit.framework.TestCase.assertNull
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -12,9 +14,17 @@ import org.junit.Test
  * Test class for the HourRecapScreen composable using real CalendarViewModel, but injecting test
  * data into its UI state.
  */
-class HourRecapWithVMTest {
+class HourRecapWithVMTest : RequiresSelectedOrganizationTest {
 
   @get:Rule val compose = createAndroidComposeRule<ComponentActivity>()
+
+  override val organizationId = "test_org"
+
+  @Before
+  fun setUp() {
+    setSelectedOrganization()
+  }
+
   /**
    * Tests that the recap list displays the expected number of items based on the test data injected
    * into the CalendarViewModel's UI state.

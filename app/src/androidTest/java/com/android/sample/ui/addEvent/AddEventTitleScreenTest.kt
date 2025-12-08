@@ -14,15 +14,21 @@ import androidx.compose.ui.test.performTextInput
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.components.AddEventTitleAndDescriptionBottomBar
 import com.android.sample.ui.calendar.addEvent.components.AddEventTitleAndDescriptionScreen
+import com.android.sample.utils.RequiresSelectedOrganizationTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class AddEventTitleScreenTest {
+class AddEventTitleScreenTest : RequiresSelectedOrganizationTest {
+
+  override val organizationId = "org_123"
+
   @get:Rule val composeTestRule = createComposeRule()
 
   @Before
   fun setUp() {
+    setSelectedOrganization()
+
     composeTestRule.setContent {
       Scaffold(
           content = { padding ->

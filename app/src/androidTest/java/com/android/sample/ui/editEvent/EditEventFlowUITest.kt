@@ -48,6 +48,7 @@ class EditEventFlowUITest : RequiresSelectedOrganizationTest {
 
     composeTestRule.setContent { EditEventFlow(eventId = "E123", editEventViewModel = viewModel) }
 
+    composeTestRule.onNodeWithTag(EditEventTestTags.ATTENDANCE_WARNING_ACK_BUTTON).performClick()
     composeTestRule.onNodeWithText("Alice").assertIsDisplayed()
     composeTestRule.onNodeWithTag(EditEventTestTags.PARTICIPANTS_LIST + "_Alice").assertExists()
   }

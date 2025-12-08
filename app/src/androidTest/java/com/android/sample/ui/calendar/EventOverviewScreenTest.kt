@@ -4,8 +4,11 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.android.sample.model.calendar.Event
+import com.android.sample.model.calendar.EventRepository
+import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.category.EventCategory
+import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreen
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreenTestTags
 import com.android.sample.ui.calendar.eventOverview.EventOverviewViewModel
@@ -32,10 +35,13 @@ class EventOverviewScreenTest : RequiresSelectedOrganizationTest {
   @get:Rule val composeRule = createComposeRule()
 
   override val organizationId = "orgTest"
+  private lateinit var repo: EventRepository
 
   @Before
   fun setup() {
     setSelectedOrganization()
+
+    repo = EventRepositoryProvider.repository
   }
 
   // ---------- Helpers ----------
@@ -67,9 +73,9 @@ class EventOverviewScreenTest : RequiresSelectedOrganizationTest {
 
   // ---------- Tests ----------
 
-  /** Verifies that the bottom bar contains both Delete and Modify buttons. */
+  /** Verifies that the screen contains Delete, Modify and Ask to be replaced buttons. */
   @Test
-  fun deleteAndModifyButtons_exist() {
+  fun allThreeButtons_exist() {
     val (vm, _) = makeViewModelWith(sampleEvent())
 
     composeRule.setContent {
@@ -85,6 +91,7 @@ class EventOverviewScreenTest : RequiresSelectedOrganizationTest {
 
     composeRule.onNodeWithTag(EventOverviewScreenTestTags.DELETE_BUTTON).assertExists()
     composeRule.onNodeWithTag(EventOverviewScreenTestTags.MODIFY_BUTTON).assertExists()
+    composeRule.onNodeWithTag(EventOverviewScreenTestTags.ASK_TO_BE_REPLACED_BUTTON).assertExists()
   }
 
   /**

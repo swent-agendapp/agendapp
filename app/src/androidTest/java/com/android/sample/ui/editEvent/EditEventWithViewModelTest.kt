@@ -151,7 +151,9 @@ class EditEventWithViewModelTest : RequiresSelectedOrganizationTest {
       }
     }
 
-    composeTestRule.onNodeWithText("Select participants").assertIsDisplayed()
+    // Click on the "Got it" button of the first pop-up
+    composeTestRule.onNodeWithTag(EditEventTestTags.ATTENDANCE_WARNING_ACK_BUTTON).performClick()
+
     composeTestRule.onNodeWithText("Alice").performClick()
 
     composeTestRule.onNodeWithTag(EditEventTestTags.SAVE_BUTTON).performClick()
@@ -174,6 +176,9 @@ class EditEventWithViewModelTest : RequiresSelectedOrganizationTest {
     composeTestRule.setContent {
       SampleAppTheme { EditEventAttendantScreen(editEventViewModel = fakeViewModel) }
     }
+
+    // Click on the "Got it" button of the first pop-up
+    composeTestRule.onNodeWithTag(EditEventTestTags.ATTENDANCE_WARNING_ACK_BUTTON).performClick()
 
     val alice = composeTestRule.onNodeWithText("Alice")
 

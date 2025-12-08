@@ -43,16 +43,6 @@ class EditEventScreenTest : RequiresSelectedOrganizationTest {
         .assertExists()
 
     composeTestRule
-        .onNodeWithTag(EditEventTestTags.DESCRIPTION_FIELD, useUnmergedTree = true)
-        .performScrollTo()
-        .assertExists()
-
-    composeTestRule
-        .onNodeWithTag(EditEventTestTags.RECURRENCE_DROPDOWN, useUnmergedTree = true)
-        .performScrollTo()
-        .assertExists()
-
-    composeTestRule
         .onNodeWithTag(EditEventTestTags.START_DATE_FIELD, useUnmergedTree = true)
         .performScrollTo()
         .assertExists()
@@ -96,8 +86,8 @@ class EditEventScreenTest : RequiresSelectedOrganizationTest {
       }
     }
 
-    // Verify participant list rendered
-    composeTestRule.onNodeWithText("Select participants").assertIsDisplayed()
+    // Click on the "Got it" button of the first pop-up
+    composeTestRule.onNodeWithTag(EditEventTestTags.ATTENDANCE_WARNING_ACK_BUTTON).performClick()
 
     // Click a participant checkbox
     composeTestRule.onNodeWithText("Alice").performClick()

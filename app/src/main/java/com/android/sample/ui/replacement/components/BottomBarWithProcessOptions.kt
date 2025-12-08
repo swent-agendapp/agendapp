@@ -15,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import com.android.sample.R
+import com.android.sample.ui.common.BottomNavigationButtons
 import com.android.sample.ui.common.SecondaryButton
-import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeTestTags
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.PaddingMedium

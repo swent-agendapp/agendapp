@@ -24,6 +24,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryInMemory
+import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.model.map.MapRepository
 import com.android.sample.model.map.MapRepositoryLocal
@@ -55,10 +56,13 @@ abstract class BaseCalendarScreenTest : RequiresSelectedOrganizationTest {
   @get:Rule open val composeTestRule = createComposeRule()
 
   override val organizationId = "orgTest"
+  private lateinit var repo: EventRepository
 
   @Before
   fun setUp() {
     setSelectedOrganization()
+
+    repo = EventRepositoryProvider.repository
   }
 
   /** Converts a (LocalDate, LocalTime) to an Instant in the system zone for concise test setup. */

@@ -186,6 +186,7 @@ class EventMapperTest {
 
     val categoryMap = map["eventCategory"] as Map<*, *>
     assertThat(categoryMap["id"]).isEqualTo(sampleEvent.category.id)
+    assertThat(categoryMap["organizationId"]).isEqualTo(sampleEvent.category.organizationId)
     assertThat(categoryMap["label"]).isEqualTo(sampleEvent.category.label)
     assertThat(categoryMap["color"]).isEqualTo(sampleEvent.category.color.value.toLong())
     assertThat(categoryMap["isDefault"]).isEqualTo(sampleEvent.category.isDefault)

@@ -1,6 +1,6 @@
 package com.android.sample.data.local.repositories
 
-import com.android.sample.model.calendar.BaseEventRepository
+import com.android.sample.data.global.repositories.BaseEventRepository
 import com.android.sample.model.calendar.Event
 import java.time.Instant
 import java.util.UUID

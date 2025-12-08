@@ -1,6 +1,6 @@
-package com.android.sample.model.calendar
+package com.android.sample.data.global.repositories
 
-import com.android.sample.data.global.repositories.EventRepository
+import java.time.Duration
 import java.time.Instant
 
 /**
@@ -25,8 +25,7 @@ abstract class BaseEventRepository : EventRepository {
     val workedHoursMap = mutableMapOf<String, Double>()
     events.forEach { event ->
       if (event.startDate <= now) {
-        val durationHours =
-            java.time.Duration.between(event.startDate, event.endDate).toMinutes() / 60.0
+        val durationHours = Duration.between(event.startDate, event.endDate).toMinutes() / 60.0
         event.presence.forEach { (userId, isPresent) ->
           if (isPresent) {
             workedHoursMap[userId] = workedHoursMap.getOrDefault(userId, 0.0) + durationHours
@@ -51,8 +50,7 @@ abstract class BaseEventRepository : EventRepository {
     val workedHoursMap = mutableMapOf<String, Double>()
     events.forEach { event ->
       if (event.startDate > now) {
-        val durationHours =
-            java.time.Duration.between(event.startDate, event.endDate).toMinutes() / 60.0
+        val durationHours = Duration.between(event.startDate, event.endDate).toMinutes() / 60.0
         event.participants.forEach { userId ->
           workedHoursMap[userId] = workedHoursMap.getOrDefault(userId, 0.0) + durationHours
         }

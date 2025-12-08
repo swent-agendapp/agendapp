@@ -1,7 +1,7 @@
 package com.android.sample.data.firebase.repositories
 
 import com.android.sample.data.firebase.mappers.EventMapper
-import com.android.sample.model.calendar.BaseEventRepository
+import com.android.sample.data.global.repositories.BaseEventRepository
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.constants.FirestoreConstants
 import com.google.firebase.Timestamp

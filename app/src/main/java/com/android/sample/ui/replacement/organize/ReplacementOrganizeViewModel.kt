@@ -3,6 +3,8 @@ package com.android.sample.ui.replacement.organize
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.sample.model.authentication.AuthRepository
+import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepository
 import com.android.sample.model.authentication.UserRepositoryProvider
@@ -81,11 +83,12 @@ enum class ReplacementOrganizeStep {
  * All ViewModel state is exposed through a [StateFlow] of [ReplacementOrganizeUIState].
  */
 class ReplacementOrganizeViewModel(
-    private val userRepository: UserRepository = UserRepositoryProvider.repository,
-    private val eventRepository: EventRepository = EventRepositoryProvider.repository,
-    private val replacementRepository: ReplacementRepository =
+  private val userRepository: UserRepository = UserRepositoryProvider.repository,
+  private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
+  private val eventRepository: EventRepository = EventRepositoryProvider.repository,
+  private val replacementRepository: ReplacementRepository =
         ReplacementRepositoryProvider.repository,
-    private val selectedOrganizationViewModel: SelectedOrganizationViewModel =
+  private val selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel,
 ) : ViewModel() {
 
@@ -110,7 +113,7 @@ class ReplacementOrganizeViewModel(
     viewModelScope.launch {
       _uiState.update {
         val orgId = getSelectedOrganizationId()
-        val listUserIdOrg = userRepository.getUsersIds(orgId)
+        val listUserIdOrg = userRepository.getMembersIds(orgId)
         val listUsers = userRepository.getUsersByIds(listUserIdOrg)
         it.copy(memberList = listUsers)
       }

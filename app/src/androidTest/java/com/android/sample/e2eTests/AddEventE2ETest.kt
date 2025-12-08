@@ -6,6 +6,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeDown
@@ -112,10 +113,13 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
         .performClick()
 
     // Wait for navigation back to Organization List screen
-    composeTestRule.waitForIdle()
 
     // Verify that we are back on Organization List screen
     composeTestRule.onNodeWithTag(OrganizationListScreenTestTags.ROOT).assertIsDisplayed()
+
+    composeTestRule.onNodeWithTag(OrganizationListScreenTestTags.PULL_TO_REFRESH).performTouchInput { swipeDown() }
+
+    composeTestRule.waitForIdle()
 
     // Click on the newly created organization to enter its Calendar
     composeTestRule

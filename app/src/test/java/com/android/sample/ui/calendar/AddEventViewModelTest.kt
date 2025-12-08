@@ -1,5 +1,10 @@
 package com.android.sample.ui.calendar
 
+import com.android.sample.model.authentication.AuthRepository
+import com.android.sample.model.authentication.FakeAuthRepository
+import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.calendar.*
 import com.android.sample.model.category.EventCategory
 import com.android.sample.model.category.mockData.getMockEventCategory
@@ -22,14 +27,18 @@ import org.junit.Test
 class AddEventViewModelTest {
 
   private val testDispatcher = StandardTestDispatcher()
-  private lateinit var repository: EventRepository
+  private lateinit var eventRepository: EventRepository
+  private lateinit var userRepository: UserRepository
+  private lateinit var authRepository: AuthRepository
 
   private val selectedOrganizationID = "org123"
 
   @Before
   fun setUp() {
     Dispatchers.setMain(testDispatcher)
-    repository = EventRepositoryInMemory()
+    eventRepository = EventRepositoryInMemory()
+    userRepository = UsersRepositoryLocal()
+    authRepository = FakeAuthRepository()
 
     // Set a selected organization
     SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationID)
@@ -102,12 +111,12 @@ class AddEventViewModelTest {
   @Test
   fun `addParticipant and removeParticipant modify participants set`() {
     val vm = makeVm()
+    val user = User(id ="user1")
+    vm.addParticipant(user)
+    assertTrue(vm.uiState.value.participants.contains(user))
 
-    vm.addParticipant("user1")
-    assertTrue(vm.uiState.value.participants.contains("user1"))
-
-    vm.removeParticipant("user1")
-    assertFalse(vm.uiState.value.participants.contains("user1"))
+    vm.removeParticipant(user)
+    assertFalse(vm.uiState.value.participants.contains(user))
   }
 
   @Test
@@ -144,10 +153,11 @@ class AddEventViewModelTest {
   @Test
   fun `resetUiState clears all fields to default`() {
     val vm = makeVm()
+    val user = User(id ="user1")
 
     vm.setTitle("Some Title")
     vm.setDescription("Some Description")
-    vm.addParticipant("user1")
+    vm.addParticipant(user)
     vm.setStartInstant(Instant.parse("2025-03-01T10:00:00Z"))
     vm.setEndInstant(Instant.parse("2025-03-01T11:00:00Z"))
     vm.setRecurrenceMode(RecurrenceStatus.Weekly)
@@ -180,7 +190,7 @@ class AddEventViewModelTest {
     vm.addEvent()
     testDispatcher.scheduler.advanceUntilIdle()
 
-    val events = repository.getAllEvents(selectedOrganizationID)
+    val events = eventRepository.getAllEvents(selectedOrganizationID)
     assertTrue(events.any { it.title == "Meeting" && it.description == "Team sync" })
   }
 
@@ -190,6 +200,6 @@ class AddEventViewModelTest {
 
   /** Creates a ViewModel with no authorization (because auth was removed from the app). */
   private fun makeVm(): AddEventViewModel {
-    return AddEventViewModel(repository)
+    return AddEventViewModel(userRepository, authRepository, eventRepository)
   }
 }

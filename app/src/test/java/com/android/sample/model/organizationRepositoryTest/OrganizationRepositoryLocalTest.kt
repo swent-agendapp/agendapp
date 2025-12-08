@@ -1,6 +1,8 @@
 package com.android.sample.model.organizationRepositoryTest
 
 import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepositoryProvider
+import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.repository.OrganizationRepositoryLocal
 import kotlinx.coroutines.runBlocking
@@ -36,29 +38,27 @@ class OrganizationRepositoryLocalTest {
     // --- Create organizations ---
     orgA =
         Organization(
-            id = "orgA", name = "Org A", admins = listOf(adminA), members = listOf(memberA, adminA))
+            id = "orgA", name = "Org A")
 
     orgB =
         Organization(
-            id = "orgB", name = "Org B", admins = listOf(adminB), members = listOf(memberB, adminB))
+            id = "orgB", name = "Org B")
 
     orgC =
         Organization(
             id = "orgC",
-            name = "Org C",
-            admins = listOf(adminA, adminB),
-            members = listOf(memberA, memberB))
+            name = "Org C")
   }
 
   // Insertion tests
   @Test
   fun insertOrganization_asAdmin_shouldSucceed() = runBlocking {
-    repository.insertOrganization(orgA, adminA)
+    repository.insertOrganization(orgA)
     val organizations = repository.getAllOrganizations(adminA)
     assertEquals(1, organizations.size)
     assertEquals("Org A", organizations.first().name)
 
-    repository.insertOrganization(orgC, adminA)
+    repository.insertOrganization(orgC)
     val updatedOrganizations = repository.getAllOrganizations(adminA)
     assertEquals(2, updatedOrganizations.size)
     assertEquals("Org C", updatedOrganizations.find { it.id == "orgC" }?.name)
@@ -66,21 +66,21 @@ class OrganizationRepositoryLocalTest {
 
   @Test(expected = IllegalArgumentException::class)
   fun insertOrganization_asNonAdmin_shouldThrow() = runBlocking {
-    repository.insertOrganization(orgA, memberA)
+    repository.insertOrganization(orgA)
   }
 
   @Test(expected = IllegalArgumentException::class)
   fun insertOrganization_withDuplicateId_shouldThrow() = runBlocking {
-    repository.insertOrganization(orgA, adminA)
-    repository.insertOrganization(orgA.copy(name = "Duplicate"), adminA)
+    repository.insertOrganization(orgA)
+    repository.insertOrganization(orgA.copy(name = "Duplicate"))
   }
 
   // Fetching & visibility tests
   @Test
   fun getAllOrganizations_shouldReturnOnlyAccessibleOnes() = runBlocking {
-    repository.insertOrganization(orgA, adminA)
-    repository.insertOrganization(orgB, adminB)
-    repository.insertOrganization(orgC, adminA)
+    repository.insertOrganization(orgA)
+    repository.insertOrganization(orgB)
+    repository.insertOrganization(orgC)
 
     val adminAOrganizations = repository.getAllOrganizations(adminA)
     val memberBOrganizations = repository.getAllOrganizations(memberB)
@@ -94,8 +94,8 @@ class OrganizationRepositoryLocalTest {
   @Test(expected = IllegalArgumentException::class)
   fun getOrganizationById_shouldRespectAccessRights() {
     runBlocking {
-      repository.insertOrganization(orgA, adminA)
-      repository.insertOrganization(orgB, adminB)
+      repository.insertOrganization(orgA)
+      repository.insertOrganization(orgB)
 
       // Admin can fetch their org
       val fetchedAdmin = repository.getOrganizationById("orgA", adminA)
@@ -113,7 +113,7 @@ class OrganizationRepositoryLocalTest {
   // Update tests
   @Test
   fun updateOrganization_asAdmin_shouldModifyIt() = runBlocking {
-    repository.insertOrganization(orgA, adminA)
+    repository.insertOrganization(orgA)
     val updated = orgA.copy(name = "Org A Updated")
 
     repository.updateOrganization(orgA.id, updated, adminA)
@@ -124,7 +124,7 @@ class OrganizationRepositoryLocalTest {
 
   @Test(expected = IllegalArgumentException::class)
   fun updateOrganization_asNonAdmin_shouldThrow() = runBlocking {
-    repository.insertOrganization(orgA, adminA)
+    repository.insertOrganization(orgA)
     val updated = orgA.copy(name = "Invalid Update")
     repository.updateOrganization(orgA.id, updated, memberA)
   }
@@ -137,8 +137,8 @@ class OrganizationRepositoryLocalTest {
   // Deletion tests
   @Test
   fun deleteOrganization_asAdmin_shouldRemoveIt() = runBlocking {
-    repository.insertOrganization(orgA, adminA)
-    repository.insertOrganization(orgC, adminA)
+    repository.insertOrganization(orgA)
+    repository.insertOrganization(orgC)
 
     repository.deleteOrganization(orgA.id, adminA)
 
@@ -148,7 +148,7 @@ class OrganizationRepositoryLocalTest {
 
   @Test(expected = IllegalArgumentException::class)
   fun deleteOrganization_asNonAdmin_shouldThrow() = runBlocking {
-    repository.insertOrganization(orgA, adminA)
+    repository.insertOrganization(orgA)
     repository.deleteOrganization(orgA.id, memberA)
   }
 
@@ -161,9 +161,9 @@ class OrganizationRepositoryLocalTest {
   @Test
   fun complexScenario_multipleAdminsAndMembers_shouldMaintainConsistency() = runBlocking {
     // Insert all
-    repository.insertOrganization(orgA, adminA)
-    repository.insertOrganization(orgB, adminB)
-    repository.insertOrganization(orgC, adminA)
+    repository.insertOrganization(orgA)
+    repository.insertOrganization(orgB)
+    repository.insertOrganization(orgC)
 
     // Admin A updates orgC
     val updatedC = orgC.copy(name = "Org C Updated", geoCheckEnabled = true)
@@ -185,19 +185,18 @@ class OrganizationRepositoryLocalTest {
 
   @Test
   fun getMembersOfOrganization_asMember_shouldReturnMembers() = runBlocking {
-    repository.insertOrganization(orgC, adminA)
+    repository.insertOrganization(orgC)
 
-    val members = repository.getMembersOfOrganization(orgC.id, memberA)
-    val memberIds = members.map { it.id }.toSet()
+    val members = UsersRepositoryLocal().getMembersIds(orgC.id)
 
-    assertEquals(setOf("memberA", "memberB"), memberIds)
+    assertEquals(setOf("memberA", "memberB"), members)
   }
 
   @Test(expected = IllegalArgumentException::class)
   fun getMembersOfOrganization_asOutsider_shouldThrow() {
     runBlocking {
-      repository.insertOrganization(orgC, adminA)
-      repository.getMembersOfOrganization(orgC.id, outsider)
+      repository.insertOrganization(orgC)
+      UsersRepositoryLocal().getMembersIds(orgC.id)
     }
   }
 }

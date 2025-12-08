@@ -33,10 +33,7 @@ class UserRepositoryFirebaseTest : FirebaseEmulatedTest() {
     UserRepositoryProvider.repository.addUserToOrganization("user-1", organizationId)
     UserRepositoryProvider.repository.addUserToOrganization("user-2", organizationId)
 
-    UserRepositoryProvider.repository.getUserById("user-1")
-    UserRepositoryProvider.repository.getUserById("user-2")
-
-    val userIds = UserRepositoryProvider.repository.getUsersIds(organizationId)
+    val userIds = UserRepositoryProvider.repository.getMembersIds(organizationId)
 
     Assert.assertEquals(2, userIds.size)
     Assert.assertTrue(userIds.contains("user-1"))
@@ -65,7 +62,9 @@ class UserRepositoryFirebaseTest : FirebaseEmulatedTest() {
   fun deleteUser_shouldRemoveUser_everywhere() = runBlocking {
     val userAdmin = User(id = "user-admin")
     OrganizationRepositoryProvider.repository.insertOrganization(
-        Organization(id = organizationId, name = "Test Org", admins = listOf(userAdmin.id)))
+        Organization(id = organizationId, name = "Test Org"))
+    UserRepositoryProvider.repository.newUser(userAdmin)
+    UserRepositoryProvider.repository.addAdminToOrganization(userAdmin.id, organizationId)
 
     val user =
         User(
@@ -80,19 +79,15 @@ class UserRepositoryFirebaseTest : FirebaseEmulatedTest() {
     // Ensure org membership is written inside Firestore structure
     UserRepositoryProvider.repository.addUserToOrganization("to-delete", organizationId)
 
-    UserRepositoryProvider.repository.getUserById("to-delete")
-
     // Must exist before deletion
-    var userIds = UserRepositoryProvider.repository.getUsersIds(organizationId)
+    var userIds = UserRepositoryProvider.repository.getMembersIds(organizationId)
     Assert.assertTrue(userIds.contains("to-delete"))
 
     // Delete the user fully
     UserRepositoryProvider.repository.deleteUser("to-delete")
 
-    UserRepositoryProvider.repository.getUserById("to-delete")
-
     // Must disappear from organization
-    userIds = UserRepositoryProvider.repository.getUsersIds(organizationId)
+    userIds = UserRepositoryProvider.repository.getMembersIds(organizationId)
     Assert.assertFalse(userIds.contains("to-delete"))
   }
 
@@ -113,7 +108,7 @@ class UserRepositoryFirebaseTest : FirebaseEmulatedTest() {
     // Prepare organization
     val userAdmin = User(id = "user-admin")
     OrganizationRepositoryProvider.repository.insertOrganization(
-        Organization(id = organizationId, name = "Test Org", admins = listOf(userAdmin.id)))
+        Organization(id = organizationId, name = "Test Org"))
 
     val user1 = User(id = "admin-1", displayName = "Admin1", email = "a1@e.com")
     val user2 = User(id = "admin-2", displayName = "Admin2", email = "a2@e.com")
@@ -124,9 +119,6 @@ class UserRepositoryFirebaseTest : FirebaseEmulatedTest() {
     // Add admins
     UserRepositoryProvider.repository.addAdminToOrganization("admin-1", organizationId)
     UserRepositoryProvider.repository.addAdminToOrganization("admin-2", organizationId)
-
-    UserRepositoryProvider.repository.getUserById("admin-1")
-    UserRepositoryProvider.repository.getUserById("admin-2")
 
     val adminIds = UserRepositoryProvider.repository.getAdminsIds(organizationId)
 
@@ -144,8 +136,6 @@ class UserRepositoryFirebaseTest : FirebaseEmulatedTest() {
     val updated = user.copy(displayName = "Updated Name")
     UserRepositoryProvider.repository.modifyUser(updated)
 
-    UserRepositoryProvider.repository.getUserById("mod-1")
-
     val result = UserRepositoryProvider.repository.getUsersByIds(listOf("mod-1")).first()
     Assert.assertEquals("Updated Name", result.displayName)
   }
@@ -155,13 +145,12 @@ class UserRepositoryFirebaseTest : FirebaseEmulatedTest() {
     // Prepare organization
     val userAdmin = User(id = "user-admin")
     OrganizationRepositoryProvider.repository.insertOrganization(
-        Organization(id = organizationId, name = "Test Org", admins = listOf(userAdmin.id)))
+        Organization(id = organizationId, name = "Test Org"))
 
     val user = User(id = "new-admin", displayName = "NA", email = "na@e.com")
     UserRepositoryProvider.repository.newUser(user)
 
     UserRepositoryProvider.repository.addAdminToOrganization("new-admin", organizationId)
-    UserRepositoryProvider.repository.getUserById("new-admin")
 
     val adminIds = UserRepositoryProvider.repository.getAdminsIds(organizationId)
     Assert.assertEquals(1, adminIds.size)
@@ -175,9 +164,9 @@ class UserRepositoryFirebaseTest : FirebaseEmulatedTest() {
   @Test
   fun deleteUser_shouldRemoveAdminEverywhere() = runBlocking {
     // Prepare organization
-    val userAdmin = User(id = "user-admin")
+    val userAdmin = User(id = "user-admin", organizations = listOf(organizationId))
     OrganizationRepositoryProvider.repository.insertOrganization(
-        Organization(id = organizationId, name = "Test Org", admins = listOf(userAdmin.id)))
+        Organization(id = organizationId, name = "Test Org"))
 
     val admin =
         User(
@@ -188,14 +177,12 @@ class UserRepositoryFirebaseTest : FirebaseEmulatedTest() {
 
     UserRepositoryProvider.repository.newUser(admin)
     UserRepositoryProvider.repository.addAdminToOrganization("admin-del", organizationId)
-    UserRepositoryProvider.repository.getUserById("admin-del")
 
     // Ensure exists before deletion
     Assert.assertTrue(
         UserRepositoryProvider.repository.getAdminsIds(organizationId).contains("admin-del"))
 
     UserRepositoryProvider.repository.deleteUser("admin-del")
-    UserRepositoryProvider.repository.getUserById("admin-del")
 
     // Should no longer be admin
     val adminIds = UserRepositoryProvider.repository.getAdminsIds(organizationId)

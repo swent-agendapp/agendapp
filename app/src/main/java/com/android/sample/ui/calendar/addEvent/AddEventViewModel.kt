@@ -3,6 +3,8 @@ package com.android.sample.ui.calendar.addEvent
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.sample.model.authentication.AuthRepository
+import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepository
 import com.android.sample.model.authentication.UserRepositoryProvider
@@ -75,9 +77,10 @@ enum class AddEventStep {
  * [setStartInstant], and [addEvent].
  */
 class AddEventViewModel(
-    private val userRepository: UserRepository = UserRepositoryProvider.repository,
-    private val eventRepository: EventRepository = EventRepositoryProvider.repository,
-    selectedOrganizationViewModel: SelectedOrganizationViewModel =
+  private val userRepository: UserRepository = UserRepositoryProvider.repository,
+  private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
+  private val eventRepository: EventRepository = EventRepositoryProvider.repository,
+  selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel
 ) : ViewModel() {
 
@@ -99,7 +102,7 @@ class AddEventViewModel(
   init {
     viewModelScope.launch {
       val selectedOrga = getSelectedOrganizationId()
-      val userIds = userRepository.getUsersIds(selectedOrga)
+      val userIds = userRepository.getMembersIds(selectedOrga)
       val users = userRepository.getUsersByIds(userIds)
       _uiState.update { it.copy(users = users) }
     }

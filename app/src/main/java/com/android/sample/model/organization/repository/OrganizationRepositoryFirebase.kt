@@ -44,8 +44,15 @@ class OrganizationRepositoryFirebase(private val db: FirebaseFirestore) : Organi
       organization: Organization,
       user: User
   ) {
-    // Calls the interface check to ensure the user is an admin
-    super.updateOrganization(organizationId, organization, user)
+    val adminDocs =
+      db.collection(FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH)
+        .document(organizationId)
+        .collection(FirestoreConstants.COLLECTION_ADMINS)
+        .get()
+        .await()
+
+    val isAdmin = adminDocs.documents.any { it.id == user.id }
+    require(isAdmin) { "User ${user.id} is not an admin of organization $organizationId" }
 
     db.collection(FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH)
         .document(organizationId)
@@ -54,16 +61,15 @@ class OrganizationRepositoryFirebase(private val db: FirebaseFirestore) : Organi
   }
 
   override suspend fun deleteOrganization(organizationId: String, user: User) {
-    val document =
+    val adminDocs =
         db.collection(FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH)
             .document(organizationId)
+            .collection(FirestoreConstants.COLLECTION_ADMINS)
             .get()
             .await()
-    val org =
-        OrganizationMapper.fromDocument(document = document)
-            ?: throw IllegalArgumentException("Organization does not exist")
 
-    require(user.id in org.admins.map { it }) { "Only admins can delete the organization." }
+    val isAdmin = adminDocs.documents.any { it.id == user.id }
+    require(isAdmin) { "User ${user.id} is not an admin of organization $organizationId" }
 
     db.collection(FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH)
         .document(organizationId)
@@ -78,13 +84,6 @@ class OrganizationRepositoryFirebase(private val db: FirebaseFirestore) : Organi
             .get()
             .await()
     val organization = OrganizationMapper.fromDocument(document = document)
-
-    if (organization != null) {
-      require(
-          user.id in organization.admins.map { it } || user.id in organization.members.map { it }) {
-            "User does not have access to this organization."
-          }
-    }
     return organization
   }
 }

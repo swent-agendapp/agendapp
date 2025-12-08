@@ -102,11 +102,6 @@ class OrganizationMapperTest {
     assertThat(organization.name).isEqualTo("My Organization")
     assertThat(organization.geoCheckEnabled).isTrue()
 
-    assertThat(organization.admins).hasSize(1)
-    assertThat(organization.admins[0].displayName).isEqualTo("Admin One")
-
-    assertThat(organization.members).hasSize(1)
-    assertThat(organization.members[0].email).isEqualTo("member1@example.com")
 
     assertThat(organization.areas).hasSize(1)
     val area = organization.areas[0]
@@ -182,10 +177,6 @@ class OrganizationMapperTest {
     assertThat(organization.id).isEqualTo("org123")
     assertThat(organization.name).isEqualTo("My Organization")
     assertThat(organization.geoCheckEnabled).isTrue()
-    assertThat(organization.admins).hasSize(1)
-    assertThat(organization.admins[0].displayName).isEqualTo("Admin One")
-    assertThat(organization.members).hasSize(1)
-    assertThat(organization.members[0].email).isEqualTo("member1@example.com")
     assertThat(organization.areas).hasSize(1)
     val area = organization.areas[0]
     assertThat(area.label).isEqualTo("Main Area")
@@ -217,8 +208,6 @@ class OrganizationMapperTest {
         Organization(
             id = "org123",
             name = "My Organization",
-            admins = admins,
-            members = members,
             events = events,
             areas = areas,
             geoCheckEnabled = true)

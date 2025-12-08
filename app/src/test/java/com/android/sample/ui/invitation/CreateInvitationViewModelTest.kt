@@ -33,8 +33,6 @@ class CreateInvitationViewModelTest {
       Organization(
           id = "org1",
           name = "Super Organization",
-          admins = listOf(admin),
-          members = listOf(employee, admin),
       )
 
   @Before
@@ -169,6 +167,10 @@ class CreateInvitationViewModelTest {
             return if (!hasAuthenticatedUser) null else if (isAdminVm) admin else employee
           }
 
+          override fun requireUser(): User {
+            TODO("No need to implement for current tests")
+          }
+
           override suspend fun getUserById(userId: String): User? {
             return when (userId) {
               admin.id -> {
@@ -193,6 +195,18 @@ class CreateInvitationViewModelTest {
         object : OrganizationRepository {
           override suspend fun getAllOrganizations(user: User): List<Organization> {
             return listOf(organization)
+          }
+
+          override suspend fun insertOrganization(organization: Organization) {
+            TODO("No need to implement for current tests")
+          }
+
+          override suspend fun updateOrganization(
+            organizationId: String,
+            organization: Organization,
+            user: User
+          ) {
+            TODO("No need to implement for current tests")
           }
 
           override suspend fun deleteOrganization(organizationId: String, user: User) {}

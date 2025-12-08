@@ -12,9 +12,6 @@ class InvitationRepositoryLocal : InvitationRepository {
   }
 
   override suspend fun insertInvitation(organization: Organization, user: User) {
-    // Calls the interface check to ensure the user is an admin
-    super.insertInvitation(organization, user)
-
     val item = Invitation.create(organizationId = organization.id)
     require(invitations.none { it.id == item.id }) {
       "Invitation with id ${item.id} already exists."

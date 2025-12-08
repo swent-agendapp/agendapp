@@ -39,7 +39,7 @@ class InvitationRepositoryLocalTest {
     // --- Create organization ---
     orgA =
         Organization(
-            id = "orgA", name = "Org A", admins = listOf(admin), members = listOf(member, admin))
+            id = "orgA", name = "Org A")
   }
 
   @Test

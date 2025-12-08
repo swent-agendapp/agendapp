@@ -22,8 +22,8 @@ class OrganizationListScreenTest {
 
   private val organizations =
       listOf(
-          Organization(name = "Org 1", admins = emptyList(), members = emptyList()),
-          Organization(name = "Org 2", admins = emptyList(), members = emptyList()))
+          Organization(name = "Org 1"),
+          Organization(name = "Org 2"))
 
   @Before
   fun setUp() {
@@ -122,8 +122,8 @@ class OrganizationListScreenTest {
     // Simulate refresh with new data
     val newOrganizations =
         listOf(
-            Organization(name = "New Org 1", admins = emptyList(), members = emptyList()),
-            Organization(name = "New Org 2", admins = emptyList(), members = emptyList()))
+            Organization(name = "New Org 1"),
+            Organization(name = "New Org 2"))
     fakeViewModel.setOrganizations(newOrganizations)
 
     // Verify new organizations are displayed

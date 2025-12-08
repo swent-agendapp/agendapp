@@ -28,7 +28,7 @@ class UsersRepositoryFirebase(
     return snap.documents.map { it.id }
   }
 
-  override suspend fun getUsersIds(organizationId: String): List<String> {
+  override suspend fun getMembersIds(organizationId: String): List<String> {
     val snap =
         db.collection(ORGANIZATIONS_COLLECTION_PATH)
             .document(organizationId)
@@ -106,10 +106,5 @@ class UsersRepositoryFirebase(
         .document(userId)
         .set(mapOf("exists" to true))
         .await()
-  }
-
-  override suspend fun getUserById(userId: String): User? {
-    val all = usersCollection().get().await().documents.mapNotNull { UserMapper.fromDocument(it) }
-    return all.firstOrNull { it.id == userId }
   }
 }

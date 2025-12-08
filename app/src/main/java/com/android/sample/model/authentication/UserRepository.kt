@@ -6,7 +6,13 @@ interface UserRepository {
    * @param organizationId the id of the organization we want the list of user
    * @return The list of users of the organization.
    */
-  suspend fun getUsersIds(organizationId: String): List<String>
+  suspend fun getMembersIds(organizationId: String): List<String>
+
+  /**
+   * @param organizationId the id of the organization we want the list of admins
+   * @return The list of admins.
+   */
+  suspend fun getAdminsIds(organizationId: String): List<String>
 
   /**
    * @param userIds the list of user IDs to retrieve
@@ -14,14 +20,6 @@ interface UserRepository {
    */
   suspend fun getUsersByIds(userIds: List<String>): List<User>
 
-  /** Get a user by its ID */
-  suspend fun getUserById(userId: String): User?
-
-  /**
-   * @param organizationId the id of the organization we want the list of admins
-   * @return The list of admins.
-   */
-  suspend fun getAdminsIds(organizationId: String): List<String>
 
   /** Modify an existing user */
   suspend fun modifyUser(user: User)

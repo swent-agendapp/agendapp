@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.android.sample.R
 import com.android.sample.model.authentication.AuthRepository
 import com.android.sample.model.authentication.AuthRepositoryProvider
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.organization.repository.OrganizationRepository
 import com.android.sample.model.organization.repository.OrganizationRepositoryProvider
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
@@ -28,9 +30,11 @@ data class OrganizationOverviewUIState(
 
 /** ViewModel for managing the state and logic of the Organization Overview screen. */
 class OrganizationOverviewViewModel(
-    private val organizationRepository: OrganizationRepository =
+  private val organizationRepository: OrganizationRepository =
         OrganizationRepositoryProvider.repository,
-    private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
+  private val userRepository: UserRepository =
+      UserRepositoryProvider.repository,
+  private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
 ) : ViewModel() {
   // State holding the UI state for organization overview
   private val _uiState = MutableStateFlow(OrganizationOverviewUIState())
@@ -66,11 +70,12 @@ class OrganizationOverviewViewModel(
       // Fetch organization details from the repository
       val org =
           organizationRepository.getOrganizationById(organizationId = orgId, user = currentUser)
-
+      val members =
+        userRepository.getUsersByIds(userRepository.getMembersIds(organizationId = orgId))
       // Update the UI state with organization details
       _uiState.value =
           OrganizationOverviewUIState(
-              organizationName = org?.name ?: "", memberCount = org?.members?.size ?: 0)
+              organizationName = org?.name ?: "", memberCount = members.size)
     }
   }
 

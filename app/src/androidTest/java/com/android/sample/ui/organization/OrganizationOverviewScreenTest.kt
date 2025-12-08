@@ -9,6 +9,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.R
 import com.android.sample.model.authentication.FakeAuthRepository
 import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.repository.FakeOrganizationRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,6 +26,7 @@ class OrganizationOverviewScreenTest {
 
   private lateinit var fakeOrgRepo: FakeOrganizationRepository
   private lateinit var fakeAuthRepo: FakeAuthRepository
+  private lateinit var fakeUserRepo: UsersRepositoryLocal
   private lateinit var vm: OrganizationOverviewViewModel
   private lateinit var selectedOrgVM: SelectedOrganizationViewModel
 
@@ -39,7 +41,8 @@ class OrganizationOverviewScreenTest {
   fun setup() {
     fakeOrgRepo = FakeOrganizationRepository()
     fakeAuthRepo = FakeAuthRepository(fakeUser)
-    vm = OrganizationOverviewViewModel(fakeOrgRepo, fakeAuthRepo)
+    fakeUserRepo = UsersRepositoryLocal()
+    vm = OrganizationOverviewViewModel(fakeOrgRepo,fakeUserRepo,fakeAuthRepo)
     selectedOrgVM = SelectedOrganizationVMProvider.viewModel
     selectedOrgVM.clearSelection()
   }
@@ -75,9 +78,7 @@ class OrganizationOverviewScreenTest {
     val org =
         Organization(
             id = "org1",
-            name = "Test Organization",
-            admins = emptyList(),
-            members = listOf(user1.id, user2.id, user3.id))
+            name = "Test Organization")
     fakeOrgRepo.insertOrganization(org)
     selectedOrgVM.selectOrganization(org.id)
 
@@ -119,7 +120,7 @@ class OrganizationOverviewScreenTest {
   @Test
   fun clickingChangeButtonClearsOrganization() = runTest {
     val org =
-        Organization(id = "org1", name = "Org", admins = emptyList(), members = listOf(user1.id))
+        Organization(id = "org1", name = "Org")
     fakeOrgRepo.insertOrganization(org)
     selectedOrgVM.selectOrganization(org.id)
 
@@ -142,7 +143,7 @@ class OrganizationOverviewScreenTest {
   @Test
   fun clickingDeleteButtonDeletesOrganizationAndCallsCallback() = runTest {
     val org =
-        Organization(id = "org1", name = "To Delete", admins = emptyList(), members = emptyList())
+        Organization(id = "org1", name = "To Delete")
     fakeOrgRepo.insertOrganization(org)
     selectedOrgVM.selectOrganization(org.id)
 

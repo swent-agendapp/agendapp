@@ -18,9 +18,6 @@ class InvitationRepositoryFirebase(private val db: FirebaseFirestore) : Invitati
   }
 
   override suspend fun insertInvitation(organization: Organization, user: User) {
-    // Calls the interface check to ensure the user is an admin
-    super.insertInvitation(organization, user)
-
     val item = Invitation.create(organizationId = organization.id)
     require(getInvitationById(item.id) == null) { "Invitation with id ${item.id} already exists." }
     collection.document(item.id).set(InvitationMapper.toMap(model = item)).await()

@@ -20,8 +20,6 @@ import java.util.UUID
 data class Organization(
     val id: String = UUID.randomUUID().toString(),
     val name: String,
-    val admins: List<String> = emptyList(),
-    val members: List<String> = emptyList(),
     val events: List<Event> = emptyList(),
     val areas: List<Area> = emptyList(),
     val geoCheckEnabled: Boolean = false,

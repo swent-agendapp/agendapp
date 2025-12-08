@@ -23,11 +23,7 @@ interface InvitationRepository {
    * @param user The user attempting to perform the insertion.
    * @throws IllegalArgumentException if the user is not an organization admin.
    */
-  suspend fun insertInvitation(organization: Organization, user: User) {
-    require(organization.admins.contains(user.id)) {
-      "Only organization admins can create invitations."
-    }
-  }
+  suspend fun insertInvitation(organization: Organization, user: User)
 
   /**
    * Updates an existing invitation.
@@ -63,11 +59,6 @@ interface InvitationRepository {
     require(item.organizationId == organization.id) {
       "New invitation organizationId ${item.organizationId} does not match organization id ${organization.id}"
     }
-    if (item.status == InvitationStatus.Active) {
-      require(organization.admins.contains(user.id)) {
-        "Only organization admins can activate invitations."
-      }
-    }
   }
 
   /**
@@ -82,10 +73,6 @@ interface InvitationRepository {
     val organizationId =
         getInvitationById(itemId)?.organizationId
             ?: throw IllegalArgumentException("Invitation with id $itemId does not exist.")
-
-    require(organization.admins.contains(user.id)) {
-      "Only organization admins can delete invitations."
-    }
     require(organizationId == organization.id) {
       "Invitation organizationId $organizationId does not match organization id ${organization.id}"
     }

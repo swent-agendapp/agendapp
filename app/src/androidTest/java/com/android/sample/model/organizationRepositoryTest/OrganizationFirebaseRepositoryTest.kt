@@ -2,6 +2,8 @@ package com.android.sample.model.organizationRepositoryTest
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.repository.OrganizationRepository
 import com.android.sample.utils.FirebaseEmulatedTest
@@ -15,6 +17,7 @@ import org.junit.runner.RunWith
 class OrganizationFirebaseRepositoryTest : FirebaseEmulatedTest() {
 
   private lateinit var repository: OrganizationRepository
+  private lateinit var userRepository: UserRepository
 
   private lateinit var adminA: User
   private lateinit var adminB: User
@@ -27,38 +30,41 @@ class OrganizationFirebaseRepositoryTest : FirebaseEmulatedTest() {
   private lateinit var orgC: Organization
 
   @Before
-  override fun setUp() {
+  override fun setUp() = runBlocking {
     super.setUp()
     repository = createInitializedOrganizationRepository()
-
-    // --- Create users ---
-    adminA = User(id = "adminA", displayName = "Admin A", email = "adminA@example.com")
-    adminB = User(id = "adminB", displayName = "Admin B", email = "adminB@example.com")
-    memberA = User(id = "memberA", displayName = "Member A", email = "memberA@example.com")
-    memberB = User(id = "memberB", displayName = "Member B", email = "memberB@example.com")
-    outsider = User(id = "outsider", displayName = "Outsider", email = "outsider@example.com")
 
     // --- Create organizations ---
     orgA =
         Organization(
             id = "orgA",
-            name = "Org A",
-            admins = listOf(adminA.id),
-            members = listOf(memberA.id, adminA.id))
-
+            name = "Org A")
     orgB =
         Organization(
             id = "orgB",
-            name = "Org B",
-            admins = listOf(adminB.id),
-            members = listOf(memberB.id, adminB.id))
-
+            name = "Org B")
     orgC =
         Organization(
             id = "orgC",
-            name = "Org C",
-            admins = listOf(adminA.id, adminB.id),
-            members = listOf(memberA.id, memberB.id))
+            name = "Org C")
+
+    // --- Create users ---
+    adminA = User(id = "adminA", displayName = "Admin A", email = "adminA@example.com", organizations = listOf(orgA.id))
+    adminB = User(id = "adminB", displayName = "Admin B", email = "adminB@example.com", organizations = listOf(orgB.id))
+    memberA = User(id = "memberA", displayName = "Member A", email = "memberA@example.com", organizations = listOf(orgA.id))
+    memberB = User(id = "memberB", displayName = "Member B", email = "memberB@example.com", organizations = listOf(orgB.id))
+    outsider = User(id = "outsider", displayName = "Outsider", email = "outsider@example.com", organizations = emptyList())
+
+    userRepository.newUser(adminA)
+    userRepository.newUser(adminB)
+    userRepository.newUser(memberA)
+    userRepository.newUser(memberB)
+    userRepository.newUser(outsider)
+
+    userRepository.addAdminToOrganization(adminA.id, orgA.id)
+    userRepository.addAdminToOrganization(adminB.id, orgB.id)
+    userRepository.addUserToOrganization(memberA.id, orgA.id)
+    userRepository.addUserToOrganization(memberB.id, orgB.id)
   }
 
   // --- Insertion tests ---
@@ -179,7 +185,7 @@ class OrganizationFirebaseRepositoryTest : FirebaseEmulatedTest() {
   @Test
   fun getMembersOfOrganization_asMember_shouldReturnMembers() = runBlocking {
     repository.insertOrganization(orgA)
-    val members = repository.getMembersOfOrganization(orgA.id, memberA)
+    val members = userRepository.getMembersIds(orgA.id)
     val memberIds = members.map { it }.toSet()
     assertEquals(setOf("memberA", "adminA"), memberIds)
   }
@@ -188,7 +194,7 @@ class OrganizationFirebaseRepositoryTest : FirebaseEmulatedTest() {
   fun getMembersOfOrganization_asOutsider_shouldThrow() = runBlocking {
     repository.insertOrganization(orgA)
     try {
-      repository.getMembersOfOrganization(orgA.id, outsider)
+      userRepository.getMembersIds(orgA.id)
       fail("Expected IllegalArgumentException for outsider")
     } catch (_: IllegalArgumentException) {}
   }

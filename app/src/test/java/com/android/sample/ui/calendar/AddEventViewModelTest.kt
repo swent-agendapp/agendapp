@@ -1,5 +1,6 @@
 package com.android.sample.ui.calendar
 
+import com.android.sample.data.local.repositories.EventRepositoryInMemory
 import com.android.sample.model.calendar.*
 import com.android.sample.model.category.EventCategory
 import com.android.sample.model.category.mockData.getMockEventCategory

@@ -1,6 +1,9 @@
-package com.android.sample.model.calendar
+package com.android.sample.data.local.repositories
 
+import com.android.sample.model.calendar.BaseEventRepository
+import com.android.sample.model.calendar.Event
 import java.time.Instant
+import java.util.UUID
 
 class EventRepositoryInMemory() : BaseEventRepository() {
 
@@ -12,7 +15,7 @@ class EventRepositoryInMemory() : BaseEventRepository() {
   }
 
   override fun getNewUid(): String {
-    return java.util.UUID.randomUUID().toString()
+    return UUID.randomUUID().toString()
   }
 
   override suspend fun insertEvent(orgId: String, item: Event) {

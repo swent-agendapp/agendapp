@@ -1,9 +1,9 @@
 package com.android.sample.ui.calendar
 
+import com.android.sample.data.local.repositories.EventRepositoryInMemory
 import com.android.sample.model.authentication.FakeAuthRepository
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
-import com.android.sample.model.calendar.EventRepositoryInMemory
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.eventOverview.EventOverviewViewModel

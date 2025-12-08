@@ -1,4 +1,4 @@
-package com.android.sample.model.calendar
+package com.android.sample.data.local.repositories
 
 import com.android.sample.data.local.BoxProvider
 import com.android.sample.data.local.mappers.EventMapper.toEntity
@@ -6,14 +6,17 @@ import com.android.sample.data.local.mappers.EventMapper.toEvent
 import com.android.sample.data.local.objects.EventEntity
 import com.android.sample.data.local.objects.EventEntity_
 import com.android.sample.data.local.utils.encodeSet
+import com.android.sample.model.calendar.BaseEventRepository
+import com.android.sample.model.calendar.Event
 import io.objectbox.Box
 import java.time.Instant
+import java.util.UUID
 
 class EventRepositoryLocal(private val eventBox: Box<EventEntity> = BoxProvider.eventBox()) :
     BaseEventRepository() {
 
   override fun getNewUid(): String {
-    return java.util.UUID.randomUUID().toString()
+    return UUID.randomUUID().toString()
   }
 
   override suspend fun getAllEvents(orgId: String): List<Event> {

@@ -1,6 +1,7 @@
 package com.android.sample.ui.calendar
 
 import android.app.Application
+import com.android.sample.data.local.repositories.EventRepositoryInMemory
 import com.android.sample.model.calendar.*
 import com.android.sample.model.map.MapRepository
 import com.android.sample.model.map.MapRepositoryLocal

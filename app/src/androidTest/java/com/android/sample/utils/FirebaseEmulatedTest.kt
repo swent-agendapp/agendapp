@@ -1,7 +1,7 @@
 package com.android.sample.utils
 
+import com.android.sample.data.firebase.repositories.EventRepositoryFirebase
 import com.android.sample.model.calendar.EventRepository
-import com.android.sample.model.calendar.EventRepositoryFirebase
 import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.constants.FirestoreConstants
 import com.android.sample.model.map.MapRepository

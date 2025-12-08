@@ -26,7 +26,6 @@ import com.android.sample.ui.calendar.style.EventSummaryTextConfig
 import com.android.sample.ui.calendar.utils.DatePresentation
 import com.android.sample.ui.calendar.utils.NO_DATA_DEFAULT_VALUE
 import com.android.sample.ui.theme.AlphaExtraLow
-import com.android.sample.ui.theme.AlphaLow
 import com.android.sample.ui.theme.ElevationExtraLow
 import com.android.sample.ui.theme.EventPalette
 import java.time.ZonedDateTime
@@ -131,8 +130,6 @@ fun DrawEventSummaryCard(
                       participantNames = participantNames,
                       rowHeight = style.participantsRowHeight,
                       visibleRows = style.participantsVisibleRows,
-                      borderColor =
-                          MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = AlphaLow),
                   )
                 }
           }

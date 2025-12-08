@@ -38,6 +38,7 @@ const val WeightMedium = 0.5f
 const val WeightHeavy = 0.7f
 const val WeightVeryHeavy = 0.9f
 const val WeightExtraHeavy = 1f
+const val WeightFadeEffect = 0.85f
 
 // Alpha (transparent effect)
 const val AlphaExtraLow = 0.1f

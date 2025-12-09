@@ -9,6 +9,7 @@ import androidx.compose.ui.test.performTextInput
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.rule.GrantPermissionRule
 import com.android.sample.model.map.MapRepositoryProvider
+import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.utils.FirebaseEmulatedTest
 import com.google.android.gms.maps.MapsInitializer
 import org.junit.Before
@@ -17,10 +18,12 @@ import org.junit.Test
 
 class MapScreenTest : FirebaseEmulatedTest() {
   lateinit var mapViewModel: MapViewModel
+  private val selectedOrganizationId = "orgTest"
 
   @Before
   override fun setUp() {
     super.setUp()
+    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
     val repo = MapRepositoryProvider.repository
     mapViewModel = MapViewModel(ApplicationProvider.getApplicationContext(), repo)
     MapsInitializer.initialize(

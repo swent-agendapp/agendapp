@@ -53,7 +53,8 @@ class CalendarEventSelectorTests : BaseCalendarScreenTest() {
 
     composeTestRule.setContent {
       CompositionLocalProvider(LocalViewModelStoreOwner provides owner) {
-        CalendarEventSelector(viewModel(factory = CalendarVMFactory(repoEvents, repoMap)))
+        CalendarEventSelector(
+            calendarViewModel = viewModel(factory = CalendarVMFactory(repoEvents, repoMap)))
       }
     }
   }

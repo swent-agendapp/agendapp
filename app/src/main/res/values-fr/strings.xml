@@ -34,7 +34,6 @@
 
     <!-- Edit Event Screen -->
     <string name="edit_event_title">Modifier l’événement</string>
-    <string name="edit_event_instruction">Modifiez les détails de l’événement ci-dessous :</string>
 
     <!-- Fields -->
     <string name="edit_event_title_label">Titre</string>
@@ -49,19 +48,21 @@
     <string name="edit_event_end_date_label">Date de fin</string>
     <string name="edit_event_start_time_label">Heure de début :</string>
     <string name="edit_event_end_time_label">Heure de fin :</string>
-    <string name="edit_event_recurrence_label">Récurrence</string>
 
     <!-- Participants -->
-    <string name="edit_event_participants_label">Participants :</string>
     <string name="edit_event_edit_participants_button">Modifier les participants</string>
     <string name="edit_event_participants_screen_title">Modifier les participants à l’événement</string>
-    <string name="edit_event_select_participants_text">Sélectionner les participants</string>
 
     <!-- Notifications -->
 
     <!-- Buttons -->
     <string name="common_save">Enregistrer</string>
     <string name="common_cancel">Annuler</string>
+
+    <!-- Warnings -->
+    <string name="warning_title">Avertissement</string>
+    <string name="warning_participant_modification">Les modifications de participants effectuées ici ne seront pas notifiées aux personnes concernées\n\nSi vous devez organiser un remplacement pour l’un des participants, utilisez plutôt l’onglet « Remplacements » dans le menu principal</string>
+    <string name="warning_got_it">Compris</string>
 
     <!-- Home Screen -->
 
@@ -241,6 +242,8 @@
     <string name="filter_participants">Participants</string>
     <string name="clear_all">Tout effacer</string>
     <string name="apply">Appliquer</string>
+    <string name="eventType">Type d’événement</string>
+    <string name="location">Lieu</string>
 
     <!-- Invitations -->
     <string name="invitation_codes_title">Codes d’invitation</string>
@@ -251,6 +254,12 @@
     <string name="status_active">Actif</string>
     <string name="status_used">Utilisé</string>
     <string name="status_expired">Expiré</string>
+    <string name="invitations_loading">Chargement des invitations</string>
+    <string name="invitations_creating">Création des invitations</string>
+    <string name="error_inserting_invitation">Erreur lors de l’ajout de l\’invitation</string>
+    <string name="error_loading_invitations">Échec du chargement des invitations</string>
+    <string name="error_invitation_not_found">Invitation introuvable</string>
+    <string name="error_deleting_invitations">Échec de la suppression de l\'invitation</string>
 
     <!-- hourRecap -->
     <string name="loading_hours">Chargement…</string>

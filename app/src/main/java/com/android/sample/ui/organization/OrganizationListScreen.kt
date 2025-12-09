@@ -114,8 +114,6 @@ fun OrganizationListScreen(
                             selectedOrganizationViewModel.selectOrganization(
                                 orgId = organization.id)
 
-                            organizationViewModel.addUserToOrganization(
-                                organizationId = organization.id)
                             // Invoke given callback after selection
                             onOrganizationSelected()
                           })

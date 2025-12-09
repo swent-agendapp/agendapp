@@ -86,22 +86,6 @@ open class OrganizationViewModel(
     _uiState.update { it.copy(errorMsg = null) }
   }
 
-  fun addUserToOrganization(organizationId: String) {
-    viewModelScope.launch {
-      try {
-        val user = userState.value ?: throw IllegalStateException("No authenticated user found.")
-        userRepository.addUserToOrganization(user.id, organizationId)
-        // Reload organizations to reflect the new member addition
-        loadOrganizations()
-      } catch (e: Exception) {
-        // Update the UI state with the error message
-        _uiState.update {
-          it.copy(errorMsg = "Failed to add user to organization: ${e.localizedMessage}")
-        }
-      }
-    }
-  }
-
   // Add a new organization with the given name for the current user (himself as the only admin and
   // member)
   fun addOrganizationFromName(name: String) {

@@ -44,6 +44,7 @@ import com.android.sample.ui.navigation.Screen
 import com.android.sample.ui.organization.AddOrganizationScreen
 import com.android.sample.ui.organization.OrganizationListScreen
 import com.android.sample.ui.organization.OrganizationOverViewScreen
+import com.android.sample.ui.organization.OrganizationViewModel
 import com.android.sample.ui.profile.AdminContactScreen
 import com.android.sample.ui.profile.ProfileScreen
 import com.android.sample.ui.replacement.ReplacementPendingListScreen
@@ -201,8 +202,8 @@ private fun NavGraphBuilder.organizationsGraph(navigationActions: NavigationActi
     // Add Organization Screen
     composable(Screen.AddOrganization.route) {
       AddOrganizationScreen(
-          onNavigateBack = { navigationActions.navigateBack() },
-          onFinish = { navigationActions.navigateTo(Screen.Organizations) })
+        onNavigateBack = { navigationActions.navigateBack() },
+        onFinish = { navigationActions.navigateTo(Screen.Organizations) })
     }
   }
 }

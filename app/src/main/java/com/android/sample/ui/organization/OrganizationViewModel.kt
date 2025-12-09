@@ -44,7 +44,7 @@ open class OrganizationViewModel(
   }
 
   // Load organizations for the current user
-  private fun loadOrganizations() {
+  fun loadOrganizations() {
     viewModelScope.launch {
       // Get the current authenticated user
       val user = userState.value ?: throw IllegalStateException(errorMessageNoAuthenticated)
@@ -52,7 +52,8 @@ open class OrganizationViewModel(
       // Update UI state to loading and fetch organizations
       _uiState.update { it.copy(isLoading = true) }
       _uiState.update {
-        it.copy(organizations = organizationRepository.getAllOrganizations(user), isLoading = false)
+        val organizations = organizationRepository.getAllOrganizations(user)
+        it.copy(organizations = organizations, isLoading = false)
       }
     }
   }

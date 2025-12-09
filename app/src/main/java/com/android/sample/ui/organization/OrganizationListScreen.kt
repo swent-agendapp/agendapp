@@ -69,6 +69,8 @@ fun OrganizationListScreen(
       organizationViewModel.clearErrorMsg()
     }
   }
+  LaunchedEffect(Unit) { organizationViewModel.loadOrganizations() }
+
 
   Scaffold(
       topBar = {

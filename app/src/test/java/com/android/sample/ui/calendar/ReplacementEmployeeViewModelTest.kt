@@ -7,6 +7,7 @@ import com.android.sample.model.category.EventCategory
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.model.replacement.*
 import com.android.sample.ui.calendar.replacementEmployee.ReplacementEmployeeViewModel
+import com.android.sample.utils.FakeEventRepository
 import java.time.Instant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -252,57 +253,4 @@ class FakeReplacementRepository : ReplacementRepository {
       orgId: String,
       status: ReplacementStatus
   ): List<Replacement> = storage.filter { it.status == status }
-}
-
-class FakeEventRepository : EventRepository {
-
-  private val events = mutableListOf<Event>()
-
-  override fun getNewUid(): String = "fake-uid"
-
-  override suspend fun getAllEvents(orgId: String): List<Event> = events.toList()
-
-  override suspend fun insertEvent(orgId: String, item: Event) {
-    events.add(item)
-  }
-
-  override suspend fun updateEvent(orgId: String, itemId: String, item: Event) {}
-
-  override suspend fun deleteEvent(orgId: String, itemId: String) {}
-
-  override suspend fun getEventById(orgId: String, itemId: String): Event? =
-      events.find { it.id == itemId }
-
-  override suspend fun getEventsBetweenDates(
-      orgId: String,
-      startDate: Instant,
-      endDate: Instant
-  ): List<Event> = events.filter { e -> e.startDate <= endDate && e.endDate >= startDate }
-
-  override suspend fun calculateWorkedHoursPastEvents(
-      orgId: String,
-      start: Instant,
-      end: Instant
-  ): List<Pair<String, Double>> {
-    // Stub implementation for testing - not used in these tests
-    return emptyList()
-  }
-
-  override suspend fun calculateWorkedHoursFutureEvents(
-      orgId: String,
-      start: Instant,
-      end: Instant
-  ): List<Pair<String, Double>> {
-    // Stub implementation for testing - not used in these tests
-    return emptyList()
-  }
-
-  override suspend fun calculateWorkedHours(
-      orgId: String,
-      start: Instant,
-      end: Instant
-  ): List<Pair<String, Double>> {
-    // Stub implementation for testing - not used in these tests
-    return emptyList()
-  }
 }

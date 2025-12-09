@@ -13,6 +13,7 @@ import com.android.sample.ui.calendar.eventOverview.EventOverviewScreen
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreenTestTags
 import com.android.sample.ui.calendar.eventOverview.EventOverviewViewModel
 import com.android.sample.utils.FakeEventRepository
+import com.android.sample.utils.RepoMethod
 import java.time.Duration
 import java.time.Instant.now
 import java.time.temporal.ChronoUnit
@@ -151,7 +152,9 @@ class EventOverviewScreenTest {
   @Test
   fun clickingDelete_whenRepositoryFails_setsErrorMsg() {
     val (vm, fakeRepo) = makeViewModelWith(sampleEvent())
-    fakeRepo.shouldFailDelete = true
+
+    // Simulate failure on deleteEvent
+    fakeRepo.failMethods.add(RepoMethod.DELETE_EVENT)
 
     composeRule.setContent {
       EventOverviewScreen(

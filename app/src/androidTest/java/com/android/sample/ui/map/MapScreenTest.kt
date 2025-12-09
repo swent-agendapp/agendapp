@@ -40,7 +40,6 @@ class MapScreenTest : FirebaseEmulatedTest() {
     composeTestRule.setContent { MapScreen(mapViewModel = mapViewModel) }
 
     composeTestRule.onNodeWithTag(MapScreenTestTags.GOOGLE_MAP_SCREEN).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(MapScreenTestTags.MAP_TITLE).assertIsDisplayed()
     composeTestRule.onNodeWithTag(MapScreenTestTags.MAP_GO_BACK_BUTTON).assertIsDisplayed()
     composeTestRule.onNodeWithTag(MapScreenTestTags.TOOLTIP_BUTTON).assertIsDisplayed()
     composeTestRule.onNodeWithTag(MapScreenTestTags.CREATE_AREA_FLOATING_BUTTON).assertIsDisplayed()

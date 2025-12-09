@@ -55,18 +55,6 @@ object FilterScreenTestTags {
   const val BUTTON_ROW = "FilterSheet_ButtonRow"
   const val CLEAR_ALL = "FilterSheet_ClearAll"
   const val APPLY = "FilterSheet_Apply"
-
-  // Event Type Filter Screen
-  const val EVENT_TYPE_SCREEN = "Filter_EventType_Screen"
-  const val EVENT_TYPE_HEADER = "Filter_EventType_Header"
-  const val EVENT_TYPE_BACK_BUTTON = "Filter_EventType_Back"
-  const val EVENT_TYPE_TITLE = "Filter_EventType_Title"
-
-  const val EVENT_TYPE_LIST = "Filter_EventType_List"
-  const val EVENT_TYPE_ITEM_PREFIX = "Filter_EventType_Item_" // + type name
-
-  const val EVENT_TYPE_CLEAR_BUTTON = "Filter_EventType_Clear"
-  const val EVENT_TYPE_APPLY_BUTTON = "Filter_EventType_Apply"
 }
 
 enum class FilterPage {
@@ -200,8 +188,34 @@ fun FilterBottomSheet(onDismiss: () -> Unit, onApply: (Map<String, List<String>>
           // EVENT TYPE FILTER SCREEN
           // -------------------------------
           FilterPage.EVENT_TYPE -> {
-            EventTypeFilterScreen(
+            val eventTypes =
+                listOf(
+                    "Course",
+                    "Workshop",
+                    "Seminar",
+                    "Conference",
+                    "Training",
+                    "Meeting",
+                    "Lecture",
+                    "Webinar",
+                    "Lab Session",
+                    "Presentation",
+                    "Office Hours",
+                    "Hackathon",
+                    "Networking Event",
+                    "Panel Discussion",
+                    "Tutorial",
+                    "Exam",
+                    "Review Session",
+                    "Team Building",
+                    "Brainstorming",
+                    "Guest Talk")
+
+            FilterListScreen(
+                title = stringResource(R.string.eventType),
+                items = eventTypes,
                 selected = eventTypeFilters,
+                testTagPrefix = "EventTypeFilter",
                 onBack = { currentPage = FilterPage.MAIN },
                 onApply = {
                   eventTypeFilters = it
@@ -213,8 +227,13 @@ fun FilterBottomSheet(onDismiss: () -> Unit, onApply: (Map<String, List<String>>
           // LOCATION FILTER SCREEN
           // -------------------------------
           FilterPage.LOCATION -> {
-            LocationFilterScreen(
+            val locations = listOf("Salle 1", "Salle 2", "Unknown")
+
+            FilterListScreen(
+                title = stringResource(R.string.location),
+                items = locations,
                 selected = locationFilters,
+                testTagPrefix = "LocationFilter",
                 onBack = { currentPage = FilterPage.MAIN },
                 onApply = {
                   locationFilters = it
@@ -226,8 +245,24 @@ fun FilterBottomSheet(onDismiss: () -> Unit, onApply: (Map<String, List<String>>
           // PARTICIPANTS FILTER SCREEN
           // -------------------------------
           FilterPage.PARTICIPANTS -> {
-            ParticipantFilterScreen(
+            val participants =
+                listOf(
+                    "Alice",
+                    "Bob",
+                    "Charlie",
+                    "David",
+                    "Emma",
+                    "Lucas",
+                    "Sophie",
+                    "Martin",
+                    "Olivia",
+                    "Noah")
+
+            FilterListScreen(
+                title = stringResource(R.string.filter_participants),
+                items = participants,
                 selected = participantFilters,
+                testTagPrefix = "ParticipantFilter",
                 onBack = { currentPage = FilterPage.MAIN },
                 onApply = {
                   participantFilters = it

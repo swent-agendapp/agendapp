@@ -2,12 +2,12 @@ package com.android.sample.ui.filters
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import com.android.sample.ui.calendar.filters.ParticipantFilterScreen
-import com.android.sample.ui.calendar.filters.ParticipantFilterTestTags
+import com.android.sample.ui.calendar.filters.FilterListScreen
 import com.android.sample.ui.calendar.filters.components.FilterCheckboxTestTags
 import org.junit.Rule
 import org.junit.Test
 
+// Assisted by AI
 /** Test suite for ParticipantFilterScreen. */
 class ParticipantFilterScreenTest {
 
@@ -15,90 +15,114 @@ class ParticipantFilterScreenTest {
 
   private val participants = listOf("Alice", "Bob", "Charlie")
 
-  // Reuse only first three for simple testing
-
-  /** Test that the screen loads and essential UI elements exist. */
+  // -------------------------------
+  // 1. Screen loads and essential UI appears
+  // -------------------------------
   @Test
   fun participantFilterScreen_displaysUIElements() {
     compose.setContent {
-      ParticipantFilterScreen(selected = emptyList(), onBack = {}, onApply = {})
+      FilterListScreen(
+          title = "Participants",
+          items = participants,
+          selected = emptyList(),
+          onBack = {},
+          onApply = {},
+          testTagPrefix = "ParticipantFilter")
     }
 
-    compose.onNodeWithTag(ParticipantFilterTestTags.SCREEN).assertExists()
-    compose.onNodeWithTag(ParticipantFilterTestTags.HEADER).assertExists()
-    compose.onNodeWithTag(ParticipantFilterTestTags.LIST).assertExists()
+    compose.onNodeWithTag("ParticipantFilter_Screen").assertExists()
+    compose.onNodeWithTag("ParticipantFilter_Header").assertExists()
+    compose.onNodeWithTag("ParticipantFilter_List").assertExists()
 
-    // First item exists
-    compose
-        .onNodeWithTag(ParticipantFilterTestTags.ITEM_PREFIX + participants.first())
-        .assertExists()
+    // Check first item exists
+    compose.onNodeWithTag("ParticipantFilter_Item_${participants.first()}").assertExists()
   }
 
-  /** Test checkbox toggling state correctly. */
+  // -------------------------------
+  // 2. Checkbox toggles correctly
+  // -------------------------------
   @Test
   fun participantFilterScreen_checkbox_togglesCorrectly() {
     compose.setContent {
-      ParticipantFilterScreen(selected = emptyList(), onBack = {}, onApply = {})
+      FilterListScreen(
+          title = "Participants",
+          items = participants,
+          selected = emptyList(),
+          onBack = {},
+          onApply = {},
+          testTagPrefix = "ParticipantFilter")
     }
 
     val person = participants.first()
-    val boxTag = FilterCheckboxTestTags.PREFIX + person + "_Box"
+    val checkboxTag = FilterCheckboxTestTags.PREFIX + person + "_Box"
 
-    // Checkbox initially off
-    compose.onNodeWithTag(boxTag).assertIsOff()
+    compose.onNodeWithTag(checkboxTag).assertIsOff()
 
-    // Click → ON
-    compose.onNodeWithTag(boxTag).performClick()
-    compose.onNodeWithTag(boxTag).assertIsOn()
+    // On
+    compose.onNodeWithTag(checkboxTag).performClick()
+    compose.onNodeWithTag(checkboxTag).assertIsOn()
 
-    // Click → OFF
-    compose.onNodeWithTag(boxTag).performClick()
-    compose.onNodeWithTag(boxTag).assertIsOff()
+    // Off
+    compose.onNodeWithTag(checkboxTag).performClick()
+    compose.onNodeWithTag(checkboxTag).assertIsOff()
   }
 
-  /** Test that "Clear" removes all selections. */
+  // -------------------------------
+  // 3. Clear removes all selections
+  // -------------------------------
   @Test
   fun participantFilterScreen_clear_clearsSelections() {
     compose.setContent {
-      ParticipantFilterScreen(
-          selected = participants, // all preselected
+      FilterListScreen(
+          title = "Participants",
+          items = participants,
+          selected = participants, // all ON initially
           onBack = {},
-          onApply = {})
+          onApply = {},
+          testTagPrefix = "ParticipantFilter")
     }
 
-    // All should be ON initially
+    // All ON initially
     participants.forEach { p ->
-      val boxTag = FilterCheckboxTestTags.PREFIX + p + "_Box"
-      compose.onNodeWithTag(boxTag).assertIsOn()
+      val tag = FilterCheckboxTestTags.PREFIX + p + "_Box"
+      compose.onNodeWithTag(tag).assertIsOn()
     }
 
-    // Click Clear
-    compose.onNodeWithTag(ParticipantFilterTestTags.CLEAR).performClick()
+    // Clear
+    compose.onNodeWithTag("ParticipantFilter_Clear").performClick()
 
-    // All should be OFF now
+    // All OFF
     participants.forEach { p ->
-      val boxTag = FilterCheckboxTestTags.PREFIX + p + "_Box"
-      compose.onNodeWithTag(boxTag).assertIsOff()
+      val tag = FilterCheckboxTestTags.PREFIX + p + "_Box"
+      compose.onNodeWithTag(tag).assertIsOff()
     }
   }
 
-  /** Test that Apply returns the correct selected participants. */
+  // -------------------------------
+  // 4. Apply returns correct selected list
+  // -------------------------------
   @Test
   fun participantFilterScreen_apply_returnsCorrectSelections() {
     var appliedList: List<String>? = null
 
     compose.setContent {
-      ParticipantFilterScreen(selected = emptyList(), onBack = {}, onApply = { appliedList = it })
+      FilterListScreen(
+          title = "Participants",
+          items = participants,
+          selected = emptyList(),
+          onBack = {},
+          onApply = { appliedList = it },
+          testTagPrefix = "ParticipantFilter")
     }
 
-    // Select Alice + Bob
+    // Select Alice and Bob
     listOf("Alice", "Bob").forEach { p ->
-      val boxTag = FilterCheckboxTestTags.PREFIX + p + "_Box"
-      compose.onNodeWithTag(boxTag).performClick()
+      val checkboxTag = FilterCheckboxTestTags.PREFIX + p + "_Box"
+      compose.onNodeWithTag(checkboxTag).performClick()
     }
 
-    // Click Apply
-    compose.onNodeWithTag(ParticipantFilterTestTags.APPLY).performClick()
+    // Apply
+    compose.onNodeWithTag("ParticipantFilter_Apply").performClick()
 
     assert(appliedList == listOf("Alice", "Bob"))
   }

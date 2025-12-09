@@ -10,6 +10,7 @@ import com.android.sample.ui.calendar.filters.components.FilterCheckboxTestTags
 import org.junit.Rule
 import org.junit.Test
 
+// Assisted by AI
 /** Test class for FilterCheckbox composable. */
 class FilterCheckboxTest {
 

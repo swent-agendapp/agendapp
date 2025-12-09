@@ -5,14 +5,14 @@ import androidx.compose.ui.test.assertIsOn
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
-import com.android.sample.ui.calendar.filters.LocationFilterScreen
-import com.android.sample.ui.calendar.filters.LocationFilterTestTags
+import com.android.sample.ui.calendar.filters.FilterListScreen
 import com.android.sample.ui.calendar.filters.components.FilterCheckboxTestTags
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 
+// Assisted by AI
 /** Test suite for LocationFilterScreen. */
 class LocationFilterScreenTest {
 
@@ -25,16 +25,21 @@ class LocationFilterScreenTest {
   // -------------------------------
   @Test
   fun locationFilterScreen_rendersCorrectly() {
-    compose.setContent { LocationFilterScreen(selected = emptyList(), onBack = {}, onApply = {}) }
-
-    compose.onNodeWithTag(LocationFilterTestTags.SCREEN).assertExists()
-    compose.onNodeWithTag(LocationFilterTestTags.HEADER).assertExists()
-    compose.onNodeWithTag(LocationFilterTestTags.LIST).assertExists()
-
-    // Each item exists
-    locations.forEach { loc ->
-      compose.onNodeWithTag(LocationFilterTestTags.ITEM_PREFIX + loc).assertExists()
+    compose.setContent {
+      FilterListScreen(
+          title = "Location",
+          items = locations,
+          selected = emptyList(),
+          onBack = {},
+          onApply = {},
+          testTagPrefix = "LocationFilter")
     }
+
+    compose.onNodeWithTag("LocationFilter_Screen").assertExists()
+    compose.onNodeWithTag("LocationFilter_Header").assertExists()
+    compose.onNodeWithTag("LocationFilter_List").assertExists()
+
+    locations.forEach { loc -> compose.onNodeWithTag("LocationFilter_Item_$loc").assertExists() }
   }
 
   // -------------------------------
@@ -45,30 +50,38 @@ class LocationFilterScreenTest {
     var appliedList: List<String> = emptyList()
 
     compose.setContent {
-      LocationFilterScreen(selected = emptyList(), onBack = {}, onApply = { appliedList = it })
+      FilterListScreen(
+          title = "Location",
+          items = locations,
+          selected = emptyList(),
+          onBack = {},
+          onApply = { appliedList = it },
+          testTagPrefix = "LocationFilter")
     }
 
     val key = "Salle 1"
-    val itemTag = FilterCheckboxTestTags.PREFIX + key
-    val boxTag = itemTag + "_Box"
+    val itemTag = "LocationFilter_Item_$key"
+    val checkboxTag = FilterCheckboxTestTags.PREFIX + key + "_Box"
 
-    // Initial Off
-    compose.onNodeWithTag(boxTag).assertIsOff()
+    compose.onNodeWithTag(itemTag).assertExists()
+
+    // Initially unchecked
+    compose.onNodeWithTag(checkboxTag).assertIsOff()
 
     // Toggle ON
-    compose.onNodeWithTag(boxTag).performClick()
-    compose.onNodeWithTag(boxTag).assertIsOn()
+    compose.onNodeWithTag(checkboxTag).performClick()
+    compose.onNodeWithTag(checkboxTag).assertIsOn()
 
-    // Apply → should contain Salle 1
-    compose.onNodeWithTag(LocationFilterTestTags.APPLY_BUTTON).performClick()
+    // Apply -> should contain key
+    compose.onNodeWithTag("LocationFilter_Apply").performClick()
     assertTrue(appliedList.contains(key))
 
     // Toggle OFF
-    compose.onNodeWithTag(boxTag).performClick()
-    compose.onNodeWithTag(boxTag).assertIsOff()
+    compose.onNodeWithTag(checkboxTag).performClick()
+    compose.onNodeWithTag(checkboxTag).assertIsOff()
 
-    // Apply → should NOT contain Salle 1
-    compose.onNodeWithTag(LocationFilterTestTags.APPLY_BUTTON).performClick()
+    // Apply -> should NOT contain key
+    compose.onNodeWithTag("LocationFilter_Apply").performClick()
     assertFalse(appliedList.contains(key))
   }
 
@@ -78,22 +91,28 @@ class LocationFilterScreenTest {
   @Test
   fun locationFilterScreen_clearButton_clearsSelections() {
     compose.setContent {
-      LocationFilterScreen(selected = listOf("Salle 1", "Salle 2"), onBack = {}, onApply = {})
+      FilterListScreen(
+          title = "Location",
+          items = locations,
+          selected = listOf("Salle 1", "Salle 2"),
+          onBack = {},
+          onApply = {},
+          testTagPrefix = "LocationFilter")
     }
 
-    // Both should start checked
-    locations.take(2).forEach { loc ->
-      val boxTag = FilterCheckboxTestTags.PREFIX + loc + "_Box"
-      compose.onNodeWithTag(boxTag).assertIsOn()
+    // Both selected initially
+    listOf("Salle 1", "Salle 2").forEach { loc ->
+      val tag = FilterCheckboxTestTags.PREFIX + loc + "_Box"
+      compose.onNodeWithTag(tag).assertIsOn()
     }
 
-    // Click clear
-    compose.onNodeWithTag(LocationFilterTestTags.CLEAR_BUTTON).performClick()
+    // Click CLEAR
+    compose.onNodeWithTag("LocationFilter_Clear").performClick()
 
-    // All should now be unchecked
+    // All unchecked
     locations.forEach { loc ->
-      val boxTag = FilterCheckboxTestTags.PREFIX + loc + "_Box"
-      compose.onNodeWithTag(boxTag).assertIsOff()
+      val tag = FilterCheckboxTestTags.PREFIX + loc + "_Box"
+      compose.onNodeWithTag(tag).assertIsOff()
     }
   }
 
@@ -105,11 +124,16 @@ class LocationFilterScreenTest {
     var backCalled = false
 
     compose.setContent {
-      LocationFilterScreen(selected = emptyList(), onBack = { backCalled = true }, onApply = {})
+      FilterListScreen(
+          title = "Location",
+          items = locations,
+          selected = emptyList(),
+          onBack = { backCalled = true },
+          onApply = {},
+          testTagPrefix = "LocationFilter")
     }
 
-    compose.onNodeWithTag(LocationFilterTestTags.BACK_BUTTON).performClick()
-
+    compose.onNodeWithTag("LocationFilter_BackButton").performClick()
     assertTrue(backCalled)
   }
 }

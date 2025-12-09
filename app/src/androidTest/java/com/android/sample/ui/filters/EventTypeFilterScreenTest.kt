@@ -2,55 +2,55 @@ package com.android.sample.ui.filters
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import com.android.sample.ui.calendar.filters.EventTypeFilterScreen
-import com.android.sample.ui.calendar.filters.FilterScreenTestTags
+import com.android.sample.ui.calendar.filters.FilterListScreen
 import org.junit.Rule
 import org.junit.Test
 
+// Assisted by AI
 class EventTypeFilterScreenTest {
-
   @get:Rule val compose = createComposeRule()
 
   /** Ensures the EventTypeFilterScreen displays correctly */
   @Test
   fun eventTypeScreen_displaysHeaderAndList() {
-    compose.setContent { EventTypeFilterScreen(selected = emptyList(), onBack = {}, onApply = {}) }
+    compose.setContent {
+      FilterListScreen(
+          title = "Event Type",
+          items = listOf("Course", "Workshop", "Conference"),
+          selected = emptyList(),
+          onBack = {},
+          onApply = {},
+          testTagPrefix = "EventTypeFilter")
+    }
 
-    // Screen root exists
-    compose.onNodeWithTag(FilterScreenTestTags.EVENT_TYPE_SCREEN).assertExists()
-
-    // Header exists
-    compose.onNodeWithTag(FilterScreenTestTags.EVENT_TYPE_HEADER).assertExists()
-
-    // Title exists
-    compose.onNodeWithTag(FilterScreenTestTags.EVENT_TYPE_TITLE).assertExists()
-
-    // Back button exists
-    compose.onNodeWithTag(FilterScreenTestTags.EVENT_TYPE_BACK_BUTTON).assertExists()
-
-    // List container exists
-    compose.onNodeWithTag(FilterScreenTestTags.EVENT_TYPE_LIST).assertExists()
+    compose.onNodeWithTag("EventTypeFilter_Screen").assertExists()
+    compose.onNodeWithTag("EventTypeFilter_Header").assertExists()
+    compose.onNodeWithTag("EventTypeFilter_Title").assertExists()
+    compose.onNodeWithTag("EventTypeFilter_BackButton").assertExists()
+    compose.onNodeWithTag("EventTypeFilter_List").assertExists()
   }
 
   /** Ensures a checkbox item renders and toggles correctly */
   @Test
   fun eventTypeScreen_checkbox_togglesSelection() {
-    compose.setContent { EventTypeFilterScreen(selected = emptyList(), onBack = {}, onApply = {}) }
+    compose.setContent {
+      FilterListScreen(
+          title = "Event Type",
+          items = listOf("Conference"),
+          selected = emptyList(),
+          onBack = {},
+          onApply = {},
+          testTagPrefix = "EventTypeFilter")
+    }
 
-    // Pick one of the types (e.g., "Conference")
-    val itemTag = FilterScreenTestTags.EVENT_TYPE_ITEM_PREFIX + "Conference"
-
-    // Ensure item exists
+    val itemTag = "EventTypeFilter_Item_Conference"
     compose.onNodeWithTag(itemTag).assertExists()
 
-    // Find checkbox inside item
     val checkbox = compose.onNode(hasAnyAncestor(hasTestTag(itemTag)) and hasClickAction())
 
-    // Toggle ON
     checkbox.performClick()
     checkbox.assertIsOn()
 
-    // Toggle OFF
     checkbox.performClick()
     checkbox.assertIsOff()
   }
@@ -58,24 +58,26 @@ class EventTypeFilterScreenTest {
   /** Clear button clears all selections */
   @Test
   fun eventTypeScreen_clearButton_clearsSelections() {
-    // A captured applied result
-    var result: List<String>? = null // to hold onApply result
+    var result: List<String>? = null
 
     compose.setContent {
-      EventTypeFilterScreen(selected = listOf("Course"), onBack = {}, onApply = { result = it })
+      FilterListScreen(
+          title = "Event Type",
+          items = listOf("Course"),
+          selected = listOf("Course"),
+          onBack = {},
+          onApply = { result = it },
+          testTagPrefix = "EventTypeFilter")
     }
 
-    // Course checkbox should initially be on
-    val courseItemTag = FilterScreenTestTags.EVENT_TYPE_ITEM_PREFIX + "Course"
-    val courseCheckbox =
-        compose.onNode(hasAnyAncestor(hasTestTag(courseItemTag)) and hasClickAction())
-    courseCheckbox.assertIsOn()
+    val courseItemTag = "EventTypeFilter_Item_Course"
+    val checkbox = compose.onNode(hasAnyAncestor(hasTestTag(courseItemTag)) and hasClickAction())
 
-    // Click CLEAR
-    compose.onNodeWithTag(FilterScreenTestTags.EVENT_TYPE_CLEAR_BUTTON).performClick()
+    checkbox.assertIsOn()
 
-    // Now checkbox should be OFF
-    courseCheckbox.assertIsOff()
+    compose.onNodeWithTag("EventTypeFilter_Clear").performClick()
+
+    checkbox.assertIsOff()
   }
 
   /** Apply returns current selections */
@@ -84,21 +86,22 @@ class EventTypeFilterScreenTest {
     var appliedSelections: List<String>? = null
 
     compose.setContent {
-      EventTypeFilterScreen(
-          selected = emptyList(), onBack = {}, onApply = { appliedSelections = it })
+      FilterListScreen(
+          title = "Event Type",
+          items = listOf("Workshop"),
+          selected = emptyList(),
+          onBack = {},
+          onApply = { appliedSelections = it },
+          testTagPrefix = "EventTypeFilter")
     }
 
-    // Toggle "Workshop"
-    val workshopTag = FilterScreenTestTags.EVENT_TYPE_ITEM_PREFIX + "Workshop"
-    val workshopCheckbox =
-        compose.onNode(hasAnyAncestor(hasTestTag(workshopTag)) and hasClickAction())
+    val workshopTag = "EventTypeFilter_Item_Workshop"
+    val checkbox = compose.onNode(hasAnyAncestor(hasTestTag(workshopTag)) and hasClickAction())
 
-    workshopCheckbox.performClick() // turn on
+    checkbox.performClick()
 
-    // Click APPLY
-    compose.onNodeWithTag(FilterScreenTestTags.EVENT_TYPE_APPLY_BUTTON).performClick()
+    compose.onNodeWithTag("EventTypeFilter_Apply").performClick()
 
-    // Assert appliedSelections contains "Workshop"
     assert(appliedSelections == listOf("Workshop")) {
       "Expected [Workshop], but got $appliedSelections"
     }

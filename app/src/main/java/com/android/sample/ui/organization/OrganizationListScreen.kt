@@ -104,7 +104,8 @@ fun OrganizationListScreen(
                       Loading(
                           label = stringResource(R.string.organization_loading),
                           modifier =
-                              Modifier.testTag(OrganizationListScreenTestTags.LOADING_INDICATOR))
+                              Modifier.fillMaxSize()
+                                  .testTag(OrganizationListScreenTestTags.LOADING_INDICATOR))
                     } else {
                       Spacer(modifier = Modifier.height(SpacingMedium))
                       OrganizationList(

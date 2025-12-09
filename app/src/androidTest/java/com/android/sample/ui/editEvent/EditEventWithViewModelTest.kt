@@ -5,12 +5,12 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
+import com.android.sample.model.category.EventCategory
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.editEvent.EditEventTestTags
 import com.android.sample.ui.calendar.editEvent.EditEventViewModel
 import com.android.sample.ui.calendar.editEvent.components.EditEventAttendantScreen
 import com.android.sample.ui.calendar.editEvent.components.EditEventScreen
-import com.android.sample.ui.theme.EventPalette
 import com.android.sample.ui.theme.SampleAppTheme
 import com.android.sample.utils.FakeEventRepository
 import java.time.Duration
@@ -55,7 +55,7 @@ class EditEventWithViewModelTest {
             version = 1L,
             recurrenceStatus = RecurrenceStatus.OneTime,
             hasBeenDeleted = false,
-            color = EventPalette.Blue)
+            category = EventCategory.defaultCategory())
 
     val fakeRepository = FakeEventRepository()
     fakeRepository.add(event = sampleEvent)
@@ -145,7 +145,9 @@ class EditEventWithViewModelTest {
       }
     }
 
-    composeTestRule.onNodeWithText("Select participants").assertIsDisplayed()
+    // Click on the "Got it" button of the first pop-up
+    composeTestRule.onNodeWithTag(EditEventTestTags.ATTENDANCE_WARNING_ACK_BUTTON).performClick()
+
     composeTestRule.onNodeWithText("Alice").performClick()
 
     composeTestRule.onNodeWithTag(EditEventTestTags.SAVE_BUTTON).performClick()
@@ -168,6 +170,9 @@ class EditEventWithViewModelTest {
     composeTestRule.setContent {
       SampleAppTheme { EditEventAttendantScreen(editEventViewModel = fakeViewModel) }
     }
+
+    // Click on the "Got it" button of the first pop-up
+    composeTestRule.onNodeWithTag(EditEventTestTags.ATTENDANCE_WARNING_ACK_BUTTON).performClick()
 
     val alice = composeTestRule.onNodeWithText("Alice")
 

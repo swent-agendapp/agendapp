@@ -10,17 +10,17 @@ import com.android.sample.ui.calendar.editEvent.components.EditEventScreen
 object EditEventTestTags {
   const val ROOT = "edit_event_screen"
   const val TITLE_FIELD = "edit_title_field"
-  const val COLOR_SELECTOR = "color_selector"
+  const val CATEGORY_SELECTOR = "category_selector"
   const val DESCRIPTION_FIELD = "edit_description_field"
   const val START_DATE_FIELD = "edit_start_date"
   const val END_DATE_FIELD = "edit_end_date"
   const val START_TIME_BUTTON = "edit_start_time_button"
   const val END_TIME_BUTTON = "edit_end_time_button"
-  const val RECURRENCE_DROPDOWN = "edit_recurrence_dropdown"
   const val PARTICIPANTS_LIST = "edit_participants_list"
   const val SAVE_BUTTON = "edit_save_button"
   const val CANCEL_BUTTON = "edit_cancel_button"
   const val EDIT_PARTICIPANTS_BUTTON = "edit_participants_button"
+  const val ATTENDANCE_WARNING_ACK_BUTTON = "attendance_warning_ack_button"
   const val BACK_BUTTON = "edit_back_button"
 }
 

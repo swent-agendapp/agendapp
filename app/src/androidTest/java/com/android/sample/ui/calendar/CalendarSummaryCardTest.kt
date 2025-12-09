@@ -17,6 +17,7 @@ import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
+import com.android.sample.model.category.EventCategory
 import com.android.sample.ui.calendar.components.EventSummaryCard
 import com.android.sample.ui.calendar.components.EventSummaryCardTags
 import com.android.sample.ui.theme.EventPalette
@@ -51,7 +52,7 @@ class EventSummaryCardTest {
       end: Instant,
       recurrence: RecurrenceStatus = RecurrenceStatus.OneTime,
       participants: Set<String> = emptySet(),
-      color: Color = EventPalette.Green
+      category: EventCategory = EventCategory.defaultCategory()
   ) =
       Event(
           id = "e-test",
@@ -67,7 +68,7 @@ class EventSummaryCardTest {
           version = 1L,
           recurrenceStatus = recurrence,
           hasBeenDeleted = false,
-          color = color)
+          category = category)
 
   private val zone: ZoneId = ZoneId.systemDefault()
   private val locale: Locale = Locale.getDefault()
@@ -93,9 +94,10 @@ class EventSummaryCardTest {
       )
     }
 
-    // Then: title, date line 1 and line 2 exist; no recurrence; no description; no participants
-    // list
+    // Then: title, category, date line 1 and line 2 exist; no recurrence; no description; no
+    // participants list
     composeTestRule.onAllNodesWithTag(EventSummaryCardTags.TITLE_TEXT).assertCountEquals(1)
+    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.CATEGORY).assertCountEquals(1)
     composeTestRule.onAllNodesWithTag(EventSummaryCardTags.DATE_LINE1).assertCountEquals(1)
     composeTestRule.onAllNodesWithTag(EventSummaryCardTags.DATE_LINE2).assertCountEquals(1)
     composeTestRule.onAllNodesWithTag(EventSummaryCardTags.RECURRENCE).assertCountEquals(0)
@@ -126,8 +128,9 @@ class EventSummaryCardTest {
       )
     }
 
-    // Then: title/date/time/description exist
+    // Then: title/category/date/time/description exist
     composeTestRule.onAllNodesWithTag(EventSummaryCardTags.TITLE_TEXT).assertCountEquals(1)
+    composeTestRule.onAllNodesWithTag(EventSummaryCardTags.CATEGORY).assertCountEquals(1)
     composeTestRule.onAllNodesWithTag(EventSummaryCardTags.DATE_LINE1).assertCountEquals(1)
     composeTestRule.onAllNodesWithTag(EventSummaryCardTags.DATE_LINE2).assertCountEquals(1)
     composeTestRule.onAllNodesWithTag(EventSummaryCardTags.DESCRIPTION_TEXT).assertCountEquals(1)
@@ -309,7 +312,11 @@ class EventSummaryCardTest {
   fun leftColoredBar_matchesEventColor() {
     // We pick a strong color to assert (Red)
     val e =
-        event(title = "Color", start = base, end = base.plusSeconds(3600), color = EventPalette.Red)
+        event(
+            title = "Color",
+            start = base,
+            end = base.plusSeconds(3600),
+            category = EventCategory(label = "Strong color", color = EventPalette.Red))
 
     composeTestRule.setContent { EventSummaryCard(event = e, participantNames = emptyList()) }
 

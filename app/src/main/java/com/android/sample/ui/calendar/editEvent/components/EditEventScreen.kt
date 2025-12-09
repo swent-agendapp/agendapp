@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,22 +16,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
-import com.android.sample.model.calendar.RecurrenceStatus
-import com.android.sample.model.calendar.labelRes
-import com.android.sample.ui.calendar.components.ColorSelector
+import com.android.sample.ui.calendar.components.CategorySelector
 import com.android.sample.ui.calendar.components.DatePickerFieldToModal
-import com.android.sample.ui.calendar.components.TopTitleBar
 import com.android.sample.ui.calendar.components.ValidatingTextField
+import com.android.sample.ui.calendar.components.eventSummaryComponents.ParticipantsSection
 import com.android.sample.ui.calendar.editEvent.EditEventTestTags
 import com.android.sample.ui.calendar.editEvent.EditEventViewModel
 import com.android.sample.ui.calendar.utils.DateTimeUtils
+import com.android.sample.ui.common.BottomNavigationButtons
+import com.android.sample.ui.common.SecondaryButton
+import com.android.sample.ui.common.SecondaryPageTopBar
+import com.android.sample.ui.theme.BorderWidthThick
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingLarge
 import com.android.sample.ui.theme.PaddingMedium
-import com.android.sample.ui.theme.PaddingSmall
+import com.android.sample.ui.theme.SpacingExtraLarge
+import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingMedium
-import com.android.sample.ui.theme.heightLarge
-import com.android.sample.ui.theme.widthLarge
+import com.android.sample.ui.theme.WeightExtraHeavy
 
 // Assisted by AI
 
@@ -72,26 +75,28 @@ fun EditEventScreen(
     }
   }
 
-  var expanded by remember { mutableStateOf(false) }
+  val noParticipantLabel = stringResource(R.string.replacement_selected_members_none)
+
+  // Participants names
+  val names =
+      if (uiState.participants.isNotEmpty()) {
+        uiState.participants.toList()
+      } else {
+        listOf(noParticipantLabel)
+      }
+
   var showStartTimePicker by remember { mutableStateOf(false) }
   var showEndTimePicker by remember { mutableStateOf(false) }
 
   Scaffold(
-      topBar = { TopTitleBar(title = stringResource(R.string.edit_event_title)) },
+      topBar = {
+        SecondaryPageTopBar(title = stringResource(R.string.edit_event_title), canGoBack = false)
+      },
       content = { paddingValues ->
         LazyColumn(
-            modifier =
-                Modifier.fillMaxSize().padding(paddingValues).padding(horizontal = PaddingLarge),
-            horizontalAlignment = Alignment.CenterHorizontally) {
-              item {
-                Text(
-                    text = stringResource(R.string.edit_event_instruction),
-                    style = MaterialTheme.typography.headlineSmall,
-                    textAlign = TextAlign.Center,
-                    modifier =
-                        Modifier.padding(vertical = PaddingMedium).testTag("edit_instruction_text"))
-              }
-
+            modifier = Modifier.fillMaxSize().padding(paddingValues).padding(PaddingLarge),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceAround) {
               // Title
               item {
                 ValidatingTextField(
@@ -106,11 +111,12 @@ fun EditEventScreen(
 
               // Color
               item {
-                ColorSelector(
-                    selectedColor = uiState.color,
-                    onColorSelected = { editEventViewModel.setColor(it) },
-                    testTag = EditEventTestTags.COLOR_SELECTOR,
+                CategorySelector(
+                    selectedCategory = uiState.category,
+                    onCategorySelected = { editEventViewModel.setCategory(it) },
+                    testTag = EditEventTestTags.CATEGORY_SELECTOR,
                 )
+                Spacer(modifier = Modifier.height(SpacingLarge))
               }
 
               // Description
@@ -125,99 +131,86 @@ fun EditEventScreen(
                     errorMessage = stringResource(R.string.edit_event_description_error),
                     singleLine = false,
                     minLines = DESCRIPTION_MIN_LINES)
+                Spacer(modifier = Modifier.height(SpacingExtraLarge))
               }
 
               // Start & End Dates
               item {
-                Spacer(modifier = Modifier.height(SpacingMedium))
-                DatePickerFieldToModal(
-                    label = stringResource(R.string.edit_event_start_date_label),
-                    modifier = Modifier.testTag(EditEventTestTags.START_DATE_FIELD),
-                    onDateSelected = { date ->
-                      editEventViewModel.setStartInstant(
-                          DateTimeUtils.instantWithDate(uiState.startInstant, date))
-                    },
-                    enabled = true,
-                    initialInstant = uiState.startInstant)
-              }
-
-              item {
-                DatePickerFieldToModal(
-                    label = stringResource(R.string.edit_event_end_date_label),
-                    modifier = Modifier.testTag(EditEventTestTags.END_DATE_FIELD),
-                    onDateSelected = { date ->
-                      editEventViewModel.setEndInstant(
-                          DateTimeUtils.instantWithDate(uiState.endInstant, date))
-                    },
-                    enabled = true,
-                    initialInstant = uiState.endInstant)
-              }
-
-              // Start Time Picker
-              item {
-                Spacer(modifier = Modifier.height(SpacingMedium))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically) {
-                      Text(
-                          text = stringResource(R.string.edit_event_start_time_label),
-                          style = MaterialTheme.typography.titleMedium)
-                      Button(
-                          onClick = { showStartTimePicker = true },
-                          modifier = Modifier.testTag(EditEventTestTags.START_TIME_BUTTON)) {
-                            Text(DateTimeUtils.formatInstantToTime(uiState.startInstant))
-                          }
+                key(
+                    uiState
+                        .startInstant) { // Use the latest value from uiState as the initial value
+                      DatePickerFieldToModal(
+                          label = stringResource(R.string.edit_event_start_date_label),
+                          modifier = Modifier.testTag(EditEventTestTags.START_DATE_FIELD),
+                          onDateSelected = { date ->
+                            editEventViewModel.setStartInstant(
+                                DateTimeUtils.instantWithDate(uiState.startInstant, date))
+                          },
+                          enabled = true,
+                          initialInstant = uiState.startInstant)
                     }
+                Spacer(modifier = Modifier.height(SpacingLarge))
               }
 
-              // End Time Picker
               item {
-                Spacer(modifier = Modifier.height(SpacingMedium))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically) {
-                      Text(
-                          text = stringResource(R.string.edit_event_end_time_label),
-                          style = MaterialTheme.typography.titleMedium)
-                      Button(
-                          onClick = { showEndTimePicker = true },
-                          modifier = Modifier.testTag(EditEventTestTags.END_TIME_BUTTON)) {
-                            Text(DateTimeUtils.formatInstantToTime(uiState.endInstant))
-                          }
-                    }
+                key(uiState.endInstant) { // Use the latest value from uiState as the initial value
+                  DatePickerFieldToModal(
+                      label = stringResource(R.string.edit_event_end_date_label),
+                      modifier = Modifier.testTag(EditEventTestTags.END_DATE_FIELD),
+                      onDateSelected = { date ->
+                        editEventViewModel.setEndInstant(
+                            DateTimeUtils.instantWithDate(uiState.endInstant, date))
+                      },
+                      enabled = true,
+                      initialInstant = uiState.endInstant)
+                }
+                Spacer(modifier = Modifier.height(SpacingLarge))
               }
 
-              // Recurrence dropdown
+              // Start & End Time Pickers
               item {
-                Spacer(modifier = Modifier.height(SpacingMedium))
-                ExposedDropdownMenuBox(
-                    expanded = expanded, onExpandedChange = { expanded = !expanded }) {
-                      OutlinedTextField(
-                          value = stringResource(uiState.recurrenceMode.labelRes()),
-                          onValueChange = {},
-                          readOnly = true,
-                          label = { Text(stringResource(R.string.edit_event_recurrence_label)) },
-                          trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
-                          modifier =
-                              Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable, true)
-                                  .fillMaxWidth()
-                                  .testTag(EditEventTestTags.RECURRENCE_DROPDOWN),
-                          shape = RoundedCornerShape(CornerRadiusLarge),
-                          colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors())
-                      ExposedDropdownMenu(
-                          expanded = expanded, onDismissRequest = { expanded = false }) {
-                            RecurrenceStatus.entries.forEach { option ->
-                              DropdownMenuItem(
-                                  text = { Text(option.name) },
-                                  onClick = {
-                                    editEventViewModel.setRecurrenceMode(option)
-                                    expanded = false
-                                  })
+                Column(modifier = Modifier.fillMaxWidth()) {
+
+                  // Start time row
+                  Row(
+                      modifier = Modifier.fillMaxWidth(),
+                      horizontalArrangement = Arrangement.SpaceBetween,
+                      verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = stringResource(R.string.edit_event_start_time_label),
+                            modifier = Modifier.weight(WeightExtraHeavy),
+                            textAlign = TextAlign.Center)
+                        OutlinedButton(
+                            onClick = { showStartTimePicker = true },
+                            modifier =
+                                Modifier.weight(WeightExtraHeavy)
+                                    .testTag(EditEventTestTags.START_TIME_BUTTON)) {
+                              Text(DateTimeUtils.formatInstantToTime(uiState.startInstant))
                             }
-                          }
-                    }
+                      }
+
+                  Spacer(modifier = Modifier.height(SpacingMedium))
+
+                  // End time row
+                  Row(
+                      modifier = Modifier.fillMaxWidth(),
+                      horizontalArrangement = Arrangement.SpaceBetween,
+                      verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = stringResource(R.string.edit_event_end_time_label),
+                            modifier = Modifier.weight(WeightExtraHeavy),
+                            textAlign = TextAlign.Center)
+                        OutlinedButton(
+                            onClick = { showEndTimePicker = true },
+                            modifier =
+                                Modifier.weight(WeightExtraHeavy)
+                                    .testTag(EditEventTestTags.END_TIME_BUTTON)) {
+                              Text(DateTimeUtils.formatInstantToTime(uiState.endInstant))
+                            }
+                      }
+                }
+
+                Spacer(modifier = Modifier.height(SpacingExtraLarge))
               }
 
               // Notifications (implement later if needed)
@@ -228,46 +221,38 @@ fun EditEventScreen(
 
               // Participants
               item {
-                Spacer(modifier = Modifier.height(SpacingMedium))
-                Text(
-                    text = stringResource(R.string.edit_event_participants_label),
-                    style = MaterialTheme.typography.titleMedium)
-                OutlinedButton(
-                    onClick = onEditParticipants,
-                    modifier =
-                        Modifier.fillMaxWidth()
-                            .padding(vertical = PaddingSmall)
-                            .testTag(EditEventTestTags.EDIT_PARTICIPANTS_BUTTON)) {
-                      Text(stringResource(R.string.edit_event_edit_participants_button))
-                    }
+                Card(shape = RoundedCornerShape(CornerRadiusLarge)) {
+                  Column(
+                      modifier = Modifier.fillMaxWidth().padding(PaddingMedium),
+                      horizontalAlignment = Alignment.Start) {
+                        ParticipantsSection(participantNames = names, showHeader = false)
+                        Spacer(modifier = Modifier.height(SpacingLarge))
+                        SecondaryButton(
+                            modifier = Modifier.testTag(EditEventTestTags.EDIT_PARTICIPANTS_BUTTON),
+                            onClick = onEditParticipants,
+                            text = stringResource(R.string.edit_event_edit_participants_button))
+                      }
+                }
               }
             }
       },
       bottomBar = {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(PaddingLarge),
-            horizontalArrangement = Arrangement.SpaceEvenly) {
-              OutlinedButton(
-                  onClick = onCancel,
-                  modifier =
-                      Modifier.size(width = widthLarge, height = heightLarge)
-                          .testTag(EditEventTestTags.CANCEL_BUTTON)) {
-                    Text(stringResource(R.string.common_cancel))
-                  }
-              Button(
-                  onClick = {
-                    if (editEventViewModel.allFieldsValid()) {
-                      editEventViewModel.saveEditEventChanges()
-                      onSave()
-                    }
-                  },
-                  modifier =
-                      Modifier.size(width = widthLarge, height = heightLarge)
-                          .testTag(EditEventTestTags.SAVE_BUTTON),
-                  enabled = editEventViewModel.allFieldsValid()) {
-                    Text(stringResource(R.string.common_save))
-                  }
-            }
+        HorizontalDivider(
+            modifier = Modifier.fillMaxWidth(),
+            thickness = BorderWidthThick,
+            color = MaterialTheme.colorScheme.outlineVariant)
+        BottomNavigationButtons(
+            onBack = onCancel,
+            backButtonText = stringResource(R.string.common_cancel),
+            canGoBack = true,
+            backButtonTestTag = EditEventTestTags.CANCEL_BUTTON,
+            onNext = {
+              editEventViewModel.saveEditEventChanges()
+              onSave()
+            },
+            nextButtonText = stringResource(R.string.common_save),
+            canGoNext = editEventViewModel.allFieldsValid(),
+            nextButtonTestTag = EditEventTestTags.SAVE_BUTTON)
       })
 
   // Time pickers

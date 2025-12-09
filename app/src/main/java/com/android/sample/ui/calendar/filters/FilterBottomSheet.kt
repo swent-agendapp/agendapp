@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.android.sample.R
 import com.android.sample.ui.calendar.CalendarScreenTestTags
-import com.android.sample.ui.components.BottomNavigationButtons
+import com.android.sample.ui.common.BottomNavigationButtons
 import com.android.sample.ui.theme.AlphaLow
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingLarge
@@ -184,8 +184,90 @@ fun FilterBottomSheet(onDismiss: () -> Unit, onApply: (Map<String, List<String>>
                   Spacer(Modifier.height(SpacingMedium))
                 }
           }
-          else -> {
-            // Later implementation for other filter pages will go here
+          // -------------------------------
+          // EVENT TYPE FILTER SCREEN
+          // -------------------------------
+          FilterPage.EVENT_TYPE -> {
+            val eventTypes =
+                listOf(
+                    "Course",
+                    "Workshop",
+                    "Seminar",
+                    "Conference",
+                    "Training",
+                    "Meeting",
+                    "Lecture",
+                    "Webinar",
+                    "Lab Session",
+                    "Presentation",
+                    "Office Hours",
+                    "Hackathon",
+                    "Networking Event",
+                    "Panel Discussion",
+                    "Tutorial",
+                    "Exam",
+                    "Review Session",
+                    "Team Building",
+                    "Brainstorming",
+                    "Guest Talk")
+
+            FilterListScreen(
+                title = stringResource(R.string.eventType),
+                items = eventTypes,
+                selected = eventTypeFilters,
+                testTagPrefix = "EventTypeFilter",
+                onBack = { currentPage = FilterPage.MAIN },
+                onApply = {
+                  eventTypeFilters = it
+                  currentPage = FilterPage.MAIN
+                })
+          }
+
+          // -------------------------------
+          // LOCATION FILTER SCREEN
+          // -------------------------------
+          FilterPage.LOCATION -> {
+            val locations = listOf("Salle 1", "Salle 2", "Unknown")
+
+            FilterListScreen(
+                title = stringResource(R.string.location),
+                items = locations,
+                selected = locationFilters,
+                testTagPrefix = "LocationFilter",
+                onBack = { currentPage = FilterPage.MAIN },
+                onApply = {
+                  locationFilters = it
+                  currentPage = FilterPage.MAIN
+                })
+          }
+
+          // -------------------------------
+          // PARTICIPANTS FILTER SCREEN
+          // -------------------------------
+          FilterPage.PARTICIPANTS -> {
+            val participants =
+                listOf(
+                    "Alice",
+                    "Bob",
+                    "Charlie",
+                    "David",
+                    "Emma",
+                    "Lucas",
+                    "Sophie",
+                    "Martin",
+                    "Olivia",
+                    "Noah")
+
+            FilterListScreen(
+                title = stringResource(R.string.filter_participants),
+                items = participants,
+                selected = participantFilters,
+                testTagPrefix = "ParticipantFilter",
+                onBack = { currentPage = FilterPage.MAIN },
+                onApply = {
+                  participantFilters = it
+                  currentPage = FilterPage.MAIN
+                })
           }
         }
       }

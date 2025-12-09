@@ -12,7 +12,7 @@ import androidx.compose.ui.test.swipeLeft
 import androidx.compose.ui.test.swipeRight
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.rule.GrantPermissionRule
-import com.android.sample.model.calendar.EventRepositoryLocal
+import com.android.sample.model.calendar.EventRepositoryInMemory
 import com.android.sample.model.map.MapRepositoryLocal
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.components.ViewMode
@@ -55,7 +55,7 @@ class CalendarContainerTest {
 
   /** Sets the content with a default [CalendarContainer]. */
   private fun setCalendarContent() {
-    val eventRepo = EventRepositoryLocal()
+    val eventRepo = EventRepositoryInMemory()
     val mapRepo = MapRepositoryLocal()
     SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
 

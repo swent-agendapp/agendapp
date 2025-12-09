@@ -1,15 +1,16 @@
 package com.android.sample.model.firestoreMappers
 
-import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.graphics.Color
 import com.android.sample.model.calendar.CloudStorageStatus
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
+import com.android.sample.model.category.EventCategory
 import com.android.sample.ui.theme.EventPalette
-import com.android.sample.ui.theme.Palette
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import java.time.Instant
 import java.util.Date
+import java.util.UUID
 
 /** Maps Firestore documents to [Event] objects and vice versa. */
 object EventMapper : FirestoreMapper<Event> {
@@ -39,8 +40,8 @@ object EventMapper : FirestoreMapper<Event> {
 
     val presence = parsePresence(document["presence"])
     val version = document.getLong("version") ?: 0L
-    val colorLong = document.getLong("eventColor") ?: EventPalette.Blue.toArgb().toLong()
-    val color = Palette.fromLong(colorLong)
+    val hasBeenDeleted = document.getBoolean("hasBeenDeleted") ?: false
+    val category = parseCategory(document["eventCategory"])
 
     return Event(
         id = id,
@@ -55,7 +56,8 @@ object EventMapper : FirestoreMapper<Event> {
         version = version,
         presence = presence,
         recurrenceStatus = recurrenceStatus,
-        color = color)
+        hasBeenDeleted = hasBeenDeleted,
+        category = category)
   }
 
   override fun fromMap(data: Map<String, Any?>): Event? {
@@ -92,8 +94,8 @@ object EventMapper : FirestoreMapper<Event> {
     val presence = parsePresence(data["presence"])
 
     val version = (data["version"] as? Number)?.toLong() ?: 0L
-    val colorLong = (data["eventColor"] as? Number)?.toLong() ?: EventPalette.Blue.toArgb().toLong()
-    val color = Palette.fromLong(colorLong)
+    val hasBeenDeleted = data["hasBeenDeleted"] as? Boolean ?: false
+    val category = parseCategory(data["eventCategory"])
 
     return Event(
         id = id,
@@ -108,7 +110,8 @@ object EventMapper : FirestoreMapper<Event> {
         version = version,
         presence = presence,
         recurrenceStatus = recurrenceStatus,
-        color = color)
+        hasBeenDeleted = hasBeenDeleted,
+        category = category)
   }
 
   override fun toMap(model: Event): Map<String, Any?> {
@@ -125,7 +128,14 @@ object EventMapper : FirestoreMapper<Event> {
         "version" to model.version,
         "presence" to model.presence,
         "recurrenceStatus" to model.recurrenceStatus.name,
-        "eventColor" to model.color.toArgb().toLong())
+        "hasBeenDeleted" to model.hasBeenDeleted,
+        "eventCategory" to
+            mapOf(
+                "id" to model.category.id,
+                "label" to model.category.label,
+                "color" to model.category.color.value.toLong(), // Color -> Long
+                "isDefault" to model.category.isDefault,
+            ))
   }
 
   private fun parsePresence(rawPresence: Any?): Map<String, Boolean> {
@@ -136,5 +146,22 @@ object EventMapper : FirestoreMapper<Event> {
           userId to isPresent
         }
         ?.toMap() ?: emptyMap()
+  }
+
+  private fun parseCategory(rawCategory: Any?): EventCategory {
+    val map = rawCategory as? Map<*, *> ?: return EventCategory.defaultCategory()
+
+    val id = map["id"] as? String ?: UUID.randomUUID().toString()
+    val label = map["label"] as? String ?: "Uncategorized"
+    val isDefault = map["isDefault"] as? Boolean ?: false
+
+    val colorLong = (map["color"] as? Number)?.toLong() ?: EventPalette.NoCategory.value.toLong()
+
+    return EventCategory(
+        id = id,
+        label = label,
+        color = Color(colorLong.toULong()),
+        isDefault = isDefault,
+    )
   }
 }

@@ -28,9 +28,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
-import com.android.sample.ui.calendar.components.ColorSelector
+import com.android.sample.ui.calendar.components.CategorySelector
 import com.android.sample.ui.calendar.components.ValidatingTextField
-import com.android.sample.ui.components.BottomNavigationButtons
+import com.android.sample.ui.common.BottomNavigationButtons
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.SpacingExtraLarge
 import com.android.sample.ui.theme.WeightExtraHeavy
@@ -79,10 +79,10 @@ fun AddEventTitleAndDescriptionScreen(
               onValueChange = { addEventViewModel.setTitle(it) },
               onFocusChange = { focusState -> if (focusState.isFocused) titleTouched = true })
 
-          ColorSelector(
-              selectedColor = newEventUIState.color,
-              onColorSelected = { addEventViewModel.setColor(it) },
-              testTag = AddEventTestTags.COLOR_SELECTOR,
+          CategorySelector(
+              selectedCategory = newEventUIState.category,
+              onCategorySelected = { addEventViewModel.setCategory(it) },
+              testTag = AddEventTestTags.CATEGORY_SELECTOR,
           )
 
           Spacer(modifier = Modifier.height(SpacingExtraLarge))

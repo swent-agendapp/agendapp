@@ -38,6 +38,7 @@ const val WeightMedium = 0.5f
 const val WeightHeavy = 0.7f
 const val WeightVeryHeavy = 0.9f
 const val WeightExtraHeavy = 1f
+const val WeightFadeEffect = 0.85f
 
 // Alpha (transparent effect)
 const val AlphaExtraLow = 0.1f
@@ -58,11 +59,13 @@ val ElevationMedium = 8.dp
 val ElevationHigh = 12.dp
 
 // widths and heights
+val widthSmall = 48.dp
 val widthLarge = 120.dp
 val heightMedium = 40.dp
 val heightLarge = 60.dp
 val BarWidthSmall = 4.dp
-val BarWidthMedium = 18.dp
+val BarWidthMedium = 12.dp
+val BarWidthLarge = 18.dp
 val RowHeightMedium = 32.dp
 val IconSizeMedium = 16.dp
 val IconSizeExtraLarge = 30.dp

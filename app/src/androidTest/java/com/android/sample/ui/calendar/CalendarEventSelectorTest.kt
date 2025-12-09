@@ -7,7 +7,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.model.calendar.Event
-import com.android.sample.model.calendar.EventRepositoryLocal
+import com.android.sample.model.calendar.EventRepositoryInMemory
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.model.map.MapRepositoryLocal
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
@@ -45,7 +45,7 @@ class CalendarEventSelectorTests : BaseCalendarScreenTest() {
    */
   private fun setSelectorContentWithLocalRepo(events: List<Event> = buildTestEvents()) {
     val repoMap = MapRepositoryLocal()
-    val repoEvents = EventRepositoryLocal()
+    val repoEvents = EventRepositoryInMemory()
     populateRepo(repoEvents, events)
     val owner = TestOwner(CalendarVMFactory(repoEvents, repoMap))
 
@@ -183,7 +183,7 @@ class CalendarEventSelectorTests : BaseCalendarScreenTest() {
                 participants = emptySet())
 
     val repoMap = MapRepositoryLocal()
-    val repoEvent = EventRepositoryLocal()
+    val repoEvent = EventRepositoryInMemory()
 
     SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
     populateRepo(repoEvent, allowedEvents, selectedOrganizationId)

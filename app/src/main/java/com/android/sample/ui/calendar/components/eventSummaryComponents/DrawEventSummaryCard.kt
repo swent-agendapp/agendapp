@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import com.android.sample.model.category.EventCategory
 import com.android.sample.ui.calendar.components.EventSummaryCardTags
 import com.android.sample.ui.calendar.components.ExpandableText
 import com.android.sample.ui.calendar.style.EventSummaryCardDefaults
@@ -25,7 +26,6 @@ import com.android.sample.ui.calendar.style.EventSummaryTextConfig
 import com.android.sample.ui.calendar.utils.DatePresentation
 import com.android.sample.ui.calendar.utils.NO_DATA_DEFAULT_VALUE
 import com.android.sample.ui.theme.AlphaExtraLow
-import com.android.sample.ui.theme.AlphaLow
 import com.android.sample.ui.theme.ElevationExtraLow
 import com.android.sample.ui.theme.EventPalette
 import java.time.ZonedDateTime
@@ -43,6 +43,8 @@ fun DrawEventSummaryCard(
     onTitleToggle: () -> Unit = {},
     onTitleOverflowChange: (Boolean) -> Unit = {},
     showTitleToggle: Boolean = true,
+    // Category
+    category: EventCategory = EventCategory.defaultCategory(),
     // Dates
     datePresentation: DatePresentation =
         DatePresentation(
@@ -98,17 +100,21 @@ fun DrawEventSummaryCard(
                       modifier = Modifier.testTag(EventSummaryCardTags.TITLE_TEXT),
                       toggleTestTag = EventSummaryCardTags.TOGGLE_TITLE)
                   // Preserve spacing when the toggle is absent
-                  if (!showTitleToggle) Spacer(Modifier.height(style.titleSpacer))
+                  // if (!showTitleToggle) Spacer(Modifier.height(style.titleSpacer))
 
-                  // 2) Dates
+                  // 2) Category
+                  CategorySection(category = category)
+                  Spacer(Modifier.height(style.sectionGapLarge))
+
+                  // 3) Dates
                   DateSection(datePresentation)
 
-                  // 3) Recurrence
+                  // 4) Recurrence
                   RecurrenceSection(recurrenceText)
 
                   Spacer(Modifier.height(style.sectionGapLarge))
 
-                  // 4) Description
+                  // 5) Description
                   DescriptionSection(
                       descriptionText = descriptionText,
                       collapsedMaxLines = textConfig.descriptionCollapsedMaxLines,
@@ -119,13 +125,11 @@ fun DrawEventSummaryCard(
                       noToggleSpacer = style.descNoToggleSpacer,
                       hasToggleSpacer = style.descHasToggleSpacer)
 
-                  // 5) Participants
+                  // 6) Participants
                   ParticipantsSection(
                       participantNames = participantNames,
                       rowHeight = style.participantsRowHeight,
                       visibleRows = style.participantsVisibleRows,
-                      borderColor =
-                          MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = AlphaLow),
                   )
                 }
           }

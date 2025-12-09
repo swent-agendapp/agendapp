@@ -32,9 +32,13 @@
     <string name="confirmed_replacements">Bestätigte Ersetzungen</string>
     <string name="common_back">Zurück</string>
 
+    <!-- Warnings -->
+    <string name="warning_title">Warnung</string>
+    <string name="warning_participant_modification">Änderungen der Teilnehmenden, die Sie hier vornehmen, werden den betroffenen Personen nicht mitgeteilt\n\nWenn Sie einen Ersatz für eine der teilnehmenden Personen organisieren müssen, verwenden Sie stattdessen den Tab “Ersatzplan” im Hauptmenü</string>
+    <string name="warning_got_it">Verstanden</string>
+
     <!-- Edit Event Screen -->
     <string name="edit_event_title">Ereignis bearbeiten</string>
-    <string name="edit_event_instruction">Bearbeiten Sie unten die Ereignisdetails:</string>
 
     <!-- Fields -->
     <string name="edit_event_title_label">Titel</string>
@@ -49,13 +53,10 @@
     <string name="edit_event_end_date_label">Enddatum</string>
     <string name="edit_event_start_time_label">Startzeit:</string>
     <string name="edit_event_end_time_label">Endzeit:</string>
-    <string name="edit_event_recurrence_label">Wiederholung</string>
 
     <!-- Participants -->
-    <string name="edit_event_participants_label">Teilnehmer:</string>
     <string name="edit_event_edit_participants_button">Teilnehmer bearbeiten</string>
     <string name="edit_event_participants_screen_title">Ereignisteilnehmer bearbeiten</string>
-    <string name="edit_event_select_participants_text">Teilnehmer auswählen</string>
 
     <!-- Notifications -->
 
@@ -217,6 +218,8 @@
     <string name="filter_participants">Teilnehmer</string>
     <string name="clear_all">Alles löschen</string>
     <string name="apply">Anwenden</string>
+    <string name="eventType">Ereignistyp</string>
+    <string name="location">Ort</string>
 
     <!-- Invitations -->
     <string name="invitation_codes_title">Einladungscodes</string>
@@ -227,6 +230,12 @@
     <string name="status_active">Aktiv</string>
     <string name="status_used">Verwendet</string>
     <string name="status_expired">Abgelaufen</string>
+    <string name="invitations_loading">Einladungen werden geladen</string>
+    <string name="invitations_creating">Einladungen werden erstellt</string>
+    <string name="error_inserting_invitation">Fehler beim Hinzufügen der Einladung</string>
+    <string name="error_loading_invitations">Einladungen konnten nicht geladen werden</string>
+    <string name="error_invitation_not_found">Einladung wurde nicht gefunden</string>
+    <string name="error_deleting_invitations">Einladung konnte nicht gelöscht werden</string>
     <string name="enter_invitation_code">Geben Sie den Einladungscode ein</string>
     <string name="join_button_text">Beitreten</string>
 
@@ -234,5 +243,8 @@
     <string name="loading_hours">Laden…</string>
     <string name="work_duration_hours">%1$d Std.</string>
     <string name="work_duration_hours_minutes">%1$d Std. %2$d Min.</string>
+
+    <!-- Category -->
+    <string name="default_category_label">Ohne Kategorie</string>
 
 </resources>

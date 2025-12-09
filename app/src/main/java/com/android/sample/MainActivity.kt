@@ -39,7 +39,6 @@ import com.android.sample.ui.common.BottomBar
 import com.android.sample.ui.common.BottomBarItem
 import com.android.sample.ui.common.BottomBarTestTags
 import com.android.sample.ui.hourRecap.HourRecapScreen
-import com.android.sample.ui.hourrecap.HourRecapScreen
 import com.android.sample.ui.invitation.InvitationOverviewScreen
 import com.android.sample.ui.map.MapScreen
 import com.android.sample.ui.navigation.NavigationActions

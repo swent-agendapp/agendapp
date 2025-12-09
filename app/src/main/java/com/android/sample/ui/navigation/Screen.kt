@@ -49,9 +49,8 @@ sealed class Screen(val route: String, val name: String) {
 
   data object ReplacementUpcoming : Screen("replacement/upcoming", name = "Replacement Upcoming")
 
-  data object InvitationOverview : Screen("invitation/overview", name = "Invitation Overview")
-
   data object HourRecap : Screen("hour_recap", name = "Hour Recap")
+
   data object ChangeOrganization : Screen("Change_organization", name = "Change Organization")
 
   data object InvitationOverview :

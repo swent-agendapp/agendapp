@@ -30,11 +30,10 @@ data class OrganizationOverviewUIState(
 
 /** ViewModel for managing the state and logic of the Organization Overview screen. */
 class OrganizationOverviewViewModel(
-  private val organizationRepository: OrganizationRepository =
+    private val organizationRepository: OrganizationRepository =
         OrganizationRepositoryProvider.repository,
-  private val userRepository: UserRepository =
-      UserRepositoryProvider.repository,
-  private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
+    private val userRepository: UserRepository = UserRepositoryProvider.repository,
+    private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
 ) : ViewModel() {
   // State holding the UI state for organization overview
   private val _uiState = MutableStateFlow(OrganizationOverviewUIState())
@@ -71,7 +70,7 @@ class OrganizationOverviewViewModel(
       val org =
           organizationRepository.getOrganizationById(organizationId = orgId, user = currentUser)
       val members =
-        userRepository.getUsersByIds(userRepository.getMembersIds(organizationId = orgId))
+          userRepository.getUsersByIds(userRepository.getMembersIds(organizationId = orgId))
       // Update the UI state with organization details
       _uiState.value =
           OrganizationOverviewUIState(

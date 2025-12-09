@@ -45,9 +45,7 @@ class OrganizationOverviewViewModelTest {
   @Test
   fun `fillSelectedOrganizationDetails fills UI state correctly`() = runTest {
     val orgId = "org1"
-    val org =
-        Organization(
-            id = orgId, name = "My Organization")
+    val org = Organization(id = orgId, name = "My Organization")
     organizationRepository.insertOrganization(org)
 
     vm.fillSelectedOrganizationDetails(orgId)
@@ -70,7 +68,9 @@ class OrganizationOverviewViewModelTest {
   @OptIn(ExperimentalCoroutinesApi::class)
   @Test
   fun `fillSelectedOrganizationDetails sets error when no authenticated user`() = runTest {
-    val vmNoUser = OrganizationOverviewViewModel(organizationRepository, userRepository, FakeAuthRepository(null))
+    val vmNoUser =
+        OrganizationOverviewViewModel(
+            organizationRepository, userRepository, FakeAuthRepository(null))
     vmNoUser.fillSelectedOrganizationDetails("org1")
 
     val state = vmNoUser.uiState.value

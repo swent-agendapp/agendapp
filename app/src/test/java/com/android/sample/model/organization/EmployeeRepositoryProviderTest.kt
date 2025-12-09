@@ -3,7 +3,6 @@ package com.android.sample.model.organization
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepository
 import com.android.sample.model.authentication.UserRepositoryProvider
-import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
@@ -15,19 +14,15 @@ import org.junit.Test
  * - Implements only the required functions of the current UserRepository contract
  */
 private class StubUserRepo : UserRepository {
-  override suspend fun getMembersIds(
-    organizationId: String
-  ): List<String> {
+  override suspend fun getMembersIds(organizationId: String): List<String> {
     TODO("No need to implement for current tests")
   }
-
 
   override suspend fun getAdminsIds(organizationId: String): List<String> {
     TODO("No need to implement for current tests")
   }
 
   override suspend fun getUsersByIds(userIds: List<String>): List<User> = emptyList()
-
 
   override suspend fun modifyUser(user: User) {
     TODO("No need to implement for current tests")
@@ -60,7 +55,6 @@ class UserRepositoryProviderTest {
   fun stubRepository_instantiates_and_calls_methods() = runBlocking {
     UserRepositoryProvider.repository = StubUserRepo()
     val repo = UserRepositoryProvider.repository
-
 
     // newUser should not throw
     repo.newUser(User("u1", "Alice", "alice@test.com"))

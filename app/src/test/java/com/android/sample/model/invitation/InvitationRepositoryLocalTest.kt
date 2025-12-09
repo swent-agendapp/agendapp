@@ -37,9 +37,7 @@ class InvitationRepositoryLocalTest {
     outsider = User(id = "outsider", displayName = "Outsider", email = "outsider@example.com")
 
     // --- Create organization ---
-    orgA =
-        Organization(
-            id = "orgA", name = "Org A")
+    orgA = Organization(id = "orgA", name = "Org A")
   }
 
   @Test

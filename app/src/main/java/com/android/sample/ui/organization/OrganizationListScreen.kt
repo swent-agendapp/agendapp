@@ -71,7 +71,6 @@ fun OrganizationListScreen(
   }
   LaunchedEffect(Unit) { organizationViewModel.loadOrganizations() }
 
-
   Scaffold(
       topBar = {
         MainPageTopBar(

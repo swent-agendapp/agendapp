@@ -19,15 +19,14 @@ import kotlinx.coroutines.launch
 data class AddOrganizationUIState(val name: String? = null, val errorMsg: String? = null)
 
 open class AddOrganizationViewModel(
-  private val userRepository: UserRepository = UserRepositoryProvider.repository,
-  private val organizationRepository: OrganizationRepository =
-    OrganizationRepositoryProvider.repository,
-  private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
-  ) : ViewModel() {
+    private val userRepository: UserRepository = UserRepositoryProvider.repository,
+    private val organizationRepository: OrganizationRepository =
+        OrganizationRepositoryProvider.repository,
+    private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
+) : ViewModel() {
   // State holding the UI state for adding an organization
   private val _uiState = MutableStateFlow(AddOrganizationUIState())
   open val uiState: StateFlow<AddOrganizationUIState> = _uiState
-
 
   // State holding the current user
   private val _userState = MutableStateFlow(authRepository.getCurrentUser())

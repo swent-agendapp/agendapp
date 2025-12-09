@@ -12,7 +12,6 @@ import androidx.test.filters.MediumTest
 import androidx.test.rule.GrantPermissionRule
 import com.android.sample.Agendapp
 import com.android.sample.model.authentication.AuthRepositoryProvider
-import com.android.sample.model.authentication.UserRepository
 import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.ui.authentication.SignInScreenTestTags
@@ -62,7 +61,8 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
     // Ensure a user is signed in before each test (use runBlocking to call suspend function)
     runBlocking {
       FirebaseEmulator.signInWithFakeGoogleUser(fakeGoogleIdToken)
-      UserRepositoryProvider.repository.newUser(AuthRepositoryProvider.repository.getCurrentUser()!!)
+      UserRepositoryProvider.repository.newUser(
+          AuthRepositoryProvider.repository.getCurrentUser()!!)
     }
   }
 

@@ -43,7 +43,7 @@ class OrganizationOverviewScreenTest {
     fakeOrgRepo = FakeOrganizationRepository()
     fakeAuthRepo = FakeAuthRepository(fakeUser)
     fakeUserRepo = UsersRepositoryLocal()
-    vm = OrganizationOverviewViewModel(fakeOrgRepo,fakeUserRepo,fakeAuthRepo)
+    vm = OrganizationOverviewViewModel(fakeOrgRepo, fakeUserRepo, fakeAuthRepo)
     selectedOrgVM = SelectedOrganizationVMProvider.viewModel
     selectedOrgVM.clearSelection()
 
@@ -80,10 +80,7 @@ class OrganizationOverviewScreenTest {
   @OptIn(ExperimentalCoroutinesApi::class)
   @Test
   fun organizationDetailsAreDisplayed() = runTest {
-    val org =
-        Organization(
-            id = "org1",
-            name = "Test Organization")
+    val org = Organization(id = "org1", name = "Test Organization")
     fakeOrgRepo.insertOrganization(org)
     fakeUserRepo.addUserToOrganization(user1.id, "org1")
     fakeUserRepo.addUserToOrganization(user2.id, "org1")
@@ -127,8 +124,7 @@ class OrganizationOverviewScreenTest {
   @OptIn(ExperimentalCoroutinesApi::class)
   @Test
   fun clickingChangeButtonClearsOrganization() = runTest {
-    val org =
-        Organization(id = "org1", name = "Org")
+    val org = Organization(id = "org1", name = "Org")
     fakeOrgRepo.insertOrganization(org)
     selectedOrgVM.selectOrganization(org.id)
 
@@ -150,8 +146,7 @@ class OrganizationOverviewScreenTest {
   @OptIn(ExperimentalCoroutinesApi::class)
   @Test
   fun clickingDeleteButtonDeletesOrganizationAndCallsCallback() = runTest {
-    val org =
-        Organization(id = "org1", name = "To Delete")
+    val org = Organization(id = "org1", name = "To Delete")
     fakeOrgRepo.insertOrganization(org)
     selectedOrgVM.selectOrganization(org.id)
 

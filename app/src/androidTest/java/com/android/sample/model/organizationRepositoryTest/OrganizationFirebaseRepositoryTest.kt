@@ -3,7 +3,6 @@ package com.android.sample.model.organizationRepositoryTest
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepository
-import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.repository.OrganizationRepository
 import com.android.sample.utils.FirebaseEmulatedTest
@@ -35,25 +34,41 @@ class OrganizationFirebaseRepositoryTest : FirebaseEmulatedTest() {
     repository = createInitializedOrganizationRepository()
 
     // --- Create organizations ---
-    orgA =
-        Organization(
-            id = "orgA",
-            name = "Org A")
-    orgB =
-        Organization(
-            id = "orgB",
-            name = "Org B")
-    orgC =
-        Organization(
-            id = "orgC",
-            name = "Org C")
+    orgA = Organization(id = "orgA", name = "Org A")
+    orgB = Organization(id = "orgB", name = "Org B")
+    orgC = Organization(id = "orgC", name = "Org C")
 
     // --- Create users ---
-    adminA = User(id = "adminA", displayName = "Admin A", email = "adminA@example.com", organizations = listOf(orgA.id))
-    adminB = User(id = "adminB", displayName = "Admin B", email = "adminB@example.com", organizations = listOf(orgB.id))
-    memberA = User(id = "memberA", displayName = "Member A", email = "memberA@example.com", organizations = listOf(orgA.id))
-    memberB = User(id = "memberB", displayName = "Member B", email = "memberB@example.com", organizations = listOf(orgB.id))
-    outsider = User(id = "outsider", displayName = "Outsider", email = "outsider@example.com", organizations = emptyList())
+    adminA =
+        User(
+            id = "adminA",
+            displayName = "Admin A",
+            email = "adminA@example.com",
+            organizations = listOf(orgA.id))
+    adminB =
+        User(
+            id = "adminB",
+            displayName = "Admin B",
+            email = "adminB@example.com",
+            organizations = listOf(orgB.id))
+    memberA =
+        User(
+            id = "memberA",
+            displayName = "Member A",
+            email = "memberA@example.com",
+            organizations = listOf(orgA.id))
+    memberB =
+        User(
+            id = "memberB",
+            displayName = "Member B",
+            email = "memberB@example.com",
+            organizations = listOf(orgB.id))
+    outsider =
+        User(
+            id = "outsider",
+            displayName = "Outsider",
+            email = "outsider@example.com",
+            organizations = emptyList())
 
     userRepository.newUser(adminA)
     userRepository.newUser(adminB)

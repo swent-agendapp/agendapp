@@ -77,10 +77,10 @@ enum class AddEventStep {
  * [setStartInstant], and [addEvent].
  */
 class AddEventViewModel(
-  private val userRepository: UserRepository = UserRepositoryProvider.repository,
-  private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
-  private val eventRepository: EventRepository = EventRepositoryProvider.repository,
-  selectedOrganizationViewModel: SelectedOrganizationViewModel =
+    private val userRepository: UserRepository = UserRepositoryProvider.repository,
+    private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
+    private val eventRepository: EventRepository = EventRepositoryProvider.repository,
+    selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel
 ) : ViewModel() {
 

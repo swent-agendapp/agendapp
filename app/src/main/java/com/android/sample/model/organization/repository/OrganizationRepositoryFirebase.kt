@@ -24,11 +24,11 @@ class OrganizationRepositoryFirebase(private val db: FirebaseFirestore) : Organi
     val userDoc = db.collection(COLLECTION_USERS).document(user.id).get().await()
     val orgIds = userDoc.get("organizations") as? List<String> ?: emptyList()
     if (orgIds.isEmpty()) return emptyList()
-      val orgSnapshot =
-          db.collection(ORGANIZATIONS_COLLECTION_PATH)
-              .whereIn(FieldPath.documentId(), orgIds)
-              .get()
-              .await()
+    val orgSnapshot =
+        db.collection(ORGANIZATIONS_COLLECTION_PATH)
+            .whereIn(FieldPath.documentId(), orgIds)
+            .get()
+            .await()
     return orgSnapshot.documents.mapNotNull { OrganizationMapper.fromDocument(it) }
   }
 
@@ -45,11 +45,11 @@ class OrganizationRepositoryFirebase(private val db: FirebaseFirestore) : Organi
       user: User
   ) {
     val adminDocs =
-      db.collection(FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH)
-        .document(organizationId)
-        .collection(FirestoreConstants.COLLECTION_ADMINS)
-        .get()
-        .await()
+        db.collection(FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH)
+            .document(organizationId)
+            .collection(FirestoreConstants.COLLECTION_ADMINS)
+            .get()
+            .await()
 
     val isAdmin = adminDocs.documents.any { it.id == user.id }
     require(isAdmin) { "User ${user.id} is not an admin of organization $organizationId" }

@@ -111,7 +111,7 @@ class AddEventViewModelTest {
   @Test
   fun `addParticipant and removeParticipant modify participants set`() {
     val vm = makeVm()
-    val user = User(id ="user1")
+    val user = User(id = "user1")
     vm.addParticipant(user)
     assertTrue(vm.uiState.value.participants.contains(user))
 
@@ -153,7 +153,7 @@ class AddEventViewModelTest {
   @Test
   fun `resetUiState clears all fields to default`() {
     val vm = makeVm()
-    val user = User(id ="user1")
+    val user = User(id = "user1")
 
     vm.setTitle("Some Title")
     vm.setDescription("Some Description")

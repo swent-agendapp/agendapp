@@ -35,14 +35,8 @@ class OrganizationViewModelTest {
   private lateinit var viewModel: OrganizationViewModel
 
   private val testUser = User(id = "user1", displayName = "Test User", email = "test@example.com")
-  private val testOrg1 =
-      Organization(
-          id = "org1",
-          name = "Organization 1")
-  private val testOrg2 =
-      Organization(
-          id = "org2",
-          name = "Organization 2")
+  private val testOrg1 = Organization(id = "org1", name = "Organization 1")
+  private val testOrg2 = Organization(id = "org2", name = "Organization 2")
 
   @Before
   fun setUp() {
@@ -92,10 +86,7 @@ class OrganizationViewModelTest {
     testDispatcher.scheduler.advanceUntilIdle()
 
     // Update mock to return different data
-    val updatedOrg =
-        Organization(
-            id = "org3",
-            name = "Updated Organization")
+    val updatedOrg = Organization(id = "org3", name = "Updated Organization")
     coEvery { organizationRepository.getAllOrganizations(testUser) } returns listOf(updatedOrg)
 
     // Call refresh and complete it

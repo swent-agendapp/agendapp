@@ -202,9 +202,9 @@ class CreateInvitationViewModelTest {
           }
 
           override suspend fun updateOrganization(
-            organizationId: String,
-            organization: Organization,
-            user: User
+              organizationId: String,
+              organization: Organization,
+              user: User
           ) {
             TODO("No need to implement for current tests")
           }

@@ -1,7 +1,6 @@
 package com.android.sample.model.organizationRepositoryTest
 
 import com.android.sample.model.authentication.User
-import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.repository.OrganizationRepositoryLocal
@@ -36,18 +35,11 @@ class OrganizationRepositoryLocalTest {
     outsider = User(id = "outsider", displayName = "Outsider", email = "outsider@example.com")
 
     // --- Create organizations ---
-    orgA =
-        Organization(
-            id = "orgA", name = "Org A")
+    orgA = Organization(id = "orgA", name = "Org A")
 
-    orgB =
-        Organization(
-            id = "orgB", name = "Org B")
+    orgB = Organization(id = "orgB", name = "Org B")
 
-    orgC =
-        Organization(
-            id = "orgC",
-            name = "Org C")
+    orgC = Organization(id = "orgC", name = "Org C")
   }
 
   // Insertion tests

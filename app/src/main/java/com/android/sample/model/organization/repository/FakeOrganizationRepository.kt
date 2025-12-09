@@ -12,12 +12,11 @@ class FakeOrganizationRepository : OrganizationRepository {
   }
 
   override suspend fun updateOrganization(
-    organizationId: String,
-    organization: Organization,
-    user: User
+      organizationId: String,
+      organization: Organization,
+      user: User
   ) {
-    if(organizationId == organization.id)
-      organizations[organizationId] = organization
+    if (organizationId == organization.id) organizations[organizationId] = organization
   }
 
   override suspend fun getOrganizationById(organizationId: String, user: User): Organization? {

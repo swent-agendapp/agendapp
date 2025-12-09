@@ -18,11 +18,7 @@ object OrganizationMapper : FirestoreMapper<Organization> {
     val events = eventsData.mapNotNull { EventMapper.fromAny(it) }
 
     return Organization(
-        id = id,
-        name = name,
-        events = events,
-        areas = areas,
-        geoCheckEnabled = geoCheckEnabled)
+        id = id, name = name, events = events, areas = areas, geoCheckEnabled = geoCheckEnabled)
   }
 
   override fun fromMap(data: Map<String, Any?>): Organization? {
@@ -37,11 +33,7 @@ object OrganizationMapper : FirestoreMapper<Organization> {
     val events = eventsData.mapNotNull { EventMapper.fromAny(it) }
 
     return Organization(
-        id = id,
-        name = name,
-        events = events,
-        areas = areas,
-        geoCheckEnabled = geoCheckEnabled)
+        id = id, name = name, events = events, areas = areas, geoCheckEnabled = geoCheckEnabled)
   }
 
   override fun toMap(model: Organization): Map<String, Any?> {

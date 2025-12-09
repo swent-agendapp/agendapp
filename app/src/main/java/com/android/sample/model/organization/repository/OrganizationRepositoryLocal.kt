@@ -16,9 +16,7 @@ class OrganizationRepositoryLocal : OrganizationRepository {
   private val organizations: MutableList<Organization> = mutableListOf()
 
   override suspend fun getAllOrganizations(user: User): List<Organization> {
-    return user.organizations.map { id ->
-      organizations.first { it -> it.id == id }
-    }
+    return user.organizations.map { id -> organizations.first { it -> it.id == id } }
   }
 
   override suspend fun insertOrganization(organization: Organization) {

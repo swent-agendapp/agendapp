@@ -102,7 +102,6 @@ class OrganizationMapperTest {
     assertThat(organization.name).isEqualTo("My Organization")
     assertThat(organization.geoCheckEnabled).isTrue()
 
-
     assertThat(organization.areas).hasSize(1)
     val area = organization.areas[0]
     assertThat(area.label).isEqualTo("Main Area")

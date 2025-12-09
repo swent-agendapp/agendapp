@@ -37,10 +37,7 @@ class InvitationRepositoryFirebaseTest : FirebaseEmulatedTest() {
     outsider = User(id = "outsider", displayName = "Outsider", email = "outsider@example.com")
 
     // --- Create organization ---
-    organization =
-        Organization(
-            id = "orgA",
-            name = "Org A")
+    organization = Organization(id = "orgA", name = "Org A")
   }
 
   @Test

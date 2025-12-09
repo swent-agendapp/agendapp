@@ -144,14 +144,24 @@ fun EventBlock(
     DrawEventBlock(
         modifier = modifier,
         event = event,
-        topOffset = topOffset,
-        eventHeight = eventHeight,
-        eventWidthDp = eventWidthDp,
-        horizontalOffsetDp = horizontalOffsetDp,
+        layout =
+            EventBlockLayout(
+                topOffset = topOffset,
+                height = eventHeight,
+                width = eventWidthDp,
+                horizontalOffset = horizontalOffsetDp,
+            ),
         onEventClick = onEventClick,
         isSelected = (selectedEvent == event))
   }
 }
+
+data class EventBlockLayout(
+    val topOffset: Dp = ElevationNull,
+    val height: Dp = widthLarge,
+    val width: Dp = widthLarge,
+    val horizontalOffset: Dp = ElevationNull,
+)
 
 /**
  * Draws the UI block for a single event within a day column.
@@ -171,13 +181,14 @@ fun EventBlock(
 private fun DrawEventBlock(
     modifier: Modifier = Modifier,
     event: Event,
-    topOffset: Dp = ElevationNull,
-    eventHeight: Dp = widthLarge, // squared
-    eventWidthDp: Dp = widthLarge,
-    horizontalOffsetDp: Dp = ElevationNull,
+    layout: EventBlockLayout = EventBlockLayout(),
     onEventClick: (Event) -> Unit = {},
     isSelected: Boolean = false,
 ) {
+  val topOffset = layout.topOffset
+  val eventHeight = layout.height
+  val eventWidthDp = layout.width
+  val horizontalOffsetDp = layout.horizontalOffset
   // Event styling
   val baseBackgroundColor = event.category.color
   val backgroundColor = baseBackgroundColor

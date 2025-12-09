@@ -6,6 +6,9 @@ import androidx.compose.ui.test.onNodeWithTag
 import com.android.sample.ui.invitation.createInvitation.CreateInvitationBottomSheet
 import com.android.sample.ui.invitation.createInvitation.InvitationCreationTestTags
 import com.android.sample.utils.FirebaseEmulatedTest
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -15,6 +18,9 @@ import org.junit.Test
 class CreateInvitationBottomSheetTest : FirebaseEmulatedTest() {
 
   @get:Rule val composeTestRule = createComposeRule()
+
+  @OptIn(ExperimentalCoroutinesApi::class)
+  private val testScope = TestScope(UnconfinedTestDispatcher())
 
   @Before
   override fun setUp() {

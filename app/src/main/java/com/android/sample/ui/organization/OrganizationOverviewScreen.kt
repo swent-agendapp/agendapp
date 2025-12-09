@@ -1,6 +1,7 @@
 package com.android.sample.ui.organization
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -18,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.common.BottomNavigationButtons
+import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.theme.PaddingMedium
 import kotlinx.coroutines.launch
@@ -28,6 +30,7 @@ object OrganizationOverviewScreenTestTags {
   const val MEMBER_COUNT_TEXT = "memberCountText"
   const val CHANGE_BUTTON = "changeButton"
   const val DELETE_BUTTON = "deleteButton"
+  const val INVITATION_BUTTON = "invitationButton"
   const val ERROR_SNACKBAR = "errorSnackBar"
 }
 
@@ -45,6 +48,7 @@ fun OrganizationOverViewScreen(
     onNavigateBack: () -> Unit = {},
     onChangeOrganization: () -> Unit = {},
     onDeleteOrganization: () -> Unit = {},
+    onInvitationClick: () -> Unit = {},
     organizationOverviewViewModel: OrganizationOverviewViewModel = viewModel(),
     selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel,
@@ -104,6 +108,15 @@ fun OrganizationOverViewScreen(
           Text(
               modifier = Modifier.testTag(OrganizationOverviewScreenTestTags.MEMBER_COUNT_TEXT),
               text = stringResource(R.string.organization_members) + ": ${uiState.memberCount}")
+
+          // Here is an hardcoded string, but this button is only here temporarily, so we do not
+          // need to write "Invitations" in strings.xml
+          PrimaryButton(
+              text = "Invitations",
+              onClick = onInvitationClick,
+              modifier =
+                  Modifier.fillMaxWidth()
+                      .testTag(OrganizationOverviewScreenTestTags.INVITATION_BUTTON))
 
           // Bottom buttons (Change / Delete)
           BottomNavigationButtons(

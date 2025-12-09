@@ -30,9 +30,12 @@ class SettingsHourRecapE2ETest : FirebaseEmulatedTest() {
 
   private val expectedName = "John Doe"
   private val expectedEmail = "john.doe@test.com"
+
+  // Fake Google token for test flow
   private val fakeGoogleIdToken =
       FakeJwtGenerator.createFakeGoogleIdToken(
           sub = "settings_test", name = expectedName, email = expectedEmail)
+
   private val fakeCredentialManager = FakeCredentialManager.create(fakeGoogleIdToken)
 
   @get:Rule val compose = createComposeRule()
@@ -45,13 +48,14 @@ class SettingsHourRecapE2ETest : FirebaseEmulatedTest() {
 
   @Test
   fun navigateFromSettingsToHourRecap_success() {
-    // Launch app
+    // --- Launch app ---
     compose.setContent { Agendapp(credentialManager = fakeCredentialManager) }
     compose.waitForIdle()
 
-    // ---- Sign In ----
+    // --- Sign In ---
     compose.onNodeWithTag(SignInScreenTestTags.LOGIN_BUTTON).assertIsDisplayed().performClick()
 
+    // Wait until we reach the Organization List screen
     compose.waitUntil(timeoutMillis = UI_AUTH_TIMEOUT) {
       compose
           .onAllNodesWithTag(OrganizationListScreenTestTags.ROOT)
@@ -59,38 +63,45 @@ class SettingsHourRecapE2ETest : FirebaseEmulatedTest() {
           .isNotEmpty()
     }
 
-    // ---- Create organization ----
+    // --- Create an organization so we can enter the app ---
     val orgName = "E2E_Test_Org"
 
-    compose.onNodeWithTag(OrganizationListScreenTestTags.ADD_ORGANIZATION_BUTTON).performClick()
+    compose
+        .onNodeWithTag(OrganizationListScreenTestTags.ADD_ORGANIZATION_BUTTON)
+        .assertIsDisplayed()
+        .performClick()
 
     compose
         .onNodeWithTag(AddOrganizationScreenTestTags.ORGANIZATION_NAME_TEXT_FIELD)
         .performTextInput(orgName)
 
-    compose.onNodeWithTag(AddOrganizationScreenTestTags.CREATE_BUTTON).performClick()
-
-    compose.waitForIdle()
-
-    // Back to list → select organization
     compose
-        .onNodeWithTag(OrganizationListScreenTestTags.organizationItemTag(orgName))
+        .onNodeWithTag(AddOrganizationScreenTestTags.CREATE_BUTTON)
+        .assertIsDisplayed()
         .performClick()
 
     compose.waitForIdle()
 
-    // ---- Now we are in Calendar screen ----
+    // --- Select the new organization ---
+    compose
+        .onNodeWithTag(OrganizationListScreenTestTags.organizationItemTag(orgName))
+        .assertIsDisplayed()
+        .performClick()
+
+    compose.waitForIdle()
+
+    // --- Calendar screen should be shown ---
     compose.onNodeWithTag(CalendarScreenTestTags.ROOT).assertIsDisplayed()
 
-    // ---- Open Settings via bottom bar ----
+    // --- Open Settings through bottom bar ---
     compose.onNodeWithTag(BottomBarTestTags.ITEM_SETTINGS).assertIsDisplayed().performClick()
 
     compose.waitForIdle()
 
-    // ---- Settings screen loaded ----
+    // --- Settings screen should load ---
     compose.onNodeWithTag(SettingsScreenTestTags.ROOT).assertIsDisplayed()
 
-    // ---- Click Hour Recap ----
+    // --- Navigate to Hour Recap ---
     compose
         .onNodeWithTag(SettingsScreenTestTags.HOURRECAP_BUTTON)
         .assertIsDisplayed()
@@ -98,7 +109,7 @@ class SettingsHourRecapE2ETest : FirebaseEmulatedTest() {
 
     compose.waitForIdle()
 
-    // ---- Verify HourRecapScreen ----
+    // --- Verify Hour Recap Screen ---
     compose.onNodeWithTag(HourRecapTestTags.SCREEN_ROOT).assertIsDisplayed()
   }
 }

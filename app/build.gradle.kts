@@ -121,11 +121,6 @@ android {
         res.setSrcDirs(emptyList<File>())
         resources.setSrcDirs(emptyList<File>())
     }
-
-    // Enable test fixtures to share code between unit and instrumentation tests
-    testFixtures {
-        enable = true
-    }
 }
 
 sonar {

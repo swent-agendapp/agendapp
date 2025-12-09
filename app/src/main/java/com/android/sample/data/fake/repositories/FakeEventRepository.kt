@@ -1,4 +1,4 @@
-package com.android.sample.utils
+package com.android.sample.data.fake.repositories
 
 import com.android.sample.data.global.repositories.BaseEventRepository
 import com.android.sample.model.calendar.Event

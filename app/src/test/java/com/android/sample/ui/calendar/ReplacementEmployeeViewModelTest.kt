@@ -1,5 +1,6 @@
 package com.android.sample.ui.calendar
 
+import com.android.sample.data.fake.repositories.FakeEventRepository
 import com.android.sample.data.global.repositories.EventRepository
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
@@ -7,7 +8,6 @@ import com.android.sample.model.category.EventCategory
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.model.replacement.*
 import com.android.sample.ui.calendar.replacementEmployee.ReplacementEmployeeViewModel
-import com.android.sample.utils.FakeEventRepository
 import java.time.Instant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

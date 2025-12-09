@@ -3,6 +3,8 @@ package com.android.sample.ui.calendar
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import com.android.sample.data.fake.repositories.FakeEventRepository
+import com.android.sample.data.fake.repositories.RepoMethod
 import com.android.sample.data.global.providers.EventRepositoryProvider
 import com.android.sample.data.global.repositories.EventRepository
 import com.android.sample.model.calendar.Event
@@ -12,8 +14,6 @@ import com.android.sample.model.organization.repository.SelectedOrganizationRepo
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreen
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreenTestTags
 import com.android.sample.ui.calendar.eventOverview.EventOverviewViewModel
-import com.android.sample.utils.FakeEventRepository
-import com.android.sample.utils.RepoMethod
 import java.time.Duration
 import java.time.Instant.now
 import java.time.temporal.ChronoUnit

@@ -100,7 +100,6 @@ fun ReplacementEmployeeListScreen(
     isAdmin: Boolean = false,
     adminActions: ReplacementAdminActions = ReplacementAdminActions(),
     createRequestActions: ReplacementCreateRequestActions = ReplacementCreateRequestActions(),
-    onBack: () -> Unit = {},
 ) {
   var showCreateOptions by remember { mutableStateOf(false) }
 
@@ -128,7 +127,7 @@ fun ReplacementEmployeeListScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(PaddingExtraSmall),
         ) {
-          if (true) {
+          if (true) { // change to if is admin when implemented
             SecondaryButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(R.string.organize_replacement),

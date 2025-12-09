@@ -72,6 +72,12 @@ private fun filterVisibleEvents(
   }
 }
 
+data class EventBlockConfig(
+    val startTime: LocalTime = CalendarDefaults.DefaultStartTime,
+    val endTime: LocalTime = CalendarDefaults.DefaultEndTime,
+    val columnWidthDp: Dp,
+)
+
 /**
  * Draws visual blocks for a list of events within a single day column. Events are clipped to the
  * visible time window and positioned using their start/end times. Overlap handling is planned and
@@ -91,12 +97,14 @@ fun EventBlock(
     events: List<Event> = emptyList(),
     currentDate:
         LocalDate, // used to compute the visible portion of events that may span multiple days
-    startTime: LocalTime = CalendarDefaults.DefaultStartTime,
-    endTime: LocalTime = CalendarDefaults.DefaultEndTime,
-    columnWidthDp: Dp = defaultGridContentDimensions().defaultColumnWidthDp,
+    config: EventBlockConfig =
+        EventBlockConfig(columnWidthDp = defaultGridContentDimensions().defaultColumnWidthDp),
     selectedEvent: Event? = null,
     onEventClick: (Event) -> Unit = {}
 ) {
+  val startTime = config.startTime
+  val endTime = config.endTime
+  val columnWidthDp = config.columnWidthDp
   // Filter events for the current day and time range using the helper
   val visibleEvents = filterVisibleEvents(events, currentDate, startTime, endTime)
 

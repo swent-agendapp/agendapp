@@ -19,6 +19,7 @@ import androidx.compose.ui.platform.testTag
 import com.android.sample.model.calendar.Event
 import com.android.sample.ui.calendar.components.DayHeaderRow
 import com.android.sample.ui.calendar.components.EventsPane
+import com.android.sample.ui.calendar.components.EventsPaneConfig
 import com.android.sample.ui.calendar.components.GridCanvas
 import com.android.sample.ui.calendar.components.NowIndicatorLine
 import com.android.sample.ui.calendar.components.TimeAxisColumn
@@ -146,10 +147,12 @@ fun CalendarGridContent(
                   EventsPane(
                       days = metrics.days,
                       events = events,
-                      columnWidthDp = gridColumnWidthDp,
-                      gridHeightDp = metrics.gridHeightDp,
-                      gridStartTime = metrics.gridStartTime,
-                      effectiveEndTime = metrics.effectiveEndTime,
+                      layout =
+                          EventsPaneConfig(
+                              columnWidthDp = gridColumnWidthDp,
+                              gridHeightDp = metrics.gridHeightDp,
+                              gridStartTime = metrics.gridStartTime,
+                              effectiveEndTime = metrics.effectiveEndTime),
                       selectedEvent = selectedEvent,
                       onEventClick = onEventClick)
 

@@ -32,8 +32,7 @@ object EventMapper {
         presence = encodeBooleanMap(presence),
         version = version,
         hasBeenDeleted = hasBeenDeleted,
-        recurrenceStatus = recurrenceStatus.name,
-        color = color.toArgb())
+        recurrenceStatus = recurrenceStatus.name,)
   }
 
   /* Maps an EventEntity from local database storage to an Event domain model. */
@@ -57,7 +56,6 @@ object EventMapper {
         hasBeenDeleted = hasBeenDeleted,
         recurrenceStatus =
             runCatching { RecurrenceStatus.valueOf(recurrenceStatus) }
-                .getOrDefault(RecurrenceStatus.OneTime),
-        color = Color(color))
+                .getOrDefault(RecurrenceStatus.OneTime),)
   }
 }

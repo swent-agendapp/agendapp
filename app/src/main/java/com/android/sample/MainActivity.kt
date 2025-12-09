@@ -203,7 +203,9 @@ private fun NavGraphBuilder.organizationsGraph(navigationActions: NavigationActi
     composable(Screen.AddOrganization.route) {
       AddOrganizationScreen(
         onNavigateBack = { navigationActions.navigateBack() },
-        onFinish = { navigationActions.navigateTo(Screen.Organizations) })
+        onFinish = {
+          navigationActions.navigateTo(Screen.Calendar)
+        })
     }
   }
 }

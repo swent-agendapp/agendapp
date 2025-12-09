@@ -187,11 +187,5 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
         .onNodeWithTag(AddOrganizationScreenTestTags.CREATE_BUTTON)
         .assertIsDisplayed()
         .performClick()
-
-    // Click on the newly created organization to enter its Calendar
-    composeTestRule
-        .onNodeWithTag(OrganizationListScreenTestTags.organizationItemTag(organizationName))
-        .assertIsDisplayed()
-        .performClick()
   }
 }

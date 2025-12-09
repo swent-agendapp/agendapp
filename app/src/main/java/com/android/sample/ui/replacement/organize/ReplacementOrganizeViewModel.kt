@@ -84,7 +84,6 @@ enum class ReplacementOrganizeStep {
  */
 class ReplacementOrganizeViewModel(
   private val userRepository: UserRepository = UserRepositoryProvider.repository,
-  private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
   private val eventRepository: EventRepository = EventRepositoryProvider.repository,
   private val replacementRepository: ReplacementRepository =
         ReplacementRepositoryProvider.repository,

@@ -72,6 +72,8 @@ class ProfileFlowE2ETest : FirebaseEmulatedTest() {
         .assertIsDisplayed()
         .performClick()
 
+    composeTestRule.waitForIdle()
+
     // Wait for sign-in to complete
     composeTestRule.waitUntil(timeoutMillis = UI_AUTH_TIMEOUT) {
       // Verify that Organization screen exists
@@ -81,6 +83,7 @@ class ProfileFlowE2ETest : FirebaseEmulatedTest() {
           .isNotEmpty()
     }
 
+    composeTestRule.waitForIdle()
     // Check that a user is signed in after sign in
     assert(FirebaseEmulator.auth.currentUser != null)
 
@@ -104,15 +107,6 @@ class ProfileFlowE2ETest : FirebaseEmulatedTest() {
     // Click on Create button
     composeTestRule
         .onNodeWithTag(AddOrganizationScreenTestTags.CREATE_BUTTON)
-        .assertIsDisplayed()
-        .performClick()
-
-    // Verify that we are back on Organization List screen
-    composeTestRule.onNodeWithTag(OrganizationListScreenTestTags.ROOT).assertIsDisplayed()
-
-    // Click on the newly created organization to enter its Calendar
-    composeTestRule
-        .onNodeWithTag(OrganizationListScreenTestTags.organizationItemTag(organizationName))
         .assertIsDisplayed()
         .performClick()
 

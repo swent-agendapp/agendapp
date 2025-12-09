@@ -10,6 +10,7 @@ import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.repository.OrganizationRepository
 import com.android.sample.model.organization.repository.OrganizationRepositoryProvider
+import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -24,7 +25,6 @@ data class OrganizationUIState(
 
 // ViewModel for managing organization data for the current user
 open class OrganizationViewModel(
-    private val userRepository: UserRepository = UserRepositoryProvider.repository,
     private val organizationRepository: OrganizationRepository =
         OrganizationRepositoryProvider.repository,
     private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
@@ -85,27 +85,5 @@ open class OrganizationViewModel(
   // Clear any error message in the UI state
   open fun clearErrorMsg() {
     _uiState.update { it.copy(errorMsg = null) }
-  }
-
-  // Add a new organization with the given name for the current user (himself as the only admin and
-  // member)
-  fun addOrganizationFromName(name: String) {
-    viewModelScope.launch {
-      val currentUser = userState.value ?: throw IllegalStateException(errorMessageNoAuthenticated)
-
-      try {
-        // Create a new organization with the current user as the only admin and member
-        val newOrganization = Organization(name = name)
-        // Add the new organization to the repository
-        organizationRepository.insertOrganization(newOrganization)
-        userRepository.addAdminToOrganization(currentUser.id, newOrganization.id)
-
-        // Load organizations again to ensure consistency
-        loadOrganizations()
-      } catch (e: Exception) {
-        // Update the UI state with the error message
-        _uiState.update { it.copy(errorMsg = "Failed to add organization: ${e.localizedMessage}") }
-      }
-    }
   }
 }

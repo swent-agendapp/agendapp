@@ -112,21 +112,6 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
         .assertIsDisplayed()
         .performClick()
 
-    // Wait for navigation back to Organization List screen
-
-    // Verify that we are back on Organization List screen
-    composeTestRule.onNodeWithTag(OrganizationListScreenTestTags.ROOT).assertIsDisplayed()
-
-    composeTestRule.onNodeWithTag(OrganizationListScreenTestTags.PULL_TO_REFRESH).performTouchInput { swipeDown() }
-
-    composeTestRule.waitForIdle()
-
-    // Click on the newly created organization to enter its Calendar
-    composeTestRule
-        .onNodeWithTag(OrganizationListScreenTestTags.organizationItemTag(organizationName))
-        .assertIsDisplayed()
-        .performClick()
-
     // Wait for Calendar screen to load
     composeTestRule.waitForIdle()
 

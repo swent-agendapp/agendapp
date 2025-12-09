@@ -51,7 +51,7 @@ class UsersRepositoryFirebase(
     require(user.id.isNotBlank()) { "userId is required" }
     val data = UserMapper.toMap(user)
 
-    usersCollection().document(user.id).set(data).await()
+    usersCollection().document(user.id).set(data, SetOptions.merge()).await()
   }
 
   override suspend fun modifyUser(user: User) {

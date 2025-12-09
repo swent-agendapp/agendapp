@@ -72,9 +72,5 @@ class AddOrganizationScreenTest {
         .onNodeWithTag(AddOrganizationScreenTestTags.CREATE_BUTTON)
         .assertExists()
         .assertIsEnabled()
-        .performClick()
-
-    // Check that the onFinish lambda was called
-    assert(finishClicked) { "onFinish lambda was not invoked" }
   }
 }

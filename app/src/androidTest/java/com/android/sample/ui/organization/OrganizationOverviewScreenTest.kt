@@ -13,6 +13,7 @@ import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.repository.FakeOrganizationRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -38,13 +39,17 @@ class OrganizationOverviewScreenTest {
   private val user3 = User(id = "user3", email = "user3@test.com")
 
   @Before
-  fun setup() {
+  fun setup() = runBlocking {
     fakeOrgRepo = FakeOrganizationRepository()
     fakeAuthRepo = FakeAuthRepository(fakeUser)
     fakeUserRepo = UsersRepositoryLocal()
     vm = OrganizationOverviewViewModel(fakeOrgRepo,fakeUserRepo,fakeAuthRepo)
     selectedOrgVM = SelectedOrganizationVMProvider.viewModel
     selectedOrgVM.clearSelection()
+
+    fakeUserRepo.newUser(user1)
+    fakeUserRepo.newUser(user2)
+    fakeUserRepo.newUser(user3)
   }
 
   @Test
@@ -80,6 +85,9 @@ class OrganizationOverviewScreenTest {
             id = "org1",
             name = "Test Organization")
     fakeOrgRepo.insertOrganization(org)
+    fakeUserRepo.addUserToOrganization(user1.id, "org1")
+    fakeUserRepo.addUserToOrganization(user2.id, "org1")
+    fakeUserRepo.addUserToOrganization(user3.id, "org1")
     selectedOrgVM.selectOrganization(org.id)
 
     composeTestRule.setContent {

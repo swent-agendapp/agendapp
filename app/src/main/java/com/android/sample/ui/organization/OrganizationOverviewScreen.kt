@@ -29,7 +29,6 @@ import com.android.sample.R
 import com.android.sample.ui.common.BottomNavigationButtons
 import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.common.SecondaryPageTopBar
-import com.android.sample.ui.components.BottomNavigationButtons
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.ElevationExtraLow
 import com.android.sample.ui.theme.PaddingMedium
@@ -145,38 +144,38 @@ fun OrganizationOverViewScreen(
                     }
               }
 
-          // Display member count
-          Text(
-              modifier = Modifier.testTag(OrganizationOverviewScreenTestTags.MEMBER_COUNT_TEXT),
-              text = stringResource(R.string.organization_members) + ": ${uiState.memberCount}")
+              // Display member count
+              Text(
+                  modifier = Modifier.testTag(OrganizationOverviewScreenTestTags.MEMBER_COUNT_TEXT),
+                  text = stringResource(R.string.organization_members) + ": ${uiState.memberCount}")
 
-          // Here is an hardcoded string, but this button is only here temporarily, so we do not
-          // need to write "Invitations" in strings.xml
-          PrimaryButton(
-              text = "Invitations",
-              onClick = onInvitationClick,
-              modifier =
-                  Modifier.fillMaxWidth()
-                      .testTag(OrganizationOverviewScreenTestTags.INVITATION_BUTTON))
+              // Here is an hardcoded string, but this button is only here temporarily, so we do not
+              // need to write "Invitations" in strings.xml
+              PrimaryButton(
+                  text = "Invitations",
+                  onClick = onInvitationClick,
+                  modifier =
+                      Modifier.fillMaxWidth()
+                          .testTag(OrganizationOverviewScreenTestTags.INVITATION_BUTTON))
 
-          // Bottom buttons (Change / Delete)
-          BottomNavigationButtons(
-              onNext = {
-                coroutineScope.launch {
-                  organizationOverviewViewModel.deleteSelectedOrganization(selectedOrgId)
-                  onDeleteOrganization()
-                }
-              },
-              onBack = {
-                organizationOverviewViewModel.clearSelectedOrganization()
-                onChangeOrganization()
-              },
-              canGoNext = true,
-              canGoBack = true,
-              nextButtonText = stringResource(R.string.delete),
-              backButtonText = stringResource(R.string.change),
-              nextButtonTestTag = OrganizationOverviewScreenTestTags.DELETE_BUTTON,
-              backButtonTestTag = OrganizationOverviewScreenTestTags.CHANGE_BUTTON)
-        }
+              // Bottom buttons (Change / Delete)
+              BottomNavigationButtons(
+                  onNext = {
+                    coroutineScope.launch {
+                      organizationOverviewViewModel.deleteSelectedOrganization(selectedOrgId)
+                      onDeleteOrganization()
+                    }
+                  },
+                  onBack = {
+                    organizationOverviewViewModel.clearSelectedOrganization()
+                    onChangeOrganization()
+                  },
+                  canGoNext = true,
+                  canGoBack = true,
+                  nextButtonText = stringResource(R.string.delete),
+                  backButtonText = stringResource(R.string.change),
+                  nextButtonTestTag = OrganizationOverviewScreenTestTags.DELETE_BUTTON,
+                  backButtonTestTag = OrganizationOverviewScreenTestTags.CHANGE_BUTTON)
+            }
       }
 }

@@ -2,7 +2,7 @@ package com.android.sample.model.organizationRepositoryTest
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.authentication.User
-import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.repository.OrganizationRepository
 import com.android.sample.utils.FirebaseEmulatedTest
@@ -16,8 +16,6 @@ import org.junit.runner.RunWith
 class OrganizationFirebaseRepositoryTest : FirebaseEmulatedTest() {
 
   private lateinit var repository: OrganizationRepository
-  private lateinit var userRepository: UserRepository
-
   private lateinit var adminA: User
   private lateinit var adminB: User
   private lateinit var memberA: User
@@ -30,6 +28,7 @@ class OrganizationFirebaseRepositoryTest : FirebaseEmulatedTest() {
 
   @Before
   override fun setUp() = runBlocking {
+    val userRepository = UserRepositoryProvider.repository
     super.setUp()
     repository = createInitializedOrganizationRepository()
 
@@ -199,6 +198,7 @@ class OrganizationFirebaseRepositoryTest : FirebaseEmulatedTest() {
 
   @Test
   fun getMembersOfOrganization_asMember_shouldReturnMembers() = runBlocking {
+    val userRepository = UserRepositoryProvider.repository
     repository.insertOrganization(orgA)
     val members = userRepository.getMembersIds(orgA.id)
     val memberIds = members.map { it }.toSet()
@@ -207,6 +207,7 @@ class OrganizationFirebaseRepositoryTest : FirebaseEmulatedTest() {
 
   @Test
   fun getMembersOfOrganization_asOutsider_shouldThrow() = runBlocking {
+    val userRepository = UserRepositoryProvider.repository
     repository.insertOrganization(orgA)
     try {
       userRepository.getMembersIds(orgA.id)

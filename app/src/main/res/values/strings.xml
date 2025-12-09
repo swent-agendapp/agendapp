@@ -243,7 +243,7 @@
     <!-- Category -->
     <string name="default_category_label">Uncategorized</string>
 
-    <string name="settings_hour_recap_button">Hour Recap</string>
+    <string name="hour_recap">Hour Recap</string>
 
 </resources>
 

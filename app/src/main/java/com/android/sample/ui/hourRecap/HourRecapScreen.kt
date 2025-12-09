@@ -86,7 +86,7 @@ fun HourRecapScreen(
       topBar = {
         SecondaryPageTopBar(
             modifier = Modifier.testTag(HourRecapTestTags.TOP_BAR),
-            title = stringResource(R.string.settings_hour_recap_button),
+            title = stringResource(R.string.hour_recap),
             canGoBack = true,
             onClick = onBackClick,
             backButtonTestTags = HourRecapTestTags.BACK_BUTTON,

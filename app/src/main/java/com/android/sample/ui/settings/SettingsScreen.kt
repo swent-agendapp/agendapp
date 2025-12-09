@@ -67,7 +67,7 @@ fun SettingsScreen(
               SettingsScreenTestTags.ORGANIZATION_BUTTON,
               onClick = onNavigateToOrganizationList),
           ButtonItem(
-              stringResource(R.string.settings_hour_recap_button),
+              stringResource(R.string.hour_recap),
               Icons.Default.AccessTime,
               SettingsScreenTestTags.HOURRECAP_BUTTON,
               onClick = onNavigateToHourRecap))

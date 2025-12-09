@@ -109,7 +109,7 @@ class HourRecapScreenTest : FirebaseEmulatedTest() {
   fun emptyWorkedHours_showsEmptyList() {
     val vm = CalendarViewModel(app = ApplicationProvider.getApplicationContext())
 
-    vm.setTestWorkedHours(emptyList()) // 空数据
+    vm.setTestWorkedHours(emptyList())
 
     compose.setContent { HourRecapScreen(calendarViewModel = vm) }
 

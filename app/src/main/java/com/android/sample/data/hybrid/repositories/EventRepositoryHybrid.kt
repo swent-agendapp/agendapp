@@ -212,17 +212,14 @@ class EventRepositoryHybrid(
    */
   private suspend fun synchronizeLocal(orgId: String, remoteEvents: List<Event>) {
     // Get all local events
-    val localEvents = local.getAllEvents(orgId = orgId)
+    val localEvents = local.getAllEvents(orgId)
 
     // Create maps for remote and local events for easy lookup
     val remoteMap = remoteEvents.associateBy { it.id }
     val localMap = localEvents.associateBy { it.id }
 
-    // Sets of IDs for easy existence checks
-    val remoteIds = remoteMap.keys
-
     // Assume both local and remote storage
-    val cloudStorageStatusBoth = setOf(CloudStorageStatus.FIRESTORE, CloudStorageStatus.LOCAL)
+    val cloudBoth = setOf(CloudStorageStatus.FIRESTORE, CloudStorageStatus.LOCAL)
 
     // First look at events present in remote
     for ((id, remoteEvent) in remoteMap) {
@@ -230,57 +227,100 @@ class EventRepositoryHybrid(
       // Get corresponding local event if exists
       val localEvent = localMap[id]
 
-      // If not in local, insert it
-      if (localEvent == null) {
-        val updated = remoteEvent.copy(cloudStorageStatuses = cloudStorageStatusBoth)
-        local.insertEvent(orgId = orgId, item = updated)
-        continue
-      }
+      when {
+        // If not in local, insert it
+        localEvent == null ->
+            // Event cloud storage statuses set to both
+            insertRemoteIntoLocal(orgId, remoteEvent, cloudBoth)
 
-      // If in both, compare versions
-      if (remoteEvent.version > localEvent.version) {
-        // If remote is newer -> update event in local
-        val updated = remoteEvent.copy(cloudStorageStatuses = cloudStorageStatusBoth)
-        local.updateEvent(orgId = orgId, itemId = id, item = updated)
-      }
+        // If in both, and remote is newer, update local
+        remoteEvent.version > localEvent.version ->
+            // Event cloud storage statuses set to both
+            updateLocalFromRemote(orgId, id, remoteEvent, cloudBoth)
 
-      // If in both, and local is newer
-      else if (remoteEvent.version < localEvent.version) {
-        // Put local event to remote
-        val updated = localEvent.copy(cloudStorageStatuses = cloudStorageStatusBoth)
-        try {
-          remote.updateEvent(orgId = orgId, item = updated, itemId = id)
-        } catch (_: Exception) {
-          // If remote update fails, revert local event to LOCAL only
-          val fallback = updated.copy(cloudStorageStatuses = setOf(CloudStorageStatus.LOCAL))
-          local.updateEvent(orgId = orgId, itemId = id, item = fallback)
-        }
-      }
-      // If versions are equal
-      else {
-        // Ensure cloud storage statuses are correct (both FIRESTORE and LOCAL)
-        val updated = remoteEvent.copy(cloudStorageStatuses = cloudStorageStatusBoth)
-        local.updateEvent(orgId = orgId, itemId = id, item = updated)
+        // If in both, and local is newer, push local to remote
+        remoteEvent.version < localEvent.version ->
+            // Event cloud storage statuses set to both
+            pushLocalToRemote(orgId, id, localEvent, cloudBoth)
+
+        // If versions are equal, ensure cloud storage statuses are correct
+        else ->
+            // Event cloud storage statuses set to both
+            ensureBothStoragesInLocal(orgId, id, remoteEvent, cloudBoth)
       }
     }
 
     // Look at events present in local
     for ((id, localEvent) in localMap) {
-      // If not in remote
-      if (!remoteIds.contains(id)) {
-
-        // Put local event to remote (with both FIRESTORE and LOCAL as status)
-        try {
-          val updated = localEvent.copy(cloudStorageStatuses = cloudStorageStatusBoth)
-          remote.insertEvent(orgId = orgId, item = updated)
-          // Local event updated to reflect remote storage
-          local.updateEvent(orgId = orgId, itemId = id, item = updated)
-        } catch (_: Exception) {
-          // If remote insert fails, revert local event to LOCAL only
-          val fallback = localEvent.copy(cloudStorageStatuses = setOf(CloudStorageStatus.LOCAL))
-          local.updateEvent(orgId = orgId, itemId = id, item = fallback)
-        }
+      // If not in remote, insert into remote
+      if (!remoteMap.containsKey(id)) {
+        // Event cloud storage statuses set to both
+        insertLocalIntoRemote(orgId, id, localEvent, cloudBoth)
       }
+    }
+  }
+
+  /** Helper functions for synchronization operations */
+  private suspend fun insertRemoteIntoLocal(
+      orgId: String,
+      remoteEvent: Event,
+      cloudBoth: Set<CloudStorageStatus>
+  ) {
+    local.insertEvent(orgId = orgId, item = remoteEvent.copy(cloudStorageStatuses = cloudBoth))
+  }
+
+  private suspend fun updateLocalFromRemote(
+      orgId: String,
+      id: String,
+      remoteEvent: Event,
+      cloudBoth: Set<CloudStorageStatus>
+  ) {
+    local.updateEvent(
+        orgId = orgId, itemId = id, item = remoteEvent.copy(cloudStorageStatuses = cloudBoth))
+  }
+
+  private suspend fun pushLocalToRemote(
+      orgId: String,
+      id: String,
+      localEvent: Event,
+      cloudBoth: Set<CloudStorageStatus>
+  ) {
+    val updated = localEvent.copy(cloudStorageStatuses = cloudBoth)
+    try {
+      remote.updateEvent(orgId = orgId, itemId = id, item = updated)
+    } catch (_: Exception) {
+      local.updateEvent(
+          orgId = orgId,
+          itemId = id,
+          item = updated.copy(cloudStorageStatuses = setOf(CloudStorageStatus.LOCAL)))
+    }
+  }
+
+  private suspend fun ensureBothStoragesInLocal(
+      orgId: String,
+      id: String,
+      remoteEvent: Event,
+      cloudBoth: Set<CloudStorageStatus>
+  ) {
+    local.updateEvent(
+        orgId = orgId, itemId = id, item = remoteEvent.copy(cloudStorageStatuses = cloudBoth))
+  }
+
+  private suspend fun insertLocalIntoRemote(
+      orgId: String,
+      id: String,
+      localEvent: Event,
+      cloudBoth: Set<CloudStorageStatus>
+  ) {
+    val updated = localEvent.copy(cloudStorageStatuses = cloudBoth)
+    try {
+      remote.insertEvent(orgId = orgId, item = updated)
+      local.updateEvent(orgId = orgId, itemId = id, item = updated)
+    } catch (_: Exception) {
+      local.updateEvent(
+          orgId = orgId,
+          itemId = id,
+          item = updated.copy(cloudStorageStatuses = setOf(CloudStorageStatus.LOCAL)))
     }
   }
 }

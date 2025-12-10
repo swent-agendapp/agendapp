@@ -206,7 +206,6 @@
 
 
     <string name="hour_recap_results_title">Gesamtstunden pro Mitarbeiter im ausgewählten Zeitraum:</string>
-    <string name="hour_recap_title">Gesamtstunden pro Mitarbeiter</string>
     <string name="hour_recap_generate">Zusammenfassung erstellen</string>
     <string name="export_excel">Nach Excel exportieren</string>
 
@@ -244,5 +243,7 @@
 
     <!-- Category -->
     <string name="default_category_label">Ohne Kategorie</string>
+
+    <string name="hour_recap">Stundenübersicht</string>
 
 </resources>

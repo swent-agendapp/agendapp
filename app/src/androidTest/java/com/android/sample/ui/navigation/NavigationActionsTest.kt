@@ -17,6 +17,7 @@ import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.common.BottomBarTestTags
+import com.android.sample.ui.hourRecap.HourRecapTestTags
 import com.android.sample.ui.invitation.InvitationOverviewScreenTestTags
 import com.android.sample.ui.organization.AddOrganizationScreenTestTags
 import com.android.sample.ui.organization.OrganizationListScreenTestTags
@@ -193,6 +194,30 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
         .performClick()
 
     composeTestRule.onNodeWithTag(InvitationOverviewScreenTestTags.ROOT).assertIsDisplayed()
+  }
+
+  @Test
+  fun navigate_fromSettings_toHourRecap() {
+    composeTestRule.setContent { Agendapp() }
+
+    // Step 1: create org → navigate to calendar
+    createOrganizationAndNavigateToCalendar()
+
+    // Step 2: open settings
+    composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_SETTINGS).assertExists().performClick()
+
+    // Step 3: assert Settings screen displayed
+    composeTestRule.onNodeWithTag(SettingsScreenTestTags.ROOT).assertIsDisplayed()
+
+    // Step 4: click “Hour Recap”
+    composeTestRule
+        .onNodeWithTag(SettingsScreenTestTags.HOURRECAP_BUTTON)
+        .assertExists()
+        .assertIsDisplayed()
+        .performClick()
+
+    // Step 5: verify Hour Recap screen is shown
+    composeTestRule.onNodeWithTag(HourRecapTestTags.SCREEN_ROOT).assertExists().assertIsDisplayed()
   }
 
   // Helper function to create an organization and navigate to its calendar

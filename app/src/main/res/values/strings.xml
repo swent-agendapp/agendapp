@@ -205,7 +205,6 @@
     <string name="replacement_list_instruction">Select an event you need to be replaced for</string>
     <string name="select_date_range_instruction">Select the date range for which you need a replacement.</string>
     <string name="hour_recap_results_title">Total hours per employee for the selected period:</string>
-    <string name="hour_recap_title">Total hours per employee</string>
     <string name="hour_recap_generate">Generate summary</string>
     <string name="export_excel">Export to Excel</string>
 
@@ -245,6 +244,8 @@
 
     <!-- Category -->
     <string name="default_category_label">Uncategorized</string>
+
+    <string name="hour_recap">Hour Recap</string>
 
 </resources>
 

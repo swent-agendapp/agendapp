@@ -27,8 +27,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -38,11 +36,13 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
+import com.android.sample.model.map.Area
 import com.android.sample.model.map.Marker
 import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.map.MapScreenTestTags.CREATE_AREA_BUTTON
 import com.android.sample.ui.map.MapScreenTestTags.DOWN_SHEET
 import com.android.sample.ui.map.MapScreenTestTags.DOWN_SHEET_FORM
+import com.android.sample.ui.map.MapScreenTestTags.SLIDER
 import com.android.sample.ui.theme.DefaultZoom
 import com.android.sample.ui.theme.MapPalette
 import com.android.sample.ui.theme.PaddingMedium
@@ -83,7 +83,7 @@ private fun getSliderRangeForZoom(zoom: Float): ClosedFloatingPointRange<Float> 
 
 /** Renders markers and circular areas on the map. */
 @Composable
-private fun MapContent(uiState: MapUiState, onAreaClick: (String) -> Unit) {
+private fun MapContent(uiState: MapUiState, onAreaClick: (Area) -> Unit) {
   // Current selection marker and circle
   uiState.selectedMarker?.let { marker ->
     Marker(
@@ -103,7 +103,7 @@ private fun MapContent(uiState: MapUiState, onAreaClick: (String) -> Unit) {
         radius = area.radius,
         strokeColor = MapPalette.Stroke,
         fillColor = MapPalette.Fill,
-        onClick = { _ -> onAreaClick(area.id) })
+        onClick = { _ -> onAreaClick(area) })
   }
 }
 
@@ -162,7 +162,7 @@ private fun AreaBottomSheet(
                     stringResource(R.string.down_sheet_area_size) +
                         "${uiState.selectedRadius.toInt()} m")
             Slider(
-                modifier = Modifier.padding(horizontal = PaddingMedium),
+                modifier = Modifier.padding(horizontal = PaddingMedium).testTag(SLIDER),
                 value = uiState.selectedRadius.toFloat().coerceIn(sliderRange),
                 onValueChange = { onRadiusChange(it.toDouble()) },
                 colors =
@@ -193,6 +193,7 @@ object MapScreenTestTags {
   const val DOWN_SHEET = "down_sheet"
   const val DOWN_SHEET_FORM = "down_sheet_form"
   const val DELETE_MARKER_BUTTON = "delete_marker_button"
+  const val SLIDER = "slider_from"
 }
 
 /** Displays the Map in a screen composable. */
@@ -204,7 +205,6 @@ fun MapScreen(
 ) {
   val uiState by mapViewModel.state.collectAsState()
   val cameraPositionState = rememberCameraPositionState()
-  var showBottomSheet by remember { mutableStateOf(false) }
   val sliderRange = getSliderRangeForZoom(cameraPositionState.position.zoom)
 
   val context = LocalContext.current
@@ -264,34 +264,24 @@ fun MapScreen(
             GoogleMap(
                 modifier = Modifier.matchParentSize().testTag(MapScreenTestTags.GOOGLE_MAP_SCREEN),
                 cameraPositionState = cameraPositionState,
-                onMapLongClick = { pos ->
-                  mapViewModel.selectNewMarker(pos)
-                  showBottomSheet = true
-                },
+                onMapLongClick = { pos -> mapViewModel.createArea(pos) },
                 properties =
                     MapProperties(
                         isMyLocationEnabled = uiState.hasPermission, mapType = MapType.NORMAL)) {
                   MapContent(
-                      uiState = uiState,
-                      onAreaClick = { areaId ->
-                        mapViewModel.selectArea(uiState.listArea.first { it.id == areaId })
-                        showBottomSheet = true
-                      })
+                      uiState = uiState, onAreaClick = { area -> mapViewModel.selectArea(area) })
                 }
           }
-          if (showBottomSheet) {
+          if (uiState.showBottomBar) {
             AreaBottomSheet(
                 uiState = uiState,
                 sliderRange = sliderRange,
-                onDismiss = {
-                  showBottomSheet = false
-                  mapViewModel.unselectArea()
-                },
+                onDismiss = { mapViewModel.hideBottomBar() },
                 onNameChange = { mapViewModel.setNewAreaName(it) },
                 onRadiusChange = { mapViewModel.setNewAreaRadius(it) },
                 onDelete = { id ->
                   mapViewModel.deleteArea()
-                  showBottomSheet = false
+                  mapViewModel.hideBottomBar()
                 },
                 onCreate = {
                   if (uiState.selectedId == null) {
@@ -299,7 +289,7 @@ fun MapScreen(
                   } else {
                     mapViewModel.updateArea()
                   }
-                  showBottomSheet = false
+                  mapViewModel.hideBottomBar()
                 })
           }
         }

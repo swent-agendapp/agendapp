@@ -1,7 +1,6 @@
 package com.android.sample.ui.map
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -54,6 +53,7 @@ data class MapUiState(
     val selectedRadius: Double = DefaultMarkerValue.RADIUS,
     val selectedMarker: Marker? = null,
     val selectedId: String? = null,
+    val showBottomBar: Boolean = false
 )
 
 class MapViewModel(
@@ -69,7 +69,7 @@ class MapViewModel(
       SelectedOrganizationRepository.selectedOrganizationId
 
   // Helper function to get the selected organization ID or throw an exception if none is selected
-  fun getSelectedOrganizationId(): String {
+  private fun getSelectedOrganizationId(): String {
     val orgId = selectedOrganizationId.value
     require(orgId != null) { "No organization selected" }
     return orgId
@@ -93,6 +93,25 @@ class MapViewModel(
   }
 
   /**
+   * Add a new marker to the temporary list of markers used for creating a new area.
+   *
+   * @param position The geographical position (latitude and longitude) of the new marker.
+   */
+  fun createArea(position: LatLng) {
+    _state.value =
+        _state.value.copy(
+            selectedMarker = Marker(latitude = position.latitude, longitude = position.longitude),
+            selectedRadius = DefaultMarkerValue.RADIUS,
+            selectedAreaName = "",
+            showBottomBar = true)
+  }
+
+  fun hideBottomBar() {
+    _state.value = _state.value.copy(showBottomBar = false)
+    this.unselectArea()
+  }
+
+  /**
    * Create a new area based on the markers currently stored in the temporary list.
    *
    * Each marker is first saved in the repository. Then, a new area is created using the current
@@ -105,53 +124,31 @@ class MapViewModel(
   fun createNewArea() {
     require(_state.value.selectedMarker != null)
     viewModelScope.launch {
-      Log.d("VM", "before deleteArea")
-      try {
-        val areaName = _state.value.selectedAreaName.ifBlank { DefaultMarkerValue.LABEL }
-        mapRepository.createArea(
-            orgId = getSelectedOrganizationId(),
-            label = areaName,
-            marker = _state.value.selectedMarker!!,
-            radius = _state.value.selectedRadius)
-        Log.d("VM", "after deleteArea") // 👈 celui-là devrait enfin apparaître
-        unselectArea()
-        fetchAllArea()
-      } catch (e: IllegalArgumentException) {
-        _state.value = _state.value.copy(errorMessage = e.message)
-      }
+      val areaName = _state.value.selectedAreaName.ifBlank { DefaultMarkerValue.LABEL }
+      mapRepository.createArea(
+          orgId = getSelectedOrganizationId(),
+          label = areaName,
+          marker = _state.value.selectedMarker!!,
+          radius = _state.value.selectedRadius)
+      unselectArea()
+      fetchAllArea()
     }
   }
 
   fun updateArea() {
     require(_state.value.selectedMarker != null)
+    require(_state.value.selectedId != null)
     viewModelScope.launch {
-      try {
-        mapRepository.updateArea(
-            areaId = _state.value.selectedId!!,
-            orgId = getSelectedOrganizationId(),
-            label = _state.value.selectedAreaName,
-            marker = _state.value.selectedMarker!!,
-            radius = _state.value.selectedRadius)
-        unselectArea()
-        fetchAllArea()
-      } catch (e: IllegalArgumentException) {
-        _state.value = _state.value.copy(errorMessage = e.message)
-      }
+      val areaName = _state.value.selectedAreaName.ifBlank { DefaultMarkerValue.LABEL }
+      mapRepository.updateArea(
+          areaId = _state.value.selectedId!!,
+          orgId = getSelectedOrganizationId(),
+          label = areaName,
+          marker = _state.value.selectedMarker!!,
+          radius = _state.value.selectedRadius)
+      unselectArea()
+      fetchAllArea()
     }
-  }
-
-  /**
-   * Add a new marker to the temporary list of markers used for creating a new area.
-   *
-   * @param coordinate The geographical position (latitude and longitude) of the new marker.
-   */
-  fun selectNewMarker(coordinate: LatLng) {
-    _state.value =
-        _state.value.copy(
-            selectedMarker =
-                Marker(latitude = coordinate.latitude, longitude = coordinate.longitude),
-            selectedRadius = DefaultMarkerValue.RADIUS,
-            selectedAreaName = "")
   }
 
   /**
@@ -160,14 +157,11 @@ class MapViewModel(
    * @param markerId The unique identifier of the marker to be removed.
    */
   fun deleteArea() {
-    try {
-      viewModelScope.launch {
-        mapRepository.deleteArea(orgId = getSelectedOrganizationId(), _state.value.selectedId!!)
-        unselectArea()
-        fetchAllArea()
-      }
-    } catch (e: Exception) {
-      Log.e("erreur", e.message!!)
+    require(_state.value.selectedMarker != null)
+    viewModelScope.launch {
+      mapRepository.deleteArea(orgId = getSelectedOrganizationId(), _state.value.selectedId!!)
+      unselectArea()
+      fetchAllArea()
     }
   }
 
@@ -205,7 +199,8 @@ class MapViewModel(
             selectedAreaName = area.label,
             selectedRadius = area.radius,
             selectedMarker = area.marker,
-            selectedId = area.id)
+            selectedId = area.id,
+            showBottomBar = true)
   }
 
   /**

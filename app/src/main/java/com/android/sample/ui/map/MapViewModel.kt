@@ -1,6 +1,7 @@
 package com.android.sample.ui.map
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -49,7 +50,7 @@ data class MapUiState(
     val listArea: List<Area> = emptyList(),
     val hasPermission: Boolean = false,
     val errorMessage: String? = null,
-    val selectedAreaName: String = DefaultMarkerValue.LABEL,
+    val selectedAreaName: String = "",
     val selectedRadius: Double = DefaultMarkerValue.RADIUS,
     val selectedMarker: Marker? = null,
     val selectedId: String? = null,
@@ -104,12 +105,15 @@ class MapViewModel(
   fun createNewArea() {
     require(_state.value.selectedMarker != null)
     viewModelScope.launch {
+      Log.d("VM", "before deleteArea")
       try {
+        val areaName = _state.value.selectedAreaName.ifBlank { DefaultMarkerValue.LABEL }
         mapRepository.createArea(
             orgId = getSelectedOrganizationId(),
-            label = _state.value.selectedAreaName,
+            label = areaName,
             marker = _state.value.selectedMarker!!,
             radius = _state.value.selectedRadius)
+        Log.d("VM", "after deleteArea")  // 👈 celui-là devrait enfin apparaître
         unselectArea()
         fetchAllArea()
       } catch (e: IllegalArgumentException) {
@@ -147,7 +151,7 @@ class MapViewModel(
             selectedMarker =
                 Marker(latitude = coordinate.latitude, longitude = coordinate.longitude),
             selectedRadius = DefaultMarkerValue.RADIUS,
-            selectedAreaName = DefaultMarkerValue.LABEL)
+            selectedAreaName = "")
   }
 
   /**
@@ -156,14 +160,14 @@ class MapViewModel(
    * @param markerId The unique identifier of the marker to be removed.
    */
   fun deleteArea() {
-    viewModelScope.launch {
-      try {
+    try {
+      viewModelScope.launch {
         mapRepository.deleteArea(orgId = getSelectedOrganizationId(), _state.value.selectedId!!)
         unselectArea()
         fetchAllArea()
-      } catch (e: IllegalArgumentException) {
-        _state.value = _state.value.copy(errorMessage = e.message)
       }
+    } catch (e: Exception) {
+      Log.e("erreur", e.message!!)
     }
   }
 
@@ -213,7 +217,7 @@ class MapViewModel(
     _state.value =
         _state.value.copy(
             selectedMarker = null,
-            selectedAreaName = DefaultMarkerValue.LABEL,
+            selectedAreaName = "",
             selectedRadius = DefaultMarkerValue.RADIUS,
             selectedId = null)
   }

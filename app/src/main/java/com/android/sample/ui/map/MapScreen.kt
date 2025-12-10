@@ -49,9 +49,13 @@ import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.Palette
 import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingSmall
+import com.android.sample.ui.theme.Time
 import com.android.sample.ui.theme.Weight
+import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.Circle
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
@@ -101,7 +105,9 @@ private fun MapContent(uiState: MapUiState, onAreaClick: (String) -> Unit) {
         radius = area.radius,
         strokeColor = MapPalette.Stroke,
         fillColor = MapPalette.Fill,
-        onClick = { _ -> onAreaClick(area.id) })
+        onClick = { _ ->
+          onAreaClick(area.id)
+        })
   }
 }
 
@@ -142,6 +148,7 @@ private fun AreaBottomSheet(
           // Name input
           OutlinedTextField(
               value = uiState.selectedAreaName,
+              placeholder = { Text(DefaultMarkerValue.LABEL) },
               onValueChange = onNameChange,
               label = { Text(stringResource(R.string.down_sheet_text_field)) },
               singleLine = true,
@@ -221,6 +228,17 @@ fun MapScreen(
           cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(target, DefaultZoom))
         }
   }
+  LaunchedEffect(uiState.selectedMarker) {
+    uiState.selectedMarker?.let { marker ->
+      cameraPositionState.animate(
+        update = CameraUpdateFactory.newCameraPosition(
+          CameraPosition(LatLng(marker.location.latitude, marker.location.longitude), cameraPositionState.position.zoom, 0f, 0f)
+        ),
+        durationMs = Time
+      )
+    }
+  }
+
 
   LaunchedEffect(Unit) { mapViewModel.fetchUserLocation() }
 

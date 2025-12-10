@@ -212,6 +212,10 @@ dependencies {
     // Coroutine testing utilities (needed for runBlocking)
     testImplementation(libs.kotlinx.coroutines.test)
 
+    // Coroutines runtime
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.play.services)
 
     // Firebase
     implementation(libs.firebase.database.ktx)

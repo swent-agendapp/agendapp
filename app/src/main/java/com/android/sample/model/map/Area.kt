@@ -23,7 +23,9 @@ data class Area(
     val marker: Marker,
     val radius: Double
 ) {
-
+  init {
+    require(radius > 0) { "The radius of the Area must be positive." }
+  }
   /**
    * Checks whether the given marker is located inside this Area.
    *

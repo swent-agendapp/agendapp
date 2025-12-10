@@ -113,3 +113,5 @@ val SmallCardElevation = 2.dp
 
 // weight
 const val Weight = 1f
+// time
+const val Time = 700

@@ -3,6 +3,7 @@ package com.android.sample.utils
 import com.android.sample.model.map.Area
 import kotlin.math.*
 
+// AI help
 /** Utility functions for simple geographic calculations. */
 object GeoUtils {
   private const val EARTH_RADIUS_METERS = 6371000.0

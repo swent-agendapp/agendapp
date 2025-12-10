@@ -31,15 +31,16 @@ class AreaMapperTest {
     val marker = Marker("marker1", Location(10.0, 20.0), "Marker 1")
 
     val markerData =
-          mapOf(
-              "id" to marker.id,
-              "label" to marker.label,
-              "location" to
-                  mapOf(
-                      "latitude" to marker.location.latitude,
-                      "longitude" to marker.location.longitude))
+        mapOf(
+            "id" to marker.id,
+            "label" to marker.label,
+            "location" to
+                mapOf(
+                    "latitude" to marker.location.latitude,
+                    "longitude" to marker.location.longitude))
 
-    val data = mapOf("id" to "area123", "label" to "My Area", "marker" to markerData, "radius" to 10.0)
+    val data =
+        mapOf("id" to "area123", "label" to "My Area", "marker" to markerData, "radius" to 10.0)
 
     val area = AreaMapper.fromMap(data)
     assertValidArea(area)
@@ -79,11 +80,11 @@ class AreaMapperTest {
   // --- Helpers ---
   private fun createMockMarkers(): DocumentSnapshot {
     val loc1 =
-      mock(DocumentSnapshot::class.java).apply {
-        `when`(getDouble("latitude")).thenReturn(10.0)
-        `when`(getDouble("longitude")).thenReturn(20.0)
-        `when`(getString("label")).thenReturn("Loc 1")
-      }
+        mock(DocumentSnapshot::class.java).apply {
+          `when`(getDouble("latitude")).thenReturn(10.0)
+          `when`(getDouble("longitude")).thenReturn(20.0)
+          `when`(getString("label")).thenReturn("Loc 1")
+        }
 
     return mock(DocumentSnapshot::class.java).apply {
       `when`(getString("id")).thenReturn("marker1")

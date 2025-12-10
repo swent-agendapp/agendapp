@@ -51,11 +51,9 @@ import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingSmall
 import com.android.sample.ui.theme.Time
 import com.android.sample.ui.theme.Weight
-import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.Circle
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
@@ -105,9 +103,7 @@ private fun MapContent(uiState: MapUiState, onAreaClick: (String) -> Unit) {
         radius = area.radius,
         strokeColor = MapPalette.Stroke,
         fillColor = MapPalette.Fill,
-        onClick = { _ ->
-          onAreaClick(area.id)
-        })
+        onClick = { _ -> onAreaClick(area.id) })
   }
 }
 
@@ -231,14 +227,16 @@ fun MapScreen(
   LaunchedEffect(uiState.selectedMarker) {
     uiState.selectedMarker?.let { marker ->
       cameraPositionState.animate(
-        update = CameraUpdateFactory.newCameraPosition(
-          CameraPosition(LatLng(marker.location.latitude, marker.location.longitude), cameraPositionState.position.zoom, 0f, 0f)
-        ),
-        durationMs = Time
-      )
+          update =
+              CameraUpdateFactory.newCameraPosition(
+                  CameraPosition(
+                      LatLng(marker.location.latitude, marker.location.longitude),
+                      cameraPositionState.position.zoom,
+                      0f,
+                      0f)),
+          durationMs = Time)
     }
   }
-
 
   LaunchedEffect(Unit) { mapViewModel.fetchUserLocation() }
 

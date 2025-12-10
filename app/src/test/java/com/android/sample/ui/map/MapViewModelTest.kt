@@ -1,16 +1,9 @@
 package com.android.sample.ui.map
 
-import android.Manifest
-import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.GrantPermissionRule
 import com.android.sample.model.map.MapRepositoryLocal
-import com.android.sample.model.organization.repository.SelectedOrganizationRepository
-import com.google.android.gms.maps.model.LatLng
 import org.junit.Assert.*
-import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -27,8 +20,8 @@ class MapViewModelTest {
   }
 }
 
-//@RunWith(AndroidJUnit4::class)
-//class MapViewModelTestWithPermission {
+// @RunWith(AndroidJUnit4::class)
+// class MapViewModelTestWithPermission {
 //  private var repository = MapRepositoryLocal()
 //
 //  @get:Rule
@@ -43,4 +36,4 @@ class MapViewModelTest {
 //    // Set a selected organization before tests
 //    SelectedOrganizationRepository.changeSelectedOrganization("testOrg")
 //  }
-//}
+// }

@@ -113,7 +113,7 @@ class MapViewModel(
             label = areaName,
             marker = _state.value.selectedMarker!!,
             radius = _state.value.selectedRadius)
-        Log.d("VM", "after deleteArea")  // 👈 celui-là devrait enfin apparaître
+        Log.d("VM", "after deleteArea") // 👈 celui-là devrait enfin apparaître
         unselectArea()
         fetchAllArea()
       } catch (e: IllegalArgumentException) {

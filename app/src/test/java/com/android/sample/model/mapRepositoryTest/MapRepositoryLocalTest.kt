@@ -25,10 +25,7 @@ class MapRepositoryLocalTest {
     runTest {
       try {
         repository.createArea(
-            orgId = orgId,
-            label = "InvalidArea",
-            marker = marker1,
-            radius = -10.0)
+            orgId = orgId, label = "InvalidArea", marker = marker1, radius = -10.0)
         fail("Expected IllegalArgumentException for non-distinct markers")
       } catch (_: IllegalArgumentException) {}
     }
@@ -37,11 +34,7 @@ class MapRepositoryLocalTest {
   @Test
   fun createArea_shouldSucceed() {
     runTest {
-      repository.createArea(
-          orgId = orgId,
-          label = "ValidArea",
-          marker = marker1,
-          radius = 10.0)
+      repository.createArea(orgId = orgId, label = "ValidArea", marker = marker1, radius = 10.0)
       val allAreas = repository.getAllAreas(orgId)
       assertEquals(1, allAreas.size)
       val area = allAreas.first()
@@ -54,10 +47,8 @@ class MapRepositoryLocalTest {
   @Test
   fun getAllAreas_shouldReturnMultipleAreas() {
     runTest {
-      repository.createArea(
-          orgId = orgId, label = "Area1", marker = marker1, radius = 10.0)
-      repository.createArea(
-          orgId = orgId, label = "Area2", marker = marker1, radius = 10.0)
+      repository.createArea(orgId = orgId, label = "Area1", marker = marker1, radius = 10.0)
+      repository.createArea(orgId = orgId, label = "Area2", marker = marker1, radius = 10.0)
       val allAreas = repository.getAllAreas(orgId)
       assertEquals(2, allAreas.size)
       assertTrue(allAreas.any { it.label == "Area1" })
@@ -68,8 +59,7 @@ class MapRepositoryLocalTest {
   @Test
   fun deleteArea_shouldReturnNoArea() {
     runTest {
-      repository.createArea(
-        orgId = orgId, label = "Area1", marker = marker1, radius = 10.0)
+      repository.createArea(orgId = orgId, label = "Area1", marker = marker1, radius = 10.0)
       val areaId = repository.getAllAreas(orgId).first().id
       repository.deleteArea(orgId, areaId)
       val allAreas = repository.getAllAreas(orgId)
@@ -81,15 +71,13 @@ class MapRepositoryLocalTest {
   @Test
   fun modifyArea_shouldReturnNewArea() {
     runTest {
-      repository.createArea(
-        orgId = orgId, label = "Area1", marker = marker1, radius = 10.0)
+      repository.createArea(orgId = orgId, label = "Area1", marker = marker1, radius = 10.0)
       val newArea = repository.getAllAreas(orgId).first()
       repository.updateArea(newArea.id, orgId, label = "AreaNew", newArea.marker, newArea.radius)
       val allAreas = repository.getAllAreas(orgId)
 
       assertEquals(1, allAreas.size)
       assertTrue(allAreas.any { it.label == "AreaNew" })
-
     }
   }
 }

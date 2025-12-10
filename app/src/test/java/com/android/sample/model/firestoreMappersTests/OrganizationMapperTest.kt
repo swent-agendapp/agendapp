@@ -3,9 +3,6 @@ package com.android.sample.model.firestoreMappersTests
 import com.android.sample.model.authentication.User
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.model.firestoreMappers.OrganizationMapper
-import com.android.sample.model.map.Area
-import com.android.sample.model.map.Location
-import com.android.sample.model.map.Marker
 import com.android.sample.model.organization.data.Organization
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.Timestamp

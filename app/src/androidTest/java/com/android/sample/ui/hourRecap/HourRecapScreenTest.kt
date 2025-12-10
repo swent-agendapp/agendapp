@@ -7,9 +7,7 @@ import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.test.core.app.ApplicationProvider
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
-import com.android.sample.ui.calendar.CalendarViewModel
 import com.android.sample.utils.FirebaseEmulatedTest
 import org.junit.Before
 import org.junit.Rule
@@ -77,41 +75,30 @@ class HourRecapScreenTest : FirebaseEmulatedTest() {
     compose.onNodeWithTag(HourRecapTestTags.GENERATE_BUTTON).performClick()
   }
 
-  /**
-   * Tests that the recap list displays the expected worked hours for each employee based on the
-   * test data injected into the CalendarViewModel's UI state.
-   */
   @Test
-  fun RecapItems_displayWorkedHoursCorrectly() {
-    val calendarViewModel =
-        CalendarViewModel(
-            app = ApplicationProvider.getApplicationContext(),
-        )
+  fun recapItems_displayWorkedHoursCorrectly() {
+    val vm = HourRecapViewModel()
 
-    calendarViewModel.setTestWorkedHours(
-        listOf(
-            "Alice" to 12.5,
-            "Bob" to 8.0,
-        ))
+    // Inject worked hours into test VM
+    vm.setTestWorkedHours(listOf("Alice" to 12.5, "Bob" to 8.0))
 
-    compose.setContent { HourRecapScreen(calendarViewModel = calendarViewModel) }
+    compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
+
     compose.onNodeWithText("Alice").assertExists()
     compose.onNodeWithText("12h 30min").assertExists()
 
     compose.onNodeWithText("Bob").assertExists()
     compose.onNodeWithText("8h").assertExists()
 
-    // Only 2 recap item
     compose.onAllNodesWithTag(HourRecapTestTags.RECAP_ITEM).assertCountEquals(2)
   }
 
   @Test
   fun emptyWorkedHours_showsEmptyList() {
-    val vm = CalendarViewModel(app = ApplicationProvider.getApplicationContext())
-
+    val vm = HourRecapViewModel()
     vm.setTestWorkedHours(emptyList())
 
-    compose.setContent { HourRecapScreen(calendarViewModel = vm) }
+    compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
 
     compose.onAllNodesWithTag(HourRecapTestTags.RECAP_ITEM).assertCountEquals(0)
   }

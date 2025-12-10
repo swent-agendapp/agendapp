@@ -1,6 +1,7 @@
 package com.android.sample.ui.replacement
 
 import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepository
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryInMemory
@@ -32,6 +33,7 @@ class ReplacementOrganizeViewModelTest {
   private lateinit var eventRepo: EventRepository
   private lateinit var orgRepo: OrganizationRepository
   private lateinit var replacementRepo: ReplacementRepository
+  private lateinit var userRepo: UserRepository
   private lateinit var event1: Event
 
   private val selectedOrganizationID = "org123"
@@ -42,6 +44,39 @@ class ReplacementOrganizeViewModelTest {
     eventRepo = EventRepositoryInMemory()
     orgRepo = OrganizationRepositoryLocal()
     replacementRepo = ReplacementRepositoryLocal()
+
+    // Create a mock UserRepository that returns test users
+    userRepo =
+        object : UserRepository {
+          private val testUsers =
+              listOf(
+                  User(id = "1", displayName = "Alice", email = "alice@example.com"),
+                  User(id = "2", displayName = "Bob", email = "bob@example.com"),
+                  User(id = "3", displayName = "Charlie", email = "charlie@example.com"),
+                  User(id = "4", displayName = "Dana", email = "dana@example.com"))
+
+          override suspend fun getMembersIds(organizationId: String): List<String> {
+            return testUsers.map { it.id }
+          }
+
+          override suspend fun getAdminsIds(organizationId: String): List<String> {
+            return listOf("1")
+          }
+
+          override suspend fun getUsersByIds(userIds: List<String>): List<User> {
+            return testUsers.filter { it.id in userIds }
+          }
+
+          override suspend fun modifyUser(user: User) {}
+
+          override suspend fun newUser(user: User) {}
+
+          override suspend fun deleteUser(userId: String) {}
+
+          override suspend fun addUserToOrganization(userId: String, organizationId: String) {}
+
+          override suspend fun addAdminToOrganization(userId: String, organizationId: String) {}
+        }
 
     event1 =
         createEvent(
@@ -63,7 +98,9 @@ class ReplacementOrganizeViewModelTest {
   /** Helper VM (authorization removed everywhere) */
   private fun makeVm(): ReplacementOrganizeViewModel {
     return ReplacementOrganizeViewModel(
-        eventRepository = eventRepo, replacementRepository = replacementRepo)
+        userRepository = userRepo,
+        eventRepository = eventRepo,
+        replacementRepository = replacementRepo)
   }
 
   // ----------------------------------------------------------------------
@@ -71,11 +108,13 @@ class ReplacementOrganizeViewModelTest {
   // ----------------------------------------------------------------------
 
   @Test
-  fun `initial state has default values`() {
+  fun `initial state has default values`() = runTest {
     val vm = makeVm()
+    testDispatcher.scheduler.advanceUntilIdle() // Allow init block to complete
     val state = vm.uiState.value
 
-    assertTrue(state.memberList.isEmpty())
+    // Members are loaded in init block
+    assertTrue(state.memberList.isNotEmpty())
     assertNull(state.selectedMember)
     assertTrue(state.selectedEvents.isEmpty())
     assertEquals(ReplacementOrganizeStep.SelectSubstitute, state.step)

@@ -95,6 +95,10 @@ class ReplacementOrganizeViewModel(
   /** Public immutable UI state observed by the UI. */
   val uiState: StateFlow<ReplacementOrganizeUIState> = _uiState.asStateFlow()
 
+  init {
+    loadOrganizationMembers()
+  }
+
   // Helper function to get the selected organization ID or throw an exception if none is selected
   fun getSelectedOrganizationId(): String {
     val orgId = selectedOrganizationId.value

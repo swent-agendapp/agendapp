@@ -54,33 +54,6 @@ fun SettingsScreen(
     onNavigateToOrganizationList: () -> Unit = {},
     onNavigateToHourRecap: () -> Unit = {}
 ) {
-  val items =
-      listOf(
-          ButtonItem(
-              stringResource(R.string.settings_profile_button),
-              Icons.Default.Person,
-              SettingsScreenTestTags.PROFILE_BUTTON,
-              onClick = onNavigateToUserProfile),
-          ButtonItem(
-              stringResource(R.string.settings_admin_info_button),
-              Icons.Default.AdminPanelSettings,
-              SettingsScreenTestTags.ADMIN_BUTTON,
-              onClick = onNavigateToAdminInfo),
-          ButtonItem(
-              stringResource(R.string.settings_map_settings_button),
-              Icons.Default.Map,
-              SettingsScreenTestTags.MAP_SETTINGS_BUTTON,
-              onClick = onNavigateToMapSettings),
-          ButtonItem(
-              stringResource(R.string.settings_organization_selection_button),
-              Icons.Default.Business,
-              SettingsScreenTestTags.ORGANIZATION_BUTTON,
-              onClick = onNavigateToOrganizationList),
-          ButtonItem(
-              stringResource(R.string.hour_recap),
-              Icons.Default.AccessTime,
-              SettingsScreenTestTags.HOURRECAP_BUTTON,
-              onClick = onNavigateToHourRecap))
 
   Scaffold(
       topBar = {
@@ -129,6 +102,17 @@ fun SettingsScreen(
                           icon = Icons.Default.Business,
                           testTag = SettingsScreenTestTags.ORGANIZATION_BUTTON,
                           onClick = onNavigateToOrganizationList)
+
+                      DividerSpacer()
+
+                      SettingsItemRow(
+                          title = stringResource(R.string.hour_recap),
+                          icon = Icons.Default.AccessTime,
+                          testTag = SettingsScreenTestTags.HOURRECAP_BUTTON,
+                          onClick = onNavigateToHourRecap,
+                      )
+
+                      DividerSpacer()
                     }
                   }
             }

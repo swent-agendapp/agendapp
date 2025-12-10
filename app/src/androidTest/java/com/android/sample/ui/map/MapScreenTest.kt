@@ -5,6 +5,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextInput
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.rule.GrantPermissionRule
 import com.android.sample.model.map.MapRepositoryProvider
@@ -24,12 +25,12 @@ import org.junit.Test
 
 class MapScreenTest : FirebaseEmulatedTest() {
   lateinit var mapViewModel: MapViewModel
-  val orgId = "my org"
+  private val selectedOrganizationId = "orgTest"
 
   @Before
   override fun setUp() {
     super.setUp()
-    SelectedOrganizationRepository.changeSelectedOrganization(orgId)
+    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
     val repo = MapRepositoryProvider.repository
     mapViewModel = MapViewModel(ApplicationProvider.getApplicationContext(), repo)
     MapsInitializer.initialize(

@@ -39,6 +39,8 @@ import com.android.sample.R
 import com.android.sample.model.map.Area
 import com.android.sample.model.map.Marker
 import com.android.sample.ui.common.PrimaryButton
+import com.android.sample.ui.common.SecondaryPageTopBar
+import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.map.MapScreenTestTags.CREATE_AREA_BUTTON
 import com.android.sample.ui.map.MapScreenTestTags.DOWN_SHEET
 import com.android.sample.ui.map.MapScreenTestTags.DOWN_SHEET_FORM
@@ -242,21 +244,11 @@ fun MapScreen(
 
   Scaffold(
       topBar = {
-        TopAppBar(
-            title = {
-              Text(
-                  stringResource(R.string.delimit_organization_title),
-                  Modifier.testTag(MapScreenTestTags.MAP_TITLE))
-            },
-            navigationIcon = {
-              IconButton(
-                  onClick = { onGoBack() },
-                  Modifier.testTag(MapScreenTestTags.MAP_GO_BACK_BUTTON)) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                        contentDescription = "Back")
-                  }
-            })
+        SecondaryPageTopBar(
+          title = stringResource(R.string.delimit_organization_title),
+          onClick = onGoBack,
+          backButtonTestTags = MapScreenTestTags.MAP_GO_BACK_BUTTON
+        )
       },
       content = { padding ->
         Column(modifier = Modifier.fillMaxSize()) {

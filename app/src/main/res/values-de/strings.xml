@@ -32,9 +32,13 @@
     <string name="confirmed_replacements">Bestätigte Ersetzungen</string>
     <string name="common_back">Zurück</string>
 
+    <!-- Warnings -->
+    <string name="warning_title">Warnung</string>
+    <string name="warning_participant_modification">Änderungen der Teilnehmenden, die Sie hier vornehmen, werden den betroffenen Personen nicht mitgeteilt\n\nWenn Sie einen Ersatz für eine der teilnehmenden Personen organisieren müssen, verwenden Sie stattdessen den Tab “Ersatzplan” im Hauptmenü</string>
+    <string name="warning_got_it">Verstanden</string>
+
     <!-- Edit Event Screen -->
     <string name="edit_event_title">Ereignis bearbeiten</string>
-    <string name="edit_event_instruction">Bearbeiten Sie unten die Ereignisdetails:</string>
 
     <!-- Fields -->
     <string name="edit_event_title_label">Titel</string>
@@ -49,13 +53,10 @@
     <string name="edit_event_end_date_label">Enddatum</string>
     <string name="edit_event_start_time_label">Startzeit:</string>
     <string name="edit_event_end_time_label">Endzeit:</string>
-    <string name="edit_event_recurrence_label">Wiederholung</string>
 
     <!-- Participants -->
-    <string name="edit_event_participants_label">Teilnehmer:</string>
     <string name="edit_event_edit_participants_button">Teilnehmer bearbeiten</string>
     <string name="edit_event_participants_screen_title">Ereignisteilnehmer bearbeiten</string>
-    <string name="edit_event_select_participants_text">Teilnehmer auswählen</string>
 
     <!-- Notifications -->
 
@@ -68,14 +69,14 @@
     <!-- Settings Screen -->
     <string name="settings_screen_title">Einstellungen</string>
     <string name="settings_profile_button">Profil</string>
-    <string name="settings_admin_info_button">Admin-Informationen</string>
+    <string name="settings_admin_info_button">Admin Kontact</string>
     <string name="settings_map_settings_button">Karte</string>
     <string name="settings_organization_selection_button">Organisation</string>
 
     <!-- Profile Screen -->
     <string name="profile_screen_title">Profil</string>
     <string name="profile_email_error">Bitte geben Sie eine gültige E-Mail-Adresse ein</string>
-    <string name="profile_phone_error">Bitte geben Sie eine gültige Telefonnummer ein (mindestens 7 Ziffern)</string>
+    <string name="profile_phone_error">Bitte geben Sie eine gültige Telefonnummer ein</string>
     <string name="profile_display_name_label">Anzeigename</string>
     <string name="profile_email_label">E-Mail</string>
     <string name="profile_phone_label">Telefonnummer</string>
@@ -206,7 +207,6 @@
 
 
     <string name="hour_recap_results_title">Gesamtstunden pro Mitarbeiter im ausgewählten Zeitraum:</string>
-    <string name="hour_recap_title">Gesamtstunden pro Mitarbeiter</string>
     <string name="hour_recap_generate">Zusammenfassung erstellen</string>
     <string name="export_excel">Nach Excel exportieren</string>
 
@@ -218,6 +218,8 @@
     <string name="filter_participants">Teilnehmer</string>
     <string name="clear_all">Alles löschen</string>
     <string name="apply">Anwenden</string>
+    <string name="eventType">Ereignistyp</string>
+    <string name="location">Ort</string>
 
     <!-- Invitations -->
     <string name="invitation_codes_title">Einladungscodes</string>
@@ -228,6 +230,12 @@
     <string name="status_active">Aktiv</string>
     <string name="status_used">Verwendet</string>
     <string name="status_expired">Abgelaufen</string>
+    <string name="invitations_loading">Einladungen werden geladen</string>
+    <string name="invitations_creating">Einladungen werden erstellt</string>
+    <string name="error_inserting_invitation">Fehler beim Hinzufügen der Einladung</string>
+    <string name="error_loading_invitations">Einladungen konnten nicht geladen werden</string>
+    <string name="error_invitation_not_found">Einladung wurde nicht gefunden</string>
+    <string name="error_deleting_invitations">Einladung konnte nicht gelöscht werden</string>
 
     <!-- hourRecap -->
     <string name="loading_hours">Laden…</string>
@@ -236,5 +244,7 @@
 
     <!-- Category -->
     <string name="default_category_label">Ohne Kategorie</string>
+
+    <string name="hour_recap">Stundenübersicht</string>
 
 </resources>

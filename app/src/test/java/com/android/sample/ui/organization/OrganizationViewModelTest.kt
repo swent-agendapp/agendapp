@@ -52,7 +52,7 @@ class OrganizationViewModelTest {
     coEvery { organizationRepository.getAllOrganizations(testUser) } returns
         listOf(testOrg1, testOrg2)
 
-    viewModel = OrganizationViewModel(userRepository, organizationRepository, authRepository)
+    viewModel = OrganizationViewModel(organizationRepository, authRepository)
   }
 
   @After
@@ -62,7 +62,7 @@ class OrganizationViewModelTest {
 
   @Test
   fun initialStateShouldBeLoading() = runTest {
-    val newViewModel = OrganizationViewModel(userRepository, organizationRepository, authRepository)
+    val newViewModel = OrganizationViewModel(organizationRepository, authRepository)
     val state = newViewModel.uiState.value
     assertTrue(state.isLoading)
   }
@@ -137,24 +137,6 @@ class OrganizationViewModelTest {
 
     // Verify error is cleared
     assertNull(viewModel.uiState.value.errorMsg)
-  }
-
-  @Test
-  fun addOrganizationFromNameShouldCreateAndReloadOrganizations() = runTest {
-    testDispatcher.scheduler.advanceUntilIdle()
-
-    // Setup mock for insert
-    coEvery { organizationRepository.insertOrganization(any()) } returns Unit
-
-    // Add organization
-    viewModel.addOrganizationFromName("New Org")
-    testDispatcher.scheduler.advanceUntilIdle()
-
-    // Verify insert was called
-    coVerify { organizationRepository.insertOrganization(any()) }
-
-    // Verify organizations were reloaded
-    coVerify(atLeast = 2) { organizationRepository.getAllOrganizations(testUser) }
   }
 
   @Test

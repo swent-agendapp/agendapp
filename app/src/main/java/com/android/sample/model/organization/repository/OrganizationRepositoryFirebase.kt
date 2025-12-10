@@ -1,6 +1,8 @@
 package com.android.sample.model.organization.repository
 
 import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.constants.FirestoreConstants
 import com.android.sample.model.constants.FirestoreConstants.COLLECTION_USERS
 import com.android.sample.model.constants.FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH
@@ -18,7 +20,10 @@ import kotlinx.coroutines.tasks.await
  *   defined in the interface.
  * - When overriding these methods, always call `super` first to ensure the admin check is applied.
  */
-class OrganizationRepositoryFirebase(private val db: FirebaseFirestore) : OrganizationRepository {
+class OrganizationRepositoryFirebase(
+    private val db: FirebaseFirestore,
+    private val userRepository: UserRepository = UserRepositoryProvider.repository
+) : OrganizationRepository {
 
   override suspend fun getAllOrganizations(user: User): List<Organization> {
     val userDoc = db.collection(COLLECTION_USERS).document(user.id).get().await()
@@ -78,6 +83,7 @@ class OrganizationRepositoryFirebase(private val db: FirebaseFirestore) : Organi
   }
 
   override suspend fun getOrganizationById(organizationId: String, user: User): Organization? {
+    require(userRepository.getMembersIds(organizationId).contains(user.id))
     val document =
         db.collection(FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH)
             .document(organizationId)

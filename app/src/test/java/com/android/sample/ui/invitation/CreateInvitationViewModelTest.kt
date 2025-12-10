@@ -167,10 +167,6 @@ class CreateInvitationViewModelTest {
             return if (!hasAuthenticatedUser) null else if (isAdminVm) admin else employee
           }
 
-          override fun requireUser(): User {
-            TODO("No need to implement for current tests")
-          }
-
           override suspend fun getUserById(userId: String): User? {
             return when (userId) {
               admin.id -> {

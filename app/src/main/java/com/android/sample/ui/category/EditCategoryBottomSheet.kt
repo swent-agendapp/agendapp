@@ -1,0 +1,111 @@
+package com.android.sample.ui.category
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SheetState
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
+import com.android.sample.R
+import com.android.sample.model.category.EventCategory
+import com.android.sample.ui.common.ColorSelector
+import com.android.sample.ui.common.PrimaryButton
+import com.android.sample.ui.theme.EventPalette
+import com.android.sample.ui.theme.PaddingMedium
+import com.android.sample.ui.theme.SpacingLarge
+import com.android.sample.ui.theme.SpacingMedium
+import com.android.sample.ui.theme.SpacingSmall
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CategoryEditBottomSheet(
+    showBottomSheet: Boolean,
+    sheetState: SheetState,
+    initialLabel: String?,
+    initialColor: Color?,
+    onDismiss: () -> Unit,
+    onSave: (String, Color) -> Unit,
+) {
+  if (!showBottomSheet) return
+
+  ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState) {
+    CategoryEditBottomSheetContent(
+        initialLabel = initialLabel,
+        initialColor = initialColor ?: EventCategory.defaultCategory().color,
+        onSave = onSave,
+    )
+  }
+}
+
+@Composable
+private fun CategoryEditBottomSheetContent(
+    initialLabel: String?,
+    initialColor: Color,
+    onSave: (String, Color) -> Unit,
+) {
+  // NOW: local bottom-sheet state driven by selectedCategory
+  // LATER: this entire content will be bound to ViewModel uiState and events
+  var currentColor by remember(initialColor) { mutableStateOf(initialColor) }
+  var label by remember(initialLabel) { mutableStateOf(initialLabel ?: "") }
+
+  Column(
+      modifier =
+          Modifier.fillMaxWidth()
+              .padding(PaddingMedium)
+              .testTag(EditCategoryScreenTestTags.BOTTOM_SHEET)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+          // Color selector.
+          // NOW: default to EventCategory.defaultCategory() if no selection
+          // LATER: use ViewModel's selectedCategory.color
+          Column {
+            // this Spacer is a trick visually to align the ColorSelector with the OutlinedTextField
+            Spacer(modifier = Modifier.height(SpacingSmall))
+            ColorSelector(
+                selectedColor = currentColor,
+                onColorSelected = { currentColor = it },
+                colors = EventPalette.defaultColors)
+          }
+
+          Spacer(modifier = Modifier.width(SpacingMedium))
+
+          // Text field for the label
+          // NOW: local state derived from selectedCategory
+          // LATER: call editCategoryViewModel.setLabel(categoryId, newLabel)
+          OutlinedTextField(
+              value = label,
+              onValueChange = { newValue -> label = newValue },
+              label = { Text(stringResource(R.string.edit_category_name_label)) },
+              placeholder = {
+                if (initialLabel == null) {
+                  Text(stringResource(R.string.edit_category_name_label))
+                }
+              },
+              modifier = Modifier.testTag(EditCategoryScreenTestTags.BOTTOM_SHEET_LABEL_TEXT_FIELD),
+          )
+        }
+
+        Spacer(modifier = Modifier.height(SpacingLarge))
+
+        PrimaryButton(
+            modifier = Modifier.testTag(EditCategoryScreenTestTags.BOTTOM_SHEET_SAVE_BUTTON),
+            text = stringResource(R.string.edit_category_save_button),
+            enabled = label.trim().isNotEmpty(),
+            onClick = { onSave(label, currentColor) })
+      }
+}

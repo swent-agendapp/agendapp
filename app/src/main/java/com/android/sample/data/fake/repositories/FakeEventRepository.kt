@@ -73,7 +73,7 @@ class FakeEventRepository : BaseEventRepository() {
       endDate: Instant
   ): List<Event> {
     failIfNeeded(method = RepoMethod.GET_EVENTS_BETWEEN_DATES)
-    return events.filter { it.startDate >= startDate && it.endDate <= endDate }
+    return events.filter { e -> e.startDate <= endDate && e.endDate >= startDate }
   }
 
   override suspend fun ensureOrganizationExists(orgId: String) {

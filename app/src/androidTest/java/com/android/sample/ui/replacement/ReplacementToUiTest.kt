@@ -44,7 +44,8 @@ class ReplacementToUiTest {
             version = 1L,
             locallyStoredBy = emptyList(),
             cloudStorageStatuses = emptySet(),
-            personalNotes = null)
+            personalNotes = null,
+            location = null)
 
     val replacement =
         Replacement(

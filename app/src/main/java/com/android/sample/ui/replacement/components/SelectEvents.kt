@@ -62,7 +62,7 @@ fun SelectEventScreen(
     onEventClick: (Event) -> Unit = {},
     processActions: ReplacementProcessActions? = null,
 ) {
-  var selectedEvent by remember { mutableStateOf<Event?>(null) }
+  var selectedEvents by remember { mutableStateOf<List<Event>>(emptyList()) }
   Scaffold(
       topBar = {
         SecondaryPageTopBar(
@@ -90,22 +90,22 @@ fun SelectEventScreen(
                   }
               Box(modifier = Modifier.weight(WeightExtraHeavy).fillMaxWidth()) {
                 CalendarEventSelector(
-                    selectedEvent = selectedEvent,
+                    selectedEvents = selectedEvents,
                     onEventClick = { event ->
-                      selectedEvent =
-                          if (selectedEvent?.id == event.id) {
-                            null
+                      selectedEvents =
+                          if (selectedEvents.any { it.id == event.id }) {
+                            selectedEvents.filterNot { it.id == event.id }
                           } else {
-                            event
+                            selectedEvents + event
                           }
-                      selectedEvent?.let { onEventClick(it) }
+                      onEventClick(event)
                     })
               }
             }
       },
       bottomBar = {
         ReplacementBottomBarWithProcessOptions(
-            canGoNext = canGoNext && selectedEvent != null,
+            canGoNext = canGoNext && selectedEvents.isNotEmpty(),
             onBack = onBack,
             onNext = onNext,
             onProcessNow = processActions?.onProcessNow,

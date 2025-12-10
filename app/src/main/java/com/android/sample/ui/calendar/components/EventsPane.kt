@@ -44,7 +44,7 @@ fun EventsPane(
             gridStartTime = CalendarDefaults.DefaultStartTime,
             effectiveEndTime = CalendarDefaults.DefaultEndTime,
         ),
-    selectedEvent: Event? = null,
+    selectedEvents: List<Event> = emptyList(),
     onEventClick: (Event) -> Unit = {}
 ) {
   val columnWidthDp = layout.columnWidthDp
@@ -62,7 +62,6 @@ fun EventsPane(
       Box(
           modifier =
               Modifier.offset(x = dayIndex * columnWidthDp).size(columnWidthDp, gridHeightDp)) {
-            // for now (later : EventBlockWithOverlapHandling)
             EventBlock(
                 events = eventsForDay,
                 currentDate = date,
@@ -71,7 +70,7 @@ fun EventsPane(
                         startTime = gridStartTime,
                         endTime = effectiveEndTime,
                         columnWidthDp = columnWidthDp),
-                selectedEvent = selectedEvent,
+                selectedEvents = selectedEvents,
                 onEventClick = onEventClick)
           }
     }

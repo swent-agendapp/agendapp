@@ -38,10 +38,10 @@ import com.android.sample.ui.theme.AlphaLow
 import com.android.sample.ui.theme.BorderWidthThin
 import com.android.sample.ui.theme.CornerRadiusSmall
 import com.android.sample.ui.theme.ElevationExtraLow
-import com.android.sample.ui.theme.ElevationNull
 import com.android.sample.ui.theme.FontSizeExtraExtraSmall
 import com.android.sample.ui.theme.FontSizeExtraSmall
 import com.android.sample.ui.theme.FontSizeSmall
+import com.android.sample.ui.theme.OffsetNull
 import com.android.sample.ui.theme.PaddingExtraSmall
 import com.android.sample.ui.theme.widthLarge
 import java.time.Instant
@@ -99,7 +99,7 @@ fun EventBlock(
         LocalDate, // used to compute the visible portion of events that may span multiple days
     config: EventBlockConfig =
         EventBlockConfig(columnWidthDp = defaultGridContentDimensions().defaultColumnWidthDp),
-    selectedEvent: Event? = null,
+    selectedEvents: List<Event> = emptyList(),
     onEventClick: (Event) -> Unit = {}
 ) {
   val startTime = config.startTime
@@ -138,8 +138,9 @@ fun EventBlock(
         if (layout != null) {
           columnWidthDp * layout.offsetFraction
         } else {
-          ElevationNull
+          OffsetNull
         }
+    val isSelected = selectedEvents.any { it.id == event.id }
 
     DrawEventBlock(
         modifier = modifier,
@@ -152,15 +153,15 @@ fun EventBlock(
                 horizontalOffset = horizontalOffsetDp,
             ),
         onEventClick = onEventClick,
-        isSelected = (selectedEvent == event))
+        isSelected = isSelected)
   }
 }
 
 data class EventBlockLayout(
-    val topOffset: Dp = ElevationNull,
+    val topOffset: Dp = OffsetNull,
     val height: Dp = widthLarge,
     val width: Dp = widthLarge,
-    val horizontalOffset: Dp = ElevationNull,
+    val horizontalOffset: Dp = OffsetNull,
 )
 
 /**
@@ -190,8 +191,7 @@ private fun DrawEventBlock(
   val eventWidthDp = layout.width
   val horizontalOffsetDp = layout.horizontalOffset
   // Event styling
-  val baseBackgroundColor = event.category.color
-  val backgroundColor = baseBackgroundColor
+  val backgroundColor = event.category.color
   val textColor = Color.Black
   val borderColor =
       if (isSelected) Color.Black.copy(alpha = AlphaHigh)
@@ -199,8 +199,6 @@ private fun DrawEventBlock(
   val elevation = if (isSelected) ElevationExtraLow * 2 else ElevationExtraLow
 
   val titleFontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium
-
-  // Later : add logic to adapt the view when orientation (portrait or not)
 
   Box(
       modifier =

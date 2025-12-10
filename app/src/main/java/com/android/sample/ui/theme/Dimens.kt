@@ -100,6 +100,7 @@ val LineHeightSmall = 8.sp
 val LineHeightLarge = 22.sp
 
 // Calendar Dimensions
+val OffsetNull = 0.dp
 val CalendarLeftOffset = 58.dp
 val CalendarTopOffset = 58.dp
 val CalendarColumnWidth = 64.dp

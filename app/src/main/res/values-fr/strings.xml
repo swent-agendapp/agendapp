@@ -206,7 +206,6 @@
 
 
     <string name="hour_recap_results_title">Total d\'heures par employé pour la période sélectionnée :</string>
-    <string name="hour_recap_title">Total d\'heures par employé</string>
     <string name="hour_recap_generate">Générer le récapitulatif</string>
     <string name="export_excel">Exporter vers Excel</string>
 
@@ -218,6 +217,8 @@
     <string name="filter_participants">Participants</string>
     <string name="clear_all">Tout effacer</string>
     <string name="apply">Appliquer</string>
+    <string name="eventType">Type d’événement</string>
+    <string name="location">Lieu</string>
 
     <!-- Invitations -->
     <string name="invitation_codes_title">Codes d’invitation</string>
@@ -228,6 +229,12 @@
     <string name="status_active">Actif</string>
     <string name="status_used">Utilisé</string>
     <string name="status_expired">Expiré</string>
+    <string name="invitations_loading">Chargement des invitations</string>
+    <string name="invitations_creating">Création des invitations</string>
+    <string name="error_inserting_invitation">Erreur lors de l’ajout de l\’invitation</string>
+    <string name="error_loading_invitations">Échec du chargement des invitations</string>
+    <string name="error_invitation_not_found">Invitation introuvable</string>
+    <string name="error_deleting_invitations">Échec de la suppression de l\'invitation</string>
 
     <!-- hourRecap -->
     <string name="loading_hours">Chargement…</string>
@@ -236,5 +243,7 @@
 
     <!-- Category -->
     <string name="default_category_label">Sans catégorie</string>
+
+    <string name="hour_recap">Récapitulatif des heures</string>
 
 </resources>

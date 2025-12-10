@@ -50,4 +50,8 @@ class InvitationRepositoryFirebase(private val db: FirebaseFirestore) : Invitati
     val doc = collection.document(itemId).get().await()
     return InvitationMapper.fromDocument(doc)
   }
+
+  override suspend fun getInvitationByOrganization(organizationId: String): List<Invitation> {
+    return getAllInvitations().filter { it.organizationId == organizationId }
+  }
 }

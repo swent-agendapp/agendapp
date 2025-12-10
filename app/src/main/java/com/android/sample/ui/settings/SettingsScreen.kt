@@ -3,6 +3,7 @@ package com.android.sample.ui.settings
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.AdminPanelSettings
 import androidx.compose.material.icons.filled.Business
 import androidx.compose.material.icons.filled.Map
@@ -29,6 +30,7 @@ object SettingsScreenTestTags {
   const val ADMIN_BUTTON = "admin_info_button"
   const val MAP_SETTINGS_BUTTON = "map_settings_button"
   const val ORGANIZATION_BUTTON = "organization_selection_button"
+  const val HOURRECAP_BUTTON = "hour_recap_button"
 }
 
 /** Settings screen with navigation to profile. */
@@ -39,7 +41,8 @@ fun SettingsScreen(
     onNavigateToUserProfile: () -> Unit = {},
     onNavigateToAdminInfo: () -> Unit = {},
     onNavigateToMapSettings: () -> Unit = {},
-    onNavigateToOrganizationList: () -> Unit = {}
+    onNavigateToOrganizationList: () -> Unit = {},
+    onNavigateToHourRecap: () -> Unit = {}
 ) {
   val items =
       listOf(
@@ -62,7 +65,12 @@ fun SettingsScreen(
               stringResource(R.string.settings_organization_selection_button),
               Icons.Default.Business,
               SettingsScreenTestTags.ORGANIZATION_BUTTON,
-              onClick = onNavigateToOrganizationList))
+              onClick = onNavigateToOrganizationList),
+          ButtonItem(
+              stringResource(R.string.hour_recap),
+              Icons.Default.AccessTime,
+              SettingsScreenTestTags.HOURRECAP_BUTTON,
+              onClick = onNavigateToHourRecap))
 
   Scaffold(
       topBar = {

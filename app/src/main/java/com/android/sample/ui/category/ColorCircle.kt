@@ -1,0 +1,41 @@
+package com.android.sample.ui.category
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
+import com.android.sample.ui.theme.BorderWidthExtraThick
+import com.android.sample.ui.theme.BorderWidthThin
+import com.android.sample.ui.theme.SizeMediumLarge
+
+object ColorCircleTestTags {
+  const val COLOR_CIRCLE = "color_circle"
+}
+
+@Composable
+fun ColorCircle(
+    color: Color,
+    isSelected: Boolean = false,
+    modifier: Modifier = Modifier,
+    testTag: String = ColorCircleTestTags.COLOR_CIRCLE,
+) {
+  Box(
+      modifier =
+          modifier
+              .size(SizeMediumLarge)
+              .clip(CircleShape)
+              .background(color)
+              .border(
+                  width = if (isSelected) BorderWidthExtraThick else BorderWidthThin,
+                  color = MaterialTheme.colorScheme.onSurface,
+                  shape = CircleShape)
+              .testTag(testTag),
+  )
+}

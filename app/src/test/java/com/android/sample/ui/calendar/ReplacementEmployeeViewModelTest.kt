@@ -1,6 +1,7 @@
 package com.android.sample.ui.calendar
 
 import com.android.sample.data.fake.repositories.FakeEventRepository
+import com.android.sample.data.fake.repositories.FakeReplacementRepository
 import com.android.sample.data.global.repositories.EventRepository
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
@@ -212,45 +213,4 @@ class ReplacementEmployeeViewModelTest {
 
     return ReplacementEmployeeViewModel(replacementRepo, eventRepo)
   }
-}
-
-// ========================================================================
-// Fake Repositories
-// ========================================================================
-class FakeReplacementRepository : ReplacementRepository {
-
-  private val storage = mutableListOf<Replacement>()
-
-  override suspend fun getAllReplacements(orgId: String): List<Replacement> = storage.toList()
-
-  override suspend fun insertReplacement(orgId: String, item: Replacement) {
-    storage.add(item)
-  }
-
-  override suspend fun updateReplacement(orgId: String, itemId: String, item: Replacement) {
-    val idx = storage.indexOfFirst { it.id == itemId }
-    if (idx != -1) storage[idx] = item
-  }
-
-  override suspend fun deleteReplacement(orgId: String, itemId: String) {
-    storage.removeAll { it.id == itemId }
-  }
-
-  override suspend fun getReplacementById(orgId: String, itemId: String): Replacement? =
-      storage.find { it.id == itemId }
-
-  override suspend fun getReplacementsByAbsentUser(
-      orgId: String,
-      userId: String
-  ): List<Replacement> = storage.filter { it.absentUserId == userId }
-
-  override suspend fun getReplacementsBySubstituteUser(
-      orgId: String,
-      userId: String
-  ): List<Replacement> = storage.filter { it.substituteUserId == userId }
-
-  override suspend fun getReplacementsByStatus(
-      orgId: String,
-      status: ReplacementStatus
-  ): List<Replacement> = storage.filter { it.status == status }
 }

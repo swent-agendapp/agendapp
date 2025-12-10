@@ -243,6 +243,12 @@
     <string name="work_duration_hours_minutes">%1$d Std. %2$d Min.</string>
 
     <!-- Category -->
+    <string name="delete_category_message">Sind Sie sicher, dass Sie diese Kategorie löschen möchten?</string>
     <string name="default_category_label">Ohne Kategorie</string>
+    <string name="edit_category_title">Kategorien bearbeiten</string>
+    <string name="edit_category_empty_state_title">Noch keine Kategorien vorhanden.</string>
+    <string name="edit_category_empty_state_message">Erstellen Sie Ihre erste Kategorie über die „+“-Schaltfläche.</string>
+    <string name="edit_category_name_label">Name der Kategorie</string>
+    <string name="edit_category_save_button">Kategorie speichern</string>
 
 </resources>

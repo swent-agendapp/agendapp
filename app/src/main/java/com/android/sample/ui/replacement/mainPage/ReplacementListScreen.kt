@@ -24,9 +24,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
 import com.android.sample.ui.calendar.components.eventSummaryComponents.ColoredSideBar
+import com.android.sample.ui.common.MainPageTopBar
 import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.common.SecondaryButton
-import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.theme.*
 
 // Assisted by AI
@@ -100,7 +100,6 @@ fun ReplacementEmployeeListScreen(
     isAdmin: Boolean = false,
     adminActions: ReplacementAdminActions = ReplacementAdminActions(),
     createRequestActions: ReplacementCreateRequestActions = ReplacementCreateRequestActions(),
-    onBack: () -> Unit = {},
 ) {
   var showCreateOptions by remember { mutableStateOf(false) }
 
@@ -109,9 +108,8 @@ fun ReplacementEmployeeListScreen(
 
   Scaffold(
       topBar = {
-        SecondaryPageTopBar(
+        MainPageTopBar(
             title = stringResource(R.string.replacement_title),
-            onClick = onBack,
         )
       },
       bottomBar = {
@@ -129,7 +127,7 @@ fun ReplacementEmployeeListScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(PaddingExtraSmall),
         ) {
-          if (isAdmin) {
+          if (true) { // change to if is admin when implemented
             SecondaryButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(R.string.organize_replacement),

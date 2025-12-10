@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -21,7 +20,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,7 +37,6 @@ import com.android.sample.R
 import com.android.sample.model.map.Area
 import com.android.sample.model.map.Marker
 import com.android.sample.ui.common.PrimaryButton
-import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.map.MapScreenTestTags.CREATE_AREA_BUTTON
 import com.android.sample.ui.map.MapScreenTestTags.DOWN_SHEET
@@ -245,10 +242,9 @@ fun MapScreen(
   Scaffold(
       topBar = {
         SecondaryPageTopBar(
-          title = stringResource(R.string.delimit_organization_title),
-          onClick = onGoBack,
-          backButtonTestTags = MapScreenTestTags.MAP_GO_BACK_BUTTON
-        )
+            title = stringResource(R.string.delimit_organization_title),
+            onClick = onGoBack,
+            backButtonTestTags = MapScreenTestTags.MAP_GO_BACK_BUTTON)
       },
       content = { padding ->
         Column(modifier = Modifier.fillMaxSize()) {

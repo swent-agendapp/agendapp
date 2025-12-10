@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.AdminPanelSettings
 import androidx.compose.material.icons.filled.Business
 import androidx.compose.material.icons.filled.Map
@@ -39,6 +40,7 @@ object SettingsScreenTestTags {
   const val ADMIN_BUTTON = "admin_info_button"
   const val MAP_SETTINGS_BUTTON = "map_settings_button"
   const val ORGANIZATION_BUTTON = "organization_selection_button"
+  const val HOURRECAP_BUTTON = "hour_recap_button"
 }
 
 /** Settings screen with navigation to profile. */
@@ -49,8 +51,36 @@ fun SettingsScreen(
     onNavigateToUserProfile: () -> Unit = {},
     onNavigateToAdminInfo: () -> Unit = {},
     onNavigateToMapSettings: () -> Unit = {},
-    onNavigateToOrganizationList: () -> Unit = {}
+    onNavigateToOrganizationList: () -> Unit = {},
+    onNavigateToHourRecap: () -> Unit = {}
 ) {
+  val items =
+      listOf(
+          ButtonItem(
+              stringResource(R.string.settings_profile_button),
+              Icons.Default.Person,
+              SettingsScreenTestTags.PROFILE_BUTTON,
+              onClick = onNavigateToUserProfile),
+          ButtonItem(
+              stringResource(R.string.settings_admin_info_button),
+              Icons.Default.AdminPanelSettings,
+              SettingsScreenTestTags.ADMIN_BUTTON,
+              onClick = onNavigateToAdminInfo),
+          ButtonItem(
+              stringResource(R.string.settings_map_settings_button),
+              Icons.Default.Map,
+              SettingsScreenTestTags.MAP_SETTINGS_BUTTON,
+              onClick = onNavigateToMapSettings),
+          ButtonItem(
+              stringResource(R.string.settings_organization_selection_button),
+              Icons.Default.Business,
+              SettingsScreenTestTags.ORGANIZATION_BUTTON,
+              onClick = onNavigateToOrganizationList),
+          ButtonItem(
+              stringResource(R.string.hour_recap),
+              Icons.Default.AccessTime,
+              SettingsScreenTestTags.HOURRECAP_BUTTON,
+              onClick = onNavigateToHourRecap))
 
   Scaffold(
       topBar = {

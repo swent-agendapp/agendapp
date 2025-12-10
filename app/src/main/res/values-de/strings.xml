@@ -206,7 +206,6 @@
 
 
     <string name="hour_recap_results_title">Gesamtstunden pro Mitarbeiter im ausgewählten Zeitraum:</string>
-    <string name="hour_recap_title">Gesamtstunden pro Mitarbeiter</string>
     <string name="hour_recap_generate">Zusammenfassung erstellen</string>
     <string name="export_excel">Nach Excel exportieren</string>
 
@@ -218,6 +217,8 @@
     <string name="filter_participants">Teilnehmer</string>
     <string name="clear_all">Alles löschen</string>
     <string name="apply">Anwenden</string>
+    <string name="eventType">Ereignistyp</string>
+    <string name="location">Ort</string>
 
     <!-- Invitations -->
     <string name="invitation_codes_title">Einladungscodes</string>
@@ -242,5 +243,7 @@
 
     <!-- Category -->
     <string name="default_category_label">Ohne Kategorie</string>
+
+    <string name="hour_recap">Stundenübersicht</string>
 
 </resources>

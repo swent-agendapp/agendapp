@@ -206,7 +206,6 @@
 
 
     <string name="hour_recap_results_title">Total d\'heures par employé pour la période sélectionnée :</string>
-    <string name="hour_recap_title">Total d\'heures par employé</string>
     <string name="hour_recap_generate">Générer le récapitulatif</string>
     <string name="export_excel">Exporter vers Excel</string>
 
@@ -218,6 +217,8 @@
     <string name="filter_participants">Participants</string>
     <string name="clear_all">Tout effacer</string>
     <string name="apply">Appliquer</string>
+    <string name="eventType">Type d’événement</string>
+    <string name="location">Lieu</string>
 
     <!-- Invitations -->
     <string name="invitation_codes_title">Codes d’invitation</string>
@@ -242,5 +243,7 @@
 
     <!-- Category -->
     <string name="default_category_label">Sans catégorie</string>
+
+    <string name="hour_recap">Récapitulatif des heures</string>
 
 </resources>

@@ -59,6 +59,7 @@ val ElevationMedium = 8.dp
 val ElevationHigh = 12.dp
 
 // widths and heights
+val widthSmall = 48.dp
 val widthLarge = 120.dp
 val heightExtraSmall = 0.7.dp
 val heightMedium = 40.dp

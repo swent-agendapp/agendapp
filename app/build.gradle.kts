@@ -227,6 +227,9 @@ dependencies {
     implementation(libs.play.services.maps)
     implementation(libs.maps.compose)
     implementation(libs.maps.compose.utils)
+
+    // Reorderable lists
+    implementation(libs.burnoutcrew.reorderable)
 }
 
 tasks.withType<Test> {

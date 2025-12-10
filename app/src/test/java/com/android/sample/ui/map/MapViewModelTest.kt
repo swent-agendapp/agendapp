@@ -47,7 +47,7 @@ class MapViewModelTestWithPermission {
   @Test
   fun `map vm create new map with no selected marker`() {
     val vm = MapViewModel(ApplicationProvider.getApplicationContext(), repository)
-    assertThrows(IllegalStateException::class.java) { vm.createNewArea() }
+    assertThrows(IllegalArgumentException::class.java) { vm.createNewArea() }
   }
 
   @Test

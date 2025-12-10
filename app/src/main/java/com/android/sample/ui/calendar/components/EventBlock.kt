@@ -167,7 +167,7 @@ private fun DrawEventBlock(
     onEventClick: (Event) -> Unit = {},
 ) {
   // Event styling
-  val backgroundColor = event.color
+  val backgroundColor = event.category.color
   val textColor = Color.Black
 
   // Later : add logic to adapt the view when orientation (portrait or not)

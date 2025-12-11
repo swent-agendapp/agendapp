@@ -68,7 +68,6 @@ fun OrganizationListScreen(
         SelectedOrganizationVMProvider.viewModel,
     onOrganizationSelected: () -> Unit = {},
     onAddOrganizationClicked: () -> Unit = {},
-    onUseInvitationClicked: () -> Unit = {}
 ) {
   val sheetState = rememberModalBottomSheetState()
   val scope = rememberCoroutineScope()
@@ -97,7 +96,6 @@ fun OrganizationListScreen(
                   onClick = {
                     scope.launch { sheetState.show() }
                     organizationViewModel.setShowUseInvitationBottomSheet(true)
-                    onUseInvitationClicked
                   },
                   icon = Icons.AutoMirrored.Filled.Login,
               )

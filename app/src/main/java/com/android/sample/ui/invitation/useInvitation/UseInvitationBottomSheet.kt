@@ -26,8 +26,6 @@ object UseInvitationTestTags {
   const val INVITATION_CODE_TEXT_FIELD = "invitation_code_text_field"
   const val CANCEL_BUTTON = "cancel_button"
   const val JOIN_BUTTON = "join_button"
-
-  const val CODE_INPUT_ERROR_MESSAGE = "code_input_error_message"
 }
 
 /**
@@ -65,13 +63,10 @@ fun UseInvitationBottomSheet(
                     .testTag(UseInvitationTestTags.INVITATION_CODE_TEXT_FIELD),
             isError = uiState.isInputCodeIllegal,
             supportingText = {
-              if (uiState.isInputCodeIllegal) {
-                Text(
-                    text =
-                        stringResource(
-                            R.string.error_invitation_code_illegal_input, INVITATION_CODE_LENGTH),
-                    modifier = Modifier.testTag(UseInvitationTestTags.CODE_INPUT_ERROR_MESSAGE))
-              }
+              Text(
+                  text =
+                      stringResource(
+                          R.string.error_invitation_code_illegal_input, INVITATION_CODE_LENGTH))
             })
         Spacer(Modifier.height(SpacingSmall))
 

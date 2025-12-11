@@ -19,34 +19,13 @@ import java.util.UUID
  */
 data class Area(
     val id: String = UUID.randomUUID().toString(),
-    val label: String? = null,
-    val markers: List<Marker>
+    val label: String,
+    val marker: Marker,
+    val radius: Double
 ) {
-  private val _sortedMarkers: List<Marker>
-
   init {
-    // Check there are at least 3 distinct markers by comparing their locations
-    val distinctMarkers =
-        markers
-            .map { it.location }
-            .distinctBy { it.latitude to it.longitude }
-            .map { loc -> markers.first { it.location == loc } }
-
-    require(distinctMarkers.size >= 3) {
-      "An Area must have at least 3 distinct markers with unique coordinates"
-    }
-
-    _sortedMarkers = GeoUtils.sortMarkersCounterClockwise(distinctMarkers)
+    require(radius > 0) { "The radius of the Area must be positive." }
   }
-
-  /**
-   * Returns the list of markers defining this Area, sorted in counter-clockwise order around the
-   * polygon.
-   *
-   * @return List of Marker objects in sorted order.
-   */
-  fun getSortedMarkers(): List<Marker> = _sortedMarkers
-
   /**
    * Checks whether the given marker is located inside this Area.
    *
@@ -54,6 +33,6 @@ data class Area(
    * @return true if the marker is inside the area polygon, false otherwise.
    */
   fun contains(marker: Marker): Boolean =
-      GeoUtils.isPointInPolygon(
+      GeoUtils.isPointInCircle(
           latitude = marker.location.latitude, longitude = marker.location.longitude, area = this)
 }

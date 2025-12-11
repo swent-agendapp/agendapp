@@ -23,6 +23,7 @@ object EventMapper : FirestoreMapper<Event> {
     val startDate = document.getTimestamp("startDate")?.toDate()?.toInstant() ?: return null
     val endDate = document.getTimestamp("endDate")?.toDate()?.toInstant() ?: return null
     val personalNotes = document.getString("personalNotes")
+    val location = document.getString("location")
 
     val participants =
         (document["participants"] as? List<*>)?.filterIsInstance<String>()?.toSet() ?: emptySet()
@@ -57,7 +58,8 @@ object EventMapper : FirestoreMapper<Event> {
         presence = presence,
         recurrenceStatus = recurrenceStatus,
         hasBeenDeleted = hasBeenDeleted,
-        category = category)
+        category = category,
+        location = location)
   }
 
   override fun fromMap(data: Map<String, Any?>): Event? {
@@ -79,6 +81,8 @@ object EventMapper : FirestoreMapper<Event> {
             ?: return null
 
     val personalNotes = data["personalNotes"] as? String
+    val location = data["location"] as? String
+
     val participants =
         (data["participants"] as? List<*>)?.filterIsInstance<String>()?.toSet() ?: emptySet()
 
@@ -110,6 +114,7 @@ object EventMapper : FirestoreMapper<Event> {
         version = version,
         presence = presence,
         recurrenceStatus = recurrenceStatus,
+        location = location,
         hasBeenDeleted = hasBeenDeleted,
         category = category)
   }
@@ -124,6 +129,7 @@ object EventMapper : FirestoreMapper<Event> {
         "endDate" to Timestamp(Date.from(model.endDate)),
         "storageStatus" to model.cloudStorageStatuses.map { it.name },
         "personalNotes" to model.personalNotes,
+        "location" to model.location,
         "participants" to model.participants.toList(),
         "version" to model.version,
         "presence" to model.presence,

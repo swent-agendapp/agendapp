@@ -87,7 +87,8 @@ class EditEventViewModel(
                 version = System.currentTimeMillis(),
                 recurrenceStatus = state.recurrenceMode,
                 hasBeenDeleted = false,
-                category = state.category)
+                category = state.category,
+                location = null)
         repository.updateEvent(orgId = orgId, itemId = updated.id, item = updated)
       } catch (e: Exception) {
         Log.e("EditEventViewModel", "Error saving event changes: ${e.message}")

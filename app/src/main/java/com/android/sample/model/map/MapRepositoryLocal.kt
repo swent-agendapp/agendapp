@@ -15,33 +15,28 @@ class MapRepositoryLocal : MapRepository {
   // Helper function to get or create OrgData for a given organization ID
   private fun getOrCreate(orgId: String): OrgData = dataByOrganization.getOrPut(orgId) { OrgData() }
 
-  override fun addMarker(orgId: String, marker: Marker) {
-    getOrCreate(orgId).markers[marker.id] = marker
-  }
-
-  override fun removeMarker(orgId: String, id: String) {
-    getOrCreate(orgId).markers.remove(id)
-  }
-
-  override fun getMarkerById(orgId: String, id: String): Marker? = getOrCreate(orgId).markers[id]
-
-  override fun getAllMarkers(orgId: String): List<Marker> =
-      getOrCreate(orgId).markers.values.toList()
-
-  override fun getAllMarkersIds(orgId: String): List<String> =
-      getOrCreate(orgId).markers.keys.toList()
-
-  override suspend fun createArea(orgId: String, label: String?, markerIds: List<String>) {
+  override suspend fun createArea(orgId: String, label: String, marker: Marker, radius: Double) {
     val org = getOrCreate(orgId)
-    val selectedMarkers = markerIds.mapNotNull { org.markers[it] }
-    val area = Area(label = label, markers = selectedMarkers)
+    val area = Area(label = label, marker = marker, radius = radius)
+    org.areas[area.id] = area
+  }
+
+  override suspend fun updateArea(
+      areaId: String,
+      orgId: String,
+      label: String,
+      marker: Marker,
+      radius: Double
+  ) {
+    val org = getOrCreate(orgId)
+    val area = Area(id = areaId, label = label, marker = marker, radius = radius)
     org.areas[area.id] = area
   }
 
   override suspend fun getAllAreas(orgId: String): List<Area> =
       getOrCreate(orgId).areas.values.toList()
 
-  override fun getAllAreasIds(orgId: String): List<String> = getOrCreate(orgId).areas.keys.toList()
-
-  override fun getAreaById(orgId: String, id: String): Area? = getOrCreate(orgId).areas[id]
+  override suspend fun deleteArea(orgId: String, itemId: String) {
+    getOrCreate(orgId).areas.remove(itemId)
+  }
 }

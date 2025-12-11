@@ -127,7 +127,8 @@ private val previewEvents: List<Event> by lazy {
           version = 1L,
           recurrenceStatus = RecurrenceStatus.OneTime,
           hasBeenDeleted = false,
-          category = EventCategory(label = "Category A", color = EventPalette.Blue)),
+          category = EventCategory(label = "Category A", color = EventPalette.Blue),
+          location = null),
       // e1) Recurring (weekly)
       Event(
           id = "e1",
@@ -143,7 +144,8 @@ private val previewEvents: List<Event> by lazy {
           version = 1L,
           recurrenceStatus = RecurrenceStatus.Weekly,
           hasBeenDeleted = false,
-          category = EventCategory(label = "Category B", color = EventPalette.Green)),
+          category = EventCategory(label = "Category B", color = EventPalette.Green),
+          location = null),
       // e2) 3-day event
       Event(
           id = "e2",
@@ -159,7 +161,8 @@ private val previewEvents: List<Event> by lazy {
           version = 1L,
           recurrenceStatus = RecurrenceStatus.OneTime,
           hasBeenDeleted = false,
-          category = EventCategory(label = "Category C", color = EventPalette.Orange)),
+          category = EventCategory(label = "Category C", color = EventPalette.Orange),
+          location = null),
       // e3) 3-day recurring
       Event(
           id = "e3",
@@ -175,7 +178,8 @@ private val previewEvents: List<Event> by lazy {
           version = 1L,
           recurrenceStatus = RecurrenceStatus.Weekly,
           hasBeenDeleted = false,
-          category = EventCategory(label = "Category D", color = EventPalette.Purple)),
+          category = EventCategory(label = "Category D", color = EventPalette.Purple),
+          location = null),
       // e4) Long title
       Event(
           id = "e4",
@@ -192,7 +196,8 @@ private val previewEvents: List<Event> by lazy {
           version = 1L,
           recurrenceStatus = RecurrenceStatus.OneTime,
           hasBeenDeleted = false,
-          category = EventCategory(label = "Category D", color = EventPalette.Blue)),
+          category = EventCategory(label = "Category D", color = EventPalette.Blue),
+          location = null),
       // e5) Long description
       Event(
           id = "e5",
@@ -211,7 +216,8 @@ private val previewEvents: List<Event> by lazy {
           version = 1L,
           recurrenceStatus = RecurrenceStatus.OneTime,
           hasBeenDeleted = false,
-          category = EventCategory(label = "Category E", color = EventPalette.Red)),
+          category = EventCategory(label = "Category E", color = EventPalette.Red),
+          location = null),
       // e6) Many participants
       Event(
           id = "e6",
@@ -227,7 +233,8 @@ private val previewEvents: List<Event> by lazy {
           version = 1L,
           recurrenceStatus = RecurrenceStatus.OneTime,
           hasBeenDeleted = false,
-          category = EventCategory(label = "Category F", color = EventPalette.Orange)),
+          category = EventCategory(label = "Category F", color = EventPalette.Orange),
+          location = null),
       // e7) Minimal
       Event(
           id = "e7",
@@ -243,7 +250,8 @@ private val previewEvents: List<Event> by lazy {
           version = 1L,
           recurrenceStatus = RecurrenceStatus.OneTime,
           hasBeenDeleted = false,
-          category = EventCategory(label = "Category G", color = EventPalette.Green)))
+          category = EventCategory(label = "Category G", color = EventPalette.Green),
+          location = null))
 }
 
 @Preview(showBackground = true)

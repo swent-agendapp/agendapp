@@ -23,11 +23,11 @@ class EventCategoryMapperTest {
 
   private val sampleMap: Map<String, Any?> =
       mapOf(
-          "id" to sampleCategory.id,
-          "organizationId" to sampleCategory.organizationId,
-          "label" to sampleCategory.label,
-          "color" to sampleCategory.color.value.toLong(),
-          "isDefault" to sampleCategory.isDefault,
+          EventCategoryMapper.ID_FIELD to sampleCategory.id,
+          EventCategoryMapper.ORGANIZATION_ID_FIELD to sampleCategory.organizationId,
+          EventCategoryMapper.LABEL_FIELD to sampleCategory.label,
+          EventCategoryMapper.COLOR_FIELD to sampleCategory.color.value.toLong(),
+          EventCategoryMapper.IS_DEFAULT_FIELD to sampleCategory.isDefault,
       )
 
   // --- fromDocument tests ---
@@ -35,10 +35,11 @@ class EventCategoryMapperTest {
   fun fromDocument_withValidDocument_returnsCategory() {
     val doc = mock(DocumentSnapshot::class.java)
     `when`(doc.id).thenReturn("category123")
-    `when`(doc.getString("organizationId")).thenReturn("testOrg")
-    `when`(doc.getString("label")).thenReturn("Test Category")
-    `when`(doc.getLong("color")).thenReturn(sampleCategory.color.value.toLong())
-    `when`(doc.getBoolean("isDefault")).thenReturn(false)
+    `when`(doc.getString(EventCategoryMapper.ORGANIZATION_ID_FIELD)).thenReturn("testOrg")
+    `when`(doc.getString(EventCategoryMapper.LABEL_FIELD)).thenReturn("Test Category")
+    `when`(doc.getLong(EventCategoryMapper.COLOR_FIELD))
+        .thenReturn(sampleCategory.color.value.toLong())
+    `when`(doc.getBoolean(EventCategoryMapper.IS_DEFAULT_FIELD)).thenReturn(false)
 
     val category = EventCategoryMapper.fromDocument(doc)
 
@@ -50,7 +51,7 @@ class EventCategoryMapperTest {
   fun fromDocument_missingOrganizationId_returnsNull() {
     val doc = mock(DocumentSnapshot::class.java)
     `when`(doc.id).thenReturn("category123")
-    `when`(doc.getString("organizationId")).thenReturn(null)
+    `when`(doc.getString(EventCategoryMapper.ORGANIZATION_ID_FIELD)).thenReturn(null)
 
     val category = EventCategoryMapper.fromDocument(doc)
 
@@ -79,8 +80,8 @@ class EventCategoryMapperTest {
   fun fromMap_withMissingOptionalFields_usesDefaults() {
     val minimalMap =
         mapOf(
-            "id" to "categoryMinimal",
-            "organizationId" to "testOrg",
+            EventCategoryMapper.ID_FIELD to "categoryMinimal",
+            EventCategoryMapper.ORGANIZATION_ID_FIELD to "testOrg",
         )
 
     val category = EventCategoryMapper.fromMap(minimalMap)
@@ -98,10 +99,11 @@ class EventCategoryMapperTest {
   fun fromAny_withDocument_returnsCategory() {
     val doc = mock(DocumentSnapshot::class.java)
     `when`(doc.id).thenReturn("category123")
-    `when`(doc.getString("organizationId")).thenReturn("testOrg")
-    `when`(doc.getString("label")).thenReturn("Test Category")
-    `when`(doc.getLong("color")).thenReturn(sampleCategory.color.value.toLong())
-    `when`(doc.getBoolean("isDefault")).thenReturn(false)
+    `when`(doc.getString(EventCategoryMapper.ORGANIZATION_ID_FIELD)).thenReturn("testOrg")
+    `when`(doc.getString(EventCategoryMapper.LABEL_FIELD)).thenReturn("Test Category")
+    `when`(doc.getLong(EventCategoryMapper.COLOR_FIELD))
+        .thenReturn(sampleCategory.color.value.toLong())
+    `when`(doc.getBoolean(EventCategoryMapper.IS_DEFAULT_FIELD)).thenReturn(false)
 
     val category = EventCategoryMapper.fromAny(doc)
 
@@ -129,10 +131,11 @@ class EventCategoryMapperTest {
   fun toMap_returnsCorrectMap() {
     val map = EventCategoryMapper.toMap(sampleCategory)
 
-    assertThat(map["id"]).isEqualTo(sampleCategory.id)
-    assertThat(map["organizationId"]).isEqualTo(sampleCategory.organizationId)
-    assertThat(map["label"]).isEqualTo(sampleCategory.label)
-    assertThat(map["color"]).isEqualTo(sampleCategory.color.value.toLong())
-    assertThat(map["isDefault"]).isEqualTo(sampleCategory.isDefault)
+    assertThat(map[EventCategoryMapper.ID_FIELD]).isEqualTo(sampleCategory.id)
+    assertThat(map[EventCategoryMapper.ORGANIZATION_ID_FIELD])
+        .isEqualTo(sampleCategory.organizationId)
+    assertThat(map[EventCategoryMapper.LABEL_FIELD]).isEqualTo(sampleCategory.label)
+    assertThat(map[EventCategoryMapper.COLOR_FIELD]).isEqualTo(sampleCategory.color.value.toLong())
+    assertThat(map[EventCategoryMapper.IS_DEFAULT_FIELD]).isEqualTo(sampleCategory.isDefault)
   }
 }

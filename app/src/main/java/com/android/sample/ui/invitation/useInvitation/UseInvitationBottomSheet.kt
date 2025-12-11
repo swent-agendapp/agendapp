@@ -26,6 +26,8 @@ object UseInvitationTestTags {
   const val INVITATION_CODE_TEXT_FIELD = "invitation_code_text_field"
   const val CANCEL_BUTTON = "cancel_button"
   const val JOIN_BUTTON = "join_button"
+
+  const val CODE_INPUT_ERROR_MESSAGE = "code_input_error_message"
 }
 
 /**
@@ -39,7 +41,7 @@ object UseInvitationTestTags {
 fun UseInvitationBottomSheet(
     useInvitationViewModel: UseInvitationViewModel = viewModel(),
     onCancel: () -> Unit = {},
-    onJoin: (String) -> Unit = {}
+    onJoin: () -> Unit = {}
 ) {
 
   val uiState by useInvitationViewModel.uiState.collectAsStateWithLifecycle()
@@ -50,19 +52,30 @@ fun UseInvitationBottomSheet(
       verticalArrangement = Arrangement.Center) {
         OutlinedTextField(
             value = uiState.code,
-            onValueChange = { useInvitationViewModel.setCode(it) },
+            onValueChange = {
+                useInvitationViewModel.setIsInputCodeIllegal(uiState.code == it)
+                useInvitationViewModel.setCode(it) },
             placeholder = { Text(stringResource(R.string.enter_invitation_code)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii),
             modifier =
                 Modifier.fillMaxWidth()
                     .padding(horizontal = PaddingSmall)
-                    .testTag(UseInvitationTestTags.INVITATION_CODE_TEXT_FIELD))
-
+                    .testTag(UseInvitationTestTags.INVITATION_CODE_TEXT_FIELD),
+            isError = uiState.isInputCodeIllegal,
+            supportingText = {
+                if (uiState.isInputCodeIllegal) {
+                    Text(text = stringResource(R.string.error_invitation_code_illegal_input, INVITATION_CODE_LENGTH), modifier = Modifier.testTag(UseInvitationTestTags.CODE_INPUT_ERROR_MESSAGE))
+                }
+            }
+        )
         Spacer(Modifier.height(SpacingSmall))
 
         BottomNavigationButtons(
-            onNext = { useInvitationViewModel.joinWithCode() },
+            onNext = {
+                useInvitationViewModel.joinWithCode()
+                onJoin()
+            },
             onBack = onCancel,
             backButtonText = stringResource(R.string.cancel),
             nextButtonText = stringResource(R.string.join_button_text),

@@ -242,6 +242,10 @@
     <string name="error_invitation_already_used">This invitation has already been used.</string>
     <string name="error_invitation_expired">This invitation has expired.</string>
     <string name="error_joining_organization">Could not join the organization: it no longer exists or you are already a member.</string>
+    <string name="error_invitation_code_illegal_input">
+    Only letters and digits are allowed, and the code must be %1$d characters long.
+</string>
+
 
     <!-- hourRecap -->
     <string name="loading_hours">Loading…</string>

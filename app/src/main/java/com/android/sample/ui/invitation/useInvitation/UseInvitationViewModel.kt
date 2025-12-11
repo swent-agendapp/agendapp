@@ -22,14 +22,16 @@ import kotlinx.coroutines.launch
  * UI state representing the current draft for invitation creation.
  *
  * @property code The code that the user has entered. Defaults to an empty string.
- * @property errorMessageId Optional ID of the error message to display when a failure occurs.
  * @property isTemptingToJoin Indicates whether the user is currently attempting to join an
  *   organization.
+ * @property isInputCodeIllegal Indicates whether the user is tempting to enter illegal characters or surpass allowed length.
+ * @property errorMessageId Optional ID of the error message to display when a failure occurs.
  */
 data class UseInvitationUIState(
     val code: String = "",
     val isTemptingToJoin: Boolean = false,
-    @StringRes val errorMessageId: Int? = null
+    val isInputCodeIllegal: Boolean = false,
+    @StringRes val errorMessageId: Int? = null,
 )
 
 class UseInvitationViewModel(
@@ -142,10 +144,11 @@ class UseInvitationViewModel(
    * @param rawInput The raw text entered by the user in the invitation code field.
    */
   fun setCode(rawInput: String) {
-    val sanitized =
-        rawInput.uppercase().filter { it.isLetterOrDigit() }.take(INVITATION_CODE_LENGTH)
+      val upper = rawInput.uppercase()
+      val onlyAllowed = upper.filter { it.isLetterOrDigit() }
+      val sanitized = onlyAllowed.take(INVITATION_CODE_LENGTH)
 
-    _uiState.update { it.copy(code = sanitized) }
+      _uiState.update { it.copy(code = sanitized) }
   }
 
   /**
@@ -166,4 +169,13 @@ class UseInvitationViewModel(
   fun setIsTemptingToJoin(isTempting: Boolean) {
     _uiState.update { it.copy(isTemptingToJoin = isTempting) }
   }
+
+    /**
+     * Updates whether the input code is illegal.
+     *
+     * @param isIllegal `true` if the input code contains illegal characters or surpasses allowed length, `false` otherwise.
+     */
+    fun setIsInputCodeIllegal(isIllegal: Boolean) {
+        _uiState.update { it.copy(isInputCodeIllegal = isIllegal) }
+    }
 }

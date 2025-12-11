@@ -1,6 +1,5 @@
 package com.android.sample.ui.replacement.organize
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.sample.model.authentication.User
@@ -169,9 +168,10 @@ class ReplacementOrganizeViewModel(
       val orgId = requireOrgId()
 
       replacementRepository.insertReplacement(orgId = orgId, item = replacement)
-    } catch (e: Exception) {
-      Log.e("ReplacementOrganizeVM", "Error adding replacement: ${e.message}")
-      _uiState.update { it.copy(errorMsg = "Unexpected error while creating the replacement.") }
+    } catch (_: IllegalStateException) {
+      _uiState.update { it.copy(errorMsg = "No organization selected") }
+    } catch (_: Exception) {
+      _uiState.update { it.copy(errorMsg = "Unexpected error while creating the replacement") }
     }
   }
 

@@ -32,7 +32,6 @@ import com.android.sample.ui.theme.*
 
 // Assisted by AI
 
-/** ---------- Test Tags ---------- */
 object ReplacementEmployeeListTestTags {
   const val ROOT = "replacement_employee_list_root"
   const val ASK_BUTTON = "replacement_employee_ask_button"
@@ -47,7 +46,6 @@ object ReplacementEmployeeListTestTags {
   fun refuse(id: String) = "replacement_employee_refuse_$id"
 }
 
-/** ---------- Simple UI structure (remove after VM is implemented) ---------- */
 data class ReplacementRequestUi(
     val id: String,
     val weekdayAndDay: String,
@@ -213,7 +211,6 @@ fun ReplacementEmployeeListScreen(
                       data = req,
                       onAccept = { callbacks.onAccept(req.id) },
                       onRefuse = { callbacks.onRefuse(req.id) },
-                      enabled = !isProcessing,
                       testTag = ReplacementEmployeeListTestTags.card(req.id),
                       acceptTag = ReplacementEmployeeListTestTags.accept(req.id),
                       refuseTag = ReplacementEmployeeListTestTags.refuse(req.id),
@@ -231,7 +228,6 @@ private fun ReplacementRequestCard(
     data: ReplacementRequestUi,
     onAccept: () -> Unit,
     onRefuse: () -> Unit,
-    enabled: Boolean,
     testTag: String,
     acceptTag: String,
     refuseTag: String,

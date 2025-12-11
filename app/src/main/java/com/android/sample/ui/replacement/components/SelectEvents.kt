@@ -64,7 +64,6 @@ fun SelectEventScreen(
     canGoNext: Boolean = true,
     onEventClick: (Event) -> Unit = {},
     processActions: ReplacementProcessActions? = null,
-    eventFilter: (Event) -> Boolean = { true },
 ) {
   val context = LocalContext.current
   var selectedEvents by remember { mutableStateOf<List<Event>>(emptyList()) }

@@ -122,7 +122,7 @@ class MapViewModel(
    * [IllegalArgumentException] and updates the state with the corresponding error message.
    */
   fun createNewArea() {
-    require(_state.value.selectedMarker != null)
+    requireNotNull(_state.value.selectedMarker)
     viewModelScope.launch {
       val areaName = _state.value.selectedAreaName.ifBlank { DefaultMarkerValue.LABEL }
       mapRepository.createArea(
@@ -136,8 +136,8 @@ class MapViewModel(
   }
 
   fun updateArea() {
-    require(_state.value.selectedMarker != null)
-    require(_state.value.selectedId != null)
+    requireNotNull(_state.value.selectedMarker)
+    requireNotNull(_state.value.selectedId)
     viewModelScope.launch {
       val areaName = _state.value.selectedAreaName.ifBlank { DefaultMarkerValue.LABEL }
       mapRepository.updateArea(
@@ -157,7 +157,7 @@ class MapViewModel(
    * @param markerId The unique identifier of the marker to be removed.
    */
   fun deleteArea() {
-    require(_state.value.selectedMarker != null)
+    requireNotNull(_state.value.selectedMarker)
     viewModelScope.launch {
       mapRepository.deleteArea(orgId = getSelectedOrganizationId(), _state.value.selectedId!!)
       unselectArea()

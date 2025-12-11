@@ -25,7 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,7 +34,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.model.map.Area
-import com.android.sample.model.map.Marker
 import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.map.MapScreenTestTags.CREATE_AREA_BUTTON
@@ -115,7 +113,7 @@ private fun AreaBottomSheet(
     onDismiss: () -> Unit,
     onNameChange: (String) -> Unit,
     onRadiusChange: (Double) -> Unit,
-    onDelete: (String) -> Unit,
+    onDelete: () -> Unit,
     onCreate: () -> Unit,
 ) {
   ModalBottomSheet(
@@ -126,9 +124,9 @@ private fun AreaBottomSheet(
           // Title row with optional delete button
           Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Text(stringResource(R.string.down_sheet_title))
-            uiState.selectedId?.let { id ->
+            uiState.selectedId?.let { _ ->
               IconButton(
-                  onClick = { onDelete(id) },
+                  onClick = { onDelete() },
                   modifier = Modifier.testTag(MapScreenTestTags.DELETE_MARKER_BUTTON)) {
                     Icon(
                         Icons.Default.Delete,
@@ -267,7 +265,7 @@ fun MapScreen(
                 onDismiss = { mapViewModel.hideBottomBar() },
                 onNameChange = { mapViewModel.setNewAreaName(it) },
                 onRadiusChange = { mapViewModel.setNewAreaRadius(it) },
-                onDelete = { id ->
+                onDelete = {
                   mapViewModel.deleteArea()
                   mapViewModel.hideBottomBar()
                 },

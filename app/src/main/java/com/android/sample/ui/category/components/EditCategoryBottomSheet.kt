@@ -1,4 +1,4 @@
-package com.android.sample.ui.category
+package com.android.sample.ui.category.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import com.android.sample.R
 import com.android.sample.model.category.EventCategory
+import com.android.sample.ui.category.EditCategoryScreenTestTags
 import com.android.sample.ui.common.ColorSelector
 import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.theme.EventPalette

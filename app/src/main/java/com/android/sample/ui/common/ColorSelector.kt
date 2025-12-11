@@ -27,7 +27,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
-import com.android.sample.ui.category.ColorCircle
+import com.android.sample.ui.category.components.ColorCircle
 import com.android.sample.ui.theme.BorderWidthThin
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.EventPalette

@@ -1,4 +1,4 @@
-package com.android.sample.ui.category
+package com.android.sample.ui.category.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

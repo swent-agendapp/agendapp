@@ -29,7 +29,7 @@ import com.android.sample.R
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
 import com.android.sample.ui.calendar.components.ValidatingTextField
-import com.android.sample.ui.category.CategorySelector
+import com.android.sample.ui.category.components.CategorySelector
 import com.android.sample.ui.common.BottomNavigationButtons
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.SpacingExtraLarge

@@ -1,4 +1,4 @@
-package com.android.sample.ui.category
+package com.android.sample.ui.category.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,6 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.android.sample.R
 import com.android.sample.model.category.EventCategory
+import com.android.sample.ui.category.EditCategoryScreenTestTags
 import com.android.sample.ui.theme.PaddingHuge
 import com.android.sample.ui.theme.PaddingLarge
 import com.android.sample.ui.theme.SpacingLarge

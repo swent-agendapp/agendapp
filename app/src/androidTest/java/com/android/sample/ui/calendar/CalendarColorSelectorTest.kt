@@ -6,7 +6,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.android.sample.model.category.EventCategory
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags.CATEGORY_SELECTOR
-import com.android.sample.ui.category.CategorySelector
+import com.android.sample.ui.category.components.CategorySelector
 import com.android.sample.ui.theme.EventPalette
 import org.junit.Assert.assertEquals
 import org.junit.Rule

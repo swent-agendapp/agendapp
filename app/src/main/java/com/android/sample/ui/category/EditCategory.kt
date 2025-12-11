@@ -22,6 +22,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
 import com.android.sample.model.category.EventCategory
 import com.android.sample.model.category.mockData.getMockEventCategory
+import com.android.sample.ui.category.components.CategoryEditBottomSheet
+import com.android.sample.ui.category.components.CategoryListSection
 import com.android.sample.ui.common.FloatingButton
 import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.theme.PaddingLarge

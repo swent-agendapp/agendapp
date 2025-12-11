@@ -183,7 +183,6 @@ class UseInvitationViewModelTest {
     assertFalse(vm.uiState.value.isTemptingToJoin)
   }
 
-
   // -----------------------------------------------------------
   // setIsInputCodeIllegal
   // -----------------------------------------------------------
@@ -194,6 +193,5 @@ class UseInvitationViewModelTest {
 
     vm.setIsInputCodeIllegal(false)
     assertFalse(vm.uiState.value.isInputCodeIllegal)
-
   }
 }

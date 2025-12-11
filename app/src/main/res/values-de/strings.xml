@@ -238,6 +238,10 @@
     <string name="error_deleting_invitations">Einladung konnte nicht gelöscht werden</string>
     <string name="enter_invitation_code">Geben Sie den Einladungscode ein</string>
     <string name="join_button_text">Beitreten</string>
+    <string name="error_invitation_with_code_not_found">Keine Einladung mit diesem Code gefunden.</string>
+    <string name="error_invitation_already_used">Diese Einladung wurde bereits verwendet.</string>
+    <string name="error_invitation_expired">Diese Einladung ist abgelaufen.</string>
+    <string name="error_joining_organization">Beim Beitritt zur Organisation ist ein Fehler aufgetreten.</string>
 
     <!-- hourRecap -->
     <string name="loading_hours">Laden…</string>

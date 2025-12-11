@@ -238,6 +238,10 @@
     <string name="error_deleting_invitations">Échec de la suppression de l\'invitation</string>
     <string name="enter_invitation_code">Entrez le code d\'invitation</string>
     <string name="join_button_text">Rejoindre</string>
+    <string name="error_invitation_with_code_not_found">Aucune invitation trouvée avec ce code.</string>
+    <string name="error_invitation_already_used">Cette invitation a déjà été utilisée.</string>
+    <string name="error_invitation_expired">Cette invitation a expiré.</string>
+    <string name="error_joining_organization">Une erreur est survenue lors de la tentative de rejoindre l’organisation.</string>
 
     <!-- hourRecap -->
     <string name="loading_hours">Chargement…</string>

@@ -52,7 +52,6 @@ object FilterScreenTestTags {
   const val CATEGORY_PARTICIPANTS = "Filter_Participants"
 
   // Buttons
-  const val BUTTON_ROW = "FilterSheet_ButtonRow"
   const val CLEAR_ALL = "FilterSheet_ClearAll"
   const val APPLY = "FilterSheet_Apply"
 }
@@ -68,17 +67,15 @@ enum class FilterPage {
  * A bottom sheet allowing users to filter events in the calendar.
  *
  * @param onDismiss Called when the sheet should close.
- * @param onApply Called when the user applies filters. The current filters are sent as a Map.
+ * @param onApply Called when the user applies the selected filters.
+ * @param filterVM The FilterViewModel managing filter state.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FilterBottomSheet(onDismiss: () -> Unit, onApply: (Map<String, List<String>>) -> Unit) {
-  // States for all filters
-  var eventTypeFilters by remember { mutableStateOf(listOf<String>()) }
-  var locationFilters by remember { mutableStateOf(listOf<String>()) }
-  var participantFilters by remember { mutableStateOf(listOf<String>()) }
+fun FilterBottomSheet(onDismiss: () -> Unit, onApply: () -> Unit, filterVM: FilterViewModel) {
+  // Read current selections
+  val filters by filterVM.filters.collectAsState()
 
-  // Page state (MAIN / EVENT_TYPE / LOCATION / PARTICIPANTS)
   var currentPage by remember { mutableStateOf(FilterPage.MAIN) }
 
   ModalBottomSheet(
@@ -94,7 +91,6 @@ fun FilterBottomSheet(onDismiss: () -> Unit, onApply: (Map<String, List<String>>
                 modifier =
                     Modifier.padding(PaddingLarge)
                         .testTag(FilterScreenTestTags.FILTER_SHEET_CONTENT)) {
-
                   // ----- Header -----
                   Row(
                       modifier =
@@ -130,31 +126,28 @@ fun FilterBottomSheet(onDismiss: () -> Unit, onApply: (Map<String, List<String>>
                               .background(
                                   MaterialTheme.colorScheme.surfaceVariant.copy(alpha = AlphaLow))
                               .padding(vertical = PaddingSmall)) {
-
-                        // ----- Category: Event Type -----
+                        // Event Type
                         FilterCategoryItem(
                             name = stringResource(R.string.filter_event_type),
-                            count = eventTypeFilters.size,
+                            count = filters.eventTypes.size,
                             tag = FilterScreenTestTags.CATEGORY_EVENT_TYPE,
                             onClick = { currentPage = FilterPage.EVENT_TYPE })
-
                         HorizontalDivider(
                             color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = AlphaLow))
 
-                        // ----- Category: Location -----
+                        // Location
                         FilterCategoryItem(
                             name = stringResource(R.string.filter_location),
-                            count = locationFilters.size,
+                            count = filters.locations.size,
                             tag = FilterScreenTestTags.CATEGORY_LOCATION,
                             onClick = { currentPage = FilterPage.LOCATION })
-
                         HorizontalDivider(
                             color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = AlphaLow))
 
-                        // ----- Category: Participants -----
+                        // Participants
                         FilterCategoryItem(
                             name = stringResource(R.string.filter_participants),
-                            count = participantFilters.size,
+                            count = filters.participants.size,
                             tag = FilterScreenTestTags.CATEGORY_PARTICIPANTS,
                             onClick = { currentPage = FilterPage.PARTICIPANTS })
                       }
@@ -162,18 +155,8 @@ fun FilterBottomSheet(onDismiss: () -> Unit, onApply: (Map<String, List<String>>
                   Spacer(Modifier.height(SpacingExtraLarge))
 
                   BottomNavigationButtons(
-                      onBack = {
-                        eventTypeFilters = emptyList()
-                        locationFilters = emptyList()
-                        participantFilters = emptyList()
-                      },
-                      onNext = {
-                        onApply(
-                            mapOf(
-                                "types" to eventTypeFilters,
-                                "locations" to locationFilters,
-                                "participants" to participantFilters))
-                      },
+                      onBack = { filterVM.clearFilters() },
+                      onNext = onApply,
                       canGoBack = true,
                       canGoNext = true,
                       backButtonText = stringResource(R.string.clear_all),
@@ -184,6 +167,7 @@ fun FilterBottomSheet(onDismiss: () -> Unit, onApply: (Map<String, List<String>>
                   Spacer(Modifier.height(SpacingMedium))
                 }
           }
+
           // -------------------------------
           // EVENT TYPE FILTER SCREEN
           // -------------------------------
@@ -214,11 +198,11 @@ fun FilterBottomSheet(onDismiss: () -> Unit, onApply: (Map<String, List<String>>
             FilterListScreen(
                 title = stringResource(R.string.eventType),
                 items = eventTypes,
-                selected = eventTypeFilters,
+                selected = filters.eventTypes.toList(),
                 testTagPrefix = "EventTypeFilter",
                 onBack = { currentPage = FilterPage.MAIN },
                 onApply = {
-                  eventTypeFilters = it
+                  filterVM.setEventTypes(it)
                   currentPage = FilterPage.MAIN
                 })
           }
@@ -232,11 +216,11 @@ fun FilterBottomSheet(onDismiss: () -> Unit, onApply: (Map<String, List<String>>
             FilterListScreen(
                 title = stringResource(R.string.location),
                 items = locations,
-                selected = locationFilters,
+                selected = filters.locations.toList(),
                 testTagPrefix = "LocationFilter",
                 onBack = { currentPage = FilterPage.MAIN },
                 onApply = {
-                  locationFilters = it
+                  filterVM.setLocations(it)
                   currentPage = FilterPage.MAIN
                 })
           }
@@ -261,11 +245,11 @@ fun FilterBottomSheet(onDismiss: () -> Unit, onApply: (Map<String, List<String>>
             FilterListScreen(
                 title = stringResource(R.string.filter_participants),
                 items = participants,
-                selected = participantFilters,
+                selected = filters.participants.toList(),
                 testTagPrefix = "ParticipantFilter",
                 onBack = { currentPage = FilterPage.MAIN },
                 onApply = {
-                  participantFilters = it
+                  filterVM.setParticipants(it)
                   currentPage = FilterPage.MAIN
                 })
           }

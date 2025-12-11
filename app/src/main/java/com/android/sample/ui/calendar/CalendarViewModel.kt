@@ -14,12 +14,14 @@ import com.android.sample.model.map.LocationRepository
 import com.android.sample.model.map.LocationRepositoryAndroid
 import com.android.sample.model.map.MapRepository
 import com.android.sample.model.map.MapRepositoryProvider
+import com.android.sample.ui.calendar.filters.EventFilters
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import java.time.Instant
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 enum class LocationStatus {
@@ -250,5 +252,25 @@ class CalendarViewModel(
         CalendarViewModel(app = app)
       }
     }
+  }
+
+  fun applyFilters(filters: EventFilters) {
+    val all = uiState.value.events
+    var result = all
+
+    // Participants (safe to implement now)
+    if (filters.participants.isNotEmpty()) {
+      result = result.filter { e -> filters.participants.all { it in e.participants } }
+    }
+
+    // Later: Event type filtering
+    // Wait for event type field update (category? type? enum?)
+    // result = result.filter { it.category in filters.eventTypes }
+
+    // Later: Location filtering
+    // Wait for event location definition in Event class
+    // result = result.filter { it.location in filters.locations }
+
+    _uiState.update { it.copy(events = result) }
   }
 }

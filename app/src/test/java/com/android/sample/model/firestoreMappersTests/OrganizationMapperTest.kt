@@ -3,9 +3,6 @@ package com.android.sample.model.firestoreMappersTests
 import com.android.sample.model.authentication.User
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.model.firestoreMappers.OrganizationMapper
-import com.android.sample.model.map.Area
-import com.android.sample.model.map.Location
-import com.android.sample.model.map.Marker
 import com.android.sample.model.organization.data.Organization
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.Timestamp
@@ -40,37 +37,18 @@ class OrganizationMapperTest {
     `when`(locDoc1.getDouble("longitude")).thenReturn(20.0)
     `when`(locDoc1.getString("label")).thenReturn("Loc1")
 
-    val locDoc2 = mock(DocumentSnapshot::class.java)
-    `when`(locDoc2.getDouble("latitude")).thenReturn(15.0)
-    `when`(locDoc2.getDouble("longitude")).thenReturn(25.0)
-    `when`(locDoc2.getString("label")).thenReturn("Loc2")
-
-    val locDoc3 = mock(DocumentSnapshot::class.java)
-    `when`(locDoc3.getDouble("latitude")).thenReturn(12.0)
-    `when`(locDoc3.getDouble("longitude")).thenReturn(22.0)
-    `when`(locDoc3.getString("label")).thenReturn("Loc3")
-
     // Marker documents
     val markerDoc1 = mock(DocumentSnapshot::class.java)
     `when`(markerDoc1.getString("id")).thenReturn("m1")
     `when`(markerDoc1.getString("label")).thenReturn("Marker 1")
     `when`(markerDoc1.get("location")).thenReturn(locDoc1)
 
-    val markerDoc2 = mock(DocumentSnapshot::class.java)
-    `when`(markerDoc2.getString("id")).thenReturn("m2")
-    `when`(markerDoc2.getString("label")).thenReturn("Marker 2")
-    `when`(markerDoc2.get("location")).thenReturn(locDoc2)
-
-    val markerDoc3 = mock(DocumentSnapshot::class.java)
-    `when`(markerDoc3.getString("id")).thenReturn("m3")
-    `when`(markerDoc3.getString("label")).thenReturn("Marker 3")
-    `when`(markerDoc3.get("location")).thenReturn(locDoc3)
-
     // Area document
     val areaDoc = mock(DocumentSnapshot::class.java)
     `when`(areaDoc.getString("id")).thenReturn("area1")
     `when`(areaDoc.getString("label")).thenReturn("Main Area")
-    `when`(areaDoc.get("markers")).thenReturn(listOf(markerDoc1, markerDoc2, markerDoc3))
+    `when`(areaDoc.get("marker")).thenReturn(markerDoc1)
+    `when`(areaDoc.get("radius")).thenReturn(10.0)
 
     // Event document
     val eventDoc = mock(DocumentSnapshot::class.java)
@@ -91,7 +69,6 @@ class OrganizationMapperTest {
     `when`(orgDoc.getBoolean("geoCheckEnabled")).thenReturn(true)
     `when`(orgDoc["admins"]).thenReturn(listOf(adminDoc))
     `when`(orgDoc["members"]).thenReturn(listOf(memberDoc))
-    `when`(orgDoc["areas"]).thenReturn(listOf(areaDoc))
     `when`(orgDoc["events"]).thenReturn(listOf(eventDoc))
 
     val organization = OrganizationMapper.fromDocument(orgDoc)
@@ -101,11 +78,6 @@ class OrganizationMapperTest {
     assertThat(organization.id).isEqualTo("org123")
     assertThat(organization.name).isEqualTo("My Organization")
     assertThat(organization.geoCheckEnabled).isTrue()
-
-    assertThat(organization.areas).hasSize(1)
-    val area = organization.areas[0]
-    assertThat(area.label).isEqualTo("Main Area")
-    assertThat(area.getSortedMarkers()).hasSize(3)
 
     assertThat(organization.events).hasSize(1)
     val event = organization.events[0]
@@ -132,22 +104,6 @@ class OrganizationMapperTest {
         listOf(
             mapOf(
                 "id" to "member1", "displayName" to "Member One", "email" to "member1@example.com"))
-    val markers =
-        listOf(
-            mapOf(
-                "id" to "m1",
-                "label" to "Marker 1",
-                "location" to mapOf("latitude" to 10.0, "longitude" to 20.0, "label" to "Loc1")),
-            mapOf(
-                "id" to "m2",
-                "label" to "Marker 2",
-                "location" to mapOf("latitude" to 15.0, "longitude" to 25.0, "label" to "Loc2")),
-            mapOf(
-                "id" to "m3",
-                "label" to "Marker 3",
-                "location" to mapOf("latitude" to 12.0, "longitude" to 22.0, "label" to "Loc3")))
-    val areas = listOf(mapOf("id" to "area1", "label" to "Main Area", "markers" to markers))
-
     val events =
         listOf(
             mapOf(
@@ -166,7 +122,6 @@ class OrganizationMapperTest {
             "geoCheckEnabled" to true,
             "admins" to admins,
             "members" to members,
-            "areas" to areas,
             "events" to events)
 
     val organization = OrganizationMapper.fromMap(data)
@@ -176,12 +131,6 @@ class OrganizationMapperTest {
     assertThat(organization.id).isEqualTo("org123")
     assertThat(organization.name).isEqualTo("My Organization")
     assertThat(organization.geoCheckEnabled).isTrue()
-    assertThat(organization.areas).hasSize(1)
-    val area = organization.areas[0]
-    assertThat(area.label).isEqualTo("Main Area")
-    assertThat(area.getSortedMarkers()).hasSize(3)
-    assertThat(area.getSortedMarkers().map { it.label })
-        .containsExactly("Marker 1", "Marker 2", "Marker 3")
     assertThat(organization.events).hasSize(1)
     assertThat(organization.events[0].title).isEqualTo("Meeting")
   }
@@ -190,12 +139,6 @@ class OrganizationMapperTest {
   fun toMap_returnsCorrectMap() {
     val admins = listOf(User("admin1", "Admin One", "admin1@example.com"))
     val members = listOf(User("member1", "Member One", "member1@example.com"))
-    val markers =
-        listOf(
-            Marker("m1", Location(10.0, 20.0), "Marker 1"),
-            Marker("m2", Location(15.0, 25.0), "Marker 2"),
-            Marker("m3", Location(12.0, 22.0), "Marker 3"))
-    val areas = listOf(Area("area1", "Main Area", markers))
     val events =
         createEvent(
             organizationId = "org123",
@@ -208,7 +151,6 @@ class OrganizationMapperTest {
             id = "org123",
             name = "My Organization",
             events = events,
-            areas = areas,
             geoCheckEnabled = true)
 
     val map = OrganizationMapper.toMap(organization)
@@ -219,12 +161,10 @@ class OrganizationMapperTest {
 
     val adminsList = (map["admins"] as? List<*>)?.filterIsInstance<Map<String, Any?>>()
     val membersList = (map["members"] as? List<*>)?.filterIsInstance<Map<String, Any?>>()
-    val areasList = (map["areas"] as? List<*>)?.filterIsInstance<Map<String, Any?>>()
     val eventsList = (map["events"] as? List<*>)?.filterIsInstance<Map<String, Any?>>()
 
     assertThat(adminsList!![0]["displayName"]).isEqualTo("Admin One")
     assertThat(membersList!![0]["email"]).isEqualTo("member1@example.com")
-    assertThat(areasList!![0]["label"]).isEqualTo("Main Area")
     assertThat(eventsList!![0]["title"]).isEqualTo("Meeting")
     assertThat(eventsList[0]["description"]).isEqualTo("Team meeting")
   }

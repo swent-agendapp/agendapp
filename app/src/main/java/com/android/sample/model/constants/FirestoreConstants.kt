@@ -12,7 +12,7 @@ object FirestoreConstants {
   const val COLLECTION_ADMINS = "admins"
   const val REPLACEMENTS_COLLECTION_PATH = "replacements"
   const val INVITATIONS_COLLECTION_PATH = "invitations"
-  const val MAP_COLLECTION_PATH = "maps"
+  const val MAP_COLLECTION_PATH = "areas"
 
   val ALL_COLLECTIONS =
       listOf(

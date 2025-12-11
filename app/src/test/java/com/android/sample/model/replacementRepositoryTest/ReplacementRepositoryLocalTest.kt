@@ -52,7 +52,8 @@ class ReplacementRepositoryLocalTest {
             version = System.currentTimeMillis(),
             locallyStoredBy = listOf("LOCAL_USER"),
             cloudStorageStatuses = emptySet(),
-            personalNotes = null)
+            personalNotes = null,
+            location = null)
   }
 
   @Test

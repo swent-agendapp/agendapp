@@ -19,6 +19,7 @@ import androidx.compose.ui.platform.testTag
 import com.android.sample.model.calendar.Event
 import com.android.sample.ui.calendar.components.DayHeaderRow
 import com.android.sample.ui.calendar.components.EventsPane
+import com.android.sample.ui.calendar.components.EventsPaneConfig
 import com.android.sample.ui.calendar.components.GridCanvas
 import com.android.sample.ui.calendar.components.NowIndicatorLine
 import com.android.sample.ui.calendar.components.TimeAxisColumn
@@ -58,6 +59,7 @@ fun CalendarGridContent(
     style: GridContentStyle = defaultGridContentStyle(),
     today: LocalDate = LocalDate.now(),
     selectedDate: LocalDate? = null,
+    selectedEvents: List<Event> = emptyList(),
     onHeaderDayClick: ((LocalDate) -> Unit)? = null,
     onEventClick: (Event) -> Unit = {}
 ) {
@@ -145,10 +147,13 @@ fun CalendarGridContent(
                   EventsPane(
                       days = metrics.days,
                       events = events,
-                      columnWidthDp = gridColumnWidthDp,
-                      gridHeightDp = metrics.gridHeightDp,
-                      gridStartTime = metrics.gridStartTime,
-                      effectiveEndTime = metrics.effectiveEndTime,
+                      layout =
+                          EventsPaneConfig(
+                              columnWidthDp = gridColumnWidthDp,
+                              gridHeightDp = metrics.gridHeightDp,
+                              gridStartTime = metrics.gridStartTime,
+                              effectiveEndTime = metrics.effectiveEndTime),
+                      selectedEvents = selectedEvents,
                       onEventClick = onEventClick)
 
                   // Render the "now" indicator line

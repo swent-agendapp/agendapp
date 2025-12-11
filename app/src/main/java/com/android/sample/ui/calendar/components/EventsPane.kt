@@ -15,6 +15,12 @@ import com.android.sample.ui.calendar.utils.DateTimeUtils
 import java.time.LocalDate
 import java.time.LocalTime
 
+data class EventsPaneConfig(
+    val columnWidthDp: Dp,
+    val gridHeightDp: Dp,
+    val gridStartTime: LocalTime,
+    val effectiveEndTime: LocalTime,
+)
 /**
  * Renders all event blocks for the provided list of days. Each day occupies a column; events are
  * filtered by day and positioned vertically according to their time span.
@@ -31,12 +37,21 @@ import java.time.LocalTime
 fun EventsPane(
     days: List<LocalDate> = workWeekDays(),
     events: List<Event> = listOf(),
-    columnWidthDp: Dp = defaultGridContentStyle().dimensions.defaultColumnWidthDp,
-    gridHeightDp: Dp = defaultGridContentStyle().dimensions.rowHeightDp,
-    gridStartTime: LocalTime = CalendarDefaults.DefaultStartTime,
-    effectiveEndTime: LocalTime = CalendarDefaults.DefaultEndTime,
+    layout: EventsPaneConfig =
+        EventsPaneConfig(
+            columnWidthDp = defaultGridContentStyle().dimensions.defaultColumnWidthDp,
+            gridHeightDp = defaultGridContentStyle().dimensions.rowHeightDp,
+            gridStartTime = CalendarDefaults.DefaultStartTime,
+            effectiveEndTime = CalendarDefaults.DefaultEndTime,
+        ),
+    selectedEvents: List<Event> = emptyList(),
     onEventClick: (Event) -> Unit = {}
 ) {
+  val columnWidthDp = layout.columnWidthDp
+  val gridHeightDp = layout.gridHeightDp
+  val gridStartTime = layout.gridStartTime
+  val effectiveEndTime = layout.effectiveEndTime
+
   days.forEachIndexed { dayIndex, date ->
     val dayStart = DateTimeUtils.dayStartInstant(date)
     val dayEndExclusive =
@@ -47,13 +62,15 @@ fun EventsPane(
       Box(
           modifier =
               Modifier.offset(x = dayIndex * columnWidthDp).size(columnWidthDp, gridHeightDp)) {
-            // for now (later : EventBlockWithOverlapHandling)
             EventBlock(
                 events = eventsForDay,
                 currentDate = date,
-                startTime = gridStartTime,
-                endTime = effectiveEndTime,
-                columnWidthDp = columnWidthDp,
+                config =
+                    EventBlockConfig(
+                        startTime = gridStartTime,
+                        endTime = effectiveEndTime,
+                        columnWidthDp = columnWidthDp),
+                selectedEvents = selectedEvents,
                 onEventClick = onEventClick)
           }
     }

@@ -25,10 +25,19 @@ object Palette {
   // ----------------------------------------
   // Base / Neutrals
   // ----------------------------------------
+  val Magnolia = Color(color = 0xFFFFFBFE)
   val Platinum = Color(color = 0xFFE6E4E9)
-  val Gray = Color(color = 0xFF888888)
+  val LavenderMist = Color(color = 0xFFE7E0EC)
+  val LavenderGray = Color(color = 0xFFE6E1E5)
+  val FrenchGray = Color(color = 0xFFCAC4D0)
   val LightGray = Color(color = 0xFFCCCCCC)
+  val Gray = Color(color = 0xFF888888)
+  val SpanishGray = Color(color = 0xFF938F99)
+  val Rhythm = Color(color = 0xFF79747E)
+  val RaisinBlack = Color(color = 0xFF49454F)
+  val EerieBlack = Color(color = 0xFF1C1B1F)
   val Black = Color(color = 0xFF000000)
+  val Transparent = Color(color = 0x00000000)
 
   // ----------------------------------------
   // Purples / Violets / Indigo
@@ -51,13 +60,14 @@ object Palette {
   // ----------------------------------------
   val MistyMoss = Color(color = 0xFFB2C778)
   val DarkSeaGreen = Color(color = 0xFF81C784)
+  val Mantis = Color(color = 0xFF74C365)
 
   // ----------------------------------------
   // Blues
   // ----------------------------------------
   val CadmiumBlue = Color(color = 0xFF09099D)
   val CadmiumBlue_50 = Color(color = 0x8009099D)
-  val BlueJeans = Color(color = 0xFF4495D6)
+  val BlueJeans = Color(color = 0xFF64B5F6)
   val SkyBlue = Color(color = 0xFF87CEEB)
   val MediumAquamarine = Color(color = 0xFF4DB6AC)
 
@@ -83,7 +93,25 @@ object Palette {
 
 // General Color Scheme
 object GeneralPalette {
+  // Surfaces
+  val Surface = Palette.Magnolia
+  val SurfaceVariant = Palette.LavenderMist
+
+  // Utility
+  val Transparent = Palette.Transparent
+
+  // Card / containers
+  val CardContainer = Palette.Platinum
+
+  // Text / content
   val Font = Black
+  val OnSurface = Palette.EerieBlack
+  val OnSurfaceVariant = Palette.RaisinBlack
+
+  // Outline
+  val Outline = Palette.Rhythm
+
+  // App Colors
   val Primary = CircusPalette.Primary
   val Secondary = CircusPalette.Secondary
   val Tertiary = CircusPalette.Tertiary
@@ -91,6 +119,25 @@ object GeneralPalette {
 
 // General Color Scheme for Dark Mode
 object GeneralPaletteDark {
+  // Surfaces
+  val Surface = Palette.EerieBlack
+  val SurfaceVariant = Palette.RaisinBlack
+
+  // Utility
+  val Transparent = Palette.Transparent
+
+  // Card / containers
+  val CardContainer = Palette.EerieBlack
+
+  // Text / content
+  val Font = Black
+  val OnSurface = Palette.LavenderGray
+  val OnSurfaceVariant = Palette.FrenchGray
+
+  // Outline
+  val Outline = Palette.SpanishGray
+
+  // App Colors
   val Primary = Palette.CadmiumBlue
   val Secondary = Palette.RichLilac
   val Tertiary = Palette.DarkSeaGreen

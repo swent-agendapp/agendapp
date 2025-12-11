@@ -38,6 +38,8 @@ import com.android.sample.ui.calendar.eventOverview.EventOverviewScreen
 import com.android.sample.ui.common.BottomBar
 import com.android.sample.ui.common.BottomBarItem
 import com.android.sample.ui.common.BottomBarTestTags
+import com.android.sample.ui.hourRecap.HourRecapScreen
+import com.android.sample.ui.invitation.InvitationOverviewScreen
 import com.android.sample.ui.map.MapScreen
 import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
@@ -105,7 +107,7 @@ fun Agendapp(
   val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
   val startDestination =
-      if (authRepository.getCurrentUser() != null) Screen.Organizations.route
+      if (authRepository.getCurrentUser() != null) Screen.SelectOrganization.route
       else Screen.Authentication.route
 
   val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
@@ -160,6 +162,7 @@ fun Agendapp(
               editEventGraph(navigationActions)
               addEventGraph(navigationActions)
               replacementGraph(navigationActions, credentialManager)
+              invitationGraph(navigationActions)
             }
       }
 }
@@ -184,19 +187,20 @@ private fun NavGraphBuilder.authenticationGraph(
   composable(Screen.Authentication.route) {
     SignInScreen(
         credentialManager = credentialManager,
-        onSignedIn = { navigationActions.navigateTo(Screen.Organizations) })
+        onSignedIn = { navigationActions.navigateTo(Screen.SelectOrganization) })
   }
 }
 
 private fun NavGraphBuilder.organizationsGraph(navigationActions: NavigationActions) {
   // Organization Selection Graph
-  navigation(startDestination = Screen.Organizations.route, route = Screen.Organizations.name) {
-    // Organization List Screen
-    composable(Screen.Organizations.route) {
-      OrganizationListScreen(
-          onOrganizationSelected = { navigationActions.navigateTo(Screen.Calendar) },
-          onAddOrganizationClicked = { navigationActions.navigateTo(Screen.AddOrganization) })
-    }
+  navigation(
+      startDestination = Screen.SelectOrganization.route, route = Screen.SelectOrganization.name) {
+        // Organization List Screen
+        composable(Screen.SelectOrganization.route) {
+          OrganizationListScreen(
+              onOrganizationSelected = { navigationActions.navigateTo(Screen.Calendar) },
+              onAddOrganizationClicked = { navigationActions.navigateTo(Screen.AddOrganization) })
+        }
 
     // Add Organization Screen
     composable(Screen.AddOrganization.route) {
@@ -327,6 +331,7 @@ private fun NavGraphBuilder.settingsGraph(
           onNavigateToUserProfile = { navigationActions.navigateTo(Screen.Profile) },
           onNavigateToAdminInfo = { navigationActions.navigateTo(Screen.AdminContact) },
           onNavigateToMapSettings = { navigationActions.navigateTo(Screen.Map) },
+          onNavigateToHourRecap = { navigationActions.navigateTo(Screen.HourRecap) },
           onNavigateToOrganizationList = {
             navigationActions.navigateTo(Screen.OrganizationOverview)
           })
@@ -350,8 +355,28 @@ private fun NavGraphBuilder.settingsGraph(
     composable(Screen.OrganizationOverview.route) {
       OrganizationOverViewScreen(
           onNavigateBack = { navigationActions.navigateBack() },
-          onChangeOrganization = { navigationActions.navigateTo(Screen.Organizations) },
-          onDeleteOrganization = { navigationActions.navigateTo(Screen.Organizations) })
+          onChangeOrganization = { navigationActions.navigateTo(Screen.ChangeOrganization) },
+          onDeleteOrganization = { navigationActions.navigateTo(Screen.SelectOrganization) },
+          onInvitationClick = { navigationActions.navigateTo(Screen.InvitationOverview) })
+    }
+
+    // Hour Recap Screen
+    composable(Screen.HourRecap.route) {
+      HourRecapScreen(onBackClick = { navigationActions.navigateBack() })
+    }
+    composable(Screen.ChangeOrganization.route) {
+      OrganizationListScreen(
+          onOrganizationSelected = { navigationActions.navigateTo(Screen.Settings) },
+          onAddOrganizationClicked = { navigationActions.navigateTo(Screen.AddOrganization) })
     }
   }
+}
+
+private fun NavGraphBuilder.invitationGraph(navigationActions: NavigationActions) {
+  navigation(
+      startDestination = Screen.InvitationOverview.route, route = Screen.InvitationOverview.name) {
+        composable(route = Screen.InvitationOverview.route) {
+          InvitationOverviewScreen(onBack = { navigationActions.navigateBack() })
+        }
+      }
 }

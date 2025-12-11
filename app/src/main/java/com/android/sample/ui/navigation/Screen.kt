@@ -8,7 +8,8 @@ sealed class Screen(val route: String, val name: String) {
 
   data object Authentication : Screen(route = "authentication", name = "Authentication")
 
-  data object Organizations : Screen(route = "organizations", name = "Organizations")
+  data object SelectOrganization :
+      Screen(route = "select_organizations", name = "Select_Organizations")
 
   data object AddOrganization : Screen(route = "add_organization", name = "Add Organization")
 
@@ -48,5 +49,12 @@ sealed class Screen(val route: String, val name: String) {
 
   data object ReplacementUpcoming : Screen("replacement/upcoming", name = "Replacement Upcoming")
 
-  data object InvitationOverview : Screen("invitation/overview", name = "Invitation Overview")
+  data object HourRecap : Screen("hour_recap", name = "Hour Recap")
+
+  data object ChangeOrganization : Screen("Change_organization", name = "Change Organization")
+
+  data object InvitationOverview :
+      Screen("invitation/overview/{organizationId}", name = "Invitation Overview") {
+    fun createRoute(organizationId: String) = "invitation/overview/$organizationId"
+  }
 }

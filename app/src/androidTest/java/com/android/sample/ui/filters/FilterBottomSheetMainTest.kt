@@ -38,4 +38,37 @@ class FilterBottomSheetMainTest {
     compose.onNodeWithTag(FilterScreenTestTags.CATEGORY_PARTICIPANTS).assertExists()
     compose.onNodeWithTag(FilterScreenTestTags.CATEGORY_PARTICIPANTS).assertIsDisplayed()
   }
+
+  /** Clicking "Event Type" navigates to EventType filter screen */
+  @Test
+  fun clickingEventType_opensEventTypeScreen() {
+    compose.setContent { FilterBottomSheet(onDismiss = {}, onApply = {}) }
+
+    compose.onNodeWithTag(FilterScreenTestTags.CATEGORY_EVENT_TYPE).performClick()
+
+    // Updated test tag
+    compose.onNodeWithTag("EventTypeFilter_Screen").assertExists()
+  }
+
+  /** Clicking Location navigates to Location filter screen */
+  @Test
+  fun clickingLocation_opensLocationScreen() {
+    compose.setContent { FilterBottomSheet(onDismiss = {}, onApply = {}) }
+
+    compose.onNodeWithTag(FilterScreenTestTags.CATEGORY_LOCATION).performClick()
+
+    // Updated test tag
+    compose.onNodeWithTag("LocationFilter_Screen").assertExists()
+  }
+
+  /** Clicking Participants navigates to Participant filter screen */
+  @Test
+  fun clickingParticipants_opensParticipantsScreen() {
+    compose.setContent { FilterBottomSheet(onDismiss = {}, onApply = {}) }
+
+    compose.onNodeWithTag(FilterScreenTestTags.CATEGORY_PARTICIPANTS).performClick()
+
+    // Updated test tag
+    compose.onNodeWithTag("ParticipantFilter_Screen").assertExists()
+  }
 }

@@ -4,6 +4,8 @@ import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepository
 import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.organization.data.Organization
+import com.android.sample.model.organization.invitation.Invitation
+import kotlin.collections.plus
 
 /**
  * Local in-memory implementation of [OrganizationRepository] for testing or offline usage.
@@ -75,5 +77,20 @@ class OrganizationRepositoryLocal(
     }
 
     return organization
+  }
+
+  override suspend fun addMemberToOrganization(member: User, invitation: Invitation) {
+    val organizationOfInvitation =
+        organizations.find { it.id == invitation.organizationId }
+            ?: throw IllegalArgumentException(
+                "No organization matches the ID of the invitation's organizationId.")
+    require(!(organizationOfInvitation.members.contains(member))) {
+      "User is already a member of the organization."
+    }
+
+    val updatedOrganization =
+        organizationOfInvitation.copy(members = organizationOfInvitation.members + member)
+    val index = organizations.indexOfFirst { it.id == updatedOrganization.id }
+    organizations[index] = updatedOrganization
   }
 }

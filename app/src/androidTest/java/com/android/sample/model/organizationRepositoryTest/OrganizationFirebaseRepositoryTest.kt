@@ -4,6 +4,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.organization.data.Organization
+import com.android.sample.model.organization.invitation.Invitation
 import com.android.sample.model.organization.repository.OrganizationRepository
 import com.android.sample.utils.FirebaseEmulatedTest
 import kotlinx.coroutines.runBlocking
@@ -198,5 +199,41 @@ class OrganizationFirebaseRepositoryTest : FirebaseEmulatedTest() {
     val members = userRepository.getMembersIds(orgA.id)
     val memberIds = members.map { it }.toSet()
     assertEquals(setOf("memberA", "adminA"), memberIds)
+  }
+
+  @Test
+  fun getMembersOfOrganization_asOutsider_shouldThrow() = runBlocking {
+    repository.insertOrganization(orgA)
+    try {
+      repository.getMembersOfOrganization(orgA.id, outsider)
+      fail("Expected IllegalArgumentException for outsider")
+    } catch (_: IllegalArgumentException) {}
+  }
+
+  @Test
+  fun addMemberToOrganization_withValidInvitation_shouldAddMember() = runBlocking {
+    repository.insertOrganization(orgA)
+    val invitation = Invitation.create(organizationId = orgA.id)
+    repository.addMemberToOrganization(outsider, invitation)
+    val members = repository.getMembersOfOrganization(orgA.id, adminA)
+    val memberIds = members.map { it.id }.toSet()
+    assertTrue(memberIds.contains(outsider.id))
+  }
+
+  @Test(expected = IllegalArgumentException::class)
+  fun addMemberToOrganization_withMemberAlreadyPresent_shouldNotDuplicate() = runBlocking {
+    repository.insertOrganization(orgA)
+    val invitation = Invitation.create(organizationId = orgA.id)
+    // First addition
+    repository.addMemberToOrganization(memberA, invitation)
+    // Second addition (should throw exception)
+    repository.addMemberToOrganization(memberA, invitation)
+  }
+
+  @Test(expected = IllegalArgumentException::class)
+  fun addMemberToOrganization_withInvalidInvitation_shouldThrow() = runBlocking {
+    repository.insertOrganization(orgA)
+    val invalidInvitation = Invitation.create(organizationId = "nonExistentOrg")
+    repository.addMemberToOrganization(outsider, invalidInvitation)
   }
 }

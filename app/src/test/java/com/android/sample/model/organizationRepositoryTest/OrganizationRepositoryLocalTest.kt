@@ -3,6 +3,7 @@ package com.android.sample.model.organizationRepositoryTest
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.organization.data.Organization
+import com.android.sample.model.organization.invitation.Invitation
 import com.android.sample.model.organization.repository.OrganizationRepositoryLocal
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
@@ -271,5 +272,32 @@ class OrganizationRepositoryLocalTest {
       // Should return empty list, not throw
       assertTrue(members.isEmpty())
     }
+  }
+
+  @Test
+  fun addMemberToOrganization_withValidInvitation_shouldAddMember() = runBlocking {
+    repository.insertOrganization(orgA, adminA)
+    val invitation = Invitation.create(organizationId = orgA.id)
+    repository.addMemberToOrganization(outsider, invitation)
+    val members = repository.getMembersOfOrganization(orgA.id, adminA)
+    val memberIds = members.map { it.id }.toSet()
+    assertTrue(memberIds.contains(outsider.id))
+  }
+
+  @Test(expected = IllegalArgumentException::class)
+  fun addMemberToOrganization_withMemberAlreadyPresent_shouldNotDuplicate() = runBlocking {
+    repository.insertOrganization(orgA, adminA)
+    val invitation = Invitation.create(organizationId = orgA.id)
+    // First addition
+    repository.addMemberToOrganization(memberA, invitation)
+    // Second addition (should throw exception)
+    repository.addMemberToOrganization(memberA, invitation)
+  }
+
+  @Test(expected = IllegalArgumentException::class)
+  fun addMemberToOrganization_withInvalidInvitation_shouldThrow() = runBlocking {
+    repository.insertOrganization(orgA, adminA)
+    val invalidInvitation = Invitation.create(organizationId = "nonExistentOrg")
+    repository.addMemberToOrganization(outsider, invalidInvitation)
   }
 }

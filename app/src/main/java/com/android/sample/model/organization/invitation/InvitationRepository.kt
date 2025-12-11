@@ -87,6 +87,14 @@ interface InvitationRepository {
   suspend fun getInvitationById(itemId: String): Invitation?
 
   /**
+   * Retrieves an invitation by its code.
+   *
+   * @param code The code of the invitation to retrieve.
+   * @return The invitation if found, otherwise null.
+   */
+  suspend fun getInvitationByCode(code: String): Invitation?
+
+  /**
    * Retrieves an invitation by its unique identifier.
    *
    * @param organizationId The unique identifier.

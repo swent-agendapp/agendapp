@@ -29,12 +29,29 @@ class FakeInvitationRepository(
     invitations.add(item)
   }
 
+  override suspend fun updateInvitation(
+      itemId: String,
+      item: Invitation,
+      organization: Organization,
+      user: User
+  ) {
+    super.updateInvitation(itemId, item, organization, user)
+
+    val index = invitations.indexOfFirst { it.id == itemId }
+    require(index != -1) { "Invitation with id $itemId does not exist." }
+    invitations[index] = item
+  }
+
   override suspend fun deleteInvitation(itemId: String, organization: Organization, user: User) {
     super.deleteInvitation(itemId, organization, user)
     val admins = userRepository.getAdminsIds(organization.id)
     require(user.id in admins) { "Only organization admins can activate invitations." }
-    invitations.removeIf { it.id == itemId }
+
+    val index = invitations.indexOfFirst { it.id == itemId }
+    require(index != -1) { "Invitation with id $itemId does not exist." }
+    invitations.removeAt(index)
   }
+
 
   override suspend fun getInvitationById(itemId: String): Invitation? {
     return invitations.firstOrNull { it.id == itemId }
@@ -42,5 +59,9 @@ class FakeInvitationRepository(
 
   override suspend fun getInvitationByOrganization(organizationId: String): List<Invitation> {
     return invitations.filter { it.organizationId == organizationId }
+  }
+
+  override suspend fun getInvitationByCode(code: String): Invitation? {
+    return invitations.firstOrNull { it.code == code }
   }
 }

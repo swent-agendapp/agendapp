@@ -154,4 +154,13 @@ class InvitationRepositoryFirebaseTest : FirebaseEmulatedTest() {
 
     assertEquals(2, invitationsOfOrgB.size)
   }
+
+  @Test
+  fun getInvitationByCode_correctly_retrieves() = runBlocking {
+    repo.insertInvitation(organizationA, admin)
+    val retrievedInv = repo.getAllInvitations().first()
+    val fetchedByCode = repo.getInvitationByCode(retrievedInv.code)
+    assertNotNull(fetchedByCode)
+    assertEquals(retrievedInv.id, fetchedByCode?.id)
+  }
 }

@@ -95,7 +95,8 @@ class HourRecapViewModelTest {
             participants = setOf(participantId),
             presence = mapOf(participantId to true),
             version = System.currentTimeMillis(),
-            recurrenceStatus = RecurrenceStatus.OneTime)
+            recurrenceStatus = RecurrenceStatus.OneTime,
+            location = null)
     repo.add(event)
 
     vm.calculateWorkedHours(start = Instant.EPOCH, end = Instant.EPOCH)

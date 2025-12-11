@@ -45,7 +45,10 @@ class FakeReplacementRepositoryTest { // Later make this implement RequireSelect
             version = 1L,
             locallyStoredBy = listOf("LOCAL"),
             cloudStorageStatuses = emptySet(),
-            personalNotes = null)
+            personalNotes = null,
+            presence = emptyMap(),
+            location = null
+        )
   }
 
   @Test

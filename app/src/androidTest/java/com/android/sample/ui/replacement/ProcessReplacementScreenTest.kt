@@ -15,7 +15,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.sample.R
 import com.android.sample.model.replacement.mockData.getMockReplacements
 import com.android.sample.ui.theme.SampleAppTheme
-import com.android.sample.utils.RequiresSelectedOrganizationTest
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -24,7 +24,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class ProcessReplacementScreenTest : RequiresSelectedOrganizationTest {
+class ProcessReplacementScreenTest : RequiresSelectedOrganizationTestBase {
 
   @get:Rule val composeTestRule = createComposeRule()
 

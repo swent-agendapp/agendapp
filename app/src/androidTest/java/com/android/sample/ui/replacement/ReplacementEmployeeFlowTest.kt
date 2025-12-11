@@ -9,12 +9,12 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.sample.R
 import com.android.sample.ui.replacement.mainPage.ReplacementEmployeeFlow
 import com.android.sample.ui.replacement.mainPage.ReplacementEmployeeListTestTags
-import com.android.sample.utils.RequiresSelectedOrganizationTest
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class ReplacementEmployeeFlowTest : RequiresSelectedOrganizationTest {
+class ReplacementEmployeeFlowTest : RequiresSelectedOrganizationTestBase {
 
   @get:Rule val compose = createComposeRule()
   override val organizationId = "orgTest"

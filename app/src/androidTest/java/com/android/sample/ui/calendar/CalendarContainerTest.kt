@@ -15,7 +15,7 @@ import androidx.test.rule.GrantPermissionRule
 import com.android.sample.model.calendar.EventRepositoryInMemory
 import com.android.sample.model.map.MapRepositoryLocal
 import com.android.sample.ui.calendar.components.ViewMode
-import com.android.sample.utils.RequiresSelectedOrganizationTest
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import java.time.DayOfWeek
 import java.time.LocalDate
 import org.junit.Rule
@@ -38,7 +38,7 @@ import org.junit.rules.RuleChain
  * - Compose test APIs are used to open the picker.
  * - Espresso is used to interact with the platform DatePicker dialog.
  */
-class CalendarContainerTest : RequiresSelectedOrganizationTest {
+class CalendarContainerTest : RequiresSelectedOrganizationTestBase {
   override val organizationId = "orgTest"
 
   private val permissionRule: GrantPermissionRule =

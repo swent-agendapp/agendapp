@@ -7,14 +7,14 @@ import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementStatus
 import com.android.sample.ui.replacement.mainPage.ReplacementRequestUi
 import com.android.sample.ui.replacement.mainPage.toUi
-import com.android.sample.utils.RequiresSelectedOrganizationTest
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import java.time.Instant
 import java.time.ZoneId
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
-class ReplacementToUiTest : RequiresSelectedOrganizationTest {
+class ReplacementToUiTest : RequiresSelectedOrganizationTestBase {
 
   override val organizationId = "ORG1"
 

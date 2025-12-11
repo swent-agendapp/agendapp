@@ -4,7 +4,7 @@ import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.core.app.ApplicationProvider
 import com.android.sample.ui.calendar.CalendarViewModel
-import com.android.sample.utils.RequiresSelectedOrganizationTest
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import junit.framework.TestCase.assertNull
 import org.junit.Before
 import org.junit.Rule
@@ -14,7 +14,7 @@ import org.junit.Test
  * Test class for the HourRecapScreen composable using real CalendarViewModel, but injecting test
  * data into its UI state.
  */
-class HourRecapWithVMTest : RequiresSelectedOrganizationTest {
+class HourRecapWithVMTest : RequiresSelectedOrganizationTestBase {
 
   @get:Rule val compose = createAndroidComposeRule<ComponentActivity>()
 

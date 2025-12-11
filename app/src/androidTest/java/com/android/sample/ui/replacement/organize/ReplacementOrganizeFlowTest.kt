@@ -7,13 +7,13 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.android.sample.utils.FirebaseEmulatedTest
-import com.android.sample.utils.RequiresSelectedOrganizationTest
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import java.time.Instant
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class ReplacementOrganizeFlowTest : FirebaseEmulatedTest(), RequiresSelectedOrganizationTest {
+class ReplacementOrganizeFlowTest : FirebaseEmulatedTest(), RequiresSelectedOrganizationTestBase {
 
   @get:Rule val composeTestRule = createComposeRule()
 

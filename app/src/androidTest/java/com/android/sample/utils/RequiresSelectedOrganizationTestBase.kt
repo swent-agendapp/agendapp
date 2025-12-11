@@ -8,7 +8,7 @@ import com.android.sample.ui.organization.SelectedOrganizationVMProvider
  * This interface provides a mechanism to set a specific organization as selected before each test
  * is run.
  */
-interface RequiresSelectedOrganizationTest {
+interface RequiresSelectedOrganizationTestBase {
 
   /** The ID of the organization to be selected for the test. */
   val organizationId: String

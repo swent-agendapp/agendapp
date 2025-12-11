@@ -12,7 +12,7 @@ import com.android.sample.ui.calendar.eventOverview.EventOverviewScreen
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreenTestTags
 import com.android.sample.ui.calendar.eventOverview.EventOverviewViewModel
 import com.android.sample.utils.FakeEventRepository
-import com.android.sample.utils.RequiresSelectedOrganizationTest
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import java.time.Duration
 import java.time.Instant.now
 import java.time.temporal.ChronoUnit
@@ -29,7 +29,7 @@ import org.junit.Test
  * - Clicking Modify calls the onEditClick callback.
  * - Clicking Delete opens the confirmation dialog and calls onDeleteClick after confirmation.
  */
-class EventOverviewScreenTest : RequiresSelectedOrganizationTest {
+class EventOverviewScreenTest : RequiresSelectedOrganizationTestBase {
 
   @get:Rule val composeRule = createComposeRule()
 

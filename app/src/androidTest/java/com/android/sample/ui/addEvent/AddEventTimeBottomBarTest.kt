@@ -6,12 +6,12 @@ import androidx.compose.ui.test.onNodeWithTag
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
 import com.android.sample.ui.calendar.addEvent.components.AddEventTimeAndRecurrenceBottomBar
-import com.android.sample.utils.RequiresSelectedOrganizationTest
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class AddEventTimeBottomBarTest : RequiresSelectedOrganizationTest {
+class AddEventTimeBottomBarTest : RequiresSelectedOrganizationTestBase {
 
   override val organizationId: String = "org_123"
 

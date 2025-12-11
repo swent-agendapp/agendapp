@@ -11,7 +11,7 @@ import androidx.compose.ui.test.swipeDown
 import androidx.compose.ui.test.swipeUp
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.createEvent
-import com.android.sample.utils.RequiresSelectedOrganizationTest
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import java.time.DayOfWeek
 import java.time.Duration
 import java.time.LocalDate
@@ -31,7 +31,7 @@ private const val POSITION_TOLERANCE = 1f
  * Rationale: mirror the structure used in `CalendarScreenTest` so individual suites are small and
  * focused (visibility, overlap, scrolling, boundaries, validation) while reusing helpers.
  */
-abstract class BaseEventsTest : RequiresSelectedOrganizationTest {
+abstract class BaseEventsTest : RequiresSelectedOrganizationTestBase {
 
   @get:Rule val compose = createComposeRule()
 

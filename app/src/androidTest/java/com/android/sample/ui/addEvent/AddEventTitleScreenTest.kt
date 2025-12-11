@@ -14,12 +14,12 @@ import androidx.compose.ui.test.performTextInput
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.components.AddEventTitleAndDescriptionBottomBar
 import com.android.sample.ui.calendar.addEvent.components.AddEventTitleAndDescriptionScreen
-import com.android.sample.utils.RequiresSelectedOrganizationTest
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class AddEventTitleScreenTest : RequiresSelectedOrganizationTest {
+class AddEventTitleScreenTest : RequiresSelectedOrganizationTestBase {
 
   override val organizationId = "org_123"
 

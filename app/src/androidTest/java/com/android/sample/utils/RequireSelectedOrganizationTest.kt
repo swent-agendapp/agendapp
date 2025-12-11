@@ -5,7 +5,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
-class RequiresSelectedOrganizationTestTest : RequiresSelectedOrganizationTest {
+class RequiresSelectedOrganizationTest : RequiresSelectedOrganizationTestBase {
 
   override val organizationId: String = "test_org"
 

@@ -32,7 +32,7 @@ import com.android.sample.model.organization.repository.SelectedOrganizationRepo
 import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.style.CalendarDefaults.DEFAULT_SWIPE_THRESHOLD
 import com.android.sample.ui.calendar.utils.DateTimeUtils
-import com.android.sample.utils.RequiresSelectedOrganizationTest
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import java.time.DayOfWeek
 import java.time.Duration
 import java.time.LocalDate
@@ -51,7 +51,7 @@ import org.junit.Test
  * Rationale: Smaller focused subclasses improve maintainability (grouped by concern) while reusing
  * a single set of utilities.
  */
-abstract class BaseCalendarScreenTest : RequiresSelectedOrganizationTest {
+abstract class BaseCalendarScreenTest : RequiresSelectedOrganizationTestBase {
 
   @get:Rule open val composeTestRule = createComposeRule()
 

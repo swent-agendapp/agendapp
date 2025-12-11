@@ -7,12 +7,12 @@ import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
 import com.android.sample.ui.calendar.addEvent.components.AddEventTimeAndRecurrenceScreen
-import com.android.sample.utils.RequiresSelectedOrganizationTest
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class AddEventTimeScreenTest : RequiresSelectedOrganizationTest {
+class AddEventTimeScreenTest : RequiresSelectedOrganizationTestBase {
 
   override val organizationId: String = "test-org-id"
 

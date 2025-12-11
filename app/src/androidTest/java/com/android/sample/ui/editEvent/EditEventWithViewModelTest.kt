@@ -12,7 +12,7 @@ import com.android.sample.ui.calendar.editEvent.components.EditEventAttendantScr
 import com.android.sample.ui.calendar.editEvent.components.EditEventScreen
 import com.android.sample.ui.theme.SampleAppTheme
 import com.android.sample.utils.FakeEventRepository
-import com.android.sample.utils.RequiresSelectedOrganizationTest
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import java.time.Duration
 import java.time.Instant.now
 import java.time.temporal.ChronoUnit
@@ -27,7 +27,7 @@ import org.junit.runner.RunWith
  * verify UI + ViewModel interaction consistency.
  */
 @RunWith(AndroidJUnit4::class)
-class EditEventWithViewModelTest : RequiresSelectedOrganizationTest {
+class EditEventWithViewModelTest : RequiresSelectedOrganizationTestBase {
 
   @get:Rule val composeTestRule = createComposeRule()
 

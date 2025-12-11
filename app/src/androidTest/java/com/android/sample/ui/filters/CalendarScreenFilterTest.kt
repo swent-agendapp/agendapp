@@ -6,13 +6,13 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.android.sample.ui.calendar.CalendarScreen
 import com.android.sample.ui.calendar.CalendarScreenTestTags
-import com.android.sample.utils.RequiresSelectedOrganizationTest
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 // Assisted by AI
-class CalendarScreenFilterTest : RequiresSelectedOrganizationTest {
+class CalendarScreenFilterTest : RequiresSelectedOrganizationTestBase {
 
   @get:Rule val compose = createComposeRule()
 

@@ -7,13 +7,14 @@ import androidx.compose.ui.test.onNodeWithTag
 import com.android.sample.ui.calendar.addEvent.components.AddEventConfirmationScreen
 import com.android.sample.ui.calendar.components.EventSummaryCardTags
 import com.android.sample.utils.FirebaseEmulatedTest
-import com.android.sample.utils.RequiresSelectedOrganizationTest
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import java.time.LocalDate
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class AddEventConfirmationScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganizationTest {
+class AddEventConfirmationScreenTest :
+    FirebaseEmulatedTest(), RequiresSelectedOrganizationTestBase {
 
   override val organizationId: String = "org_123"
 

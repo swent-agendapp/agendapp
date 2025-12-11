@@ -10,12 +10,12 @@ import com.android.sample.model.authentication.User
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeTestTags
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeViewModel
 import com.android.sample.ui.replacement.organize.components.SelectSubstitutedScreen
-import com.android.sample.utils.RequiresSelectedOrganizationTest
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class SelectSubstitutedScreenTest : RequiresSelectedOrganizationTest {
+class SelectSubstitutedScreenTest : RequiresSelectedOrganizationTestBase {
 
   @get:Rule val composeTestRule = createComposeRule()
 

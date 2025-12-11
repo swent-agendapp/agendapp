@@ -8,6 +8,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import java.time.Instant
 import org.junit.Before
 import org.junit.Rule
@@ -17,7 +18,7 @@ class ReplacementOrganizeFlowTest : FirebaseEmulatedTest(), RequiresSelectedOrga
 
   @get:Rule val composeTestRule = createComposeRule()
 
-  override val organizationId = "orgTest"
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
 
   private lateinit var fakeViewModel: ReplacementOrganizeViewModel
 

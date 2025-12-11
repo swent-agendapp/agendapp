@@ -13,6 +13,11 @@ interface RequiresSelectedOrganizationTestBase {
   /** The ID of the organization to be selected for the test. */
   val organizationId: String
 
+  /** Default organization ID for tests if none is specified. */
+  companion object {
+    const val DEFAULT_TEST_ORG_ID = "test_org_id"
+  }
+
   /**
    * Prepares the selected organization before each test.
    *

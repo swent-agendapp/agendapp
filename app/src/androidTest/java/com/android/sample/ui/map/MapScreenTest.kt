@@ -11,6 +11,7 @@ import androidx.test.rule.GrantPermissionRule
 import com.android.sample.model.map.MapRepositoryProvider
 import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import com.google.android.gms.maps.MapsInitializer
 import org.junit.Before
 import org.junit.Rule
@@ -19,7 +20,7 @@ import org.junit.Test
 class MapScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganizationTestBase {
   lateinit var mapViewModel: MapViewModel
 
-  override val organizationId = "test-org-id"
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
 
   @Before
   override fun setUp() {

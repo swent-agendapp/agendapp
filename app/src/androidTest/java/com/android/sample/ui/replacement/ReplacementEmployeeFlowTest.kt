@@ -10,6 +10,7 @@ import com.android.sample.R
 import com.android.sample.ui.replacement.mainPage.ReplacementEmployeeFlow
 import com.android.sample.ui.replacement.mainPage.ReplacementEmployeeListTestTags
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -17,7 +18,7 @@ import org.junit.Test
 class ReplacementEmployeeFlowTest : RequiresSelectedOrganizationTestBase {
 
   @get:Rule val compose = createComposeRule()
-  override val organizationId = "orgTest"
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
 
   @Before
   fun init() {

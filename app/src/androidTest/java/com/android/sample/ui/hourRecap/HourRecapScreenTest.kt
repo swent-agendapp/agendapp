@@ -11,6 +11,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.android.sample.ui.calendar.CalendarViewModel
 import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -29,7 +30,7 @@ class HourRecapScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
 
   @get:Rule val compose = createComposeRule()
 
-  override val organizationId = "test_org"
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
 
   @Before
   override fun setUp() {

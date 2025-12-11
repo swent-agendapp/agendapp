@@ -8,6 +8,7 @@ import com.android.sample.ui.calendar.addEvent.components.AddEventConfirmationSc
 import com.android.sample.ui.calendar.components.EventSummaryCardTags
 import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import java.time.LocalDate
 import org.junit.Before
 import org.junit.Rule
@@ -16,7 +17,7 @@ import org.junit.Test
 class AddEventConfirmationScreenTest :
     FirebaseEmulatedTest(), RequiresSelectedOrganizationTestBase {
 
-  override val organizationId: String = "org_123"
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
 
   @get:Rule val composeTestRule = createComposeRule()
 

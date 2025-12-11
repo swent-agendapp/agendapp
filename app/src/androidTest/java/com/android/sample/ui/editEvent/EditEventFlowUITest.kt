@@ -8,6 +8,7 @@ import com.android.sample.ui.calendar.editEvent.EditEventStep
 import com.android.sample.ui.calendar.editEvent.EditEventTestTags
 import com.android.sample.ui.calendar.editEvent.EditEventViewModel
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -24,7 +25,7 @@ class EditEventFlowUITest : RequiresSelectedOrganizationTestBase {
 
   @get:Rule val composeTestRule = createComposeRule()
 
-  override val organizationId = "test_org_id"
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
 
   @Before
   fun setup() {

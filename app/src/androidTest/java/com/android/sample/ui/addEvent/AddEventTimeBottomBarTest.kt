@@ -7,13 +7,14 @@ import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
 import com.android.sample.ui.calendar.addEvent.components.AddEventTimeAndRecurrenceBottomBar
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 class AddEventTimeBottomBarTest : RequiresSelectedOrganizationTestBase {
 
-  override val organizationId: String = "org_123"
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
 
   @get:Rule val composeTestRule = createComposeRule()
   private lateinit var fakeViewModel: AddEventViewModel

@@ -8,6 +8,7 @@ import com.android.sample.ui.calendar.editEvent.components.EditEventAttendantScr
 import com.android.sample.ui.calendar.editEvent.components.EditEventScreen
 import com.android.sample.ui.theme.SampleAppTheme
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -19,7 +20,7 @@ class EditEventScreenTest : RequiresSelectedOrganizationTestBase {
 
   @get:Rule val composeTestRule = createComposeRule()
 
-  override val organizationId = "test_org"
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
 
   @Before
   fun setUp() {

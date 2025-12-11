@@ -7,6 +7,7 @@ import com.android.sample.ui.invitation.createInvitation.CreateInvitationBottomS
 import com.android.sample.ui.invitation.createInvitation.InvitationCreationTestTags
 import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -18,7 +19,7 @@ class CreateInvitationBottomSheetTest :
 
   @get:Rule val composeTestRule = createComposeRule()
 
-  override val organizationId = "test_org"
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
 
   @Before
   override fun setUp() {

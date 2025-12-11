@@ -13,6 +13,7 @@ import com.android.sample.ui.calendar.eventOverview.EventOverviewScreenTestTags
 import com.android.sample.ui.calendar.eventOverview.EventOverviewViewModel
 import com.android.sample.utils.FakeEventRepository
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import java.time.Duration
 import java.time.Instant.now
 import java.time.temporal.ChronoUnit
@@ -33,7 +34,7 @@ class EventOverviewScreenTest : RequiresSelectedOrganizationTestBase {
 
   @get:Rule val composeRule = createComposeRule()
 
-  override val organizationId = "orgTest"
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
   private lateinit var repo: EventRepository
 
   @Before

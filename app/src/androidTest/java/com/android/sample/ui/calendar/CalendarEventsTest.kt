@@ -12,6 +12,7 @@ import androidx.compose.ui.test.swipeUp
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import java.time.DayOfWeek
 import java.time.Duration
 import java.time.LocalDate
@@ -35,7 +36,7 @@ abstract class BaseEventsTest : RequiresSelectedOrganizationTestBase {
 
   @get:Rule val compose = createComposeRule()
 
-  override val organizationId = "orgTest"
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
 
   protected lateinit var monday: LocalDate
 

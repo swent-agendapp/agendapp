@@ -1,13 +1,14 @@
 package com.android.sample.utils
 
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
 class RequiresSelectedOrganizationTest : RequiresSelectedOrganizationTestBase {
 
-  override val organizationId: String = "test_org"
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
 
   @Before
   fun setUp() {

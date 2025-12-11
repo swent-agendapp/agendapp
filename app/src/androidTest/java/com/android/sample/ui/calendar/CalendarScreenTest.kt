@@ -33,6 +33,7 @@ import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.style.CalendarDefaults.DEFAULT_SWIPE_THRESHOLD
 import com.android.sample.ui.calendar.utils.DateTimeUtils
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import java.time.DayOfWeek
 import java.time.Duration
 import java.time.LocalDate
@@ -55,7 +56,7 @@ abstract class BaseCalendarScreenTest : RequiresSelectedOrganizationTestBase {
 
   @get:Rule open val composeTestRule = createComposeRule()
 
-  override val organizationId = "orgTest"
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
   private lateinit var repo: EventRepository
 
   @Before

@@ -7,6 +7,7 @@ import androidx.compose.ui.test.performClick
 import com.android.sample.ui.calendar.CalendarScreen
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -16,7 +17,7 @@ class CalendarScreenFilterTest : RequiresSelectedOrganizationTestBase {
 
   @get:Rule val compose = createComposeRule()
 
-  override val organizationId = "test_org"
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
 
   @Before
   fun setUp() {

@@ -7,13 +7,14 @@ import androidx.compose.ui.test.onNodeWithTag
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.components.AddEventTitleAndDescriptionBottomBar
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 class AddEventTitleBottomBarTest : RequiresSelectedOrganizationTestBase {
 
-  override val organizationId = "org_123"
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
 
   @get:Rule val composeTestRule = createComposeRule()
 

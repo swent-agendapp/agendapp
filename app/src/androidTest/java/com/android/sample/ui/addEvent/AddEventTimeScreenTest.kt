@@ -8,13 +8,14 @@ import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
 import com.android.sample.ui.calendar.addEvent.components.AddEventTimeAndRecurrenceScreen
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 class AddEventTimeScreenTest : RequiresSelectedOrganizationTestBase {
 
-  override val organizationId: String = "test-org-id"
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
 
   @get:Rule val composeTestRule = createComposeRule()
   private lateinit var fakeViewModel: AddEventViewModel

@@ -8,6 +8,7 @@ import com.android.sample.model.replacement.ReplacementStatus
 import com.android.sample.ui.replacement.mainPage.ReplacementRequestUi
 import com.android.sample.ui.replacement.mainPage.toUi
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import java.time.Instant
 import java.time.ZoneId
 import org.junit.Assert.assertEquals
@@ -16,7 +17,7 @@ import org.junit.Test
 
 class ReplacementToUiTest : RequiresSelectedOrganizationTestBase {
 
-  override val organizationId = "ORG1"
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
 
   @Before
   fun setup() {

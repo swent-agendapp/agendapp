@@ -5,6 +5,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.core.app.ApplicationProvider
 import com.android.sample.ui.calendar.CalendarViewModel
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import junit.framework.TestCase.assertNull
 import org.junit.Before
 import org.junit.Rule
@@ -18,7 +19,7 @@ class HourRecapWithVMTest : RequiresSelectedOrganizationTestBase {
 
   @get:Rule val compose = createAndroidComposeRule<ComponentActivity>()
 
-  override val organizationId = "test_org"
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
 
   @Before
   fun setUp() {

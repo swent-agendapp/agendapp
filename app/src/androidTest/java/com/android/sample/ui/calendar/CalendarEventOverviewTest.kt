@@ -13,6 +13,7 @@ import com.android.sample.ui.calendar.eventOverview.EventOverviewScreenTestTags
 import com.android.sample.ui.calendar.eventOverview.EventOverviewViewModel
 import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import java.time.Instant
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -28,7 +29,7 @@ import org.junit.Test
  */
 class CalendarEventOverviewTest : FirebaseEmulatedTest(), RequiresSelectedOrganizationTestBase {
 
-  override val organizationId = "orgTest"
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
 
   @get:Rule val composeTestRule = createComposeRule()
   private lateinit var repo: EventRepository

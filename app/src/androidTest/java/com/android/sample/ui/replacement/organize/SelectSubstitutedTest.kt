@@ -11,6 +11,7 @@ import com.android.sample.ui.replacement.organize.ReplacementOrganizeTestTags
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeViewModel
 import com.android.sample.ui.replacement.organize.components.SelectSubstitutedScreen
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -19,7 +20,7 @@ class SelectSubstitutedScreenTest : RequiresSelectedOrganizationTestBase {
 
   @get:Rule val composeTestRule = createComposeRule()
 
-  override val organizationId = "test_org_id"
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
   private lateinit var members: List<User>
   private lateinit var fakeViewModel: ReplacementOrganizeViewModel
 

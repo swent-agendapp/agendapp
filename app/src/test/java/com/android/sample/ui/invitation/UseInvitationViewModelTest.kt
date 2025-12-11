@@ -182,4 +182,18 @@ class UseInvitationViewModelTest {
     vm.setIsTemptingToJoin(false)
     assertFalse(vm.uiState.value.isTemptingToJoin)
   }
+
+
+  // -----------------------------------------------------------
+  // setIsInputCodeIllegal
+  // -----------------------------------------------------------
+  @Test
+  fun `setIsInputCodeIllegal updates isIllegal`() = runTest {
+    vm.setIsInputCodeIllegal(true)
+    assertTrue(vm.uiState.value.isInputCodeIllegal)
+
+    vm.setIsInputCodeIllegal(false)
+    assertFalse(vm.uiState.value.isInputCodeIllegal)
+
+  }
 }

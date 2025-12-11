@@ -33,6 +33,27 @@ import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingMedium
 import com.android.sample.ui.theme.SpacingSmall
 
+/**
+ * Bottom sheet used to create or edit a category.
+ *
+ * When [showBottomSheet] is true, a [ModalBottomSheet] is displayed with:
+ * - a [ColorSelector] to choose the category color,
+ * - an [OutlinedTextField] to edit the label,
+ * - a save button.
+ *
+ * The sheet is pre-filled using [initialLabel] and [initialColor]. When the user presses save,
+ * [onSave] is called with the trimmed label and selected color.
+ *
+ * Currently the state is managed locally by `EditCategoryScreen`. Later, this sheet will be fully
+ * driven by an `EditCategoryViewModel`.
+ *
+ * @param showBottomSheet Whether the sheet is visible.
+ * @param sheetState State of the modal bottom sheet.
+ * @param initialLabel Initial text for the label field, or `null` when creating a new category.
+ * @param initialColor Initial color, or a default category color if `null`.
+ * @param onDismiss Called when the sheet is dismissed.
+ * @param onSave Called when the user confirms, passing the new label and color.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryEditBottomSheet(

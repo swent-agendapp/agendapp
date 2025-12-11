@@ -1,9 +1,13 @@
 package com.android.sample.ui.map
 
 import android.Manifest
+import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performSemanticsAction
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeRight
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.rule.GrantPermissionRule
 import com.android.sample.model.map.Area
@@ -81,7 +85,11 @@ class MapScreenTest : FirebaseEmulatedTest() {
     composeTestRule.onNodeWithTag(DOWN_SHEET).assertIsDisplayed()
     composeTestRule.onNodeWithTag(DOWN_SHEET_FORM).assertIsDisplayed()
     composeTestRule.onNodeWithTag(SLIDER).assertIsDisplayed()
+      .performSemanticsAction(SemanticsActions.SetProgress) { setProgress ->
+        setProgress(30F)   // 🔹 même unité que valueRange
+      }
     composeTestRule.onNodeWithTag(CREATE_AREA_BUTTON).assertIsDisplayed()
     composeTestRule.onNodeWithTag(DELETE_MARKER_BUTTON).assertIsDisplayed()
+
   }
 }

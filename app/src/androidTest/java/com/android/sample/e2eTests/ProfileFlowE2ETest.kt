@@ -24,7 +24,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class AAAProfileFlowE2ETest : FirebaseEmulatedTest() {
+class ProfileFlowE2ETest : FirebaseEmulatedTest() {
 
   // Timeout for UI authentication operations
   // This is used to wait for the UI to update after authentication actions

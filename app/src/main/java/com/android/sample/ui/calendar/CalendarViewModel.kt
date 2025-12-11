@@ -218,7 +218,10 @@ class CalendarViewModel(
   fun checkUserLocationStatus() {
     viewModelScope.launch {
       val orgId = selectedOrganizationId.value
-      requireNotNull(orgId) { "You must join an Organisation for this feature" }
+      if (orgId == null) {
+        setErrorMsg("No organization selected")
+        return@launch
+      }
 
       try {
         val areas = mapRepository.getAllAreas(orgId = orgId)

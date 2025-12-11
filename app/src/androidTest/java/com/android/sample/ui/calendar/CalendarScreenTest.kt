@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
+import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
@@ -32,6 +33,7 @@ import com.android.sample.model.organization.repository.SelectedOrganizationRepo
 import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.style.CalendarDefaults.DEFAULT_SWIPE_THRESHOLD
 import com.android.sample.ui.calendar.utils.DateTimeUtils
+import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import java.time.DayOfWeek
@@ -58,6 +60,7 @@ abstract class BaseCalendarScreenTest : RequiresSelectedOrganizationTestBase {
 
   override val organizationId: String = DEFAULT_TEST_ORG_ID
   private lateinit var repo: EventRepository
+  protected lateinit var viewModel: CalendarViewModel
 
   @Before
   fun setUp() {
@@ -347,7 +350,7 @@ abstract class BaseCalendarScreenTest : RequiresSelectedOrganizationTestBase {
     // Provide a ViewModel factory that uses these repos
     val owner = TestOwner(CalendarVMFactory(eventRepo, mapRepo))
 
-    val viewModel =
+    viewModel =
         CalendarViewModel(
             app = ApplicationProvider.getApplicationContext(),
             eventRepository = eventRepo,
@@ -656,6 +659,16 @@ class CalendarHeaderTests : BaseCalendarScreenTest() {
     expectedLabelsCurrent.forEach { label ->
       composeTestRule.onNodeWithText(label, substring = true).assertIsDisplayed()
     }
+  }
+
+  @Test
+  fun errorAppearsWhenNoOrganizationSelected() {
+    // Do not set selected organization to simulate no selection
+    SelectedOrganizationVMProvider.viewModel.clearSelection()
+
+    setContentWithLocalRepo()
+
+    composeTestRule.onNodeWithTag(CalendarScreenTestTags.SNACK_BAR).isDisplayed()
   }
 }
 

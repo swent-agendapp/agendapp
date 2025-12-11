@@ -2,9 +2,12 @@ package com.android.sample.model.invitationRepositoryTest
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.organization.data.Organization
+import com.android.sample.model.organization.invitation.InvitationRepository
 import com.android.sample.model.organization.invitation.InvitationRepositoryLocal
+import com.android.sample.model.organization.invitation.InvitationRepositoryProvider
 import com.android.sample.model.organization.invitation.InvitationStatus
 import com.android.sample.utils.FirebaseEmulatedTest
 import kotlinx.coroutines.runBlocking
@@ -18,7 +21,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class InvitationRepositoryFirebaseTest : FirebaseEmulatedTest() {
 
-  private lateinit var repo: InvitationRepositoryLocal
+  private lateinit var repo: InvitationRepository
 
   private lateinit var admin: User
   private lateinit var member: User
@@ -27,12 +30,18 @@ class InvitationRepositoryFirebaseTest : FirebaseEmulatedTest() {
   private lateinit var organizationB: Organization
 
   @Before
-  override fun setUp() {
+  override fun setUp() = runBlocking {
     super.setUp()
+    repo = InvitationRepositoryProvider.repository
+
     // --- Create users ---
     admin = User(id = "adminA", displayName = "Admin A", email = "adminA@example.com")
     member = User(id = "memberA", displayName = "Member A", email = "memberA@example.com")
     outsider = User(id = "outsider", displayName = "Outsider", email = "outsider@example.com")
+
+    UserRepositoryProvider.repository.newUser(admin)
+    UserRepositoryProvider.repository.newUser(member)
+    UserRepositoryProvider.repository.newUser(outsider)
 
     // --- Create organization ---
     organizationA =
@@ -41,6 +50,12 @@ class InvitationRepositoryFirebaseTest : FirebaseEmulatedTest() {
 
     organizationB =
         Organization(id = "orgB", name = "Org B")
+
+
+    UserRepositoryProvider.repository.addAdminToOrganization(admin.id, organizationA.id)
+    UserRepositoryProvider.repository.addUserToOrganization(member.id, organizationA.id)
+    UserRepositoryProvider.repository.addAdminToOrganization(admin.id, organizationB.id)
+
   }
 
   @Test
@@ -106,7 +121,7 @@ class InvitationRepositoryFirebaseTest : FirebaseEmulatedTest() {
     repo.insertInvitation(organizationA, admin)
     val retrievedInv = repo.getAllInvitations().first()
     repo.updateInvitation(
-        retrievedInv.id, retrievedInv.copy(status = InvitationStatus.Used), organizationA, member)
+        retrievedInv.id, retrievedInv.copy(status = InvitationStatus.Used), organizationA, admin)
     val updatedInv = retrievedInv.copy(status = InvitationStatus.Active)
     val exception =
         assertThrows(IllegalArgumentException::class.java) {

@@ -16,7 +16,6 @@ class FakeInvitationRepository : InvitationRepository {
   }
 
   override suspend fun insertInvitation(organization: Organization, user: User) {
-    super.insertInvitation(organization, user)
     val item = Invitation.create(organizationId = organization.id)
     require(invitations.none { it.id == item.id }) {
       "Invitation with id ${item.id} already exists."

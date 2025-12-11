@@ -1,8 +1,11 @@
 package com.android.sample.ui.invitation
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsEnabled
+import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performTextInput
 import com.android.sample.ui.invitation.useInvitation.UseInvitationBottomSheet
 import com.android.sample.ui.invitation.useInvitation.UseInvitationTestTags
 import com.android.sample.utils.FirebaseEmulatedTest
@@ -40,5 +43,18 @@ class UseInvitationBottomSheetTest : FirebaseEmulatedTest() {
   @Test
   fun joinButton_isDisplayed() {
     composeTestRule.onNodeWithTag(UseInvitationTestTags.JOIN_BUTTON).assertIsDisplayed()
+  }
+
+  @Test
+  fun joinButton_isDisabledInitially() {
+    composeTestRule.onNodeWithTag(UseInvitationTestTags.JOIN_BUTTON).assertIsNotEnabled()
+  }
+
+  @Test
+  fun joinButton_isEnabledWhenCodeEntered() {
+    composeTestRule
+        .onNodeWithTag(UseInvitationTestTags.INVITATION_CODE_TEXT_FIELD)
+        .performTextInput("ABC123")
+    composeTestRule.onNodeWithTag(UseInvitationTestTags.JOIN_BUTTON).assertIsEnabled()
   }
 }

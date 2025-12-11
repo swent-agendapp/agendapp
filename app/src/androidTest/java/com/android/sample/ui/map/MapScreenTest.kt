@@ -5,6 +5,7 @@ import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performSemanticsAction
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.rule.GrantPermissionRule
@@ -64,8 +65,9 @@ class MapScreenTest : FirebaseEmulatedTest() {
 
     composeTestRule.onNodeWithTag(DOWN_SHEET).assertIsDisplayed()
     composeTestRule.onNodeWithTag(DOWN_SHEET_FORM).assertIsDisplayed()
+    mapViewModel.setNewAreaRadius(100.0)
     composeTestRule.onNodeWithTag(SLIDER).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(CREATE_AREA_BUTTON).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(CREATE_AREA_BUTTON).assertIsDisplayed().performClick()
   }
 
   @Test
@@ -86,7 +88,7 @@ class MapScreenTest : FirebaseEmulatedTest() {
         SemanticsActions.SetProgress) { setProgress ->
           setProgress(30F) // 🔹 même unité que valueRange
     }
-    composeTestRule.onNodeWithTag(CREATE_AREA_BUTTON).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(CREATE_AREA_BUTTON).assertIsDisplayed().performClick()
     composeTestRule.onNodeWithTag(DELETE_MARKER_BUTTON).assertIsDisplayed()
   }
 }

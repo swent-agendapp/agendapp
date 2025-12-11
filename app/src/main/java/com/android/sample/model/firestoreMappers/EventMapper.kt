@@ -22,6 +22,7 @@ object EventMapper : FirestoreMapper<Event> {
   const val START_DATE_FIELD = "startDate"
   const val END_DATE_FIELD = "endDate"
   const val PERSONAL_NOTES_FIELD = "personalNotes"
+  const val LOCATION_FIELD = "location"
   const val PARTICIPANTS_FIELD = "participants"
   const val STORAGE_STATUS_FIELD = "storageStatus"
   const val RECURRENCE_STATUS_FIELD = "recurrenceStatus"
@@ -38,6 +39,7 @@ object EventMapper : FirestoreMapper<Event> {
     val startDate = document.getTimestamp(START_DATE_FIELD)?.toDate()?.toInstant() ?: return null
     val endDate = document.getTimestamp(END_DATE_FIELD)?.toDate()?.toInstant() ?: return null
     val personalNotes = document.getString(PERSONAL_NOTES_FIELD)
+    val location = document.getString(LOCATION_FIELD)
 
     val participants =
         (document[PARTICIPANTS_FIELD] as? List<*>)?.filterIsInstance<String>()?.toSet()
@@ -73,7 +75,8 @@ object EventMapper : FirestoreMapper<Event> {
         presence = presence,
         recurrenceStatus = recurrenceStatus,
         hasBeenDeleted = hasBeenDeleted,
-        category = category)
+        category = category,
+        location = location)
   }
 
   override fun fromMap(data: Map<String, Any?>): Event? {
@@ -95,6 +98,7 @@ object EventMapper : FirestoreMapper<Event> {
             ?: return null
 
     val personalNotes = data[PERSONAL_NOTES_FIELD] as? String
+    val location = data[LOCATION_FIELD] as? String
     val participants =
         (data[PARTICIPANTS_FIELD] as? List<*>)?.filterIsInstance<String>()?.toSet() ?: emptySet()
 
@@ -128,6 +132,7 @@ object EventMapper : FirestoreMapper<Event> {
         version = version,
         presence = presence,
         recurrenceStatus = recurrenceStatus,
+        location = location,
         hasBeenDeleted = hasBeenDeleted,
         category = category)
   }
@@ -142,6 +147,7 @@ object EventMapper : FirestoreMapper<Event> {
         END_DATE_FIELD to Timestamp(Date.from(model.endDate)),
         STORAGE_STATUS_FIELD to model.cloudStorageStatuses.map { it.name },
         PERSONAL_NOTES_FIELD to model.personalNotes,
+        LOCATION_FIELD to model.location,
         PARTICIPANTS_FIELD to model.participants.toList(),
         VERSION_FIELD to model.version,
         PRESENCE_FIELD to model.presence,

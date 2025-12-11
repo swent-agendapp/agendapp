@@ -47,7 +47,8 @@ class EventMapperTest {
             version = 12345L,
             hasBeenDeleted = false,
             recurrenceStatus = RecurrenceStatus.OneTime,
-            category = testCategory)
+            category = testCategory,
+            location = null)
 
     emptyEvent =
         baseEvent.copy(

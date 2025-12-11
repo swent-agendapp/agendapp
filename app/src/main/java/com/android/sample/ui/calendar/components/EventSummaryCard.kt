@@ -129,7 +129,8 @@ private val previewEvents: List<Event> by lazy {
           hasBeenDeleted = false,
           category =
               EventCategory(
-                  organizationId = "org1", label = "Category A", color = EventPalette.Blue)),
+                  organizationId = "org1", label = "Category A", color = EventPalette.Blue),
+          location = null),
       // e1) 3-day recurring (tests multi-day + recurrence label)
       Event(
           id = "e1",
@@ -147,7 +148,8 @@ private val previewEvents: List<Event> by lazy {
           hasBeenDeleted = false,
           category =
               EventCategory(
-                  organizationId = "org1", label = "Category B", color = EventPalette.Green)),
+                  organizationId = "org1", label = "Category B", color = EventPalette.Green),
+          location = null),
       // e2) Stress test: long title, long description, many participants
       Event(
           id = "e2",
@@ -169,7 +171,8 @@ private val previewEvents: List<Event> by lazy {
           hasBeenDeleted = false,
           category =
               EventCategory(
-                  organizationId = "org1", label = "Category C", color = EventPalette.Orange)),
+                  organizationId = "org1", label = "Category C", color = EventPalette.Orange),
+          location = null),
   )
 }
 

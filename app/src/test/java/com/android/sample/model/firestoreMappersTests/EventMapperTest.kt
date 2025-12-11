@@ -43,7 +43,7 @@ class EventMapperTest {
           presence = mapOf("participant1" to true, "participant2" to false),
           recurrenceStatus = RecurrenceStatus.OneTime,
           category = sampleCategory,
-      )
+          location = null)
 
   private val sampleMap: Map<String, Any?> =
       mapOf(

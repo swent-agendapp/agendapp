@@ -45,56 +45,28 @@ class MapViewModelTestWithPermission {
   }
 
   @Test
-  fun `check area name is correct`() {
+  fun `map vm create new map with no selected marker`() {
     val vm = MapViewModel(ApplicationProvider.getApplicationContext(), repository)
-    vm.setNewAreaName("test")
-    assertEquals("test", vm.state.value.nextAreaName)
+    assertThrows(IllegalArgumentException::class.java) { vm.createNewArea() }
   }
 
   @Test
-  fun `check marker can be added and removed correctly`() {
+  fun `map vm test workflow`() {
     val vm = MapViewModel(ApplicationProvider.getApplicationContext(), repository)
-    vm.addNewMarker(com.google.android.gms.maps.model.LatLng(0.0, 0.0))
-    vm.addNewMarker(com.google.android.gms.maps.model.LatLng(1.0, 0.0))
-    vm.addNewMarker(com.google.android.gms.maps.model.LatLng(0.0, 1.0))
-
-    assertEquals(3, vm.state.value.listNewMarker.size)
-
-    vm.deleteMarker(vm.state.value.listNewMarker[0].id)
-
-    assertEquals(2, vm.state.value.listNewMarker.size)
-  }
-
-  @Test
-  fun `create area with 2 marker make an error and clean it`() {
-
-    val vm = MapViewModel(ApplicationProvider.getApplicationContext(), repository)
-    vm.addNewMarker(LatLng(0.0, 0.0))
-    vm.addNewMarker(LatLng(1.0, 0.0))
-
-    assertEquals(2, vm.state.value.listNewMarker.size)
-    vm.createNewArea()
-    assertEquals(
-        "An Area must have at least 3 distinct markers with unique coordinates",
-        vm.state.value.errorMessage)
-    vm.cleanMessageError()
-    assertEquals(null, vm.state.value.errorMessage)
-  }
-
-  @Test
-  fun `create area with 3 marker`() {
-    val vm = MapViewModel(ApplicationProvider.getApplicationContext(), repository)
-    vm.addNewMarker(com.google.android.gms.maps.model.LatLng(0.0, 0.0))
-    vm.addNewMarker(com.google.android.gms.maps.model.LatLng(1.0, 0.0))
-    vm.addNewMarker(com.google.android.gms.maps.model.LatLng(0.0, 1.0))
-    vm.setNewAreaName("Test Area")
-
-    assertEquals(3, vm.state.value.listNewMarker.size)
-
+    vm.createArea(LatLng(DefaultLocation.LATITUDE, DefaultLocation.LONGITUDE))
     vm.createNewArea()
 
-    assertEquals(1, vm.state.value.listArea.size)
-    assertEquals("Test Area", vm.state.value.listArea[0].label)
-    assertEquals(3, vm.state.value.listArea[0].markers.size)
+    assertEquals(vm.state.value.listArea.size, 1)
+    assertEquals(vm.state.value.listArea.first().label, DefaultMarkerValue.LABEL)
+
+    vm.selectArea(vm.state.value.listArea.first())
+    vm.setNewAreaName("new area")
+    vm.updateArea()
+
+    assertEquals(vm.state.value.listArea.size, 1)
+    assertEquals(vm.state.value.listArea.first().label, "new area")
+
+    vm.selectArea(vm.state.value.listArea.first())
+    vm.deleteArea()
   }
 }

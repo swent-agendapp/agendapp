@@ -215,7 +215,8 @@ private fun EventOverviewScreenPreview() {
           hasBeenDeleted = false,
           category =
               EventCategory(
-                  organizationId = "org1", label = "Category A", color = EventPalette.Blue))
+                  organizationId = "org1", label = "Category A", color = EventPalette.Blue),
+          location = null)
 
   EventOverviewScreen(eventId = event.id, onBackClick = {})
 }

@@ -68,7 +68,8 @@ class EventSummaryCardTest {
           version = 1L,
           recurrenceStatus = recurrence,
           hasBeenDeleted = false,
-          category = category)
+          category = category,
+          location = null)
 
   private val zone: ZoneId = ZoneId.systemDefault()
   private val locale: Locale = Locale.getDefault()

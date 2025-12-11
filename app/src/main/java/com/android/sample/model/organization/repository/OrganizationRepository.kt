@@ -2,6 +2,7 @@ package com.android.sample.model.organization.repository
 
 import com.android.sample.model.authentication.User
 import com.android.sample.model.organization.data.Organization
+import com.android.sample.model.organization.invitation.Invitation
 
 /**
  * Repository interface for managing organizations.
@@ -97,4 +98,16 @@ interface OrganizationRepository {
                 "Organization with id $organizationId does not exist.")
     return organization.members
   }
+
+  /**
+   * Adds a member to the organization based on a valid invitation.
+   *
+   * Implementations should ensure that the organization identified by the invitation exists.
+   *
+   * @param member The user to be added as a member.
+   * @param invitation The invitation used to add the member.
+   * @throws IllegalArgumentException if no organization matches the ID of the invitation's, or if
+   *   the user is already a member. organizationId.
+   */
+  suspend fun addMemberToOrganization(member: User, invitation: Invitation)
 }

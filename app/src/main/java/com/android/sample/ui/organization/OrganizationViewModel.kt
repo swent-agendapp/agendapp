@@ -17,7 +17,8 @@ data class OrganizationUIState(
     val isLoading: Boolean = true,
     val organizations: List<Organization> = emptyList(),
     val errorMsg: String? = null,
-    val isRefreshing: Boolean = false
+    val isRefreshing: Boolean = false,
+    val showUseInvitationBottomSheet: Boolean = false,
 )
 
 // ViewModel for managing organization data for the current user
@@ -103,5 +104,9 @@ open class OrganizationViewModel(
         _uiState.update { it.copy(errorMsg = "Failed to add organization: ${e.localizedMessage}") }
       }
     }
+  }
+
+  fun setShowUseInvitationBottomSheet(show: Boolean) {
+    _uiState.update { it.copy(showUseInvitationBottomSheet = show) }
   }
 }

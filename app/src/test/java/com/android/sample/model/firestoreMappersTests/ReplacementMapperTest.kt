@@ -38,7 +38,8 @@ class ReplacementMapperTest {
           participants = emptySet(),
           version = 0L,
           recurrenceStatus = RecurrenceStatus.OneTime,
-          category = sampleEventCategory)
+          category = sampleEventCategory,
+          location = null)
 
   private val sampleReplacement =
       Replacement(

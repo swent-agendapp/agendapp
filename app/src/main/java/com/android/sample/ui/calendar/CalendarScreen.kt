@@ -57,7 +57,6 @@ object CalendarScreenTestTags {
   const val DAY_HEADER_DAY_PREFIX = "CalendarContainer_DayHeaderDay_" // + index or date
 
   // Calendar container tags
-  const val CALENDAR_GRID = "CalendarContainer_Grid"
   const val DATE_PICKER_MODAL = "CalendarContainer_DatePickerModal"
 
   // View mode selector tags (moved from ViewModeSelectorTags)
@@ -94,6 +93,7 @@ fun CalendarScreen(
 
   val configuration = LocalConfiguration.current
   val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+  var errorNoOrgSelected = false
 
   var showFilterSheet by remember { mutableStateOf(false) }
 
@@ -104,7 +104,15 @@ fun CalendarScreen(
       selectedOrganizationViewModel.getSelectedOrganizationId()
       loadEventsForDateRange(calendarViewModel, currentDateRange)
     } catch (_: IllegalStateException) {
-      // No organization selected, do nothing
+      // If no organization is selected, show error only once via a toast message
+      if (!errorNoOrgSelected) {
+        Toast.makeText(
+                context,
+                context.getString(R.string.error_no_organization_selected),
+                Toast.LENGTH_SHORT)
+            .show()
+        errorNoOrgSelected = true
+      }
     }
   }
 

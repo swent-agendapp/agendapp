@@ -20,6 +20,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.common.BottomNavigationButtons
 import com.android.sample.ui.common.PrimaryButton
+import com.android.sample.ui.common.SecondaryButton
 import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.theme.PaddingMedium
 import kotlinx.coroutines.launch
@@ -31,6 +32,7 @@ object OrganizationOverviewScreenTestTags {
   const val CHANGE_BUTTON = "changeButton"
   const val DELETE_BUTTON = "deleteButton"
   const val INVITATION_BUTTON = "invitationButton"
+  const val EDIT_CATEGORY_BUTTON = "editCategoryButton"
   const val ERROR_SNACKBAR = "errorSnackBar"
 }
 
@@ -46,6 +48,7 @@ object OrganizationOverviewScreenTestTags {
 @Composable
 fun OrganizationOverViewScreen(
     onNavigateBack: () -> Unit = {},
+    onNavigateToEditCategory: () -> Unit = {},
     onChangeOrganization: () -> Unit = {},
     onDeleteOrganization: () -> Unit = {},
     onInvitationClick: () -> Unit = {},
@@ -117,6 +120,13 @@ fun OrganizationOverViewScreen(
               modifier =
                   Modifier.fillMaxWidth()
                       .testTag(OrganizationOverviewScreenTestTags.INVITATION_BUTTON))
+
+          SecondaryButton(
+              text = stringResource(R.string.edit_category_title),
+              onClick = onNavigateToEditCategory,
+              modifier =
+                  Modifier.fillMaxWidth()
+                      .testTag(OrganizationOverviewScreenTestTags.EDIT_CATEGORY_BUTTON))
 
           // Bottom buttons (Change / Delete)
           BottomNavigationButtons(

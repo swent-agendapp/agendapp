@@ -1,4 +1,4 @@
-package com.android.sample.ui.calendar
+package com.android.sample.ui.category
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule

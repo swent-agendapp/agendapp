@@ -153,11 +153,3 @@ fun InvitationOverviewScreen(
         }
   }
 }
-
-@Preview
-@Composable
-fun InvitationOverviewScreenPreview() {
-  val selectedOrganizationViewModel = SelectedOrganizationVMProvider.viewModel
-  selectedOrganizationViewModel.selectOrganization("org1")
-  InvitationOverviewScreen()
-}

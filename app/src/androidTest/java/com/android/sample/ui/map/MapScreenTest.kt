@@ -4,7 +4,6 @@ import android.Manifest
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.rule.GrantPermissionRule
 import com.android.sample.model.map.Area
@@ -19,7 +18,6 @@ import com.android.sample.ui.map.MapScreenTestTags.SLIDER
 import com.android.sample.utils.FirebaseEmulatedTest
 import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.model.LatLng
-import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -73,7 +71,12 @@ class MapScreenTest : FirebaseEmulatedTest() {
     composeTestRule.setContent { MapScreen(mapViewModel = mapViewModel) }
     composeTestRule.waitForIdle()
 
-    mapViewModel.selectArea(Area(label = "my new area", marker = Marker(latitude = DefaultLocation.LATITUDE, longitude = DefaultLocation.LONGITUDE), radius = 10.0))
+    mapViewModel.selectArea(
+        Area(
+            label = "my new area",
+            marker =
+                Marker(latitude = DefaultLocation.LATITUDE, longitude = DefaultLocation.LONGITUDE),
+            radius = 10.0))
 
     composeTestRule.onNodeWithTag(DOWN_SHEET).assertIsDisplayed()
     composeTestRule.onNodeWithTag(DOWN_SHEET_FORM).assertIsDisplayed()

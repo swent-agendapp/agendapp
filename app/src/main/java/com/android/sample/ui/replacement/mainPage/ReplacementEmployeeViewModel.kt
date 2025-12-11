@@ -20,6 +20,19 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+interface ReplacementEmployeeActions {
+  fun loadReplacementForProcessing(
+      replacementId: String,
+      onResult: (Replacement?) -> Unit,
+  )
+
+  fun sendRequestsForPendingReplacement(
+      replacementId: String,
+      selectedSubstitutes: List<String>,
+      onFinished: () -> Unit,
+  )
+}
+
 // Assisted by AI
 enum class ReplacementEmployeeLastAction {
   ACCEPTED,
@@ -81,7 +94,7 @@ class ReplacementEmployeeViewModel(
     private val selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel,
     myUserId: String = "EMP001"
-) : ViewModel() {
+) : ViewModel(), ReplacementEmployeeActions {
 
   // Later: replace with real authenticated user id
   private val currentUserId: String = myUserId
@@ -479,7 +492,10 @@ class ReplacementEmployeeViewModel(
     }
   }
 
-  fun loadReplacementForProcessing(replacementId: String, onResult: (Replacement?) -> Unit) {
+  override fun loadReplacementForProcessing(
+      replacementId: String,
+      onResult: (Replacement?) -> Unit
+  ) {
     viewModelScope.launch {
       try {
         val orgId = getSelectedOrganizationId()
@@ -496,7 +512,7 @@ class ReplacementEmployeeViewModel(
     }
   }
 
-  fun sendRequestsForPendingReplacement(
+  override fun sendRequestsForPendingReplacement(
       replacementId: String,
       selectedSubstitutes: List<String>,
       onFinished: () -> Unit,

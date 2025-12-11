@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.model.replacement.Replacement
+import com.android.sample.ui.calendar.replacementEmployee.ReplacementEmployeeActions
 import com.android.sample.ui.calendar.replacementEmployee.ReplacementEmployeeViewModel
 import com.android.sample.ui.replacement.ProcessReplacementScreen
 
@@ -23,7 +24,7 @@ fun ProcessReplacementRoute(
     replacementId: String,
     onFinished: () -> Unit,
     onBack: () -> Unit,
-    viewModel: ReplacementEmployeeViewModel = viewModel(),
+    viewModel: ReplacementEmployeeActions = viewModel<ReplacementEmployeeViewModel>(),
 ) {
   var replacement by remember { mutableStateOf<Replacement?>(null) }
   var isLoading by remember { mutableStateOf(true) }

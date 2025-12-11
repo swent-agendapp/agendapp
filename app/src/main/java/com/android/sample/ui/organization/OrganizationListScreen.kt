@@ -40,6 +40,7 @@ import com.android.sample.ui.common.Loading
 import com.android.sample.ui.common.MainPageButton
 import com.android.sample.ui.common.MainPageTopBar
 import com.android.sample.ui.invitation.useInvitation.UseInvitationBottomSheet
+import com.android.sample.ui.invitation.useInvitation.UseInvitationViewModel
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.SpacingMedium
 import kotlinx.coroutines.launch
@@ -64,6 +65,7 @@ object OrganizationListScreenTestTags {
 @Composable
 fun OrganizationListScreen(
     organizationViewModel: OrganizationViewModel = viewModel(),
+    useInvitationViewModel: UseInvitationViewModel = viewModel(),
     selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel,
     onOrganizationSelected: () -> Unit = {},
@@ -71,13 +73,25 @@ fun OrganizationListScreen(
 ) {
   val sheetState = rememberModalBottomSheetState()
   val scope = rememberCoroutineScope()
-  val uiState by organizationViewModel.uiState.collectAsState()
+  val organizationUIState by organizationViewModel.uiState.collectAsState()
+  val useInvitationUIState by useInvitationViewModel.uiState.collectAsState()
   val snackBarHostState = remember { SnackbarHostState() }
 
-  LaunchedEffect(uiState.errorMsg) {
-    uiState.errorMsg?.let {
+  val useInvitationErrMsg =
+      useInvitationUIState.errorMessageId?.let {
+        stringResource(id = useInvitationUIState.errorMessageId!!)
+      }
+  LaunchedEffect(useInvitationErrMsg) {
+    useInvitationErrMsg?.let { errorMessage ->
+      snackBarHostState.showSnackbar(errorMessage)
+      useInvitationViewModel.setError(null)
+    }
+  }
+
+  LaunchedEffect(organizationUIState.errorMsg, useInvitationErrMsg) {
+    organizationUIState.errorMsg?.let {
       snackBarHostState.showSnackbar(
-          message = uiState.errorMsg.toString(), duration = SnackbarDuration.Short)
+          message = organizationUIState.errorMsg.toString(), duration = SnackbarDuration.Short)
       organizationViewModel.clearErrorMsg()
     }
   }
@@ -115,7 +129,7 @@ fun OrganizationListScreen(
       },
       content = { innerPadding ->
         PullToRefreshBox(
-            isRefreshing = uiState.isRefreshing,
+            isRefreshing = organizationUIState.isRefreshing,
             onRefresh = { organizationViewModel.refreshOrganizations() },
             modifier =
                 Modifier.fillMaxSize()
@@ -126,16 +140,19 @@ fun OrganizationListScreen(
                       Modifier.fillMaxSize()
                           .verticalScroll(rememberScrollState())
                           .padding(PaddingMedium)) {
-                    if (uiState.isLoading) {
+                    if (organizationUIState.isLoading || useInvitationUIState.isTemptingToJoin) {
                       Loading(
-                          label = stringResource(R.string.organization_loading),
+                          label =
+                              if (organizationUIState.isLoading)
+                                  stringResource(R.string.organization_loading)
+                              else stringResource(R.string.invitation_joining_organization),
                           modifier =
                               Modifier.fillMaxSize()
                                   .testTag(OrganizationListScreenTestTags.LOADING_INDICATOR))
                     } else {
                       Spacer(modifier = Modifier.height(SpacingMedium))
                       OrganizationList(
-                          organizations = uiState.organizations,
+                          organizations = organizationUIState.organizations,
                           onOrganizationSelected = { organization ->
                             // Update selected organization in ViewModel
                             selectedOrganizationViewModel.selectOrganization(
@@ -147,12 +164,13 @@ fun OrganizationListScreen(
                   }
             }
       })
-  if (uiState.showUseInvitationBottomSheet) {
+  if (organizationUIState.showUseInvitationBottomSheet) {
     ModalBottomSheet(
         modifier = Modifier.testTag(OrganizationListScreenTestTags.USE_INVITATION_BOTTOM_SHEET),
         onDismissRequest = { organizationViewModel.setShowUseInvitationBottomSheet(false) },
         sheetState = sheetState) {
           UseInvitationBottomSheet(
+              useInvitationViewModel = useInvitationViewModel,
               onCancel = {
                 scope.launch { sheetState.hide() }
                 organizationViewModel.setShowUseInvitationBottomSheet(false)

@@ -245,6 +245,7 @@
     <string name="error_invitation_code_illegal_input">
     Seules les lettres et les chiffres sont autorisés, et le code doit contenir %1$d caractères.
 </string>
+    <string name="invitation_joining_organization">Tentative de rejoindre l’organisation…</string>
 
 
     <!-- hourRecap -->

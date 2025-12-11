@@ -245,6 +245,7 @@
     <string name="error_invitation_code_illegal_input">
     Es sind nur Buchstaben und Ziffern erlaubt, und der Code muss %1$d Zeichen lang sein.
 </string>
+    <string name="invitation_joining_organization">Organisation beitreten…</string>
 
 
     <!-- hourRecap -->

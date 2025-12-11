@@ -23,6 +23,8 @@ import kotlinx.coroutines.launch
  *
  * @property code The code that the user has entered. Defaults to an empty string.
  * @property errorMessageId Optional ID of the error message to display when a failure occurs.
+ * @property isTemptingToJoin Indicates whether the user is currently attempting to join an
+ *   organization.
  */
 data class UseInvitationUIState(
     val code: String = "",
@@ -156,6 +158,11 @@ class UseInvitationViewModel(
     _uiState.update { it.copy(errorMessageId = resId) }
   }
 
+  /**
+   * Updates whether the user is currently attempting to join an organization.
+   *
+   * @param isTempting `true` if the user is in the process of joining, `false` otherwise.
+   */
   fun setIsTemptingToJoin(isTempting: Boolean) {
     _uiState.update { it.copy(isTemptingToJoin = isTempting) }
   }

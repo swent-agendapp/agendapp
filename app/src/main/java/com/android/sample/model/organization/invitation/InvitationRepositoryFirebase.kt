@@ -46,9 +46,11 @@ class InvitationRepositoryFirebase(
     // Interface-level checks
     super.updateInvitation(itemId, item, organization, user)
 
-    // Must match the local repo message
-    require(userRepository.getAdminsIds(organization.id).contains(user.id)) {
-      "Only organization admins can activate invitations."
+    if (item.status != InvitationStatus.Used) {
+      // Must match the local repo message
+      require(userRepository.getAdminsIds(organization.id).contains(user.id)) {
+        "Only organization admins can activate invitations."
+      }
     }
 
     require(item.id == itemId) {

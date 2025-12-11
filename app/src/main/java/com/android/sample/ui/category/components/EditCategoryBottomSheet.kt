@@ -113,11 +113,7 @@ private fun CategoryEditBottomSheetContent(
               value = label,
               onValueChange = { newValue -> label = newValue },
               label = { Text(stringResource(R.string.edit_category_name_label)) },
-              placeholder = {
-                if (initialLabel == null) {
-                  Text(stringResource(R.string.edit_category_name_label))
-                }
-              },
+              placeholder = { Text(text = stringResource(R.string.edit_category_name_label)) },
               modifier = Modifier.testTag(EditCategoryScreenTestTags.BOTTOM_SHEET_LABEL_TEXT_FIELD),
           )
         }

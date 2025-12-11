@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
 import com.android.sample.model.category.EventCategory
 import com.android.sample.model.category.mockData.getMockEventCategory
+import com.android.sample.ui.category.EditCategoryScreenTestTags.CATEGORY_CARD_ADD_BUTTON
 import com.android.sample.ui.category.components.CategoryEditBottomSheet
 import com.android.sample.ui.category.components.CategoryListSection
 import com.android.sample.ui.common.FloatingButton
@@ -36,6 +37,8 @@ object EditCategoryScreenTestTags {
   const val SCREEN_ROOT = "edit_category_screen_root"
   const val CATEGORY_LIST = "edit_category_list"
   const val CATEGORY_CARD = "edit_category_card"
+  const val CATEGORY_CARD_LABEL = "edit_category_card_label"
+  const val CATEGORY_CARD_ADD_BUTTON = "edit_category_card_add_button"
   const val CATEGORY_CARD_EDIT_BUTTON = "edit_category_card_edit_button"
   const val CATEGORY_CARD_DELETE_BUTTON = "edit_category_card_delete_button"
   const val EMPTY_STATE_TITLE = "edit_category_empty_state_title"
@@ -111,6 +114,7 @@ fun EditCategoryScreen(
       },
       floatingActionButton = {
         FloatingButton(
+            modifier = Modifier.testTag(CATEGORY_CARD_ADD_BUTTON),
             onClick = {
               // Create a new category (no pre-filled data)
               selectedCategory = null

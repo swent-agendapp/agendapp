@@ -14,6 +14,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+interface ReplacementPendingContract {
+  val uiState: StateFlow<ReplacementPendingUiState>
+
+  fun refresh()
+}
+
 data class ReplacementPendingUiState(
     val isLoading: Boolean = false,
     val toProcess: List<Replacement> = emptyList(),
@@ -25,10 +31,10 @@ class ReplacementPendingViewModel(
     private val repository: ReplacementRepository = ReplacementRepositoryProvider.repository,
     private val selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel,
-) : ViewModel() {
+) : ViewModel(), ReplacementPendingContract {
 
   private val _uiState = MutableStateFlow(ReplacementPendingUiState())
-  val uiState: StateFlow<ReplacementPendingUiState> = _uiState.asStateFlow()
+  override val uiState: StateFlow<ReplacementPendingUiState> = _uiState.asStateFlow()
 
   private fun getOrgId(): String {
     val orgId = selectedOrganizationViewModel.selectedOrganizationId.value
@@ -36,7 +42,7 @@ class ReplacementPendingViewModel(
     return orgId
   }
 
-  fun refresh() {
+  override fun refresh() {
     viewModelScope.launch {
       _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
       try {

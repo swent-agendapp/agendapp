@@ -3,6 +3,7 @@ package com.android.sample.model.organization.repository
 import com.android.sample.model.authentication.User
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.invitation.Invitation
+import java.lang.IllegalArgumentException
 
 class FakeOrganizationRepository : OrganizationRepository {
 
@@ -25,7 +26,12 @@ class FakeOrganizationRepository : OrganizationRepository {
   }
 
   override suspend fun addMemberToOrganization(member: User, invitation: Invitation) {
-    val organization = organizations[invitation.organizationId] ?: return
+    val organization =
+        organizations[invitation.organizationId]
+            ?: throw IllegalArgumentException("Organizations does not exist")
+
+    if (organization.members.contains(member))
+        throw IllegalArgumentException("Member already exists in the organization")
     val updatedMembers = organization.members + member
     val updatedOrganization = organization.copy(members = updatedMembers)
     organizations[organization.id] = updatedOrganization

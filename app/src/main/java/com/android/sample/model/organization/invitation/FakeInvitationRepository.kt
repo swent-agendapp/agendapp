@@ -24,6 +24,26 @@ class FakeInvitationRepository : InvitationRepository {
     invitations.add(item)
   }
 
+  override suspend fun updateInvitation(
+      itemId: String,
+      item: Invitation,
+      organization: Organization,
+      user: User
+  ) {
+    super.updateInvitation(itemId, item, organization, user)
+
+    val index = invitations.indexOfFirst { it.id == itemId }
+    require(index != -1) { "Invitation with id $itemId does not exist." }
+    invitations[index] = item
+  }
+
+  override suspend fun deleteInvitation(itemId: String, organization: Organization, user: User) {
+    super.deleteInvitation(itemId, organization, user)
+    val index = invitations.indexOfFirst { it.id == itemId }
+    require(index != -1) { "Invitation with id $itemId does not exist." }
+    invitations.removeAt(index)
+  }
+
   override suspend fun getInvitationById(itemId: String): Invitation? {
     return invitations.firstOrNull { it.id == itemId }
   }

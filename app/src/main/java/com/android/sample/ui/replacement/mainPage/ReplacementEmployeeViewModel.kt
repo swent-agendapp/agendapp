@@ -1,4 +1,4 @@
-package com.android.sample.ui.calendar.replacementEmployee
+package com.android.sample.ui.replacement.mainPage
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -90,6 +90,13 @@ class ReplacementEmployeeViewModel(
   }
 
   // ---------------------------------------------------------------------------
+  //  Helpers
+  // ---------------------------------------------------------------------------
+
+  // Wrap for brevity
+  private fun requireOrgId(): String = selectedOrganizationViewModel.getSelectedOrganizationId()
+
+  // ---------------------------------------------------------------------------
   //  Loading / refreshing
   // ---------------------------------------------------------------------------
 
@@ -108,7 +115,7 @@ class ReplacementEmployeeViewModel(
               event = event,
               status = ReplacementStatus.ToProcess)
 
-      val orgId = selectedOrganizationViewModel.getSelectedOrganizationId()
+      val orgId = requireOrgId()
       replacementRepository.insertReplacement(orgId = orgId, item = r)
       refreshIncomingRequests()
     }
@@ -116,7 +123,7 @@ class ReplacementEmployeeViewModel(
 
   fun createReplacementsForDateRange(start: Instant, end: Instant) {
 
-    val orgId = selectedOrganizationViewModel.getSelectedOrganizationId()
+    val orgId = requireOrgId()
 
     viewModelScope.launch {
       val events =
@@ -140,7 +147,7 @@ class ReplacementEmployeeViewModel(
     viewModelScope.launch {
       _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
       try {
-        val orgId = selectedOrganizationViewModel.getSelectedOrganizationId()
+        val orgId = requireOrgId()
         val list =
             replacementRepository.getReplacementsBySubstituteUser(
                 orgId = orgId, userId = currentUserId) // Substitute side
@@ -172,7 +179,7 @@ class ReplacementEmployeeViewModel(
   private fun updateRequestStatus(id: String, newStatus: ReplacementStatus) {
     viewModelScope.launch {
       try {
-        val orgId = selectedOrganizationViewModel.getSelectedOrganizationId()
+        val orgId = requireOrgId()
 
         val existing =
             replacementRepository.getReplacementById(orgId = orgId, itemId = id) ?: return@launch
@@ -269,7 +276,7 @@ class ReplacementEmployeeViewModel(
                 event = event,
                 status = ReplacementStatus.ToProcess)
 
-        val orgId = selectedOrganizationViewModel.getSelectedOrganizationId()
+        val orgId = requireOrgId()
 
         replacementRepository.insertReplacement(orgId = orgId, item = replacement)
 
@@ -331,7 +338,7 @@ class ReplacementEmployeeViewModel(
                   status = ReplacementStatus.ToProcess)
             }
 
-        val orgId = selectedOrganizationViewModel.getSelectedOrganizationId()
+        val orgId = requireOrgId()
 
         created.forEach { replacementRepository.insertReplacement(orgId = orgId, item = it) }
 
@@ -359,7 +366,7 @@ class ReplacementEmployeeViewModel(
   ) {
     viewModelScope.launch {
       try {
-        val orgId = selectedOrganizationViewModel.getSelectedOrganizationId()
+        val orgId = requireOrgId()
 
         val original =
             replacementRepository.getReplacementById(

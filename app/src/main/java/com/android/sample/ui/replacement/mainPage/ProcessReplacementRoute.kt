@@ -2,7 +2,6 @@ package com.android.sample.ui.replacement.mainPage
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.android.sample.ui.calendar.replacementEmployee.ReplacementEmployeeViewModel
 import com.android.sample.ui.replacement.ProcessReplacementScreen
 
 @Composable

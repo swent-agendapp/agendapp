@@ -26,14 +26,15 @@ class FakeOrganizationRepository : OrganizationRepository {
   }
 
   override suspend fun addMemberToOrganization(member: User, invitation: Invitation) {
-    val organization =
+    val organizationOfInvitation =
         organizations[invitation.organizationId]
             ?: throw IllegalArgumentException("Organizations does not exist")
 
-    if (organization.members.contains(member))
-        throw IllegalArgumentException("Member already exists in the organization")
-    val updatedMembers = organization.members + member
-    val updatedOrganization = organization.copy(members = updatedMembers)
-    organizations[organization.id] = updatedOrganization
+    require(!(organizationOfInvitation.members.contains(member))) {
+      "User is already a member of the organization."
+    }
+    val updatedMembers = organizationOfInvitation.members + member
+    val updatedOrganization = organizationOfInvitation.copy(members = updatedMembers)
+    organizations[organizationOfInvitation.id] = updatedOrganization
   }
 }

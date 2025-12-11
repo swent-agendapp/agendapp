@@ -68,8 +68,8 @@ class OrganizationRepositoryLocal : OrganizationRepository {
         organizations.find { it.id == invitation.organizationId }
             ?: throw IllegalArgumentException(
                 "No organization matches the ID of the invitation's organizationId.")
-    if (organizationOfInvitation.members.contains(member)) {
-      throw IllegalArgumentException("User is already a member of the organization.")
+    require(!(organizationOfInvitation.members.contains(member))) {
+      "User is already a member of the organization."
     }
 
     val updatedOrganization =

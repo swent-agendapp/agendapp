@@ -8,6 +8,9 @@ import com.android.sample.ui.invitation.createInvitation.InvitationCreationTestT
 import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -20,6 +23,9 @@ class CreateInvitationBottomSheetTest :
   @get:Rule val composeTestRule = createComposeRule()
 
   override val organizationId: String = DEFAULT_TEST_ORG_ID
+
+  @OptIn(ExperimentalCoroutinesApi::class)
+  private val testScope = TestScope(UnconfinedTestDispatcher())
 
   @Before
   override fun setUp() {

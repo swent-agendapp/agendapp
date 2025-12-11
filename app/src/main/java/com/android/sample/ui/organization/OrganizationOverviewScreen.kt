@@ -1,7 +1,16 @@
 package com.android.sample.ui.organization
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -18,8 +27,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.common.BottomNavigationButtons
+import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.common.SecondaryPageTopBar
+import com.android.sample.ui.theme.CornerRadiusLarge
+import com.android.sample.ui.theme.ElevationExtraLow
 import com.android.sample.ui.theme.PaddingMedium
+import com.android.sample.ui.theme.SpacingSmall
 import kotlinx.coroutines.launch
 
 object OrganizationOverviewScreenTestTags {
@@ -28,6 +41,7 @@ object OrganizationOverviewScreenTestTags {
   const val MEMBER_COUNT_TEXT = "memberCountText"
   const val CHANGE_BUTTON = "changeButton"
   const val DELETE_BUTTON = "deleteButton"
+  const val INVITATION_BUTTON = "invitationButton"
   const val ERROR_SNACKBAR = "errorSnackBar"
 }
 
@@ -45,6 +59,7 @@ fun OrganizationOverViewScreen(
     onNavigateBack: () -> Unit = {},
     onChangeOrganization: () -> Unit = {},
     onDeleteOrganization: () -> Unit = {},
+    onInvitationClick: () -> Unit = {},
     organizationOverviewViewModel: OrganizationOverviewViewModel = viewModel(),
     selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel,
@@ -87,42 +102,81 @@ fun OrganizationOverViewScreen(
             modifier = Modifier.testTag(OrganizationOverviewScreenTestTags.ERROR_SNACKBAR))
       },
       modifier = Modifier.testTag(OrganizationOverviewScreenTestTags.ROOT)) { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding).padding(PaddingMedium)) {
+        Column(
+            modifier = Modifier.fillMaxSize().padding(innerPadding).padding(PaddingMedium),
+            verticalArrangement = Arrangement.SpaceBetween) {
+              Column {
+                Spacer(modifier = Modifier.height(SpacingSmall))
 
-          // Later: Add other organization details as needed and management options
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(CornerRadiusLarge),
+                    colors =
+                        CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                        ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = ElevationExtraLow)) {
+                      Column(
+                          modifier = Modifier.fillMaxWidth().padding(PaddingMedium),
+                          verticalArrangement = Arrangement.spacedBy(SpacingSmall)) {
+                            Text(
+                                modifier =
+                                    Modifier.testTag(
+                                        OrganizationOverviewScreenTestTags.ORGANIZATION_NAME_TEXT),
+                                text =
+                                    uiState.organizationName.ifEmpty {
+                                      stringResource(R.string.organization_none_selected)
+                                    },
+                                style = MaterialTheme.typography.titleMedium,
+                            )
 
-          // Display selected organization name
-          Text(
-              modifier =
-                  Modifier.testTag(OrganizationOverviewScreenTestTags.ORGANIZATION_NAME_TEXT),
-              text =
-                  uiState.organizationName.ifEmpty {
-                    stringResource(R.string.organization_none_selected)
-                  })
+                            Text(
+                                modifier =
+                                    Modifier.testTag(
+                                        OrganizationOverviewScreenTestTags.MEMBER_COUNT_TEXT),
+                                text =
+                                    stringResource(R.string.organization_members) +
+                                        ": ${uiState.memberCount}",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                          }
+                    }
+              }
 
-          // Display member count
-          Text(
-              modifier = Modifier.testTag(OrganizationOverviewScreenTestTags.MEMBER_COUNT_TEXT),
-              text = stringResource(R.string.organization_members) + ": ${uiState.memberCount}")
+              // Display member count
+              Text(
+                  // modifier =
+                  // Modifier.testTag(OrganizationOverviewScreenTestTags.MEMBER_COUNT_TEXT),
+                  text = stringResource(R.string.organization_members) + ": ${uiState.memberCount}")
 
-          // Bottom buttons (Change / Delete)
-          BottomNavigationButtons(
-              onNext = {
-                coroutineScope.launch {
-                  organizationOverviewViewModel.deleteSelectedOrganization(selectedOrgId)
-                  onDeleteOrganization()
-                }
-              },
-              onBack = {
-                organizationOverviewViewModel.clearSelectedOrganization()
-                onChangeOrganization()
-              },
-              canGoNext = true,
-              canGoBack = true,
-              nextButtonText = stringResource(R.string.delete),
-              backButtonText = stringResource(R.string.change),
-              nextButtonTestTag = OrganizationOverviewScreenTestTags.DELETE_BUTTON,
-              backButtonTestTag = OrganizationOverviewScreenTestTags.CHANGE_BUTTON)
-        }
+              // Here is an hardcoded string, but this button is only here temporarily, so we do not
+              // need to write "Invitations" in strings.xml
+              PrimaryButton(
+                  text = "Invitations",
+                  onClick = onInvitationClick,
+                  modifier =
+                      Modifier.fillMaxWidth()
+                          .testTag(OrganizationOverviewScreenTestTags.INVITATION_BUTTON))
+
+              // Bottom buttons (Change / Delete)
+              BottomNavigationButtons(
+                  onNext = {
+                    coroutineScope.launch {
+                      organizationOverviewViewModel.deleteSelectedOrganization(selectedOrgId)
+                      onDeleteOrganization()
+                    }
+                  },
+                  onBack = {
+                    organizationOverviewViewModel.clearSelectedOrganization()
+                    onChangeOrganization()
+                  },
+                  canGoNext = true,
+                  canGoBack = true,
+                  nextButtonText = stringResource(R.string.delete),
+                  backButtonText = stringResource(R.string.change),
+                  nextButtonTestTag = OrganizationOverviewScreenTestTags.DELETE_BUTTON,
+                  backButtonTestTag = OrganizationOverviewScreenTestTags.CHANGE_BUTTON)
+            }
       }
 }

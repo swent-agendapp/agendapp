@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:8567047882002894516",
-      "lastPropertyId": "17:7843856300579761234",
+      "lastPropertyId": "18:3460962049492635954",
       "name": "EventEntity",
       "properties": [
         {
@@ -87,6 +87,11 @@
         {
           "id": "17:7843856300579761234",
           "name": "category",
+          "type": 9
+        },
+        {
+          "id": "18:3460962049492635954",
+          "name": "location",
           "type": 9
         }
       ],

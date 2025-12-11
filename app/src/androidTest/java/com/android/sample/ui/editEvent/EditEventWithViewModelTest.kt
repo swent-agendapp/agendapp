@@ -62,7 +62,8 @@ class EditEventWithViewModelTest : RequiresSelectedOrganizationTestBase {
             version = 1L,
             recurrenceStatus = RecurrenceStatus.OneTime,
             hasBeenDeleted = false,
-            category = EventCategory.defaultCategory())
+            category = EventCategory.defaultCategory(),
+            location = null)
 
     val fakeRepository = FakeEventRepository()
     fakeRepository.add(event = sampleEvent)

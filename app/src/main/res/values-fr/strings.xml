@@ -69,7 +69,7 @@
     <!-- Settings Screen -->
     <string name="settings_screen_title">Paramètres</string>
     <string name="settings_profile_button">Profil</string>
-    <string name="settings_admin_info_button">Infos administrateur</string>
+    <string name="settings_admin_info_button">Contact de l\'administrateur</string>
     <string name="settings_map_settings_button">Carte</string>
     <string name="settings_organization_selection_button">Organisation</string>
 
@@ -77,7 +77,7 @@
     <!-- Profile Screen -->
     <string name="profile_screen_title">Profil</string>
     <string name="profile_email_error">Veuillez entrer une adresse e-mail valide</string>
-    <string name="profile_phone_error">Veuillez entrer un numéro de téléphone valide (minimum 7 chiffres)</string>
+    <string name="profile_phone_error">Veuillez entrer un numéro de téléphone valide</string>
     <string name="profile_display_name_label">Nom d’affichage</string>
     <string name="profile_email_label">E-mail</string>
     <string name="profile_phone_label">Numéro de téléphone</string>
@@ -127,18 +127,10 @@
     <!-- Map (Translated by AI)-->
     <string name="delimit_organization_title">Délimitez votre organisation</string>
     <string name="create_area_button">Créer une zone</string>
-    <string name="tooltip_area_marker_title">Ajoutez des marqueurs :</string>
-    <string name="tooltip_area_marker_text">Appuyez longuement sur la carte pour placer un marqueur.</string>
-    <string name="tooltip_area_multiple_marker_title">Ajoutez d’autres points :</string>
-    <string name="tooltip_area_multiple_marker_text">Répétez cette étape pour définir les coins de votre zone.</string>
-    <string name="tooltip_area_delete_marker_title">Créez votre zone :</string>
-    <string name="tooltip_area_delete_marker_text">Une fois que vous avez au moins 3 marqueurs, touchez « Créer une zone » pour la générer automatiquement.</string>
-    <string name="tooltip_area_create_title">Modifiez ou supprimez :</string>
-    <string name="tooltip_area_create_text">Vous pouvez déplacer ou supprimer des marqueurs si vous souhaitez ajuster la forme.</string>
     <string name="down_sheet_title">Nommez votre zone</string>
+    <string name="down_sheet_area_size">Taille de votre zone : </string>
     <string name="down_sheet_text_field">Nom de la zone</string>
     <string name="down_sheet_button_create">Enregistrer la zone</string>
-    <string name="down_sheet_button_delete">Supprimer le marqueur</string>
 
     <!-- Replacement -->
     <string name="replacement_requests_title">Demandes de remplacement</string>
@@ -206,7 +198,6 @@
 
 
     <string name="hour_recap_results_title">Total d\'heures par employé pour la période sélectionnée :</string>
-    <string name="hour_recap_title">Total d\'heures par employé</string>
     <string name="hour_recap_generate">Générer le récapitulatif</string>
     <string name="export_excel">Exporter vers Excel</string>
 
@@ -218,6 +209,8 @@
     <string name="filter_participants">Participants</string>
     <string name="clear_all">Tout effacer</string>
     <string name="apply">Appliquer</string>
+    <string name="eventType">Type d’événement</string>
+    <string name="location">Lieu</string>
 
     <!-- Invitations -->
     <string name="invitation_codes_title">Codes d’invitation</string>
@@ -228,6 +221,12 @@
     <string name="status_active">Actif</string>
     <string name="status_used">Utilisé</string>
     <string name="status_expired">Expiré</string>
+    <string name="invitations_loading">Chargement des invitations</string>
+    <string name="invitations_creating">Création des invitations</string>
+    <string name="error_inserting_invitation">Erreur lors de l’ajout de l\’invitation</string>
+    <string name="error_loading_invitations">Échec du chargement des invitations</string>
+    <string name="error_invitation_not_found">Invitation introuvable</string>
+    <string name="error_deleting_invitations">Échec de la suppression de l\'invitation</string>
 
     <!-- hourRecap -->
     <string name="loading_hours">Chargement…</string>
@@ -236,5 +235,7 @@
 
     <!-- Category -->
     <string name="default_category_label">Sans catégorie</string>
+
+    <string name="hour_recap">Récapitulatif des heures</string>
 
 </resources>

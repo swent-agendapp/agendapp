@@ -1,19 +1,9 @@
 package com.android.sample.ui.invitation.createInvitation
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.android.sample.model.authentication.AuthRepository
-import com.android.sample.model.authentication.AuthRepositoryProvider
-import com.android.sample.model.organization.invitation.InvitationRepository
-import com.android.sample.model.organization.invitation.InvitationRepositoryProvider
-import com.android.sample.model.organization.repository.OrganizationRepository
-import com.android.sample.model.organization.repository.OrganizationRepositoryProvider
-import com.android.sample.ui.organization.SelectedOrganizationVMProvider
-import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 
 const val MIN_INVITATION_COUNT = 1
 const val MAX_INVITATION_COUNT = 99
@@ -27,6 +17,7 @@ const val INVALID_INVITATION_COUNT_ERROR_MSG =
  */
 data class CreateInvitationUIState(
     val count: Int = MIN_INVITATION_COUNT,
+    val isLoading: Boolean = false,
     val errorMsg: String? = null
 )
 
@@ -38,15 +29,7 @@ data class CreateInvitationUIState(
  * - Exposes increment / decrement / setCount operations
  * - Ensures the count never goes below zero
  */
-class CreateInvitationViewModel(
-    private val invitationRepository: InvitationRepository =
-        InvitationRepositoryProvider.repository,
-    private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
-    private val organizationRepository: OrganizationRepository =
-        OrganizationRepositoryProvider.repository,
-    private val selectedOrganizationViewModel: SelectedOrganizationViewModel =
-        SelectedOrganizationVMProvider.viewModel
-) : ViewModel() {
+class CreateInvitationViewModel() : ViewModel() {
 
   private val _uiState = MutableStateFlow(CreateInvitationUIState())
 

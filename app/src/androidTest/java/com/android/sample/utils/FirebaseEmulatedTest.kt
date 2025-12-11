@@ -82,6 +82,7 @@ open class FirebaseEmulatedTest {
     OrganizationRepositoryProvider.repository = createInitializedOrganizationRepository()
     EventRepositoryProvider.repository = createInitializedEventRepository()
     ReplacementRepositoryProvider.repository = createInitializedReplacementRepository()
+
     runTest {
       clearAllCollections()
       assertAllCollectionsEmpty()

@@ -61,7 +61,8 @@ class EventOverviewScreenTest : RequiresSelectedOrganizationTestBase {
         version = 1L,
         recurrenceStatus = RecurrenceStatus.OneTime,
         hasBeenDeleted = false,
-        category = EventCategory.defaultCategory())
+        category = EventCategory.defaultCategory(),
+        location = null)
   }
 
   private fun makeViewModelWith(event: Event): Pair<EventOverviewViewModel, FakeEventRepository> {

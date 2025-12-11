@@ -21,15 +21,16 @@ import org.junit.Test
  */
 class InvitationRepositoryLocalTest {
 
-  private lateinit var repository: InvitationRepositoryLocal
+  private lateinit var repo: InvitationRepositoryLocal
   private lateinit var admin: User
   private lateinit var member: User
   private lateinit var outsider: User
-  private lateinit var orgA: Organization
+  private lateinit var organizationA: Organization
+  private lateinit var organizationB: Organization
 
   @Before
   fun setup() {
-    repository = InvitationRepositoryLocal()
+    repo = InvitationRepositoryLocal()
 
     // --- Create users ---
     admin = User(id = "adminA", displayName = "Admin A", email = "adminA@example.com")
@@ -37,34 +38,38 @@ class InvitationRepositoryLocalTest {
     outsider = User(id = "outsider", displayName = "Outsider", email = "outsider@example.com")
 
     // --- Create organization ---
-    orgA =
+    organizationA =
         Organization(
             id = "orgA", name = "Org A", admins = listOf(admin), members = listOf(member, admin))
+    organizationB =
+        Organization(id = "orgB", name = "Org B", admins = listOf(admin), members = listOf(admin))
   }
 
   @Test
   fun insertAndRetrieveInvitation_success() = runBlocking {
-    repository.insertInvitation(orgA, admin)
+    repo.insertInvitation(organizationA, admin)
 
-    val retrievedList = repository.getAllInvitations()
+    val retrievedList = repo.getAllInvitations()
     assertNotNull(retrievedList)
     assertEquals(1, retrievedList.size)
-    assertEquals(orgA.id, retrievedList.first().organizationId)
+    assertEquals(organizationA.id, retrievedList.first().organizationId)
     assertEquals(InvitationStatus.Active, retrievedList.first().status)
   }
 
   @Test(expected = IllegalArgumentException::class)
-  fun insertInvitationByNonAdmin_fails() = runBlocking { repository.insertInvitation(orgA, member) }
+  fun insertInvitationByNonAdmin_fails() = runBlocking {
+    repo.insertInvitation(organizationA, member)
+  }
 
   @Test
   fun updateInvitation_success() = runBlocking {
-    repository.insertInvitation(orgA, admin)
-    val retrievedInv = repository.getAllInvitations().first()
+    repo.insertInvitation(organizationA, admin)
+    val retrievedInv = repo.getAllInvitations().first()
 
     val updated = retrievedInv.copy(acceptedAt = Instant.now(), status = InvitationStatus.Used)
-    repository.updateInvitation(retrievedInv.id, updated, orgA, admin)
+    repo.updateInvitation(retrievedInv.id, updated, organizationA, admin)
 
-    val retrievedUpdated = repository.getInvitationById(retrievedInv.id)
+    val retrievedUpdated = repo.getInvitationById(retrievedInv.id)
     assertEquals(InvitationStatus.Used, retrievedUpdated?.status)
     assertNotNull(retrievedUpdated?.acceptedAt)
   }
@@ -73,57 +78,68 @@ class InvitationRepositoryLocalTest {
   fun updateNonexistentInvitation_fails() = runBlocking {
     val randomId = UUID.randomUUID().toString()
 
-    repository.updateInvitation(
+    repo.updateInvitation(
         randomId,
         Invitation(
             id = randomId,
-            organizationId = orgA.id,
+            organizationId = organizationA.id,
             code = "ABC123",
             status = InvitationStatus.Active),
-        orgA,
+        organizationA,
         admin)
   }
 
   @Test(expected = IllegalArgumentException::class)
   fun updateInvitationToActiveByMember_fails() = runBlocking {
-    repository.insertInvitation(orgA, admin)
-    val retrievedInv = repository.getAllInvitations().first()
+    repo.insertInvitation(organizationA, admin)
+    val retrievedInv = repo.getAllInvitations().first()
     val updated = retrievedInv.copy(status = InvitationStatus.Active)
 
-    repository.updateInvitation(retrievedInv.id, updated, orgA, member)
+    repo.updateInvitation(retrievedInv.id, updated, organizationA, member)
   }
 
   @Test(expected = IllegalArgumentException::class)
   fun updateInvitationToActiveByOutsider_fails() = runBlocking {
-    repository.insertInvitation(orgA, admin)
-    val retrievedInv = repository.getAllInvitations().first()
+    repo.insertInvitation(organizationA, admin)
+    val retrievedInv = repo.getAllInvitations().first()
 
     val updated = retrievedInv.copy(status = InvitationStatus.Active)
 
-    repository.updateInvitation(retrievedInv.id, updated, orgA, outsider)
+    repo.updateInvitation(retrievedInv.id, updated, organizationA, outsider)
   }
 
   @Test
   fun deleteInvitation_success() = runBlocking {
-    repository.insertInvitation(orgA, admin)
-    val retrievedInv = repository.getAllInvitations().first()
+    repo.insertInvitation(organizationA, admin)
+    val retrievedInv = repo.getAllInvitations().first()
 
-    repository.deleteInvitation(retrievedInv.id, orgA, admin)
+    repo.deleteInvitation(retrievedInv.id, organizationA, admin)
 
-    assertNull(repository.getInvitationById(retrievedInv.id))
-    assertTrue(repository.getAllInvitations().isEmpty())
+    assertNull(repo.getInvitationById(retrievedInv.id))
+    assertTrue(repo.getAllInvitations().isEmpty())
   }
 
   @Test(expected = IllegalArgumentException::class)
   fun deleteInvitationByNonAdmin_fails() = runBlocking {
-    repository.insertInvitation(orgA, admin)
-    val retrievedInv = repository.getAllInvitations().first()
+    repo.insertInvitation(organizationA, admin)
+    val retrievedInv = repo.getAllInvitations().first()
 
-    repository.deleteInvitation(retrievedInv.id, orgA, member)
+    repo.deleteInvitation(retrievedInv.id, organizationA, member)
   }
 
   @Test(expected = IllegalArgumentException::class)
   fun deleteNonexistentInvitation_fails() = runBlocking {
-    repository.deleteInvitation(UUID.randomUUID().toString(), orgA, admin)
+    repo.deleteInvitation(UUID.randomUUID().toString(), organizationA, admin)
+  }
+
+  @Test
+  fun getInvitationByOrganization_correctly_retrieves() = runBlocking {
+    repo.insertInvitation(organizationA, admin)
+    repo.insertInvitation(organizationB, admin)
+    repo.insertInvitation(organizationB, admin)
+
+    val invitationsOfOrgB = repo.getInvitationByOrganization(organizationB.id)
+
+    assertEquals(2, invitationsOfOrgB.size)
   }
 }

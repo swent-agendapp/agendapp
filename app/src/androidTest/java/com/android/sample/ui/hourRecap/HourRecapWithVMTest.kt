@@ -31,22 +31,19 @@ class HourRecapWithVMTest : RequiresSelectedOrganizationTestBase {
    * into the CalendarViewModel's UI state.
    */
   @Test
-  fun errorState_triggersToastAndClearsError() {
-    val vm =
-        CalendarViewModel(
-            app = ApplicationProvider.getApplicationContext(),
-        )
+  fun errorState_triggersEffectAndClearsError() {
+    val vm = HourRecapViewModel()
     val msg = "Test error"
 
-    // Inject error
+    // Inject error into UI state
     vm.setErrorMsg(msg)
 
-    compose.setContent { HourRecapScreen(calendarViewModel = vm) }
+    compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
 
-    // Allow LaunchedEffect to run
+    // Let LaunchedEffect run
     compose.waitForIdle()
 
-    // After LaunchedEffect → errorMsg should be cleared
+    // After LaunchedEffect, errorMsg must be cleared
     assertNull(vm.uiState.value.errorMsg)
   }
 }

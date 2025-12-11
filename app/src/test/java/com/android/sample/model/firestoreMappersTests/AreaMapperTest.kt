@@ -13,36 +13,34 @@ class AreaMapperTest {
 
   @Test
   fun fromDocument_withValidDocument_returnsArea() {
-    val markers = createMockMarkers()
+    val markers = createMockMarkers() // should match the expected type
     val doc = mock(DocumentSnapshot::class.java)
+
     `when`(doc.getString("id")).thenReturn("area123")
     `when`(doc.getString("label")).thenReturn("My Area")
-    `when`(doc.get("markers")).thenReturn(markers)
+    `when`(doc.get("marker")).thenReturn(markers)
+    `when`(doc.getDouble("radius")).thenReturn(10.0)
 
     val area = AreaMapper.fromDocument(doc)
+
     assertValidArea(area)
   }
 
   @Test
   fun fromMap_withValidData_returnsArea() {
-    val markers =
-        listOf(
-            Marker("marker1", Location(10.0, 20.0), "Marker 1"),
-            Marker("marker2", Location(15.0, 25.0), "Marker 2"),
-            Marker("marker3", Location(12.0, 22.0), "Marker 3"))
+    val marker = Marker("marker1", Location(10.0, 20.0), "Marker 1")
 
-    val markersData =
-        markers.map { marker ->
-          mapOf(
-              "id" to marker.id,
-              "label" to marker.label,
-              "location" to
-                  mapOf(
-                      "latitude" to marker.location.latitude,
-                      "longitude" to marker.location.longitude))
-        }
+    val markerData =
+        mapOf(
+            "id" to marker.id,
+            "label" to marker.label,
+            "location" to
+                mapOf(
+                    "latitude" to marker.location.latitude,
+                    "longitude" to marker.location.longitude))
 
-    val data = mapOf("id" to "area123", "label" to "My Area", "markers" to markersData)
+    val data =
+        mapOf("id" to "area123", "label" to "My Area", "marker" to markerData, "radius" to 10.0)
 
     val area = AreaMapper.fromMap(data)
     assertValidArea(area)
@@ -69,61 +67,30 @@ class AreaMapperTest {
 
   @Test
   fun toMap_returnsCorrectMap() {
-    val markers =
-        listOf(
-            Marker(id = "m1", location = Location(10.0, 20.0), label = "Marker 1"),
-            Marker(id = "m2", location = Location(15.0, 25.0), label = "Marker 2"),
-            Marker(id = "m3", location = Location(12.0, 22.0), label = "Marker 3"))
+    val marker = Marker(id = "m1", location = Location(10.0, 20.0), label = "Marker 1")
 
-    val area = Area(id = "area123", label = "My Area", markers = markers)
+    val area = Area(id = "area123", label = "My Area", marker = marker, radius = 10.0)
     val map = AreaMapper.toMap(area)
 
     assertThat(map["id"]).isEqualTo("area123")
     assertThat(map["label"]).isEqualTo("My Area")
-
-    val markersList =
-        (map["markers"] as? List<*>)?.filterIsInstance<Map<String, Any?>>() ?: emptyList()
-    assertThat(markersList.size).isEqualTo(3)
-    assertThat(markersList.map { it["label"] }).containsExactly("Marker 1", "Marker 2", "Marker 3")
+    assertThat(map["radius"]).isEqualTo(10.0)
   }
 
   // --- Helpers ---
-  private fun createMockMarkers(): List<DocumentSnapshot> {
+  private fun createMockMarkers(): DocumentSnapshot {
     val loc1 =
         mock(DocumentSnapshot::class.java).apply {
           `when`(getDouble("latitude")).thenReturn(10.0)
           `when`(getDouble("longitude")).thenReturn(20.0)
           `when`(getString("label")).thenReturn("Loc 1")
         }
-    val loc2 =
-        mock(DocumentSnapshot::class.java).apply {
-          `when`(getDouble("latitude")).thenReturn(15.0)
-          `when`(getDouble("longitude")).thenReturn(25.0)
-          `when`(getString("label")).thenReturn("Loc 2")
-        }
-    val loc3 =
-        mock(DocumentSnapshot::class.java).apply {
-          `when`(getDouble("latitude")).thenReturn(12.0)
-          `when`(getDouble("longitude")).thenReturn(22.0)
-          `when`(getString("label")).thenReturn("Loc 3")
-        }
 
-    return listOf(
-        mock(DocumentSnapshot::class.java).apply {
-          `when`(getString("id")).thenReturn("marker1")
-          `when`(getString("label")).thenReturn("Marker 1")
-          `when`(get("location")).thenReturn(loc1)
-        },
-        mock(DocumentSnapshot::class.java).apply {
-          `when`(getString("id")).thenReturn("marker2")
-          `when`(getString("label")).thenReturn("Marker 2")
-          `when`(get("location")).thenReturn(loc2)
-        },
-        mock(DocumentSnapshot::class.java).apply {
-          `when`(getString("id")).thenReturn("marker3")
-          `when`(getString("label")).thenReturn("Marker 3")
-          `when`(get("location")).thenReturn(loc3)
-        })
+    return mock(DocumentSnapshot::class.java).apply {
+      `when`(getString("id")).thenReturn("marker1")
+      `when`(getString("label")).thenReturn("Marker 1")
+      `when`(get("location")).thenReturn(loc1)
+    }
   }
 
   private fun assertValidArea(area: Area?) {
@@ -131,8 +98,7 @@ class AreaMapperTest {
     area!!
     assertThat(area.id).isEqualTo("area123")
     assertThat(area.label).isEqualTo("My Area")
-    assertThat(area.getSortedMarkers().size).isEqualTo(3)
-    assertThat(area.getSortedMarkers().map { it.label })
-        .containsExactly("Marker 1", "Marker 2", "Marker 3")
+    assertThat(area.marker.label).isEqualTo("Marker 1")
+    assertThat(area.radius).isEqualTo(10.0)
   }
 }

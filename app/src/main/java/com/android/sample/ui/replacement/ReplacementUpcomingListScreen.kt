@@ -77,7 +77,7 @@ fun ReplacementUpcomingListScreen(
         SecondaryPageTopBar(
             title = stringResource(R.string.replacement_upcoming_title),
             onClick = onBack,
-        )
+            backButtonTestTags = ReplacementUpcomingTestTags.BACK_BUTTON)
       }) { paddingValues ->
         Column(
             modifier =

@@ -78,4 +78,12 @@ class ReplacementOrganizeFlowTest : FirebaseEmulatedTest() {
     fakeViewModel.setStartInstant(Instant.parse("2024-01-01T00:00:00Z"))
     fakeViewModel.setEndInstant(Instant.parse("2024-01-05T00:00:00Z"))
   }
+
+  @Test
+  fun backFromFirstStep_callsOnCancel() {
+    composeTestRule
+        .onNodeWithTag(ReplacementOrganizeTestTags.BACK_BUTTON)
+        .assertIsDisplayed()
+        .performClick()
+  }
 }

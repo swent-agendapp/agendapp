@@ -77,7 +77,11 @@ fun CategoryCard(
       Spacer(modifier = Modifier.width(SpacingMedium))
 
       // Middle: label text that can wrap
-      Text(text = categoryLabel, modifier = Modifier.weight(WeightExtraHeavy))
+      Text(
+          text = categoryLabel,
+          modifier =
+              Modifier.weight(WeightExtraHeavy)
+                  .testTag(EditCategoryScreenTestTags.CATEGORY_CARD_LABEL))
 
       // Right: edit + delete actions
       Row {

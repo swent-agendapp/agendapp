@@ -242,9 +242,7 @@
     <string name="error_invitation_already_used">Cette invitation a déjà été utilisée.</string>
     <string name="error_invitation_expired">Cette invitation a expiré.</string>
     <string name="error_joining_organization">Impossible de rejoindre l’organisation : elle n’existe plus ou vous en êtes déjà membre.</string>
-    <string name="error_invitation_code_illegal_input">
-    Seules les lettres et les chiffres sont autorisés, et le code doit contenir %1$d caractères.
-</string>
+    <string name="error_invitation_code_illegal_input">Seules les lettres et les chiffres sont autorisés. La longueur requise du code est de %1$d.</string>
     <string name="invitation_joining_organization">Tentative de rejoindre l’organisation…</string>
 
 

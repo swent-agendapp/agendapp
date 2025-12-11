@@ -241,7 +241,7 @@
     <string name="error_invitation_with_code_not_found">Aucune invitation trouvée avec ce code.</string>
     <string name="error_invitation_already_used">Cette invitation a déjà été utilisée.</string>
     <string name="error_invitation_expired">Cette invitation a expiré.</string>
-    <string name="error_joining_organization">Une erreur est survenue lors de la tentative de rejoindre l’organisation.</string>
+    <string name="error_joining_organization">Impossible de rejoindre l’organisation : elle n’existe plus ou vous en êtes déjà membre.</string>
 
     <!-- hourRecap -->
     <string name="loading_hours">Chargement…</string>

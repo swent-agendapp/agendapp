@@ -240,6 +240,7 @@ fun MapScreen(
   Scaffold(
       topBar = {
         SecondaryPageTopBar(
+            modifier = Modifier.testTag(MapScreenTestTags.MAP_TITLE),
             title = stringResource(R.string.delimit_organization_title),
             onClick = onGoBack,
             backButtonTestTags = MapScreenTestTags.MAP_GO_BACK_BUTTON)

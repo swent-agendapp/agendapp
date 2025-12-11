@@ -7,7 +7,9 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.rule.GrantPermissionRule
+import com.android.sample.model.map.Area
 import com.android.sample.model.map.MapRepositoryProvider
+import com.android.sample.model.map.Marker
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.ui.map.MapScreenTestTags.CREATE_AREA_BUTTON
 import com.android.sample.ui.map.MapScreenTestTags.DELETE_MARKER_BUTTON
@@ -54,7 +56,7 @@ class MapScreenTest : FirebaseEmulatedTest() {
   }
 
   @Test
-  fun addArea() {
+  fun showCreateAreaBottomBar() {
     composeTestRule.setContent { MapScreen(mapViewModel = mapViewModel) }
     composeTestRule.waitForIdle()
 
@@ -63,12 +65,20 @@ class MapScreenTest : FirebaseEmulatedTest() {
     composeTestRule.onNodeWithTag(DOWN_SHEET).assertIsDisplayed()
     composeTestRule.onNodeWithTag(DOWN_SHEET_FORM).assertIsDisplayed()
     composeTestRule.onNodeWithTag(SLIDER).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(CREATE_AREA_BUTTON).assertIsDisplayed().performClick()
+    composeTestRule.onNodeWithTag(CREATE_AREA_BUTTON).assertIsDisplayed()
+  }
 
+  @Test
+  fun showEditAreaBottomBar() {
+    composeTestRule.setContent { MapScreen(mapViewModel = mapViewModel) }
     composeTestRule.waitForIdle()
-    runBlocking { mapViewModel.selectArea(mapViewModel.state.value.listArea.first()) }
+
+    mapViewModel.selectArea(Area(label = "my new area", marker = Marker(latitude = DefaultLocation.LATITUDE, longitude = DefaultLocation.LONGITUDE), radius = 10.0))
 
     composeTestRule.onNodeWithTag(DOWN_SHEET).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(DOWN_SHEET_FORM).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(SLIDER).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(CREATE_AREA_BUTTON).assertIsDisplayed()
     composeTestRule.onNodeWithTag(DELETE_MARKER_BUTTON).assertIsDisplayed()
   }
 }

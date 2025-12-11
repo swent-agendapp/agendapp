@@ -164,9 +164,9 @@ class InvitationRepositoryLocalTest {
 
   @Test
   fun getInvitationByCode_correctly_retrieves() = runBlocking {
-    repo.insertInvitation(organizationA, admin)
-    val retrievedInv = repo.getAllInvitations().first()
-    val fetchedByCode = repo.getInvitationByCode(retrievedInv.code)
+    repository.insertInvitation(organizationA, admin)
+    val retrievedInv = repository.getAllInvitations().first()
+    val fetchedByCode = repository.getInvitationByCode(retrievedInv.code)
     assertNotNull(fetchedByCode)
     assertEquals(retrievedInv.id, fetchedByCode?.id)
   }

@@ -31,4 +31,8 @@ class FakeInvitationRepository : InvitationRepository {
   override suspend fun getInvitationByOrganization(organizationId: String): List<Invitation> {
     return invitations.filter { it.organizationId == organizationId }
   }
+
+  override suspend fun getInvitationByCode(code: String): Invitation? {
+    return invitations.firstOrNull { it.code == code }
+  }
 }

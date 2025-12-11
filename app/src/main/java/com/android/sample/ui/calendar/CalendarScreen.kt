@@ -33,6 +33,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.model.calendar.Event
 import com.android.sample.ui.calendar.filters.FilterBottomSheet
+import com.android.sample.ui.calendar.filters.FilterViewModel
 import com.android.sample.ui.calendar.style.CalendarDefaults.DefaultDateRange
 import com.android.sample.ui.common.FloatingButton
 import com.android.sample.ui.common.MainPageTopBar
@@ -100,6 +101,8 @@ fun CalendarScreen(
 
   var showFilterSheet by remember { mutableStateOf(false) }
 
+  val filterVM: FilterViewModel = viewModel()
+
   // Host state for displaying a snack bar in case of errors
   val snackbarHostState = remember { SnackbarHostState() }
 
@@ -166,10 +169,11 @@ fun CalendarScreen(
         if (showFilterSheet) {
           FilterBottomSheet(
               onDismiss = { showFilterSheet = false },
-              onApply = { filters ->
-                calendarViewModel.applyFilters(filters)
+              onApply = {
+                calendarViewModel.applyFilters(filterVM.filters.value)
                 showFilterSheet = false
-              })
+              },
+              filterVM = filterVM)
         }
       }
 }

@@ -4,6 +4,7 @@ import com.android.sample.data.firebase.mappers.OrganizationMapper
 import com.android.sample.model.authentication.User
 import com.android.sample.model.constants.FirestoreConstants
 import com.android.sample.model.organization.data.Organization
+import com.android.sample.model.organization.invitation.Invitation
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
@@ -89,5 +90,29 @@ class OrganizationRepositoryFirebase(private val db: FirebaseFirestore) : Organi
           }
     }
     return organization
+  }
+
+  override suspend fun addMemberToOrganization(member: User, invitation: Invitation) {
+    val doc =
+        db.collection(FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH)
+            .document(invitation.organizationId)
+            .get()
+            .await()
+    val organizationOfInvitation = OrganizationMapper.fromDocument(doc)
+
+    // Check the existence of the organization with ID in the invitation
+    requireNotNull(organizationOfInvitation) {
+      "No organization matches the ID of the invitation's organizationId."
+    }
+    // Add member if not already present
+    require(!(organizationOfInvitation.members.contains(member))) {
+      "User is already a member of the organization."
+    }
+    val updatedOrganization =
+        organizationOfInvitation.copy(members = organizationOfInvitation.members + member)
+    db.collection(FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH)
+        .document(invitation.organizationId)
+        .set(OrganizationMapper.toMap(updatedOrganization))
+        .await()
   }
 }

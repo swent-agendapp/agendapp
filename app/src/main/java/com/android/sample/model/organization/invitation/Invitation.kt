@@ -33,16 +33,16 @@ data class Invitation(
 ) {
   companion object {
 
-    private const val CODE_LENGTH = 6
+    const val INVITATION_CODE_LENGTH = 6
     private const val CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
     /**
      * Generates a random alphanumeric invitation code.
      *
-     * @param length Length of the generated code (defaults to [CODE_LENGTH]).
+     * @param length Length of the generated code (defaults to [INVITATION_CODE_LENGTH]).
      * @return A randomly generated uppercase alphanumeric string.
      */
-    fun generateRandomCode(length: Int = CODE_LENGTH): String =
+    fun generateRandomCode(length: Int = INVITATION_CODE_LENGTH): String =
         (1..length).map { CHARS.random() }.joinToString("")
 
     /**

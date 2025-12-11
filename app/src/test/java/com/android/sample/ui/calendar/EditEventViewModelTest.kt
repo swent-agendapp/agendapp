@@ -216,7 +216,8 @@ class EditEventViewModelTest {
             version = 1L,
             recurrenceStatus = RecurrenceStatus.Weekly,
             hasBeenDeleted = false,
-            category = category)
+            category = category,
+            location = null)
 
     repository.insertEvent(orgId = selectedOrganizationID, item = event)
 
@@ -273,7 +274,8 @@ class EditEventViewModelTest {
             version = 1L,
             recurrenceStatus = RecurrenceStatus.OneTime,
             hasBeenDeleted = false,
-            category = originalCategory)
+            category = originalCategory,
+            location = null)
 
     repository.insertEvent(orgId = selectedOrganizationID, item = originalEvent)
 

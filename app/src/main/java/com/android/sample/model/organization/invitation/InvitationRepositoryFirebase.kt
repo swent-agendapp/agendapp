@@ -22,7 +22,12 @@ class InvitationRepositoryFirebase(private val db: FirebaseFirestore) : Invitati
     super.insertInvitation(organization, user)
 
     val item = Invitation.create(organizationId = organization.id)
+
+    // Ensure no existing invitation has the same ID or code
+    // Should never happen with proper UUIDs and very small chance for codes (P = 1/35^6)
     require(getInvitationById(item.id) == null) { "Invitation with id ${item.id} already exists." }
+    require(getInvitationByCode(item.code) == null) { "Code collision, insertion aborted." }
+
     collection.document(item.id).set(InvitationMapper.toMap(model = item)).await()
   }
 
@@ -53,5 +58,12 @@ class InvitationRepositoryFirebase(private val db: FirebaseFirestore) : Invitati
 
   override suspend fun getInvitationByOrganization(organizationId: String): List<Invitation> {
     return getAllInvitations().filter { it.organizationId == organizationId }
+  }
+
+  override suspend fun getInvitationByCode(code: String): Invitation? {
+    val snapshot = collection.whereEqualTo(InvitationMapper.CODE_FIELD, code).get().await()
+
+    val doc = snapshot.documents.firstOrNull() ?: return null
+    return InvitationMapper.fromDocument(doc)
   }
 }

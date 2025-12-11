@@ -48,7 +48,8 @@ data class Event(
     val presence: Map<String, Boolean> = emptyMap(),
     val recurrenceStatus: RecurrenceStatus,
     val hasBeenDeleted: Boolean = false,
-    val category: EventCategory = EventCategory.defaultCategory()
+    val category: EventCategory = EventCategory.defaultCategory(),
+    val location: String?
 ) {
   // Returns the start date as a LocalDate in the system's default time zone
   val startLocalDate: LocalDate
@@ -110,6 +111,7 @@ fun createEvent(
     category: EventCategory = EventCategory.defaultCategory(),
     recurrence: RecurrenceStatus = RecurrenceStatus.OneTime,
     endRecurrence: Instant = Instant.now(),
+    location: String? = null,
 ): List<Event> {
   require(!endDate.isBefore(startDate)) { "End date cannot be before start date" }
   val zone = ZoneId.systemDefault()
@@ -130,7 +132,8 @@ fun createEvent(
                 version = System.currentTimeMillis(),
                 presence = presence,
                 recurrenceStatus = recurrence,
-                category = category))
+                category = category,
+                location = location))
     RecurrenceStatus.Daily -> {
       val days =
           1 +
@@ -149,7 +152,8 @@ fun createEvent(
             participants = participants,
             version = System.currentTimeMillis(),
             recurrenceStatus = recurrence,
-            category = category)
+            category = category,
+            location = location)
       }
     }
     RecurrenceStatus.Weekly -> {
@@ -171,7 +175,8 @@ fun createEvent(
             version = System.currentTimeMillis(),
             presence = presence,
             recurrenceStatus = recurrence,
-            category = category)
+            category = category,
+            location = location)
       }
     }
     RecurrenceStatus.Monthly -> {
@@ -193,7 +198,8 @@ fun createEvent(
             version = System.currentTimeMillis(),
             presence = presence,
             recurrenceStatus = recurrence,
-            category = category)
+            category = category,
+            location = location)
       }
     }
     RecurrenceStatus.Yearly -> {
@@ -215,7 +221,8 @@ fun createEvent(
             version = System.currentTimeMillis(),
             presence = presence,
             recurrenceStatus = recurrence,
-            category = category)
+            category = category,
+            location = location)
       }
     }
   }

@@ -80,6 +80,9 @@ class AddEventViewModel(
   /** Public immutable UI state observed by composables. */
   val uiState: StateFlow<AddCalendarEventUIState> = _uiState.asStateFlow()
 
+  // Wrap for brevity
+  private fun requireOrgId(): String = selectedOrganizationViewModel.getSelectedOrganizationId()
+
   /**
    * Loads a draft event instance based on the current UI field values.
    *
@@ -116,7 +119,7 @@ class AddEventViewModel(
    * A valid organization must be selected; otherwise an exception is thrown.
    */
   fun addEvent() {
-    val orgId = selectedOrganizationViewModel.getSelectedOrganizationId()
+    val orgId = requireOrgId()
 
     val state = _uiState.value
 
@@ -146,7 +149,7 @@ class AddEventViewModel(
   fun addEventToRepository(event: Event) {
     viewModelScope.launch {
       try {
-        val orgId = selectedOrganizationViewModel.getSelectedOrganizationId()
+        val orgId = requireOrgId()
 
         repository.insertEvent(orgId = orgId, item = event)
       } catch (e: Exception) {

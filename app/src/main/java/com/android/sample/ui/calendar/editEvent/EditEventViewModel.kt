@@ -62,11 +62,14 @@ class EditEventViewModel(
   private val _uiState = MutableStateFlow(EditCalendarEventUIState())
   val uiState: StateFlow<EditCalendarEventUIState> = _uiState.asStateFlow()
 
+  // Wrap for brevity
+  private fun requireOrgId(): String = selectedOrganizationViewModel.getSelectedOrganizationId()
+
   fun saveEditEventChanges() {
     viewModelScope.launch {
       val state = _uiState.value
       try {
-        val orgId = selectedOrganizationViewModel.getSelectedOrganizationId()
+        val orgId = requireOrgId()
 
         val updated =
             Event(
@@ -95,7 +98,7 @@ class EditEventViewModel(
     viewModelScope.launch {
       _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
       try {
-        val orgId = selectedOrganizationViewModel.getSelectedOrganizationId()
+        val orgId = requireOrgId()
 
         val event = repository.getEventById(orgId = orgId, itemId = eventId)
         if (event != null) {

@@ -53,6 +53,9 @@ class CreateInvitationViewModel(
   /** Public immutable state observed by the UI. */
   val uiState: StateFlow<CreateInvitationUIState> = _uiState.asStateFlow()
 
+  // Wrap for brevity
+  private fun requireOrgId(): String = selectedOrganizationViewModel.getSelectedOrganizationId()
+
   /**
    * Creates multiple invitations and inserts them into the repository.
    *
@@ -75,7 +78,7 @@ class CreateInvitationViewModel(
           authRepository.getCurrentUser()
               ?: throw IllegalStateException("No authenticated user found.")
       // getSelectedOrganizationId() will throw if no organization is selected
-      val selectedOrganizationId = selectedOrganizationViewModel.getSelectedOrganizationId()
+      val selectedOrganizationId = requireOrgId()
       val selectedOrganization =
           organizationRepository.getOrganizationById(selectedOrganizationId, user)
               ?: throw IllegalStateException("Selected organization not found.")

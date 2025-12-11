@@ -92,6 +92,9 @@ class ReplacementOrganizeViewModel(
   /** Public immutable UI state observed by the UI. */
   val uiState: StateFlow<ReplacementOrganizeUIState> = _uiState.asStateFlow()
 
+  // Wrap for brevity
+  private fun requireOrgId(): String = selectedOrganizationViewModel.getSelectedOrganizationId()
+
   /**
    * Loads all members from the selected organization.
    *
@@ -134,7 +137,7 @@ class ReplacementOrganizeViewModel(
               return@launch
             }
 
-            val orgId = selectedOrganizationViewModel.getSelectedOrganizationId()
+            val orgId = requireOrgId()
 
             eventRepository.getEventsBetweenDates(
                 orgId = orgId, startDate = state.startInstant, endDate = state.endInstant)
@@ -163,7 +166,7 @@ class ReplacementOrganizeViewModel(
    */
   private suspend fun addReplacementToRepository(replacement: Replacement) {
     try {
-      val orgId = selectedOrganizationViewModel.getSelectedOrganizationId()
+      val orgId = requireOrgId()
 
       replacementRepository.insertReplacement(orgId = orgId, item = replacement)
     } catch (e: Exception) {

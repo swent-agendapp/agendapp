@@ -44,6 +44,9 @@ class EventOverviewViewModel(
   // Publicly exposed immutable UI state
   val uiState: StateFlow<OverviewUIState> = _uiState.asStateFlow()
 
+  // Wrap for brevity
+  private fun requireOrgId(): String = selectedOrganizationViewModel.getSelectedOrganizationId()
+
   /** Sets an error message in the UI state. */
   private fun setErrorMsg(errorMsg: String) {
     _uiState.value = _uiState.value.copy(errorMsg = errorMsg)
@@ -66,7 +69,7 @@ class EventOverviewViewModel(
   fun deleteEvent(eventId: String) {
     viewModelScope.launch {
       try {
-        val orgId = selectedOrganizationViewModel.getSelectedOrganizationId()
+        val orgId = requireOrgId()
 
         eventRepository.deleteEvent(orgId = orgId, itemId = eventId)
         _uiState.value = _uiState.value.copy(isDeleteSuccessful = true)
@@ -90,7 +93,7 @@ class EventOverviewViewModel(
     viewModelScope.launch {
       setLoading(true)
       try {
-        val orgId = selectedOrganizationViewModel.getSelectedOrganizationId()
+        val orgId = requireOrgId()
 
         val event =
             eventRepository.getEventById(orgId = orgId, itemId = eventId)

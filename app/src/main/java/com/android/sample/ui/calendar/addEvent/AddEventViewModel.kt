@@ -1,6 +1,5 @@
 package com.android.sample.ui.calendar.addEvent
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.sample.model.calendar.Event
@@ -152,8 +151,9 @@ class AddEventViewModel(
         val orgId = requireOrgId()
 
         repository.insertEvent(orgId = orgId, item = event)
-      } catch (e: Exception) {
-        Log.e("AddEventViewModel", "Error adding event: ${e.message}")
+      } catch (_: IllegalStateException) {
+        _uiState.update { it.copy(errorMsg = "No organization selected") }
+      } catch (_: Exception) {
         _uiState.update { it.copy(errorMsg = "Unexpected error while creating the event") }
       }
     }

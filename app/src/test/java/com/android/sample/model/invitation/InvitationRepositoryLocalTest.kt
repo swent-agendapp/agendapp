@@ -1,6 +1,9 @@
 package com.android.sample.model.invitation
 
 import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UserRepositoryProvider
+import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.invitation.Invitation
 import com.android.sample.model.organization.invitation.InvitationRepositoryLocal
@@ -22,13 +25,18 @@ import org.junit.Test
 class InvitationRepositoryLocalTest {
 
   private lateinit var repository: InvitationRepositoryLocal
+  private lateinit var userRepository: UserRepository
   private lateinit var admin: User
   private lateinit var member: User
   private lateinit var outsider: User
   private lateinit var orgA: Organization
 
   @Before
-  fun setup() {
+  fun setup() = runBlocking {
+    // Initialize fresh UserRepository for each test
+    userRepository = UsersRepositoryLocal()
+    UserRepositoryProvider.repository = userRepository
+
     repository = InvitationRepositoryLocal()
 
     // --- Create users ---
@@ -36,8 +44,17 @@ class InvitationRepositoryLocalTest {
     member = User(id = "memberA", displayName = "Member A", email = "memberA@example.com")
     outsider = User(id = "outsider", displayName = "Outsider", email = "outsider@example.com")
 
+    // Register all users in the repository
+    userRepository.newUser(admin)
+    userRepository.newUser(member)
+    userRepository.newUser(outsider)
+
     // --- Create organization ---
     orgA = Organization(id = "orgA", name = "Org A")
+
+    // Set up user-organization relationships
+    userRepository.addAdminToOrganization(admin.id, orgA.id)
+    userRepository.addUserToOrganization(member.id, orgA.id)
   }
 
   @Test

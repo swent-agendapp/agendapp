@@ -9,7 +9,7 @@ import org.junit.Before
 import org.junit.Test
 
 /** Unit tests for [EventCategoryRepositoryLocal]. */
-class EventCategoryRepositoryTest {
+class EventCategoryRepositoryLocalTest {
 
   private lateinit var repository: EventCategoryRepositoryLocal
   private lateinit var category1: EventCategory

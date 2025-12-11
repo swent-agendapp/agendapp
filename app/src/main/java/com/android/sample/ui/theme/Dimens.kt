@@ -61,6 +61,7 @@ val ElevationHigh = 12.dp
 // widths and heights
 val widthSmall = 48.dp
 val widthLarge = 120.dp
+val heightExtraSmall = 0.7.dp
 val heightMedium = 40.dp
 val heightLarge = 60.dp
 val BarWidthSmall = 4.dp
@@ -76,11 +77,12 @@ val SizeSmall = 16.dp
 val SizeMedium = 24.dp
 val SizeLarge = 32.dp
 val SizeExtraLarge = 48.dp
-val SizeHuge = 64.dp
+val SizeHuge = 58.dp
 val SizeExtraHuge = 80.dp
 val SizeMassive = 96.dp
 
 // Font size
+val FontSizeExtraExtraSmall = 9.sp
 val FontSizeExtraSmall = 10.sp
 val FontSizeSmall = 12.sp
 val FontSizeMediumSmall = 14.sp
@@ -99,6 +101,7 @@ val LineHeightSmall = 8.sp
 val LineHeightLarge = 22.sp
 
 // Calendar Dimensions
+val OffsetNull = 0.dp
 val CalendarLeftOffset = 58.dp
 val CalendarTopOffset = 58.dp
 val CalendarColumnWidth = 64.dp

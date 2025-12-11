@@ -1,12 +1,15 @@
 package com.android.sample.ui.profile
 
 import android.content.Intent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -15,6 +18,8 @@ import androidx.compose.ui.semantics.testTag
 import androidx.core.net.toUri
 import com.android.sample.R
 import com.android.sample.ui.common.SecondaryPageTopBar
+import com.android.sample.ui.theme.AlphaExtraLow
+import com.android.sample.ui.theme.CornerRadiusExtraLarge
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingSmall
@@ -28,7 +33,7 @@ object AdminContactScreenTestTags {
 
 object AdminInformation {
   const val EMAIL = "admin@agendapp.com"
-  const val PHONE = "+1 (555) 123-4567"
+  const val PHONE = "079 123 45 67"
 }
 
 /**
@@ -55,51 +60,66 @@ fun AdminContactScreen(onNavigateBack: () -> Unit = {}) {
                 },
             horizontalAlignment = Alignment.CenterHorizontally) {
 
-              // Admin Email
-              Card(modifier = Modifier.fillMaxWidth().padding(vertical = SpacingSmall)) {
-                Column(modifier = Modifier.padding(SpacingLarge)) {
-                  Text(
-                      stringResource(R.string.admin_contact_email_label),
-                      style = MaterialTheme.typography.labelMedium)
-                  Text(
-                      AdminInformation.EMAIL,
-                      style = MaterialTheme.typography.bodyLarge,
-                      modifier =
-                          Modifier.testTag(AdminContactScreenTestTags.ADMIN_EMAIL_TEXT).clickable {
-                            val intent =
-                                Intent(
-                                        Intent.ACTION_SENDTO,
-                                        "mailto:${AdminInformation.EMAIL}".toUri())
-                                    .apply {
-                                      putExtra(Intent.EXTRA_EMAIL, arrayOf(AdminInformation.EMAIL))
-                                      putExtra(
-                                          Intent.EXTRA_SUBJECT,
-                                          context.getString(R.string.admin_contact_email_subject))
-                                    }
-                            context.startActivity(intent)
-                          })
-                }
-              }
+              // Email admin
+              AdminInfoRow(
+                  label = stringResource(R.string.admin_contact_email_label),
+                  value = AdminInformation.EMAIL,
+                  testTag = AdminContactScreenTestTags.ADMIN_EMAIL_TEXT,
+                  onClick = {
+                    val intent =
+                        Intent(Intent.ACTION_SENDTO, "mailto:${AdminInformation.EMAIL}".toUri())
+                            .apply {
+                              putExtra(Intent.EXTRA_EMAIL, arrayOf(AdminInformation.EMAIL))
+                              putExtra(
+                                  Intent.EXTRA_SUBJECT,
+                                  context.getString(R.string.admin_contact_email_subject))
+                            }
+                    context.startActivity(intent)
+                  })
 
-              // Admin Phone
-              Card(modifier = Modifier.fillMaxWidth().padding(vertical = SpacingSmall)) {
-                Column(modifier = Modifier.padding(SpacingLarge)) {
-                  Text(
-                      stringResource(R.string.admin_contact_phone_label),
-                      style = MaterialTheme.typography.labelMedium)
-                  Text(
-                      AdminInformation.PHONE,
-                      style = MaterialTheme.typography.bodyLarge,
-                      modifier =
-                          Modifier.testTag(AdminContactScreenTestTags.ADMIN_PHONE_TEXT).clickable {
-                            val intent =
-                                Intent(
-                                    Intent.ACTION_DIAL,
-                                    "tel:${AdminInformation.PHONE.replace(" ", "")}".toUri())
-                            context.startActivity(intent)
-                          })
-                }
-              }
+              Spacer(modifier = Modifier.height(SpacingLarge))
+
+              // Phone number admin
+              AdminInfoRow(
+                  label = stringResource(R.string.admin_contact_phone_label),
+                  value = AdminInformation.PHONE,
+                  testTag = AdminContactScreenTestTags.ADMIN_PHONE_TEXT,
+                  onClick = {
+                    val intent =
+                        Intent(
+                            Intent.ACTION_DIAL,
+                            "tel:${AdminInformation.PHONE.replace(" ", "")}".toUri())
+                    context.startActivity(intent)
+                  })
             }
+      }
+}
+
+@Composable
+private fun AdminInfoRow(
+    label: String,
+    value: String,
+    testTag: String,
+    onClick: () -> Unit,
+) {
+  Column(
+      modifier =
+          Modifier.fillMaxWidth()
+              .clip(RoundedCornerShape(CornerRadiusExtraLarge))
+              .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = AlphaExtraLow))
+              .clickable(onClick = onClick)
+              .padding(PaddingMedium)
+              .testTag(testTag)) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant)
+
+        Spacer(modifier = Modifier.height(SpacingSmall))
+
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface)
       }
 }

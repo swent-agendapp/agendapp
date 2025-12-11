@@ -104,7 +104,9 @@ fun ReplacementPendingListScreen(
   Scaffold(
       topBar = {
         SecondaryPageTopBar(
-            title = stringResource(R.string.replacement_requests_title), onClick = onBack)
+            title = stringResource(id = R.string.replacement_requests_title),
+            onClick = onNavigateBack,
+        )
       }) { paddingValues ->
         Column(
             modifier =

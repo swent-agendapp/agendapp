@@ -11,6 +11,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -63,6 +67,7 @@ fun SelectEventScreen(
     eventFilter: (Event) -> Boolean = { true },
 ) {
   val context = LocalContext.current
+  var selectedEvents by remember { mutableStateOf<List<Event>>(emptyList()) }
   Scaffold(
       topBar = {
         SecondaryPageTopBar(
@@ -90,15 +95,22 @@ fun SelectEventScreen(
                   }
               Box(modifier = Modifier.weight(WeightExtraHeavy).fillMaxWidth()) {
                 CalendarEventSelector(
-                    onEventClick = onEventClick,
-                    eventFilter = eventFilter,
-                )
+                    selectedEvents = selectedEvents,
+                    onEventClick = { event ->
+                      selectedEvents =
+                          if (selectedEvents.any { it.id == event.id }) {
+                            selectedEvents.filterNot { it.id == event.id }
+                          } else {
+                            selectedEvents + event
+                          }
+                      onEventClick(event)
+                    })
               }
             }
       },
       bottomBar = {
         ReplacementBottomBarWithProcessOptions(
-            canGoNext = canGoNext,
+            canGoNext = canGoNext && selectedEvents.isNotEmpty(),
             onBack = onBack,
             onNext = {
               onNext()

@@ -51,6 +51,7 @@ object ReplacementUpcomingTestTags {
   const val SCREEN = "replacement_upcoming_screen"
   const val LIST = "replacement_upcoming_list"
   private const val ITEM_PREFIX = "replacement_upcoming_item_"
+  const val BACK_BUTTON = "replacement_upcoming_back_button"
 
   fun itemTag(id: String): String = ITEM_PREFIX + id
 }

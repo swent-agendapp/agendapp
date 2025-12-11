@@ -127,14 +127,14 @@
     <!-- Settings Screen -->
     <string name="settings_screen_title">Settings</string>
     <string name="settings_profile_button">Profile</string>
-    <string name="settings_admin_info_button">Admin info</string>
+    <string name="settings_admin_info_button">Admin contact</string>
     <string name="settings_map_settings_button">Map</string>
     <string name="settings_organization_selection_button">Organization</string>
 
     <!-- Profile Screen -->
     <string name="profile_screen_title">Profile</string>
     <string name="profile_email_error">Please enter a valid email address</string>
-    <string name="profile_phone_error">Please enter a valid phone number (min 7 digits)</string>
+    <string name="profile_phone_error">Please enter a valid phone number</string>
     <string name="profile_display_name_label">Display Name</string>
     <string name="profile_email_label">Email</string>
     <string name="profile_phone_label">Phone Number</string>
@@ -226,7 +226,6 @@
     <string name="replacement_list_instruction">Select an event you need to be replaced for</string>
     <string name="select_date_range_instruction">Select the date range for which you need a replacement.</string>
     <string name="hour_recap_results_title">Total hours per employee for the selected period:</string>
-    <string name="hour_recap_title">Total hours per employee</string>
     <string name="hour_recap_generate">Generate summary</string>
     <string name="export_excel">Export to Excel</string>
 
@@ -266,6 +265,8 @@
 
     <!-- Category -->
     <string name="default_category_label">Uncategorized</string>
+
+    <string name="hour_recap">Hour Recap</string>
 
 </resources>
 

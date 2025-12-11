@@ -51,6 +51,7 @@ fun CalendarContainer(
     modifier: Modifier = Modifier,
     calendarViewModel: CalendarViewModel = viewModel(),
     eventFilter: (Event) -> Boolean = { true },
+    selectedEvents: List<Event> = emptyList(),
     onEventClick: (Event) -> Unit = {}
 ) {
   // "Today" is used to compute the initial view mode and initial date range.
@@ -117,6 +118,7 @@ fun CalendarContainer(
                 events = events,
                 today = today,
                 selectedDate = selectedDate,
+                selectedEvents = selectedEvents,
                 // Header is clickable only in ONE_DAY mode.
                 onHeaderDayClick =
                     buildOnHeaderDayClick(currentMode) { clickedDate ->

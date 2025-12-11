@@ -38,6 +38,7 @@ import com.android.sample.ui.calendar.eventOverview.EventOverviewScreen
 import com.android.sample.ui.common.BottomBar
 import com.android.sample.ui.common.BottomBarItem
 import com.android.sample.ui.common.BottomBarTestTags
+import com.android.sample.ui.hourRecap.HourRecapScreen
 import com.android.sample.ui.invitation.InvitationOverviewScreen
 import com.android.sample.ui.map.MapScreen
 import com.android.sample.ui.navigation.NavigationActions
@@ -338,6 +339,7 @@ private fun NavGraphBuilder.settingsGraph(
           onNavigateToUserProfile = { navigationActions.navigateTo(Screen.Profile) },
           onNavigateToAdminInfo = { navigationActions.navigateTo(Screen.AdminContact) },
           onNavigateToMapSettings = { navigationActions.navigateTo(Screen.Map) },
+          onNavigateToHourRecap = { navigationActions.navigateTo(Screen.HourRecap) },
           onNavigateToOrganizationList = {
             navigationActions.navigateTo(Screen.OrganizationOverview)
           })
@@ -364,6 +366,11 @@ private fun NavGraphBuilder.settingsGraph(
           onChangeOrganization = { navigationActions.navigateTo(Screen.ChangeOrganization) },
           onDeleteOrganization = { navigationActions.navigateTo(Screen.SelectOrganization) },
           onInvitationClick = { navigationActions.navigateTo(Screen.InvitationOverview) })
+    }
+
+    // Hour Recap Screen
+    composable(Screen.HourRecap.route) {
+      HourRecapScreen(onBackClick = { navigationActions.navigateBack() })
     }
     composable(Screen.ChangeOrganization.route) {
       OrganizationListScreen(

@@ -47,6 +47,7 @@ object CalendarEventSelectorTestTags {
 fun CalendarEventSelector(
     eventFilter: (Event) -> Boolean = { true },
     calendarViewModel: CalendarViewModel = viewModel(factory = CalendarViewModel.Factory),
+    selectedEvents: List<Event> = emptyList(),
     onEventClick: (Event) -> Unit = {}
 ) {
   val context = LocalContext.current
@@ -71,6 +72,7 @@ fun CalendarEventSelector(
                 .testTag(CalendarEventSelectorTestTags.SCREEN_ROOT),
         calendarViewModel = calendarViewModel,
         eventFilter = eventFilter,
+        selectedEvents = selectedEvents,
         onEventClick = onEventClick)
   }
 }

@@ -69,14 +69,14 @@
     <!-- Settings Screen -->
     <string name="settings_screen_title">Einstellungen</string>
     <string name="settings_profile_button">Profil</string>
-    <string name="settings_admin_info_button">Admin-Informationen</string>
+    <string name="settings_admin_info_button">Admin Kontact</string>
     <string name="settings_map_settings_button">Karte</string>
     <string name="settings_organization_selection_button">Organisation</string>
 
     <!-- Profile Screen -->
     <string name="profile_screen_title">Profil</string>
     <string name="profile_email_error">Bitte geben Sie eine gültige E-Mail-Adresse ein</string>
-    <string name="profile_phone_error">Bitte geben Sie eine gültige Telefonnummer ein (mindestens 7 Ziffern)</string>
+    <string name="profile_phone_error">Bitte geben Sie eine gültige Telefonnummer ein</string>
     <string name="profile_display_name_label">Anzeigename</string>
     <string name="profile_email_label">E-Mail</string>
     <string name="profile_phone_label">Telefonnummer</string>
@@ -230,7 +230,6 @@
 
 
     <string name="hour_recap_results_title">Gesamtstunden pro Mitarbeiter im ausgewählten Zeitraum:</string>
-    <string name="hour_recap_title">Gesamtstunden pro Mitarbeiter</string>
     <string name="hour_recap_generate">Zusammenfassung erstellen</string>
     <string name="export_excel">Nach Excel exportieren</string>
 
@@ -268,5 +267,7 @@
 
     <!-- Category -->
     <string name="default_category_label">Ohne Kategorie</string>
+
+    <string name="hour_recap">Stundenübersicht</string>
 
 </resources>

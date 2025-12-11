@@ -47,4 +47,8 @@ class InvitationRepositoryLocal : InvitationRepository {
   override suspend fun getInvitationById(itemId: String): Invitation? {
     return invitations.find { it.id == itemId }
   }
+
+  override suspend fun getInvitationByOrganization(organizationId: String): List<Invitation> {
+    return getAllInvitations().filter { it.organizationId == organizationId }
+  }
 }

@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,7 +23,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
@@ -45,6 +43,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.common.FloatingButton
 import com.android.sample.ui.common.PrimaryButton
+import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.map.MapScreenTestTags.CREATE_AREA_BUTTON
 import com.android.sample.ui.map.MapScreenTestTags.CREATE_AREA_FLOATING_BUTTON
 import com.android.sample.ui.map.MapScreenTestTags.DELETE_MARKER_BUTTON
@@ -125,21 +124,10 @@ fun MapScreen(
 
   Scaffold(
       topBar = {
-        TopAppBar(
-            title = {
-              Text(
-                  stringResource(R.string.delimit_organization_title),
-                  Modifier.testTag(MapScreenTestTags.MAP_TITLE))
-            },
-            navigationIcon = {
-              IconButton(
-                  onClick = { onGoBack() },
-                  Modifier.testTag(MapScreenTestTags.MAP_GO_BACK_BUTTON)) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                        contentDescription = "Back")
-                  }
-            },
+        SecondaryPageTopBar(
+            title = stringResource(R.string.delimit_organization_title),
+            onClick = onGoBack,
+            backButtonTestTags = MapScreenTestTags.MAP_GO_BACK_BUTTON,
             actions = {
               TooltipBox(
                   positionProvider = TooltipDefaults.rememberRichTooltipPositionProvider(8.dp),

@@ -27,6 +27,7 @@ object EventMapper : FirestoreMapper<Event> {
   const val RECURRENCE_STATUS_FIELD = "recurrenceStatus"
   const val PRESENCE_FIELD = "presence"
   const val VERSION_FIELD = "version"
+  const val HAS_BEEN_DELETED_FIELD = "hasBeenDeleted"
   const val EVENT_CATEGORY_FIELD = "eventCategory"
 
   override fun fromDocument(document: DocumentSnapshot): Event? {
@@ -55,6 +56,7 @@ object EventMapper : FirestoreMapper<Event> {
 
     val presence = parsePresence(document[PRESENCE_FIELD])
     val version = document.getLong(VERSION_FIELD) ?: 0L
+    val hasBeenDeleted = document.getBoolean(HAS_BEEN_DELETED_FIELD) ?: false
     val category = parseCategory(document[EVENT_CATEGORY_FIELD])
 
     return Event(
@@ -70,6 +72,7 @@ object EventMapper : FirestoreMapper<Event> {
         version = version,
         presence = presence,
         recurrenceStatus = recurrenceStatus,
+        hasBeenDeleted = hasBeenDeleted,
         category = category)
   }
 
@@ -109,6 +112,7 @@ object EventMapper : FirestoreMapper<Event> {
     val presence = parsePresence(data[PRESENCE_FIELD])
 
     val version = (data[VERSION_FIELD] as? Number)?.toLong() ?: 0L
+    val hasBeenDeleted = data[HAS_BEEN_DELETED_FIELD] as? Boolean ?: false
     val category = parseCategory(data[EVENT_CATEGORY_FIELD])
 
     return Event(
@@ -124,6 +128,7 @@ object EventMapper : FirestoreMapper<Event> {
         version = version,
         presence = presence,
         recurrenceStatus = recurrenceStatus,
+        hasBeenDeleted = hasBeenDeleted,
         category = category)
   }
 
@@ -141,6 +146,7 @@ object EventMapper : FirestoreMapper<Event> {
         VERSION_FIELD to model.version,
         PRESENCE_FIELD to model.presence,
         RECURRENCE_STATUS_FIELD to model.recurrenceStatus.name,
+        HAS_BEEN_DELETED_FIELD to model.hasBeenDeleted,
         EVENT_CATEGORY_FIELD to
             mapOf(
                 EventCategoryMapper.ID_FIELD to model.category.id,

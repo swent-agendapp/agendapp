@@ -24,6 +24,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryInMemory
+import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.model.map.MapRepository
 import com.android.sample.model.map.MapRepositoryLocal
@@ -39,6 +40,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import kotlinx.coroutines.runBlocking
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -53,6 +55,15 @@ abstract class BaseCalendarScreenTest {
   @get:Rule open val composeTestRule = createComposeRule()
 
   val selectedOrganizationId = "orgTest"
+  private lateinit var repo: EventRepository
+
+  @Before
+  fun setup() {
+    repo = EventRepositoryProvider.repository
+
+    // Ensure the right organization is selected
+    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
+  }
 
   /** Converts a (LocalDate, LocalTime) to an Instant in the system zone for concise test setup. */
   protected fun at(date: LocalDate, time: LocalTime) =

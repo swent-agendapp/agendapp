@@ -53,11 +53,11 @@ import com.android.sample.ui.theme.SpacingSmall
  */
 @Composable
 fun ParticipantsSection(
-  participantNames: List<User> = emptyList(),
-  showHeader: Boolean = true,
-  rowHeight: Dp = RowHeightMedium,
-  visibleRows: Int = EventSummaryCardStyle().participantsVisibleRows,
-  borderColor: Color = GeneralPalette.OnSurfaceVariant.copy(alpha = AlphaLow),
+    participantNames: List<User> = emptyList(),
+    showHeader: Boolean = true,
+    rowHeight: Dp = RowHeightMedium,
+    visibleRows: Int = EventSummaryCardStyle().participantsVisibleRows,
+    borderColor: Color = GeneralPalette.OnSurfaceVariant.copy(alpha = AlphaLow),
 ) {
   if (participantNames.isNotEmpty()) {
     if (showHeader) {
@@ -87,7 +87,7 @@ fun ParticipantsSection(
                 .clip(RoundedCornerShape(CornerRadiusLarge))) {
           // Delegate the scrollable vs non-scrollable logic to a helper.
           ParticipantsList(
-              participantNames = participantNames.map { it -> it.display()},
+              participantNames = participantNames.map { it -> it.display() },
               rowHeight = rowHeight,
               visibleRows = visibleRows,
           )

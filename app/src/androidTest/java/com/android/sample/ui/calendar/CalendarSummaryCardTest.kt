@@ -287,7 +287,13 @@ class EventSummaryCardTest {
             start = base,
             end = base.plusSeconds(3600),
             participants = setOf("u1", "u2", "u3", "u4", "u5"))
-    val names = listOf(User(displayName = "A"), User(displayName = "B"), User(displayName = "C"), User(displayName = "D"), User(displayName = "E"))
+    val names =
+        listOf(
+            User(displayName = "A"),
+            User(displayName = "B"),
+            User(displayName = "C"),
+            User(displayName = "D"),
+            User(displayName = "E"))
 
     composeTestRule.setContent { EventSummaryCard(event = e, participantNames = names) }
 

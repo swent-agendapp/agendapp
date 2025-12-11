@@ -58,7 +58,7 @@ fun AddEventAttendantScreen(
     addEventViewModel: AddEventViewModel = viewModel(),
 ) {
   val newEventUIState by addEventViewModel.uiState.collectAsState()
-  
+
   Column(
       modifier = modifier.fillMaxSize().padding(horizontal = PaddingExtraLarge),
       horizontalAlignment = Alignment.CenterHorizontally,

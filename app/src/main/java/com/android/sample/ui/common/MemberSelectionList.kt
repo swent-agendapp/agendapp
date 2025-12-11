@@ -61,11 +61,11 @@ data class MemberSelectionListOptions(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MemberSelectionList(
-  modifier: Modifier = Modifier,
-  members: List<User> = emptyList(),
-  selectedMembers: Set<User> = emptySet(),
-  onSelectionChanged: (Set<User>) -> Unit = {},
-  options: MemberSelectionListOptions = MemberSelectionListOptions(),
+    modifier: Modifier = Modifier,
+    members: List<User> = emptyList(),
+    selectedMembers: Set<User> = emptySet(),
+    onSelectionChanged: (Set<User>) -> Unit = {},
+    options: MemberSelectionListOptions = MemberSelectionListOptions(),
 ) {
   var searchQuery by remember { mutableStateOf("") }
 
@@ -130,11 +130,11 @@ private fun MemberSearchBar(
 
 @Composable
 private fun MemberSelectionLazyList(
-  members: List<User>,
-  selectedMembers: Set<User>,
-  onSelectionChanged: (Set<User>) -> Unit,
-  options: MemberSelectionListOptions,
-  modifier: Modifier = Modifier,
+    members: List<User>,
+    selectedMembers: Set<User>,
+    onSelectionChanged: (Set<User>) -> Unit,
+    options: MemberSelectionListOptions,
+    modifier: Modifier = Modifier,
 ) {
   LazyColumn(
       modifier =
@@ -187,9 +187,9 @@ private fun MemberSelectionLazyList(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MemberSelectionSummary(
-  selectedMembers: Set<User>,
-  summaryTestTag: String?,
-  modifier: Modifier = Modifier,
+    selectedMembers: Set<User>,
+    summaryTestTag: String?,
+    modifier: Modifier = Modifier,
 ) {
   val selectedMembersText =
       if (selectedMembers.isEmpty()) {
@@ -198,12 +198,13 @@ private fun MemberSelectionSummary(
         pluralStringResource(
             R.plurals.replacement_selected_members,
             count = selectedMembers.size,
-          selectedMembers.joinToString(
-            separator = ", ",
-            // extra space as a postfix to be able to scroll enough and not see the fade effect
-            // at the end of the last name
-            postfix = "      "
-          ) { it -> it.display() },
+            selectedMembers.joinToString(
+                separator = ", ",
+                // extra space as a postfix to be able to scroll enough and not see the fade effect
+                // at the end of the last name
+                postfix = "      ") { it ->
+                  it.display()
+                },
         )
       }
 
@@ -245,10 +246,10 @@ private fun MemberSelectionSummary(
 }
 
 private fun calculateNewSelection(
-  isSingleSelection: Boolean,
-  isSelected: Boolean,
-  member: User,
-  selectedMembers: Set<User>,
+    isSingleSelection: Boolean,
+    isSelected: Boolean,
+    member: User,
+    selectedMembers: Set<User>,
 ): Set<User> {
   return if (isSingleSelection) {
     if (isSelected) emptySet() else setOf(member)

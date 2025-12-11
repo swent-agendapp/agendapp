@@ -70,10 +70,10 @@ class InvitationOverviewViewModelTest {
 
     // ViewModel under test – after Main is set
     vm =
-      InvitationOverviewViewModel(
-        invitationRepository = fakeInvitationRepository,
-        organizationRepository = organizationRepository,
-        authRepository = fakeAuthRepository)
+        InvitationOverviewViewModel(
+            invitationRepository = fakeInvitationRepository,
+            organizationRepository = organizationRepository,
+            authRepository = fakeAuthRepository)
   }
 
   @After

@@ -33,21 +33,21 @@ import java.time.ZonedDateTime
 
 @Composable
 fun DrawEventSummaryCard(
-  modifier: Modifier = Modifier,
-  style: EventSummaryCardStyle = EventSummaryCardDefaults.style,
-  textConfig: EventSummaryTextConfig = EventSummaryCardDefaults.texts,
-  sideColor: Color = EventPalette.Blue,
-  shape: RoundedCornerShape = RoundedCornerShape(style.cornerRadiusDp),
+    modifier: Modifier = Modifier,
+    style: EventSummaryCardStyle = EventSummaryCardDefaults.style,
+    textConfig: EventSummaryTextConfig = EventSummaryCardDefaults.texts,
+    sideColor: Color = EventPalette.Blue,
+    shape: RoundedCornerShape = RoundedCornerShape(style.cornerRadiusDp),
     // Title
-  titleText: String = "No title provided...",
-  isTitleExpanded: Boolean = false,
-  onTitleToggle: () -> Unit = {},
-  onTitleOverflowChange: (Boolean) -> Unit = {},
-  showTitleToggle: Boolean = true,
+    titleText: String = "No title provided...",
+    isTitleExpanded: Boolean = false,
+    onTitleToggle: () -> Unit = {},
+    onTitleOverflowChange: (Boolean) -> Unit = {},
+    showTitleToggle: Boolean = true,
     // Category
-  category: EventCategory = EventCategory.defaultCategory(),
+    category: EventCategory = EventCategory.defaultCategory(),
     // Dates
-  datePresentation: DatePresentation =
+    datePresentation: DatePresentation =
         DatePresentation(
             isMultiDay = false,
             dateLine1 = NO_DATA_DEFAULT_VALUE,
@@ -59,15 +59,15 @@ fun DrawEventSummaryCard(
             startZdt = ZonedDateTime.now(),
             endZdt = ZonedDateTime.now()),
     // Recurrence
-  recurrenceText: String? = null,
+    recurrenceText: String? = null,
     // Description
-  descriptionText: String = "No description provided...",
-  isDescriptionExpanded: Boolean = false,
-  onDescriptionToggle: () -> Unit = {},
-  onDescriptionOverflowChange: (Boolean) -> Unit = {},
-  showDescriptionToggle: Boolean = true,
+    descriptionText: String = "No description provided...",
+    isDescriptionExpanded: Boolean = false,
+    onDescriptionToggle: () -> Unit = {},
+    onDescriptionOverflowChange: (Boolean) -> Unit = {},
+    showDescriptionToggle: Boolean = true,
     // Participants
-  participantNames: List<User> = emptyList(),
+    participantNames: List<User> = emptyList(),
 ) {
   val overlayColor =
       sideColor.copy(alpha = AlphaExtraLow) // translucent event tint drawn above base

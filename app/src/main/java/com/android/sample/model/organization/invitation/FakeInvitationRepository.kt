@@ -5,7 +5,9 @@ import com.android.sample.model.authentication.UserRepository
 import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.organization.data.Organization
 
-class FakeInvitationRepository(private val userRepository: UserRepository = UsersRepositoryLocal()) : InvitationRepository {
+class FakeInvitationRepository(
+    private val userRepository: UserRepository = UsersRepositoryLocal()
+) : InvitationRepository {
 
   private val invitations = mutableListOf<Invitation>()
 

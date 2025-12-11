@@ -1,6 +1,5 @@
 package com.android.sample.model.firestoreMappers
 
-import androidx.collection.intFloatMapOf
 import com.android.sample.model.authentication.User
 import com.google.firebase.firestore.DocumentSnapshot
 
@@ -51,19 +50,19 @@ object UserMapper : FirestoreMapper<User> {
 
   override fun toMap(model: User): Map<String, Any?> {
     return if (model.organizations.isEmpty()) {
-        mapOf(
+      mapOf(
           "id" to model.id,
           "displayName" to model.displayName,
           "email" to model.email,
           "phoneNumber" to model.phoneNumber,
-        )
-      } else {
-        mapOf(
+      )
+    } else {
+      mapOf(
           "id" to model.id,
           "displayName" to model.displayName,
           "email" to model.email,
           "phoneNumber" to model.phoneNumber,
           "organizations" to model.organizations)
-      }
+    }
   }
 }

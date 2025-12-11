@@ -19,11 +19,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 data class OverviewUIState(
-  val event: Event? = null,
-  val participantsNames: List<User> = emptyList(),
-  val errorMsg: String? = null,
-  val isLoading: Boolean = false,
-  val isDeleteSuccessful: Boolean = false
+    val event: Event? = null,
+    val participantsNames: List<User> = emptyList(),
+    val errorMsg: String? = null,
+    val isLoading: Boolean = false,
+    val isDeleteSuccessful: Boolean = false
 )
 
 /**
@@ -37,11 +37,11 @@ data class OverviewUIState(
  */
 class EventOverviewViewModel(
     // used to get Events
-  private val eventRepository: EventRepository = EventRepositoryProvider.repository,
-  private val userRepository: UserRepository = UserRepositoryProvider.repository,
+    private val eventRepository: EventRepository = EventRepositoryProvider.repository,
+    private val userRepository: UserRepository = UserRepositoryProvider.repository,
     // used to get the name of the participants (the event only contains user id, not name)
-  private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
-  private val selectedOrganizationViewModel: SelectedOrganizationViewModel =
+    private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
+    private val selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel
 ) : ViewModel() {
   private val _uiState = MutableStateFlow(OverviewUIState())

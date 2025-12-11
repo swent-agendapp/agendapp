@@ -14,7 +14,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.sample.R
 import com.android.sample.model.authentication.User
-import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.model.replacement.mockData.getMockReplacements
 import com.android.sample.ui.theme.SampleAppTheme
 import com.android.sample.utils.FirebaseEmulatedTest
@@ -44,7 +43,7 @@ class ProcessReplacementScreenTest : FirebaseEmulatedTest() {
     Unit
   }
 
-    @Test
+  @Test
   fun screen_displaysBasicElements() {
     composeTestRule.setContent {
       SampleAppTheme { ProcessReplacementScreen(replacementId = replacementId) }
@@ -93,12 +92,11 @@ class ProcessReplacementScreenTest : FirebaseEmulatedTest() {
         ProcessReplacementScreen(
             replacementId = replacementId,
             onSendRequests = { sentMembers = it },
-            candidates = listOf(
-              User(id = "1", displayName = "Alice", email = "alice@example.com"),
-              User(id = "2", displayName = "Bob", email = "bob@example.com"),
-              User(id = "3", displayName = "Charlie", email = "charlie@example.com")
-            )
-        )
+            candidates =
+                listOf(
+                    User(id = "1", displayName = "Alice", email = "alice@example.com"),
+                    User(id = "2", displayName = "Bob", email = "bob@example.com"),
+                    User(id = "3", displayName = "Charlie", email = "charlie@example.com")))
       }
     }
 
@@ -122,13 +120,12 @@ class ProcessReplacementScreenTest : FirebaseEmulatedTest() {
     composeTestRule.setContent {
       SampleAppTheme {
         ProcessReplacementScreen(
-          replacementId = replacementId,
-          candidates = listOf(
-            User(id = "1", displayName = "Alice", email = "alice@example.com"),
-            User(id = "2", displayName = "Bob", email = "bob@example.com"),
-            User(id = "3", displayName = "Charlie", email = "charlie@example.com")
-          )
-        )
+            replacementId = replacementId,
+            candidates =
+                listOf(
+                    User(id = "1", displayName = "Alice", email = "alice@example.com"),
+                    User(id = "2", displayName = "Bob", email = "bob@example.com"),
+                    User(id = "3", displayName = "Charlie", email = "charlie@example.com")))
       }
     }
 

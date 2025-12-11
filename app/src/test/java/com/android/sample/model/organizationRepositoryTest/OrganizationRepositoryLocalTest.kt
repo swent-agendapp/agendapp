@@ -1,7 +1,6 @@
 package com.android.sample.model.organizationRepositoryTest
 
 import com.android.sample.model.authentication.User
-
 import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.repository.OrganizationRepositoryLocal

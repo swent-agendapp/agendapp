@@ -361,9 +361,9 @@ class ReplacementEmployeeViewModel(
   }
 
   fun sendRequestsForPendingReplacement(
-    replacementId: String,
-    selectedSubstitutes: List<User>,
-    onFinished: () -> Unit,
+      replacementId: String,
+      selectedSubstitutes: List<User>,
+      onFinished: () -> Unit,
   ) {
     viewModelScope.launch {
       try {

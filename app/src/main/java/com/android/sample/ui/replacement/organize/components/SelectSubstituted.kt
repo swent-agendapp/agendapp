@@ -71,7 +71,6 @@ fun SelectSubstitutedScreen(
 ) {
   val uiState by replacementOrganizeViewModel.uiState.collectAsState()
 
-
   Scaffold(
       topBar = {
         SecondaryPageTopBar(
@@ -108,8 +107,9 @@ fun SelectSubstitutedScreen(
                         onSelectionChanged = { selection ->
                           val selectedLabel = selection.firstOrNull()
                           val selectedMember =
-                              uiState.memberList
-                                  .firstOrNull {  label -> label.id == selectedLabel?.id }
+                              uiState.memberList.firstOrNull { label ->
+                                label.id == selectedLabel?.id
+                              }
                           selectedMember?.let { replacementOrganizeViewModel.setSelectedMember(it) }
                         },
                         modifier = Modifier.fillMaxSize(),

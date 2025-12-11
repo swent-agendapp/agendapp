@@ -23,19 +23,19 @@ import kotlinx.coroutines.launch
 
 // Assisted by AI
 data class EditCalendarEventUIState(
-  val eventId: String = "",
-  val title: String = "",
-  val description: String = "",
-  val startInstant: Instant = Instant.now(),
-  val endInstant: Instant = Instant.now().plus(Duration.ofHours(1)),
-  val recurrenceMode: RecurrenceStatus = RecurrenceStatus.OneTime,
-  val participants: Set<User> = emptySet(),
-  val category: EventCategory = EventCategory.defaultCategory(),
-  val notifications: List<String> = emptyList(),
-  val isLoading: Boolean = false,
-  val errorMessage: String? = null,
-  val users: List<User> = emptyList(),
-  val step: EditEventStep = EditEventStep.MAIN
+    val eventId: String = "",
+    val title: String = "",
+    val description: String = "",
+    val startInstant: Instant = Instant.now(),
+    val endInstant: Instant = Instant.now().plus(Duration.ofHours(1)),
+    val recurrenceMode: RecurrenceStatus = RecurrenceStatus.OneTime,
+    val participants: Set<User> = emptySet(),
+    val category: EventCategory = EventCategory.defaultCategory(),
+    val notifications: List<String> = emptyList(),
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null,
+    val users: List<User> = emptyList(),
+    val step: EditEventStep = EditEventStep.MAIN
 )
 
 /**
@@ -59,9 +59,9 @@ enum class EditEventStep {
  * - Navigating between edit steps.
  */
 class EditEventViewModel(
-  private val eventRepository: EventRepository = EventRepositoryProvider.repository,
-  private val userRepository: UserRepository = UserRepositoryProvider.repository,
-  selectedOrganizationViewModel: SelectedOrganizationViewModel =
+    private val eventRepository: EventRepository = EventRepositoryProvider.repository,
+    private val userRepository: UserRepository = UserRepositoryProvider.repository,
+    selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel
 ) : ViewModel() {
 
@@ -106,7 +106,7 @@ class EditEventViewModel(
     }
   }
 
-  fun loadUsers(){
+  fun loadUsers() {
     viewModelScope.launch {
       val orgId = selectedOrganizationId.value
       require(orgId != null) { "No organization selected." }
@@ -135,7 +135,7 @@ class EditEventViewModel(
                   endInstant = event.endDate,
                   recurrenceMode = event.recurrenceStatus,
                   participants =
-                    _uiState.value.users.filter { it.id in event.participants }.toSet(),
+                      _uiState.value.users.filter { it.id in event.participants }.toSet(),
                   category = event.category,
                   isLoading = false)
         } else {

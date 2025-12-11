@@ -67,8 +67,18 @@ class EventOverviewViewModelTest {
 
     organizationRepository = OrganizationRepositoryLocal(userRepository)
 
-    user1 = User(id = "Alice", displayName = "Alice", email = "alice@example.com", organizations = listOf(selectedOrganizationID))
-    user2 = User(id = "Bob", displayName = "Bob", email = "bob@example.com", organizations = listOf(selectedOrganizationID))
+    user1 =
+        User(
+            id = "Alice",
+            displayName = "Alice",
+            email = "alice@example.com",
+            organizations = listOf(selectedOrganizationID))
+    user2 =
+        User(
+            id = "Bob",
+            displayName = "Bob",
+            email = "bob@example.com",
+            organizations = listOf(selectedOrganizationID))
 
     // Register all users in the repository
     userRepository.newUser(user1)
@@ -87,7 +97,10 @@ class EventOverviewViewModelTest {
     SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationID)
 
     viewModel =
-        EventOverviewViewModel(eventRepository = repository, authRepository = FakeAuthRepository(), userRepository = userRepository)
+        EventOverviewViewModel(
+            eventRepository = repository,
+            authRepository = FakeAuthRepository(),
+            userRepository = userRepository)
 
     // Create sample events for testing.
     eventWithoutParticipants =

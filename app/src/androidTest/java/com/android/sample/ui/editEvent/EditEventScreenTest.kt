@@ -3,7 +3,6 @@ package com.android.sample.ui.editEvent
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.android.sample.ui.calendar.addEvent.components.AddEventConfirmationScreen
 import com.android.sample.ui.calendar.editEvent.EditEventTestTags
 import com.android.sample.ui.calendar.editEvent.components.EditEventAttendantScreen
 import com.android.sample.ui.calendar.editEvent.components.EditEventScreen
@@ -19,7 +18,6 @@ import org.junit.runner.RunWith
 // Assisted by AI
 @RunWith(AndroidJUnit4::class)
 class EditEventScreenTest : FirebaseEmulatedTest() {
-
 
   @get:Rule val composeTestRule = createComposeRule()
 

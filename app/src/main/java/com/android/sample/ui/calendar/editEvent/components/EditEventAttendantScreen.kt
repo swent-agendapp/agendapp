@@ -17,14 +17,10 @@ import com.android.sample.ui.common.BottomNavigationButtons
 import com.android.sample.ui.common.MemberSelectionList
 import com.android.sample.ui.common.MemberSelectionListOptions
 import com.android.sample.ui.common.SecondaryPageTopBar
-import com.android.sample.ui.theme.DefaultZoom
 import com.android.sample.ui.theme.PaddingHuge
 import com.android.sample.ui.theme.PaddingLarge
 import com.android.sample.ui.theme.PaddingSmall
 import com.android.sample.ui.theme.WeightExtraHeavy
-import com.google.android.gms.maps.CameraUpdateFactory
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterNotNull
 
 // Assisted by AI
 /**

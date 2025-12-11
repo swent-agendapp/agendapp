@@ -40,7 +40,6 @@ class EditEventViewModelTest {
   private lateinit var user: User
   private lateinit var organization: Organization
 
-
   private val selectedOrganizationID: String = "org123"
 
   @Before
@@ -50,7 +49,12 @@ class EditEventViewModelTest {
     userRepository = UsersRepositoryLocal()
     organizationRepository = OrganizationRepositoryLocal(userRepository)
 
-    user = User(id = "adminA", displayName = "Admin A", email = "adminA@example.com", organizations = listOf(selectedOrganizationID))
+    user =
+        User(
+            id = "adminA",
+            displayName = "Admin A",
+            email = "adminA@example.com",
+            organizations = listOf(selectedOrganizationID))
 
     // Register all users in the repository
     userRepository.newUser(user)

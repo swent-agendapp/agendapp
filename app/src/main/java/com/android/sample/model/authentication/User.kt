@@ -22,8 +22,6 @@ data class User(
     val email: String? = null,
     val phoneNumber: String? = null,
     val organizations: List<String> = emptyList()
-)
-{
-    fun display() : String =
-        displayName ?: email ?: "no name"
+) {
+  fun display(): String = displayName ?: email ?: "no name"
 }

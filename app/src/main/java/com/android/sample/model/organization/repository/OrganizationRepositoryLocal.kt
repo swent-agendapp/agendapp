@@ -11,7 +11,9 @@ import com.android.sample.model.organization.data.Organization
  * This implementation uses [UserRepositoryProvider] to check user permissions (admin/member access)
  * for various operations.
  */
-class OrganizationRepositoryLocal(private val userRepository: UserRepository = UserRepositoryProvider.repository) : OrganizationRepository {
+class OrganizationRepositoryLocal(
+    private val userRepository: UserRepository = UserRepositoryProvider.repository
+) : OrganizationRepository {
 
   private val organizations: MutableList<Organization> = mutableListOf()
 

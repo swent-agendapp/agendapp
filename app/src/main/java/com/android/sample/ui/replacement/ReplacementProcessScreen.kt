@@ -56,10 +56,10 @@ object ProcessReplacementTestTags {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProcessReplacementScreen(
-  replacementId: String,
-  candidates: List<User> = emptyList(),
-  onSendRequests: (List<User>) -> Unit = {},
-  onBack: () -> Unit = {},
+    replacementId: String,
+    candidates: List<User> = emptyList(),
+    onSendRequests: (List<User>) -> Unit = {},
+    onBack: () -> Unit = {},
 ) {
   val replacement =
       remember(replacementId) { getMockReplacements().first { it.id == replacementId } }

@@ -6,7 +6,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.category.EventCategory
-import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.editEvent.EditEventTestTags
 import com.android.sample.ui.calendar.editEvent.EditEventViewModel
 import com.android.sample.ui.calendar.editEvent.components.EditEventAttendantScreen
@@ -15,10 +14,10 @@ import com.android.sample.ui.theme.SampleAppTheme
 import com.android.sample.utils.FakeEventRepository
 import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.OrganizationTestHelper
-import kotlinx.coroutines.runBlocking
 import java.time.Duration
 import java.time.Instant.now
 import java.time.temporal.ChronoUnit
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -44,7 +43,6 @@ class EditEventWithViewModelTest : FirebaseEmulatedTest() {
     val orgId = "orgTest"
     val helper = OrganizationTestHelper()
     helper.setupOrganizationWithUsers(orgId)
-
 
     val start = now().truncatedTo(ChronoUnit.HOURS)
     sampleEvent =

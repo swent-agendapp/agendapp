@@ -36,41 +36,6 @@ class CreateInvitationViewModel() : ViewModel() {
   /** Public immutable state observed by the UI. */
   val uiState: StateFlow<CreateInvitationUIState> = _uiState.asStateFlow()
 
-  // Wrap for brevity
-  private fun requireOrgId(): String = selectedOrganizationViewModel.getSelectedOrganizationId()
-
-  /**
-   * Creates multiple invitations and inserts them into the repository.
-   *
-   * This method:
-   * - Retrieves the currently authenticated user (required to assign creator/issuer info).
-   * - Creates `count` new invitations using `Invitation.create(...)`.
-   * - Persists each invitation through the `invitationRepository`.
-   *
-   * @param count The number of invitations to generate and store.
-   * @throws IllegalStateException if no authenticated user is found.
-   * @throws IllegalStateException if no organization is selected.
-   * @throws IllegalStateException if the current user is not an admin of the selected organization
-   *
-   * This function is typically called after the user confirms the creation from the invitation
-   * creation bottom sheet.
-   */
-  fun addInvitations() {
-    viewModelScope.launch {
-      val user =
-          authRepository.getCurrentUser()
-              ?: throw IllegalStateException("No authenticated user found.")
-      // getSelectedOrganizationId() will throw if no organization is selected
-      val selectedOrganizationId = requireOrgId()
-      val selectedOrganization =
-          organizationRepository.getOrganizationById(selectedOrganizationId, user)
-              ?: throw IllegalStateException("Selected organization not found.")
-      repeat(_uiState.value.count) {
-        invitationRepository.insertInvitation(organization = selectedOrganization, user = user)
-      }
-    }
-  }
-
   /** Returns true if the current state allows creating invitations. */
   fun canCreateInvitations() =
       _uiState.value.count >= MIN_INVITATION_COUNT && _uiState.value.count <= MAX_INVITATION_COUNT

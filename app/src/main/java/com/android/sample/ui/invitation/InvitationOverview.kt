@@ -28,7 +28,6 @@ import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.invitation.components.InvitationCardList
 import com.android.sample.ui.invitation.createInvitation.CreateInvitationBottomSheet
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
-import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import kotlinx.coroutines.launch
 

@@ -15,10 +15,10 @@ import com.android.sample.ui.invitation.createInvitation.InvitationCreationTestT
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import com.android.sample.utils.FirebaseEmulatedTest
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -37,7 +37,8 @@ class InvitationOverviewScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrg
   override val organizationId: String = DEFAULT_TEST_ORG_ID
   private val user = User(id = "user1", displayName = "Test User", email = "test@example.com")
   private val org =
-      Organization(id = organizationId, name = "Test Org", admins = listOf(user), members = listOf(user))
+      Organization(
+          id = organizationId, name = "Test Org", admins = listOf(user), members = listOf(user))
   private val inv1 = Invitation(id = "id1", organizationId = org.id, code = "123456")
   private val inv2 = Invitation(id = "id2", organizationId = org.id, code = "654321")
 
@@ -53,7 +54,7 @@ class InvitationOverviewScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrg
     fakeInvitationRepository.addInvitation(inv1)
     fakeInvitationRepository.addInvitation(inv2)
 
-      fakeAuthRepository = FakeAuthRepository(user)
+    fakeAuthRepository = FakeAuthRepository(user)
     vm =
         InvitationOverviewViewModel(
             invitationRepository = fakeInvitationRepository,

@@ -12,7 +12,6 @@ import androidx.test.rule.GrantPermissionRule
 import com.android.sample.model.map.Area
 import com.android.sample.model.map.MapRepositoryProvider
 import com.android.sample.model.map.Marker
-import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.ui.map.MapScreenTestTags.CREATE_AREA_BUTTON
 import com.android.sample.ui.map.MapScreenTestTags.DELETE_MARKER_BUTTON
 import com.android.sample.ui.map.MapScreenTestTags.DOWN_SHEET

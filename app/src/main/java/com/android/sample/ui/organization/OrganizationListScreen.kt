@@ -1,8 +1,8 @@
 package com.android.sample.ui.organization
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,6 +28,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -41,6 +42,7 @@ import com.android.sample.ui.common.MainPageButton
 import com.android.sample.ui.common.MainPageTopBar
 import com.android.sample.ui.invitation.useInvitation.UseInvitationBottomSheet
 import com.android.sample.ui.invitation.useInvitation.UseInvitationViewModel
+import com.android.sample.ui.theme.PaddingExtraSmall
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.SpacingMedium
 import kotlinx.coroutines.launch
@@ -104,22 +106,28 @@ fun OrganizationListScreen(
         )
       },
       floatingActionButton = {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(end = PaddingMedium, start = PaddingMedium),
-            horizontalArrangement = Arrangement.SpaceBetween) {
-              FloatingButton(
-                  onClick = {
-                    scope.launch { sheetState.show() }
-                    organizationViewModel.setShowUseInvitationBottomSheet(true)
-                  },
-                  icon = Icons.AutoMirrored.Filled.Login,
-                  modifier = Modifier.testTag(OrganizationListScreenTestTags.USE_INVITATION_BUTTON))
-
-              FloatingButton(
-                  onClick = onAddOrganizationClicked,
-                  icon = Icons.Default.Add,
-                  modifier =
-                      Modifier.testTag(OrganizationListScreenTestTags.ADD_ORGANIZATION_BUTTON))
+        Box(
+            modifier =
+                Modifier.fillMaxWidth()
+                    .padding(end = PaddingExtraSmall, bottom = PaddingExtraSmall)) {
+              Column(
+                  modifier = Modifier.align(Alignment.BottomEnd),
+                  verticalArrangement = Arrangement.spacedBy(PaddingMedium)) {
+                    FloatingButton(
+                        onClick = {
+                          scope.launch { sheetState.show() }
+                          organizationViewModel.setShowUseInvitationBottomSheet(true)
+                        },
+                        icon = Icons.AutoMirrored.Filled.Login,
+                        modifier =
+                            Modifier.testTag(OrganizationListScreenTestTags.USE_INVITATION_BUTTON))
+                    FloatingButton(
+                        onClick = onAddOrganizationClicked,
+                        icon = Icons.Default.Add,
+                        modifier =
+                            Modifier.testTag(
+                                OrganizationListScreenTestTags.ADD_ORGANIZATION_BUTTON))
+                  }
             }
       },
       modifier = Modifier.testTag(OrganizationListScreenTestTags.ROOT),

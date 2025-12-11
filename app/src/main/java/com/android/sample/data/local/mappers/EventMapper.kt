@@ -31,7 +31,9 @@ object EventMapper {
         version = version,
         hasBeenDeleted = hasBeenDeleted,
         recurrenceStatus = recurrenceStatus.name,
-        category = category)
+        category = category,
+        location = location,
+    )
   }
 
   /* Maps an EventEntity from local database storage to an Event domain model. */
@@ -56,6 +58,7 @@ object EventMapper {
         recurrenceStatus =
             runCatching { RecurrenceStatus.valueOf(recurrenceStatus) }
                 .getOrDefault(RecurrenceStatus.OneTime),
-        category = category)
+        category = category,
+        location = location)
   }
 }

@@ -56,7 +56,6 @@ fun ReplacementEmployeeFlow(
                   onSelectEvent = { viewModel.goToSelectEvent() },
                   onChooseDateRange = { viewModel.goToSelectDateRange() },
               ),
-          onBack = onBack,
       )
     }
     ReplacementEmployeeStep.SELECT_EVENT -> {

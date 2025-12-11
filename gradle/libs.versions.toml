@@ -1,5 +1,5 @@
 [versions]
-coroutinesTest = "1.7.3"
+coroutines = "1.7.3"
 agp = "8.4.2"
 gradle = "8.0.2"
 kotlin = "1.9.0"
@@ -62,7 +62,7 @@ reorderable = "0.9.6"
 
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlinBom" }
-kotlinx_coroutines_test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesTest" }
+kotlinx_coroutines_test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
 
 # Firebase Libraries
 firebase-auth = { module = "com.google.firebase:firebase-auth", version.ref = "firebaseAuth" }
@@ -124,6 +124,10 @@ play-services-location = { group = "com.google.android.gms", name = "play-servic
 places = { group = "com.google.android.libraries.places", name = "places", version.ref = "places" }
 core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "coreKtxVersion" }
 androidx-compose-animation = { group = "androidx.compose.animation", name = "animation", version.ref = "animation" }
+
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
+kotlinx-coroutines-play-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "coroutines" }
 
 burnoutcrew-reorderable = { module = "org.burnoutcrew.composereorderable:reorderable", version.ref = "reorderable" }
 

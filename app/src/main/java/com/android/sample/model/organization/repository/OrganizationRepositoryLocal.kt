@@ -68,11 +68,13 @@ class OrganizationRepositoryLocal : OrganizationRepository {
         organizations.find { it.id == invitation.organizationId }
             ?: throw IllegalArgumentException(
                 "No organization matches the ID of the invitation's organizationId.")
-    if (!organizationOfInvitation.members.contains(member)) {
-      val updatedOrganization =
-          organizationOfInvitation.copy(members = organizationOfInvitation.members + member)
-      val index = organizations.indexOfFirst { it.id == updatedOrganization.id }
-      organizations[index] = updatedOrganization
+    if (organizationOfInvitation.members.contains(member)) {
+      throw IllegalArgumentException("User is already a member of the organization.")
     }
+
+    val updatedOrganization =
+        organizationOfInvitation.copy(members = organizationOfInvitation.members + member)
+    val index = organizations.indexOfFirst { it.id == updatedOrganization.id }
+    organizations[index] = updatedOrganization
   }
 }

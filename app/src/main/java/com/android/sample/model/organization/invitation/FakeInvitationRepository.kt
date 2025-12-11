@@ -52,7 +52,6 @@ class FakeInvitationRepository(
     invitations.removeAt(index)
   }
 
-
   override suspend fun getInvitationById(itemId: String): Invitation? {
     return invitations.firstOrNull { it.id == itemId }
   }

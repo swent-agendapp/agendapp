@@ -46,8 +46,7 @@ class UseInvitationViewModelTest {
   private lateinit var vm: UseInvitationViewModel
 
   private val user = User("user1", "Tester", "test@example.com")
-  private val organization =
-      Organization(id = "org1", name = "Org")
+  private val organization = Organization(id = "org1", name = "Org")
 
   private val validInvitation =
       Invitation(
@@ -102,8 +101,7 @@ class UseInvitationViewModelTest {
             invitationRepository = fakeInvitationRepository,
             organizationRepository = fakeOrganizationRepository,
             authRepository = fakeAuthRepository,
-            userRepository = userRepository
-        )
+            userRepository = userRepository)
 
     Dispatchers.setMain(testDispatcher)
   }

@@ -43,8 +43,7 @@ class UseInvitationViewModel(
     private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
     private val organizationRepository: OrganizationRepository =
         OrganizationRepositoryProvider.repository,
-    private val userRepository: UserRepository =
-          UserRepositoryProvider.repository
+    private val userRepository: UserRepository = UserRepositoryProvider.repository
 ) : ViewModel() {
   private val _uiState = MutableStateFlow(UseInvitationUIState())
 

@@ -4,7 +4,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.organization.data.Organization
-import com.android.sample.model.organization.invitation.Invitation
 import com.android.sample.model.organization.repository.OrganizationRepository
 import com.android.sample.utils.FirebaseEmulatedTest
 import kotlinx.coroutines.runBlocking
@@ -200,5 +199,4 @@ class OrganizationFirebaseRepositoryTest : FirebaseEmulatedTest() {
     val memberIds = members.map { it }.toSet()
     assertEquals(setOf("memberA", "adminA"), memberIds)
   }
-
 }

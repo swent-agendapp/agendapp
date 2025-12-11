@@ -4,7 +4,6 @@ import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepository
 import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.organization.data.Organization
-import com.android.sample.model.organization.invitation.Invitation
 import kotlin.collections.plus
 
 /**

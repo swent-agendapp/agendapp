@@ -58,36 +58,7 @@ fun AddEventAttendantScreen(
     addEventViewModel: AddEventViewModel = viewModel(),
 ) {
   val newEventUIState by addEventViewModel.uiState.collectAsState()
-
-  val allParticipants =
-      listOf(
-          "Anaïs",
-          "Ania",
-          "Benjamin",
-          "Célestin",
-          "Chiara",
-          "Coralie",
-          "David",
-          "Diana",
-          "Emi",
-          "Emilien",
-          "Giada",
-          "Héloïse",
-          "Jael",
-          "Laura",
-          "Ludovic",
-          "Maé",
-          "Mara",
-          "Maud",
-          "Maxime",
-          "Maya",
-          "Miki",
-          "Roby",
-          "Solene",
-          "Yukié",
-          "Zoé") // Placeholder for all possible participants
-  // note : these temporary names are inspired from the real Stakeholder's employee's names
-
+  
   Column(
       modifier = modifier.fillMaxSize().padding(horizontal = PaddingExtraLarge),
       horizontalAlignment = Alignment.CenterHorizontally,

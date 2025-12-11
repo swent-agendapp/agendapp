@@ -75,14 +75,12 @@ fun EditEventScreen(
     }
   }
 
-  val noParticipantLabel = stringResource(R.string.replacement_selected_members_none)
-
   // Participants names
   val names =
       if (uiState.participants.isNotEmpty()) {
         uiState.participants.toList()
       } else {
-        listOf(noParticipantLabel)
+        emptyList()
       }
 
   var showStartTimePicker by remember { mutableStateOf(false) }
@@ -97,144 +95,161 @@ fun EditEventScreen(
             modifier = Modifier.fillMaxSize().padding(paddingValues).padding(PaddingLarge),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround) {
-              // Title
-              item {
-                ValidatingTextField(
-                    label = stringResource(R.string.edit_event_title_label),
-                    placeholder = stringResource(R.string.edit_event_title_placeholder),
-                    testTag = EditEventTestTags.TITLE_FIELD,
-                    value = uiState.title,
-                    onValueChange = { editEventViewModel.setTitle(it) },
-                    isError = uiState.title.isBlank(),
-                    errorMessage = stringResource(R.string.edit_event_title_error))
-              }
+          // Title
+          item {
+            ValidatingTextField(
+              label = stringResource(R.string.edit_event_title_label),
+              placeholder = stringResource(R.string.edit_event_title_placeholder),
+              testTag = EditEventTestTags.TITLE_FIELD,
+              value = uiState.title,
+              onValueChange = { editEventViewModel.setTitle(it) },
+              isError = uiState.title.isBlank(),
+              errorMessage = stringResource(R.string.edit_event_title_error)
+            )
+          }
 
-              // Color
-              item {
-                CategorySelector(
-                    selectedCategory = uiState.category,
-                    onCategorySelected = { editEventViewModel.setCategory(it) },
-                    testTag = EditEventTestTags.CATEGORY_SELECTOR,
+          // Color
+          item {
+            CategorySelector(
+              selectedCategory = uiState.category,
+              onCategorySelected = { editEventViewModel.setCategory(it) },
+              testTag = EditEventTestTags.CATEGORY_SELECTOR,
+            )
+            Spacer(modifier = Modifier.height(SpacingLarge))
+          }
+
+          // Description
+          item {
+            ValidatingTextField(
+              label = stringResource(R.string.edit_event_description_label),
+              placeholder = stringResource(R.string.edit_event_description_placeholder),
+              testTag = EditEventTestTags.DESCRIPTION_FIELD,
+              value = uiState.description,
+              onValueChange = { editEventViewModel.setDescription(it) },
+              isError = uiState.description.isBlank(),
+              errorMessage = stringResource(R.string.edit_event_description_error),
+              singleLine = false,
+              minLines = DESCRIPTION_MIN_LINES
+            )
+            Spacer(modifier = Modifier.height(SpacingExtraLarge))
+          }
+
+          // Start & End Dates
+          item {
+            key(
+              uiState
+                .startInstant
+            ) { // Use the latest value from uiState as the initial value
+              DatePickerFieldToModal(
+                label = stringResource(R.string.edit_event_start_date_label),
+                modifier = Modifier.testTag(EditEventTestTags.START_DATE_FIELD),
+                onDateSelected = { date ->
+                  editEventViewModel.setStartInstant(
+                    DateTimeUtils.instantWithDate(uiState.startInstant, date)
+                  )
+                },
+                enabled = true,
+                initialInstant = uiState.startInstant
+              )
+            }
+            Spacer(modifier = Modifier.height(SpacingLarge))
+          }
+
+          item {
+            key(uiState.endInstant) {
+              DatePickerFieldToModal(
+                label = stringResource(R.string.edit_event_end_date_label),
+                modifier = Modifier.testTag(EditEventTestTags.END_DATE_FIELD),
+                onDateSelected = { date ->
+                  editEventViewModel.setEndInstant(
+                    DateTimeUtils.instantWithDate(uiState.endInstant, date)
+                  )
+                },
+                enabled = true,
+                initialInstant = uiState.endInstant
+              )
+            }
+            Spacer(modifier = Modifier.height(SpacingLarge))
+          }
+
+          // Start & End Time Pickers
+          item {
+            Column(modifier = Modifier.fillMaxWidth()) {
+
+              // Start time row
+              Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+              ) {
+                Text(
+                  text = stringResource(R.string.edit_event_start_time_label),
+                  modifier = Modifier.weight(WeightExtraHeavy),
+                  textAlign = TextAlign.Center
                 )
-                Spacer(modifier = Modifier.height(SpacingLarge))
-              }
-
-              // Description
-              item {
-                ValidatingTextField(
-                    label = stringResource(R.string.edit_event_description_label),
-                    placeholder = stringResource(R.string.edit_event_description_placeholder),
-                    testTag = EditEventTestTags.DESCRIPTION_FIELD,
-                    value = uiState.description,
-                    onValueChange = { editEventViewModel.setDescription(it) },
-                    isError = uiState.description.isBlank(),
-                    errorMessage = stringResource(R.string.edit_event_description_error),
-                    singleLine = false,
-                    minLines = DESCRIPTION_MIN_LINES)
-                Spacer(modifier = Modifier.height(SpacingExtraLarge))
-              }
-
-              // Start & End Dates
-              item {
-                key(
-                    uiState
-                        .startInstant) { // Use the latest value from uiState as the initial value
-                      DatePickerFieldToModal(
-                          label = stringResource(R.string.edit_event_start_date_label),
-                          modifier = Modifier.testTag(EditEventTestTags.START_DATE_FIELD),
-                          onDateSelected = { date ->
-                            editEventViewModel.setStartInstant(
-                                DateTimeUtils.instantWithDate(uiState.startInstant, date))
-                          },
-                          enabled = true,
-                          initialInstant = uiState.startInstant)
-                    }
-                Spacer(modifier = Modifier.height(SpacingLarge))
-              }
-
-              item {
-                key(uiState.endInstant) { // Use the latest value from uiState as the initial value
-                  DatePickerFieldToModal(
-                      label = stringResource(R.string.edit_event_end_date_label),
-                      modifier = Modifier.testTag(EditEventTestTags.END_DATE_FIELD),
-                      onDateSelected = { date ->
-                        editEventViewModel.setEndInstant(
-                            DateTimeUtils.instantWithDate(uiState.endInstant, date))
-                      },
-                      enabled = true,
-                      initialInstant = uiState.endInstant)
+                OutlinedButton(
+                  onClick = { showStartTimePicker = true },
+                  modifier =
+                    Modifier.weight(WeightExtraHeavy)
+                      .testTag(EditEventTestTags.START_TIME_BUTTON)
+                ) {
+                  Text(DateTimeUtils.formatInstantToTime(uiState.startInstant))
                 }
-                Spacer(modifier = Modifier.height(SpacingLarge))
               }
 
-              // Start & End Time Pickers
-              item {
-                Column(modifier = Modifier.fillMaxWidth()) {
+              Spacer(modifier = Modifier.height(SpacingMedium))
 
-                  // Start time row
-                  Row(
-                      modifier = Modifier.fillMaxWidth(),
-                      horizontalArrangement = Arrangement.SpaceBetween,
-                      verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = stringResource(R.string.edit_event_start_time_label),
-                            modifier = Modifier.weight(WeightExtraHeavy),
-                            textAlign = TextAlign.Center)
-                        OutlinedButton(
-                            onClick = { showStartTimePicker = true },
-                            modifier =
-                                Modifier.weight(WeightExtraHeavy)
-                                    .testTag(EditEventTestTags.START_TIME_BUTTON)) {
-                              Text(DateTimeUtils.formatInstantToTime(uiState.startInstant))
-                            }
-                      }
-
-                  Spacer(modifier = Modifier.height(SpacingMedium))
-
-                  // End time row
-                  Row(
-                      modifier = Modifier.fillMaxWidth(),
-                      horizontalArrangement = Arrangement.SpaceBetween,
-                      verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = stringResource(R.string.edit_event_end_time_label),
-                            modifier = Modifier.weight(WeightExtraHeavy),
-                            textAlign = TextAlign.Center)
-                        OutlinedButton(
-                            onClick = { showEndTimePicker = true },
-                            modifier =
-                                Modifier.weight(WeightExtraHeavy)
-                                    .testTag(EditEventTestTags.END_TIME_BUTTON)) {
-                              Text(DateTimeUtils.formatInstantToTime(uiState.endInstant))
-                            }
-                      }
-                }
-
-                Spacer(modifier = Modifier.height(SpacingExtraLarge))
-              }
-
-              // Notifications (implement later if needed)
-              /**
-               * item { Spacer(modifier = Modifier.height(SpacingMedium))
-               * NotificationSection(editEventViewModel = editEventViewModel) }
-               */
-
-              // Participants
-              item {
-                Card(shape = RoundedCornerShape(CornerRadiusLarge)) {
-                  Column(
-                      modifier = Modifier.fillMaxWidth().padding(PaddingMedium),
-                      horizontalAlignment = Alignment.Start) {
-                        ParticipantsSection(participantNames = names, showHeader = false)
-                        Spacer(modifier = Modifier.height(SpacingLarge))
-                        SecondaryButton(
-                            modifier = Modifier.testTag(EditEventTestTags.EDIT_PARTICIPANTS_BUTTON),
-                            onClick = onEditParticipants,
-                            text = stringResource(R.string.edit_event_edit_participants_button))
-                      }
+              // End time row
+              Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+              ) {
+                Text(
+                  text = stringResource(R.string.edit_event_end_time_label),
+                  modifier = Modifier.weight(WeightExtraHeavy),
+                  textAlign = TextAlign.Center
+                )
+                OutlinedButton(
+                  onClick = { showEndTimePicker = true },
+                  modifier =
+                    Modifier.weight(WeightExtraHeavy)
+                      .testTag(EditEventTestTags.END_TIME_BUTTON)
+                ) {
+                  Text(DateTimeUtils.formatInstantToTime(uiState.endInstant))
                 }
               }
             }
+
+            Spacer(modifier = Modifier.height(SpacingExtraLarge))
+          }
+
+          // Notifications (implement later if needed)
+          /**
+           * item { Spacer(modifier = Modifier.height(SpacingMedium))
+           * NotificationSection(editEventViewModel = editEventViewModel) }
+           */
+
+          // Participants
+          item {
+            key(uiState.participants) { // Use the latest value from uiState as the initial value
+              Card(shape = RoundedCornerShape(CornerRadiusLarge)) {
+                Column(
+                  modifier = Modifier.fillMaxWidth().padding(PaddingMedium),
+                  horizontalAlignment = Alignment.Start
+                ) {
+                  ParticipantsSection(participantNames = names, showHeader = false)
+                  Spacer(modifier = Modifier.height(SpacingLarge))
+                  SecondaryButton(
+                    modifier = Modifier.testTag(EditEventTestTags.EDIT_PARTICIPANTS_BUTTON),
+                    onClick = onEditParticipants,
+                    text = stringResource(R.string.edit_event_edit_participants_button)
+                  )
+                }
+              }
+            }
+          }
+        }
       },
       bottomBar = {
         HorizontalDivider(

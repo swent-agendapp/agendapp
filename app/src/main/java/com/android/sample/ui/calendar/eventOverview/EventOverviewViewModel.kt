@@ -5,6 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.sample.model.authentication.AuthRepository
 import com.android.sample.model.authentication.AuthRepositoryProvider
+import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
@@ -16,11 +19,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 data class OverviewUIState(
-    val event: Event? = null,
-    val participantsNames: List<String> = emptyList(),
-    val errorMsg: String? = null,
-    val isLoading: Boolean = false,
-    val isDeleteSuccessful: Boolean = false
+  val event: Event? = null,
+  val participantsNames: List<User> = emptyList(),
+  val errorMsg: String? = null,
+  val isLoading: Boolean = false,
+  val isDeleteSuccessful: Boolean = false
 )
 
 /**
@@ -34,10 +37,11 @@ data class OverviewUIState(
  */
 class EventOverviewViewModel(
     // used to get Events
-    private val eventRepository: EventRepository = EventRepositoryProvider.repository,
+  private val eventRepository: EventRepository = EventRepositoryProvider.repository,
+  private val userRepository: UserRepository = UserRepositoryProvider.repository,
     // used to get the name of the participants (the event only contains user id, not name)
-    private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
-    private val selectedOrganizationViewModel: SelectedOrganizationViewModel =
+  private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
+  private val selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel
 ) : ViewModel() {
   private val _uiState = MutableStateFlow(OverviewUIState())
@@ -148,9 +152,10 @@ class EventOverviewViewModel(
 
       // To still see something coherent with what we "add", we update it like so :
       val participantsNames = _uiState.value.event!!.participants.toList()
+      val allParticipant = userRepository.getUsersByIds(participantsNames)
 
       // update the uiState with the new participants list
-      _uiState.value = _uiState.value.copy(participantsNames = participantsNames)
+      _uiState.value = _uiState.value.copy(participantsNames = allParticipant)
     }
   }
 }

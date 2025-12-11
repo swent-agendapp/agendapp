@@ -127,7 +127,7 @@ class AddEventViewModel(
                 personalNotes = "",
                 participants =
                     state.participants
-                        .map { it -> it.displayName ?: it.email ?: "No Name" }
+                        .map { it -> it.id }
                         .toSet(),
                 category = state.category,
                 recurrence = state.recurrenceMode,
@@ -163,7 +163,7 @@ class AddEventViewModel(
             personalNotes = "",
             category = state.category,
             participants =
-                state.participants.map { it -> it.displayName ?: it.email ?: "No Name" }.toSet(),
+                state.participants.map { it -> it.id }.toSet(),
             recurrence = state.recurrenceMode,
             endRecurrence = state.recurrenceEndInstant)
 

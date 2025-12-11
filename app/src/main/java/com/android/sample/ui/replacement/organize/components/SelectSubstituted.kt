@@ -71,17 +71,6 @@ fun SelectSubstitutedScreen(
 ) {
   val uiState by replacementOrganizeViewModel.uiState.collectAsState()
 
-  val labeledMembers =
-      uiState.memberList.map { member ->
-        val label = member.displayName ?: member.email ?: member.id
-        member to label
-      }
-
-  val selectedLabels: Set<String> =
-      uiState.selectedMember?.let { selected ->
-        val label = labeledMembers.firstOrNull { (m, _) -> m.id == selected.id }?.second
-        if (label != null) setOf(label) else emptySet()
-      } ?: emptySet()
 
   Scaffold(
       topBar = {
@@ -114,14 +103,13 @@ fun SelectSubstitutedScreen(
                   elevation = CardDefaults.cardElevation(defaultElevation = DefaultCardElevation),
                   shape = RoundedCornerShape(CornerRadiusLarge)) {
                     MemberSelectionList(
-                        members = labeledMembers.map { it.second },
-                        selectedMembers = selectedLabels,
+                        members = uiState.memberList,
+                        selectedMembers = setOfNotNull(uiState.selectedMember),
                         onSelectionChanged = { selection ->
                           val selectedLabel = selection.firstOrNull()
                           val selectedMember =
-                              labeledMembers
-                                  .firstOrNull { (_, label) -> label == selectedLabel }
-                                  ?.first
+                              uiState.memberList
+                                  .firstOrNull {  label -> label.id == selectedLabel?.id }
                           selectedMember?.let { replacementOrganizeViewModel.setSelectedMember(it) }
                         },
                         modifier = Modifier.fillMaxSize(),

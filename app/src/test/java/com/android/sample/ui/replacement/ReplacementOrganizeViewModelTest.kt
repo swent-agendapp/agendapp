@@ -34,6 +34,7 @@ class ReplacementOrganizeViewModelTest {
   private lateinit var orgRepo: OrganizationRepository
   private lateinit var replacementRepo: ReplacementRepository
   private lateinit var userRepo: UserRepository
+
   private lateinit var event1: Event
 
   private val selectedOrganizationID = "org123"
@@ -41,9 +42,6 @@ class ReplacementOrganizeViewModelTest {
   @Before
   fun setUp() {
     Dispatchers.setMain(testDispatcher)
-    eventRepo = EventRepositoryInMemory()
-    orgRepo = OrganizationRepositoryLocal()
-    replacementRepo = ReplacementRepositoryLocal()
 
     // Create a mock UserRepository that returns test users
     userRepo =
@@ -77,6 +75,10 @@ class ReplacementOrganizeViewModelTest {
 
           override suspend fun addAdminToOrganization(userId: String, organizationId: String) {}
         }
+
+    eventRepo = EventRepositoryInMemory()
+    orgRepo = OrganizationRepositoryLocal(userRepository = userRepo)
+    replacementRepo = ReplacementRepositoryLocal()
 
     event1 =
         createEvent(

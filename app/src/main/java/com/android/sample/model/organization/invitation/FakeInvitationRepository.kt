@@ -1,9 +1,11 @@
 package com.android.sample.model.organization.invitation
 
 import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.organization.data.Organization
 
-class FakeInvitationRepository : InvitationRepository {
+class FakeInvitationRepository(private val userRepository: UserRepository = UsersRepositoryLocal()) : InvitationRepository {
 
   private val invitations = mutableListOf<Invitation>()
 
@@ -16,11 +18,20 @@ class FakeInvitationRepository : InvitationRepository {
   }
 
   override suspend fun insertInvitation(organization: Organization, user: User) {
+    val admins = userRepository.getAdminsIds(organization.id)
+    require(user.id in admins) { "Only organization admins can activate invitations." }
     val item = Invitation.create(organizationId = organization.id)
     require(invitations.none { it.id == item.id }) {
       "Invitation with id ${item.id} already exists."
     }
     invitations.add(item)
+  }
+
+  override suspend fun deleteInvitation(itemId: String, organization: Organization, user: User) {
+    super.deleteInvitation(itemId, organization, user)
+    val admins = userRepository.getAdminsIds(organization.id)
+    require(user.id in admins) { "Only organization admins can activate invitations." }
+    invitations.removeIf { it.id == itemId }
   }
 
   override suspend fun getInvitationById(itemId: String): Invitation? {

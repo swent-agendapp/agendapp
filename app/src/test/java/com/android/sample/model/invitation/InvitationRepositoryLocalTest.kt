@@ -7,6 +7,8 @@ import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.invitation.Invitation
 import com.android.sample.model.organization.invitation.InvitationRepositoryLocal
 import com.android.sample.model.organization.invitation.InvitationStatus
+import com.android.sample.model.organization.repository.OrganizationRepository
+import com.android.sample.model.organization.repository.OrganizationRepositoryLocal
 import java.time.Instant
 import java.util.UUID
 import kotlinx.coroutines.runBlocking
@@ -25,6 +27,7 @@ class InvitationRepositoryLocalTest {
 
   private lateinit var repository: InvitationRepositoryLocal
   private lateinit var userRepository: UserRepository
+  private lateinit var organizationRepository: OrganizationRepository
   private lateinit var admin: User
   private lateinit var member: User
   private lateinit var outsider: User
@@ -35,7 +38,8 @@ class InvitationRepositoryLocalTest {
   fun setup() = runBlocking {
     // Initialize fresh UserRepository for each test
     userRepository = UsersRepositoryLocal()
-    repository = InvitationRepositoryLocal()
+    repository = InvitationRepositoryLocal(userRepository)
+    organizationRepository = OrganizationRepositoryLocal(userRepository)
 
     // --- Create users ---
     admin = User(id = "adminA", displayName = "Admin A", email = "adminA@example.com")
@@ -50,6 +54,9 @@ class InvitationRepositoryLocalTest {
     // --- Create organization ---
     organizationA = Organization(id = "orgA", name = "Org A")
     organizationB = Organization(id = "orgB", name = "Org B")
+
+    organizationRepository.insertOrganization(organizationA)
+    organizationRepository.insertOrganization(organizationB)
 
     // Set up user-organization relationships
     userRepository.addAdminToOrganization(admin.id, organizationA.id)

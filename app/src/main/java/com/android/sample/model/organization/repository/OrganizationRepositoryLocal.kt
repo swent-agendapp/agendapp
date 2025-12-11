@@ -1,6 +1,7 @@
 package com.android.sample.model.organization.repository
 
 import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepository
 import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.organization.data.Organization
 
@@ -10,7 +11,7 @@ import com.android.sample.model.organization.data.Organization
  * This implementation uses [UserRepositoryProvider] to check user permissions (admin/member access)
  * for various operations.
  */
-class OrganizationRepositoryLocal : OrganizationRepository {
+class OrganizationRepositoryLocal(private val userRepository: UserRepository = UserRepositoryProvider.repository) : OrganizationRepository {
 
   private val organizations: MutableList<Organization> = mutableListOf()
 
@@ -35,7 +36,7 @@ class OrganizationRepositoryLocal : OrganizationRepository {
     require(index != -1) { "Organization with id $organizationId does not exist." }
 
     // Check if user is an admin
-    val admins = UserRepositoryProvider.repository.getAdminsIds(organizationId)
+    val admins = userRepository.getAdminsIds(organizationId)
     require(admins.contains(user.id)) {
       "User ${user.id} is not an admin of organization $organizationId"
     }
@@ -48,7 +49,7 @@ class OrganizationRepositoryLocal : OrganizationRepository {
     require(organization != null) { "Organization with id $organizationId does not exist." }
 
     // Check if user is an admin
-    val admins = UserRepositoryProvider.repository.getAdminsIds(organizationId)
+    val admins = userRepository.getAdminsIds(organizationId)
     require(admins.contains(user.id)) {
       "User ${user.id} is not an admin of organization $organizationId"
     }
@@ -64,8 +65,8 @@ class OrganizationRepositoryLocal : OrganizationRepository {
     }
 
     // Check if user has access (is admin or member)
-    val admins = UserRepositoryProvider.repository.getAdminsIds(organizationId)
-    val members = UserRepositoryProvider.repository.getMembersIds(organizationId)
+    val admins = userRepository.getAdminsIds(organizationId)
+    val members = userRepository.getMembersIds(organizationId)
 
     require(admins.contains(user.id) || members.contains(user.id)) {
       "User ${user.id} does not have access to organization $organizationId"

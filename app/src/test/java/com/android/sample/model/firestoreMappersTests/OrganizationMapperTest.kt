@@ -137,8 +137,6 @@ class OrganizationMapperTest {
 
   @Test
   fun toMap_returnsCorrectMap() {
-    val admins = listOf(User("admin1", "Admin One", "admin1@example.com"))
-    val members = listOf(User("member1", "Member One", "member1@example.com"))
     val events =
         createEvent(
             organizationId = "org123",
@@ -156,12 +154,8 @@ class OrganizationMapperTest {
     assertThat(map["name"]).isEqualTo("My Organization")
     assertThat(map["geoCheckEnabled"]).isEqualTo(true)
 
-    val adminsList = (map["admins"] as? List<*>)?.filterIsInstance<Map<String, Any?>>()
-    val membersList = (map["members"] as? List<*>)?.filterIsInstance<Map<String, Any?>>()
     val eventsList = (map["events"] as? List<*>)?.filterIsInstance<Map<String, Any?>>()
 
-    assertThat(adminsList!![0]["displayName"]).isEqualTo("Admin One")
-    assertThat(membersList!![0]["email"]).isEqualTo("member1@example.com")
     assertThat(eventsList!![0]["title"]).isEqualTo("Meeting")
     assertThat(eventsList[0]["description"]).isEqualTo("Team meeting")
   }

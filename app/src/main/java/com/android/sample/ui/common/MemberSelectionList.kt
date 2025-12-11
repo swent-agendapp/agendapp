@@ -40,6 +40,7 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.android.sample.R
+import com.android.sample.model.authentication.User
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.DefaultCardElevation
 import com.android.sample.ui.theme.GeneralPalette
@@ -60,17 +61,17 @@ data class MemberSelectionListOptions(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MemberSelectionList(
-    modifier: Modifier = Modifier,
-    members: List<String> = emptyList(),
-    selectedMembers: Set<String> = emptySet(),
-    onSelectionChanged: (Set<String>) -> Unit = {},
-    options: MemberSelectionListOptions = MemberSelectionListOptions(),
+  modifier: Modifier = Modifier,
+  members: List<User> = emptyList(),
+  selectedMembers: Set<User> = emptySet(),
+  onSelectionChanged: (Set<User>) -> Unit = {},
+  options: MemberSelectionListOptions = MemberSelectionListOptions(),
 ) {
   var searchQuery by remember { mutableStateOf("") }
 
   val filteredMembers =
       remember(searchQuery, members) {
-        members.filter { it.contains(searchQuery, ignoreCase = true) }
+        members.filter { it -> it.display().contains(searchQuery, ignoreCase = true) }
       }
 
   Card(
@@ -129,11 +130,11 @@ private fun MemberSearchBar(
 
 @Composable
 private fun MemberSelectionLazyList(
-    members: List<String>,
-    selectedMembers: Set<String>,
-    onSelectionChanged: (Set<String>) -> Unit,
-    options: MemberSelectionListOptions,
-    modifier: Modifier = Modifier,
+  members: List<User>,
+  selectedMembers: Set<User>,
+  onSelectionChanged: (Set<User>) -> Unit,
+  options: MemberSelectionListOptions,
+  modifier: Modifier = Modifier,
 ) {
   LazyColumn(
       modifier =
@@ -163,14 +164,14 @@ private fun MemberSelectionLazyList(
                       .padding(vertical = PaddingMedium)
                       .let { base ->
                         if (options.memberTagBuilder != null) {
-                          base.testTag(options.memberTagBuilder.invoke(member))
+                          base.testTag(options.memberTagBuilder.invoke(member.display()))
                         } else {
                           base
                         }
                       },
               contentAlignment = Alignment.CenterStart) {
                 Text(
-                    text = member,
+                    text = member.display(),
                     modifier = modifier.padding(start = PaddingMedium),
                     textAlign = TextAlign.Center)
               }
@@ -186,9 +187,9 @@ private fun MemberSelectionLazyList(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MemberSelectionSummary(
-    selectedMembers: Set<String>,
-    summaryTestTag: String?,
-    modifier: Modifier = Modifier,
+  selectedMembers: Set<User>,
+  summaryTestTag: String?,
+  modifier: Modifier = Modifier,
 ) {
   val selectedMembersText =
       if (selectedMembers.isEmpty()) {
@@ -197,11 +198,12 @@ private fun MemberSelectionSummary(
         pluralStringResource(
             R.plurals.replacement_selected_members,
             count = selectedMembers.size,
-            selectedMembers.joinToString(
-                separator = ", ",
-                // extra space as a postfix to be able to scroll enough and not see the fade effect
-                // at the end of the last name
-                postfix = "      "),
+          selectedMembers.joinToString(
+            separator = ", ",
+            // extra space as a postfix to be able to scroll enough and not see the fade effect
+            // at the end of the last name
+            postfix = "      "
+          ) { it -> it.display() },
         )
       }
 
@@ -243,11 +245,11 @@ private fun MemberSelectionSummary(
 }
 
 private fun calculateNewSelection(
-    isSingleSelection: Boolean,
-    isSelected: Boolean,
-    member: String,
-    selectedMembers: Set<String>,
-): Set<String> {
+  isSingleSelection: Boolean,
+  isSelected: Boolean,
+  member: User,
+  selectedMembers: Set<User>,
+): Set<User> {
   return if (isSingleSelection) {
     if (isSelected) emptySet() else setOf(member)
   } else {

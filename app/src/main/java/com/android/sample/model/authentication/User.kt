@@ -23,3 +23,7 @@ data class User(
     val phoneNumber: String? = null,
     val organizations: List<String> = emptyList()
 )
+{
+    fun display() : String =
+        displayName ?: email ?: "no name"
+}

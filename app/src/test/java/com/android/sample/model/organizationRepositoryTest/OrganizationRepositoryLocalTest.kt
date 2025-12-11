@@ -1,8 +1,7 @@
 package com.android.sample.model.organizationRepositoryTest
 
 import com.android.sample.model.authentication.User
-import com.android.sample.model.authentication.UserRepository
-import com.android.sample.model.authentication.UserRepositoryProvider
+
 import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.repository.OrganizationRepositoryLocal
@@ -14,7 +13,7 @@ import org.junit.Test
 class OrganizationRepositoryLocalTest {
 
   private lateinit var organizationRepository: OrganizationRepositoryLocal
-  private lateinit var userRepository: UserRepository
+  private lateinit var userRepository: UsersRepositoryLocal
 
   private lateinit var adminA: User
   private lateinit var adminB: User
@@ -30,9 +29,7 @@ class OrganizationRepositoryLocalTest {
   fun setup() = runBlocking {
     // Initialize fresh UserRepository for each test
     userRepository = UsersRepositoryLocal()
-    UserRepositoryProvider.repository = userRepository
-
-    organizationRepository = OrganizationRepositoryLocal()
+    organizationRepository = OrganizationRepositoryLocal(userRepository = userRepository)
 
     // --- Create users ---
     adminA = User(id = "adminA", displayName = "Admin A", email = "adminA@example.com")

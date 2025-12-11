@@ -47,6 +47,12 @@ class OrganizationOverviewViewModelTest {
     val orgId = "org1"
     val org = Organization(id = orgId, name = "My Organization")
     organizationRepository.insertOrganization(org)
+    userRepository.newUser(user1)
+    userRepository.newUser(user2)
+    userRepository.newUser(user3)
+    userRepository.addAdminToOrganization(user1.id, orgId)
+    userRepository.addUserToOrganization(user2.id, orgId)
+    userRepository.addUserToOrganization(user3.id, orgId)
 
     vm.fillSelectedOrganizationDetails(orgId)
 

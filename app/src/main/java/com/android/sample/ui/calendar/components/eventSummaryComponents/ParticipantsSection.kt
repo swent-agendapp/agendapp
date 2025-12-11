@@ -27,6 +27,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
+import com.android.sample.model.authentication.User
 import com.android.sample.ui.calendar.components.EventSummaryCardTags
 import com.android.sample.ui.calendar.style.EventSummaryCardStyle
 import com.android.sample.ui.theme.AlphaHigh
@@ -52,11 +53,11 @@ import com.android.sample.ui.theme.SpacingSmall
  */
 @Composable
 fun ParticipantsSection(
-    participantNames: List<String> = emptyList(),
-    showHeader: Boolean = true,
-    rowHeight: Dp = RowHeightMedium,
-    visibleRows: Int = EventSummaryCardStyle().participantsVisibleRows,
-    borderColor: Color = GeneralPalette.OnSurfaceVariant.copy(alpha = AlphaLow),
+  participantNames: List<User> = emptyList(),
+  showHeader: Boolean = true,
+  rowHeight: Dp = RowHeightMedium,
+  visibleRows: Int = EventSummaryCardStyle().participantsVisibleRows,
+  borderColor: Color = GeneralPalette.OnSurfaceVariant.copy(alpha = AlphaLow),
 ) {
   if (participantNames.isNotEmpty()) {
     if (showHeader) {
@@ -86,7 +87,7 @@ fun ParticipantsSection(
                 .clip(RoundedCornerShape(CornerRadiusLarge))) {
           // Delegate the scrollable vs non-scrollable logic to a helper.
           ParticipantsList(
-              participantNames = participantNames,
+              participantNames = participantNames.map { it -> it.display()},
               rowHeight = rowHeight,
               visibleRows = visibleRows,
           )

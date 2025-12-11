@@ -83,8 +83,7 @@ class EventRepositoryHybridTest { // Later: Make this inherit RequireSelectedOrg
             participants = emptySet(),
             version = System.currentTimeMillis(),
             recurrenceStatus = RecurrenceStatus.OneTime,
-            location = null
-        )
+            location = null)
 
     event2 =
         Event(
@@ -99,8 +98,7 @@ class EventRepositoryHybridTest { // Later: Make this inherit RequireSelectedOrg
             participants = emptySet(),
             version = System.currentTimeMillis(),
             recurrenceStatus = RecurrenceStatus.OneTime,
-            location = null
-        )
+            location = null)
   }
 
   @After

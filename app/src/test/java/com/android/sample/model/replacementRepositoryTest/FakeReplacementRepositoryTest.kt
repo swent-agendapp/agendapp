@@ -47,8 +47,7 @@ class FakeReplacementRepositoryTest { // Later make this implement RequireSelect
             cloudStorageStatuses = emptySet(),
             personalNotes = null,
             presence = emptyMap(),
-            location = null
-        )
+            location = null)
   }
 
   @Test

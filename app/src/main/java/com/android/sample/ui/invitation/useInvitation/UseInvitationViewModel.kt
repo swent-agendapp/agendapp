@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.android.sample.R
 import com.android.sample.model.authentication.AuthRepository
 import com.android.sample.model.authentication.AuthRepositoryProvider
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.organization.invitation.Invitation.Companion.INVITATION_CODE_LENGTH
 import com.android.sample.model.organization.invitation.InvitationRepository
 import com.android.sample.model.organization.invitation.InvitationRepositoryProvider
@@ -40,7 +42,9 @@ class UseInvitationViewModel(
         InvitationRepositoryProvider.repository,
     private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
     private val organizationRepository: OrganizationRepository =
-        OrganizationRepositoryProvider.repository
+        OrganizationRepositoryProvider.repository,
+    private val userRepository: UserRepository =
+          UserRepositoryProvider.repository
 ) : ViewModel() {
   private val _uiState = MutableStateFlow(UseInvitationUIState())
 
@@ -99,7 +103,7 @@ class UseInvitationViewModel(
       // Step 4: Attempt to add the user to the organization.
       val success =
           try {
-            organizationRepository.addMemberToOrganization(user, invitation)
+            userRepository.addUserToOrganization(user.id, invitation.organizationId)
             true
           } catch (_: Exception) {
             setError(R.string.error_joining_organization)

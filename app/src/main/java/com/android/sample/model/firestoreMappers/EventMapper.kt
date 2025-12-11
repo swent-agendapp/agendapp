@@ -15,32 +15,47 @@ import java.util.UUID
 /** Maps Firestore documents to [Event] objects and vice versa. */
 object EventMapper : FirestoreMapper<Event> {
 
+  const val ID_FIELD = "id"
+  const val ORGANIZATION_ID_FIELD = "organizationId"
+  const val TITLE_FIELD = "title"
+  const val DESCRIPTION_FIELD = "description"
+  const val START_DATE_FIELD = "startDate"
+  const val END_DATE_FIELD = "endDate"
+  const val PERSONAL_NOTES_FIELD = "personalNotes"
+  const val PARTICIPANTS_FIELD = "participants"
+  const val STORAGE_STATUS_FIELD = "storageStatus"
+  const val RECURRENCE_STATUS_FIELD = "recurrenceStatus"
+  const val PRESENCE_FIELD = "presence"
+  const val VERSION_FIELD = "version"
+  const val EVENT_CATEGORY_FIELD = "eventCategory"
+
   override fun fromDocument(document: DocumentSnapshot): Event? {
     val id = document.id
-    val organizationId = document.getString("organizationId") ?: return null
-    val title = document.getString("title") ?: return null
-    val description = document.getString("description") ?: ""
-    val startDate = document.getTimestamp("startDate")?.toDate()?.toInstant() ?: return null
-    val endDate = document.getTimestamp("endDate")?.toDate()?.toInstant() ?: return null
-    val personalNotes = document.getString("personalNotes")
+    val organizationId = document.getString(ORGANIZATION_ID_FIELD) ?: return null
+    val title = document.getString(TITLE_FIELD) ?: return null
+    val description = document.getString(DESCRIPTION_FIELD) ?: ""
+    val startDate = document.getTimestamp(START_DATE_FIELD)?.toDate()?.toInstant() ?: return null
+    val endDate = document.getTimestamp(END_DATE_FIELD)?.toDate()?.toInstant() ?: return null
+    val personalNotes = document.getString(PERSONAL_NOTES_FIELD)
 
     val participants =
-        (document["participants"] as? List<*>)?.filterIsInstance<String>()?.toSet() ?: emptySet()
+        (document[PARTICIPANTS_FIELD] as? List<*>)?.filterIsInstance<String>()?.toSet()
+            ?: emptySet()
 
     val storageStatusList =
-        (document["storageStatus"] as? List<*>)
+        (document[STORAGE_STATUS_FIELD] as? List<*>)
             ?.mapNotNull { runCatching { CloudStorageStatus.valueOf(it.toString()) }.getOrNull() }
             ?.toSet() ?: setOf(CloudStorageStatus.FIRESTORE)
 
     val recurrenceStatus =
         runCatching {
-              RecurrenceStatus.valueOf(document.getString("recurrenceStatus") ?: "OneTime")
+              RecurrenceStatus.valueOf(document.getString(RECURRENCE_STATUS_FIELD) ?: "OneTime")
             }
             .getOrDefault(RecurrenceStatus.OneTime)
 
-    val presence = parsePresence(document["presence"])
-    val version = document.getLong("version") ?: 0L
-    val category = parseCategory(document["eventCategory"])
+    val presence = parsePresence(document[PRESENCE_FIELD])
+    val version = document.getLong(VERSION_FIELD) ?: 0L
+    val category = parseCategory(document[EVENT_CATEGORY_FIELD])
 
     return Event(
         id = id,
@@ -59,40 +74,42 @@ object EventMapper : FirestoreMapper<Event> {
   }
 
   override fun fromMap(data: Map<String, Any?>): Event? {
-    val id = data["id"] as? String ?: return null
-    val organizationId = data["organizationId"] as? String ?: return null
-    val title = data["title"] as? String ?: return null
-    val description = data["description"] as? String ?: ""
+    val id = data[ID_FIELD] as? String ?: return null
+    val organizationId = data[ORGANIZATION_ID_FIELD] as? String ?: return null
+    val title = data[TITLE_FIELD] as? String ?: return null
+    val description = data[DESCRIPTION_FIELD] as? String ?: ""
 
     val startDate =
-        (data["startDate"] as? Timestamp)?.toDate()?.toInstant()
-            ?: (data["startDate"] as? Date)?.toInstant()
-            ?: (data["startDate"] as? Long)?.let { Instant.ofEpochMilli(it) }
+        (data[START_DATE_FIELD] as? Timestamp)?.toDate()?.toInstant()
+            ?: (data[START_DATE_FIELD] as? Date)?.toInstant()
+            ?: (data[START_DATE_FIELD] as? Long)?.let { Instant.ofEpochMilli(it) }
             ?: return null
 
     val endDate =
-        (data["endDate"] as? Timestamp)?.toDate()?.toInstant()
-            ?: (data["endDate"] as? Date)?.toInstant()
-            ?: (data["endDate"] as? Long)?.let { Instant.ofEpochMilli(it) }
+        (data[END_DATE_FIELD] as? Timestamp)?.toDate()?.toInstant()
+            ?: (data[END_DATE_FIELD] as? Date)?.toInstant()
+            ?: (data[END_DATE_FIELD] as? Long)?.let { Instant.ofEpochMilli(it) }
             ?: return null
 
-    val personalNotes = data["personalNotes"] as? String
+    val personalNotes = data[PERSONAL_NOTES_FIELD] as? String
     val participants =
-        (data["participants"] as? List<*>)?.filterIsInstance<String>()?.toSet() ?: emptySet()
+        (data[PARTICIPANTS_FIELD] as? List<*>)?.filterIsInstance<String>()?.toSet() ?: emptySet()
 
     val storageStatusList =
-        (data["storageStatus"] as? List<*>)
+        (data[STORAGE_STATUS_FIELD] as? List<*>)
             ?.mapNotNull { runCatching { CloudStorageStatus.valueOf(it.toString()) }.getOrNull() }
             ?.toSet() ?: setOf(CloudStorageStatus.FIRESTORE)
 
     val recurrenceStatus =
-        runCatching { RecurrenceStatus.valueOf(data["recurrenceStatus"] as? String ?: "OneTime") }
+        runCatching {
+              RecurrenceStatus.valueOf(data[RECURRENCE_STATUS_FIELD] as? String ?: "OneTime")
+            }
             .getOrDefault(RecurrenceStatus.OneTime)
 
-    val presence = parsePresence(data["presence"])
+    val presence = parsePresence(data[PRESENCE_FIELD])
 
-    val version = (data["version"] as? Number)?.toLong() ?: 0L
-    val category = parseCategory(data["eventCategory"])
+    val version = (data[VERSION_FIELD] as? Number)?.toLong() ?: 0L
+    val category = parseCategory(data[EVENT_CATEGORY_FIELD])
 
     return Event(
         id = id,
@@ -112,25 +129,26 @@ object EventMapper : FirestoreMapper<Event> {
 
   override fun toMap(model: Event): Map<String, Any?> {
     return mapOf(
-        "id" to model.id,
-        "organizationId" to model.organizationId,
-        "title" to model.title,
-        "description" to model.description,
-        "startDate" to Timestamp(Date.from(model.startDate)),
-        "endDate" to Timestamp(Date.from(model.endDate)),
-        "storageStatus" to model.cloudStorageStatuses.map { it.name },
-        "personalNotes" to model.personalNotes,
-        "participants" to model.participants.toList(),
-        "version" to model.version,
-        "presence" to model.presence,
-        "recurrenceStatus" to model.recurrenceStatus.name,
-        "eventCategory" to
+        ID_FIELD to model.id,
+        ORGANIZATION_ID_FIELD to model.organizationId,
+        TITLE_FIELD to model.title,
+        DESCRIPTION_FIELD to model.description,
+        START_DATE_FIELD to Timestamp(Date.from(model.startDate)),
+        END_DATE_FIELD to Timestamp(Date.from(model.endDate)),
+        STORAGE_STATUS_FIELD to model.cloudStorageStatuses.map { it.name },
+        PERSONAL_NOTES_FIELD to model.personalNotes,
+        PARTICIPANTS_FIELD to model.participants.toList(),
+        VERSION_FIELD to model.version,
+        PRESENCE_FIELD to model.presence,
+        RECURRENCE_STATUS_FIELD to model.recurrenceStatus.name,
+        EVENT_CATEGORY_FIELD to
             mapOf(
-                "id" to model.category.id,
-                "organizationId" to model.category.organizationId,
-                "label" to model.category.label,
-                "color" to model.category.color.value.toLong(), // Color -> Long
-                "isDefault" to model.category.isDefault,
+                EventCategoryMapper.ID_FIELD to model.category.id,
+                EventCategoryMapper.ORGANIZATION_ID_FIELD to model.category.organizationId,
+                EventCategoryMapper.LABEL_FIELD to model.category.label,
+                EventCategoryMapper.COLOR_FIELD to
+                    model.category.color.value.toLong(), // Color -> Long
+                EventCategoryMapper.IS_DEFAULT_FIELD to model.category.isDefault,
             ))
   }
 
@@ -147,11 +165,15 @@ object EventMapper : FirestoreMapper<Event> {
   private fun parseCategory(rawCategory: Any?): EventCategory {
     val map = rawCategory as? Map<*, *> ?: return EventCategory.defaultCategory()
 
-    val id = map["id"] as? String ?: UUID.randomUUID().toString()
-    val organizationId = map["organizationId"] as? String ?: return EventCategory.defaultCategory()
-    val label = map["label"] as? String ?: "Uncategorized"
-    val colorLong = (map["color"] as? Number)?.toLong() ?: EventPalette.NoCategory.value.toLong()
-    val isDefault = map["isDefault"] as? Boolean ?: false
+    val id = map[EventCategoryMapper.ID_FIELD] as? String ?: UUID.randomUUID().toString()
+    val organizationId =
+        map[EventCategoryMapper.ORGANIZATION_ID_FIELD] as? String
+            ?: return EventCategory.defaultCategory()
+    val label = map[EventCategoryMapper.LABEL_FIELD] as? String ?: "Uncategorized"
+    val colorLong =
+        (map[EventCategoryMapper.COLOR_FIELD] as? Number)?.toLong()
+            ?: EventPalette.NoCategory.value.toLong()
+    val isDefault = map[EventCategoryMapper.IS_DEFAULT_FIELD] as? Boolean ?: false
 
     return EventCategory(
         id = id,

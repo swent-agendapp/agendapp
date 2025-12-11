@@ -36,7 +36,7 @@ interface EventCategoryRepository {
    */
   suspend fun updateCategory(orgId: String, itemId: String, item: EventCategory) {
     require(item.organizationId == orgId) {
-      "Event's organizationId ${item.organizationId} does not match the provided orgId $orgId."
+      "Category's organizationId ${item.organizationId} does not match the provided orgId $orgId."
     }
   }
 

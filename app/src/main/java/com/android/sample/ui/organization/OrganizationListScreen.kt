@@ -54,6 +54,7 @@ object OrganizationListScreenTestTags {
   const val LOADING_INDICATOR = "loadingIndicator"
 
   const val ADD_ORGANIZATION_BUTTON = "addOrganizationButton"
+  const val USE_INVITATION_BUTTON = "useInvitationButton"
 
   const val SNACK_BAR = "snackBar"
 
@@ -112,7 +113,7 @@ fun OrganizationListScreen(
                     organizationViewModel.setShowUseInvitationBottomSheet(true)
                   },
                   icon = Icons.AutoMirrored.Filled.Login,
-              )
+                  modifier = Modifier.testTag(OrganizationListScreenTestTags.USE_INVITATION_BUTTON))
 
               FloatingButton(
                   onClick = onAddOrganizationClicked,

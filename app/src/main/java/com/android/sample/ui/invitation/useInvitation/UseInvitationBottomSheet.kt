@@ -53,8 +53,9 @@ fun UseInvitationBottomSheet(
         OutlinedTextField(
             value = uiState.code,
             onValueChange = {
-                useInvitationViewModel.setIsInputCodeIllegal(uiState.code == it)
-                useInvitationViewModel.setCode(it) },
+              useInvitationViewModel.setIsInputCodeIllegal(uiState.code == it)
+              useInvitationViewModel.setCode(it)
+            },
             placeholder = { Text(stringResource(R.string.enter_invitation_code)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii),
@@ -64,17 +65,20 @@ fun UseInvitationBottomSheet(
                     .testTag(UseInvitationTestTags.INVITATION_CODE_TEXT_FIELD),
             isError = uiState.isInputCodeIllegal,
             supportingText = {
-                if (uiState.isInputCodeIllegal) {
-                    Text(text = stringResource(R.string.error_invitation_code_illegal_input, INVITATION_CODE_LENGTH), modifier = Modifier.testTag(UseInvitationTestTags.CODE_INPUT_ERROR_MESSAGE))
-                }
-            }
-        )
+              if (uiState.isInputCodeIllegal) {
+                Text(
+                    text =
+                        stringResource(
+                            R.string.error_invitation_code_illegal_input, INVITATION_CODE_LENGTH),
+                    modifier = Modifier.testTag(UseInvitationTestTags.CODE_INPUT_ERROR_MESSAGE))
+              }
+            })
         Spacer(Modifier.height(SpacingSmall))
 
         BottomNavigationButtons(
             onNext = {
-                useInvitationViewModel.joinWithCode()
-                onJoin()
+              useInvitationViewModel.joinWithCode()
+              onJoin()
             },
             onBack = onCancel,
             backButtonText = stringResource(R.string.cancel),

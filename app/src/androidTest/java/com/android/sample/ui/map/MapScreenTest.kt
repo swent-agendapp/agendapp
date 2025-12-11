@@ -88,7 +88,7 @@ class MapScreenTest : FirebaseEmulatedTest() {
         SemanticsActions.SetProgress) { setProgress ->
           setProgress(30F) // 🔹 même unité que valueRange
     }
-    composeTestRule.onNodeWithTag(CREATE_AREA_BUTTON).assertIsDisplayed().performClick()
     composeTestRule.onNodeWithTag(DELETE_MARKER_BUTTON).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(CREATE_AREA_BUTTON).assertIsDisplayed().performClick()
   }
 }

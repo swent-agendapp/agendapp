@@ -2,6 +2,7 @@ package com.android.sample.model.organization.repository
 
 import com.android.sample.model.authentication.User
 import com.android.sample.model.organization.data.Organization
+import com.android.sample.model.organization.invitation.Invitation
 
 class FakeOrganizationRepository : OrganizationRepository {
 
@@ -21,5 +22,12 @@ class FakeOrganizationRepository : OrganizationRepository {
 
   override suspend fun deleteOrganization(organizationId: String, user: User) {
     organizations.remove(organizationId)
+  }
+
+  override suspend fun addMemberToOrganization(member: User, invitation: Invitation) {
+    val organization = organizations[invitation.organizationId] ?: return
+    val updatedMembers = organization.members + member
+    val updatedOrganization = organization.copy(members = updatedMembers)
+    organizations[organization.id] = updatedOrganization
   }
 }

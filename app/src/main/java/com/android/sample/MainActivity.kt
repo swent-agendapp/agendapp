@@ -202,13 +202,13 @@ private fun NavGraphBuilder.organizationsGraph(navigationActions: NavigationActi
               onAddOrganizationClicked = { navigationActions.navigateTo(Screen.AddOrganization) })
         }
 
-    // Add Organization Screen
-    composable(Screen.AddOrganization.route) {
-      AddOrganizationScreen(
-          onNavigateBack = { navigationActions.navigateBack() },
-          onFinish = { navigationActions.navigateTo(Screen.Calendar) })
-    }
-  }
+        // Add Organization Screen
+        composable(Screen.AddOrganization.route) {
+          AddOrganizationScreen(
+              onNavigateBack = { navigationActions.navigateBack() },
+              onFinish = { navigationActions.navigateTo(Screen.Calendar) })
+        }
+      }
 }
 
 private fun NavGraphBuilder.calendarGraph(navigationActions: NavigationActions) {

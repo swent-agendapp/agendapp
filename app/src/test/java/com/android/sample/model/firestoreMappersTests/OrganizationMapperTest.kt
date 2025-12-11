@@ -148,10 +148,7 @@ class OrganizationMapperTest {
             endDate = Instant.parse("2025-01-01T11:00:00Z"))
     val organization =
         Organization(
-            id = "org123",
-            name = "My Organization",
-            events = events,
-            geoCheckEnabled = true)
+            id = "org123", name = "My Organization", events = events, geoCheckEnabled = true)
 
     val map = OrganizationMapper.toMap(organization)
 

@@ -2,7 +2,6 @@ package com.android.sample.model.invitation
 
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepository
-import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.invitation.Invitation
@@ -49,17 +48,13 @@ class InvitationRepositoryLocalTest {
     userRepository.newUser(outsider)
 
     // --- Create organization ---
-    organizationA =
-        Organization(
-            id = "orgA", name = "Org A")
-    organizationB =
-        Organization(id = "orgB", name = "Org B")
+    organizationA = Organization(id = "orgA", name = "Org A")
+    organizationB = Organization(id = "orgB", name = "Org B")
 
     // Set up user-organization relationships
     userRepository.addAdminToOrganization(admin.id, organizationA.id)
     userRepository.addUserToOrganization(member.id, organizationA.id)
     userRepository.addAdminToOrganization(admin.id, organizationB.id)
-
   }
 
   @Test
@@ -74,7 +69,9 @@ class InvitationRepositoryLocalTest {
   }
 
   @Test(expected = IllegalArgumentException::class)
-  fun insertInvitationByNonAdmin_fails() = runBlocking { repository.insertInvitation(organizationA, member) }
+  fun insertInvitationByNonAdmin_fails() = runBlocking {
+    repository.insertInvitation(organizationA, member)
+  }
 
   @Test
   fun updateInvitation_success() = runBlocking {

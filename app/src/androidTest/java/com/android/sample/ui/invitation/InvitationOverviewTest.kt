@@ -34,8 +34,7 @@ class InvitationOverviewScreenTest : FirebaseEmulatedTest() {
   private lateinit var selectedOrgVM: SelectedOrganizationViewModel
 
   private val user = User(id = "user1", displayName = "Test User", email = "test@example.com")
-  private val org =
-      Organization(id = "org1", name = "Test Org")
+  private val org = Organization(id = "org1", name = "Test Org")
   private val inv1 = Invitation(id = "id1", organizationId = org.id, code = "123456")
   private val inv2 = Invitation(id = "id2", organizationId = org.id, code = "654321")
 

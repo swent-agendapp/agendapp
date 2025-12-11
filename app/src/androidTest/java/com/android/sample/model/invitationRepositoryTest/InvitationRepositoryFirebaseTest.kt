@@ -3,10 +3,8 @@ package com.android.sample.model.invitationRepositoryTest
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepositoryProvider
-import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.invitation.InvitationRepository
-import com.android.sample.model.organization.invitation.InvitationRepositoryLocal
 import com.android.sample.model.organization.invitation.InvitationRepositoryProvider
 import com.android.sample.model.organization.invitation.InvitationStatus
 import com.android.sample.utils.FirebaseEmulatedTest
@@ -44,18 +42,13 @@ class InvitationRepositoryFirebaseTest : FirebaseEmulatedTest() {
     UserRepositoryProvider.repository.newUser(outsider)
 
     // --- Create organization ---
-    organizationA =
-        Organization(
-            id = "orgA", name = "Org A")
+    organizationA = Organization(id = "orgA", name = "Org A")
 
-    organizationB =
-        Organization(id = "orgB", name = "Org B")
-
+    organizationB = Organization(id = "orgB", name = "Org B")
 
     UserRepositoryProvider.repository.addAdminToOrganization(admin.id, organizationA.id)
     UserRepositoryProvider.repository.addUserToOrganization(member.id, organizationA.id)
     UserRepositoryProvider.repository.addAdminToOrganization(admin.id, organizationB.id)
-
   }
 
   @Test

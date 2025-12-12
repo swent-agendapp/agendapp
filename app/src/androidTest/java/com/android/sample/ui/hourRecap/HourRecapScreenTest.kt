@@ -7,6 +7,8 @@ import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.test.platform.app.InstrumentationRegistry
+import com.android.sample.R
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.utils.FirebaseEmulatedTest
 import org.junit.Before
@@ -228,8 +230,9 @@ class HourRecapScreenTest : FirebaseEmulatedTest() {
     compose.onNodeWithText("Alice").performClick()
     compose.waitForIdle()
 
+    val context = InstrumentationRegistry.getInstrumentation().targetContext
     // Verify empty message is shown
-    compose.onNodeWithText("No events found for this user in the selected period.").assertExists()
+    compose.onNodeWithText(context.getString(R.string.hour_recap_no_events_for_user)).assertExists()
   }
 
   @Test
@@ -257,10 +260,11 @@ class HourRecapScreenTest : FirebaseEmulatedTest() {
     compose.onNodeWithText("User").performClick()
     compose.waitForIdle()
 
+    val context = InstrumentationRegistry.getInstrumentation().targetContext
     // Verify past tag is displayed
-    compose.onNodeWithText("Past").assertExists()
+    compose.onNodeWithText(context.getString(R.string.hour_recap_tag_past)).assertExists()
     // Verify presence tag is displayed
-    compose.onNodeWithText("Present").assertExists()
+    compose.onNodeWithText(context.getString(R.string.hour_recap_tag_present)).assertExists()
   }
 
   @Test
@@ -288,11 +292,12 @@ class HourRecapScreenTest : FirebaseEmulatedTest() {
     compose.onNodeWithText("User").performClick()
     compose.waitForIdle()
 
+    val context = InstrumentationRegistry.getInstrumentation().targetContext
     // Verify future tag is displayed
-    compose.onNodeWithText("Future").assertExists()
+    compose.onNodeWithText(context.getString(R.string.hour_recap_tag_future)).assertExists()
     // Verify no presence tag for future events
-    compose.onNodeWithText("Present").assertDoesNotExist()
-    compose.onNodeWithText("Absent").assertDoesNotExist()
+    compose.onNodeWithText(context.getString(R.string.hour_recap_tag_present)).assertDoesNotExist()
+    compose.onNodeWithText(context.getString(R.string.hour_recap_tag_absent)).assertDoesNotExist()
   }
 
   @Test
@@ -320,8 +325,9 @@ class HourRecapScreenTest : FirebaseEmulatedTest() {
     compose.onNodeWithText("User").performClick()
     compose.waitForIdle()
 
+    val context = InstrumentationRegistry.getInstrumentation().targetContext
     // Verify replacement tag is displayed
-    compose.onNodeWithText("Was replaced").assertExists()
+    compose.onNodeWithText(context.getString(R.string.hour_recap_tag_replaced)).assertExists()
   }
 
   @Test
@@ -349,8 +355,11 @@ class HourRecapScreenTest : FirebaseEmulatedTest() {
     compose.onNodeWithText("User").performClick()
     compose.waitForIdle()
 
+    val context = InstrumentationRegistry.getInstrumentation().targetContext
     // Verify took replacement tag is displayed
-    compose.onNodeWithText("Took a replacement").assertExists()
+    compose
+        .onNodeWithText(context.getString(R.string.hour_recap_tag_replacement_taken))
+        .assertExists()
   }
 
   @Test
@@ -378,8 +387,9 @@ class HourRecapScreenTest : FirebaseEmulatedTest() {
     compose.onNodeWithText("User").performClick()
     compose.waitForIdle()
 
+    val context = InstrumentationRegistry.getInstrumentation().targetContext
     // Verify absent tag is displayed
-    compose.onNodeWithText("Absent").assertExists()
+    compose.onNodeWithText(context.getString(R.string.hour_recap_tag_absent)).assertExists()
   }
 
   @Test
@@ -407,7 +417,10 @@ class HourRecapScreenTest : FirebaseEmulatedTest() {
     compose.onNodeWithText("User").performClick()
     compose.waitForIdle()
 
+    val context = InstrumentationRegistry.getInstrumentation().targetContext
     // Verify unknown presence tag is displayed
-    compose.onNodeWithText("Presence unknown").assertExists()
+    compose
+        .onNodeWithText(context.getString(R.string.hour_recap_tag_presence_unknown))
+        .assertExists()
   }
 }

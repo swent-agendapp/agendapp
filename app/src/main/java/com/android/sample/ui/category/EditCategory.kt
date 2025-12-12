@@ -160,7 +160,9 @@ fun EditCategoryScreen(
     } else {
       // Add new category
       categories =
-          categories + EventCategory(label = trimmedLabel, color = color, isDefault = false)
+          categories +
+              EventCategory(
+                  organizationId = "", label = trimmedLabel, color = color, isDefault = false)
     }
 
     showBottomSheet = false

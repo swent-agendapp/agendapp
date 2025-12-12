@@ -20,6 +20,7 @@ class EventTest {
 
   private val testCategory: EventCategory =
       EventCategory(
+          organizationId = selectedOrganizationID,
           label = "Test Category",
           color = EventPalette.Green,
       )

@@ -3,6 +3,8 @@ package com.android.sample.utils
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryFirebase
 import com.android.sample.model.calendar.EventRepositoryProvider
+import com.android.sample.model.category.EventCategoryRepository
+import com.android.sample.model.category.EventCategoryRepositoryFirebase
 import com.android.sample.model.constants.FirestoreConstants
 import com.android.sample.model.map.MapRepository
 import com.android.sample.model.map.MapRepositoryFirebase
@@ -30,6 +32,10 @@ open class FirebaseEmulatedTest {
 
   fun createInitializedEventRepository(): EventRepository {
     return EventRepositoryFirebase(db = FirebaseEmulator.firestore)
+  }
+
+  fun createInitializedEventCategoryRepository(): EventCategoryRepository {
+    return EventCategoryRepositoryFirebase(db = FirebaseEmulator.firestore)
   }
 
   fun createInitializedMapRepository(): MapRepository {

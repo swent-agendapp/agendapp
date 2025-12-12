@@ -14,6 +14,7 @@ import com.android.sample.ui.theme.SampleAppTheme
 import com.android.sample.utils.FakeEventRepository
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
+import com.android.sample.utils.FirebaseEmulatedTest
 import java.time.Duration
 import java.time.Instant.now
 import java.time.temporal.ChronoUnit
@@ -28,22 +29,19 @@ import org.junit.runner.RunWith
  * verify UI + ViewModel interaction consistency.
  */
 @RunWith(AndroidJUnit4::class)
-class EditEventWithViewModelTest : RequiresSelectedOrganizationTestBase {
+class EditEventWithViewModelTest : FirebaseEmulatedTest(), RequiresSelectedOrganizationTestBase {
 
   @get:Rule val composeTestRule = createComposeRule()
 
   override val organizationId: String = DEFAULT_TEST_ORG_ID
 
-  @Before
-  fun setUp() {
-    setSelectedOrganization()
-  }
-
   private lateinit var sampleEvent: Event
   private lateinit var fakeViewModel: EditEventViewModel
 
   @Before
-  fun setup() {
+  override fun setup() {
+      super.setUp()
+
     setSelectedOrganization()
 
     val start = now().truncatedTo(ChronoUnit.HOURS)
@@ -166,7 +164,7 @@ class EditEventWithViewModelTest : RequiresSelectedOrganizationTestBase {
 
     // verify ViewModel updated with selected participant
     val uiState = fakeViewModel.uiState.value
-    assert(uiState.participants.contains("Alice"))
+    assert(uiState.participants.map { it.id }.contains("1"))
   }
 
   // -------------------------------------------------------------------------
@@ -190,7 +188,7 @@ class EditEventWithViewModelTest : RequiresSelectedOrganizationTestBase {
 
     // verify ViewModel updated to remove participant
     val uiState = fakeViewModel.uiState.value
-    assert(!uiState.participants.contains("Alice"))
+    assert(!uiState.participants.map { it.id }.contains("Alice"))
   }
 
   @Test

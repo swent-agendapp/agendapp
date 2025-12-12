@@ -4,6 +4,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.R
 import com.android.sample.model.authentication.FakeAuthRepository
 import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.repository.FakeOrganizationRepository
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
@@ -18,6 +19,7 @@ import org.junit.runner.RunWith
 class OrganizationOverviewViewModelTest {
 
   private lateinit var authRepository: FakeAuthRepository
+  private lateinit var userRepository: UsersRepositoryLocal
   private lateinit var organizationRepository: FakeOrganizationRepository
   private lateinit var vm: OrganizationOverviewViewModel
 
@@ -32,7 +34,8 @@ class OrganizationOverviewViewModelTest {
   fun setup() {
     authRepository = FakeAuthRepository(fakeUser)
     organizationRepository = FakeOrganizationRepository()
-    vm = OrganizationOverviewViewModel(organizationRepository, authRepository)
+    userRepository = UsersRepositoryLocal()
+    vm = OrganizationOverviewViewModel(organizationRepository, userRepository, authRepository)
 
     // Clear any selected organization before each test
     SelectedOrganizationRepository.clearSelection()
@@ -42,9 +45,14 @@ class OrganizationOverviewViewModelTest {
   @Test
   fun `fillSelectedOrganizationDetails fills UI state correctly`() = runTest {
     val orgId = "org1"
-    val org =
-        Organization(id = orgId, name = "My Organization", members = listOf(user1, user2, user3))
-    organizationRepository.addOrganization(org)
+    val org = Organization(id = orgId, name = "My Organization")
+    organizationRepository.insertOrganization(org)
+    userRepository.newUser(user1)
+    userRepository.newUser(user2)
+    userRepository.newUser(user3)
+    userRepository.addAdminToOrganization(user1.id, orgId)
+    userRepository.addUserToOrganization(user2.id, orgId)
+    userRepository.addUserToOrganization(user3.id, orgId)
 
     vm.fillSelectedOrganizationDetails(orgId)
 
@@ -66,7 +74,9 @@ class OrganizationOverviewViewModelTest {
   @OptIn(ExperimentalCoroutinesApi::class)
   @Test
   fun `fillSelectedOrganizationDetails sets error when no authenticated user`() = runTest {
-    val vmNoUser = OrganizationOverviewViewModel(organizationRepository, FakeAuthRepository(null))
+    val vmNoUser =
+        OrganizationOverviewViewModel(
+            organizationRepository, userRepository, FakeAuthRepository(null))
     vmNoUser.fillSelectedOrganizationDetails("org1")
 
     val state = vmNoUser.uiState.value
@@ -88,8 +98,8 @@ class OrganizationOverviewViewModelTest {
   @Test
   fun `deleteSelectedOrganization removes org and clears selection`() = runTest {
     val orgId = "orgToDelete"
-    val org = Organization(id = orgId, name = "Deletable Org", members = listOf(user1))
-    organizationRepository.addOrganization(org)
+    val org = Organization(id = orgId, name = "Deletable Org")
+    organizationRepository.insertOrganization(org)
 
     vm.deleteSelectedOrganization(orgId)
 

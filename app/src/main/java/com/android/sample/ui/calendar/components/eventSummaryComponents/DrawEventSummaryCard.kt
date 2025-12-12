@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import com.android.sample.model.authentication.User
 import com.android.sample.model.category.EventCategory
 import com.android.sample.ui.calendar.components.EventSummaryCardTags
 import com.android.sample.ui.calendar.components.ExpandableText
@@ -66,7 +67,7 @@ fun DrawEventSummaryCard(
     onDescriptionOverflowChange: (Boolean) -> Unit = {},
     showDescriptionToggle: Boolean = true,
     // Participants
-    participantNames: List<String> = emptyList(),
+    participantNames: List<User> = emptyList(),
 ) {
   val overlayColor =
       sideColor.copy(alpha = AlphaExtraLow) // translucent event tint drawn above base

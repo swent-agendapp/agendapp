@@ -17,7 +17,8 @@ data class OrganizationUIState(
     val isLoading: Boolean = true,
     val organizations: List<Organization> = emptyList(),
     val errorMsg: String? = null,
-    val isRefreshing: Boolean = false
+    val isRefreshing: Boolean = false,
+    val showUseInvitationBottomSheet: Boolean = false,
 )
 
 // ViewModel for managing organization data for the current user
@@ -41,7 +42,7 @@ open class OrganizationViewModel(
   }
 
   // Load organizations for the current user
-  private fun loadOrganizations() {
+  fun loadOrganizations() {
     viewModelScope.launch {
       // Get the current authenticated user
       val user = userState.value ?: throw IllegalStateException(errorMessageNoAuthenticated)
@@ -49,7 +50,8 @@ open class OrganizationViewModel(
       // Update UI state to loading and fetch organizations
       _uiState.update { it.copy(isLoading = true) }
       _uiState.update {
-        it.copy(organizations = organizationRepository.getAllOrganizations(user), isLoading = false)
+        val organizations = organizationRepository.getAllOrganizations(user)
+        it.copy(organizations = organizations, isLoading = false)
       }
     }
   }
@@ -77,31 +79,12 @@ open class OrganizationViewModel(
       }
     }
   }
-
   // Clear any error message in the UI state
   open fun clearErrorMsg() {
     _uiState.update { it.copy(errorMsg = null) }
   }
 
-  // Add a new organization with the given name for the current user (himself as the only admin and
-  // member)
-  fun addOrganizationFromName(name: String) {
-    viewModelScope.launch {
-      val currentUser = userState.value ?: throw IllegalStateException(errorMessageNoAuthenticated)
-
-      try {
-        // Create a new organization with the current user as the only admin and member
-        val newOrganization =
-            Organization(name = name, admins = listOf(currentUser), members = listOf(currentUser))
-        // Add the new organization to the repository
-        organizationRepository.insertOrganization(newOrganization, currentUser)
-
-        // Load organizations again to ensure consistency
-        loadOrganizations()
-      } catch (e: Exception) {
-        // Update the UI state with the error message
-        _uiState.update { it.copy(errorMsg = "Failed to add organization: ${e.localizedMessage}") }
-      }
-    }
+  fun setShowUseInvitationBottomSheet(show: Boolean) {
+    _uiState.update { it.copy(showUseInvitationBottomSheet = show) }
   }
 }

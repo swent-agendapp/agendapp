@@ -227,6 +227,15 @@
     <string name="error_loading_invitations">Échec du chargement des invitations</string>
     <string name="error_invitation_not_found">Invitation introuvable</string>
     <string name="error_deleting_invitations">Échec de la suppression de l\'invitation</string>
+    <string name="enter_invitation_code">Entrez le code d\'invitation</string>
+    <string name="join_button_text">Rejoindre</string>
+    <string name="error_invitation_with_code_not_found">Aucune invitation trouvée avec ce code.</string>
+    <string name="error_invitation_already_used">Cette invitation a déjà été utilisée.</string>
+    <string name="error_invitation_expired">Cette invitation a expiré.</string>
+    <string name="error_joining_organization">Impossible de rejoindre l’organisation : elle n’existe plus ou vous en êtes déjà membre.</string>
+    <string name="error_invitation_code_illegal_input">Seules les lettres et les chiffres sont autorisés. La longueur requise du code est de %1$d.</string>
+    <string name="invitation_joining_organization">Tentative de rejoindre l’organisation…</string>
+
 
     <!-- hourRecap -->
     <string name="loading_hours">Chargement…</string>

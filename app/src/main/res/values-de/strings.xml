@@ -227,6 +227,15 @@
     <string name="error_loading_invitations">Einladungen konnten nicht geladen werden</string>
     <string name="error_invitation_not_found">Einladung wurde nicht gefunden</string>
     <string name="error_deleting_invitations">Einladung konnte nicht gelöscht werden</string>
+    <string name="enter_invitation_code">Geben Sie den Einladungscode ein</string>
+    <string name="join_button_text">Beitreten</string>
+    <string name="error_invitation_with_code_not_found">Keine Einladung mit diesem Code gefunden.</string>
+    <string name="error_invitation_already_used">Diese Einladung wurde bereits verwendet.</string>
+    <string name="error_invitation_expired">Diese Einladung ist abgelaufen.</string>
+    <string name="error_joining_organization">Beitritt nicht möglich: Die Organisation existiert nicht mehr oder Sie sind bereits Mitglied.</string>
+    <string name="error_invitation_code_illegal_input">Es sind nur Buchstaben und Ziffern erlaubt. Die erforderliche Codelänge beträgt %1$d.</string>
+    <string name="invitation_joining_organization">Organisation beitreten…</string>
+
 
     <!-- hourRecap -->
     <string name="loading_hours">Laden…</string>

@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import com.android.sample.R
+import com.android.sample.model.authentication.User
 import com.android.sample.model.replacement.mockData.getMockReplacements
 import com.android.sample.ui.calendar.utils.DateTimeUtils.DATE_FORMAT_PATTERN
 import com.android.sample.ui.common.MemberSelectionList
@@ -52,21 +53,18 @@ object ProcessReplacementTestTags {
   fun memberTag(name: String): String = MEMBER_PREFIX + name
 }
 
-private val DefaultCandidates =
-    listOf("Emilien", "Haobin", "Noa", "Weifeng", "Timael", "Méline", "Nathan")
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProcessReplacementScreen(
     replacementId: String,
-    candidates: List<String> = DefaultCandidates,
-    onSendRequests: (List<String>) -> Unit = {},
+    candidates: List<User> = emptyList(),
+    onSendRequests: (List<User>) -> Unit = {},
     onBack: () -> Unit = {},
 ) {
   val replacement =
       remember(replacementId) { getMockReplacements().first { it.id == replacementId } }
 
-  var selectedMembers by remember { mutableStateOf(setOf<String>()) }
+  var selectedMembers by remember { mutableStateOf(setOf<User>()) }
 
   val dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)
   val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")

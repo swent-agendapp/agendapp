@@ -10,6 +10,10 @@ import com.android.sample.ui.calendar.editEvent.EditEventViewModel
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import org.junit.Before
+import com.android.sample.utils.FirebaseEmulatedTest
+import com.android.sample.utils.OrganizationTestHelper
+import kotlinx.coroutines.runBlocking
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -21,16 +25,17 @@ import org.junit.runner.RunWith
  * Verifies that the correct UI elements are displayed depending on the current EditEventStep.
  */
 @RunWith(AndroidJUnit4::class)
-class EditEventFlowUITest : RequiresSelectedOrganizationTestBase {
+class EditEventFlowUITest : FirebaseEmulatedTest(), RequiresSelectedOrganizationTestBase {
 
-  @get:Rule val composeTestRule = createComposeRule()
+    override val organizationId: String = DEFAULT_TEST_ORG_ID
 
-  override val organizationId: String = DEFAULT_TEST_ORG_ID
-
-  @Before
-  fun setup() {
+    @Before
+  override fun setUp() {
+    super.setUp()
     setSelectedOrganization()
   }
+
+  @get:Rule val composeTestRule = createComposeRule()
 
   @Test
   fun editEventFlow_displaysMainScreen_byDefault() {

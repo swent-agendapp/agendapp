@@ -28,7 +28,6 @@ fun ReplacementEmployeeFlow(
     onWaitingConfirmationClick: () -> Unit,
     onConfirmedClick: () -> Unit,
     viewModel: ReplacementEmployeeViewModel = viewModel(),
-    onBack: () -> Unit = {},
 ) {
   val uiState by viewModel.uiState.collectAsState()
 

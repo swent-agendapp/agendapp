@@ -15,6 +15,7 @@ import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.sample.model.authentication.User
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.category.EventCategory
@@ -120,7 +121,7 @@ class EventSummaryCardTest {
             start = base.plusSeconds(60 * 60), // 09:00 CET
             end = base.plusSeconds(60 * 60 * 2), // 10:00 CET
             participants = setOf("u1", "u2"))
-    val names = listOf("Alice", "Bob")
+    val names = listOf(User(displayName = "Alice"), User(displayName = "Bob"))
 
     composeTestRule.setContent {
       EventSummaryCard(
@@ -286,7 +287,13 @@ class EventSummaryCardTest {
             start = base,
             end = base.plusSeconds(3600),
             participants = setOf("u1", "u2", "u3", "u4", "u5"))
-    val names = listOf("A", "B", "C", "D", "E")
+    val names =
+        listOf(
+            User(displayName = "A"),
+            User(displayName = "B"),
+            User(displayName = "C"),
+            User(displayName = "D"),
+            User(displayName = "E"))
 
     composeTestRule.setContent { EventSummaryCard(event = e, participantNames = names) }
 
@@ -302,7 +309,7 @@ class EventSummaryCardTest {
             start = base,
             end = base.plusSeconds(3600),
             participants = (1..6).map { "u$it" }.toSet())
-    val names = (1..6).map { "Name $it" }
+    val names = (1..6).map { User(displayName = "Name $it") }
 
     composeTestRule.setContent { EventSummaryCard(event = e, participantNames = names) }
 
@@ -317,7 +324,9 @@ class EventSummaryCardTest {
             title = "Color",
             start = base,
             end = base.plusSeconds(3600),
-            category = EventCategory(label = "Strong color", color = EventPalette.Red))
+            category =
+                EventCategory(
+                    organizationId = "orgTest", label = "Strong color", color = EventPalette.Red))
 
     composeTestRule.setContent { EventSummaryCard(event = e, participantNames = emptyList()) }
 

@@ -18,6 +18,7 @@ import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -44,9 +45,9 @@ class InvitationOverviewScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrg
 
   @OptIn(ExperimentalCoroutinesApi::class)
   @Before
-  override fun setUp() {
+  override fun setUp() = runBlocking {
     fakeOrganizationRepository = FakeOrganizationRepository()
-    fakeOrganizationRepository.addOrganization(org)
+    fakeOrganizationRepository.insertOrganization(org)
 
     setSelectedOrganization()
 

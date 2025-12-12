@@ -12,11 +12,13 @@ import com.android.sample.ui.replacement.organize.ReplacementOrganizeViewModel
 import com.android.sample.ui.replacement.organize.components.SelectSubstitutedScreen
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
+import com.android.sample.utils.FirebaseEmulatedTest
+
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class SelectSubstitutedScreenTest : RequiresSelectedOrganizationTestBase {
+class SelectSubstitutedScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganizationTestBase {
 
   @get:Rule val composeTestRule = createComposeRule()
 
@@ -25,7 +27,9 @@ class SelectSubstitutedScreenTest : RequiresSelectedOrganizationTestBase {
   private lateinit var fakeViewModel: ReplacementOrganizeViewModel
 
   @Before
-  fun setUp() {
+  override fun setUp() {
+      super.setUp()
+
     setSelectedOrganization()
 
     fakeViewModel = ReplacementOrganizeViewModel()

@@ -7,8 +7,16 @@ class FakeOrganizationRepository : OrganizationRepository {
 
   private val organizations = mutableMapOf<String, Organization>()
 
-  fun addOrganization(org: Organization) {
-    organizations[org.id] = org
+  override suspend fun insertOrganization(organization: Organization) {
+    organizations[organization.id] = organization
+  }
+
+  override suspend fun updateOrganization(
+      organizationId: String,
+      organization: Organization,
+      user: User
+  ) {
+    if (organizationId == organization.id) organizations[organizationId] = organization
   }
 
   override suspend fun getOrganizationById(organizationId: String, user: User): Organization? {

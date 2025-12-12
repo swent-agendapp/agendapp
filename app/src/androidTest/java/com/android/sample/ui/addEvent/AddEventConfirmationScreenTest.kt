@@ -7,9 +7,9 @@ import androidx.compose.ui.test.onNodeWithTag
 import com.android.sample.ui.calendar.addEvent.components.AddEventConfirmationScreen
 import com.android.sample.ui.calendar.components.EventSummaryCardTags
 import com.android.sample.utils.FirebaseEmulatedTest
-import com.android.sample.utils.RequiresSelectedOrganizationTestBase
-import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import java.time.LocalDate
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -22,7 +22,7 @@ class AddEventConfirmationScreenTest :
   @get:Rule val composeTestRule = createComposeRule()
 
   @Before
-  override fun setUp() {
+  override fun setUp() = runBlocking {
     super.setUp()
 
     setSelectedOrganization()
@@ -31,7 +31,7 @@ class AddEventConfirmationScreenTest :
   }
 
   @Test
-  fun displayAllComponents() {
+  fun displayAllComponents() = runTest {
     // Main parts of the summary card are visible
     composeTestRule.onNodeWithTag(EventSummaryCardTags.SIDE_BAR).assertIsDisplayed()
     composeTestRule.onNodeWithTag(EventSummaryCardTags.DATE_LINE1).assertIsDisplayed()

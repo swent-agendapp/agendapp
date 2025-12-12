@@ -12,6 +12,7 @@ class EventCategoryConverter : PropertyConverter<EventCategory, String> {
   // Keys for serializing and deserializing EventCategory properties
   private companion object {
     const val KEY_ID = "id"
+    const val KEY_ORG_ID = "organizationId"
     const val KEY_LABEL = "label"
     const val KEY_COLOR = "color"
     const val KEY_DEFAULT = "isDefault"
@@ -22,6 +23,7 @@ class EventCategoryConverter : PropertyConverter<EventCategory, String> {
     val json =
         JSONObject().apply {
           put(KEY_ID, entityProperty.id)
+          put(KEY_ORG_ID, entityProperty.organizationId)
           put(KEY_LABEL, entityProperty.label)
           put(KEY_COLOR, entityProperty.color.toArgb())
           put(KEY_DEFAULT, entityProperty.isDefault)
@@ -33,6 +35,7 @@ class EventCategoryConverter : PropertyConverter<EventCategory, String> {
     if (databaseValue.isNullOrBlank()) return EventCategory.defaultCategory()
     val json = JSONObject(databaseValue)
     val id = json.optString(KEY_ID, UUID.randomUUID().toString())
+    val organizationId = json.optString(KEY_ORG_ID, UUID.randomUUID().toString())
     val label = json.optString(KEY_LABEL, "")
     val colorLong = json.optLong(KEY_COLOR, EventPalette.NoCategory.value.toLong())
     val color = Color(colorLong.toULong())
@@ -40,6 +43,7 @@ class EventCategoryConverter : PropertyConverter<EventCategory, String> {
 
     return EventCategory(
         id = id,
+        organizationId = organizationId,
         label = label,
         color = color,
         isDefault = isDefault,

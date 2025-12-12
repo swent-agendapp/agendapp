@@ -10,20 +10,25 @@ import com.android.sample.ui.theme.SampleAppTheme
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import org.junit.Before
+import com.android.sample.utils.FirebaseEmulatedTest
+import kotlinx.coroutines.runBlocking
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 // Assisted by AI
 @RunWith(AndroidJUnit4::class)
-class EditEventScreenTest : RequiresSelectedOrganizationTestBase {
+class EditEventScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganizationTestBase {
 
   @get:Rule val composeTestRule = createComposeRule()
 
   override val organizationId: String = DEFAULT_TEST_ORG_ID
 
   @Before
-  fun setUp() {
+  override fun setUp() {
+      super.setUp()
+
     setSelectedOrganization()
   }
 

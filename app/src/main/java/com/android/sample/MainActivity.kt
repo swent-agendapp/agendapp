@@ -278,7 +278,6 @@ private fun NavGraphBuilder.replacementGraph(
                 navigationActions.navigateTo(Screen.ReplacementPending)
               },
               onConfirmedClick = { navigationActions.navigateTo(Screen.ReplacementUpcoming) },
-              onBack = { navigationActions.navigateTo(Screen.Calendar) },
           )
         }
         composable(Screen.ReplacementOrganize.route) {

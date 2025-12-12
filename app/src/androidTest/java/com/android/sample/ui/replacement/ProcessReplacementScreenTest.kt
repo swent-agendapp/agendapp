@@ -36,8 +36,8 @@ class ProcessReplacementScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrg
   private val replacementId = getMockReplacements().first().id
 
   @Before
-  override fun setup() {
-      super.setUp()
+  override fun setUp() {
+    super.setUp()
 
     setSelectedOrganization()
   }

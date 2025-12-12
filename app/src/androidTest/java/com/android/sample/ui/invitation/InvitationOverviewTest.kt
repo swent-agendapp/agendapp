@@ -37,9 +37,7 @@ class InvitationOverviewScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrg
 
   override val organizationId: String = DEFAULT_TEST_ORG_ID
   private val user = User(id = "user1", displayName = "Test User", email = "test@example.com")
-  private val org =
-      Organization(
-          id = organizationId, name = "Test Org", admins = listOf(user), members = listOf(user))
+  private val org = Organization(id = organizationId, name = "Test Org")
   private val inv1 = Invitation(id = "id1", organizationId = org.id, code = "123456")
   private val inv2 = Invitation(id = "id2", organizationId = org.id, code = "654321")
 

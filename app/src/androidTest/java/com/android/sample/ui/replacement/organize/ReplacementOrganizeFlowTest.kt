@@ -6,10 +6,13 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import java.time.Instant
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -38,6 +41,15 @@ class ReplacementOrganizeFlowTest : FirebaseEmulatedTest(), RequiresSelectedOrga
 
   @Test
   fun fullFlow_displaysCorrectScreensAndNavigates() {
+
+    // Add Alice to participants to verify she appears in the list
+    runBlocking {
+      val user = User(id = "1", displayName = "Alice", email = "alice@example.com")
+      UserRepositoryProvider.repository.newUser(user)
+      UserRepositoryProvider.repository.addUserToOrganization(user.id, organizationId)
+      fakeViewModel.loadOrganizationMembers()
+    }
+
     composeTestRule.waitUntil(timeoutMillis = 5_000) {
       fakeViewModel.uiState.value.memberList.isNotEmpty()
     }

@@ -3,14 +3,15 @@ package com.android.sample.ui.editEvent
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.ui.calendar.editEvent.EditEventTestTags
 import com.android.sample.ui.calendar.editEvent.components.EditEventAttendantScreen
 import com.android.sample.ui.calendar.editEvent.components.EditEventScreen
 import com.android.sample.ui.theme.SampleAppTheme
+import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
-import org.junit.Before
-import com.android.sample.utils.FirebaseEmulatedTest
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -27,7 +28,7 @@ class EditEventScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
 
   @Before
   override fun setUp() {
-      super.setUp()
+    super.setUp()
 
     setSelectedOrganization()
   }
@@ -83,6 +84,13 @@ class EditEventScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
 
   @Test
   fun editEventAttendantScreen_selectsParticipantsCorrectly() {
+    // Add Alice to participants to verify she appears in the list
+    runBlocking {
+      val user = User(id = "1", displayName = "Alice")
+      UserRepositoryProvider.repository.newUser(user)
+      UserRepositoryProvider.repository.addUserToOrganization(user.id, organizationId)
+    }
+
     var saveClicked = false
     var backClicked = false
 
@@ -108,6 +116,13 @@ class EditEventScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
 
   @Test
   fun editEventAttendantScreen_toggleParticipantCheckbox() {
+    // Add Alice to participants to verify she appears in the list
+    runBlocking {
+      val user = User(id = "1", displayName = "Alice")
+      UserRepositoryProvider.repository.newUser(user)
+      UserRepositoryProvider.repository.addUserToOrganization(user.id, organizationId)
+    }
+
     composeTestRule.setContent { SampleAppTheme { EditEventAttendantScreen() } }
 
     val alice = composeTestRule.onNodeWithText("Alice")

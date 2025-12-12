@@ -90,14 +90,14 @@ class AddEventViewModel(
   // Wrap for brevity
   private fun requireOrgId(): String = selectedOrganizationViewModel.getSelectedOrganizationId()
 
-    init {
-        viewModelScope.launch {
-            val selectedOrga = requireOrgId()
-            val userIds = userRepository.getMembersIds(selectedOrga)
-            val users = userRepository.getUsersByIds(userIds)
-            _uiState.update { it.copy(users = users) }
-        }
+  init {
+    viewModelScope.launch {
+      val selectedOrga = requireOrgId()
+      val userIds = userRepository.getMembersIds(selectedOrga)
+      val users = userRepository.getUsersByIds(userIds)
+      _uiState.update { it.copy(users = users) }
     }
+  }
 
   /**
    * Loads a draft event instance based on the current UI field values.

@@ -64,7 +64,6 @@ class EditEventViewModel(
     private val selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel
 ) : ViewModel() {
-  private val organizationError = "No organization selected."
   private val _uiState = MutableStateFlow(EditCalendarEventUIState())
   val uiState: StateFlow<EditCalendarEventUIState> = _uiState.asStateFlow()
 
@@ -107,7 +106,7 @@ class EditEventViewModel(
 
   fun loadUsers() {
     viewModelScope.launch {
-      requireOrgId()
+      val orgId = requireOrgId()
 
       val userIds = userRepository.getMembersIds(orgId)
       val users = userRepository.getUsersByIds(userIds)

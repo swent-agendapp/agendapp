@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FileDownload
 import androidx.compose.material3.*
@@ -204,7 +206,11 @@ private fun HourRecapUserEventsSheet(recap: HourRecapUserRecap, onDismiss: () ->
   val dateFormatter = remember { DateTimeFormatter.ofPattern("MMM dd, yyyy") }
   val timeFormatter = remember { DateTimeFormatter.ofPattern("HH:mm") }
 
-  Column(modifier = Modifier.fillMaxWidth().padding(horizontal = SpacingLarge, vertical = SpacingMedium)) {
+  Column(
+      modifier =
+          Modifier.fillMaxWidth()
+              .verticalScroll(rememberScrollState())
+              .padding(horizontal = SpacingLarge, vertical = SpacingMedium)) {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
       Text(
           text = stringResource(R.string.hour_recap_events_for_user, recap.displayName),
@@ -258,19 +264,21 @@ private fun HourRecapEventCard(
             else stringResource(R.string.hour_recap_tag_future)
         RecapTag(label = timeLabel, containerColor = MaterialTheme.colorScheme.secondaryContainer)
 
-        val presenceLabel =
-            when (event.wasPresent) {
-              true -> stringResource(R.string.hour_recap_tag_present)
-              false -> stringResource(R.string.hour_recap_tag_absent)
-              null -> stringResource(R.string.hour_recap_tag_presence_unknown)
-            }
-        val presenceColor =
-            when (event.wasPresent) {
-              true -> MaterialTheme.colorScheme.primaryContainer
-              false -> MaterialTheme.colorScheme.errorContainer
-              null -> MaterialTheme.colorScheme.surfaceVariant
-            }
-        RecapTag(label = presenceLabel, containerColor = presenceColor)
+        if (event.isPast) {
+          val presenceLabel =
+              when (event.wasPresent) {
+                true -> stringResource(R.string.hour_recap_tag_present)
+                false -> stringResource(R.string.hour_recap_tag_absent)
+                null -> stringResource(R.string.hour_recap_tag_presence_unknown)
+              }
+          val presenceColor =
+              when (event.wasPresent) {
+                true -> MaterialTheme.colorScheme.primaryContainer
+                false -> MaterialTheme.colorScheme.errorContainer
+                null -> MaterialTheme.colorScheme.surfaceVariant
+              }
+          RecapTag(label = presenceLabel, containerColor = presenceColor)
+        }
 
         if (event.wasReplaced) {
           RecapTag(

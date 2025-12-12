@@ -27,7 +27,7 @@ import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.theme.ElevationLow
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.PaddingSmall
-import com.android.sample.ui.theme.PaddingXS
+import com.android.sample.ui.theme.PaddingExtraSmall
 import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingMedium
 import com.android.sample.ui.theme.Weight
@@ -72,6 +72,7 @@ object HourRecapTestTags {
  * @param hourRecapViewModel ViewModel for hour recap.
  * @param onBackClick Callback invoked when the user presses the back navigation button.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HourRecapScreen(
     hourRecapViewModel: HourRecapViewModel = viewModel(factory = HourRecapViewModel.Factory),
@@ -248,7 +249,7 @@ private fun HourRecapEventCard(
   Card(modifier = Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(ElevationLow)) {
     Column(modifier = Modifier.padding(PaddingMedium)) {
       Text(text = event.title, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
-      Spacer(Modifier.height(PaddingXS))
+      Spacer(Modifier.height(PaddingExtraSmall))
       Text(
           text =
               stringResource(

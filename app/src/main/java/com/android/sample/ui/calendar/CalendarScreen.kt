@@ -1,7 +1,6 @@
 package com.android.sample.ui.calendar
 
 import android.content.res.Configuration
-import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -13,6 +12,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -57,7 +58,6 @@ object CalendarScreenTestTags {
   const val DAY_HEADER_DAY_PREFIX = "CalendarContainer_DayHeaderDay_" // + index or date
 
   // Calendar container tags
-  const val CALENDAR_GRID = "CalendarContainer_Grid"
   const val DATE_PICKER_MODAL = "CalendarContainer_DatePickerModal"
 
   // View mode selector tags (moved from ViewModeSelectorTags)
@@ -74,6 +74,9 @@ object CalendarScreenTestTags {
 
   // Location status chip
   const val LOCATION_STATUS_CHIP = "LocationStatusChip"
+
+  // Snack bar
+  const val SNACK_BAR = "CalendarSnackBar"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -97,22 +100,35 @@ fun CalendarScreen(
 
   var showFilterSheet by remember { mutableStateOf(false) }
 
+  // Host state for displaying a snack bar in case of errors
+  val snackbarHostState = remember { SnackbarHostState() }
+
   // Fetch events when the screen is recomposed
   LaunchedEffect(currentDateRange, selectedOrgId) {
-    if (selectedOrgId != null) {
+    try {
+      // Getting organization ID will throw IllegalStateException if none is selected
+      selectedOrganizationViewModel.getSelectedOrganizationId()
       loadEventsForDateRange(calendarViewModel, currentDateRange)
+    } catch (_: IllegalStateException) {
+      // If no organization is selected, show error only once via a toast message
+      calendarViewModel.setErrorMsg(context.getString(R.string.error_no_organization_selected))
     }
   }
 
-  // Show error message if fetching events fails
+  // Show error message in a toast when errorMsg is set in the UI state
   LaunchedEffect(uiState.errorMsg) {
     uiState.errorMsg?.let { message ->
-      Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+      snackbarHostState.showSnackbar(message)
       calendarViewModel.clearErrorMsg()
     }
   }
 
   Scaffold(
+      snackbarHost = {
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier.testTag(CalendarScreenTestTags.SNACK_BAR))
+      },
       topBar = {
         if (isPortrait) {
           MainPageTopBar(

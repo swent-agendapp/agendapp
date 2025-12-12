@@ -17,8 +17,8 @@ import com.android.sample.model.authentication.User
 import com.android.sample.model.replacement.mockData.getMockReplacements
 import com.android.sample.ui.theme.SampleAppTheme
 import com.android.sample.utils.FirebaseEmulatedTest
-import com.android.sample.utils.OrganizationTestHelper
-import kotlinx.coroutines.runBlocking
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -27,20 +27,19 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class ProcessReplacementScreenTest : FirebaseEmulatedTest() {
+class ProcessReplacementScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganizationTestBase {
 
   @get:Rule val composeTestRule = createComposeRule()
+
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
 
   private val replacementId = getMockReplacements().first().id
 
   @Before
-  override fun setUp() = runBlocking {
+  override fun setUp() {
     super.setUp()
 
-    val orgId = "orgTest"
-    val helper = OrganizationTestHelper()
-    helper.setupOrganizationWithUsers(orgId)
-    Unit
+    setSelectedOrganization()
   }
 
   @Test

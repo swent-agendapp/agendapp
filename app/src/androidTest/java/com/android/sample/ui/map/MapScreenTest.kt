@@ -12,27 +12,29 @@ import androidx.test.rule.GrantPermissionRule
 import com.android.sample.model.map.Area
 import com.android.sample.model.map.MapRepositoryProvider
 import com.android.sample.model.map.Marker
-import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.ui.map.MapScreenTestTags.CREATE_AREA_BUTTON
 import com.android.sample.ui.map.MapScreenTestTags.DELETE_MARKER_BUTTON
 import com.android.sample.ui.map.MapScreenTestTags.DOWN_SHEET
 import com.android.sample.ui.map.MapScreenTestTags.DOWN_SHEET_FORM
 import com.android.sample.ui.map.MapScreenTestTags.SLIDER
 import com.android.sample.utils.FirebaseEmulatedTest
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.model.LatLng
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class MapScreenTest : FirebaseEmulatedTest() {
+class MapScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganizationTestBase {
   lateinit var mapViewModel: MapViewModel
-  private val selectedOrganizationId = "orgTest"
+
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
 
   @Before
   override fun setUp() {
     super.setUp()
-    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
+    setSelectedOrganization()
     val repo = MapRepositoryProvider.repository
     mapViewModel = MapViewModel(ApplicationProvider.getApplicationContext(), repo)
     MapsInitializer.initialize(

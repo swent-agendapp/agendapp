@@ -7,12 +7,13 @@ import androidx.compose.ui.test.performClick
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.calendar.createEvent
-import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.components.EventSummaryCardTags
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreen
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreenTestTags
 import com.android.sample.ui.calendar.eventOverview.EventOverviewViewModel
 import com.android.sample.utils.FirebaseEmulatedTest
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import java.time.Instant
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -26,27 +27,27 @@ import org.junit.Test
  * These tests focus on verifying that the screen shows its main structure (top bar and content
  * container) and that the back button correctly triggers the provided callback.
  */
-class CalendarEventOverviewTest : FirebaseEmulatedTest() {
+class CalendarEventOverviewTest : FirebaseEmulatedTest(), RequiresSelectedOrganizationTestBase {
+
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
 
   @get:Rule val composeTestRule = createComposeRule()
-
-  private val selectedOrganizationId = "orgTest"
   private lateinit var repo: EventRepository
 
   @Before
   fun setup() {
-    repo = EventRepositoryProvider.repository
+    // Ensure an organization is selected before running tests
+    setSelectedOrganization()
 
-    // Ensure the right organization is selected
-    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
+    repo = EventRepositoryProvider.repository
   }
 
   @Test
   fun eventOverview_showsTopBarAndRootScreen() { // Arrange: create an in-memory repository and
 
-    val event = createEvent(organizationId = selectedOrganizationId)[0]
+    val event = createEvent(organizationId = organizationId)[0]
 
-    runBlocking { repo.insertEvent(orgId = selectedOrganizationId, item = event) }
+    runBlocking { repo.insertEvent(orgId = organizationId, item = event) }
 
     val viewModel = EventOverviewViewModel(repo)
 
@@ -69,14 +70,14 @@ class CalendarEventOverviewTest : FirebaseEmulatedTest() {
   fun eventOverview_showsTitleDescriptionParticipantsAndSidebar() {
     val event =
         createEvent(
-            organizationId = selectedOrganizationId,
+            organizationId = organizationId,
             title = "Overviewed Event",
             description = "This is an event used to test the summary card.",
             startDate = Instant.parse("2025-01-10T10:00:00Z"),
             endDate = Instant.parse("2025-01-10T11:00:00Z"),
             participants = setOf("Alice", "Bob"))[0]
 
-    runBlocking { repo.insertEvent(orgId = selectedOrganizationId, item = event) }
+    runBlocking { repo.insertEvent(orgId = organizationId, item = event) }
 
     val viewModel = EventOverviewViewModel(repo)
 
@@ -102,14 +103,14 @@ class CalendarEventOverviewTest : FirebaseEmulatedTest() {
 
     val event =
         createEvent(
-            organizationId = selectedOrganizationId,
+            organizationId = organizationId,
             title = "Overviewed Event",
             description = "This is an event used to test the summary card.",
             startDate = Instant.parse("2025-01-10T10:00:00Z"),
             endDate = Instant.parse("2025-01-10T11:00:00Z"),
             participants = setOf("Alice", "Bob"))[0]
 
-    runBlocking { repo.insertEvent(orgId = selectedOrganizationId, item = event) }
+    runBlocking { repo.insertEvent(orgId = organizationId, item = event) }
 
     val viewModel = EventOverviewViewModel(repo)
 

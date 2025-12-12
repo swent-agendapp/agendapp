@@ -15,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -48,6 +49,14 @@ object EditCategoryScreenTestTags {
   const val BOTTOM_SHEET_SAVE_BUTTON = "edit_category_save_button"
 }
 
+/**
+ * Screen that lets the admin view, reorder and customize their event categories.
+ *
+ * NOW: uses local state with mock categories (getMockEventCategory()). LATER: this will be backed
+ * by an EditCategoryViewModel and its uiState.
+ *
+ * @param onBack callback invoked when the user taps the top bar back button.
+ */
 // FOR NOW: use local state + mock categories (getMockEventCategory()).
 // LATER: we will replace local state with an EditCategoryViewModel and its uiState.
 @OptIn(ExperimentalMaterial3Api::class)
@@ -85,29 +94,141 @@ fun EditCategoryScreen(
             categories = categories.toMutableList().apply { move(from.index, to.index) }
           })
 
-  // LATER: use a LaunchedEffect for displaying the error msg
-
-  // Delete confirmation dialog
-  if (showDeleteDialog.value && selectedCategory != null) {
-    DeleteCategoryConfirmationDialog(
-        category = selectedCategory!!,
-        onConfirm = {
-          val categoryToDelete = selectedCategory
-          showDeleteDialog.value = false
-          if (categoryToDelete != null) {
-            // LATER: call editCategoryViewModel.deleteCategory(category.id)
-            categories = categories.filterNot { it.id == categoryToDelete.id }
-          }
-          selectedCategory = null
-          selectedCategoryIndex = -1
-        },
-        onDismiss = {
-          showDeleteDialog.value = false
-          selectedCategory = null
-          selectedCategoryIndex = -1
-        })
+  // NOW: helper to clear the local selection state.
+  // LATER: selection will be owned by the ViewModel and cleared via a ViewModel event.
+  fun resetSelection() {
+    selectedCategory = null
+    selectedCategoryIndex = -1
   }
 
+  // NOW: prepare local state before showing the delete dialog.
+  // LATER: the ViewModel will expose an intent (for example onAskDeleteCategory(categoryId)) and
+  // own both the selected category and the delete dialog visibility.
+  fun askDeleteCategory(category: EventCategory) {
+    selectedCategory = category
+    selectedCategoryIndex = categories.indexOfFirst { it == category }
+    showDeleteDialog.value = true
+  }
+
+  // NOW: close the delete dialog and reset local selection.
+  // LATER: the ViewModel will handle closing the dialog and clearing the selection.
+  fun dismissDeleteDialog() {
+    showDeleteDialog.value = false
+    resetSelection()
+  }
+
+  // NOW: delete the selected category from the local list and close the dialog.
+  // LATER: the ViewModel will perform the deletion (for example onConfirmDelete()) and update its
+  // uiState accordingly.
+  fun deleteSelectedCategoryAndDismissDialog() {
+    val categoryToDelete = selectedCategory
+    showDeleteDialog.value = false
+    if (categoryToDelete != null) {
+      // LATER: call editCategoryViewModel.deleteCategory(category.id)
+      categories = categories.filterNot { it.id == categoryToDelete.id }
+    }
+    resetSelection()
+  }
+
+  // NOW: close the bottom sheet and reset local selection.
+  // LATER: the ViewModel will expose an intent to close the sheet and reset its uiState.
+  fun dismissBottomSheet() {
+    showBottomSheet = false
+    resetSelection()
+  }
+
+  // NOW: create or update a category directly in the local list when the user saves.
+  // LATER: the ViewModel will expose a save intent (for example onSaveCategory(label, color)) and
+  // handle creation / edition, then the UI will only observe the new uiState.
+  fun saveCategory(label: String, color: Color) {
+    val trimmedLabel = label.trim()
+    if (trimmedLabel.isEmpty()) return
+
+    // NOW: update local list
+    // LATER: call ViewModel to create or update the category
+    if (selectedCategoryIndex in categories.indices) {
+      // Edit existing category
+      val updated =
+          categories.mapIndexed { index, oldCategory ->
+            if (index == selectedCategoryIndex) {
+              oldCategory.copy(label = trimmedLabel, color = color)
+            } else {
+              oldCategory
+            }
+          }
+      categories = updated
+    } else {
+      // Add new category
+      categories =
+          categories + EventCategory(label = trimmedLabel, color = color, isDefault = false)
+    }
+
+    showBottomSheet = false
+    resetSelection()
+  }
+
+  // LATER: use a LaunchedEffect for displaying the error msg
+
+  EditCategoryDeleteDialog(
+      showDeleteDialog = showDeleteDialog.value,
+      category = selectedCategory,
+      onConfirm = { deleteSelectedCategoryAndDismissDialog() },
+      onDismiss = { dismissDeleteDialog() })
+
+  EditCategoryScaffold(
+      onBack = onBack,
+      categories = categories,
+      reorderState = reorderState,
+      onCreateCategory = {
+        resetSelection()
+        showBottomSheet = true
+      },
+      onEditCategory = { category ->
+        selectedCategory = category
+        selectedCategoryIndex = categories.indexOfFirst { it == category }
+        showBottomSheet = true
+      },
+      onDeleteCategory = { category -> askDeleteCategory(category) },
+      showBottomSheet = showBottomSheet,
+      sheetState = sheetState,
+      selectedCategory = selectedCategory,
+      onDismissBottomSheet = { dismissBottomSheet() },
+      onSaveCategory = { label, color -> saveCategory(label, color) },
+  )
+}
+
+@Composable
+private fun EditCategoryDeleteDialog(
+    showDeleteDialog: Boolean,
+    category: EventCategory?,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+  // Delete confirmation dialog
+  if (showDeleteDialog && category != null) {
+    DeleteCategoryConfirmationDialog(
+        category = category,
+        onConfirm = onConfirm,
+        onDismiss = onDismiss,
+    )
+  }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun EditCategoryScaffold(
+    onBack: () -> Unit,
+    categories: List<EventCategory>,
+    reorderState: org.burnoutcrew.reorderable.ReorderableLazyListState,
+    onCreateCategory: () -> Unit,
+    onEditCategory: (EventCategory) -> Unit,
+    onDeleteCategory: (EventCategory) -> Unit,
+    showBottomSheet: Boolean,
+    sheetState: androidx.compose.material3.SheetState,
+    selectedCategory: EventCategory?,
+    onDismissBottomSheet: () -> Unit,
+    onSaveCategory: (String, Color) -> Unit,
+) {
   Scaffold(
       topBar = {
         SecondaryPageTopBar(title = stringResource(R.string.edit_category_title), onClick = onBack)
@@ -117,9 +238,7 @@ fun EditCategoryScreen(
             modifier = Modifier.testTag(CATEGORY_CARD_ADD_BUTTON),
             onClick = {
               // Create a new category (no pre-filled data)
-              selectedCategory = null
-              selectedCategoryIndex = -1
-              showBottomSheet = true
+              onCreateCategory()
             })
       }) { paddingValues ->
         CategoryListSection(
@@ -129,17 +248,8 @@ fun EditCategoryScreen(
                     .testTag(EditCategoryScreenTestTags.SCREEN_ROOT),
             categories = categories,
             reorderState = reorderState,
-            onEditCategory = { category ->
-              // LATER: call editCategoryViewModel.selectCategory(category.id)
-              selectedCategory = category
-              selectedCategoryIndex = categories.indexOfFirst { it == category }
-              showBottomSheet = true
-            },
-            onDeleteCategory = { category ->
-              selectedCategory = category
-              selectedCategoryIndex = categories.indexOfFirst { it == category }
-              showDeleteDialog.value = true
-            },
+            onEditCategory = { category -> onEditCategory(category) },
+            onDeleteCategory = { category -> onDeleteCategory(category) },
         )
 
         CategoryEditBottomSheet(
@@ -147,39 +257,8 @@ fun EditCategoryScreen(
             sheetState = sheetState,
             initialLabel = selectedCategory?.label,
             initialColor = selectedCategory?.color,
-            onDismiss = {
-              showBottomSheet = false
-              selectedCategory = null
-              selectedCategoryIndex = -1
-            },
-            onSave = { label, color ->
-              val trimmedLabel = label.trim()
-              if (trimmedLabel.isEmpty()) return@CategoryEditBottomSheet
-
-              // NOW: update local list
-              // LATER: call ViewModel to create or update the category
-              if (selectedCategoryIndex in categories.indices) {
-                // Edit existing category
-                val updated =
-                    categories.mapIndexed { index, oldCategory ->
-                      if (index == selectedCategoryIndex) {
-                        oldCategory.copy(label = trimmedLabel, color = color)
-                      } else {
-                        oldCategory
-                      }
-                    }
-                categories = updated
-              } else {
-                // Add new category
-                categories =
-                    categories +
-                        EventCategory(label = trimmedLabel, color = color, isDefault = false)
-              }
-
-              showBottomSheet = false
-              selectedCategory = null
-              selectedCategoryIndex = -1
-            },
+            onDismiss = { onDismissBottomSheet() },
+            onSave = { label, color -> onSaveCategory(label, color) },
         )
       }
 }

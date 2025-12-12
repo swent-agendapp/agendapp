@@ -64,7 +64,7 @@ class EditEventViewModel(
     selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel
 ) : ViewModel() {
-
+  private val organizationError = "No organization selected."
   private val _uiState = MutableStateFlow(EditCalendarEventUIState())
   val uiState: StateFlow<EditCalendarEventUIState> = _uiState.asStateFlow()
 
@@ -80,7 +80,7 @@ class EditEventViewModel(
       val state = _uiState.value
       try {
         val orgId = selectedOrganizationId.value
-        require(orgId != null) { "No organization selected." }
+        require(orgId != null) { organizationError }
 
         val updated =
             Event(
@@ -93,7 +93,7 @@ class EditEventViewModel(
                 cloudStorageStatuses = emptySet(),
                 locallyStoredBy = emptyList(),
                 personalNotes = null,
-                participants = state.participants.map { it -> it.id }.toSet(),
+                participants = state.participants.map { it.id }.toSet(),
                 version = System.currentTimeMillis(),
                 recurrenceStatus = state.recurrenceMode,
                 hasBeenDeleted = false,
@@ -109,7 +109,7 @@ class EditEventViewModel(
   fun loadUsers() {
     viewModelScope.launch {
       val orgId = selectedOrganizationId.value
-      require(orgId != null) { "No organization selected." }
+      require(orgId != null) { organizationError }
 
       val userIds = userRepository.getMembersIds(orgId)
       val users = userRepository.getUsersByIds(userIds)
@@ -122,7 +122,7 @@ class EditEventViewModel(
       _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
       try {
         val orgId = selectedOrganizationId.value
-        require(orgId != null) { "No organization selected." }
+        require(orgId != null) { organizationError }
 
         val event = eventRepository.getEventById(orgId = orgId, itemId = eventId)
         if (event != null) {

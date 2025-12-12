@@ -65,8 +65,6 @@ class ReplacementOrganizeViewModelTest {
             return testUsers.filter { it.id in userIds }
           }
 
-          override suspend fun modifyUser(user: User) {}
-
           override suspend fun newUser(user: User) {}
 
           override suspend fun deleteUser(userId: String) {}

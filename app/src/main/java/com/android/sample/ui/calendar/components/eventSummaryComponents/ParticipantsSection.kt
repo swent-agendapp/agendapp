@@ -87,7 +87,7 @@ fun ParticipantsSection(
                 .clip(RoundedCornerShape(CornerRadiusLarge))) {
           // Delegate the scrollable vs non-scrollable logic to a helper.
           ParticipantsList(
-              participantNames = participantNames.map { it -> it.display() },
+              participantNames = participantNames.map { it.display() },
               rowHeight = rowHeight,
               visibleRows = visibleRows,
           )

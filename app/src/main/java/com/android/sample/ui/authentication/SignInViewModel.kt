@@ -85,8 +85,6 @@ class SignInViewModel(
 
   /** Initiates the Google sign-in flow and updates the UI state on success or failure. */
   fun signIn(context: Context, credentialManager: CredentialManager) {
-    // if (_uiState.value.isLoading) return
-
     viewModelScope.launch {
       _uiState.update { it.copy(isLoading = true, errorMsg = null) }
 

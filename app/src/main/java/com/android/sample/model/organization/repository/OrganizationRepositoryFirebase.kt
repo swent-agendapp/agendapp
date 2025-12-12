@@ -27,7 +27,8 @@ class OrganizationRepositoryFirebase(
 
   override suspend fun getAllOrganizations(user: User): List<Organization> {
     val userDoc = db.collection(COLLECTION_USERS).document(user.id).get().await()
-    val orgIds = userDoc.get("organizations") as? List<String> ?: emptyList()
+    val orgIds =
+        (userDoc.get("organizations") as? List<*>)?.filterIsInstance<String>() ?: emptyList()
     if (orgIds.isEmpty()) return emptyList()
     val orgSnapshot =
         db.collection(ORGANIZATIONS_COLLECTION_PATH)

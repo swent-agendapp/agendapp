@@ -20,9 +20,6 @@ interface UserRepository {
    */
   suspend fun getUsersByIds(userIds: List<String>): List<User>
 
-  /** Modify an existing user */
-  suspend fun modifyUser(user: User)
-
   /**
    * Create or update an user
    *

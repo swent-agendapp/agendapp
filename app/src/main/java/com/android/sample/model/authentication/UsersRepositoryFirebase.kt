@@ -54,13 +54,6 @@ class UsersRepositoryFirebase(
     usersCollection().document(user.id).set(data, SetOptions.merge()).await()
   }
 
-  override suspend fun modifyUser(user: User) {
-    require(user.id.isNotBlank()) { "userId is required" }
-    val data = UserMapper.toMap(user)
-
-    usersCollection().document(user.id).set(data, SetOptions.merge()).await()
-  }
-
   /** -------------------------- DELETE USER -------------------------- */
   override suspend fun deleteUser(userId: String) {
     val batch = db.batch()

@@ -128,19 +128,6 @@ class UserRepositoryFirebaseTest : FirebaseEmulatedTest() {
   }
 
   @Test
-  fun modifyUser_shouldUpdateFields() = runBlocking {
-    val user = User(id = "mod-1", displayName = "Original", email = "orig@e.com")
-    UserRepositoryProvider.repository.newUser(user)
-
-    // Modify the user
-    val updated = user.copy(displayName = "Updated Name")
-    UserRepositoryProvider.repository.modifyUser(updated)
-
-    val result = UserRepositoryProvider.repository.getUsersByIds(listOf("mod-1")).first()
-    Assert.assertEquals("Updated Name", result.displayName)
-  }
-
-  @Test
   fun addAdminToOrganization_shouldWork() = runBlocking {
     // Prepare organization
     val userAdmin = User(id = "user-admin")

@@ -27,11 +27,6 @@ class UsersRepositoryLocal : UserRepository {
     users[user.id] = user
   }
 
-  override suspend fun modifyUser(user: User) {
-    require(user.id.isNotBlank()) { "userId is required" }
-    users[user.id] = user
-  }
-
   /** -------------------------- DELETE USER -------------------------- */
   override suspend fun deleteUser(userId: String) {
     val user = users[userId] ?: return

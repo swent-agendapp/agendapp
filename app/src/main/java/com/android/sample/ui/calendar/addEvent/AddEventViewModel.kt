@@ -125,7 +125,7 @@ class AddEventViewModel(
                 endDate = state.endInstant,
                 cloudStorageStatuses = emptySet(),
                 personalNotes = "",
-                participants = state.participants.map { it -> it.id }.toSet(),
+                participants = state.participants.map { it.id }.toSet(),
                 category = state.category,
                 recurrence = state.recurrenceMode,
                 endRecurrence = state.recurrenceEndInstant)
@@ -159,7 +159,7 @@ class AddEventViewModel(
             cloudStorageStatuses = emptySet(),
             personalNotes = "",
             category = state.category,
-            participants = state.participants.map { it -> it.id }.toSet(),
+            participants = state.participants.map { it.id }.toSet(),
             recurrence = state.recurrenceMode,
             endRecurrence = state.recurrenceEndInstant)
 

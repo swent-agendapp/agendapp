@@ -71,7 +71,7 @@ fun MemberSelectionList(
 
   val filteredMembers =
       remember(searchQuery, members) {
-        members.filter { it -> it.display().contains(searchQuery, ignoreCase = true) }
+        members.filter { it.display().contains(searchQuery, ignoreCase = true) }
       }
 
   Card(
@@ -202,7 +202,7 @@ private fun MemberSelectionSummary(
                 separator = ", ",
                 // extra space as a postfix to be able to scroll enough and not see the fade effect
                 // at the end of the last name
-                postfix = "      ") { it ->
+                postfix = "      ") {
                   it.display()
                 },
         )

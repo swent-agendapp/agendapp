@@ -61,15 +61,14 @@ enum class EditEventStep {
 class EditEventViewModel(
     private val eventRepository: EventRepository = EventRepositoryProvider.repository,
     private val userRepository: UserRepository = UserRepositoryProvider.repository,
-    selectedOrganizationViewModel: SelectedOrganizationViewModel =
+    private val selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel
 ) : ViewModel() {
-  private val organizationError = "No organization selected."
   private val _uiState = MutableStateFlow(EditCalendarEventUIState())
   val uiState: StateFlow<EditCalendarEventUIState> = _uiState.asStateFlow()
 
-  val selectedOrganizationId: StateFlow<String?> =
-      selectedOrganizationViewModel.selectedOrganizationId
+  // Wrap for brevity
+  private fun requireOrgId(): String = selectedOrganizationViewModel.getSelectedOrganizationId()
 
   init {
     loadUsers()
@@ -79,8 +78,7 @@ class EditEventViewModel(
     viewModelScope.launch {
       val state = _uiState.value
       try {
-        val orgId = selectedOrganizationId.value
-        require(orgId != null) { organizationError }
+        val orgId = requireOrgId()
 
         val updated =
             Event(
@@ -108,8 +106,7 @@ class EditEventViewModel(
 
   fun loadUsers() {
     viewModelScope.launch {
-      val orgId = selectedOrganizationId.value
-      require(orgId != null) { organizationError }
+      val orgId = requireOrgId()
 
       val userIds = userRepository.getMembersIds(orgId)
       val users = userRepository.getUsersByIds(userIds)
@@ -121,8 +118,7 @@ class EditEventViewModel(
     viewModelScope.launch {
       _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
       try {
-        val orgId = selectedOrganizationId.value
-        require(orgId != null) { organizationError }
+        val orgId = requireOrgId()
 
         val event = eventRepository.getEventById(orgId = orgId, itemId = eventId)
         if (event != null) {

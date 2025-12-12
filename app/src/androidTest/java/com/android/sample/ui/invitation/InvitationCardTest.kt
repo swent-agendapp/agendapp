@@ -10,7 +10,6 @@ import com.android.sample.model.organization.invitation.InvitationStatus
 import com.android.sample.ui.calendar.utils.DateTimeUtils
 import com.android.sample.ui.invitation.components.InvitationCard
 import com.android.sample.ui.invitation.components.InvitationCardTestTags
-import com.android.sample.utils.FirebaseEmulatedTest
 import java.time.Instant
 import org.junit.After
 import org.junit.Before
@@ -19,7 +18,7 @@ import org.junit.Test
 
 // Tests written by AI
 
-class InvitationCardTest : FirebaseEmulatedTest() {
+class InvitationCardTest {
 
   @get:Rule val composeTestRule = createComposeRule()
 
@@ -28,8 +27,7 @@ class InvitationCardTest : FirebaseEmulatedTest() {
   private var deleteClicked = false
 
   @Before
-  override fun setUp() {
-    super.setUp()
+  fun setUp() {
 
     activeInvitation =
         Invitation(

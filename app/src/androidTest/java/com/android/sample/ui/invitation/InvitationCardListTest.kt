@@ -7,14 +7,13 @@ import com.android.sample.model.organization.invitation.Invitation
 import com.android.sample.model.organization.invitation.InvitationStatus
 import com.android.sample.ui.invitation.components.InvitationCardList
 import com.android.sample.ui.invitation.components.InvitationCardListTestTags
-import com.android.sample.utils.FirebaseEmulatedTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 // Tests written by AI
 
-class InvitationCardListTest : FirebaseEmulatedTest() {
+class InvitationCardListTest {
 
   @get:Rule val composeTestRule = createComposeRule()
 
@@ -23,8 +22,7 @@ class InvitationCardListTest : FirebaseEmulatedTest() {
   private var deletedInvitation: Invitation? = null
 
   @Before
-  override fun setUp() {
-    super.setUp()
+  fun setUp() {
 
     invitationA =
         Invitation(

@@ -80,7 +80,12 @@ class HourRecapScreenTest : FirebaseEmulatedTest() {
     val vm = HourRecapViewModel()
 
     // Inject worked hours into test VM
-    vm.setTestWorkedHours(listOf("Alice" to 12.5, "Bob" to 8.0))
+    vm.setTestWorkedHours(
+        listOf(
+            HourRecapUserRecap(
+                userId = "alice", displayName = "Alice", totalHours = 12.5, events = emptyList()),
+            HourRecapUserRecap(
+                userId = "bob", displayName = "Bob", totalHours = 8.0, events = emptyList())))
 
     compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
 
@@ -112,5 +117,297 @@ class HourRecapScreenTest : FirebaseEmulatedTest() {
     compose.onNodeWithTag(HourRecapTestTags.BACK_BUTTON).assertExists().performClick()
 
     assert(backPressed)
+  }
+
+  @Test
+  fun recapItem_opensUserDetailsSheet() {
+    val vm = HourRecapViewModel()
+    val event =
+        HourRecapEventEntry(
+            id = "event1",
+            title = "Team Meeting",
+            startDate = java.time.Instant.now().plusSeconds(3600),
+            endDate = java.time.Instant.now().plusSeconds(7200),
+            isPast = false,
+            wasPresent = null,
+            wasReplaced = false,
+            tookReplacement = false)
+
+    vm.setTestWorkedHours(
+        listOf(
+            HourRecapUserRecap(
+                userId = "alice", displayName = "Alice", totalHours = 8.0, events = listOf(event))))
+
+    compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
+
+    // Click on the recap item
+    compose.onNodeWithText("Alice").performClick()
+
+    // Wait for sheet to appear
+    compose.waitForIdle()
+
+    // Verify sheet is displayed
+    compose.onNodeWithTag(HourRecapTestTags.RECAP_SHEET).assertExists().assertIsDisplayed()
+
+    // Verify event title is shown
+    compose.onNodeWithText("Team Meeting").assertExists()
+  }
+
+  @Test
+  fun userDetailsSheet_displaysEventDetails() {
+    val vm = HourRecapViewModel()
+    val pastTime = java.time.Instant.now().minusSeconds(86400) // 1 day ago
+    val event =
+        HourRecapEventEntry(
+            id = "event1",
+            title = "Morning Shift",
+            startDate = pastTime,
+            endDate = pastTime.plusSeconds(7200),
+            isPast = true,
+            wasPresent = true,
+            wasReplaced = false,
+            tookReplacement = false)
+
+    vm.setTestWorkedHours(
+        listOf(
+            HourRecapUserRecap(
+                userId = "bob", displayName = "Bob", totalHours = 2.0, events = listOf(event))))
+
+    compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
+
+    compose.onNodeWithText("Bob").performClick()
+    compose.waitForIdle()
+
+    // Verify event details are shown
+    compose.onNodeWithText("Morning Shift").assertExists()
+  }
+
+  @Test
+  fun userDetailsSheet_closesOnDismiss() {
+    val vm = HourRecapViewModel()
+    val event =
+        HourRecapEventEntry(
+            id = "event1",
+            title = "Task",
+            startDate = java.time.Instant.now(),
+            endDate = java.time.Instant.now().plusSeconds(3600),
+            isPast = false,
+            wasPresent = null,
+            wasReplaced = false,
+            tookReplacement = false)
+
+    vm.setTestWorkedHours(
+        listOf(
+            HourRecapUserRecap(
+                userId = "user", displayName = "User", totalHours = 1.0, events = listOf(event))))
+
+    compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
+
+    compose.onNodeWithText("User").performClick()
+    compose.waitForIdle()
+
+    // Close the sheet
+    compose.onNodeWithText("Close").performClick()
+    compose.waitForIdle()
+
+    // Verify sheet is no longer displayed
+    compose.onNodeWithTag(HourRecapTestTags.RECAP_SHEET).assertDoesNotExist()
+  }
+
+  @Test
+  fun userDetailsSheet_showsEmptyMessageWhenNoEvents() {
+    val vm = HourRecapViewModel()
+
+    vm.setTestWorkedHours(
+        listOf(
+            HourRecapUserRecap(
+                userId = "alice", displayName = "Alice", totalHours = 0.0, events = emptyList())))
+
+    compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
+
+    compose.onNodeWithText("Alice").performClick()
+    compose.waitForIdle()
+
+    // Verify empty message is shown
+    compose.onNodeWithText("No events found for this user in the selected period.").assertExists()
+  }
+
+  @Test
+  fun eventTags_displayForPastEvent() {
+    val vm = HourRecapViewModel()
+    val pastTime = java.time.Instant.now().minusSeconds(86400)
+    val event =
+        HourRecapEventEntry(
+            id = "event1",
+            title = "Past Event",
+            startDate = pastTime,
+            endDate = pastTime.plusSeconds(3600),
+            isPast = true,
+            wasPresent = true,
+            wasReplaced = false,
+            tookReplacement = false)
+
+    vm.setTestWorkedHours(
+        listOf(
+            HourRecapUserRecap(
+                userId = "user", displayName = "User", totalHours = 1.0, events = listOf(event))))
+
+    compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
+
+    compose.onNodeWithText("User").performClick()
+    compose.waitForIdle()
+
+    // Verify past tag is displayed
+    compose.onNodeWithText("Past").assertExists()
+    // Verify presence tag is displayed
+    compose.onNodeWithText("Present").assertExists()
+  }
+
+  @Test
+  fun eventTags_displayForFutureEvent() {
+    val vm = HourRecapViewModel()
+    val futureTime = java.time.Instant.now().plusSeconds(86400)
+    val event =
+        HourRecapEventEntry(
+            id = "event1",
+            title = "Future Event",
+            startDate = futureTime,
+            endDate = futureTime.plusSeconds(3600),
+            isPast = false,
+            wasPresent = null,
+            wasReplaced = false,
+            tookReplacement = false)
+
+    vm.setTestWorkedHours(
+        listOf(
+            HourRecapUserRecap(
+                userId = "user", displayName = "User", totalHours = 1.0, events = listOf(event))))
+
+    compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
+
+    compose.onNodeWithText("User").performClick()
+    compose.waitForIdle()
+
+    // Verify future tag is displayed
+    compose.onNodeWithText("Future").assertExists()
+    // Verify no presence tag for future events
+    compose.onNodeWithText("Present").assertDoesNotExist()
+    compose.onNodeWithText("Absent").assertDoesNotExist()
+  }
+
+  @Test
+  fun eventTags_displayReplacementTags() {
+    val vm = HourRecapViewModel()
+    val futureTime = java.time.Instant.now().plusSeconds(86400)
+    val event =
+        HourRecapEventEntry(
+            id = "event1",
+            title = "Replaced Event",
+            startDate = futureTime,
+            endDate = futureTime.plusSeconds(3600),
+            isPast = false,
+            wasPresent = null,
+            wasReplaced = true,
+            tookReplacement = false)
+
+    vm.setTestWorkedHours(
+        listOf(
+            HourRecapUserRecap(
+                userId = "user", displayName = "User", totalHours = 0.0, events = listOf(event))))
+
+    compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
+
+    compose.onNodeWithText("User").performClick()
+    compose.waitForIdle()
+
+    // Verify replacement tag is displayed
+    compose.onNodeWithText("Was replaced").assertExists()
+  }
+
+  @Test
+  fun eventTags_displayTookReplacementTag() {
+    val vm = HourRecapViewModel()
+    val futureTime = java.time.Instant.now().plusSeconds(86400)
+    val event =
+        HourRecapEventEntry(
+            id = "event1",
+            title = "Replacement Event",
+            startDate = futureTime,
+            endDate = futureTime.plusSeconds(3600),
+            isPast = false,
+            wasPresent = null,
+            wasReplaced = false,
+            tookReplacement = true)
+
+    vm.setTestWorkedHours(
+        listOf(
+            HourRecapUserRecap(
+                userId = "user", displayName = "User", totalHours = 2.0, events = listOf(event))))
+
+    compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
+
+    compose.onNodeWithText("User").performClick()
+    compose.waitForIdle()
+
+    // Verify took replacement tag is displayed
+    compose.onNodeWithText("Took a replacement").assertExists()
+  }
+
+  @Test
+  fun eventTags_displayAbsentTag() {
+    val vm = HourRecapViewModel()
+    val pastTime = java.time.Instant.now().minusSeconds(86400)
+    val event =
+        HourRecapEventEntry(
+            id = "event1",
+            title = "Missed Shift",
+            startDate = pastTime,
+            endDate = pastTime.plusSeconds(3600),
+            isPast = true,
+            wasPresent = false,
+            wasReplaced = false,
+            tookReplacement = false)
+
+    vm.setTestWorkedHours(
+        listOf(
+            HourRecapUserRecap(
+                userId = "user", displayName = "User", totalHours = 0.0, events = listOf(event))))
+
+    compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
+
+    compose.onNodeWithText("User").performClick()
+    compose.waitForIdle()
+
+    // Verify absent tag is displayed
+    compose.onNodeWithText("Absent").assertExists()
+  }
+
+  @Test
+  fun eventTags_displayUnknownPresenceTag() {
+    val vm = HourRecapViewModel()
+    val pastTime = java.time.Instant.now().minusSeconds(86400)
+    val event =
+        HourRecapEventEntry(
+            id = "event1",
+            title = "Unknown Status",
+            startDate = pastTime,
+            endDate = pastTime.plusSeconds(3600),
+            isPast = true,
+            wasPresent = null,
+            wasReplaced = false,
+            tookReplacement = false)
+
+    vm.setTestWorkedHours(
+        listOf(
+            HourRecapUserRecap(
+                userId = "user", displayName = "User", totalHours = 0.0, events = listOf(event))))
+
+    compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
+
+    compose.onNodeWithText("User").performClick()
+    compose.waitForIdle()
+
+    // Verify unknown presence tag is displayed
+    compose.onNodeWithText("Presence unknown").assertExists()
   }
 }

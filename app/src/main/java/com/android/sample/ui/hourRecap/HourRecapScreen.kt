@@ -25,9 +25,9 @@ import com.android.sample.ui.common.Loading
 import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.theme.ElevationLow
+import com.android.sample.ui.theme.PaddingExtraSmall
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.PaddingSmall
-import com.android.sample.ui.theme.PaddingExtraSmall
 import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingMedium
 import com.android.sample.ui.theme.Weight
@@ -196,8 +196,7 @@ fun HourRecapScreen(
         modifier = Modifier.testTag(HourRecapTestTags.RECAP_SHEET),
         onDismissRequest = { selectedUser = null },
         sheetState = bottomSheetState) {
-          HourRecapUserEventsSheet(
-              recap = selectedUser!!, onDismiss = { selectedUser = null })
+          HourRecapUserEventsSheet(recap = selectedUser!!, onDismiss = { selectedUser = null })
         }
   }
 }
@@ -212,29 +211,27 @@ private fun HourRecapUserEventsSheet(recap: HourRecapUserRecap, onDismiss: () ->
           Modifier.fillMaxWidth()
               .verticalScroll(rememberScrollState())
               .padding(horizontal = SpacingLarge, vertical = SpacingMedium)) {
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-      Text(
-          text = stringResource(R.string.hour_recap_events_for_user, recap.displayName),
-          style = MaterialTheme.typography.titleMedium,
-          fontWeight = FontWeight.Bold,
-      )
-      TextButton(onClick = onDismiss) {
-        Text(text = stringResource(R.string.close))
-      }
-    }
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+          Text(
+              text = stringResource(R.string.hour_recap_events_for_user, recap.displayName),
+              style = MaterialTheme.typography.titleMedium,
+              fontWeight = FontWeight.Bold,
+          )
+          TextButton(onClick = onDismiss) { Text(text = stringResource(R.string.close)) }
+        }
 
-    Spacer(Modifier.height(SpacingMedium))
+        Spacer(Modifier.height(SpacingMedium))
 
-    if (recap.events.isEmpty()) {
-      Text(text = stringResource(R.string.hour_recap_no_events_for_user))
-    } else {
-      recap.events.forEach { event ->
-        HourRecapEventCard(
-            event = event, dateFormatter = dateFormatter, timeFormatter = timeFormatter)
-        Spacer(Modifier.height(PaddingSmall))
+        if (recap.events.isEmpty()) {
+          Text(text = stringResource(R.string.hour_recap_no_events_for_user))
+        } else {
+          recap.events.forEach { event ->
+            HourRecapEventCard(
+                event = event, dateFormatter = dateFormatter, timeFormatter = timeFormatter)
+            Spacer(Modifier.height(PaddingSmall))
+          }
+        }
       }
-    }
-  }
 }
 
 @Composable
@@ -248,7 +245,10 @@ private fun HourRecapEventCard(
   val end = event.endDate.atZone(ZoneId.systemDefault())
   Card(modifier = Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(ElevationLow)) {
     Column(modifier = Modifier.padding(PaddingMedium)) {
-      Text(text = event.title, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+      Text(
+          text = event.title,
+          style = MaterialTheme.typography.titleSmall,
+          fontWeight = FontWeight.SemiBold)
       Spacer(Modifier.height(PaddingExtraSmall))
       Text(
           text =
@@ -263,7 +263,10 @@ private fun HourRecapEventCard(
         val timeLabel =
             if (event.isPast) stringResource(R.string.hour_recap_tag_past)
             else stringResource(R.string.hour_recap_tag_future)
-        RecapTag(label = timeLabel, containerColor = MaterialTheme.colorScheme.secondaryContainer)
+        val timeColor =
+            if (event.isPast) MaterialTheme.colorScheme.primaryContainer // Blue for past
+            else MaterialTheme.colorScheme.tertiaryContainer // Purple for future
+        RecapTag(label = timeLabel, containerColor = timeColor)
 
         if (event.isPast) {
           val presenceLabel =
@@ -274,9 +277,9 @@ private fun HourRecapEventCard(
               }
           val presenceColor =
               when (event.wasPresent) {
-                true -> MaterialTheme.colorScheme.primaryContainer
-                false -> MaterialTheme.colorScheme.errorContainer
-                null -> MaterialTheme.colorScheme.surfaceVariant
+                true -> Color(0xFF4CAF50) // Green for presence confirmed
+                false -> MaterialTheme.colorScheme.errorContainer // Red for absent
+                null -> MaterialTheme.colorScheme.surfaceVariant // Grey for unknown
               }
           RecapTag(label = presenceLabel, containerColor = presenceColor)
         }
@@ -284,13 +287,13 @@ private fun HourRecapEventCard(
         if (event.wasReplaced) {
           RecapTag(
               label = stringResource(R.string.hour_recap_tag_replaced),
-              containerColor = MaterialTheme.colorScheme.errorContainer)
+              containerColor = Color(0xFFFF9800)) // Orange for replaced
         }
 
         if (event.tookReplacement) {
           RecapTag(
               label = stringResource(R.string.hour_recap_tag_replacement_taken),
-              containerColor = MaterialTheme.colorScheme.tertiaryContainer)
+              containerColor = Color(0xFF00BCD4)) // Cyan for took replacement
         }
       }
     }
@@ -301,7 +304,6 @@ private fun HourRecapEventCard(
 private fun RecapTag(label: String, containerColor: Color) {
   AssistChip(
       onClick = {},
-      enabled = false,
       label = { Text(label) },
       colors = AssistChipDefaults.assistChipColors(containerColor = containerColor))
 }

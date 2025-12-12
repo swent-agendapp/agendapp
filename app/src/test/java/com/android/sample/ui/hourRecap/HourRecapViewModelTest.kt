@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.*
@@ -166,10 +167,7 @@ class HourRecapViewModelTest {
     val data =
         listOf(
             HourRecapUserRecap(
-                userId = "Alice",
-                displayName = "Alice",
-                totalHours = 5.0,
-                events = emptyList()))
+                userId = "Alice", displayName = "Alice", totalHours = 5.0, events = emptyList()))
 
     vm.setTestWorkedHours(data)
 
@@ -182,21 +180,22 @@ class HourRecapViewModelTest {
     repo.result = listOf("Bob" to 10.5)
     val start = Instant.now().minus(3, ChronoUnit.DAYS)
     val end = Instant.now().plus(3, ChronoUnit.DAYS)
-    repo.events =
-        listOf(
-            createEvent(
-                organizationId = selectedOrganizationID,
-                startDate = Instant.now().minus(1, ChronoUnit.DAYS),
-                endDate = Instant.now().minus(1, ChronoUnit.DAYS).plus(2, ChronoUnit.HOURS),
-                participants = setOf(user.id),
-                presence = mapOf(user.id to true)),
-            createEvent(
-                organizationId = selectedOrganizationID,
-                startDate = Instant.now().plus(1, ChronoUnit.DAYS),
-                endDate = Instant.now().plus(1, ChronoUnit.DAYS).plus(2, ChronoUnit.HOURS),
-                participants = setOf(otherUser.id),
-                assignedUsers = setOf(user.id, otherUser.id),
-                recurrence = RecurrenceStatus.OneTime))
+    val pastEvent =
+        createEvent(
+            organizationId = selectedOrganizationID,
+            startDate = Instant.now().minus(1, ChronoUnit.DAYS),
+            endDate = Instant.now().minus(1, ChronoUnit.DAYS).plus(2, ChronoUnit.HOURS),
+            participants = setOf(user.id),
+            presence = mapOf(user.id to true))
+    val futureEvent =
+        createEvent(
+            organizationId = selectedOrganizationID,
+            startDate = Instant.now().plus(1, ChronoUnit.DAYS),
+            endDate = Instant.now().plus(1, ChronoUnit.DAYS).plus(2, ChronoUnit.HOURS),
+            participants = setOf(otherUser.id),
+            assignedUsers = setOf(user.id, otherUser.id),
+            recurrence = RecurrenceStatus.OneTime)
+    repo.events = pastEvent + futureEvent
 
     vm.calculateWorkedHours(start = start, end = end)
     advanceUntilIdle()
@@ -216,5 +215,260 @@ class HourRecapViewModelTest {
     testDispatcher.scheduler.advanceUntilIdle()
 
     assertTrue(vm.uiState.value.errorMsg?.contains("Failed") == true)
+  }
+
+  @Test
+  fun `event entry detects past events correctly`() = runTest {
+    val vm = makeVm()
+    val pastTime = Instant.now().minus(2, ChronoUnit.DAYS)
+    val pastEvent =
+        createEvent(
+            organizationId = selectedOrganizationID,
+            startDate = pastTime,
+            endDate = pastTime.plus(2, ChronoUnit.HOURS),
+            participants = setOf(user.id))
+
+    repo.result = listOf(user.id to 2.0)
+    repo.events =
+        listOf(
+            createEvent(
+                    organizationId = selectedOrganizationID,
+                    startDate = pastTime,
+                    endDate = pastTime.plus(2, ChronoUnit.HOURS),
+                    participants = setOf(user.id))
+                .first())
+
+    vm.calculateWorkedHours(Instant.now().minus(3, ChronoUnit.DAYS), Instant.now())
+    advanceUntilIdle()
+
+    val events = vm.uiState.value.userRecaps.first().events
+    assertTrue(events.first().isPast)
+  }
+
+  @Test
+  fun `event entry detects future events correctly`() = runTest {
+    val vm = makeVm()
+    val futureTime = Instant.now().plus(2, ChronoUnit.DAYS)
+    val futureEvent =
+        createEvent(
+            organizationId = selectedOrganizationID,
+            startDate = futureTime,
+            endDate = futureTime.plus(2, ChronoUnit.HOURS),
+            participants = setOf(user.id))
+
+    repo.result = listOf(user.id to 2.0)
+    repo.events = futureEvent
+
+    vm.calculateWorkedHours(Instant.now(), Instant.now().plus(3, ChronoUnit.DAYS))
+    advanceUntilIdle()
+
+    val events = vm.uiState.value.userRecaps.first().events
+    assertTrue(!events.first().isPast)
+  }
+
+  @Test
+  fun `event entry detects presence for past events`() = runTest {
+    val vm = makeVm()
+    val pastTime = Instant.now().minus(1, ChronoUnit.DAYS)
+    val presentEvent =
+        createEvent(
+            organizationId = selectedOrganizationID,
+            startDate = pastTime,
+            endDate = pastTime.plus(2, ChronoUnit.HOURS),
+            participants = setOf(user.id),
+            presence = mapOf(user.id to true))
+
+    repo.result = listOf(user.id to 2.0)
+    repo.events = presentEvent
+
+    vm.calculateWorkedHours(Instant.now().minus(2, ChronoUnit.DAYS), Instant.now())
+    advanceUntilIdle()
+
+    val events = vm.uiState.value.userRecaps.first().events
+    assertEquals(true, events.first().wasPresent)
+  }
+
+  @Test
+  fun `event entry detects absence for past events`() = runTest {
+    val vm = makeVm()
+    val pastTime = Instant.now().minus(1, ChronoUnit.DAYS)
+    val absentEvent =
+        createEvent(
+            organizationId = selectedOrganizationID,
+            startDate = pastTime,
+            endDate = pastTime.plus(2, ChronoUnit.HOURS),
+            participants = setOf(user.id),
+            presence = mapOf(user.id to false))
+
+    repo.result = listOf(user.id to 2.0)
+    repo.events = absentEvent
+
+    vm.calculateWorkedHours(Instant.now().minus(2, ChronoUnit.DAYS), Instant.now())
+    advanceUntilIdle()
+
+    val events = vm.uiState.value.userRecaps.first().events
+    assertEquals(false, events.first().wasPresent)
+  }
+
+  @Test
+  fun `event entry has null presence for future events`() = runTest {
+    val vm = makeVm()
+    val futureTime = Instant.now().plus(1, ChronoUnit.DAYS)
+    val futureEvent =
+        createEvent(
+            organizationId = selectedOrganizationID,
+            startDate = futureTime,
+            endDate = futureTime.plus(2, ChronoUnit.HOURS),
+            participants = setOf(user.id))
+
+    repo.result = listOf(user.id to 2.0)
+    repo.events = futureEvent
+
+    vm.calculateWorkedHours(Instant.now(), Instant.now().plus(2, ChronoUnit.DAYS))
+    advanceUntilIdle()
+
+    val events = vm.uiState.value.userRecaps.first().events
+    assertNull(events.first().wasPresent)
+  }
+
+  @Test
+  fun `event entry detects wasReplaced correctly`() = runTest {
+    val vm = makeVm()
+    val futureTime = Instant.now().plus(1, ChronoUnit.DAYS)
+    // User was assigned but not participating (was replaced)
+    val replacedEvent =
+        createEvent(
+            organizationId = selectedOrganizationID,
+            startDate = futureTime,
+            endDate = futureTime.plus(2, ChronoUnit.HOURS),
+            assignedUsers = setOf(user.id, otherUser.id),
+            participants = setOf(otherUser.id)) // User is assigned but not participating
+
+    repo.result = listOf(user.id to 0.0)
+    repo.events = replacedEvent
+
+    vm.calculateWorkedHours(Instant.now(), Instant.now().plus(2, ChronoUnit.DAYS))
+    advanceUntilIdle()
+
+    val events = vm.uiState.value.userRecaps.first().events
+    assertTrue(events.first().wasReplaced)
+  }
+
+  @Test
+  fun `event entry detects tookReplacement correctly`() = runTest {
+    val vm = makeVm()
+    val futureTime = Instant.now().plus(1, ChronoUnit.DAYS)
+    // OtherUser was assigned but user took their place
+    val replacementEvent =
+        createEvent(
+            organizationId = selectedOrganizationID,
+            startDate = futureTime,
+            endDate = futureTime.plus(2, ChronoUnit.HOURS),
+            assignedUsers = setOf(otherUser.id),
+            participants = setOf(user.id)) // User is participating but wasn't assigned
+
+    repo.result = listOf(user.id to 2.0)
+    repo.events = replacementEvent
+
+    vm.calculateWorkedHours(Instant.now(), Instant.now().plus(2, ChronoUnit.DAYS))
+    advanceUntilIdle()
+
+    val events = vm.uiState.value.userRecaps.first().events
+    assertTrue(events.first().tookReplacement)
+  }
+
+  @Test
+  fun `event entry with no replacement has correct flags`() = runTest {
+    val vm = makeVm()
+    val futureTime = Instant.now().plus(1, ChronoUnit.DAYS)
+    // Normal event - user is both assigned and participating
+    val normalEvent =
+        createEvent(
+            organizationId = selectedOrganizationID,
+            startDate = futureTime,
+            endDate = futureTime.plus(2, ChronoUnit.HOURS),
+            assignedUsers = setOf(user.id),
+            participants = setOf(user.id))
+
+    repo.result = listOf(user.id to 2.0)
+    repo.events = normalEvent
+
+    vm.calculateWorkedHours(Instant.now(), Instant.now().plus(2, ChronoUnit.DAYS))
+    advanceUntilIdle()
+
+    val events = vm.uiState.value.userRecaps.first().events
+    assertTrue(!events.first().wasReplaced)
+    assertTrue(!events.first().tookReplacement)
+  }
+
+  @Test
+  fun `buildUserRecaps filters events correctly for user`() = runTest {
+    val vm = makeVm()
+    val futureTime = Instant.now().plus(1, ChronoUnit.DAYS)
+    // Event for user
+    val userEvent =
+        createEvent(
+            organizationId = selectedOrganizationID,
+            startDate = futureTime,
+            endDate = futureTime.plus(2, ChronoUnit.HOURS),
+            participants = setOf(user.id))
+    // Event for other user only
+    val otherEvent =
+        createEvent(
+            organizationId = selectedOrganizationID,
+            startDate = futureTime.plus(1, ChronoUnit.HOURS),
+            endDate = futureTime.plus(3, ChronoUnit.HOURS),
+            participants = setOf(otherUser.id))
+
+    repo.result = listOf(user.id to 2.0)
+    repo.events = userEvent + otherEvent
+
+    vm.calculateWorkedHours(Instant.now(), Instant.now().plus(2, ChronoUnit.DAYS))
+    advanceUntilIdle()
+
+    val recaps = vm.uiState.value.userRecaps
+    assertEquals(1, recaps.size)
+    assertEquals(1, recaps.first().events.size)
+    assertEquals(userEvent.first().id, recaps.first().events.first().id)
+  }
+
+  @Test
+  fun `buildUserRecaps sorts events by startDate`() = runTest {
+    val vm = makeVm()
+    val time1 = Instant.now().plus(1, ChronoUnit.DAYS)
+    val time2 = Instant.now().plus(2, ChronoUnit.DAYS)
+    val time3 = Instant.now().plus(3, ChronoUnit.DAYS)
+
+    val event3 =
+        createEvent(
+            organizationId = selectedOrganizationID,
+            startDate = time3,
+            endDate = time3.plus(2, ChronoUnit.HOURS),
+            participants = setOf(user.id))
+    val event1 =
+        createEvent(
+            organizationId = selectedOrganizationID,
+            startDate = time1,
+            endDate = time1.plus(2, ChronoUnit.HOURS),
+            participants = setOf(user.id))
+    val event2 =
+        createEvent(
+            organizationId = selectedOrganizationID,
+            startDate = time2,
+            endDate = time2.plus(2, ChronoUnit.HOURS),
+            participants = setOf(user.id))
+
+    // Add events in random order
+    repo.result = listOf(user.id to 6.0)
+    repo.events = event3 + event1 + event2
+
+    vm.calculateWorkedHours(Instant.now(), Instant.now().plus(4, ChronoUnit.DAYS))
+    advanceUntilIdle()
+
+    val events = vm.uiState.value.userRecaps.first().events
+    assertEquals(3, events.size)
+    assertEquals(event1.first().id, events[0].id)
+    assertEquals(event2.first().id, events[1].id)
+    assertEquals(event3.first().id, events[2].id)
   }
 }

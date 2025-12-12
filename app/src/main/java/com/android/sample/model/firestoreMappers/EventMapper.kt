@@ -109,7 +109,8 @@ object EventMapper : FirestoreMapper<Event> {
         (data[PARTICIPANTS_FIELD] as? List<*>)?.filterIsInstance<String>()?.toSet() ?: emptySet()
 
     val assignedUsers =
-        (data[ASSIGNED_USERS_FIELD] as? List<*>)?.filterIsInstance<String>()?.toSet() ?: participants
+        (data[ASSIGNED_USERS_FIELD] as? List<*>)?.filterIsInstance<String>()?.toSet()
+            ?: participants
 
     val storageStatusList =
         (data[STORAGE_STATUS_FIELD] as? List<*>)

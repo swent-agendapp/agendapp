@@ -21,9 +21,9 @@ object ColorCircleTestTags {
 
 @Composable
 fun ColorCircle(
+    modifier: Modifier = Modifier,
     color: Color,
     isSelected: Boolean = false,
-    modifier: Modifier = Modifier,
     testTag: String = ColorCircleTestTags.COLOR_CIRCLE,
 ) {
   Box(

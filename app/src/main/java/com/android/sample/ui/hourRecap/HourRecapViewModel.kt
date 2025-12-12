@@ -8,6 +8,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.android.sample.model.authentication.UserRepository
 import com.android.sample.model.authentication.UserRepositoryProvider
+import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
@@ -19,8 +20,26 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 /** UI State for the Hour Recap screen. */
+data class HourRecapEventEntry(
+    val id: String,
+    val title: String,
+    val startDate: Instant,
+    val endDate: Instant,
+    val isPast: Boolean,
+    val wasPresent: Boolean?,
+    val wasReplaced: Boolean,
+    val tookReplacement: Boolean,
+)
+
+data class HourRecapUserRecap(
+    val userId: String,
+    val displayName: String,
+    val totalHours: Double,
+    val events: List<HourRecapEventEntry>,
+)
+
 data class HourRecapUiState(
-    val workedHours: List<Pair<String, Double>> = emptyList(),
+    val userRecaps: List<HourRecapUserRecap> = emptyList(),
     val isLoading: Boolean = false,
     val errorMsg: String? = null
 )
@@ -68,14 +87,8 @@ class HourRecapViewModel(
       _uiState.update { it.copy(isLoading = true) }
 
       try {
-        val result = eventRepository.calculateWorkedHours(orgId, start, end)
-        val users = userRepository.getUsersByIds(result.map { it.first })
-        val userMap = users.associateBy { it.id }
-        val finalList: List<Pair<String, Double>> =
-            result.mapNotNull { (userId, value) ->
-              userMap[userId]?.let { user -> user.display() to value }
-            }
-        _uiState.update { it.copy(workedHours = finalList, isLoading = false) }
+        val recaps = buildUserRecaps(orgId, start, end)
+        _uiState.update { it.copy(userRecaps = recaps, isLoading = false) }
       } catch (e: Exception) {
         _uiState.update {
           it.copy(isLoading = false, errorMsg = "Failed to calculate worked hours: ${e.message}")
@@ -86,8 +99,54 @@ class HourRecapViewModel(
 
   /** Allows test code to override worked hours data. */
   @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-  internal fun setTestWorkedHours(hours: List<Pair<String, Double>>) {
-    _uiState.update { it.copy(workedHours = hours) }
+  internal fun setTestWorkedHours(hours: List<HourRecapUserRecap>) {
+    _uiState.update { it.copy(userRecaps = hours) }
+  }
+
+  private suspend fun buildUserRecaps(
+      orgId: String,
+      start: Instant,
+      end: Instant
+  ): List<HourRecapUserRecap> {
+    val workedHours = eventRepository.calculateWorkedHours(orgId, start, end)
+    val events = eventRepository.getEventsBetweenDates(orgId, start, end)
+    val users = userRepository.getUsersByIds(workedHours.map { it.first })
+    val userMap = users.associateBy { it.id }
+    val now = Instant.now()
+
+    return workedHours.mapNotNull { (userId, totalHours) ->
+      val user = userMap[userId] ?: return@mapNotNull null
+      val userEvents =
+          events
+              .filter { event -> userId in event.participants || userId in event.assignedUsers }
+              .map { event -> event.toHourRecapEntry(userId, now) }
+              .sortedBy { it.startDate }
+
+      HourRecapUserRecap(
+          userId = userId,
+          displayName = user.display(),
+          totalHours = totalHours,
+          events = userEvents)
+    }
+  }
+
+  private fun Event.toHourRecapEntry(userId: String, now: Instant): HourRecapEventEntry {
+    val isPast = startDate <= now
+    val presenceStatus = if (isPast) presence[userId] else null
+    val wasReplaced = userId in assignedUsers && userId !in participants
+    val tookReplacement =
+        userId in participants &&
+            assignedUsers.any { assigned -> assigned != userId && assigned !in participants }
+
+    return HourRecapEventEntry(
+        id = id,
+        title = title,
+        startDate = startDate,
+        endDate = endDate,
+        isPast = isPast,
+        wasPresent = presenceStatus,
+        wasReplaced = wasReplaced,
+        tookReplacement = tookReplacement)
   }
 
   companion object {

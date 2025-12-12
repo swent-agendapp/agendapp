@@ -5,21 +5,30 @@ import com.android.sample.model.authentication.UserRepository
 import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
+import com.android.sample.model.calendar.RecurrenceStatus
+import com.android.sample.model.calendar.createEvent
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.repository.OrganizationRepositoryLocal
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import java.time.Instant
+import java.time.temporal.ChronoUnit
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.*
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import org.junit.*
 
 /** Minimal fake repository implementing only what HourRecapViewModel needs. */
 class SimpleFakeEventRepository : EventRepository {
   var result: List<Pair<String, Double>> = emptyList()
+  var events: List<Event> = emptyList()
   var shouldThrow = false
 
   override fun getNewUid(): String {
@@ -43,7 +52,7 @@ class SimpleFakeEventRepository : EventRepository {
       startDate: Instant,
       endDate: Instant
   ): List<Event> {
-    error("Not needed in test")
+    return events.filter { it.startDate >= startDate && it.endDate <= endDate }
   }
 
   override suspend fun calculateWorkedHoursPastEvents(
@@ -82,6 +91,7 @@ class HourRecapViewModelTest {
   private lateinit var organizationRepository: OrganizationRepositoryLocal
 
   private lateinit var user: User
+  private lateinit var otherUser: User
 
   private lateinit var orgA: Organization
   private val selectedOrganizationID: String = "org123"
@@ -98,10 +108,12 @@ class HourRecapViewModelTest {
 
     // --- Create users ---
     user = User(id = "Bob", displayName = "Bob", email = "adminA@example.com")
+    otherUser = User(id = "Alice", displayName = "Alice", email = "alice@example.com")
     orgA = Organization(id = selectedOrganizationID, name = "Org A")
 
     // Register all users in the repository
     userRepo.newUser(user)
+    userRepo.newUser(otherUser)
     SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationID)
     organizationRepository.insertOrganization(orgA)
     userRepo.addAdminToOrganization(user.id, selectedOrganizationID)
@@ -124,7 +136,7 @@ class HourRecapViewModelTest {
     val vm = makeVm()
     val state = vm.uiState.value
 
-    assertTrue(state.workedHours.isEmpty())
+    assertTrue(state.userRecaps.isEmpty())
     assertNull(state.errorMsg)
     assertTrue(!state.isLoading)
   }
@@ -151,21 +163,48 @@ class HourRecapViewModelTest {
   @Test
   fun `setTestWorkedHours updates worked hours`() {
     val vm = makeVm()
-    val data = listOf("Alice" to 5.0)
+    val data =
+        listOf(
+            HourRecapUserRecap(
+                userId = "Alice",
+                displayName = "Alice",
+                totalHours = 5.0,
+                events = emptyList()))
 
     vm.setTestWorkedHours(data)
 
-    assertEquals(data, vm.uiState.value.workedHours)
+    assertEquals(data, vm.uiState.value.userRecaps)
   }
 
   @Test
   fun `calculateWorkedHours loads data successfully`() = runTest {
     val vm = makeVm()
     repo.result = listOf("Bob" to 10.5)
+    val start = Instant.now().minus(3, ChronoUnit.DAYS)
+    val end = Instant.now().plus(3, ChronoUnit.DAYS)
+    repo.events =
+        listOf(
+            createEvent(
+                organizationId = selectedOrganizationID,
+                startDate = Instant.now().minus(1, ChronoUnit.DAYS),
+                endDate = Instant.now().minus(1, ChronoUnit.DAYS).plus(2, ChronoUnit.HOURS),
+                participants = setOf(user.id),
+                presence = mapOf(user.id to true)),
+            createEvent(
+                organizationId = selectedOrganizationID,
+                startDate = Instant.now().plus(1, ChronoUnit.DAYS),
+                endDate = Instant.now().plus(1, ChronoUnit.DAYS).plus(2, ChronoUnit.HOURS),
+                participants = setOf(otherUser.id),
+                assignedUsers = setOf(user.id, otherUser.id),
+                recurrence = RecurrenceStatus.OneTime))
 
-    vm.calculateWorkedHours(start = Instant.EPOCH, end = Instant.EPOCH)
+    vm.calculateWorkedHours(start = start, end = end)
     advanceUntilIdle()
-    assertEquals(repo.result, vm.uiState.value.workedHours)
+
+    val recaps = vm.uiState.value.userRecaps
+    assertEquals(1, recaps.size)
+    assertEquals("Bob", recaps.first().displayName)
+    assertEquals(2, recaps.first().events.size)
   }
 
   @Test

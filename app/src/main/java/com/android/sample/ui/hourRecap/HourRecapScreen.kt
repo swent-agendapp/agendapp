@@ -2,12 +2,15 @@ package com.android.sample.ui.hourRecap
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FileDownload
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -22,11 +25,14 @@ import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.theme.ElevationLow
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.PaddingSmall
+import com.android.sample.ui.theme.PaddingXS
 import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingMedium
 import com.android.sample.ui.theme.Weight
 import java.time.LocalDate
+import java.time.ZoneId
 import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
 // Modularization assisted by AI
 
@@ -40,6 +46,7 @@ object HourRecapTestTags {
   const val GENERATE_BUTTON = "hour_recap_generate_button"
   const val RECAP_LIST = "hour_recap_list"
   const val RECAP_ITEM = "hour_recap_item"
+  const val RECAP_SHEET = "hour_recap_sheet"
   const val EXPORT_BUTTON = "hour_recap_export_button"
 }
 
@@ -80,6 +87,8 @@ fun HourRecapScreen(
 
   var startDate by remember { mutableStateOf<LocalDate?>(null) }
   var endDate by remember { mutableStateOf<LocalDate?>(null) }
+  var selectedUser by remember { mutableStateOf<HourRecapUserRecap?>(null) }
+  val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
   Scaffold(
       topBar = {
@@ -151,24 +160,23 @@ fun HourRecapScreen(
               } else {
                 // ---- LIST OF WORKED HOURS ----
                 LazyColumn(modifier = Modifier.testTag(HourRecapTestTags.RECAP_LIST)) {
-                  items(uiState.workedHours) { pair ->
-                    val (name, hours) = pair
-
+                  items(uiState.userRecaps, key = { it.userId }) { recap ->
                     Card(
                         modifier =
                             Modifier.fillMaxWidth()
                                 .padding(vertical = PaddingSmall)
                                 .testTag(HourRecapTestTags.RECAP_ITEM),
+                        onClick = { selectedUser = recap },
                         elevation = CardDefaults.cardElevation(ElevationLow)) {
                           Row(
                               modifier = Modifier.fillMaxWidth().padding(PaddingMedium),
                               horizontalArrangement = Arrangement.SpaceBetween) {
                                 Text(
-                                    text = name,
+                                    text = recap.displayName,
                                     style = MaterialTheme.typography.bodyLarge,
                                     modifier = Modifier.weight(Weight))
                                 Text(
-                                    text = formatDecimalHoursToTime(hours),
+                                    text = formatDecimalHoursToTime(recap.totalHours),
                                     style =
                                         MaterialTheme.typography.bodyLarge.copy(
                                             fontWeight = FontWeight.Bold))
@@ -179,4 +187,112 @@ fun HourRecapScreen(
               }
             }
       }
+
+  if (selectedUser != null) {
+    ModalBottomSheet(
+        modifier = Modifier.testTag(HourRecapTestTags.RECAP_SHEET),
+        onDismissRequest = { selectedUser = null },
+        sheetState = bottomSheetState) {
+          HourRecapUserEventsSheet(
+              recap = selectedUser!!, onDismiss = { selectedUser = null })
+        }
+  }
+}
+
+@Composable
+private fun HourRecapUserEventsSheet(recap: HourRecapUserRecap, onDismiss: () -> Unit) {
+  val dateFormatter = remember { DateTimeFormatter.ofPattern("MMM dd, yyyy") }
+  val timeFormatter = remember { DateTimeFormatter.ofPattern("HH:mm") }
+
+  Column(modifier = Modifier.fillMaxWidth().padding(horizontal = SpacingLarge, vertical = SpacingMedium)) {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+      Text(
+          text = stringResource(R.string.hour_recap_events_for_user, recap.displayName),
+          style = MaterialTheme.typography.titleMedium,
+          fontWeight = FontWeight.Bold,
+      )
+      TextButton(onClick = onDismiss) {
+        Text(text = stringResource(R.string.close))
+      }
+    }
+
+    Spacer(Modifier.height(SpacingMedium))
+
+    if (recap.events.isEmpty()) {
+      Text(text = stringResource(R.string.hour_recap_no_events_for_user))
+    } else {
+      recap.events.forEach { event ->
+        HourRecapEventCard(
+            event = event, dateFormatter = dateFormatter, timeFormatter = timeFormatter)
+        Spacer(Modifier.height(PaddingSmall))
+      }
+    }
+  }
+}
+
+@Composable
+@OptIn(ExperimentalLayoutApi::class)
+private fun HourRecapEventCard(
+    event: HourRecapEventEntry,
+    dateFormatter: DateTimeFormatter,
+    timeFormatter: DateTimeFormatter,
+) {
+  val start = event.startDate.atZone(ZoneId.systemDefault())
+  val end = event.endDate.atZone(ZoneId.systemDefault())
+  Card(modifier = Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(ElevationLow)) {
+    Column(modifier = Modifier.padding(PaddingMedium)) {
+      Text(text = event.title, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+      Spacer(Modifier.height(PaddingXS))
+      Text(
+          text =
+              stringResource(
+                  R.string.hour_recap_event_date_time,
+                  start.toLocalDate().format(dateFormatter),
+                  start.toLocalTime().format(timeFormatter),
+                  end.toLocalTime().format(timeFormatter)),
+          style = MaterialTheme.typography.bodyMedium)
+      Spacer(Modifier.height(PaddingSmall))
+      FlowRow(horizontalArrangement = Arrangement.spacedBy(PaddingSmall)) {
+        val timeLabel =
+            if (event.isPast) stringResource(R.string.hour_recap_tag_past)
+            else stringResource(R.string.hour_recap_tag_future)
+        RecapTag(label = timeLabel, containerColor = MaterialTheme.colorScheme.secondaryContainer)
+
+        val presenceLabel =
+            when (event.wasPresent) {
+              true -> stringResource(R.string.hour_recap_tag_present)
+              false -> stringResource(R.string.hour_recap_tag_absent)
+              null -> stringResource(R.string.hour_recap_tag_presence_unknown)
+            }
+        val presenceColor =
+            when (event.wasPresent) {
+              true -> MaterialTheme.colorScheme.primaryContainer
+              false -> MaterialTheme.colorScheme.errorContainer
+              null -> MaterialTheme.colorScheme.surfaceVariant
+            }
+        RecapTag(label = presenceLabel, containerColor = presenceColor)
+
+        if (event.wasReplaced) {
+          RecapTag(
+              label = stringResource(R.string.hour_recap_tag_replaced),
+              containerColor = MaterialTheme.colorScheme.errorContainer)
+        }
+
+        if (event.tookReplacement) {
+          RecapTag(
+              label = stringResource(R.string.hour_recap_tag_replacement_taken),
+              containerColor = MaterialTheme.colorScheme.tertiaryContainer)
+        }
+      }
+    }
+  }
+}
+
+@Composable
+private fun RecapTag(label: String, containerColor: Color) {
+  AssistChip(
+      onClick = {},
+      enabled = false,
+      label = { Text(label) },
+      colors = AssistChipDefaults.assistChipColors(containerColor = containerColor))
 }

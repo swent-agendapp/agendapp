@@ -53,7 +53,7 @@ class SimpleFakeEventRepository : EventRepository {
       startDate: Instant,
       endDate: Instant
   ): List<Event> {
-    return events.filter { it.startDate >= startDate && it.endDate <= endDate }
+    return events.filter { it.endDate >= startDate && it.startDate <= endDate }
   }
 
   override suspend fun calculateWorkedHoursPastEvents(

@@ -75,14 +75,12 @@ fun EditEventScreen(
     }
   }
 
-  val noParticipantLabel = stringResource(R.string.replacement_selected_members_none)
-
   // Participants names
   val names =
       if (uiState.participants.isNotEmpty()) {
         uiState.participants.toList()
       } else {
-        listOf(noParticipantLabel)
+        emptyList()
       }
 
   var showStartTimePicker by remember { mutableStateOf(false) }
@@ -153,7 +151,7 @@ fun EditEventScreen(
               }
 
               item {
-                key(uiState.endInstant) { // Use the latest value from uiState as the initial value
+                key(uiState.endInstant) {
                   DatePickerFieldToModal(
                       label = stringResource(R.string.edit_event_end_date_label),
                       modifier = Modifier.testTag(EditEventTestTags.END_DATE_FIELD),
@@ -221,18 +219,24 @@ fun EditEventScreen(
 
               // Participants
               item {
-                Card(shape = RoundedCornerShape(CornerRadiusLarge)) {
-                  Column(
-                      modifier = Modifier.fillMaxWidth().padding(PaddingMedium),
-                      horizontalAlignment = Alignment.Start) {
-                        ParticipantsSection(participantNames = names, showHeader = false)
-                        Spacer(modifier = Modifier.height(SpacingLarge))
-                        SecondaryButton(
-                            modifier = Modifier.testTag(EditEventTestTags.EDIT_PARTICIPANTS_BUTTON),
-                            onClick = onEditParticipants,
-                            text = stringResource(R.string.edit_event_edit_participants_button))
+                key(
+                    uiState
+                        .participants) { // Use the latest value from uiState as the initial value
+                      Card(shape = RoundedCornerShape(CornerRadiusLarge)) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth().padding(PaddingMedium),
+                            horizontalAlignment = Alignment.Start) {
+                              ParticipantsSection(participantNames = names, showHeader = false)
+                              Spacer(modifier = Modifier.height(SpacingLarge))
+                              SecondaryButton(
+                                  modifier =
+                                      Modifier.testTag(EditEventTestTags.EDIT_PARTICIPANTS_BUTTON),
+                                  onClick = onEditParticipants,
+                                  text =
+                                      stringResource(R.string.edit_event_edit_participants_button))
+                            }
                       }
-                }
+                    }
               }
             }
       },

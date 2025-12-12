@@ -1,35 +1,104 @@
 package com.android.sample.model.authentication
 
 import com.android.sample.data.firebase.mappers.UserMapper
+import com.android.sample.model.constants.FirestoreConstants
+import com.android.sample.model.constants.FirestoreConstants.COLLECTION_ADMINS
 import com.android.sample.model.constants.FirestoreConstants.COLLECTION_USERS
+import com.android.sample.model.constants.FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH
+import com.android.sample.model.firestoreMappers.UserMapper
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.tasks.await
 
-/**
- * Firebase implementation using a global collection: /users/{userId}
- *
- * Document fields : { "userId": "firebaseUid", "displayName": "John Doe", "email":
- * "johndoe@exemple.com", "updatedAt": <timestamp> }
- */
 class UsersRepositoryFirebase(
     private val db: FirebaseFirestore,
-    private val authRepository: AuthRepository
 ) : UserRepository {
 
   private fun usersCollection() = db.collection(COLLECTION_USERS)
 
-  override suspend fun getUsers(): List<User> {
-    val snap = usersCollection().get().await()
-    return snap.documents.mapNotNull { UserMapper.fromDocument(it) }
+  /** -------------------------- USERS IDS -------------------------- */
+  override suspend fun getAdminsIds(organizationId: String): List<String> {
+    val snap =
+        db.collection(ORGANIZATIONS_COLLECTION_PATH)
+            .document(organizationId)
+            .collection(COLLECTION_ADMINS)
+            .get()
+            .await()
+
+    return snap.documents.map { it.id }
   }
 
+  override suspend fun getMembersIds(organizationId: String): List<String> {
+    val snap =
+        db.collection(ORGANIZATIONS_COLLECTION_PATH)
+            .document(organizationId)
+            .collection(COLLECTION_USERS)
+            .get()
+            .await()
+
+    return snap.documents.map { it.id }
+  }
+
+  /** -------------------------- USERS DETAILS -------------------------- */
+  override suspend fun getUsersByIds(userIds: List<String>): List<User> {
+    val all = usersCollection().get().await().documents.mapNotNull { UserMapper.fromDocument(it) }
+
+    return all.filter { userIds.contains(it.id) }
+  }
+
+  /** -------------------------- UPSERT / MODIFY -------------------------- */
   override suspend fun newUser(user: User) {
     require(user.id.isNotBlank()) { "userId is required" }
     val data = UserMapper.toMap(user)
-    usersCollection().document(user.id).set(data).await()
+
+    usersCollection().document(user.id).set(data, SetOptions.merge()).await()
   }
 
+  /** -------------------------- DELETE USER -------------------------- */
   override suspend fun deleteUser(userId: String) {
-    usersCollection().document(userId).delete().await()
+    val batch = db.batch()
+
+    // Delete global user document
+    batch.delete(usersCollection().document(userId))
+
+    // Remove from all organizations
+    val orgsSnapshot = db.collection(ORGANIZATIONS_COLLECTION_PATH).get().await()
+
+    orgsSnapshot.documents.forEach { orgDoc ->
+      val orgRef = db.collection(ORGANIZATIONS_COLLECTION_PATH).document(orgDoc.id)
+
+      batch.delete(orgRef.collection(COLLECTION_USERS).document(userId))
+      batch.delete(orgRef.collection(COLLECTION_ADMINS).document(userId))
+    }
+
+    batch.commit().await()
+  }
+
+  override suspend fun addUserToOrganization(userId: String, organizationId: String) {
+    // 1. Add user to organization subcollection
+    db.collection(ORGANIZATIONS_COLLECTION_PATH)
+        .document(organizationId)
+        .collection(COLLECTION_USERS)
+        .document(userId)
+        .set(mapOf("exists" to true))
+        .await()
+
+    // 2. Add organization to user.organizations array
+    db.collection(FirestoreConstants.COLLECTION_USERS)
+        .document(userId)
+        .update("organizations", FieldValue.arrayUnion(organizationId))
+        .await()
+  }
+
+  override suspend fun addAdminToOrganization(userId: String, organizationId: String) {
+    addUserToOrganization(userId, organizationId)
+    // 1. Add user to organization admins subcollection
+    db.collection(ORGANIZATIONS_COLLECTION_PATH)
+        .document(organizationId)
+        .collection(COLLECTION_ADMINS)
+        .document(userId)
+        .set(mapOf("exists" to true))
+        .await()
   }
 }

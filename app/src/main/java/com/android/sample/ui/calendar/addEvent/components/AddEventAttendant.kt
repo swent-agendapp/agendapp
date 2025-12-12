@@ -59,35 +59,6 @@ fun AddEventAttendantScreen(
 ) {
   val newEventUIState by addEventViewModel.uiState.collectAsState()
 
-  val allParticipants =
-      listOf(
-          "Anaïs",
-          "Ania",
-          "Benjamin",
-          "Célestin",
-          "Chiara",
-          "Coralie",
-          "David",
-          "Diana",
-          "Emi",
-          "Emilien",
-          "Giada",
-          "Héloïse",
-          "Jael",
-          "Laura",
-          "Ludovic",
-          "Maé",
-          "Mara",
-          "Maud",
-          "Maxime",
-          "Maya",
-          "Miki",
-          "Roby",
-          "Solene",
-          "Yukié",
-          "Zoé") // Placeholder for all possible participants
-  // note : these temporary names are inspired from the real Stakeholder's employee's names
-
   Column(
       modifier = modifier.fillMaxSize().padding(horizontal = PaddingExtraLarge),
       horizontalAlignment = Alignment.CenterHorizontally,
@@ -111,7 +82,7 @@ fun AddEventAttendantScreen(
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
               // Scrollable list
               LazyColumn(modifier = Modifier.fillMaxSize().padding(PaddingMedium)) {
-                items(allParticipants) { participant ->
+                items(newEventUIState.users) { participant ->
                   Row(
                       verticalAlignment = Alignment.CenterVertically,
                       modifier =
@@ -134,7 +105,7 @@ fun AddEventAttendantScreen(
                               action(participant)
                             })
                         Spacer(modifier = Modifier.width(SpacingSmall))
-                        Text(text = participant)
+                        Text(text = participant.displayName ?: participant.email ?: "No Name")
                       }
                   HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
                 }

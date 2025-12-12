@@ -2,9 +2,16 @@ package com.android.sample.ui.hourRecap
 
 import com.android.sample.data.fake.repositories.FakeEventRepository
 import com.android.sample.data.fake.repositories.RepoMethod
+import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
 import java.time.Duration
+import com.android.sample.model.calendar.EventRepository
+import com.android.sample.model.organization.data.Organization
+import com.android.sample.model.organization.repository.OrganizationRepositoryLocal
+import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import java.time.Instant
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -20,14 +27,34 @@ class HourRecapViewModelTest {
 
   private val testDispatcher = StandardTestDispatcher()
   private lateinit var repo: FakeEventRepository
+  private lateinit var repo: SimpleFakeEventRepository
+  private lateinit var userRepo: UserRepository
+  private lateinit var organizationRepository: OrganizationRepositoryLocal
 
-  private val orgId = "org123" // Pretend the user selected an organization
-  private val selectedOrgFlow = MutableStateFlow(orgId)
+  private lateinit var user: User
+
+  private lateinit var orgA: Organization
+  private val selectedOrganizationID: String = "org123"
+  private val selectedOrgFlow = MutableStateFlow(selectedOrganizationID)
 
   @Before
-  fun setup() {
+  fun setup() = runBlocking {
     Dispatchers.setMain(testDispatcher)
     repo = FakeEventRepository()
+    userRepo = UsersRepositoryLocal()
+    organizationRepository = OrganizationRepositoryLocal(userRepository = userRepo)
+
+    organizationRepository = OrganizationRepositoryLocal(userRepository = userRepo)
+
+    // --- Create users ---
+    user = User(id = "Bob", displayName = "Bob", email = "adminA@example.com")
+    orgA = Organization(id = selectedOrganizationID, name = "Org A")
+
+    // Register all users in the repository
+    userRepo.newUser(user)
+    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationID)
+    organizationRepository.insertOrganization(orgA)
+    userRepo.addAdminToOrganization(user.id, selectedOrganizationID)
   }
 
   @After
@@ -36,7 +63,10 @@ class HourRecapViewModelTest {
   }
 
   private fun makeVm(): HourRecapViewModel {
-    return HourRecapViewModel(eventRepository = repo, selectedOrganizationFlow = selectedOrgFlow)
+    return HourRecapViewModel(
+        eventRepository = repo,
+        selectedOrganizationFlow = selectedOrgFlow,
+        userRepository = userRepo)
   }
 
   @Test

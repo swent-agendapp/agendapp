@@ -13,20 +13,35 @@ import androidx.compose.ui.test.performTextInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.sample.R
+import com.android.sample.model.authentication.User
 import com.android.sample.model.replacement.mockData.getMockReplacements
 import com.android.sample.ui.theme.SampleAppTheme
+import com.android.sample.utils.FirebaseEmulatedTest
+import com.android.sample.utils.OrganizationTestHelper
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class ProcessReplacementScreenTest {
+class ProcessReplacementScreenTest : FirebaseEmulatedTest() {
 
   @get:Rule val composeTestRule = createComposeRule()
 
   private val replacementId = getMockReplacements().first().id
+
+  @Before
+  override fun setUp() = runBlocking {
+    super.setUp()
+
+    val orgId = "orgTest"
+    val helper = OrganizationTestHelper()
+    helper.setupOrganizationWithUsers(orgId)
+    Unit
+  }
 
   @Test
   fun screen_displaysBasicElements() {
@@ -70,48 +85,60 @@ class ProcessReplacementScreenTest {
 
   @Test
   fun selectingMembers_andEnablesButton_andCallsCallback() {
-    var sentMembers: List<String>? = null
+    var sentMembers: List<User>? = null
 
     composeTestRule.setContent {
       SampleAppTheme {
         ProcessReplacementScreen(
             replacementId = replacementId,
             onSendRequests = { sentMembers = it },
-        )
+            candidates =
+                listOf(
+                    User(id = "1", displayName = "Alice", email = "alice@example.com"),
+                    User(id = "2", displayName = "Bob", email = "bob@example.com"),
+                    User(id = "3", displayName = "Charlie", email = "charlie@example.com")))
       }
     }
 
     composeTestRule
-        .onNodeWithTag(ProcessReplacementTestTags.memberTag("Emilien"), useUnmergedTree = true)
+        .onNodeWithTag(ProcessReplacementTestTags.memberTag("Alice"), useUnmergedTree = true)
         .performClick()
 
     composeTestRule.onNodeWithTag(ProcessReplacementTestTags.SEND_BUTTON).assertIsEnabled()
 
     composeTestRule.onNodeWithTag(ProcessReplacementTestTags.SELECTED_SUMMARY).assertIsDisplayed()
-    composeTestRule.onNodeWithText("Emilien").assertIsDisplayed()
+    composeTestRule.onNodeWithText("Alice").assertIsDisplayed()
 
     composeTestRule.onNodeWithTag(ProcessReplacementTestTags.SEND_BUTTON).performClick()
 
     assertTrue(sentMembers != null)
-    assertEquals(listOf("Emilien"), sentMembers)
+    assertEquals(listOf("1"), sentMembers?.map { it.id })
   }
 
   @Test
   fun searchFilter_filtersList() {
     composeTestRule.setContent {
-      SampleAppTheme { ProcessReplacementScreen(replacementId = replacementId) }
+      SampleAppTheme {
+        ProcessReplacementScreen(
+            replacementId = replacementId,
+            candidates =
+                listOf(
+                    User(id = "1", displayName = "Alice", email = "alice@example.com"),
+                    User(id = "2", displayName = "Bob", email = "bob@example.com"),
+                    User(id = "3", displayName = "Charlie", email = "charlie@example.com")))
+      }
     }
 
     composeTestRule
         .onNodeWithTag(ProcessReplacementTestTags.SEARCH_BAR)
         .performClick()
-        .performTextInput("Noa")
+        .performTextInput("Bob")
 
     composeTestRule
-        .onNodeWithTag(ProcessReplacementTestTags.memberTag("Noa"), useUnmergedTree = true)
+        .onNodeWithTag(ProcessReplacementTestTags.memberTag("Bob"), useUnmergedTree = true)
         .assertExists()
     composeTestRule
-        .onNodeWithTag(ProcessReplacementTestTags.memberTag("Emilien"), useUnmergedTree = true)
+        .onNodeWithTag(ProcessReplacementTestTags.memberTag("Alice"), useUnmergedTree = true)
         .assertDoesNotExist()
   }
 }

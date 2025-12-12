@@ -8,6 +8,10 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.android.sample.data.global.providers.EventRepositoryProvider
 import com.android.sample.data.global.repositories.EventRepository
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UserRepositoryProvider
+import com.android.sample.model.calendar.EventRepository
+import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import java.time.Instant
@@ -31,6 +35,7 @@ data class HourRecapUiState(
  */
 class HourRecapViewModel(
     private val eventRepository: EventRepository = EventRepositoryProvider.repository,
+    private val userRepository: UserRepository = UserRepositoryProvider.repository,
     selectedOrganizationFlow: StateFlow<String?>? = null,
     selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel
@@ -66,7 +71,13 @@ class HourRecapViewModel(
 
       try {
         val result = eventRepository.calculateWorkedHours(orgId, start, end)
-        _uiState.update { it.copy(workedHours = result, isLoading = false) }
+        val users = userRepository.getUsersByIds(result.map { it.first })
+        val userMap = users.associateBy { it.id }
+        val finalList: List<Pair<String, Double>> =
+            result.mapNotNull { (userId, value) ->
+              userMap[userId]?.let { user -> user.display() to value }
+            }
+        _uiState.update { it.copy(workedHours = finalList, isLoading = false) }
       } catch (e: Exception) {
         _uiState.update {
           it.copy(isLoading = false, errorMsg = "Failed to calculate worked hours: ${e.message}")

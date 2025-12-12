@@ -2,16 +2,24 @@ package com.android.sample.ui.calendar
 
 import com.android.sample.data.global.repositories.EventRepository
 import com.android.sample.data.local.repositories.EventRepositoryInMemory
+import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.category.EventCategory
 import com.android.sample.model.category.mockData.getMockEventCategory
+import com.android.sample.model.organization.data.Organization
+import com.android.sample.model.organization.repository.OrganizationRepository
+import com.android.sample.model.organization.repository.OrganizationRepositoryLocal
+import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.editEvent.EditEventStep
 import com.android.sample.ui.calendar.editEvent.EditEventViewModel
 import java.time.Duration
 import java.time.Instant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -25,17 +33,42 @@ import org.junit.Test
 class EditEventViewModelTest {
 
   private val testDispatcher = StandardTestDispatcher()
-  private lateinit var repository: EventRepository
+  private lateinit var eventRepository: EventRepository
+  private lateinit var userRepository: UserRepository
+  private lateinit var organizationRepository: OrganizationRepository
+
+  private lateinit var user: User
+  private lateinit var organization: Organization
 
   private val selectedOrganizationID: String = "org123"
 
   @Before
-  fun setUp() {
+  fun setUp() = runBlocking {
     Dispatchers.setMain(testDispatcher)
-    repository = EventRepositoryInMemory()
+    eventRepository = EventRepositoryInMemory()
+    userRepository = UsersRepositoryLocal()
+    organizationRepository = OrganizationRepositoryLocal(userRepository)
+
+    user =
+        User(
+            id = "adminA",
+            displayName = "Admin A",
+            email = "adminA@example.com",
+            organizations = listOf(selectedOrganizationID))
+
+    // Register all users in the repository
+    userRepository.newUser(user)
+
+    // --- Create organization ---
+    organization = Organization(id = selectedOrganizationID, name = "Org A")
+
+    organizationRepository.insertOrganization(organization)
+
+    // Set up user-organization relationships
+    userRepository.addAdminToOrganization(user.id, organization.id)
 
     // Set the selected organization in the provider (if needed by the app)
-    // SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationID)
+    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationID)
   }
 
   @After
@@ -121,12 +154,12 @@ class EditEventViewModelTest {
   @Test
   fun `addParticipant and removeParticipant modify participants set`() {
     val vm = makeVm()
+    val user = User(displayName = "user1")
+    vm.addParticipant(user)
+    assertTrue(vm.uiState.value.participants.map { it.display() }.contains("user1"))
 
-    vm.addParticipant("user1")
-    assertTrue(vm.uiState.value.participants.contains("user1"))
-
-    vm.removeParticipant("user1")
-    assertFalse(vm.uiState.value.participants.contains("user1"))
+    vm.removeParticipant(user)
+    assertFalse(vm.uiState.value.participants.map { it.display() }.contains("user1"))
   }
 
   @Test
@@ -212,14 +245,14 @@ class EditEventViewModelTest {
             cloudStorageStatuses = emptySet(),
             locallyStoredBy = emptyList(),
             personalNotes = null,
-            participants = setOf("user1"),
+            participants = setOf("adminA"),
             version = 1L,
             recurrenceStatus = RecurrenceStatus.Weekly,
             hasBeenDeleted = false,
             category = category,
             location = null)
 
-    repository.insertEvent(orgId = selectedOrganizationID, item = event)
+    eventRepository.insertEvent(orgId = selectedOrganizationID, item = event)
 
     vm.loadEvent(eventId)
     testDispatcher.scheduler.advanceUntilIdle()
@@ -231,7 +264,7 @@ class EditEventViewModelTest {
     assertEquals(start, state.startInstant)
     assertEquals(end, state.endInstant)
     assertEquals(RecurrenceStatus.Weekly, state.recurrenceMode)
-    assertEquals(setOf("user1"), state.participants)
+    assertEquals(setOf(user), state.participants)
     assertEquals(category, state.category)
     assertFalse(state.isLoading)
     assertNull(state.errorMessage)
@@ -277,7 +310,7 @@ class EditEventViewModelTest {
             category = originalCategory,
             location = null)
 
-    repository.insertEvent(orgId = selectedOrganizationID, item = originalEvent)
+    eventRepository.insertEvent(orgId = selectedOrganizationID, item = originalEvent)
 
     vm.loadEvent(eventId)
     testDispatcher.scheduler.advanceUntilIdle()
@@ -291,7 +324,7 @@ class EditEventViewModelTest {
     testDispatcher.scheduler.advanceUntilIdle()
 
     val updated =
-        repository.getEventById(orgId = selectedOrganizationID, itemId = eventId)
+        eventRepository.getEventById(orgId = selectedOrganizationID, itemId = eventId)
             ?: error("Event should exist")
 
     assertEquals("New title", updated.title)
@@ -303,6 +336,6 @@ class EditEventViewModelTest {
   /* Helper functions */
 
   private fun makeVm(): EditEventViewModel {
-    return EditEventViewModel(repository = repository)
+    return EditEventViewModel(userRepository = userRepository, eventRepository = eventRepository)
   }
 }

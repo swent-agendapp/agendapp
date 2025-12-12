@@ -18,14 +18,18 @@ class OrganizationMapperTest {
   fun fromDocument_withValidData_returnsOrganization() {
     // Admins & members
     val adminDoc = mock(DocumentSnapshot::class.java)
+    `when`(adminDoc.exists()).thenReturn(true)
     `when`(adminDoc.getString("id")).thenReturn("admin1")
     `when`(adminDoc.getString("displayName")).thenReturn("Admin One")
     `when`(adminDoc.getString("email")).thenReturn("admin1@example.com")
+    `when`(adminDoc.get("organizations")).thenReturn(emptyList<String>())
 
     val memberDoc = mock(DocumentSnapshot::class.java)
+    `when`(memberDoc.exists()).thenReturn(true)
     `when`(memberDoc.getString("id")).thenReturn("member1")
     `when`(memberDoc.getString("displayName")).thenReturn("Member One")
     `when`(memberDoc.getString("email")).thenReturn("member1@example.com")
+    `when`(memberDoc.get("organizations")).thenReturn(emptyList<String>())
 
     // Marker locations
     val locDoc1 = mock(DocumentSnapshot::class.java)
@@ -74,12 +78,6 @@ class OrganizationMapperTest {
     assertThat(organization.id).isEqualTo("org123")
     assertThat(organization.name).isEqualTo("My Organization")
     assertThat(organization.geoCheckEnabled).isTrue()
-
-    assertThat(organization.admins).hasSize(1)
-    assertThat(organization.admins[0].displayName).isEqualTo("Admin One")
-
-    assertThat(organization.members).hasSize(1)
-    assertThat(organization.members[0].email).isEqualTo("member1@example.com")
 
     assertThat(organization.events).hasSize(1)
     val event = organization.events[0]
@@ -133,18 +131,12 @@ class OrganizationMapperTest {
     assertThat(organization.id).isEqualTo("org123")
     assertThat(organization.name).isEqualTo("My Organization")
     assertThat(organization.geoCheckEnabled).isTrue()
-    assertThat(organization.admins).hasSize(1)
-    assertThat(organization.admins[0].displayName).isEqualTo("Admin One")
-    assertThat(organization.members).hasSize(1)
-    assertThat(organization.members[0].email).isEqualTo("member1@example.com")
     assertThat(organization.events).hasSize(1)
     assertThat(organization.events[0].title).isEqualTo("Meeting")
   }
 
   @Test
   fun toMap_returnsCorrectMap() {
-    val admins = listOf(User("admin1", "Admin One", "admin1@example.com"))
-    val members = listOf(User("member1", "Member One", "member1@example.com"))
     val events =
         createEvent(
             organizationId = "org123",
@@ -154,12 +146,7 @@ class OrganizationMapperTest {
             endDate = Instant.parse("2025-01-01T11:00:00Z"))
     val organization =
         Organization(
-            id = "org123",
-            name = "My Organization",
-            admins = admins,
-            members = members,
-            events = events,
-            geoCheckEnabled = true)
+            id = "org123", name = "My Organization", events = events, geoCheckEnabled = true)
 
     val map = OrganizationMapper.toMap(organization)
 
@@ -167,12 +154,8 @@ class OrganizationMapperTest {
     assertThat(map["name"]).isEqualTo("My Organization")
     assertThat(map["geoCheckEnabled"]).isEqualTo(true)
 
-    val adminsList = (map["admins"] as? List<*>)?.filterIsInstance<Map<String, Any?>>()
-    val membersList = (map["members"] as? List<*>)?.filterIsInstance<Map<String, Any?>>()
     val eventsList = (map["events"] as? List<*>)?.filterIsInstance<Map<String, Any?>>()
 
-    assertThat(adminsList!![0]["displayName"]).isEqualTo("Admin One")
-    assertThat(membersList!![0]["email"]).isEqualTo("member1@example.com")
     assertThat(eventsList!![0]["title"]).isEqualTo("Meeting")
     assertThat(eventsList[0]["description"]).isEqualTo("Team meeting")
   }

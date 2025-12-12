@@ -16,6 +16,7 @@ import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import com.android.sample.utils.FirebaseEmulatedTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -33,16 +34,15 @@ class InvitationOverviewScreenTest : FirebaseEmulatedTest() {
   private lateinit var selectedOrgVM: SelectedOrganizationViewModel
 
   private val user = User(id = "user1", displayName = "Test User", email = "test@example.com")
-  private val org =
-      Organization(id = "org1", name = "Test Org", admins = listOf(user), members = listOf(user))
+  private val org = Organization(id = "org1", name = "Test Org")
   private val inv1 = Invitation(id = "id1", organizationId = org.id, code = "123456")
   private val inv2 = Invitation(id = "id2", organizationId = org.id, code = "654321")
 
   @OptIn(ExperimentalCoroutinesApi::class)
   @Before
-  override fun setUp() {
+  override fun setUp() = runBlocking {
     fakeOrganizationRepository = FakeOrganizationRepository()
-    fakeOrganizationRepository.addOrganization(org)
+    fakeOrganizationRepository.insertOrganization(org)
 
     fakeInvitationRepository = FakeInvitationRepository()
     fakeInvitationRepository.addInvitation(inv1)

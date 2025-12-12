@@ -3,13 +3,20 @@ package com.android.sample.ui.calendar
 import com.android.sample.data.global.repositories.EventRepository
 import com.android.sample.data.local.repositories.EventRepositoryInMemory
 import com.android.sample.model.authentication.FakeAuthRepository
+import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.createEvent
+import com.android.sample.model.organization.data.Organization
+import com.android.sample.model.organization.repository.OrganizationRepository
+import com.android.sample.model.organization.repository.OrganizationRepositoryLocal
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.eventOverview.EventOverviewViewModel
 import java.time.Instant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -32,6 +39,14 @@ class EventOverviewViewModelTest {
   // StandardTestDispatcher allows manual control over coroutine execution in tests.
   private val testDispatcher = StandardTestDispatcher()
   private lateinit var repository: EventRepository
+  private lateinit var userRepository: UserRepository
+
+  private lateinit var organizationRepository: OrganizationRepository
+
+  private lateinit var user1: User
+  private lateinit var user2: User
+  private lateinit var organization: Organization
+
   private lateinit var viewModel: EventOverviewViewModel
 
   private lateinit var eventWithoutParticipants: Event
@@ -40,7 +55,7 @@ class EventOverviewViewModelTest {
   private val selectedOrganizationID: String = "org123"
 
   @Before
-  fun setUp() {
+  fun setUp() = runBlocking {
     // Set the main dispatcher to the test dispatcher before each test.
     Dispatchers.setMain(testDispatcher)
 
@@ -48,8 +63,44 @@ class EventOverviewViewModelTest {
     SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationID)
 
     repository = EventRepositoryInMemory()
+    userRepository = UsersRepositoryLocal()
+
+    organizationRepository = OrganizationRepositoryLocal(userRepository)
+
+    user1 =
+        User(
+            id = "Alice",
+            displayName = "Alice",
+            email = "alice@example.com",
+            organizations = listOf(selectedOrganizationID))
+    user2 =
+        User(
+            id = "Bob",
+            displayName = "Bob",
+            email = "bob@example.com",
+            organizations = listOf(selectedOrganizationID))
+
+    // Register all users in the repository
+    userRepository.newUser(user1)
+    userRepository.newUser(user2)
+
+    // --- Create organization ---
+    organization = Organization(id = selectedOrganizationID, name = "Org A")
+
+    organizationRepository.insertOrganization(organization)
+
+    // Set up user-organization relationships
+    userRepository.addAdminToOrganization(user1.id, organization.id)
+    userRepository.addAdminToOrganization(user2.id, organization.id)
+
+    // Set the selected organization in the provider (if needed by the app)
+    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationID)
+
     viewModel =
-        EventOverviewViewModel(eventRepository = repository, authRepository = FakeAuthRepository())
+        EventOverviewViewModel(
+            eventRepository = repository,
+            authRepository = FakeAuthRepository(),
+            userRepository = userRepository)
 
     // Create sample events for testing.
     eventWithoutParticipants =

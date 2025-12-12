@@ -20,6 +20,7 @@ class ReplacementMapperTest {
 
   private val sampleEventCategory =
       EventCategory(
+          organizationId = "org1",
           label = "Meeting",
           color = EventPalette.Blue,
       )

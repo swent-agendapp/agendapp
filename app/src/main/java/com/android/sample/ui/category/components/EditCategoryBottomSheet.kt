@@ -57,12 +57,12 @@ import com.android.sample.ui.theme.SpacingSmall
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryEditBottomSheet(
-    showBottomSheet: Boolean,
+    showBottomSheet: Boolean = false,
     sheetState: SheetState,
-    initialLabel: String?,
-    initialColor: Color?,
-    onDismiss: () -> Unit,
-    onSave: (String, Color) -> Unit,
+    initialLabel: String? = EventCategory.defaultCategory().label,
+    initialColor: Color? = EventCategory.defaultCategory().color,
+    onDismiss: () -> Unit = {},
+    onSave: (String, Color) -> Unit = { _, _ -> },
 ) {
   if (!showBottomSheet) return
 
@@ -77,9 +77,9 @@ fun CategoryEditBottomSheet(
 
 @Composable
 private fun CategoryEditBottomSheetContent(
-    initialLabel: String?,
-    initialColor: Color,
-    onSave: (String, Color) -> Unit,
+    initialLabel: String? = EventCategory.defaultCategory().label,
+    initialColor: Color = EventCategory.defaultCategory().color,
+    onSave: (String, Color) -> Unit = { _, _ -> },
 ) {
   // NOW: local bottom-sheet state driven by selectedCategory
   // LATER: this entire content will be bound to ViewModel uiState and events

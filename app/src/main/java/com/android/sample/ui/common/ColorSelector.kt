@@ -27,6 +27,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
+import com.android.sample.model.category.EventCategory
 import com.android.sample.ui.category.components.ColorCircle
 import com.android.sample.ui.theme.BorderWidthThin
 import com.android.sample.ui.theme.CornerRadiusLarge
@@ -94,9 +95,9 @@ fun ColorSelector(
 
 @Composable
 private fun ColorSelectorField(
-    selectedColor: Color,
-    onClick: () -> Unit,
-    testTag: String,
+    selectedColor: Color = EventCategory.defaultCategory().color,
+    onClick: () -> Unit = {},
+    testTag: String = "",
 ) {
   // This Row is styled to look like an OutlinedTextField-like form field.
   Row(
@@ -154,10 +155,10 @@ private fun ColorDropdownMenu(
 
 @Composable
 private fun ColorGrid(
-    colors: List<Color>,
-    selectedColor: Color,
-    onColorSelected: (Color) -> Unit,
-    testTag: String,
+    colors: List<Color> = EventPalette.defaultColors,
+    selectedColor: Color = EventCategory.defaultCategory().color,
+    onColorSelected: (Color) -> Unit = {},
+    testTag: String = "",
 ) {
   Box(
       modifier =

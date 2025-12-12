@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import com.android.sample.ui.theme.BorderWidthExtraThick
 import com.android.sample.ui.theme.BorderWidthThin
+import com.android.sample.ui.theme.EventPalette
 import com.android.sample.ui.theme.SizeMediumLarge
 
 object ColorCircleTestTags {
@@ -22,7 +23,7 @@ object ColorCircleTestTags {
 @Composable
 fun ColorCircle(
     modifier: Modifier = Modifier,
-    color: Color,
+    color: Color = EventPalette.NoCategory,
     isSelected: Boolean = false,
     testTag: String = ColorCircleTestTags.COLOR_CIRCLE,
 ) {

@@ -17,6 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.android.sample.R
 import com.android.sample.model.category.EventCategory
+import com.android.sample.model.category.mockData.getMockEventCategory
 import com.android.sample.ui.category.EditCategoryScreenTestTags
 import com.android.sample.ui.theme.PaddingHuge
 import com.android.sample.ui.theme.PaddingLarge
@@ -28,11 +29,11 @@ import org.burnoutcrew.reorderable.reorderable
 
 @Composable
 fun CategoryListSection(
-    modifier: Modifier,
-    categories: List<EventCategory>,
+    modifier: Modifier = Modifier,
+    categories: List<EventCategory> = getMockEventCategory(),
     reorderState: ReorderableLazyListState,
-    onEditCategory: (EventCategory) -> Unit,
-    onDeleteCategory: (EventCategory) -> Unit,
+    onEditCategory: (EventCategory) -> Unit = {},
+    onDeleteCategory: (EventCategory) -> Unit = {},
 ) {
   // Main content list with reordering support
   LazyColumn(

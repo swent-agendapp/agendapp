@@ -5,6 +5,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -29,6 +30,7 @@ import com.android.sample.ui.category.components.CategoryListSection
 import com.android.sample.ui.common.FloatingButton
 import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.theme.PaddingLarge
+import org.burnoutcrew.reorderable.ReorderableLazyListState
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 
 // Assisted by AI
@@ -201,10 +203,10 @@ fun EditCategoryScreen(
 
 @Composable
 private fun EditCategoryDeleteDialog(
-    showDeleteDialog: Boolean,
-    category: EventCategory?,
-    onConfirm: () -> Unit,
-    onDismiss: () -> Unit,
+    showDeleteDialog: Boolean = false,
+    category: EventCategory? = EventCategory.defaultCategory(),
+    onConfirm: () -> Unit = {},
+    onDismiss: () -> Unit = {},
 ) {
   // Delete confirmation dialog
   if (showDeleteDialog && category != null) {
@@ -219,17 +221,17 @@ private fun EditCategoryDeleteDialog(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun EditCategoryScaffold(
-    onBack: () -> Unit,
-    categories: List<EventCategory>,
-    reorderState: org.burnoutcrew.reorderable.ReorderableLazyListState,
-    onCreateCategory: () -> Unit,
-    onEditCategory: (EventCategory) -> Unit,
-    onDeleteCategory: (EventCategory) -> Unit,
-    showBottomSheet: Boolean,
-    sheetState: androidx.compose.material3.SheetState,
-    selectedCategory: EventCategory?,
-    onDismissBottomSheet: () -> Unit,
-    onSaveCategory: (String, Color) -> Unit,
+    onBack: () -> Unit = {},
+    categories: List<EventCategory> = getMockEventCategory(),
+    reorderState: ReorderableLazyListState,
+    onCreateCategory: () -> Unit = {},
+    onEditCategory: (EventCategory) -> Unit = {},
+    onDeleteCategory: (EventCategory) -> Unit = {},
+    showBottomSheet: Boolean = false,
+    sheetState: SheetState,
+    selectedCategory: EventCategory? = EventCategory.defaultCategory(),
+    onDismissBottomSheet: () -> Unit = {},
+    onSaveCategory: (String, Color) -> Unit = { _, _ -> },
 ) {
   Scaffold(
       topBar = {
@@ -267,9 +269,9 @@ private fun EditCategoryScaffold(
 
 @Composable
 private fun DeleteCategoryConfirmationDialog(
-    category: EventCategory,
-    onConfirm: () -> Unit,
-    onDismiss: () -> Unit
+    category: EventCategory = EventCategory.defaultCategory(),
+    onConfirm: () -> Unit = {},
+    onDismiss: () -> Unit = {},
 ) {
   AlertDialog(
       onDismissRequest = onDismiss,

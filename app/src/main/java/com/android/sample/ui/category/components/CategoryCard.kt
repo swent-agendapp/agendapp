@@ -40,10 +40,10 @@ import com.android.sample.ui.theme.WeightExtraHeavy
 @Composable
 fun CategoryCard(
     modifier: Modifier = Modifier,
-    isDragging: Boolean,
-    category: EventCategory,
-    onEditClick: () -> Unit,
-    onDeleteClick: () -> Unit,
+    isDragging: Boolean = false,
+    category: EventCategory = EventCategory.defaultCategory(),
+    onEditClick: () -> Unit = {},
+    onDeleteClick: () -> Unit = {},
 ) {
   // Determine which label to show
   val categoryLabel =

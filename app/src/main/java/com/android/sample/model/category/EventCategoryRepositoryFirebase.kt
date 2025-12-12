@@ -1,8 +1,8 @@
 package com.android.sample.model.category
 
+import com.android.sample.data.firebase.mappers.EventCategoryMapper
 import com.android.sample.model.constants.FirestoreConstants.CATEGORIES_COLLECTION_PATH
 import com.android.sample.model.constants.FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH
-import com.android.sample.model.firestoreMappers.EventCategoryMapper
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 

@@ -1,7 +1,6 @@
 package com.android.sample.model.firestoreMappersTests
 
 import com.android.sample.data.firebase.mappers.OrganizationMapper
-import com.android.sample.model.authentication.User
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.model.organization.data.Organization
 import com.google.common.truth.Truth.assertThat

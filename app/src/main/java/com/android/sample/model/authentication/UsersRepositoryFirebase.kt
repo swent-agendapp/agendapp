@@ -5,7 +5,6 @@ import com.android.sample.model.constants.FirestoreConstants
 import com.android.sample.model.constants.FirestoreConstants.COLLECTION_ADMINS
 import com.android.sample.model.constants.FirestoreConstants.COLLECTION_USERS
 import com.android.sample.model.constants.FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH
-import com.android.sample.model.firestoreMappers.UserMapper
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions

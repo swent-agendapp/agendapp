@@ -7,11 +7,10 @@ import com.android.sample.model.authentication.UserRepository
 import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
-import java.time.Duration
-import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.repository.OrganizationRepositoryLocal
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
+import java.time.Duration
 import java.time.Instant
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -27,7 +26,6 @@ class HourRecapViewModelTest {
 
   private val testDispatcher = StandardTestDispatcher()
   private lateinit var repo: FakeEventRepository
-  private lateinit var repo: SimpleFakeEventRepository
   private lateinit var userRepo: UserRepository
   private lateinit var organizationRepository: OrganizationRepositoryLocal
 
@@ -111,15 +109,15 @@ class HourRecapViewModelTest {
   @Test
   fun `calculateWorkedHours loads data successfully`() = runTest {
     val vm = makeVm()
-    val participantId = "user1"
+    val participantId = user.displayName ?: ""
     val event =
         Event(
             id = "event1",
-            organizationId = orgId,
+            organizationId = selectedOrganizationID,
             title = "Test Event",
             description = "Just a test",
-            startDate = Instant.EPOCH.minusSeconds(3600), // passé
-            endDate = Instant.EPOCH, // passé
+            startDate = Instant.EPOCH.minusSeconds(3600),
+            endDate = Instant.EPOCH,
             cloudStorageStatuses = emptySet(),
             personalNotes = null,
             participants = setOf(participantId),

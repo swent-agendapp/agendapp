@@ -6,9 +6,6 @@ import com.android.sample.data.global.repositories.EventRepository
 import com.android.sample.model.authentication.UserRepository
 import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.authentication.UsersRepositoryFirebase
-import com.android.sample.model.calendar.EventRepository
-import com.android.sample.model.calendar.EventRepositoryFirebase
-import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.category.EventCategoryRepository
 import com.android.sample.model.category.EventCategoryRepositoryFirebase
 import com.android.sample.model.constants.FirestoreConstants

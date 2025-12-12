@@ -28,7 +28,9 @@ class FakeReplacementRepositoryTest { // Later make this implement RequireSelect
   fun setup() {
     repository = FakeReplacementRepository()
 
-    val category = EventCategory(label = "Test Category", color = EventPalette.Blue)
+    val category =
+        EventCategory(
+            organizationId = testOrgId, label = "Test Category", color = EventPalette.Blue)
 
     sampleEvent =
         Event(

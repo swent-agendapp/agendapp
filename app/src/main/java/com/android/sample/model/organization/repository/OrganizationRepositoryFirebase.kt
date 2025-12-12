@@ -7,7 +7,6 @@ import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.constants.FirestoreConstants
 import com.android.sample.model.constants.FirestoreConstants.COLLECTION_USERS
 import com.android.sample.model.constants.FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH
-import com.android.sample.model.firestoreMappers.OrganizationMapper
 import com.android.sample.model.organization.data.Organization
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore

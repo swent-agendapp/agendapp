@@ -12,7 +12,6 @@ import com.android.sample.ui.calendar.editEvent.EditEventViewModel
 import com.android.sample.ui.calendar.editEvent.components.EditEventAttendantScreen
 import com.android.sample.ui.calendar.editEvent.components.EditEventScreen
 import com.android.sample.ui.theme.SampleAppTheme
-import com.android.sample.utils.FakeEventRepository
 import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.OrganizationTestHelper
 import java.time.Duration

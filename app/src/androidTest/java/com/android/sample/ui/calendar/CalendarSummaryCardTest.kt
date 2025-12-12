@@ -324,7 +324,9 @@ class EventSummaryCardTest {
             title = "Color",
             start = base,
             end = base.plusSeconds(3600),
-            category = EventCategory(label = "Strong color", color = EventPalette.Red))
+            category =
+                EventCategory(
+                    organizationId = "orgTest", label = "Strong color", color = EventPalette.Red))
 
     composeTestRule.setContent { EventSummaryCard(event = e, participantNames = emptyList()) }
 

@@ -1,6 +1,7 @@
 package com.android.sample.model.organization.data
 
 import com.android.sample.model.calendar.Event
+import com.android.sample.model.category.EventCategory
 import com.android.sample.model.map.Area
 import java.util.UUID
 
@@ -21,6 +22,7 @@ data class Organization(
     val id: String = UUID.randomUUID().toString(),
     val name: String,
     val events: List<Event> = emptyList(),
+    val categories: List<EventCategory> = emptyList(),
     val areas: List<Area> = emptyList(),
     val geoCheckEnabled: Boolean = false,
 )

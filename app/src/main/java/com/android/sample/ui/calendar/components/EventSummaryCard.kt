@@ -113,60 +113,28 @@ private val previewEvents: List<Event> by lazy {
   val day = Duration.ofDays(1)
   val hour = Duration.ofHours(1)
   listOf(
-      // e0) Simple event
+      // e0) Simple, minimal event (no description / no participants)
       Event(
           id = "e0",
           organizationId = "org1",
           title = "A simple Event",
-          description = "A simple single-day event.",
+          description = "",
           startDate = base.plusSeconds(10 * 60 * 60),
           endDate = base.plusSeconds(12 * 60 * 60),
           cloudStorageStatuses = emptySet(),
           locallyStoredBy = emptyList(),
           personalNotes = null,
-          participants = setOf("u1", "u2"),
+          participants = emptySet(),
           version = 1L,
           recurrenceStatus = RecurrenceStatus.OneTime,
           hasBeenDeleted = false,
-          category = EventCategory(label = "Category A", color = EventPalette.Blue),
+          category =
+              EventCategory(
+                  organizationId = "org1", label = "Category A", color = EventPalette.Blue),
           location = null),
-      // e1) Recurring (weekly)
+      // e1) 3-day recurring (tests multi-day + recurrence label)
       Event(
           id = "e1",
-          organizationId = "org1",
-          title = "Weekly stand-up",
-          description = "Short, recurring meeting.",
-          startDate = base.plus(day).plus(hour.multipliedBy(9)),
-          endDate = base.plus(day).plus(hour.multipliedBy(10)),
-          cloudStorageStatuses = emptySet(),
-          locallyStoredBy = emptyList(),
-          personalNotes = null,
-          participants = setOf("u3", "u4"),
-          version = 1L,
-          recurrenceStatus = RecurrenceStatus.Weekly,
-          hasBeenDeleted = false,
-          category = EventCategory(label = "Category B", color = EventPalette.Green),
-          location = null),
-      // e2) 3-day event
-      Event(
-          id = "e2",
-          organizationId = "org1",
-          title = "Offsite (3 days)",
-          description = "Team offsite spanning three days.",
-          startDate = base.plus(day).plus(hour.multipliedBy(18)),
-          endDate = base.plus(day.multipliedBy(4)).plus(hour.multipliedBy(18)),
-          cloudStorageStatuses = emptySet(),
-          locallyStoredBy = emptyList(),
-          personalNotes = null,
-          participants = setOf("u2", "u5", "u6"),
-          version = 1L,
-          recurrenceStatus = RecurrenceStatus.OneTime,
-          hasBeenDeleted = false,
-          category = EventCategory(label = "Category C", color = EventPalette.Orange),
-          location = null),
-      // e3) 3-day recurring
-      Event(
-          id = "e3",
           organizationId = "org1",
           title = "Workshop series (3 days)",
           description = "Three-day recurring workshop.",
@@ -179,54 +147,22 @@ private val previewEvents: List<Event> by lazy {
           version = 1L,
           recurrenceStatus = RecurrenceStatus.Weekly,
           hasBeenDeleted = false,
-          category = EventCategory(label = "Category D", color = EventPalette.Purple),
+          category =
+              EventCategory(
+                  organizationId = "org1", label = "Category B", color = EventPalette.Green),
           location = null),
-      // e4) Long title
+      // e2) Stress test: long title, long description, many participants
       Event(
-          id = "e4",
+          id = "e2",
           organizationId = "org1",
           title =
               "Very long workshop title here with a lot of words making it intentionally too long for the card layout",
-          description = "Long title showcase.",
+          description =
+              ("This is a very long description — it keeps going to test the collapse/expand behavior. "
+                      .repeat(8))
+                  .trim(),
           startDate = base.plus(day.multipliedBy(3)).plus(hour.multipliedBy(14)),
           endDate = base.plus(day.multipliedBy(3)).plus(hour.multipliedBy(16)),
-          cloudStorageStatuses = emptySet(),
-          locallyStoredBy = emptyList(),
-          personalNotes = null,
-          participants = setOf("u2", "u8"),
-          version = 1L,
-          recurrenceStatus = RecurrenceStatus.OneTime,
-          hasBeenDeleted = false,
-          category = EventCategory(label = "Category D", color = EventPalette.Blue),
-          location = null),
-      // e5) Long description
-      Event(
-          id = "e5",
-          organizationId = "org1",
-          title = "Deep-dive session",
-          description =
-              ("This is a very long description — " +
-                      "it keeps going to test the collapse/expand behavior. ".repeat(8))
-                  .trim(),
-          startDate = base.plus(day.multipliedBy(4)).plus(hour.multipliedBy(10)),
-          endDate = base.plus(day.multipliedBy(4)).plus(hour.multipliedBy(12)),
-          cloudStorageStatuses = emptySet(),
-          locallyStoredBy = emptyList(),
-          personalNotes = null,
-          participants = setOf("u3", "u9"),
-          version = 1L,
-          recurrenceStatus = RecurrenceStatus.OneTime,
-          hasBeenDeleted = false,
-          category = EventCategory(label = "Category E", color = EventPalette.Red),
-          location = null),
-      // e6) Many participants
-      Event(
-          id = "e6",
-          organizationId = "org1",
-          title = "Large meeting",
-          description = "A meeting with many attendees.",
-          startDate = base.plus(hour.multipliedBy(13)),
-          endDate = base.plus(hour.multipliedBy(15)),
           cloudStorageStatuses = emptySet(),
           locallyStoredBy = emptyList(),
           personalNotes = null,
@@ -234,25 +170,11 @@ private val previewEvents: List<Event> by lazy {
           version = 1L,
           recurrenceStatus = RecurrenceStatus.OneTime,
           hasBeenDeleted = false,
-          category = EventCategory(label = "Category F", color = EventPalette.Orange),
+          category =
+              EventCategory(
+                  organizationId = "org1", label = "Category C", color = EventPalette.Orange),
           location = null),
-      // e7) Minimal
-      Event(
-          id = "e7",
-          organizationId = "org1",
-          title = "Smallest event",
-          description = "",
-          startDate = base.plus(hour.multipliedBy(16)),
-          endDate = base.plus(hour.multipliedBy(17)),
-          cloudStorageStatuses = emptySet(),
-          locallyStoredBy = emptyList(),
-          personalNotes = null,
-          participants = emptySet(),
-          version = 1L,
-          recurrenceStatus = RecurrenceStatus.OneTime,
-          hasBeenDeleted = false,
-          category = EventCategory(label = "Category G", color = EventPalette.Green),
-          location = null))
+  )
 }
 
 @Preview(showBackground = true)
@@ -274,16 +196,9 @@ private fun EventSummaryCardPreviewWeekly() {
   // Change here the preview index for quick testing
   val event = previewEvents[0]
   // Event index correspondence :
-  // 0: Simple single-day             (should display correctly)
-  // 1: Weekly recurring              (should display the recurrence)
-  // 2: 3-day event                   (should adapt the 2 lines of the date)
-  // 3: 3-day event, weekly recurring (should combine both)
-  // 4: Very long title               (should fade the last letters
-  //                                        + show a working "show more/less" button)
-  // 5: Very long description         (same : shade + responsive button)
-  // 6: Many participants (10)        (should make the list scrollable with, and display only half
-  //                                          of the last name visible to improve ux)
-  // 7: Minimal                       (should render without crash, no description/participants)
+  // 0: Simple single-day, minimal    (no description / no participants)
+  // 1: 3-day event, weekly recurring (should combine multi-day + recurrence)
+  // 2: Long title + description      (stress test: fade + show more/less + many participants)
 
   val participantDisplayNames = event.participants.mapNotNull { names[it] }
 

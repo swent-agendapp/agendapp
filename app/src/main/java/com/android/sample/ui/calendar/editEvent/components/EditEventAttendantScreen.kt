@@ -44,9 +44,6 @@ fun EditEventAttendantScreen(
 ) {
   val uiState by editEventViewModel.uiState.collectAsState()
   val eventParticipants = uiState.participants
-  // Placeholder for all possible participants
-  // This would come from a repository or service
-  val allParticipants = listOf("Alice", "Bob", "Charlie", "David", "Eve", "Frank")
 
   // This state controls if the warning dialog is visible.
   // It starts as true so the dialog is shown when the screen is first displayed.
@@ -64,7 +61,7 @@ fun EditEventAttendantScreen(
           AlertDialog(
               onDismissRequest = {
                 // When user presses back, we navigate back.
-                onBack
+                onBack()
               },
               confirmButton = {
                 TextButton(
@@ -95,7 +92,7 @@ fun EditEventAttendantScreen(
                           .fillMaxWidth()
                           .padding(vertical = PaddingSmall)
                           .testTag(EditEventTestTags.PARTICIPANTS_LIST),
-                  members = allParticipants,
+                  members = uiState.users,
                   selectedMembers = eventParticipants,
                   onSelectionChanged = { newSelection ->
                     val oldParticipants = eventParticipants

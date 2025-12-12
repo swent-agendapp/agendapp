@@ -3,6 +3,7 @@ package com.android.sample.ui.calendar.replacementEmployee
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.sample.model.authentication.User
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
@@ -361,7 +362,7 @@ class ReplacementEmployeeViewModel(
 
   fun sendRequestsForPendingReplacement(
       replacementId: String,
-      selectedSubstitutes: List<String>,
+      selectedSubstitutes: List<User>,
       onFinished: () -> Unit,
   ) {
     viewModelScope.launch {
@@ -379,11 +380,11 @@ class ReplacementEmployeeViewModel(
           return@launch
         }
 
-        selectedSubstitutes.forEach { substituteId ->
+        selectedSubstitutes.forEach { substitute ->
           val request =
               Replacement(
                   absentUserId = original.absentUserId,
-                  substituteUserId = substituteId,
+                  substituteUserId = substitute.id,
                   event = original.event,
                   status = ReplacementStatus.WaitingForAnswer,
               )

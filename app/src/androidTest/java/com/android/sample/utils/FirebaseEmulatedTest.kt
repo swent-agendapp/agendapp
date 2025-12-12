@@ -1,5 +1,8 @@
 package com.android.sample.utils
 
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UserRepositoryProvider
+import com.android.sample.model.authentication.UsersRepositoryFirebase
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryFirebase
 import com.android.sample.model.calendar.EventRepositoryProvider
@@ -9,6 +12,9 @@ import com.android.sample.model.constants.FirestoreConstants
 import com.android.sample.model.map.MapRepository
 import com.android.sample.model.map.MapRepositoryFirebase
 import com.android.sample.model.map.MapRepositoryProvider
+import com.android.sample.model.organization.invitation.InvitationRepository
+import com.android.sample.model.organization.invitation.InvitationRepositoryFirebase
+import com.android.sample.model.organization.invitation.InvitationRepositoryProvider
 import com.android.sample.model.organization.repository.OrganizationRepository
 import com.android.sample.model.organization.repository.OrganizationRepositoryFirebase
 import com.android.sample.model.organization.repository.OrganizationRepositoryProvider
@@ -50,6 +56,14 @@ open class FirebaseEmulatedTest {
     return ReplacementRepositoryFirebase(db = FirebaseEmulator.firestore)
   }
 
+  fun createInitializedUserRepository(): UserRepository {
+    return UsersRepositoryFirebase(db = FirebaseEmulator.firestore)
+  }
+
+  fun createInitializedInvitationRepository(): InvitationRepository {
+    return InvitationRepositoryFirebase(db = FirebaseEmulator.firestore)
+  }
+
   // --- Generic collection utilities ---
   private suspend fun clearCollection(path: String) {
     val collection = FirebaseEmulator.firestore.collection(path).get().await()
@@ -84,10 +98,12 @@ open class FirebaseEmulatedTest {
    */
   @Before
   open fun setUp() {
+    UserRepositoryProvider.repository = createInitializedUserRepository()
     MapRepositoryProvider.repository = createInitializedMapRepository()
     OrganizationRepositoryProvider.repository = createInitializedOrganizationRepository()
     EventRepositoryProvider.repository = createInitializedEventRepository()
     ReplacementRepositoryProvider.repository = createInitializedReplacementRepository()
+    InvitationRepositoryProvider.repository = createInitializedInvitationRepository()
 
     runTest {
       clearAllCollections()

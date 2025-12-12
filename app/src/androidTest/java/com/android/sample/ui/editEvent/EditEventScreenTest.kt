@@ -7,15 +7,27 @@ import com.android.sample.ui.calendar.editEvent.EditEventTestTags
 import com.android.sample.ui.calendar.editEvent.components.EditEventAttendantScreen
 import com.android.sample.ui.calendar.editEvent.components.EditEventScreen
 import com.android.sample.ui.theme.SampleAppTheme
+import com.android.sample.utils.FirebaseEmulatedTest
+import com.android.sample.utils.OrganizationTestHelper
+import kotlinx.coroutines.runBlocking
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 // Assisted by AI
 @RunWith(AndroidJUnit4::class)
-class EditEventScreenTest {
+class EditEventScreenTest : FirebaseEmulatedTest() {
 
   @get:Rule val composeTestRule = createComposeRule()
+
+  @Before
+  override fun setUp() = runBlocking {
+    super.setUp()
+    val helper = OrganizationTestHelper()
+    helper.setupOrganizationWithUsers("org1")
+    Unit
+  }
 
   // Test to verify that all UI elements are displayed on the Edit Event screen
   @Test

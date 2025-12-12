@@ -6,16 +6,18 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.category.EventCategory
-import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.editEvent.EditEventTestTags
 import com.android.sample.ui.calendar.editEvent.EditEventViewModel
 import com.android.sample.ui.calendar.editEvent.components.EditEventAttendantScreen
 import com.android.sample.ui.calendar.editEvent.components.EditEventScreen
 import com.android.sample.ui.theme.SampleAppTheme
 import com.android.sample.utils.FakeEventRepository
+import com.android.sample.utils.FirebaseEmulatedTest
+import com.android.sample.utils.OrganizationTestHelper
 import java.time.Duration
 import java.time.Instant.now
 import java.time.temporal.ChronoUnit
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -27,7 +29,7 @@ import org.junit.runner.RunWith
  * verify UI + ViewModel interaction consistency.
  */
 @RunWith(AndroidJUnit4::class)
-class EditEventWithViewModelTest {
+class EditEventWithViewModelTest : FirebaseEmulatedTest() {
 
   @get:Rule val composeTestRule = createComposeRule()
 
@@ -35,9 +37,12 @@ class EditEventWithViewModelTest {
   private lateinit var fakeViewModel: EditEventViewModel
 
   @Before
-  fun setup() {
+  override fun setUp() = runBlocking {
+    super.setUp()
+
     val orgId = "orgTest"
-    SelectedOrganizationRepository.changeSelectedOrganization(orgId)
+    val helper = OrganizationTestHelper()
+    helper.setupOrganizationWithUsers(orgId)
 
     val start = now().truncatedTo(ChronoUnit.HOURS)
     sampleEvent =
@@ -159,7 +164,7 @@ class EditEventWithViewModelTest {
 
     // verify ViewModel updated with selected participant
     val uiState = fakeViewModel.uiState.value
-    assert(uiState.participants.contains("Alice"))
+    assert(uiState.participants.map { it.id }.contains("1"))
   }
 
   // -------------------------------------------------------------------------
@@ -183,7 +188,7 @@ class EditEventWithViewModelTest {
 
     // verify ViewModel updated to remove participant
     val uiState = fakeViewModel.uiState.value
-    assert(!uiState.participants.contains("Alice"))
+    assert(!uiState.participants.map { it.id }.contains("Alice"))
   }
 
   @Test

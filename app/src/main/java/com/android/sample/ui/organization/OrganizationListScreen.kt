@@ -98,6 +98,7 @@ fun OrganizationListScreen(
       organizationViewModel.clearErrorMsg()
     }
   }
+  LaunchedEffect(Unit) { organizationViewModel.loadOrganizations() }
 
   Scaffold(
       topBar = {
@@ -166,6 +167,7 @@ fun OrganizationListScreen(
                             // Update selected organization in ViewModel
                             selectedOrganizationViewModel.selectOrganization(
                                 orgId = organization.id)
+
                             // Invoke given callback after selection
                             onOrganizationSelected()
                           })

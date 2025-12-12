@@ -28,6 +28,7 @@ class AuthentificationTest : FirebaseEmulatedTest() {
   override fun setUp() {
     super.setUp()
     FirebaseEmulator.auth.signOut()
+    FirebaseEmulator.clearAuthEmulator()
   }
 
   @Test

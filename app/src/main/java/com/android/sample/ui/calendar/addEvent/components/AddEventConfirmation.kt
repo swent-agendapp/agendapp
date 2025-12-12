@@ -36,7 +36,7 @@ fun AddEventConfirmationScreen(
   EventSummaryCard(
       modifier = modifier.padding(PaddingExtraLarge),
       event = draftEvent,
-      participantNames = draftEvent.participants.toList())
+      participantNames = newEventUIState.users.filter { it.id in draftEvent.participants })
 }
 
 @Composable

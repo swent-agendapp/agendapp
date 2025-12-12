@@ -6,9 +6,10 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.utils.FirebaseEmulatedTest
+import com.android.sample.utils.OrganizationTestHelper
 import java.time.Instant
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -22,9 +23,12 @@ class ReplacementOrganizeFlowTest : FirebaseEmulatedTest() {
   private lateinit var fakeViewModel: ReplacementOrganizeViewModel
 
   @Before
-  override fun setUp() {
+  override fun setUp() = runBlocking {
     super.setUp()
-    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
+    val helper = OrganizationTestHelper()
+    helper.setupOrganizationWithUsers(
+        organizationId = selectedOrganizationId, organizationName = "name", userCount = 4)
+
     fakeViewModel = ReplacementOrganizeViewModel()
     composeTestRule.setContent {
       ReplacementOrganizeScreen(

@@ -5,6 +5,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.android.sample.model.authentication.User
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.category.EventCategory
@@ -49,7 +50,7 @@ object EventSummaryCardTags {
 fun EventSummaryCard(
     event: Event,
     modifier: Modifier = Modifier,
-    participantNames: List<String> = emptyList(),
+    participantNames: List<User> = emptyList(),
 ) {
   // --- Default style and text configuration ---
   val style = EventSummaryCardDefaults.style
@@ -181,16 +182,16 @@ private val previewEvents: List<Event> by lazy {
 private fun EventSummaryCardPreviewWeekly() {
   val names =
       mapOf(
-          "u1" to "Alice",
-          "u2" to "Bob",
-          "u3" to "Charlie",
-          "u4" to "David",
-          "u5" to "Elvis",
-          "u6" to "Franck",
-          "u7" to "Gondulphe",
-          "u8" to "Harry",
-          "u9" to "Igor",
-          "u10" to "Johan")
+          "u1" to User(displayName = "Alice"),
+          "u2" to User(displayName = "Bob"),
+          "u3" to User(displayName = "Charlie"),
+          "u4" to User(displayName = "David"),
+          "u5" to User(displayName = "Elvis"),
+          "u6" to User(displayName = "Franck"),
+          "u7" to User(displayName = "Gondulphe"),
+          "u8" to User(displayName = "Harry"),
+          "u9" to User(displayName = "Igor"),
+          "u10" to User(displayName = "Johan"))
 
   // Change here the preview index for quick testing
   val event = previewEvents[0]

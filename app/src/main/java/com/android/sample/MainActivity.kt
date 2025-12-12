@@ -206,7 +206,7 @@ private fun NavGraphBuilder.organizationsGraph(navigationActions: NavigationActi
         composable(Screen.AddOrganization.route) {
           AddOrganizationScreen(
               onNavigateBack = { navigationActions.navigateBack() },
-              onFinish = { navigationActions.navigateTo(Screen.SelectOrganization) })
+              onFinish = { navigationActions.navigateTo(Screen.Calendar) })
         }
       }
 }
@@ -278,7 +278,6 @@ private fun NavGraphBuilder.replacementGraph(
                 navigationActions.navigateTo(Screen.ReplacementPending)
               },
               onConfirmedClick = { navigationActions.navigateTo(Screen.ReplacementUpcoming) },
-              onBack = { navigationActions.navigateTo(Screen.Calendar) },
           )
         }
         composable(Screen.ReplacementOrganize.route) {

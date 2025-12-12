@@ -1,6 +1,5 @@
 package com.android.sample.model.organization.data
 
-import com.android.sample.model.authentication.User
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.category.EventCategory
 import com.android.sample.model.map.Area
@@ -22,8 +21,6 @@ import java.util.UUID
 data class Organization(
     val id: String = UUID.randomUUID().toString(),
     val name: String,
-    val admins: List<User> = emptyList(),
-    val members: List<User> = emptyList(),
     val events: List<Event> = emptyList(),
     val categories: List<EventCategory> = emptyList(),
     val areas: List<Area> = emptyList(),

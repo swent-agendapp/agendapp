@@ -53,7 +53,9 @@ class SimpleFakeEventRepository : EventRepository {
       startDate: Instant,
       endDate: Instant
   ): List<Event> {
-    return events.filter { it.endDate >= startDate && it.startDate <= endDate }
+    return events.filter {
+      it.endDate >= startDate && it.startDate <= endDate && !it.hasBeenDeleted
+    }
   }
 
   override suspend fun calculateWorkedHoursPastEvents(
@@ -435,6 +437,38 @@ class HourRecapViewModelTest {
     assertEquals(1, recaps.size)
     assertEquals(1, recaps.first().events.size)
     assertEquals(userEvent.first().id, recaps.first().events.first().id)
+  }
+
+  @Test
+  fun `buildUserRecaps ignores deleted events`() = runTest {
+    val vm = makeVm()
+    val futureTime = Instant.now().plus(1, ChronoUnit.DAYS)
+
+    val activeEvent =
+        createEvent(
+            organizationId = selectedOrganizationID,
+            startDate = futureTime,
+            endDate = futureTime.plus(2, ChronoUnit.HOURS),
+            participants = setOf(user.id))
+    val deletedEvent =
+        createEvent(
+                organizationId = selectedOrganizationID,
+                startDate = futureTime.plus(3, ChronoUnit.HOURS),
+                endDate = futureTime.plus(5, ChronoUnit.HOURS),
+                participants = setOf(user.id))
+            .first()
+            .copy(hasBeenDeleted = true)
+
+    repo.result = listOf(user.id to 2.0)
+    repo.events = activeEvent + listOf(deletedEvent)
+
+    vm.calculateWorkedHours(Instant.now(), Instant.now().plus(2, ChronoUnit.DAYS))
+    advanceUntilIdle()
+
+    val recaps = vm.uiState.value.userRecaps
+    assertEquals(1, recaps.size)
+    assertEquals(1, recaps.first().events.size)
+    assertEquals(activeEvent.first().id, recaps.first().events.first().id)
   }
 
   @Test

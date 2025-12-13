@@ -1,3 +1,5 @@
+package com.android.sample.ui.replacement.organize
+
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
@@ -7,32 +9,47 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import com.android.sample.model.authentication.User
-import com.android.sample.ui.replacement.organize.ReplacementOrganizeTestTags
-import com.android.sample.ui.replacement.organize.ReplacementOrganizeViewModel
+import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.ui.replacement.organize.components.SelectSubstitutedScreen
 import com.android.sample.utils.FirebaseEmulatedTest
-import com.android.sample.utils.OrganizationTestHelper
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class SelectSubstitutedScreenTest : FirebaseEmulatedTest() {
+class SelectSubstitutedScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganizationTestBase {
 
   @get:Rule val composeTestRule = createComposeRule()
+
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
   private lateinit var members: List<User>
   private lateinit var fakeViewModel: ReplacementOrganizeViewModel
 
   @Before
-  override fun setUp() = runBlocking {
+  override fun setUp() {
     super.setUp()
 
-    val helper = OrganizationTestHelper()
-    helper.setupOrganizationWithUsers(
-        organizationId = "testOrg", organizationName = "name", userCount = 4)
+    setSelectedOrganization()
+
+    // Add test members to user repository and to the selected organization
+    val testMembers =
+        listOf(
+            User(id = "1", displayName = "Alice Anderson", email = "alice@example.com"),
+            User(id = "2", displayName = "Bob Brown", email = "bob@example.com"),
+            User(id = "3", displayName = "Charlie Clark", email = "charlie@example.com"),
+            User(id = "4", displayName = "Dana Davis", email = "dana@example.com"))
+    runBlocking {
+      testMembers.forEach { user ->
+        UserRepositoryProvider.repository.newUser(user)
+        UserRepositoryProvider.repository.addUserToOrganization(user.id, organizationId)
+      }
+    }
 
     fakeViewModel = ReplacementOrganizeViewModel()
     fakeViewModel.loadOrganizationMembers()
+
     composeTestRule.setContent {
       SelectSubstitutedScreen(
           replacementOrganizeViewModel = fakeViewModel,
@@ -70,7 +87,6 @@ class SelectSubstitutedScreenTest : FirebaseEmulatedTest() {
 
   @Test
   fun buttons_areDisabled_whenNoMemberSelected() {
-
     composeTestRule
         .onNodeWithTag(ReplacementOrganizeTestTags.SELECT_EVENT_BUTTON)
         .assertIsNotEnabled()

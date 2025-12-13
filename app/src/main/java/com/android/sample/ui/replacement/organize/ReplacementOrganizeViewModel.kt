@@ -1,6 +1,5 @@
 package com.android.sample.ui.replacement.organize
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.sample.data.global.providers.EventRepositoryProvider
@@ -95,6 +94,9 @@ class ReplacementOrganizeViewModel(
   /** Public immutable UI state observed by the UI. */
   val uiState: StateFlow<ReplacementOrganizeUIState> = _uiState.asStateFlow()
 
+  // Wrap for brevity
+  private fun requireOrgId(): String = selectedOrganizationViewModel.getSelectedOrganizationId()
+
   init {
     loadOrganizationMembers()
   }
@@ -105,6 +107,7 @@ class ReplacementOrganizeViewModel(
     require(orgId != null) { "No organization selected" }
     return orgId
   }
+
   /**
    * Loads all members from the selected organization.
    *
@@ -145,16 +148,13 @@ class ReplacementOrganizeViewModel(
       }
 
       val events: List<Event> =
-          if (state.selectedEvents.isNotEmpty()) {
-            state.selectedEvents
-          } else {
+          state.selectedEvents.ifEmpty {
             if (!dateRangeValid()) {
               _uiState.update { it.copy(errorMsg = "Invalid date range. End must be after start.") }
               return@launch
             }
 
-            val orgId = selectedOrganizationViewModel.selectedOrganizationId.value
-            require(orgId != null) { "Organization must be selected to fetch events." }
+            val orgId = requireOrgId()
 
             eventRepository.getEventsBetweenDates(
                 orgId = orgId, startDate = state.startInstant, endDate = state.endInstant)
@@ -183,13 +183,13 @@ class ReplacementOrganizeViewModel(
    */
   private suspend fun addReplacementToRepository(replacement: Replacement) {
     try {
-      val orgId = selectedOrganizationViewModel.selectedOrganizationId.value
-      require(orgId != null) { "Organization must be selected to create a replacement." }
+      val orgId = requireOrgId()
 
       replacementRepository.insertReplacement(orgId = orgId, item = replacement)
-    } catch (e: Exception) {
-      Log.e("ReplacementOrganizeVM", "Error adding replacement: ${e.message}")
-      _uiState.update { it.copy(errorMsg = "Unexpected error while creating the replacement.") }
+    } catch (_: IllegalStateException) {
+      _uiState.update { it.copy(errorMsg = "No organization selected") }
+    } catch (_: Exception) {
+      _uiState.update { it.copy(errorMsg = "Unexpected error while creating the replacement") }
     }
   }
 

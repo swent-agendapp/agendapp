@@ -49,8 +49,6 @@ class CalendarEventSelectorTests : BaseCalendarScreenTest() {
     populateRepo(repoEvents, events)
     val owner = TestOwner(CalendarVMFactory(repoEvents, repoMap))
 
-    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
-
     composeTestRule.setContent {
       CompositionLocalProvider(LocalViewModelStoreOwner provides owner) {
         CalendarEventSelector(viewModel(factory = CalendarVMFactory(repoEvents, repoMap)))
@@ -151,14 +149,14 @@ class CalendarEventSelectorTests : BaseCalendarScreenTest() {
     // Events for the selected organization (orgTest)
     val allowedEvents =
         createEvent(
-            organizationId = selectedOrganizationId,
+            organizationId = organizationId,
             title = "Visible Event 1",
             startDate = at(LocalDate.now(), LocalTime.of(10, 0)),
             endDate = at(LocalDate.now(), LocalTime.of(11, 0)),
             cloudStorageStatuses = emptySet(),
             participants = emptySet()) +
             createEvent(
-                organizationId = selectedOrganizationId,
+                organizationId = organizationId,
                 title = "Visible Event 2",
                 startDate = at(LocalDate.now(), LocalTime.of(12, 0)),
                 endDate = at(LocalDate.now(), LocalTime.of(13, 0)),
@@ -185,13 +183,12 @@ class CalendarEventSelectorTests : BaseCalendarScreenTest() {
     val repoMap = MapRepositoryLocal()
     val repoEvent = EventRepositoryInMemory()
 
-    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
-    populateRepo(repoEvent, allowedEvents, selectedOrganizationId)
+    populateRepo(repoEvent, allowedEvents, organizationId)
 
     SelectedOrganizationRepository.changeSelectedOrganization(otherOrgId)
     populateRepo(repoEvent, forbiddenEvents, otherOrgId)
 
-    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
+    SelectedOrganizationRepository.changeSelectedOrganization(organizationId)
 
     val owner = TestOwner(CalendarVMFactory(repoEvent, repoMap))
     composeTestRule.setContent {

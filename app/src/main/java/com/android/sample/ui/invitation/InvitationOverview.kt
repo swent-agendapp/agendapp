@@ -18,7 +18,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
@@ -62,7 +61,7 @@ object InvitationOverviewScreenTestTags {
  * The creation UI is presented using a [ModalBottomSheet].
  *
  * @param invitationOverviewViewModel The ViewModel holding the UI state of the screen
- * @param selectedOrganizationViewModel The ViewModel holding the selected organization object
+ * @param selectedOrganizationViewModel ViewModel to retrieve the selected organization context.
  * @param onBack Callback invoked when the user presses the back button in the top bar.
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -152,10 +151,4 @@ fun InvitationOverviewScreen(
               })
         }
   }
-}
-
-@Preview
-@Composable
-fun InvitationOverviewScreenPreview() {
-  InvitationOverviewScreen()
 }

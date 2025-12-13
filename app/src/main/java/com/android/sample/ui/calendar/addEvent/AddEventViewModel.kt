@@ -1,6 +1,5 @@
 package com.android.sample.ui.calendar.addEvent
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.sample.data.global.providers.EventRepositoryProvider
@@ -80,7 +79,7 @@ class AddEventViewModel(
     private val userRepository: UserRepository = UserRepositoryProvider.repository,
     private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
     private val eventRepository: EventRepository = EventRepositoryProvider.repository,
-    selectedOrganizationViewModel: SelectedOrganizationViewModel =
+    private val selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel
 ) : ViewModel() {
 
@@ -88,25 +87,18 @@ class AddEventViewModel(
   /** Public immutable UI state observed by composables. */
   val uiState: StateFlow<AddCalendarEventUIState> = _uiState.asStateFlow()
 
-  /** Currently selected organization ID. Required for saving events. */
-  val selectedOrganizationId: StateFlow<String?> =
-      selectedOrganizationViewModel.selectedOrganizationId
-
-  // Helper function to get the selected organization ID or throw an exception if none is selected
-  fun getSelectedOrganizationId(): String {
-    val orgId = selectedOrganizationId.value
-    require(orgId != null) { "No organization selected" }
-    return orgId
-  }
+  // Wrap for brevity
+  private fun requireOrgId(): String = selectedOrganizationViewModel.getSelectedOrganizationId()
 
   init {
     viewModelScope.launch {
-      val selectedOrga = getSelectedOrganizationId()
+      val selectedOrga = requireOrgId()
       val userIds = userRepository.getMembersIds(selectedOrga)
       val users = userRepository.getUsersByIds(userIds)
       _uiState.update { it.copy(users = users) }
     }
   }
+
   /**
    * Loads a draft event instance based on the current UI field values.
    *
@@ -143,8 +135,7 @@ class AddEventViewModel(
    * A valid organization must be selected; otherwise an exception is thrown.
    */
   fun addEvent() {
-    val orgId = selectedOrganizationId.value
-    require(orgId != null) { "Organization must be selected to create an event" }
+    val orgId = requireOrgId()
 
     val state = _uiState.value
 
@@ -174,12 +165,12 @@ class AddEventViewModel(
   fun addEventToRepository(event: Event) {
     viewModelScope.launch {
       try {
-        val orgId = selectedOrganizationId.value
-        require(orgId != null) { "Organization must be selected to create an event" }
+        val orgId = requireOrgId()
 
         eventRepository.insertEvent(orgId = orgId, item = event)
-      } catch (e: Exception) {
-        Log.e("AddEventViewModel", "Error adding event: ${e.message}")
+      } catch (_: IllegalStateException) {
+        _uiState.update { it.copy(errorMsg = "No organization selected") }
+      } catch (_: Exception) {
         _uiState.update { it.copy(errorMsg = "Unexpected error while creating the event") }
       }
     }

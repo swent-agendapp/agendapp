@@ -7,8 +7,9 @@ import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.utils.FirebaseEmulatedTest
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -23,16 +24,17 @@ import org.junit.Test
  * - The recap list renders the expected recap items.
  * - Clicking the export button triggers the UI action (placeholder).
  */
-class HourRecapScreenTest : FirebaseEmulatedTest() {
+class HourRecapScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganizationTestBase {
 
   @get:Rule val compose = createComposeRule()
-  val selectedOrganizationId = "orgTest"
+
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
 
   @Before
   override fun setUp() {
     super.setUp()
     // Set selected organization in the VM provider
-    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
+    setSelectedOrganization()
   }
   /**
    * Ensures that the main UI components are displayed:
@@ -75,6 +77,10 @@ class HourRecapScreenTest : FirebaseEmulatedTest() {
     compose.onNodeWithTag(HourRecapTestTags.GENERATE_BUTTON).performClick()
   }
 
+  /**
+   * Tests that the recap list displays the expected worked hours for each employee based on the
+   * test data injected into the CalendarViewModel's UI state.
+   */
   @Test
   fun recapItems_displayWorkedHoursCorrectly() {
     val vm = HourRecapViewModel()

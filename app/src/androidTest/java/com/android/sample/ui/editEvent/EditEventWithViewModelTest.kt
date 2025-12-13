@@ -4,6 +4,8 @@ import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.data.fake.repositories.FakeEventRepository
+import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.category.EventCategory
@@ -13,7 +15,8 @@ import com.android.sample.ui.calendar.editEvent.components.EditEventAttendantScr
 import com.android.sample.ui.calendar.editEvent.components.EditEventScreen
 import com.android.sample.ui.theme.SampleAppTheme
 import com.android.sample.utils.FirebaseEmulatedTest
-import com.android.sample.utils.OrganizationTestHelper
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import java.time.Duration
 import java.time.Instant.now
 import java.time.temporal.ChronoUnit
@@ -29,26 +32,26 @@ import org.junit.runner.RunWith
  * verify UI + ViewModel interaction consistency.
  */
 @RunWith(AndroidJUnit4::class)
-class EditEventWithViewModelTest : FirebaseEmulatedTest() {
+class EditEventWithViewModelTest : FirebaseEmulatedTest(), RequiresSelectedOrganizationTestBase {
 
   @get:Rule val composeTestRule = createComposeRule()
+
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
 
   private lateinit var sampleEvent: Event
   private lateinit var fakeViewModel: EditEventViewModel
 
   @Before
-  override fun setUp() = runBlocking {
+  override fun setUp() {
     super.setUp()
 
-    val orgId = "orgTest"
-    val helper = OrganizationTestHelper()
-    helper.setupOrganizationWithUsers(orgId)
+    setSelectedOrganization()
 
     val start = now().truncatedTo(ChronoUnit.HOURS)
     sampleEvent =
         Event(
             id = "E123",
-            organizationId = orgId,
+            organizationId = organizationId,
             title = "Test Event",
             description = "Desc",
             startDate = start,
@@ -139,6 +142,15 @@ class EditEventWithViewModelTest : FirebaseEmulatedTest() {
   // -------------------------------------------------------------------------
   @Test
   fun editEventAttendantScreen_selectsParticipantsCorrectly_withViewModel() {
+    // Add Alice to participants to verify she appears in the list
+    runBlocking {
+      val user = User(id = "1", displayName = "Alice")
+      UserRepositoryProvider.repository.newUser(user)
+      UserRepositoryProvider.repository.addUserToOrganization(user.id, organizationId)
+    }
+
+    runBlocking { fakeViewModel.loadUsers() }
+
     var saveClicked = false
     var backClicked = false
 
@@ -172,6 +184,14 @@ class EditEventWithViewModelTest : FirebaseEmulatedTest() {
   // -------------------------------------------------------------------------
   @Test
   fun editEventAttendantScreen_toggleParticipantCheckbox_withViewModel() {
+    // Add Alice to participants to verify she appears in the list
+    runBlocking {
+      val user = User(id = "1", displayName = "Alice")
+      UserRepositoryProvider.repository.newUser(user)
+      UserRepositoryProvider.repository.addUserToOrganization(user.id, organizationId)
+    }
+
+    runBlocking { fakeViewModel.loadUsers() }
 
     composeTestRule.setContent {
       SampleAppTheme { EditEventAttendantScreen(editEventViewModel = fakeViewModel) }

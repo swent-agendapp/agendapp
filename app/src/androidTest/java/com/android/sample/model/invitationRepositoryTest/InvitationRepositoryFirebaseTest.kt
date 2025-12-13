@@ -9,6 +9,7 @@ import com.android.sample.model.organization.invitation.InvitationRepositoryProv
 import com.android.sample.model.organization.invitation.InvitationStatus
 import com.android.sample.utils.FirebaseEmulatedTest
 import kotlinx.coroutines.runBlocking
+import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -49,6 +50,15 @@ class InvitationRepositoryFirebaseTest : FirebaseEmulatedTest() {
     UserRepositoryProvider.repository.addAdminToOrganization(admin.id, organizationA.id)
     UserRepositoryProvider.repository.addUserToOrganization(member.id, organizationA.id)
     UserRepositoryProvider.repository.addAdminToOrganization(admin.id, organizationB.id)
+  }
+
+  @After
+  fun cleanRepo() = runBlocking {
+
+    // Remove users from the repository
+    UserRepositoryProvider.repository.deleteUser(admin.id)
+    UserRepositoryProvider.repository.deleteUser(member.id)
+    UserRepositoryProvider.repository.deleteUser(outsider.id)
   }
 
   @Test

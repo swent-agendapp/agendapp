@@ -7,6 +7,7 @@ import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.repository.OrganizationRepository
 import com.android.sample.utils.FirebaseEmulatedTest
 import kotlinx.coroutines.runBlocking
+import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -79,6 +80,17 @@ class OrganizationFirebaseRepositoryTest : FirebaseEmulatedTest() {
     userRepository.addAdminToOrganization(adminB.id, orgB.id)
     userRepository.addUserToOrganization(memberA.id, orgA.id)
     userRepository.addUserToOrganization(memberB.id, orgB.id)
+  }
+
+  @After
+  fun cleanRepo() = runBlocking {
+
+    // Remove users from the repository
+    UserRepositoryProvider.repository.deleteUser(adminA.id)
+    UserRepositoryProvider.repository.deleteUser(adminB.id)
+    UserRepositoryProvider.repository.deleteUser(memberA.id)
+    UserRepositoryProvider.repository.deleteUser(memberB.id)
+    UserRepositoryProvider.repository.deleteUser(outsider.id)
   }
 
   // --- Insertion tests ---

@@ -103,5 +103,8 @@ class ReplacementOrganizeFlowTest : FirebaseEmulatedTest(), RequiresSelectedOrga
     composeTestRule
         .onNodeWithTag(ReplacementOrganizeTestTags.PROCESS_LATER_BUTTON)
         .assertIsDisplayed()
+
+    // Clean up - remove Alice from the repository
+    runBlocking { UserRepositoryProvider.repository.deleteUser("1") }
   }
 }

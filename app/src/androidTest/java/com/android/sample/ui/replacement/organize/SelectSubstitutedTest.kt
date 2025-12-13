@@ -15,6 +15,7 @@ import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import kotlinx.coroutines.runBlocking
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -63,6 +64,13 @@ class SelectSubstitutedScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrga
     }
 
     members = fakeViewModel.uiState.value.memberList
+  }
+
+  @After
+  fun cleanUp() {
+    runBlocking {
+      members.forEach { user -> UserRepositoryProvider.repository.deleteUser(user.id) }
+    }
   }
 
   private fun labelOf(user: User): String {

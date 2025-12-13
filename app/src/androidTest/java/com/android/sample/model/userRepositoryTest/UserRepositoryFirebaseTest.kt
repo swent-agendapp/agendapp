@@ -6,6 +6,8 @@ import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.repository.OrganizationRepositoryProvider
 import com.android.sample.utils.FirebaseEmulatedTest
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
@@ -13,13 +15,15 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class UserRepositoryFirebaseTest : FirebaseEmulatedTest() {
+class UserRepositoryFirebaseTest : FirebaseEmulatedTest(), RequiresSelectedOrganizationTestBase {
 
-  private val organizationId = "org-test"
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
 
   @Before
   override fun setUp() {
     super.setUp()
+
+    setSelectedOrganization()
   }
 
   @Test
@@ -38,6 +42,10 @@ class UserRepositoryFirebaseTest : FirebaseEmulatedTest() {
     Assert.assertEquals(2, userIds.size)
     Assert.assertTrue(userIds.contains("user-1"))
     Assert.assertTrue(userIds.contains("user-2"))
+
+    // Clean up
+    UserRepositoryProvider.repository.deleteUser("user-1")
+    UserRepositoryProvider.repository.deleteUser("user-2")
   }
 
   @Test
@@ -56,6 +64,11 @@ class UserRepositoryFirebaseTest : FirebaseEmulatedTest() {
     Assert.assertTrue(results.any { it.id == "u1" })
     Assert.assertTrue(results.any { it.id == "u3" })
     Assert.assertFalse(results.any { it.id == "u2" })
+
+    // Clean up
+    UserRepositoryProvider.repository.deleteUser("u1")
+    UserRepositoryProvider.repository.deleteUser("u2")
+    UserRepositoryProvider.repository.deleteUser("u3")
   }
 
   @Test
@@ -89,6 +102,9 @@ class UserRepositoryFirebaseTest : FirebaseEmulatedTest() {
     // Must disappear from organization
     userIds = UserRepositoryProvider.repository.getMembersIds(organizationId)
     Assert.assertFalse(userIds.contains("to-delete"))
+
+    // Clean up
+    UserRepositoryProvider.repository.deleteUser("user-admin")
   }
 
   @Test
@@ -125,6 +141,10 @@ class UserRepositoryFirebaseTest : FirebaseEmulatedTest() {
     Assert.assertEquals(2, adminIds.size)
     Assert.assertTrue(adminIds.contains("admin-1"))
     Assert.assertTrue(adminIds.contains("admin-2"))
+
+    // Clean up
+    UserRepositoryProvider.repository.deleteUser("admin-1")
+    UserRepositoryProvider.repository.deleteUser("admin-2")
   }
 
   @Test
@@ -146,6 +166,9 @@ class UserRepositoryFirebaseTest : FirebaseEmulatedTest() {
     // Ensure user contains organization in org array
     val updatedUser = UserRepositoryProvider.repository.getUsersByIds(listOf("new-admin")).first()
     Assert.assertTrue(updatedUser.organizations.contains(organizationId))
+
+    // Clean up
+    UserRepositoryProvider.repository.deleteUser("new-admin")
   }
 
   @Test
@@ -174,5 +197,8 @@ class UserRepositoryFirebaseTest : FirebaseEmulatedTest() {
     // Should no longer be admin
     val adminIds = UserRepositoryProvider.repository.getAdminsIds(organizationId)
     Assert.assertFalse(adminIds.contains("admin-del"))
+
+    // Clean up
+    UserRepositoryProvider.repository.deleteUser("user-admin")
   }
 }

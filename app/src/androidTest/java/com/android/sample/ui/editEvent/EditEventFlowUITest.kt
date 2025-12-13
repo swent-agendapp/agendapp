@@ -64,5 +64,8 @@ class EditEventFlowUITest : FirebaseEmulatedTest(), RequiresSelectedOrganization
     composeTestRule.onNodeWithTag(EditEventTestTags.ATTENDANCE_WARNING_ACK_BUTTON).performClick()
     composeTestRule.onNodeWithText("Alice").assertIsDisplayed()
     composeTestRule.onNodeWithTag(EditEventTestTags.PARTICIPANTS_LIST + "_Alice").assertExists()
+
+    // Clean up
+    runBlocking { UserRepositoryProvider.repository.deleteUser("1") }
   }
 }

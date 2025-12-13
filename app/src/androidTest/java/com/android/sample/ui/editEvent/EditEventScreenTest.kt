@@ -112,6 +112,9 @@ class EditEventScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
 
     assert(saveClicked)
     assert(backClicked)
+
+    // Clean up by removing the user from the organization
+    runBlocking { UserRepositoryProvider.repository.deleteUser("1") }
   }
 
   @Test
@@ -130,6 +133,9 @@ class EditEventScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
     alice.assertExists()
     alice.performClick()
     alice.performClick()
+
+    // Clean up by removing the user from the organization
+    runBlocking { UserRepositoryProvider.repository.deleteUser("1") }
   }
 
   @Test

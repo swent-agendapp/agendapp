@@ -318,6 +318,57 @@ class HourRecapViewModelTest {
   }
 
   @Test
+  fun `calculateWorkedHours includes users with past shifts but no presence`() = runTest {
+    val vm = makeVm()
+    val pastTime = Instant.now().minus(2, ChronoUnit.DAYS)
+    val absentPastEvent =
+        createEvent(
+            organizationId = selectedOrganizationID,
+            startDate = pastTime,
+            endDate = pastTime.plus(2, ChronoUnit.HOURS),
+            participants = setOf(user.id),
+            presence = mapOf(user.id to false))
+
+    repo.result = emptyList()
+    repo.events = absentPastEvent
+
+    vm.calculateWorkedHours(
+        Instant.now().minus(3, ChronoUnit.DAYS), Instant.now().minus(1, ChronoUnit.DAYS))
+    advanceUntilIdle()
+
+    val recaps = vm.uiState.value.userRecaps
+    assertEquals(1, recaps.size)
+    assertEquals(user.id, recaps.first().userId)
+    assertEquals(1, recaps.first().events.size)
+  }
+
+  @Test
+  fun `calculateWorkedHours includes events tracked only in presence map`() = runTest {
+    val vm = makeVm()
+    val pastTime = Instant.now().minus(2, ChronoUnit.DAYS)
+    val presenceOnlyEvent =
+        createEvent(
+            organizationId = selectedOrganizationID,
+            startDate = pastTime,
+            endDate = pastTime.plus(2, ChronoUnit.HOURS),
+            participants = emptySet(),
+            assignedUsers = emptySet(),
+            presence = mapOf(user.id to false))
+
+    repo.result = emptyList()
+    repo.events = presenceOnlyEvent
+
+    vm.calculateWorkedHours(
+        Instant.now().minus(3, ChronoUnit.DAYS), Instant.now().minus(1, ChronoUnit.DAYS))
+    advanceUntilIdle()
+
+    val recaps = vm.uiState.value.userRecaps
+    assertEquals(1, recaps.size)
+    assertEquals(user.id, recaps.first().userId)
+    assertEquals(1, recaps.first().events.size)
+  }
+
+  @Test
   fun `event entry has null presence for future events`() = runTest {
     val vm = makeVm()
     val futureTime = Instant.now().plus(1, ChronoUnit.DAYS)

@@ -1,22 +1,27 @@
 package com.android.sample.ui.hourRecap
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FileDownload
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.calendar.components.DatePickerFieldToModal
@@ -171,19 +176,86 @@ fun HourRecapScreen(
                                 .testTag(HourRecapTestTags.RECAP_ITEM),
                         onClick = { selectedUser = recap },
                         elevation = CardDefaults.cardElevation(ElevationLow)) {
-                          Row(
-                              modifier = Modifier.fillMaxWidth().padding(PaddingMedium),
-                              horizontalArrangement = Arrangement.SpaceBetween) {
-                                Text(
-                                    text = recap.displayName,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    modifier = Modifier.weight(Weight))
-                                Text(
-                                    text = formatDecimalHoursToTime(recap.totalHours),
-                                    style =
-                                        MaterialTheme.typography.bodyLarge.copy(
-                                            fontWeight = FontWeight.Bold))
-                              }
+                          Column(modifier = Modifier.fillMaxWidth().padding(PaddingMedium)) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically) {
+                                  Text(
+                                      text = recap.displayName,
+                                      style = MaterialTheme.typography.bodyLarge,
+                                      modifier = Modifier.weight(Weight))
+                                  Surface(
+                                      shape = MaterialTheme.shapes.small,
+                                      color =
+                                          MaterialTheme.colorScheme.surfaceVariant
+                                              .copy(alpha = 0.6f)
+                                              .compositeOver(
+                                                  MaterialTheme.colorScheme.surface)) {
+                                    Text(
+                                        modifier = Modifier.padding(horizontal = PaddingSmall),
+                                        text = formatDecimalHoursToTime(recap.totalHours),
+                                        style =
+                                            MaterialTheme.typography.labelMedium.copy(
+                                                fontWeight = FontWeight.SemiBold))
+                                  }
+                                }
+
+                            Spacer(Modifier.height(PaddingSmall))
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(PaddingSmall)) {
+                                  HourRecapStat(
+                                      label =
+                                          stringResource(
+                                              R.string.hour_recap_completed_hours_label),
+                                      value = formatDecimalHoursToTime(recap.completedHours),
+                                      containerColor =
+                                          MaterialTheme.colorScheme.primaryContainer,
+                                      contentColor =
+                                          MaterialTheme.colorScheme.onPrimaryContainer,
+                                  )
+
+                                  HourRecapStat(
+                                      label =
+                                          stringResource(
+                                              R.string.hour_recap_planned_hours_label),
+                                      value = formatDecimalHoursToTime(recap.plannedHours),
+                                      containerColor =
+                                          MaterialTheme.colorScheme.tertiaryContainer,
+                                      contentColor =
+                                          MaterialTheme.colorScheme.onTertiaryContainer,
+                                  )
+                                }
+
+                            val categorySwatches = recap.events.map { it.categoryColor }.distinct()
+                            if (categorySwatches.isNotEmpty()) {
+                              Spacer(Modifier.height(PaddingSmall))
+                              Row(
+                                  modifier = Modifier.fillMaxWidth(),
+                                  horizontalArrangement = Arrangement.spacedBy(PaddingSmall),
+                                  verticalAlignment = Alignment.CenterVertically) {
+                                    Text(
+                                        text = stringResource(R.string.hour_recap_categories_label),
+                                        style = MaterialTheme.typography.labelMedium,
+                                    )
+                                    categorySwatches.take(4).forEach { swatch ->
+                                      Box(
+                                          modifier =
+                                              Modifier.size(14.dp)
+                                                  .clip(CircleShape)
+                                                  .background(swatch))
+                                    }
+                                    if (categorySwatches.size > 4) {
+                                      Text(
+                                          text = "+${categorySwatches.size - 4}",
+                                          style = MaterialTheme.typography.labelSmall,
+                                          color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                    }
+                                  }
+                            }
+                          }
                         }
                   }
                 }
@@ -260,13 +332,11 @@ private fun HourRecapEventCard(
           style = MaterialTheme.typography.bodyMedium)
       Spacer(Modifier.height(PaddingSmall))
       FlowRow(horizontalArrangement = Arrangement.spacedBy(PaddingSmall)) {
-        val timeLabel =
-            if (event.isPast) stringResource(R.string.hour_recap_tag_past)
-            else stringResource(R.string.hour_recap_tag_future)
-        val timeColor =
-            if (event.isPast) MaterialTheme.colorScheme.primaryContainer // Blue for past
-            else MaterialTheme.colorScheme.tertiaryContainer // Purple for future
-        RecapTag(label = timeLabel, containerColor = timeColor)
+        if (!event.isPast) {
+          val timeLabel = stringResource(R.string.hour_recap_tag_future)
+          val timeColor = MaterialTheme.colorScheme.tertiaryContainer // Purple for future
+          RecapTag(label = timeLabel, containerColor = timeColor)
+        }
 
         if (event.isPast) {
           val presenceLabel =
@@ -296,6 +366,24 @@ private fun HourRecapEventCard(
               containerColor = Color(0xFF00BCD4)) // Cyan for took replacement
         }
       }
+    }
+  }
+}
+
+@Composable
+private fun HourRecapStat(
+    label: String,
+    value: String,
+    containerColor: Color,
+    contentColor: Color,
+) {
+  Surface(color = containerColor, contentColor = contentColor, shape = MaterialTheme.shapes.medium) {
+    Column(modifier = Modifier.padding(horizontal = PaddingMedium, vertical = PaddingSmall)) {
+      Text(text = label, style = MaterialTheme.typography.labelSmall, color = contentColor)
+      Text(
+          text = value,
+          style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+          color = contentColor)
     }
   }
 }

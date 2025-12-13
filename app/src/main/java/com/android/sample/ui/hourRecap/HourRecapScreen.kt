@@ -39,6 +39,7 @@ import com.android.sample.ui.theme.PaddingSmall
 import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingMedium
 import com.android.sample.ui.theme.Weight
+import java.time.Duration
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZoneOffset
@@ -279,28 +280,27 @@ fun HourRecapScreen(
         modifier = Modifier.testTag(HourRecapTestTags.RECAP_SHEET),
         onDismissRequest = { selectedUser = null },
         sheetState = bottomSheetState) {
-          HourRecapUserEventsSheet(recap = selectedUser!!, onDismiss = { selectedUser = null })
+          HourRecapUserEventsSheet(recap = selectedUser!!)
         }
   }
 }
 
 @Composable
-private fun HourRecapUserEventsSheet(recap: HourRecapUserRecap, onDismiss: () -> Unit) {
+private fun HourRecapUserEventsSheet(recap: HourRecapUserRecap) {
   val dateFormatter = remember { DateTimeFormatter.ofPattern("MMM dd, yyyy") }
   val timeFormatter = remember { DateTimeFormatter.ofPattern("HH:mm") }
 
   Column(
       modifier =
-          Modifier.fillMaxWidth()
-              .verticalScroll(rememberScrollState())
-              .padding(horizontal = SpacingLarge, vertical = SpacingMedium)) {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+      Modifier.fillMaxWidth()
+          .verticalScroll(rememberScrollState())
+          .padding(horizontal = SpacingLarge, vertical = SpacingMedium)) {
+        Row(modifier = Modifier.fillMaxWidth()) {
           Text(
               text = stringResource(R.string.hour_recap_events_for_user, recap.displayName),
               style = MaterialTheme.typography.titleMedium,
               fontWeight = FontWeight.Bold,
           )
-          TextButton(onClick = onDismiss) { Text(text = stringResource(R.string.close)) }
         }
 
         Spacer(Modifier.height(SpacingMedium))
@@ -324,15 +324,39 @@ private fun HourRecapEventCard(
     dateFormatter: DateTimeFormatter,
     timeFormatter: DateTimeFormatter,
 ) {
+  val durationHours =
+      remember(event.startDate, event.endDate) {
+        val durationMinutes = Duration.between(event.startDate, event.endDate).toMinutes()
+        durationMinutes.toDouble() / 60.0
+      }
+  val durationText = formatDecimalHoursToTime(durationHours)
+
   val start = event.startDate.atZone(ZoneId.systemDefault())
   val end = event.endDate.atZone(ZoneId.systemDefault())
   Card(modifier = Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(ElevationLow)) {
     Row(modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
       Column(modifier = Modifier.weight(1f).padding(PaddingMedium)) {
-        Text(
-            text = event.title,
-            style = MaterialTheme.typography.titleSmall,
-            fontWeight = FontWeight.SemiBold)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically) {
+          Text(
+              text = event.title,
+              style = MaterialTheme.typography.titleSmall,
+              fontWeight = FontWeight.SemiBold,
+              modifier = Modifier.weight(1f))
+          Surface(
+              shape = MaterialTheme.shapes.small,
+              color =
+                  MaterialTheme.colorScheme.surfaceVariant
+                      .copy(alpha = 0.6f)
+                      .compositeOver(MaterialTheme.colorScheme.surface)) {
+            Text(
+                modifier = Modifier.padding(horizontal = PaddingSmall),
+                text = durationText,
+                style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold))
+          }
+        }
         Spacer(Modifier.height(PaddingSmall))
         Text(
             text =

@@ -4,6 +4,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.utils.FirebaseEmulatedTest
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import java.time.Instant
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -14,23 +16,27 @@ import org.junit.runner.RunWith
 // Assisted by AI
 
 @RunWith(AndroidJUnit4::class)
-class ReplacementRepositoryFirebaseTest : FirebaseEmulatedTest() {
+class ReplacementRepositoryFirebaseTest :
+    FirebaseEmulatedTest(), RequiresSelectedOrganizationTestBase {
 
   private lateinit var repository: ReplacementRepository
   private lateinit var sampleEvent: Event
   private lateinit var replacement1: Replacement
   private lateinit var replacement2: Replacement
 
-  private val selectedOrganizationId = "orgTest"
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
 
   @Before
   override fun setUp() {
     super.setUp()
+
+    setSelectedOrganization()
+
     repository = createInitializedReplacementRepository()
 
     sampleEvent =
         createEvent(
-            organizationId = selectedOrganizationId,
+            organizationId = organizationId,
             title = "Meeting",
             description = "Team meeting",
             startDate = Instant.parse("2025-11-12T10:00:00Z"),
@@ -55,8 +61,8 @@ class ReplacementRepositoryFirebaseTest : FirebaseEmulatedTest() {
 
   @Test
   fun insertReplacement_andGetById_shouldWork() = runBlocking {
-    repository.insertReplacement(selectedOrganizationId, replacement1)
-    val retrieved = repository.getReplacementById(selectedOrganizationId, replacement1.id)
+    repository.insertReplacement(organizationId, replacement1)
+    val retrieved = repository.getReplacementById(organizationId, replacement1.id)
     Assert.assertNotNull(retrieved)
     Assert.assertEquals(replacement1.absentUserId, retrieved?.absentUserId)
     Assert.assertEquals(replacement1.event.id, retrieved?.event?.id)
@@ -64,49 +70,48 @@ class ReplacementRepositoryFirebaseTest : FirebaseEmulatedTest() {
 
   @Test
   fun getAllReplacements_shouldReturnInsertedOnes() = runBlocking {
-    repository.insertReplacement(selectedOrganizationId, replacement1)
-    repository.insertReplacement(selectedOrganizationId, replacement2)
-    val allReplacements = repository.getAllReplacements(selectedOrganizationId)
+    repository.insertReplacement(organizationId, replacement1)
+    repository.insertReplacement(organizationId, replacement2)
+    val allReplacements = repository.getAllReplacements(organizationId)
     Assert.assertEquals(2, allReplacements.size)
   }
 
   @Test
   fun updateReplacement_shouldReplaceExistingReplacement() = runBlocking {
-    repository.insertReplacement(selectedOrganizationId, replacement1)
+    repository.insertReplacement(organizationId, replacement1)
     val updated = replacement1.copy(status = ReplacementStatus.Accepted)
-    repository.updateReplacement(selectedOrganizationId, replacement1.id, updated)
-    val retrieved = repository.getReplacementById(selectedOrganizationId, replacement1.id)
+    repository.updateReplacement(organizationId, replacement1.id, updated)
+    val retrieved = repository.getReplacementById(organizationId, replacement1.id)
     Assert.assertEquals(ReplacementStatus.Accepted, retrieved?.status)
   }
 
   @Test
   fun deleteReplacement_shouldRemoveReplacement() = runBlocking {
-    repository.insertReplacement(selectedOrganizationId, replacement1)
-    repository.deleteReplacement(selectedOrganizationId, replacement1.id)
-    Assert.assertNull(repository.getReplacementById(selectedOrganizationId, replacement1.id))
+    repository.insertReplacement(organizationId, replacement1)
+    repository.deleteReplacement(organizationId, replacement1.id)
+    Assert.assertNull(repository.getReplacementById(organizationId, replacement1.id))
   }
 
   @Test
   fun getReplacementsByUser_returnsCorrectly() = runBlocking {
-    repository.insertReplacement(selectedOrganizationId, replacement1)
-    repository.insertReplacement(selectedOrganizationId, replacement2)
+    repository.insertReplacement(organizationId, replacement1)
+    repository.insertReplacement(organizationId, replacement2)
 
-    val user123Replacements =
-        repository.getReplacementsByAbsentUser(selectedOrganizationId, "user123")
+    val user123Replacements = repository.getReplacementsByAbsentUser(organizationId, "user123")
     Assert.assertEquals(1, user123Replacements.size)
     Assert.assertEquals("replacement1", user123Replacements.first().id)
   }
 
   @Test
   fun getReplacementById_unknownId_returnsNull() = runBlocking {
-    val retrieved = repository.getReplacementById(selectedOrganizationId, "unknown-id")
+    val retrieved = repository.getReplacementById(organizationId, "unknown-id")
     Assert.assertNull(retrieved)
   }
 
   @Test
   fun getReplacementsByAbsentUser_noMatch_returnsEmptyList() = runBlocking {
-    repository.insertReplacement(selectedOrganizationId, replacement1)
-    val result = repository.getReplacementsByAbsentUser(selectedOrganizationId, "someone-else")
+    repository.insertReplacement(organizationId, replacement1)
+    val result = repository.getReplacementsByAbsentUser(organizationId, "someone-else")
     Assert.assertTrue(result.isEmpty())
   }
 
@@ -147,7 +152,7 @@ class ReplacementRepositoryFirebaseTest : FirebaseEmulatedTest() {
   @Test
   fun getNoReplacementsForInvalidOrganization() = runBlocking {
     repository.insertReplacement(
-        selectedOrganizationId,
+        organizationId,
         Replacement(absentUserId = "Alice", substituteUserId = "Charlie", event = sampleEvent))
 
     val invalidOrgId = "invalidOrg"

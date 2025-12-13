@@ -69,6 +69,9 @@ class EditEventWithViewModelTest : FirebaseEmulatedTest(), RequiresSelectedOrgan
     val fakeRepository = FakeEventRepository()
     fakeRepository.add(event = sampleEvent)
     fakeViewModel = EditEventViewModel(fakeRepository)
+
+    // Use new firebase emulated test with local user repository for tests
+    UserRepositoryProvider.repository = createInitializedUserRepository()
   }
 
   // -------------------------------------------------------------------------
@@ -177,6 +180,9 @@ class EditEventWithViewModelTest : FirebaseEmulatedTest(), RequiresSelectedOrgan
     // verify ViewModel updated with selected participant
     val uiState = fakeViewModel.uiState.value
     assert(uiState.participants.map { it.id }.contains("1"))
+
+    // Clean up: remove the test user
+    runBlocking { UserRepositoryProvider.repository.deleteUser("1") }
   }
 
   // -------------------------------------------------------------------------
@@ -209,6 +215,9 @@ class EditEventWithViewModelTest : FirebaseEmulatedTest(), RequiresSelectedOrgan
     // verify ViewModel updated to remove participant
     val uiState = fakeViewModel.uiState.value
     assert(!uiState.participants.map { it.id }.contains("Alice"))
+
+    // Clean up: remove the test user
+    runBlocking { UserRepositoryProvider.repository.deleteUser("1") }
   }
 
   @Test

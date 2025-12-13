@@ -37,6 +37,9 @@ class ReplacementOrganizeFlowTest : FirebaseEmulatedTest(), RequiresSelectedOrga
           onProcessNow = {},
           onProcessLater = {})
     }
+
+    // Use new firebase emulated test with local user repository for tests
+    UserRepositoryProvider.repository = createInitializedUserRepository()
   }
 
   @Test
@@ -103,5 +106,8 @@ class ReplacementOrganizeFlowTest : FirebaseEmulatedTest(), RequiresSelectedOrga
     composeTestRule
         .onNodeWithTag(ReplacementOrganizeTestTags.PROCESS_LATER_BUTTON)
         .assertIsDisplayed()
+
+    // Clean up - remove Alice from the repository
+    runBlocking { UserRepositoryProvider.repository.deleteUser("1") }
   }
 }

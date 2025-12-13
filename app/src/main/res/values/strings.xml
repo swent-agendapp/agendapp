@@ -114,7 +114,7 @@
     <string name="profile_screen_title">Profile</string>
     <string name="profile_email_error">Please enter a valid email address</string>
     <string name="profile_phone_error">Please enter a valid phone number</string>
-    <string name="profile_display_name_label">Display Name</string>
+    <string name="profile_display_name_label">Name</string>
     <string name="profile_email_label">Email</string>
     <string name="profile_phone_label">Phone Number</string>
     <string name="profile_title">User Profile</string>

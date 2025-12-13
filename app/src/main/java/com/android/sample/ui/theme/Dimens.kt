@@ -19,7 +19,7 @@ val CornerRadiusExtraLarge = 16.dp
 val CornerRadiusHuge = 24.dp
 
 // Button Elevation
-val ButtonElevationMedium = 7.dp
+val ButtonElevationMedium = 2.dp
 
 // Spacing
 val SpacingExtraSmall = 4.dp

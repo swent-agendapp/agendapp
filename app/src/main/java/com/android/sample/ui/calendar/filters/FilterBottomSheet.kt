@@ -75,6 +75,9 @@ enum class FilterPage {
 fun FilterBottomSheet(onDismiss: () -> Unit, onApply: () -> Unit, filterVM: FilterViewModel) {
   // Read current selections
   val filters by filterVM.filters.collectAsState()
+  val eventTypes by filterVM.eventTypes.collectAsState()
+  val locations by filterVM.locations.collectAsState()
+  val participants by filterVM.participants.collectAsState()
 
   var currentPage by remember { mutableStateOf(FilterPage.MAIN) }
 
@@ -172,29 +175,6 @@ fun FilterBottomSheet(onDismiss: () -> Unit, onApply: () -> Unit, filterVM: Filt
           // EVENT TYPE FILTER SCREEN
           // -------------------------------
           FilterPage.EVENT_TYPE -> {
-            val eventTypes =
-                listOf(
-                    "Course",
-                    "Workshop",
-                    "Seminar",
-                    "Conference",
-                    "Training",
-                    "Meeting",
-                    "Lecture",
-                    "Webinar",
-                    "Lab Session",
-                    "Presentation",
-                    "Office Hours",
-                    "Hackathon",
-                    "Networking Event",
-                    "Panel Discussion",
-                    "Tutorial",
-                    "Exam",
-                    "Review Session",
-                    "Team Building",
-                    "Brainstorming",
-                    "Guest Talk")
-
             FilterListScreen(
                 title = stringResource(R.string.eventType),
                 items = eventTypes,
@@ -211,8 +191,6 @@ fun FilterBottomSheet(onDismiss: () -> Unit, onApply: () -> Unit, filterVM: Filt
           // LOCATION FILTER SCREEN
           // -------------------------------
           FilterPage.LOCATION -> {
-            val locations = listOf("Salle 1", "Salle 2", "Unknown")
-
             FilterListScreen(
                 title = stringResource(R.string.location),
                 items = locations,
@@ -229,19 +207,6 @@ fun FilterBottomSheet(onDismiss: () -> Unit, onApply: () -> Unit, filterVM: Filt
           // PARTICIPANTS FILTER SCREEN
           // -------------------------------
           FilterPage.PARTICIPANTS -> {
-            val participants =
-                listOf(
-                    "Alice",
-                    "Bob",
-                    "Charlie",
-                    "David",
-                    "Emma",
-                    "Lucas",
-                    "Sophie",
-                    "Martin",
-                    "Olivia",
-                    "Noah")
-
             FilterListScreen(
                 title = stringResource(R.string.filter_participants),
                 items = participants,

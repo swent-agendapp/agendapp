@@ -3,6 +3,9 @@ package com.android.sample.ui.calendar.editEvent
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
@@ -15,6 +18,7 @@ import java.time.Instant
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 // Assisted by AI
@@ -25,11 +29,12 @@ data class EditCalendarEventUIState(
     val startInstant: Instant = Instant.now(),
     val endInstant: Instant = Instant.now().plus(Duration.ofHours(1)),
     val recurrenceMode: RecurrenceStatus = RecurrenceStatus.OneTime,
-    val participants: Set<String> = emptySet(),
+    val participants: Set<User> = emptySet(),
     val category: EventCategory = EventCategory.defaultCategory(),
     val notifications: List<String> = emptyList(),
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
+    val users: List<User> = emptyList(),
     val step: EditEventStep = EditEventStep.MAIN
 )
 
@@ -54,23 +59,26 @@ enum class EditEventStep {
  * - Navigating between edit steps.
  */
 class EditEventViewModel(
-    private val repository: EventRepository = EventRepositoryProvider.repository,
-    selectedOrganizationViewModel: SelectedOrganizationViewModel =
+    private val eventRepository: EventRepository = EventRepositoryProvider.repository,
+    private val userRepository: UserRepository = UserRepositoryProvider.repository,
+    private val selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel
 ) : ViewModel() {
-
   private val _uiState = MutableStateFlow(EditCalendarEventUIState())
   val uiState: StateFlow<EditCalendarEventUIState> = _uiState.asStateFlow()
 
-  val selectedOrganizationId: StateFlow<String?> =
-      selectedOrganizationViewModel.selectedOrganizationId
+  // Wrap for brevity
+  private fun requireOrgId(): String = selectedOrganizationViewModel.getSelectedOrganizationId()
+
+  init {
+    loadUsers()
+  }
 
   fun saveEditEventChanges() {
     viewModelScope.launch {
       val state = _uiState.value
       try {
-        val orgId = selectedOrganizationId.value
-        require(orgId != null) { "No organization selected." }
+        val orgId = requireOrgId()
 
         val updated =
             Event(
@@ -83,15 +91,26 @@ class EditEventViewModel(
                 cloudStorageStatuses = emptySet(),
                 locallyStoredBy = emptyList(),
                 personalNotes = null,
-                participants = state.participants,
+                participants = state.participants.map { it.id }.toSet(),
                 version = System.currentTimeMillis(),
                 recurrenceStatus = state.recurrenceMode,
                 hasBeenDeleted = false,
-                category = state.category)
-        repository.updateEvent(orgId = orgId, itemId = updated.id, item = updated)
+                category = state.category,
+                location = null)
+        eventRepository.updateEvent(orgId = orgId, itemId = updated.id, item = updated)
       } catch (e: Exception) {
         Log.e("EditEventViewModel", "Error saving event changes: ${e.message}")
       }
+    }
+  }
+
+  fun loadUsers() {
+    viewModelScope.launch {
+      val orgId = requireOrgId()
+
+      val userIds = userRepository.getMembersIds(orgId)
+      val users = userRepository.getUsersByIds(userIds)
+      _uiState.update { it.copy(users = users) }
     }
   }
 
@@ -99,10 +118,9 @@ class EditEventViewModel(
     viewModelScope.launch {
       _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
       try {
-        val orgId = selectedOrganizationId.value
-        require(orgId != null) { "No organization selected." }
+        val orgId = requireOrgId()
 
-        val event = repository.getEventById(orgId = orgId, itemId = eventId)
+        val event = eventRepository.getEventById(orgId = orgId, itemId = eventId)
         if (event != null) {
           _uiState.value =
               _uiState.value.copy(
@@ -112,7 +130,8 @@ class EditEventViewModel(
                   startInstant = event.startDate,
                   endInstant = event.endDate,
                   recurrenceMode = event.recurrenceStatus,
-                  participants = event.participants,
+                  participants =
+                      _uiState.value.users.filter { it.id in event.participants }.toSet(),
                   category = event.category,
                   isLoading = false)
         } else {
@@ -152,11 +171,11 @@ class EditEventViewModel(
     _uiState.value = _uiState.value.copy(recurrenceMode = mode)
   }
 
-  fun addParticipant(name: String) {
+  fun addParticipant(name: User) {
     _uiState.value = _uiState.value.copy(participants = _uiState.value.participants + name)
   }
 
-  fun removeParticipant(name: String) {
+  fun removeParticipant(name: User) {
     _uiState.value = _uiState.value.copy(participants = _uiState.value.participants - name)
   }
 

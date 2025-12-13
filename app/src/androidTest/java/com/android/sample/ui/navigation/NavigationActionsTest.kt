@@ -11,11 +11,14 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import androidx.test.rule.GrantPermissionRule
 import com.android.sample.Agendapp
+import com.android.sample.model.authentication.AuthRepositoryProvider
+import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.ui.authentication.SignInScreenTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
+import com.android.sample.ui.category.EditCategoryScreenTestTags
 import com.android.sample.ui.common.BottomBarTestTags
 import com.android.sample.ui.hourRecap.HourRecapTestTags
 import com.android.sample.ui.invitation.InvitationOverviewScreenTestTags
@@ -60,7 +63,11 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
   override fun setUp() {
     super.setUp()
     // Ensure a user is signed in before each test (use runBlocking to call suspend function)
-    runBlocking { FirebaseEmulator.signInWithFakeGoogleUser(fakeGoogleIdToken) }
+    runBlocking {
+      FirebaseEmulator.signInWithFakeGoogleUser(fakeGoogleIdToken)
+      UserRepositoryProvider.repository.newUser(
+          AuthRepositoryProvider.repository.getCurrentUser()!!)
+    }
   }
 
   @Test
@@ -197,6 +204,30 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
   }
 
   @Test
+  fun goToEditCategoryScreen() {
+    composeTestRule.setContent { Agendapp() }
+
+    createOrganizationAndNavigateToCalendar()
+
+    composeTestRule.onNodeWithTag(BottomBarTestTags.BOTTOM_BAR).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_SETTINGS).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_SETTINGS).assertExists().performClick()
+
+    composeTestRule
+        .onNodeWithTag(SettingsScreenTestTags.ORGANIZATION_BUTTON)
+        .assertIsDisplayed()
+        .performClick()
+
+    composeTestRule.onNodeWithTag(OrganizationOverviewScreenTestTags.ROOT).assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag(OrganizationOverviewScreenTestTags.EDIT_CATEGORY_BUTTON)
+        .assertIsDisplayed()
+        .performClick()
+
+    composeTestRule.onNodeWithTag(EditCategoryScreenTestTags.SCREEN_ROOT).assertIsDisplayed()
+  }
+
+  @Test
   fun navigate_fromSettings_toHourRecap() {
     composeTestRule.setContent { Agendapp() }
 
@@ -236,12 +267,6 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
     // Click on Create button
     composeTestRule
         .onNodeWithTag(AddOrganizationScreenTestTags.CREATE_BUTTON)
-        .assertIsDisplayed()
-        .performClick()
-
-    // Click on the newly created organization to enter its Calendar
-    composeTestRule
-        .onNodeWithTag(OrganizationListScreenTestTags.organizationItemTag(organizationName))
         .assertIsDisplayed()
         .performClick()
   }

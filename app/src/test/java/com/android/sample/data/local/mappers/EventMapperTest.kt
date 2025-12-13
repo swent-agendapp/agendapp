@@ -25,7 +25,11 @@ class EventMapperTest {
   fun setUp() {
     testCategory =
         EventCategory(
-            id = "test-category-id", label = "Work", color = EventPalette.Red, isDefault = false)
+            id = "test-category-id",
+            organizationId = "test-organization-id",
+            label = "Work",
+            color = EventPalette.Red,
+            isDefault = false)
 
     baseEvent =
         Event(
@@ -43,7 +47,8 @@ class EventMapperTest {
             version = 12345L,
             hasBeenDeleted = false,
             recurrenceStatus = RecurrenceStatus.OneTime,
-            category = testCategory)
+            category = testCategory,
+            location = null)
 
     emptyEvent =
         baseEvent.copy(

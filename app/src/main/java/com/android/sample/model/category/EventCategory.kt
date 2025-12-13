@@ -8,6 +8,7 @@ import java.util.UUID
  * Represents a category that can be assigned to an event.
  *
  * @property id Unique identifier for the category. Defaults to a randomly generated UUID string.
+ * @property organizationId Identifier for the organization the category belongs to.
  * @property label Human‑readable name of the category.
  * @property color Visual color associated with this category.
  * @property isDefault Indicates whether this is the special default category used when no category
@@ -18,11 +19,8 @@ import java.util.UUID
  * is expected to display a localized name (using stringResource) instead of the stored label.
  */
 data class EventCategory(
-    // to be used soon when the EventCategory will be customizable, so that the Event depends only
-    // on the id and the label or color can freely change
     val id: String = UUID.randomUUID().toString(),
-    // to be used soon when the EventCategory will be associated to an organization
-    // val organizationId: String,
+    val organizationId: String,
     val label: String,
     val color: Color,
     val isDefault: Boolean = false,
@@ -37,6 +35,7 @@ data class EventCategory(
      */
     fun defaultCategory(): EventCategory {
       return EventCategory(
+          organizationId = "default_organization",
           label = "Uncategorized", // Fallback label, UI should localize this.
           color = EventPalette.NoCategory,
           isDefault = true,

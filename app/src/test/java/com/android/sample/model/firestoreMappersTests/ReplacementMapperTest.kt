@@ -20,6 +20,7 @@ class ReplacementMapperTest {
 
   private val sampleEventCategory =
       EventCategory(
+          organizationId = "org1",
           label = "Meeting",
           color = EventPalette.Blue,
       )
@@ -37,7 +38,8 @@ class ReplacementMapperTest {
           participants = emptySet(),
           version = 0L,
           recurrenceStatus = RecurrenceStatus.OneTime,
-          category = sampleEventCategory)
+          category = sampleEventCategory,
+          location = null)
 
   private val sampleReplacement =
       Replacement(

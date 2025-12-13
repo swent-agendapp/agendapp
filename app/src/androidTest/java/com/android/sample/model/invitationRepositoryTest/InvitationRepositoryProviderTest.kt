@@ -41,6 +41,8 @@ class InvitationRepositoryProviderTest {
           override suspend fun getInvitationByOrganization(
               organizationId: String
           ): List<Invitation> = emptyList()
+
+          override suspend fun getInvitationByCode(code: String): Invitation? = null
         }
 
     // Replace the default repository with the fake

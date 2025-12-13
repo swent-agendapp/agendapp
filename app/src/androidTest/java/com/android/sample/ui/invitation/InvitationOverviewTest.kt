@@ -15,7 +15,10 @@ import com.android.sample.ui.invitation.createInvitation.InvitationCreationTestT
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import com.android.sample.utils.FirebaseEmulatedTest
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -23,7 +26,7 @@ import org.junit.Test
 
 // Tests written by AI
 
-class InvitationOverviewScreenTest : FirebaseEmulatedTest() {
+class InvitationOverviewScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganizationTestBase {
 
   @get:Rule val composeTestRule = createComposeRule()
   private lateinit var fakeInvitationRepository: FakeInvitationRepository
@@ -32,17 +35,19 @@ class InvitationOverviewScreenTest : FirebaseEmulatedTest() {
   private lateinit var vm: InvitationOverviewViewModel
   private lateinit var selectedOrgVM: SelectedOrganizationViewModel
 
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
   private val user = User(id = "user1", displayName = "Test User", email = "test@example.com")
-  private val org =
-      Organization(id = "org1", name = "Test Org", admins = listOf(user), members = listOf(user))
+  private val org = Organization(id = organizationId, name = "Test Org")
   private val inv1 = Invitation(id = "id1", organizationId = org.id, code = "123456")
   private val inv2 = Invitation(id = "id2", organizationId = org.id, code = "654321")
 
   @OptIn(ExperimentalCoroutinesApi::class)
   @Before
-  override fun setUp() {
+  override fun setUp() = runBlocking {
     fakeOrganizationRepository = FakeOrganizationRepository()
-    fakeOrganizationRepository.addOrganization(org)
+    fakeOrganizationRepository.insertOrganization(org)
+
+    setSelectedOrganization()
 
     fakeInvitationRepository = FakeInvitationRepository()
     fakeInvitationRepository.addInvitation(inv1)

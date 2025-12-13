@@ -3,19 +3,35 @@ package com.android.sample.ui.editEvent
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.ui.calendar.editEvent.EditEventTestTags
 import com.android.sample.ui.calendar.editEvent.components.EditEventAttendantScreen
 import com.android.sample.ui.calendar.editEvent.components.EditEventScreen
 import com.android.sample.ui.theme.SampleAppTheme
+import com.android.sample.utils.FirebaseEmulatedTest
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
+import kotlinx.coroutines.runBlocking
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 // Assisted by AI
 @RunWith(AndroidJUnit4::class)
-class EditEventScreenTest {
+class EditEventScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganizationTestBase {
 
   @get:Rule val composeTestRule = createComposeRule()
+
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
+
+  @Before
+  override fun setUp() {
+    super.setUp()
+
+    setSelectedOrganization()
+  }
 
   // Test to verify that all UI elements are displayed on the Edit Event screen
   @Test
@@ -68,6 +84,13 @@ class EditEventScreenTest {
 
   @Test
   fun editEventAttendantScreen_selectsParticipantsCorrectly() {
+    // Add Alice to participants to verify she appears in the list
+    runBlocking {
+      val user = User(id = "1", displayName = "Alice")
+      UserRepositoryProvider.repository.newUser(user)
+      UserRepositoryProvider.repository.addUserToOrganization(user.id, organizationId)
+    }
+
     var saveClicked = false
     var backClicked = false
 
@@ -93,7 +116,17 @@ class EditEventScreenTest {
 
   @Test
   fun editEventAttendantScreen_toggleParticipantCheckbox() {
+    // Add Alice to participants to verify she appears in the list
+    runBlocking {
+      val user = User(id = "1", displayName = "Alice")
+      UserRepositoryProvider.repository.newUser(user)
+      UserRepositoryProvider.repository.addUserToOrganization(user.id, organizationId)
+    }
+
     composeTestRule.setContent { SampleAppTheme { EditEventAttendantScreen() } }
+
+    // Click on the "Got it" button of the first pop-up
+    composeTestRule.onNodeWithTag(EditEventTestTags.ATTENDANCE_WARNING_ACK_BUTTON).performClick()
 
     val alice = composeTestRule.onNodeWithText("Alice")
 

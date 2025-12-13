@@ -9,9 +9,11 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.R
 import com.android.sample.model.authentication.FakeAuthRepository
 import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.repository.FakeOrganizationRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -25,6 +27,7 @@ class OrganizationOverviewScreenTest {
 
   private lateinit var fakeOrgRepo: FakeOrganizationRepository
   private lateinit var fakeAuthRepo: FakeAuthRepository
+  private lateinit var fakeUserRepo: UsersRepositoryLocal
   private lateinit var vm: OrganizationOverviewViewModel
   private lateinit var selectedOrgVM: SelectedOrganizationViewModel
 
@@ -36,12 +39,17 @@ class OrganizationOverviewScreenTest {
   private val user3 = User(id = "user3", email = "user3@test.com")
 
   @Before
-  fun setup() {
+  fun setup() = runBlocking {
     fakeOrgRepo = FakeOrganizationRepository()
     fakeAuthRepo = FakeAuthRepository(fakeUser)
-    vm = OrganizationOverviewViewModel(fakeOrgRepo, fakeAuthRepo)
+    fakeUserRepo = UsersRepositoryLocal()
+    vm = OrganizationOverviewViewModel(fakeOrgRepo, fakeUserRepo, fakeAuthRepo)
     selectedOrgVM = SelectedOrganizationVMProvider.viewModel
     selectedOrgVM.clearSelection()
+
+    fakeUserRepo.newUser(user1)
+    fakeUserRepo.newUser(user2)
+    fakeUserRepo.newUser(user3)
   }
 
   @Test
@@ -72,13 +80,11 @@ class OrganizationOverviewScreenTest {
   @OptIn(ExperimentalCoroutinesApi::class)
   @Test
   fun organizationDetailsAreDisplayed() = runTest {
-    val org =
-        Organization(
-            id = "org1",
-            name = "Test Organization",
-            admins = emptyList(),
-            members = listOf(user1, user2, user3))
-    fakeOrgRepo.addOrganization(org)
+    val org = Organization(id = "org1", name = "Test Organization")
+    fakeOrgRepo.insertOrganization(org)
+    fakeUserRepo.addUserToOrganization(user1.id, "org1")
+    fakeUserRepo.addUserToOrganization(user2.id, "org1")
+    fakeUserRepo.addUserToOrganization(user3.id, "org1")
     selectedOrgVM.selectOrganization(org.id)
 
     composeTestRule.setContent {
@@ -118,8 +124,8 @@ class OrganizationOverviewScreenTest {
   @OptIn(ExperimentalCoroutinesApi::class)
   @Test
   fun clickingChangeButtonClearsOrganization() = runTest {
-    val org = Organization(id = "org1", name = "Org", admins = emptyList(), members = listOf(user1))
-    fakeOrgRepo.addOrganization(org)
+    val org = Organization(id = "org1", name = "Org")
+    fakeOrgRepo.insertOrganization(org)
     selectedOrgVM.selectOrganization(org.id)
 
     var changeClicked = false
@@ -140,9 +146,8 @@ class OrganizationOverviewScreenTest {
   @OptIn(ExperimentalCoroutinesApi::class)
   @Test
   fun clickingDeleteButtonDeletesOrganizationAndCallsCallback() = runTest {
-    val org =
-        Organization(id = "org1", name = "To Delete", admins = emptyList(), members = emptyList())
-    fakeOrgRepo.addOrganization(org)
+    val org = Organization(id = "org1", name = "To Delete")
+    fakeOrgRepo.insertOrganization(org)
     selectedOrgVM.selectOrganization(org.id)
 
     var deleteCallbackCalled = false

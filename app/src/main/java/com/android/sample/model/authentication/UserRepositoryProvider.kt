@@ -10,7 +10,7 @@ import com.google.firebase.firestore.firestore
 object UserRepositoryProvider {
   private val _repository: UserRepository by lazy {
     // Change this to switch between different implementations
-    UsersRepositoryFirebase(Firebase.firestore, AuthRepositoryProvider.repository)
+    UsersRepositoryFirebase(Firebase.firestore)
   }
 
   var repository: UserRepository = _repository

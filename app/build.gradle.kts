@@ -212,6 +212,10 @@ dependencies {
     // Coroutine testing utilities (needed for runBlocking)
     testImplementation(libs.kotlinx.coroutines.test)
 
+    // Coroutines runtime
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.play.services)
 
     // Firebase
     implementation(libs.firebase.database.ktx)
@@ -227,6 +231,9 @@ dependencies {
     implementation(libs.play.services.maps)
     implementation(libs.maps.compose)
     implementation(libs.maps.compose.utils)
+
+    // Reorderable lists
+    implementation(libs.burnoutcrew.reorderable)
 }
 
 tasks.withType<Test> {

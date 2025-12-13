@@ -6,7 +6,7 @@ import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.category.EventCategory
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.model.replacement.*
-import com.android.sample.ui.calendar.replacementEmployee.ReplacementEmployeeViewModel
+import com.android.sample.ui.replacement.mainPage.ReplacementEmployeeViewModel
 import java.time.Instant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -205,7 +205,8 @@ class ReplacementEmployeeViewModelTest {
           version = 1L,
           locallyStoredBy = emptyList(),
           cloudStorageStatuses = emptySet(),
-          personalNotes = null)
+          personalNotes = null,
+          location = null)
 
   private fun makeEmployeeVm(): ReplacementEmployeeViewModel {
 

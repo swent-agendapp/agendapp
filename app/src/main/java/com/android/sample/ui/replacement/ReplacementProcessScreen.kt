@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import com.android.sample.R
+import com.android.sample.model.authentication.User
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.ui.calendar.utils.DateTimeUtils.DATE_FORMAT_PATTERN
 import com.android.sample.ui.common.MemberSelectionList
@@ -51,8 +52,7 @@ object ProcessReplacementTestTags {
   const val SEND_BUTTON = "process_replacement_send_button"
   private const val MEMBER_PREFIX = "process_replacement_member_"
 
-  fun memberTag(name: String): String = MEMBER_PREFIX + name
-}
+    fun memberTag(user: User): String = MEMBER_PREFIX + (user.displayName ?: user.email ?: user.id)}
 
 private val DefaultCandidates =
     listOf("Emilien", "Haobin", "Noa", "Weifeng", "Timael", "Méline", "Nathan")
@@ -61,12 +61,12 @@ private val DefaultCandidates =
 @Composable
 fun ProcessReplacementScreen(
     replacement: Replacement,
-    candidates: List<String> = DefaultCandidates,
-    onSendRequests: (List<String>) -> Unit = {},
+    candidates: List<User> = emptyList(),
+    onSendRequests: (List<User>) -> Unit = {},
     onBack: () -> Unit = {},
 ) {
 
-  var selectedMembers by remember { mutableStateOf(setOf<String>()) }
+  var selectedMembers by remember { mutableStateOf(setOf<User>()) }
 
   val dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)
   val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
@@ -146,8 +146,8 @@ fun ProcessReplacementScreen(
 
               PrimaryButton(
                   onClick = {
-                    onSendRequests(selectedMembers.toList())
-                    Toast.makeText(
+                      onSendRequests(selectedMembers.toList())
+                      Toast.makeText(
                             context,
                             context.getString(R.string.replacement_requests_sent_success),
                             Toast.LENGTH_SHORT,

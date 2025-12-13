@@ -43,6 +43,7 @@ data class EventEntity(
     var cloudStorageStatuses: String = "",
     var locallyStoredBy: String = "",
     var personalNotes: String? = null,
+    var location: String? = null,
     var participants: String = "",
     var presence: String = encodeBooleanMap(emptyMap()),
     var version: Long = System.currentTimeMillis(),

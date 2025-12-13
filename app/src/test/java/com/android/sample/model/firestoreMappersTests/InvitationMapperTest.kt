@@ -23,9 +23,7 @@ class InvitationMapperTest {
   private val member = User(id = "memberA", displayName = "Member A", email = "memberA@example.com")
 
   // --- Create organization ---
-  private val sampleOrg =
-      Organization(
-          id = "orgA", name = "Org A", admins = listOf(admin), members = listOf(member, admin))
+  private val sampleOrg = Organization(id = "orgA", name = "Org A")
 
   private val sampleInvitation =
       Invitation(

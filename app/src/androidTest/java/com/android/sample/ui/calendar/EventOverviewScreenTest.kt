@@ -8,11 +8,12 @@ import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.category.EventCategory
-import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreen
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreenTestTags
 import com.android.sample.ui.calendar.eventOverview.EventOverviewViewModel
 import com.android.sample.utils.FakeEventRepository
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import java.time.Duration
 import java.time.Instant.now
 import java.time.temporal.ChronoUnit
@@ -29,19 +30,18 @@ import org.junit.Test
  * - Clicking Modify calls the onEditClick callback.
  * - Clicking Delete opens the confirmation dialog and calls onDeleteClick after confirmation.
  */
-class EventOverviewScreenTest {
+class EventOverviewScreenTest : RequiresSelectedOrganizationTestBase {
 
   @get:Rule val composeRule = createComposeRule()
 
-  val selectedOrganizationId = "orgTest"
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
   private lateinit var repo: EventRepository
 
   @Before
   fun setup() {
-    repo = EventRepositoryProvider.repository
+    setSelectedOrganization()
 
-    // Ensure the right organization is selected
-    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationId)
+    repo = EventRepositoryProvider.repository
   }
 
   // ---------- Helpers ----------
@@ -49,7 +49,7 @@ class EventOverviewScreenTest {
     val start = now().truncatedTo(ChronoUnit.HOURS)
     return Event(
         id = "E123",
-        organizationId = selectedOrganizationId,
+        organizationId = organizationId,
         title = "Test Event",
         description = "Desc",
         startDate = start,
@@ -61,7 +61,8 @@ class EventOverviewScreenTest {
         version = 1L,
         recurrenceStatus = RecurrenceStatus.OneTime,
         hasBeenDeleted = false,
-        category = EventCategory.defaultCategory())
+        category = EventCategory.defaultCategory(),
+        location = null)
   }
 
   private fun makeViewModelWith(event: Event): Pair<EventOverviewViewModel, FakeEventRepository> {

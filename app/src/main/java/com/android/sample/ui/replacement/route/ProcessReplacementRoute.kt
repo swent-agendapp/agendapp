@@ -11,9 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.model.replacement.Replacement
-import com.android.sample.ui.calendar.replacementEmployee.ReplacementEmployeeActions
-import com.android.sample.ui.calendar.replacementEmployee.ReplacementEmployeeViewModel
 import com.android.sample.ui.replacement.ProcessReplacementScreen
+import com.android.sample.ui.replacement.mainPage.ReplacementEmployeeActions
+import com.android.sample.ui.replacement.mainPage.ReplacementEmployeeViewModel
 
 object ProcessReplacementRouteTestTags {
   const val LOADING_INDICATOR = "ProcessReplacementRoute_LOADING"

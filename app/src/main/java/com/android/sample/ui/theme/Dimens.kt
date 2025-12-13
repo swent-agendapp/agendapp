@@ -75,6 +75,7 @@ val IconSizeExtraLarge = 30.dp
 val SizeExtraSmall = 8.dp
 val SizeSmall = 16.dp
 val SizeMedium = 24.dp
+val SizeMediumLarge = 28.dp
 val SizeLarge = 32.dp
 val SizeExtraLarge = 48.dp
 val SizeHuge = 58.dp
@@ -118,3 +119,5 @@ val SmallCardElevation = 2.dp
 
 // weight
 const val Weight = 1f
+// time
+const val Time = 700

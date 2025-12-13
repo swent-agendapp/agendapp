@@ -213,7 +213,10 @@ private fun EventOverviewScreenPreview() {
           version = 1L,
           recurrenceStatus = RecurrenceStatus.Weekly,
           hasBeenDeleted = false,
-          category = EventCategory(label = "Category A", color = EventPalette.Blue))
+          category =
+              EventCategory(
+                  organizationId = "org1", label = "Category A", color = EventPalette.Blue),
+          location = null)
 
   EventOverviewScreen(eventId = event.id, onBackClick = {})
 }

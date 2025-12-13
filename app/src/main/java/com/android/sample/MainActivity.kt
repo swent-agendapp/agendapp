@@ -35,6 +35,7 @@ import com.android.sample.ui.calendar.CalendarScreen
 import com.android.sample.ui.calendar.addEvent.AddEventScreen
 import com.android.sample.ui.calendar.editEvent.EditEventFlow
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreen
+import com.android.sample.ui.category.EditCategoryScreen
 import com.android.sample.ui.common.BottomBar
 import com.android.sample.ui.common.BottomBarItem
 import com.android.sample.ui.common.BottomBarTestTags
@@ -206,7 +207,7 @@ private fun NavGraphBuilder.organizationsGraph(navigationActions: NavigationActi
         composable(Screen.AddOrganization.route) {
           AddOrganizationScreen(
               onNavigateBack = { navigationActions.navigateBack() },
-              onFinish = { navigationActions.navigateTo(Screen.SelectOrganization) })
+              onFinish = { navigationActions.navigateTo(Screen.Calendar) })
         }
       }
 }
@@ -278,7 +279,6 @@ private fun NavGraphBuilder.replacementGraph(
                 navigationActions.navigateTo(Screen.ReplacementPending)
               },
               onConfirmedClick = { navigationActions.navigateTo(Screen.ReplacementUpcoming) },
-              onBack = { navigationActions.navigateTo(Screen.Calendar) },
           )
         }
         composable(Screen.ReplacementOrganize.route) {
@@ -359,10 +359,16 @@ private fun NavGraphBuilder.settingsGraph(
     // Map Settings Screen
     composable(Screen.Map.route) { MapScreen(onGoBack = { navigationActions.navigateBack() }) }
 
+    // Edit Category Screen
+    composable(Screen.EditCategory.route) {
+      EditCategoryScreen(onBack = { navigationActions.navigateBack() })
+    }
+
     // Organization Overview Screen
     composable(Screen.OrganizationOverview.route) {
       OrganizationOverViewScreen(
           onNavigateBack = { navigationActions.navigateBack() },
+          onNavigateToEditCategory = { navigationActions.navigateTo(Screen.EditCategory) },
           onChangeOrganization = { navigationActions.navigateTo(Screen.ChangeOrganization) },
           onDeleteOrganization = { navigationActions.navigateTo(Screen.SelectOrganization) },
           onInvitationClick = { navigationActions.navigateTo(Screen.InvitationOverview) })

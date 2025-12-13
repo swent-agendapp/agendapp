@@ -2,11 +2,12 @@ package com.android.sample.model.invitationRepositoryTest
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.organization.data.Organization
-import com.android.sample.model.organization.invitation.InvitationRepositoryFirebase
+import com.android.sample.model.organization.invitation.InvitationRepository
+import com.android.sample.model.organization.invitation.InvitationRepositoryProvider
 import com.android.sample.model.organization.invitation.InvitationStatus
 import com.android.sample.utils.FirebaseEmulatedTest
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Before
@@ -18,8 +19,8 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class InvitationRepositoryFirebaseTest : FirebaseEmulatedTest() {
 
-  private lateinit var repo: InvitationRepositoryFirebase
-  private lateinit var db: FirebaseFirestore
+  private lateinit var repo: InvitationRepository
+
   private lateinit var admin: User
   private lateinit var member: User
   private lateinit var outsider: User
@@ -27,23 +28,27 @@ class InvitationRepositoryFirebaseTest : FirebaseEmulatedTest() {
   private lateinit var organizationB: Organization
 
   @Before
-  override fun setUp() {
+  override fun setUp() = runBlocking {
     super.setUp()
-    db = FirebaseFirestore.getInstance()
-    repo = InvitationRepositoryFirebase(db)
+    repo = InvitationRepositoryProvider.repository
 
     // --- Create users ---
     admin = User(id = "adminA", displayName = "Admin A", email = "adminA@example.com")
     member = User(id = "memberA", displayName = "Member A", email = "memberA@example.com")
     outsider = User(id = "outsider", displayName = "Outsider", email = "outsider@example.com")
 
-    // --- Create organization ---
-    organizationA =
-        Organization(
-            id = "orgA", name = "Org A", admins = listOf(admin), members = listOf(member, admin))
+    UserRepositoryProvider.repository.newUser(admin)
+    UserRepositoryProvider.repository.newUser(member)
+    UserRepositoryProvider.repository.newUser(outsider)
 
-    organizationB =
-        Organization(id = "orgB", name = "Org B", admins = listOf(admin), members = listOf(admin))
+    // --- Create organization ---
+    organizationA = Organization(id = "orgA", name = "Org A")
+
+    organizationB = Organization(id = "orgB", name = "Org B")
+
+    UserRepositoryProvider.repository.addAdminToOrganization(admin.id, organizationA.id)
+    UserRepositoryProvider.repository.addUserToOrganization(member.id, organizationA.id)
+    UserRepositoryProvider.repository.addAdminToOrganization(admin.id, organizationB.id)
   }
 
   @Test
@@ -51,7 +56,6 @@ class InvitationRepositoryFirebaseTest : FirebaseEmulatedTest() {
     repo.insertInvitation(organizationA, admin)
     val retrieved = repo.getAllInvitations()
 
-    assertNotNull(retrieved)
     assertEquals(1, retrieved.size)
     assertEquals(organizationA.id, retrieved.first().organizationId)
     assertEquals(InvitationStatus.Active, retrieved.first().status)
@@ -110,7 +114,7 @@ class InvitationRepositoryFirebaseTest : FirebaseEmulatedTest() {
     repo.insertInvitation(organizationA, admin)
     val retrievedInv = repo.getAllInvitations().first()
     repo.updateInvitation(
-        retrievedInv.id, retrievedInv.copy(status = InvitationStatus.Used), organizationA, member)
+        retrievedInv.id, retrievedInv.copy(status = InvitationStatus.Used), organizationA, admin)
     val updatedInv = retrievedInv.copy(status = InvitationStatus.Active)
     val exception =
         assertThrows(IllegalArgumentException::class.java) {
@@ -149,5 +153,14 @@ class InvitationRepositoryFirebaseTest : FirebaseEmulatedTest() {
     val invitationsOfOrgB = repo.getInvitationByOrganization(organizationB.id)
 
     assertEquals(2, invitationsOfOrgB.size)
+  }
+
+  @Test
+  fun getInvitationByCode_correctly_retrieves() = runBlocking {
+    repo.insertInvitation(organizationA, admin)
+    val retrievedInv = repo.getAllInvitations().first()
+    val fetchedByCode = repo.getInvitationByCode(retrievedInv.code)
+    assertNotNull(fetchedByCode)
+    assertEquals(retrievedInv.id, fetchedByCode?.id)
   }
 }

@@ -1,4 +1,4 @@
-package com.android.sample.ui.calendar
+package com.android.sample.ui.category
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -6,7 +6,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.android.sample.model.category.EventCategory
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags.CATEGORY_SELECTOR
-import com.android.sample.ui.calendar.components.CategorySelector
+import com.android.sample.ui.category.components.CategorySelector
 import com.android.sample.ui.theme.EventPalette
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -20,9 +20,12 @@ class CategorySelectorTest {
 
   private val categories =
       listOf(
-          EventCategory(label = "Category 1", color = EventPalette.Green),
-          EventCategory(label = "Category 2", color = EventPalette.Blue),
-          EventCategory(label = "Category 3", color = EventPalette.Pink),
+          EventCategory(
+              organizationId = "orgTest", label = "Category 1", color = EventPalette.Green),
+          EventCategory(
+              organizationId = "orgTest", label = "Category 2", color = EventPalette.Blue),
+          EventCategory(
+              organizationId = "orgTest", label = "Category 3", color = EventPalette.Pink),
       )
 
   @Test

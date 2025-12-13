@@ -1,13 +1,14 @@
 package com.android.sample.ui.replacement.organize
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
-import com.android.sample.model.organization.data.getMockOrganizations
+import com.android.sample.model.organization.repository.SelectedOrganizationRepository.selectedOrganizationId
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementRepository
 import com.android.sample.model.replacement.ReplacementRepositoryProvider
@@ -82,6 +83,7 @@ enum class ReplacementOrganizeStep {
  * All ViewModel state is exposed through a [StateFlow] of [ReplacementOrganizeUIState].
  */
 class ReplacementOrganizeViewModel(
+    private val userRepository: UserRepository = UserRepositoryProvider.repository,
     private val eventRepository: EventRepository = EventRepositoryProvider.repository,
     private val replacementRepository: ReplacementRepository =
         ReplacementRepositoryProvider.repository,
@@ -95,6 +97,20 @@ class ReplacementOrganizeViewModel(
   /** Public immutable UI state observed by the UI. */
   val uiState: StateFlow<ReplacementOrganizeUIState> = _uiState.asStateFlow()
 
+  // Wrap for brevity
+  private fun requireOrgId(): String = selectedOrganizationViewModel.getSelectedOrganizationId()
+
+  init {
+    loadOrganizationMembers()
+  }
+
+  // Helper function to get the selected organization ID or throw an exception if none is selected
+  fun getSelectedOrganizationId(): String {
+    val orgId = selectedOrganizationId.value
+    require(orgId != null) { "No organization selected" }
+    return orgId
+  }
+
   /**
    * Loads all members from the selected organization.
    *
@@ -102,8 +118,12 @@ class ReplacementOrganizeViewModel(
    */
   fun loadOrganizationMembers() {
     viewModelScope.launch {
-      val currentOrganization = getMockOrganizations().last()
-      _uiState.update { it.copy(memberList = currentOrganization.members) }
+      _uiState.update {
+        val orgId = getSelectedOrganizationId()
+        val listUserIdOrg = userRepository.getMembersIds(orgId)
+        val listUsers = userRepository.getUsersByIds(listUserIdOrg)
+        it.copy(memberList = listUsers)
+      }
     }
   }
 
@@ -134,16 +154,13 @@ class ReplacementOrganizeViewModel(
       }
 
       val events: List<Event> =
-          if (state.selectedEvents.isNotEmpty()) {
-            state.selectedEvents
-          } else {
+          state.selectedEvents.ifEmpty {
             if (!dateRangeValid()) {
               _uiState.update { it.copy(errorMsg = "Invalid date range. End must be after start.") }
               return@launch
             }
 
-            val orgId = selectedOrganizationViewModel.selectedOrganizationId.value
-            require(orgId != null) { "Organization must be selected to fetch events." }
+            val orgId = requireOrgId()
 
             eventRepository.getEventsBetweenDates(
                 orgId = orgId, startDate = state.startInstant, endDate = state.endInstant)
@@ -177,13 +194,13 @@ class ReplacementOrganizeViewModel(
    */
   private suspend fun addReplacementToRepository(replacement: Replacement) {
     try {
-      val orgId = selectedOrganizationViewModel.selectedOrganizationId.value
-      require(orgId != null) { "Organization must be selected to create a replacement." }
+      val orgId = requireOrgId()
 
       replacementRepository.insertReplacement(orgId = orgId, item = replacement)
-    } catch (e: Exception) {
-      Log.e("ReplacementOrganizeVM", "Error adding replacement: ${e.message}")
-      _uiState.update { it.copy(errorMsg = "Unexpected error while creating the replacement.") }
+    } catch (_: IllegalStateException) {
+      _uiState.update { it.copy(errorMsg = "No organization selected") }
+    } catch (_: Exception) {
+      _uiState.update { it.copy(errorMsg = "Unexpected error while creating the replacement") }
     }
   }
 

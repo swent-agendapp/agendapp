@@ -2,6 +2,7 @@ package com.android.sample.ui.organization
 
 import com.android.sample.model.authentication.AuthRepository
 import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.repository.OrganizationRepository
 import io.mockk.coEvery
@@ -29,22 +30,13 @@ class OrganizationViewModelTest {
 
   private val testDispatcher = StandardTestDispatcher()
   private lateinit var organizationRepository: OrganizationRepository
+  private lateinit var userRepository: UsersRepositoryLocal
   private lateinit var authRepository: AuthRepository
   private lateinit var viewModel: OrganizationViewModel
 
   private val testUser = User(id = "user1", displayName = "Test User", email = "test@example.com")
-  private val testOrg1 =
-      Organization(
-          id = "org1",
-          name = "Organization 1",
-          admins = listOf(testUser),
-          members = listOf(testUser))
-  private val testOrg2 =
-      Organization(
-          id = "org2",
-          name = "Organization 2",
-          admins = listOf(testUser),
-          members = listOf(testUser))
+  private val testOrg1 = Organization(id = "org1", name = "Organization 1")
+  private val testOrg2 = Organization(id = "org2", name = "Organization 2")
 
   @Before
   fun setUp() {
@@ -53,6 +45,7 @@ class OrganizationViewModelTest {
     // Create mock repositories
     organizationRepository = mockk()
     authRepository = mockk()
+    userRepository = mockk()
 
     // Setup default mock behavior
     coEvery { authRepository.getCurrentUser() } returns testUser
@@ -93,12 +86,7 @@ class OrganizationViewModelTest {
     testDispatcher.scheduler.advanceUntilIdle()
 
     // Update mock to return different data
-    val updatedOrg =
-        Organization(
-            id = "org3",
-            name = "Updated Organization",
-            admins = listOf(testUser),
-            members = listOf(testUser))
+    val updatedOrg = Organization(id = "org3", name = "Updated Organization")
     coEvery { organizationRepository.getAllOrganizations(testUser) } returns listOf(updatedOrg)
 
     // Call refresh and complete it
@@ -149,24 +137,6 @@ class OrganizationViewModelTest {
 
     // Verify error is cleared
     assertNull(viewModel.uiState.value.errorMsg)
-  }
-
-  @Test
-  fun addOrganizationFromNameShouldCreateAndReloadOrganizations() = runTest {
-    testDispatcher.scheduler.advanceUntilIdle()
-
-    // Setup mock for insert
-    coEvery { organizationRepository.insertOrganization(any(), testUser) } returns Unit
-
-    // Add organization
-    viewModel.addOrganizationFromName("New Org")
-    testDispatcher.scheduler.advanceUntilIdle()
-
-    // Verify insert was called
-    coVerify { organizationRepository.insertOrganization(any(), testUser) }
-
-    // Verify organizations were reloaded
-    coVerify(atLeast = 2) { organizationRepository.getAllOrganizations(testUser) }
   }
 
   @Test

@@ -31,9 +31,6 @@ object AddOrganizationScreenTestTags {
 @Composable
 fun AddOrganizationScreen(
     addOrganizationViewModel: AddOrganizationViewModel = viewModel(),
-    organizationViewModel: OrganizationViewModel = viewModel(),
-    selectedOrganizationViewModel: SelectedOrganizationViewModel =
-        SelectedOrganizationVMProvider.viewModel,
     onNavigateBack: () -> Unit = {},
     onFinish: () -> Unit = {},
 ) {
@@ -63,9 +60,8 @@ fun AddOrganizationScreen(
                 onNext = {
                   val organizationName = uiState.name
                   if (organizationName != null) {
-                    organizationViewModel.addOrganizationFromName(organizationName)
+                    addOrganizationViewModel.addOrganizationFromName(organizationName)
                   }
-                  selectedOrganizationViewModel.clearSelection()
                   onFinish()
                 },
                 onBack = onNavigateBack,

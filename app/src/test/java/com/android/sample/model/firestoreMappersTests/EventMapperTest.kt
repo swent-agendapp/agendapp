@@ -22,6 +22,7 @@ class EventMapperTest {
   private val sampleCategory =
       EventCategory(
           id = "category123",
+          organizationId = "testOrg",
           label = "Test Category",
           color = EventPalette.Blue,
           isDefault = false,
@@ -42,7 +43,7 @@ class EventMapperTest {
           presence = mapOf("participant1" to true, "participant2" to false),
           recurrenceStatus = RecurrenceStatus.OneTime,
           category = sampleCategory,
-      )
+          location = null)
 
   private val sampleMap: Map<String, Any?> =
       mapOf(
@@ -61,6 +62,7 @@ class EventMapperTest {
           "eventCategory" to
               mapOf(
                   "id" to sampleCategory.id,
+                  "organizationId" to sampleCategory.organizationId,
                   "label" to sampleCategory.label,
                   "color" to sampleCategory.color.value.toLong(),
                   "isDefault" to sampleCategory.isDefault,
@@ -87,6 +89,7 @@ class EventMapperTest {
         .thenReturn(
             mapOf(
                 "id" to sampleCategory.id,
+                "organizationId" to sampleCategory.organizationId,
                 "label" to sampleCategory.label,
                 "color" to sampleCategory.color.value.toLong(),
                 "isDefault" to sampleCategory.isDefault,
@@ -183,6 +186,7 @@ class EventMapperTest {
 
     val categoryMap = map["eventCategory"] as Map<*, *>
     assertThat(categoryMap["id"]).isEqualTo(sampleEvent.category.id)
+    assertThat(categoryMap["organizationId"]).isEqualTo(sampleEvent.category.organizationId)
     assertThat(categoryMap["label"]).isEqualTo(sampleEvent.category.label)
     assertThat(categoryMap["color"]).isEqualTo(sampleEvent.category.color.value.toLong())
     assertThat(categoryMap["isDefault"]).isEqualTo(sampleEvent.category.isDefault)

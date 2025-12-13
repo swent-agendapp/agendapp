@@ -5,6 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.sample.model.authentication.AuthRepository
 import com.android.sample.model.authentication.AuthRepositoryProvider
+import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
@@ -17,7 +20,7 @@ import kotlinx.coroutines.launch
 
 data class OverviewUIState(
     val event: Event? = null,
-    val participantsNames: List<String> = emptyList(),
+    val participantsNames: List<User> = emptyList(),
     val errorMsg: String? = null,
     val isLoading: Boolean = false,
     val isDeleteSuccessful: Boolean = false
@@ -35,6 +38,7 @@ data class OverviewUIState(
 class EventOverviewViewModel(
     // used to get Events
     private val eventRepository: EventRepository = EventRepositoryProvider.repository,
+    private val userRepository: UserRepository = UserRepositoryProvider.repository,
     // used to get the name of the participants (the event only contains user id, not name)
     private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
     private val selectedOrganizationViewModel: SelectedOrganizationViewModel =
@@ -43,6 +47,9 @@ class EventOverviewViewModel(
   private val _uiState = MutableStateFlow(OverviewUIState())
   // Publicly exposed immutable UI state
   val uiState: StateFlow<OverviewUIState> = _uiState.asStateFlow()
+
+  // Wrap for brevity
+  private fun requireOrgId(): String = selectedOrganizationViewModel.getSelectedOrganizationId()
 
   /** Sets an error message in the UI state. */
   private fun setErrorMsg(errorMsg: String) {
@@ -66,8 +73,7 @@ class EventOverviewViewModel(
   fun deleteEvent(eventId: String) {
     viewModelScope.launch {
       try {
-        val orgId = selectedOrganizationViewModel.selectedOrganizationId.value
-        require(orgId != null) { "Organization must be selected to delete an event" }
+        val orgId = requireOrgId()
 
         eventRepository.deleteEvent(orgId = orgId, itemId = eventId)
         _uiState.value = _uiState.value.copy(isDeleteSuccessful = true)
@@ -91,8 +97,7 @@ class EventOverviewViewModel(
     viewModelScope.launch {
       setLoading(true)
       try {
-        val orgId = selectedOrganizationViewModel.selectedOrganizationId.value
-        require(orgId != null) { "Organization must be selected to delete an event" }
+        val orgId = requireOrgId()
 
         val event =
             eventRepository.getEventById(orgId = orgId, itemId = eventId)
@@ -148,9 +153,10 @@ class EventOverviewViewModel(
 
       // To still see something coherent with what we "add", we update it like so :
       val participantsNames = _uiState.value.event!!.participants.toList()
+      val allParticipant = userRepository.getUsersByIds(participantsNames)
 
       // update the uiState with the new participants list
-      _uiState.value = _uiState.value.copy(participantsNames = participantsNames)
+      _uiState.value = _uiState.value.copy(participantsNames = allParticipant)
     }
   }
 }

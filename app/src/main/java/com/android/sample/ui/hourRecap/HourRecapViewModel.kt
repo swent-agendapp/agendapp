@@ -1,6 +1,7 @@
 package com.android.sample.ui.hourRecap
 
 import androidx.annotation.VisibleForTesting
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -29,14 +30,19 @@ data class HourRecapEventEntry(
     val wasPresent: Boolean?,
     val wasReplaced: Boolean,
     val tookReplacement: Boolean,
+    val categoryColor: Color,
 )
 
 data class HourRecapUserRecap(
     val userId: String,
     val displayName: String,
-    val totalHours: Double,
+    val completedHours: Double,
+    val plannedHours: Double,
     val events: List<HourRecapEventEntry>,
-)
+) {
+  val totalHours: Double
+    get() = completedHours + plannedHours
+}
 
 data class HourRecapUiState(
     val userRecaps: List<HourRecapUserRecap> = emptyList(),
@@ -108,14 +114,21 @@ class HourRecapViewModel(
       start: Instant,
       end: Instant
   ): List<HourRecapUserRecap> {
-    val workedHours = eventRepository.calculateWorkedHours(orgId, start, end)
+    val pastHours = eventRepository.calculateWorkedHoursPastEvents(orgId, start, end).toMap()
+    val futureHours = eventRepository.calculateWorkedHoursFutureEvents(orgId, start, end).toMap()
     val events = eventRepository.getEventsBetweenDates(orgId, start, end)
-    val users = userRepository.getUsersByIds(workedHours.map { it.first })
+    val users =
+        userRepository.getUsersByIds(
+            (pastHours.keys + futureHours.keys).distinct().toList())
     val userMap = users.associateBy { it.id }
     val now = Instant.now()
 
-    return workedHours.mapNotNull { (userId, totalHours) ->
+    val allEmployeeIds = (pastHours.keys + futureHours.keys).distinct()
+
+    return allEmployeeIds.mapNotNull { userId ->
       val user = userMap[userId] ?: return@mapNotNull null
+      val completed = pastHours[userId] ?: 0.0
+      val planned = futureHours[userId] ?: 0.0
       val userEvents =
           events
               .filter { event -> userId in event.participants || userId in event.assignedUsers }
@@ -125,7 +138,8 @@ class HourRecapViewModel(
       HourRecapUserRecap(
           userId = userId,
           displayName = user.display(),
-          totalHours = totalHours,
+          completedHours = completed,
+          plannedHours = planned,
           events = userEvents)
     }
   }
@@ -146,7 +160,9 @@ class HourRecapViewModel(
         isPast = isPast,
         wasPresent = presenceStatus,
         wasReplaced = wasReplaced,
-        tookReplacement = tookReplacement)
+        tookReplacement = tookReplacement,
+        categoryColor = category.color,
+    )
   }
 
   companion object {

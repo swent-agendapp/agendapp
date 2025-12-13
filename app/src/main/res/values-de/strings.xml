@@ -201,7 +201,6 @@
     <string name="hour_recap_generate">Zusammenfassung erstellen</string>
     <string name="hour_recap_completed_hours_label">Abgeschlossen</string>
     <string name="hour_recap_planned_hours_label">Geplant</string>
-    <string name="hour_recap_categories_label">Kategorien</string>
     <string name="export_excel">Nach Excel exportieren</string>
 
     <!-- Filters -->
@@ -254,7 +253,6 @@
     <string name="hour_recap_no_events_in_range_heading">Keine Ereignisse für diesen Zeitraum</string>
     <string name="hour_recap_no_events_in_range_details">Passen Sie die Daten an oder erweitern Sie den Zeitraum, um alle Schichten zu sehen.</string>
     <string name="hour_recap_event_date_time">%1$s · %2$s - %3$s</string>
-    <string name="hour_recap_tag_past">Vergangenes Ereignis</string>
     <string name="hour_recap_tag_future">Zukünftiges Ereignis</string>
     <string name="hour_recap_tag_present">Anwesenheit bestätigt</string>
     <string name="hour_recap_tag_absent">Abwesenheit bestätigt</string>

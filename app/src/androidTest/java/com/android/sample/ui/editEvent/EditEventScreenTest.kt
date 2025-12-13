@@ -115,7 +115,7 @@ class EditEventScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
     assert(backClicked)
   }
 
-  @Ignore
+  @Ignore("This test is making the CI flaky, needs investigation")
   @Test
   fun editEventAttendantScreen_toggleParticipantCheckbox() {
     // Add Alice to participants to verify she appears in the list

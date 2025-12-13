@@ -141,29 +141,12 @@ fun HourRecapScreen(
                     .fillMaxSize()
                     .testTag(HourRecapTestTags.SCREEN_ROOT),
             verticalArrangement = Arrangement.Top) {
-
-              // ---- Start date Picker ----
-              DatePickerFieldToModal(
-                  label = stringResource(R.string.startDatePickerLabel),
-                  modifier = Modifier.fillMaxWidth().testTag(HourRecapTestTags.START_DATE),
-                  onDateSelected = { startDate = it })
-
-              Spacer(Modifier.height(SpacingMedium))
-
-              // ---- End date Picker ----
-              DatePickerFieldToModal(
-                  label = stringResource(R.string.endDatePickerLabel),
-                  modifier = Modifier.fillMaxWidth().testTag(HourRecapTestTags.END_DATE),
-                  onDateSelected = { endDate = it })
-
-              Spacer(Modifier.height(SpacingMedium))
-
-              // ---- Generate Recap Button ----
-              PrimaryButton(
-                  modifier = Modifier.fillMaxWidth().testTag(HourRecapTestTags.GENERATE_BUTTON),
-                  text = stringResource(R.string.hour_recap_generate),
-                  enabled = startDate != null && endDate != null && !startDate!!.isAfter(endDate!!),
-                  onClick = {
+              DateRangePicker(
+                  startDate = startDate,
+                  endDate = endDate,
+                  onStartDateSelected = { startDate = it },
+                  onEndDateSelected = { endDate = it },
+                  onGenerateClick = {
                     hasGenerated = true
                     hourRecapViewModel.calculateWorkedHours(
                         start = startDate!!.atStartOfDay().toInstant(ZoneOffset.UTC),
@@ -172,119 +155,16 @@ fun HourRecapScreen(
 
               Spacer(Modifier.height(SpacingLarge))
 
-              // ---- Title ----
               Text(
                   text = stringResource(R.string.hour_recap_results_title),
                   style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
 
               Spacer(Modifier.height(SpacingMedium))
 
-              // ---- LOADING ----
-              if (uiState.isLoading) {
-                Loading(
-                    modifier = Modifier.fillMaxSize(),
-                    label = stringResource(R.string.loading_hours))
-              } else {
-                // ---- LIST OF WORKED HOURS ----
-                LazyColumn(modifier = Modifier.testTag(HourRecapTestTags.RECAP_LIST)) {
-                  if (uiState.userRecaps.isEmpty() && hasGenerated) {
-                    item {
-                      ElevatedCard(
-                          modifier = Modifier.fillMaxWidth().padding(vertical = SpacingMedium),
-                          colors =
-                              CardDefaults.elevatedCardColors(
-                                  containerColor =
-                                      MaterialTheme.colorScheme.surfaceVariant.copy(
-                                          alpha = 0.6f))) {
-                            Column(
-                                modifier =
-                                    Modifier.fillMaxWidth()
-                                        .padding(
-                                            horizontal = SpacingLarge, vertical = SpacingMedium),
-                                horizontalAlignment = Alignment.CenterHorizontally) {
-                                  Icon(
-                                      imageVector = Icons.Default.Info,
-                                      contentDescription = null,
-                                      tint = MaterialTheme.colorScheme.primary)
-                                  Spacer(Modifier.height(PaddingSmall))
-                                  Text(
-                                      text =
-                                          stringResource(
-                                              R.string.hour_recap_no_events_in_range_heading),
-                                      style =
-                                          MaterialTheme.typography.titleSmall.copy(
-                                              fontWeight = FontWeight.SemiBold))
-                                  Spacer(Modifier.height(PaddingExtraSmall))
-                                  Text(
-                                      text =
-                                          stringResource(
-                                              R.string.hour_recap_no_events_in_range_details),
-                                      style = MaterialTheme.typography.bodyMedium,
-                                      color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                      textAlign = TextAlign.Center)
-                                }
-                          }
-                    }
-                  }
-
-                  items(uiState.userRecaps, key = { it.userId }) { recap ->
-                    Card(
-                        modifier =
-                            Modifier.fillMaxWidth()
-                                .padding(vertical = PaddingSmall)
-                                .testTag(HourRecapTestTags.RECAP_ITEM),
-                        onClick = { selectedUser = recap },
-                        elevation = CardDefaults.cardElevation(ElevationLow)) {
-                          Column(modifier = Modifier.fillMaxWidth().padding(PaddingMedium)) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically) {
-                                  Text(
-                                      text = recap.displayName,
-                                      style = MaterialTheme.typography.bodyLarge,
-                                      modifier = Modifier.weight(Weight))
-                                  Surface(
-                                      shape = MaterialTheme.shapes.small,
-                                      color =
-                                          MaterialTheme.colorScheme.surfaceVariant
-                                              .copy(alpha = 0.6f)
-                                              .compositeOver(MaterialTheme.colorScheme.surface)) {
-                                        Text(
-                                            modifier = Modifier.padding(horizontal = PaddingSmall),
-                                            text = formatDecimalHoursToTime(recap.totalHours),
-                                            style =
-                                                MaterialTheme.typography.labelMedium.copy(
-                                                    fontWeight = FontWeight.SemiBold))
-                                      }
-                                }
-
-                            Spacer(Modifier.height(PaddingSmall))
-
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(PaddingSmall)) {
-                                  HourRecapStat(
-                                      label =
-                                          stringResource(R.string.hour_recap_completed_hours_label),
-                                      value = formatDecimalHoursToTime(recap.completedHours),
-                                      containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                      contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                                  )
-
-                                  HourRecapStat(
-                                      label =
-                                          stringResource(R.string.hour_recap_planned_hours_label),
-                                      value = formatDecimalHoursToTime(recap.plannedHours),
-                                      containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                                      contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                                  )
-                                }
-                          }
-                        }
-                  }
-                }
-              }
+              RecapList(
+                  uiState = uiState,
+                  hasGenerated = hasGenerated,
+                  onUserClick = { selectedUser = it })
             }
       }
 
@@ -385,41 +265,7 @@ private fun HourRecapEventCard(
                     end.toLocalTime().format(timeFormatter)),
             style = MaterialTheme.typography.bodyMedium)
         Spacer(Modifier.height(PaddingSmall))
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(PaddingSmall)) {
-          if (!event.isPast) {
-            val timeLabel = stringResource(R.string.hour_recap_tag_future)
-            val timeColor = MaterialTheme.colorScheme.tertiaryContainer // Purple for future
-            RecapTag(label = timeLabel, containerColor = timeColor)
-          }
-
-          if (event.isPast) {
-            val presenceLabel =
-                when (event.wasPresent) {
-                  true -> stringResource(R.string.hour_recap_tag_present)
-                  false -> stringResource(R.string.hour_recap_tag_absent)
-                  null -> stringResource(R.string.hour_recap_tag_presence_unknown)
-                }
-            val presenceColor =
-                when (event.wasPresent) {
-                  true -> Color(0xFF4CAF50) // Green for presence confirmed
-                  false -> MaterialTheme.colorScheme.errorContainer // Red for absent
-                  null -> MaterialTheme.colorScheme.surfaceVariant // Grey for unknown
-                }
-            RecapTag(label = presenceLabel, containerColor = presenceColor)
-          }
-
-          if (event.wasReplaced) {
-            RecapTag(
-                label = stringResource(R.string.hour_recap_tag_replaced),
-                containerColor = Color(0xFFFF9800)) // Orange for replaced
-          }
-
-          if (event.tookReplacement) {
-            RecapTag(
-                label = stringResource(R.string.hour_recap_tag_replacement_taken),
-                containerColor = Color(0xFF00BCD4)) // Cyan for took replacement
-          }
-        }
+        EventTagsRow(event = event)
       }
 
       Box(
@@ -463,4 +309,188 @@ private fun RecapTag(label: String, containerColor: Color) {
             style = MaterialTheme.typography.labelMedium,
         )
       }
+}
+
+@Composable
+private fun DateRangePicker(
+    startDate: LocalDate?,
+    endDate: LocalDate?,
+    onStartDateSelected: (LocalDate) -> Unit,
+    onEndDateSelected: (LocalDate) -> Unit,
+    onGenerateClick: () -> Unit
+) {
+  DatePickerFieldToModal(
+      label = stringResource(R.string.startDatePickerLabel),
+      modifier = Modifier.fillMaxWidth().testTag(HourRecapTestTags.START_DATE),
+      onDateSelected = onStartDateSelected)
+
+  Spacer(Modifier.height(SpacingMedium))
+
+  DatePickerFieldToModal(
+      label = stringResource(R.string.endDatePickerLabel),
+      modifier = Modifier.fillMaxWidth().testTag(HourRecapTestTags.END_DATE),
+      onDateSelected = onEndDateSelected)
+
+  Spacer(Modifier.height(SpacingMedium))
+
+  PrimaryButton(
+      modifier = Modifier.fillMaxWidth().testTag(HourRecapTestTags.GENERATE_BUTTON),
+      text = stringResource(R.string.hour_recap_generate),
+      enabled = startDate != null && endDate != null && !startDate.isAfter(endDate),
+      onClick = onGenerateClick)
+}
+
+@Composable
+private fun RecapList(
+    uiState: HourRecapUiState,
+    hasGenerated: Boolean,
+    onUserClick: (HourRecapUserRecap) -> Unit
+) {
+  if (uiState.isLoading) {
+    Loading(modifier = Modifier.fillMaxSize(), label = stringResource(R.string.loading_hours))
+  } else {
+    LazyColumn(modifier = Modifier.testTag(HourRecapTestTags.RECAP_LIST)) {
+      if (uiState.userRecaps.isEmpty() && hasGenerated) {
+        item { EmptyRecapCard() }
+      }
+
+      items(uiState.userRecaps, key = { it.userId }) { recap ->
+        RecapItemCard(recap = recap, onClick = { onUserClick(recap) })
+      }
+    }
+  }
+}
+
+@Composable
+private fun EmptyRecapCard() {
+  ElevatedCard(
+      modifier = Modifier.fillMaxWidth().padding(vertical = SpacingMedium),
+      colors =
+          CardDefaults.elevatedCardColors(
+              containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f))) {
+        Column(
+            modifier =
+                Modifier.fillMaxWidth()
+                    .padding(horizontal = SpacingLarge, vertical = SpacingMedium),
+            horizontalAlignment = Alignment.CenterHorizontally) {
+              Icon(
+                  imageVector = Icons.Default.Info,
+                  contentDescription = null,
+                  tint = MaterialTheme.colorScheme.primary)
+              Spacer(Modifier.height(PaddingSmall))
+              Text(
+                  text = stringResource(R.string.hour_recap_no_events_in_range_heading),
+                  style =
+                      MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold))
+              Spacer(Modifier.height(PaddingExtraSmall))
+              Text(
+                  text = stringResource(R.string.hour_recap_no_events_in_range_details),
+                  style = MaterialTheme.typography.bodyMedium,
+                  color = MaterialTheme.colorScheme.onSurfaceVariant,
+                  textAlign = TextAlign.Center)
+            }
+      }
+}
+
+@Composable
+private fun RecapItemCard(recap: HourRecapUserRecap, onClick: () -> Unit) {
+  Card(
+      modifier =
+          Modifier.fillMaxWidth()
+              .padding(vertical = PaddingSmall)
+              .testTag(HourRecapTestTags.RECAP_ITEM),
+      onClick = onClick,
+      elevation = CardDefaults.cardElevation(ElevationLow)) {
+        Column(modifier = Modifier.fillMaxWidth().padding(PaddingMedium)) {
+          Row(
+              modifier = Modifier.fillMaxWidth(),
+              horizontalArrangement = Arrangement.SpaceBetween,
+              verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = recap.displayName,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.weight(Weight))
+                Surface(
+                    shape = MaterialTheme.shapes.small,
+                    color =
+                        MaterialTheme.colorScheme.surfaceVariant
+                            .copy(alpha = 0.6f)
+                            .compositeOver(MaterialTheme.colorScheme.surface)) {
+                      Text(
+                          modifier = Modifier.padding(horizontal = PaddingSmall),
+                          text = formatDecimalHoursToTime(recap.totalHours),
+                          style =
+                              MaterialTheme.typography.labelMedium.copy(
+                                  fontWeight = FontWeight.SemiBold))
+                    }
+              }
+
+          Spacer(Modifier.height(PaddingSmall))
+
+          Row(
+              modifier = Modifier.fillMaxWidth(),
+              horizontalArrangement = Arrangement.spacedBy(PaddingSmall)) {
+                HourRecapStat(
+                    label = stringResource(R.string.hour_recap_completed_hours_label),
+                    value = formatDecimalHoursToTime(recap.completedHours),
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+
+                HourRecapStat(
+                    label = stringResource(R.string.hour_recap_planned_hours_label),
+                    value = formatDecimalHoursToTime(recap.plannedHours),
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                )
+              }
+        }
+      }
+}
+
+@Composable
+@OptIn(ExperimentalLayoutApi::class)
+private fun EventTagsRow(event: HourRecapEventEntry) {
+  FlowRow(horizontalArrangement = Arrangement.spacedBy(PaddingSmall)) {
+    if (!event.isPast) {
+      RecapTag(
+          label = stringResource(R.string.hour_recap_tag_future),
+          containerColor = MaterialTheme.colorScheme.tertiaryContainer)
+    }
+
+    if (event.isPast) {
+      val (presenceLabel, presenceColor) = getPresenceTagInfo(event.wasPresent)
+      RecapTag(label = presenceLabel, containerColor = presenceColor)
+    }
+
+    if (event.wasReplaced) {
+      RecapTag(
+          label = stringResource(R.string.hour_recap_tag_replaced),
+          containerColor = Color(0xFFFF9800))
+    }
+
+    if (event.tookReplacement) {
+      RecapTag(
+          label = stringResource(R.string.hour_recap_tag_replacement_taken),
+          containerColor = Color(0xFF00BCD4))
+    }
+  }
+}
+
+@Composable
+private fun getPresenceTagInfo(wasPresent: Boolean?): Pair<String, Color> {
+  return when (wasPresent) {
+    true ->
+        Pair(
+            stringResource(R.string.hour_recap_tag_present),
+            Color(0xFF4CAF50)) // Green for presence confirmed
+    false ->
+        Pair(
+            stringResource(R.string.hour_recap_tag_absent),
+            MaterialTheme.colorScheme.errorContainer) // Red for absent
+    null ->
+        Pair(
+            stringResource(R.string.hour_recap_tag_presence_unknown),
+            MaterialTheme.colorScheme.surfaceVariant) // Grey for unknown
+  }
 }

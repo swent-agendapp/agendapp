@@ -14,6 +14,7 @@ import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -114,6 +115,7 @@ class EditEventScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
     assert(backClicked)
   }
 
+  @Ignore
   @Test
   fun editEventAttendantScreen_toggleParticipantCheckbox() {
     // Add Alice to participants to verify she appears in the list

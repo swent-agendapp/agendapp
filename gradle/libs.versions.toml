@@ -55,6 +55,9 @@ places = "3.5.0"
 coreKtxVersion = "1.7.0"
 animation = "1.7.5"
 
+# Reordarable lists
+reorderable = "0.9.6"
+
 [libraries]
 
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
@@ -125,6 +128,8 @@ androidx-compose-animation = { group = "androidx.compose.animation", name = "ani
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlinx-coroutines-play-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "coroutines" }
+
+burnoutcrew-reorderable = { module = "org.burnoutcrew.composereorderable:reorderable", version.ref = "reorderable" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

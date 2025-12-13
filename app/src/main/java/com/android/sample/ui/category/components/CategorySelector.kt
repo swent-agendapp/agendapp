@@ -1,4 +1,4 @@
-package com.android.sample.ui.calendar.components
+package com.android.sample.ui.category.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -10,9 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -29,19 +27,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.android.sample.R
 import com.android.sample.model.category.EventCategory
 import com.android.sample.model.category.mockData.getMockEventCategory
-import com.android.sample.ui.theme.BorderWidthThick
 import com.android.sample.ui.theme.BorderWidthThin
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.PaddingSmall
-import com.android.sample.ui.theme.SizeMedium
 import com.android.sample.ui.theme.SpacingMedium
 import com.android.sample.ui.theme.SpacingSmall
 import com.android.sample.ui.theme.WeightExtraHeavy
@@ -251,23 +246,4 @@ private fun CategoryDropdownItemContent(
         Spacer(modifier = Modifier.width(SpacingSmall))
         Text(text = categoryLabel, fontWeight = fontWeight)
       }
-}
-
-@Composable
-private fun ColorCircle(
-    color: Color,
-    isSelected: Boolean,
-    modifier: Modifier = Modifier,
-) {
-  Box(
-      modifier =
-          modifier
-              .size(SizeMedium)
-              .clip(CircleShape)
-              .background(color)
-              .border(
-                  width = if (isSelected) BorderWidthThick else BorderWidthThin,
-                  color = MaterialTheme.colorScheme.onSurface,
-                  shape = CircleShape),
-  )
 }

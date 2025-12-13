@@ -18,6 +18,7 @@ import com.android.sample.ui.authentication.SignInScreenTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
+import com.android.sample.ui.category.EditCategoryScreenTestTags
 import com.android.sample.ui.common.BottomBarTestTags
 import com.android.sample.ui.hourRecap.HourRecapTestTags
 import com.android.sample.ui.invitation.InvitationOverviewScreenTestTags
@@ -200,6 +201,30 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
         .performClick()
 
     composeTestRule.onNodeWithTag(InvitationOverviewScreenTestTags.ROOT).assertIsDisplayed()
+  }
+
+  @Test
+  fun goToEditCategoryScreen() {
+    composeTestRule.setContent { Agendapp() }
+
+    createOrganizationAndNavigateToCalendar()
+
+    composeTestRule.onNodeWithTag(BottomBarTestTags.BOTTOM_BAR).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_SETTINGS).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_SETTINGS).assertExists().performClick()
+
+    composeTestRule
+        .onNodeWithTag(SettingsScreenTestTags.ORGANIZATION_BUTTON)
+        .assertIsDisplayed()
+        .performClick()
+
+    composeTestRule.onNodeWithTag(OrganizationOverviewScreenTestTags.ROOT).assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag(OrganizationOverviewScreenTestTags.EDIT_CATEGORY_BUTTON)
+        .assertIsDisplayed()
+        .performClick()
+
+    composeTestRule.onNodeWithTag(EditCategoryScreenTestTags.SCREEN_ROOT).assertIsDisplayed()
   }
 
   @Test

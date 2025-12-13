@@ -4,13 +4,14 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FileDownload
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
@@ -172,10 +174,41 @@ fun HourRecapScreen(
                 LazyColumn(modifier = Modifier.testTag(HourRecapTestTags.RECAP_LIST)) {
                   if (uiState.userRecaps.isEmpty() && hasGenerated) {
                     item {
-                      Text(
-                          text = stringResource(R.string.hour_recap_no_events_in_range),
-                          style = MaterialTheme.typography.bodyMedium,
-                          color = MaterialTheme.colorScheme.onSurfaceVariant)
+                      ElevatedCard(
+                          modifier =
+                              Modifier.fillMaxWidth()
+                                  .padding(vertical = SpacingMedium),
+                          colors =
+                              CardDefaults.elevatedCardColors(
+                                  containerColor =
+                                      MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f))) {
+                            Column(
+                                modifier =
+                                    Modifier.fillMaxWidth()
+                                        .padding(horizontal = SpacingLarge, vertical = SpacingMedium),
+                                horizontalAlignment = Alignment.CenterHorizontally) {
+                                  Icon(
+                                      imageVector = Icons.Default.Info,
+                                      contentDescription = null,
+                                      tint = MaterialTheme.colorScheme.primary)
+                                  Spacer(Modifier.height(PaddingSmall))
+                                  Text(
+                                      text =
+                                          stringResource(
+                                              R.string.hour_recap_no_events_in_range_heading),
+                                      style =
+                                          MaterialTheme.typography.titleSmall.copy(
+                                              fontWeight = FontWeight.SemiBold))
+                                  Spacer(Modifier.height(PaddingExtraSmall))
+                                  Text(
+                                      text =
+                                          stringResource(
+                                              R.string.hour_recap_no_events_in_range_details),
+                                      style = MaterialTheme.typography.bodyMedium,
+                                      color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                      textAlign = TextAlign.Center)
+                                }
+                              }
                     }
                   }
 
@@ -301,62 +334,65 @@ private fun HourRecapEventCard(
   val start = event.startDate.atZone(ZoneId.systemDefault())
   val end = event.endDate.atZone(ZoneId.systemDefault())
   Card(modifier = Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(ElevationLow)) {
-    Column(modifier = Modifier.padding(PaddingMedium)) {
-      Row(verticalAlignment = Alignment.CenterVertically) {
-        Box(
-            modifier =
-                Modifier.size(12.dp).clip(CircleShape).background(event.categoryColor))
-        Spacer(Modifier.width(PaddingSmall))
+    Row(modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
+      Column(modifier = Modifier.weight(1f).padding(PaddingMedium)) {
         Text(
             text = event.title,
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.SemiBold)
+        Spacer(Modifier.height(PaddingExtraSmall))
+        Text(
+            text =
+                stringResource(
+                    R.string.hour_recap_event_date_time,
+                    start.toLocalDate().format(dateFormatter),
+                    start.toLocalTime().format(timeFormatter),
+                    end.toLocalTime().format(timeFormatter)),
+            style = MaterialTheme.typography.bodyMedium)
+        Spacer(Modifier.height(PaddingSmall))
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(PaddingSmall)) {
+          if (!event.isPast) {
+            val timeLabel = stringResource(R.string.hour_recap_tag_future)
+            val timeColor = MaterialTheme.colorScheme.tertiaryContainer // Purple for future
+            RecapTag(label = timeLabel, containerColor = timeColor)
+          }
+
+          if (event.isPast) {
+            val presenceLabel =
+                when (event.wasPresent) {
+                  true -> stringResource(R.string.hour_recap_tag_present)
+                  false -> stringResource(R.string.hour_recap_tag_absent)
+                  null -> stringResource(R.string.hour_recap_tag_presence_unknown)
+                }
+            val presenceColor =
+                when (event.wasPresent) {
+                  true -> Color(0xFF4CAF50) // Green for presence confirmed
+                  false -> MaterialTheme.colorScheme.errorContainer // Red for absent
+                  null -> MaterialTheme.colorScheme.surfaceVariant // Grey for unknown
+                }
+            RecapTag(label = presenceLabel, containerColor = presenceColor)
+          }
+
+          if (event.wasReplaced) {
+            RecapTag(
+                label = stringResource(R.string.hour_recap_tag_replaced),
+                containerColor = Color(0xFFFF9800)) // Orange for replaced
+          }
+
+          if (event.tookReplacement) {
+            RecapTag(
+                label = stringResource(R.string.hour_recap_tag_replacement_taken),
+                containerColor = Color(0xFF00BCD4)) // Cyan for took replacement
+          }
+        }
       }
-      Spacer(Modifier.height(PaddingExtraSmall))
-      Text(
-          text =
-              stringResource(
-                  R.string.hour_recap_event_date_time,
-                  start.toLocalDate().format(dateFormatter),
-                  start.toLocalTime().format(timeFormatter),
-                  end.toLocalTime().format(timeFormatter)),
-          style = MaterialTheme.typography.bodyMedium)
-      Spacer(Modifier.height(PaddingSmall))
-      FlowRow(horizontalArrangement = Arrangement.spacedBy(PaddingSmall)) {
-        if (!event.isPast) {
-          val timeLabel = stringResource(R.string.hour_recap_tag_future)
-          val timeColor = MaterialTheme.colorScheme.tertiaryContainer // Purple for future
-          RecapTag(label = timeLabel, containerColor = timeColor)
-        }
 
-        if (event.isPast) {
-          val presenceLabel =
-              when (event.wasPresent) {
-                true -> stringResource(R.string.hour_recap_tag_present)
-                false -> stringResource(R.string.hour_recap_tag_absent)
-                null -> stringResource(R.string.hour_recap_tag_presence_unknown)
-              }
-          val presenceColor =
-              when (event.wasPresent) {
-                true -> Color(0xFF4CAF50) // Green for presence confirmed
-                false -> MaterialTheme.colorScheme.errorContainer // Red for absent
-                null -> MaterialTheme.colorScheme.surfaceVariant // Grey for unknown
-              }
-          RecapTag(label = presenceLabel, containerColor = presenceColor)
-        }
-
-        if (event.wasReplaced) {
-          RecapTag(
-              label = stringResource(R.string.hour_recap_tag_replaced),
-              containerColor = Color(0xFFFF9800)) // Orange for replaced
-        }
-
-        if (event.tookReplacement) {
-          RecapTag(
-              label = stringResource(R.string.hour_recap_tag_replacement_taken),
-              containerColor = Color(0xFF00BCD4)) // Cyan for took replacement
-        }
-      }
+      Box(
+          modifier =
+              Modifier.width(10.dp)
+                  .fillMaxHeight()
+                  .clip(MaterialTheme.shapes.medium)
+                  .background(event.categoryColor))
     }
   }
 }

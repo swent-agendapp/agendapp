@@ -52,7 +52,8 @@ object ProcessReplacementTestTags {
   const val SEND_BUTTON = "process_replacement_send_button"
   private const val MEMBER_PREFIX = "process_replacement_member_"
 
-    fun memberTag(user: User): String = MEMBER_PREFIX + (user.displayName ?: user.email ?: user.id)}
+  fun memberTag(user: User): String = MEMBER_PREFIX + (user.displayName ?: user.email ?: user.id)
+}
 
 private val DefaultCandidates =
     listOf("Emilien", "Haobin", "Noa", "Weifeng", "Timael", "Méline", "Nathan")
@@ -146,8 +147,8 @@ fun ProcessReplacementScreen(
 
               PrimaryButton(
                   onClick = {
-                      onSendRequests(selectedMembers.toList())
-                      Toast.makeText(
+                    onSendRequests(selectedMembers.toList())
+                    Toast.makeText(
                             context,
                             context.getString(R.string.replacement_requests_sent_success),
                             Toast.LENGTH_SHORT,

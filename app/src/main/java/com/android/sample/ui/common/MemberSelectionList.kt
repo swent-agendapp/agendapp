@@ -71,9 +71,7 @@ fun MemberSelectionList(
 
   val filteredMembers =
       remember(searchQuery, members) {
-          members.filter { member ->
-              member.display().contains(searchQuery, ignoreCase = true)
-          }
+        members.filter { member -> member.display().contains(searchQuery, ignoreCase = true) }
       }
 
   Card(

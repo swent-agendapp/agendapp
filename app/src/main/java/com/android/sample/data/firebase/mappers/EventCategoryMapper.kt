@@ -1,4 +1,4 @@
-package com.android.sample.model.firestoreMappers
+package com.android.sample.data.firebase.mappers
 
 import androidx.compose.ui.graphics.Color
 import com.android.sample.model.calendar.Event

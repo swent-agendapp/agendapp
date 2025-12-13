@@ -1,7 +1,7 @@
 package com.android.sample.model.firestoreMappersTests
 
+import com.android.sample.data.firebase.mappers.InvitationMapper
 import com.android.sample.model.authentication.User
-import com.android.sample.model.firestoreMappers.InvitationMapper
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.invitation.Invitation
 import com.android.sample.model.organization.invitation.InvitationStatus

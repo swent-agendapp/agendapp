@@ -1,6 +1,6 @@
 package com.android.sample.model.firestoreMappersTests
 
-import com.android.sample.model.firestoreMappers.MarkerMapper
+import com.android.sample.data.firebase.mappers.MarkerMapper
 import com.android.sample.model.map.Location
 import com.android.sample.model.map.Marker
 import com.google.common.truth.Truth.assertThat

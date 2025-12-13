@@ -1,5 +1,7 @@
 package com.android.sample.ui.calendar
 
+import com.android.sample.data.global.repositories.EventRepository
+import com.android.sample.data.local.repositories.EventRepositoryInMemory
 import com.android.sample.model.authentication.AuthRepository
 import com.android.sample.model.authentication.FakeAuthRepository
 import com.android.sample.model.authentication.User

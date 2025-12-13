@@ -1,4 +1,4 @@
-package com.android.sample.data.local
+package com.android.sample.data.global.providers
 
 import android.content.Context
 import com.android.sample.data.local.objects.EventEntity

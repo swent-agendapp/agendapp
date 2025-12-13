@@ -12,7 +12,7 @@ import androidx.compose.ui.test.swipeLeft
 import androidx.compose.ui.test.swipeRight
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.rule.GrantPermissionRule
-import com.android.sample.model.calendar.EventRepositoryInMemory
+import com.android.sample.data.local.repositories.EventRepositoryInMemory
 import com.android.sample.model.map.MapRepositoryLocal
 import com.android.sample.ui.calendar.components.ViewMode
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase

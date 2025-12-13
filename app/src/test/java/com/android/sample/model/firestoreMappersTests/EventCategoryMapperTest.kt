@@ -1,7 +1,7 @@
 package com.android.sample.model.firestoreMappersTests
 
+import com.android.sample.data.firebase.mappers.EventCategoryMapper
 import com.android.sample.model.category.EventCategory
-import com.android.sample.model.firestoreMappers.EventCategoryMapper
 import com.android.sample.ui.theme.EventPalette
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.firestore.DocumentSnapshot

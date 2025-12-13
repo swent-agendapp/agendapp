@@ -1,13 +1,16 @@
 package com.android.sample.ui.hourRecap
 
+import com.android.sample.data.fake.repositories.FakeEventRepository
+import com.android.sample.data.fake.repositories.RepoMethod
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepository
 import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.calendar.Event
-import com.android.sample.model.calendar.EventRepository
+import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.repository.OrganizationRepositoryLocal
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
+import java.time.Duration
 import java.time.Instant
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -17,67 +20,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.*
 import org.junit.*
 
-/** Minimal fake repository implementing only what HourRecapViewModel needs. */
-class SimpleFakeEventRepository : EventRepository {
-  var result: List<Pair<String, Double>> = emptyList()
-  var shouldThrow = false
-
-  override fun getNewUid(): String {
-    error("Not needed in test")
-  }
-
-  override suspend fun getAllEvents(orgId: String): List<Event> {
-    error("Not needed in test")
-  }
-
-  override suspend fun deleteEvent(orgId: String, itemId: String) {
-    error("Not needed in test")
-  }
-
-  override suspend fun getEventById(orgId: String, itemId: String): Event? {
-    error("Not needed in test")
-  }
-
-  override suspend fun getEventsBetweenDates(
-      orgId: String,
-      startDate: Instant,
-      endDate: Instant
-  ): List<Event> {
-    error("Not needed in test")
-  }
-
-  override suspend fun calculateWorkedHoursPastEvents(
-      orgId: String,
-      start: Instant,
-      end: Instant
-  ): List<Pair<String, Double>> {
-    error("Not needed in test")
-  }
-
-  override suspend fun calculateWorkedHoursFutureEvents(
-      orgId: String,
-      start: Instant,
-      end: Instant
-  ): List<Pair<String, Double>> {
-    error("Not needed in test")
-  }
-
-  override suspend fun calculateWorkedHours(
-      orgId: String,
-      start: Instant,
-      end: Instant
-  ): List<Pair<String, Double>> {
-    if (shouldThrow) throw RuntimeException("error!")
-    return result
-  }
-}
-
 /** Minimal ViewModel test, without complex fake VM providers. */
 @OptIn(ExperimentalCoroutinesApi::class)
 class HourRecapViewModelTest {
 
   private val testDispatcher = StandardTestDispatcher()
-  private lateinit var repo: SimpleFakeEventRepository
+  private lateinit var repo: FakeEventRepository
   private lateinit var userRepo: UserRepository
   private lateinit var organizationRepository: OrganizationRepositoryLocal
 
@@ -90,7 +38,7 @@ class HourRecapViewModelTest {
   @Before
   fun setup() = runBlocking {
     Dispatchers.setMain(testDispatcher)
-    repo = SimpleFakeEventRepository()
+    repo = FakeEventRepository()
     userRepo = UsersRepositoryLocal()
     organizationRepository = OrganizationRepositoryLocal(userRepository = userRepo)
 
@@ -161,17 +109,38 @@ class HourRecapViewModelTest {
   @Test
   fun `calculateWorkedHours loads data successfully`() = runTest {
     val vm = makeVm()
-    repo.result = listOf("Bob" to 10.5)
+    val participantId = user.displayName ?: ""
+    val event =
+        Event(
+            id = "event1",
+            organizationId = selectedOrganizationID,
+            title = "Test Event",
+            description = "Just a test",
+            startDate = Instant.EPOCH.minusSeconds(3600),
+            endDate = Instant.EPOCH,
+            cloudStorageStatuses = emptySet(),
+            personalNotes = null,
+            participants = setOf(participantId),
+            presence = mapOf(participantId to true),
+            version = System.currentTimeMillis(),
+            recurrenceStatus = RecurrenceStatus.OneTime,
+            location = null)
+    repo.add(event)
 
     vm.calculateWorkedHours(start = Instant.EPOCH, end = Instant.EPOCH)
+
     advanceUntilIdle()
-    assertEquals(repo.result, vm.uiState.value.workedHours)
+
+    val expectedDuration = Duration.between(event.startDate, event.endDate).toMinutes() / 60.0
+    val expectedWorkedHours = listOf(participantId to expectedDuration)
+
+    assertEquals(expectedWorkedHours, vm.uiState.value.workedHours)
   }
 
   @Test
   fun `calculateWorkedHours sets error on exception`() = runTest {
     val vm = makeVm()
-    repo.shouldThrow = true
+    repo.failMethods.add(RepoMethod.GET_EVENTS_BETWEEN_DATES)
 
     vm.calculateWorkedHours(start = Instant.EPOCH, end = Instant.EPOCH)
     testDispatcher.scheduler.advanceUntilIdle()

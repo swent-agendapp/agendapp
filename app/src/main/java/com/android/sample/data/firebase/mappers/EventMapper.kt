@@ -1,4 +1,4 @@
-package com.android.sample.model.firestoreMappers
+package com.android.sample.data.firebase.mappers
 
 import androidx.compose.ui.graphics.Color
 import com.android.sample.model.calendar.CloudStorageStatus
@@ -11,6 +11,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import java.time.Instant
 import java.util.Date
 import java.util.UUID
+import kotlin.collections.get
 
 /** Maps Firestore documents to [Event] objects and vice versa. */
 object EventMapper : FirestoreMapper<Event> {

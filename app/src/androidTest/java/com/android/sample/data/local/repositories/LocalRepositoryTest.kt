@@ -3,7 +3,6 @@ package com.android.sample.data.local.repositories
 import com.android.sample.data.local.objects.EventEntity
 import com.android.sample.data.local.objects.MyObjectBox
 import com.android.sample.model.calendar.Event
-import com.android.sample.model.calendar.EventRepositoryLocal
 import com.android.sample.model.calendar.createEvent
 import io.objectbox.Box
 import io.objectbox.BoxStore
@@ -15,7 +14,7 @@ import org.junit.Before
 import org.junit.Test
 
 /**
- * Unit tests for [com.android.sample.model.calendar.EventRepositoryLocal].
+ * Unit tests for [EventRepositoryLocal].
  *
  * These tests verify expected repository contract behaviors using an in-memory fake implementation.
  */

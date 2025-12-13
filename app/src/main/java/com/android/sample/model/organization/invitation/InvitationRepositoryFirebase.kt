@@ -1,10 +1,10 @@
 package com.android.sample.model.organization.invitation
 
+import com.android.sample.data.firebase.mappers.InvitationMapper
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepository
 import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.constants.FirestoreConstants.INVITATIONS_COLLECTION_PATH
-import com.android.sample.model.firestoreMappers.InvitationMapper
 import com.android.sample.model.organization.data.Organization
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await

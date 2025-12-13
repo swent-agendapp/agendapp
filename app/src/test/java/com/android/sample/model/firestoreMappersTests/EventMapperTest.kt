@@ -1,10 +1,10 @@
 package com.android.sample.model.firestoreMappersTests
 
+import com.android.sample.data.firebase.mappers.EventMapper
 import com.android.sample.model.calendar.CloudStorageStatus
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.category.EventCategory
-import com.android.sample.model.firestoreMappers.EventMapper
 import com.android.sample.ui.theme.EventPalette
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.Timestamp

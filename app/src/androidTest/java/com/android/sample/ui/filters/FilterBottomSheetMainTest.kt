@@ -5,6 +5,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.filters.FilterBottomSheet
 import com.android.sample.ui.calendar.filters.FilterScreenTestTags
+import com.android.sample.ui.calendar.filters.FilterViewModel
 import org.junit.Rule
 import org.junit.Test
 
@@ -16,7 +17,10 @@ class FilterBottomSheetMainTest {
   /** Ensures the bottom sheet main page loads correctly */
   @Test
   fun filterBottomSheet_mainPage_displaysCategoryItems() {
-    compose.setContent { FilterBottomSheet(onDismiss = {}, onApply = {}) }
+    compose.setContent {
+      val filterVM = FilterViewModel()
+      FilterBottomSheet(onDismiss = {}, onApply = {}, filterVM)
+    }
 
     // Bottom sheet root exists
     compose.onNodeWithTag(CalendarScreenTestTags.FILTER_BOTTOM_SHEET).assertExists()
@@ -42,7 +46,10 @@ class FilterBottomSheetMainTest {
   /** Clicking "Event Type" navigates to EventType filter screen */
   @Test
   fun clickingEventType_opensEventTypeScreen() {
-    compose.setContent { FilterBottomSheet(onDismiss = {}, onApply = {}) }
+    compose.setContent {
+      val filterVM = FilterViewModel()
+      FilterBottomSheet(onDismiss = {}, onApply = {}, filterVM)
+    }
 
     compose.onNodeWithTag(FilterScreenTestTags.CATEGORY_EVENT_TYPE).performClick()
 
@@ -53,7 +60,10 @@ class FilterBottomSheetMainTest {
   /** Clicking Location navigates to Location filter screen */
   @Test
   fun clickingLocation_opensLocationScreen() {
-    compose.setContent { FilterBottomSheet(onDismiss = {}, onApply = {}) }
+    compose.setContent {
+      val filterVM = FilterViewModel()
+      FilterBottomSheet(onDismiss = {}, onApply = {}, filterVM)
+    }
 
     compose.onNodeWithTag(FilterScreenTestTags.CATEGORY_LOCATION).performClick()
 
@@ -64,7 +74,10 @@ class FilterBottomSheetMainTest {
   /** Clicking Participants navigates to Participant filter screen */
   @Test
   fun clickingParticipants_opensParticipantsScreen() {
-    compose.setContent { FilterBottomSheet(onDismiss = {}, onApply = {}) }
+    compose.setContent {
+      val filterVM = FilterViewModel()
+      FilterBottomSheet(onDismiss = {}, onApply = {}, filterVM)
+    }
 
     compose.onNodeWithTag(FilterScreenTestTags.CATEGORY_PARTICIPANTS).performClick()
 

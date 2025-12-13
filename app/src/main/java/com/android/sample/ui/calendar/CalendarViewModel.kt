@@ -14,12 +14,14 @@ import com.android.sample.model.map.LocationRepository
 import com.android.sample.model.map.LocationRepositoryAndroid
 import com.android.sample.model.map.MapRepository
 import com.android.sample.model.map.MapRepositoryProvider
+import com.android.sample.ui.calendar.filters.EventFilters
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import java.time.Instant
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 enum class LocationStatus {
@@ -154,11 +156,6 @@ class CalendarViewModel(
         errorMessage = "Failed to load events between $start and $end")
   }
 
-  // Placeholder for applying filters to the events
-  fun applyFilters(filters: Any) {
-    // Implementation for applying filters goes here
-  }
-
   /**
    * Refreshes events for the current date range (pull-to-refresh functionality).
    *
@@ -250,5 +247,26 @@ class CalendarViewModel(
         CalendarViewModel(app = app)
       }
     }
+  }
+
+  fun applyFilters(filters: EventFilters) {
+    val allEvents = uiState.value.events
+
+    val filtered =
+        allEvents.filter { event ->
+          val participantsMatch =
+              filters.participants.isEmpty() ||
+                  event.participants.any { it in filters.participants }
+
+          val eventTypeMatch =
+              filters.eventTypes.isEmpty() || filters.eventTypes.contains(event.category.label)
+
+          val locationMatch =
+              filters.locations.isEmpty() ||
+                  (event.location != null && filters.locations.contains(event.location))
+          participantsMatch && eventTypeMatch && locationMatch
+        }
+
+    _uiState.update { it.copy(events = filtered) }
   }
 }

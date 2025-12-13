@@ -168,7 +168,11 @@ class HourRecapViewModelTest {
     val data =
         listOf(
             HourRecapUserRecap(
-                userId = "Alice", displayName = "Alice", completedHours = 3.0, plannedHours = 2.0, events = emptyList()))
+                userId = "Alice",
+                displayName = "Alice",
+                completedHours = 3.0,
+                plannedHours = 2.0,
+                events = emptyList()))
 
     vm.setTestWorkedHours(data)
 

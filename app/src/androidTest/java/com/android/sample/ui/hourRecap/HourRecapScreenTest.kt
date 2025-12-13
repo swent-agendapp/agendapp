@@ -91,9 +91,17 @@ class HourRecapScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
     vm.setTestWorkedHours(
         listOf(
             HourRecapUserRecap(
-                userId = "alice", displayName = "Alice", completedHours = 12.5, plannedHours = 0.0, events = emptyList()),
+                userId = "alice",
+                displayName = "Alice",
+                completedHours = 12.5,
+                plannedHours = 0.0,
+                events = emptyList()),
             HourRecapUserRecap(
-                userId = "bob", displayName = "Bob", completedHours = 8.0, plannedHours = 0.0, events = emptyList())))
+                userId = "bob",
+                displayName = "Bob",
+                completedHours = 8.0,
+                plannedHours = 0.0,
+                events = emptyList())))
 
     compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
 
@@ -145,7 +153,11 @@ class HourRecapScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
     vm.setTestWorkedHours(
         listOf(
             HourRecapUserRecap(
-                userId = "alice", displayName = "Alice", completedHours = 8.0, plannedHours = 0.0, events = listOf(event))))
+                userId = "alice",
+                displayName = "Alice",
+                completedHours = 8.0,
+                plannedHours = 0.0,
+                events = listOf(event))))
 
     compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
 
@@ -181,7 +193,11 @@ class HourRecapScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
     vm.setTestWorkedHours(
         listOf(
             HourRecapUserRecap(
-                userId = "bob", displayName = "Bob", completedHours = 2.0, plannedHours = 0.0, events = listOf(event))))
+                userId = "bob",
+                displayName = "Bob",
+                completedHours = 2.0,
+                plannedHours = 0.0,
+                events = listOf(event))))
 
     compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
 
@@ -210,7 +226,11 @@ class HourRecapScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
     vm.setTestWorkedHours(
         listOf(
             HourRecapUserRecap(
-                userId = "user", displayName = "User", completedHours = 1.0, plannedHours = 0.0, events = listOf(event))))
+                userId = "user",
+                displayName = "User",
+                completedHours = 1.0,
+                plannedHours = 0.0,
+                events = listOf(event))))
 
     compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
 
@@ -232,7 +252,11 @@ class HourRecapScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
     vm.setTestWorkedHours(
         listOf(
             HourRecapUserRecap(
-                userId = "alice", displayName = "Alice", completedHours = 0.0, plannedHours = 0.0, events = emptyList())))
+                userId = "alice",
+                displayName = "Alice",
+                completedHours = 0.0,
+                plannedHours = 0.0,
+                events = emptyList())))
 
     compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
 
@@ -263,7 +287,11 @@ class HourRecapScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
     vm.setTestWorkedHours(
         listOf(
             HourRecapUserRecap(
-                userId = "user", displayName = "User", completedHours = 1.0, plannedHours = 0.0, events = listOf(event))))
+                userId = "user",
+                displayName = "User",
+                completedHours = 1.0,
+                plannedHours = 0.0,
+                events = listOf(event))))
 
     compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
 
@@ -296,7 +324,11 @@ class HourRecapScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
     vm.setTestWorkedHours(
         listOf(
             HourRecapUserRecap(
-                userId = "user", displayName = "User", completedHours = 1.0, plannedHours = 0.0, events = listOf(event))))
+                userId = "user",
+                displayName = "User",
+                completedHours = 1.0,
+                plannedHours = 0.0,
+                events = listOf(event))))
 
     compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
 
@@ -330,7 +362,11 @@ class HourRecapScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
     vm.setTestWorkedHours(
         listOf(
             HourRecapUserRecap(
-                userId = "user", displayName = "User", completedHours = 0.0, plannedHours = 0.0, events = listOf(event))))
+                userId = "user",
+                displayName = "User",
+                completedHours = 0.0,
+                plannedHours = 0.0,
+                events = listOf(event))))
 
     compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
 
@@ -361,7 +397,11 @@ class HourRecapScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
     vm.setTestWorkedHours(
         listOf(
             HourRecapUserRecap(
-                userId = "user", displayName = "User", completedHours = 2.0, plannedHours = 0.0, events = listOf(event))))
+                userId = "user",
+                displayName = "User",
+                completedHours = 2.0,
+                plannedHours = 0.0,
+                events = listOf(event))))
 
     compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
 
@@ -394,7 +434,11 @@ class HourRecapScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
     vm.setTestWorkedHours(
         listOf(
             HourRecapUserRecap(
-                userId = "user", displayName = "User", completedHours = 0.0, plannedHours = 0.0, events = listOf(event))))
+                userId = "user",
+                displayName = "User",
+                completedHours = 0.0,
+                plannedHours = 0.0,
+                events = listOf(event))))
 
     compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
 
@@ -425,7 +469,11 @@ class HourRecapScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
     vm.setTestWorkedHours(
         listOf(
             HourRecapUserRecap(
-                userId = "user", displayName = "User", completedHours = 0.0, plannedHours = 0.0, events = listOf(event))))
+                userId = "user",
+                displayName = "User",
+                completedHours = 0.0,
+                plannedHours = 0.0,
+                events = listOf(event))))
 
     compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
 

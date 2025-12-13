@@ -176,17 +176,17 @@ fun HourRecapScreen(
                   if (uiState.userRecaps.isEmpty() && hasGenerated) {
                     item {
                       ElevatedCard(
-                          modifier =
-                              Modifier.fillMaxWidth()
-                                  .padding(vertical = SpacingMedium),
+                          modifier = Modifier.fillMaxWidth().padding(vertical = SpacingMedium),
                           colors =
                               CardDefaults.elevatedCardColors(
                                   containerColor =
-                                      MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f))) {
+                                      MaterialTheme.colorScheme.surfaceVariant.copy(
+                                          alpha = 0.6f))) {
                             Column(
                                 modifier =
                                     Modifier.fillMaxWidth()
-                                        .padding(horizontal = SpacingLarge, vertical = SpacingMedium),
+                                        .padding(
+                                            horizontal = SpacingLarge, vertical = SpacingMedium),
                                 horizontalAlignment = Alignment.CenterHorizontally) {
                                   Icon(
                                       imageVector = Icons.Default.Info,
@@ -209,7 +209,7 @@ fun HourRecapScreen(
                                       color = MaterialTheme.colorScheme.onSurfaceVariant,
                                       textAlign = TextAlign.Center)
                                 }
-                              }
+                          }
                     }
                   }
 
@@ -235,15 +235,14 @@ fun HourRecapScreen(
                                       color =
                                           MaterialTheme.colorScheme.surfaceVariant
                                               .copy(alpha = 0.6f)
-                                              .compositeOver(
-                                                  MaterialTheme.colorScheme.surface)) {
-                                    Text(
-                                        modifier = Modifier.padding(horizontal = PaddingSmall),
-                                        text = formatDecimalHoursToTime(recap.totalHours),
-                                        style =
-                                            MaterialTheme.typography.labelMedium.copy(
-                                                fontWeight = FontWeight.SemiBold))
-                                  }
+                                              .compositeOver(MaterialTheme.colorScheme.surface)) {
+                                        Text(
+                                            modifier = Modifier.padding(horizontal = PaddingSmall),
+                                            text = formatDecimalHoursToTime(recap.totalHours),
+                                            style =
+                                                MaterialTheme.typography.labelMedium.copy(
+                                                    fontWeight = FontWeight.SemiBold))
+                                      }
                                 }
 
                             Spacer(Modifier.height(PaddingSmall))
@@ -253,27 +252,20 @@ fun HourRecapScreen(
                                 horizontalArrangement = Arrangement.spacedBy(PaddingSmall)) {
                                   HourRecapStat(
                                       label =
-                                          stringResource(
-                                              R.string.hour_recap_completed_hours_label),
+                                          stringResource(R.string.hour_recap_completed_hours_label),
                                       value = formatDecimalHoursToTime(recap.completedHours),
-                                      containerColor =
-                                          MaterialTheme.colorScheme.primaryContainer,
-                                      contentColor =
-                                          MaterialTheme.colorScheme.onPrimaryContainer,
+                                      containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                      contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                                   )
 
                                   HourRecapStat(
                                       label =
-                                          stringResource(
-                                              R.string.hour_recap_planned_hours_label),
+                                          stringResource(R.string.hour_recap_planned_hours_label),
                                       value = formatDecimalHoursToTime(recap.plannedHours),
-                                      containerColor =
-                                          MaterialTheme.colorScheme.tertiaryContainer,
-                                      contentColor =
-                                          MaterialTheme.colorScheme.onTertiaryContainer,
+                                      containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                      contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
                                   )
                                 }
-
                           }
                         }
                   }
@@ -405,15 +397,16 @@ private fun HourRecapStat(
     containerColor: Color,
     contentColor: Color,
 ) {
-  Surface(color = containerColor, contentColor = contentColor, shape = MaterialTheme.shapes.medium) {
-    Column(modifier = Modifier.padding(horizontal = PaddingMedium, vertical = PaddingSmall)) {
-      Text(text = label, style = MaterialTheme.typography.labelSmall, color = contentColor)
-      Text(
-          text = value,
-          style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
-          color = contentColor)
-    }
-  }
+  Surface(
+      color = containerColor, contentColor = contentColor, shape = MaterialTheme.shapes.medium) {
+        Column(modifier = Modifier.padding(horizontal = PaddingMedium, vertical = PaddingSmall)) {
+          Text(text = label, style = MaterialTheme.typography.labelSmall, color = contentColor)
+          Text(
+              text = value,
+              style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+              color = contentColor)
+        }
+      }
 }
 
 @Composable
@@ -422,10 +415,10 @@ private fun RecapTag(label: String, containerColor: Color) {
       color = containerColor,
       contentColor = MaterialTheme.colorScheme.onSurface,
       shape = MaterialTheme.shapes.small) {
-    Text(
-        text = label,
-        modifier = Modifier.padding(horizontal = PaddingSmall, vertical = PaddingExtraSmall),
-        style = MaterialTheme.typography.labelMedium,
-    )
-  }
+        Text(
+            text = label,
+            modifier = Modifier.padding(horizontal = PaddingSmall, vertical = PaddingExtraSmall),
+            style = MaterialTheme.typography.labelMedium,
+        )
+      }
 }

@@ -55,7 +55,7 @@ data class MemberSelectionListOptions(
     val searchTestTag: String? = null,
     val listTestTag: String? = null,
     val summaryTestTag: String? = null,
-    val memberTagBuilder: ((String) -> String)? = null,
+    val memberTagBuilder: ((User) -> String)? = null,
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,7 +71,7 @@ fun MemberSelectionList(
 
   val filteredMembers =
       remember(searchQuery, members) {
-        members.filter { it.display().contains(searchQuery, ignoreCase = true) }
+        members.filter { member -> member.display().contains(searchQuery, ignoreCase = true) }
       }
 
   Card(
@@ -164,7 +164,7 @@ private fun MemberSelectionLazyList(
                       .padding(vertical = PaddingMedium)
                       .let { base ->
                         if (options.memberTagBuilder != null) {
-                          base.testTag(options.memberTagBuilder.invoke(member.display()))
+                          base.testTag(options.memberTagBuilder.invoke(member))
                         } else {
                           base
                         }

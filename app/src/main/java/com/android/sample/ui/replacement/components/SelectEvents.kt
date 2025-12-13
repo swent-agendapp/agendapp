@@ -1,5 +1,6 @@
 package com.android.sample.ui.replacement.components
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,8 +17,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
+import com.android.sample.R
 import com.android.sample.model.calendar.Event
 import com.android.sample.ui.calendar.CalendarEventSelector
 import com.android.sample.ui.common.SecondaryPageTopBar
@@ -62,6 +65,7 @@ fun SelectEventScreen(
     onEventClick: (Event) -> Unit = {},
     processActions: ReplacementProcessActions? = null,
 ) {
+  val context = LocalContext.current
   var selectedEvents by remember { mutableStateOf<List<Event>>(emptyList()) }
   Scaffold(
       topBar = {
@@ -107,7 +111,15 @@ fun SelectEventScreen(
         ReplacementBottomBarWithProcessOptions(
             canGoNext = canGoNext && selectedEvents.isNotEmpty(),
             onBack = onBack,
-            onNext = onNext,
+            onNext = {
+              onNext()
+              Toast.makeText(
+                      context,
+                      context.getString(R.string.replacement_request_sent_success),
+                      Toast.LENGTH_SHORT,
+                  )
+                  .show()
+            },
             onProcessNow = processActions?.onProcessNow,
             onProcessLater = processActions?.onProcessLater,
         )

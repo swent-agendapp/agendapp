@@ -27,7 +27,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
@@ -68,32 +70,45 @@ object ReplacementUpcomingTestTags {
 @Composable
 fun ReplacementUpcomingListScreen(
     replacements: List<Replacement> = getMockReplacements().filterUpcomingAccepted(),
-    onNavigateBack: () -> Unit = {},
+    onBack: () -> Unit = {},
 ) {
   Scaffold(
       topBar = {
         SecondaryPageTopBar(
-            title = androidx.compose.ui.res.stringResource(R.string.replacement_upcoming_title),
-            onClick = onNavigateBack,
-            backButtonTestTags = ReplacementUpcomingTestTags.BACK_BUTTON,
-        )
-      },
-  ) { paddingValues ->
-    Column(
-        modifier =
-            Modifier.fillMaxSize()
-                .padding(paddingValues)
-                .padding(PaddingMedium)
-                .testTag(ReplacementUpcomingTestTags.SCREEN)) {
-          LazyColumn(
-              modifier = Modifier.fillMaxSize().testTag(ReplacementUpcomingTestTags.LIST),
-              verticalArrangement = Arrangement.spacedBy(SpacingMedium)) {
-                items(replacements, key = { it.id }) { replacement ->
-                  ReplacementUpcomingCard(replacement = replacement)
+            title = stringResource(R.string.replacement_upcoming_title),
+            onClick = onBack,
+            backButtonTestTags = ReplacementUpcomingTestTags.BACK_BUTTON)
+      }) { paddingValues ->
+        Column(
+            modifier =
+                Modifier.fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(PaddingMedium)
+                    .testTag(ReplacementUpcomingTestTags.SCREEN)) {
+              if (replacements.isEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                  Text(
+                      text =
+                          androidx.compose.ui.res.stringResource(
+                              R.string.replacement_upcoming_empty_message),
+                      style = MaterialTheme.typography.bodyMedium,
+                      textAlign = TextAlign.Center,
+                  )
                 }
+              } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize().testTag(ReplacementUpcomingTestTags.LIST),
+                    verticalArrangement = Arrangement.spacedBy(SpacingMedium)) {
+                      items(replacements, key = { it.id }) { replacement ->
+                        ReplacementUpcomingCard(replacement = replacement)
+                      }
+                    }
               }
-        }
-  }
+            }
+      }
 }
 
 /** Card for a future confirmed replacement. */

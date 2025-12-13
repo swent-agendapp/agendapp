@@ -50,6 +50,7 @@ import java.time.ZoneId
 fun CalendarContainer(
     modifier: Modifier = Modifier,
     calendarViewModel: CalendarViewModel = viewModel(),
+    eventFilter: (Event) -> Boolean = { true },
     selectedEvents: List<Event> = emptyList(),
     onEventClick: (Event) -> Unit = {}
 ) {

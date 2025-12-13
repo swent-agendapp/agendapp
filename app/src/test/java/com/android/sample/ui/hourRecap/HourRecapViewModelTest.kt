@@ -61,7 +61,8 @@ class SimpleFakeEventRepository : EventRepository {
       start: Instant,
       end: Instant
   ): List<Pair<String, Double>> {
-    error("Not needed in test")
+    if (shouldThrow) throw IllegalArgumentException("Failed")
+    return result
   }
 
   override suspend fun calculateWorkedHoursFutureEvents(
@@ -69,7 +70,7 @@ class SimpleFakeEventRepository : EventRepository {
       start: Instant,
       end: Instant
   ): List<Pair<String, Double>> {
-    error("Not needed in test")
+    return emptyList() // Default to no future hours in tests
   }
 
   override suspend fun calculateWorkedHours(
@@ -167,7 +168,7 @@ class HourRecapViewModelTest {
     val data =
         listOf(
             HourRecapUserRecap(
-                userId = "Alice", displayName = "Alice", totalHours = 5.0, events = emptyList()))
+                userId = "Alice", displayName = "Alice", completedHours = 3.0, plannedHours = 2.0, events = emptyList()))
 
     vm.setTestWorkedHours(data)
 

@@ -1,6 +1,8 @@
 package com.android.sample.model.eventCategoryRepositoryTest
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.sample.model.authentication.UserRepositoryProvider
+import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.category.EventCategory
 import com.android.sample.model.category.EventCategoryRepository
 import com.android.sample.ui.theme.EventPalette
@@ -34,6 +36,9 @@ class EventCategoryFirebaseRepositoryTest :
     category2 =
         EventCategory(
             organizationId = organizationId, label = "Category 2", color = EventPalette.Green)
+
+    // Use local user repository for tests
+    UserRepositoryProvider.repository = UsersRepositoryLocal()
   }
 
   @Test

@@ -5,6 +5,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepositoryProvider
+import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.ui.calendar.editEvent.EditEventTestTags
 import com.android.sample.ui.calendar.editEvent.components.EditEventAttendantScreen
 import com.android.sample.ui.calendar.editEvent.components.EditEventScreen
@@ -31,6 +32,9 @@ class EditEventScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
     super.setUp()
 
     setSelectedOrganization()
+
+    // Use local user repository for tests
+    UserRepositoryProvider.repository = UsersRepositoryLocal()
   }
 
   // Test to verify that all UI elements are displayed on the Edit Event screen

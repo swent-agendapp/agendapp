@@ -5,6 +5,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepositoryProvider
+import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.category.EventCategory
@@ -69,6 +70,9 @@ class EditEventWithViewModelTest : FirebaseEmulatedTest(), RequiresSelectedOrgan
     val fakeRepository = FakeEventRepository()
     fakeRepository.add(event = sampleEvent)
     fakeViewModel = EditEventViewModel(fakeRepository)
+
+    // Use local user repository for tests
+    UserRepositoryProvider.repository = UsersRepositoryLocal()
   }
 
   // -------------------------------------------------------------------------

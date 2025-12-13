@@ -3,6 +3,7 @@ package com.android.sample.model.organizationRepositoryTest
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepositoryProvider
+import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.repository.OrganizationRepository
 import com.android.sample.utils.FirebaseEmulatedTest
@@ -29,6 +30,9 @@ class OrganizationFirebaseRepositoryTest : FirebaseEmulatedTest() {
 
   @Before
   override fun setUp() = runBlocking {
+    // Use local user repository for tests
+    UserRepositoryProvider.repository = UsersRepositoryLocal()
+
     val userRepository = UserRepositoryProvider.repository
     super.setUp()
     repository = createInitializedOrganizationRepository()

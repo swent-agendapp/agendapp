@@ -5,6 +5,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepositoryProvider
+import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.ui.calendar.editEvent.EditEventFlow
 import com.android.sample.ui.calendar.editEvent.EditEventStep
 import com.android.sample.ui.calendar.editEvent.EditEventTestTags
@@ -33,6 +34,9 @@ class EditEventFlowUITest : FirebaseEmulatedTest(), RequiresSelectedOrganization
   override fun setUp() {
     super.setUp()
     setSelectedOrganization()
+
+    // Use local user repository for tests
+    UserRepositoryProvider.repository = UsersRepositoryLocal()
   }
 
   @get:Rule val composeTestRule = createComposeRule()

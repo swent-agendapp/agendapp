@@ -10,6 +10,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepositoryProvider
+import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.ui.replacement.organize.components.SelectSubstitutedScreen
 import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
@@ -33,6 +34,9 @@ class SelectSubstitutedScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrga
     super.setUp()
 
     setSelectedOrganization()
+
+    // Use local user repository for tests
+    UserRepositoryProvider.repository = UsersRepositoryLocal()
 
     // Add test members to user repository and to the selected organization
     val testMembers =

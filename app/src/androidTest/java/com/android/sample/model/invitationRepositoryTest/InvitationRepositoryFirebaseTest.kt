@@ -3,6 +3,7 @@ package com.android.sample.model.invitationRepositoryTest
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepositoryProvider
+import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.invitation.InvitationRepository
 import com.android.sample.model.organization.invitation.InvitationRepositoryProvider
@@ -32,6 +33,9 @@ class InvitationRepositoryFirebaseTest : FirebaseEmulatedTest() {
   override fun setUp() = runBlocking {
     super.setUp()
     repo = InvitationRepositoryProvider.repository
+
+    // Use local user repository for tests
+    UserRepositoryProvider.repository = UsersRepositoryLocal()
 
     // --- Create users ---
     admin = User(id = "adminA", displayName = "Admin A", email = "adminA@example.com")

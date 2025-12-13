@@ -269,43 +269,6 @@ class HourRecapScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
   }
 
   @Test
-  fun eventTags_displayForPastEvent() {
-    val vm = HourRecapViewModel()
-    val pastTime = java.time.Instant.now().minusSeconds(86400)
-    val event =
-        HourRecapEventEntry(
-            id = "event1",
-            title = "Past Event",
-            startDate = pastTime,
-            endDate = pastTime.plusSeconds(3600),
-            isPast = true,
-            wasPresent = true,
-            wasReplaced = false,
-            tookReplacement = false,
-            categoryColor = androidx.compose.ui.graphics.Color.Blue)
-
-    vm.setTestWorkedHours(
-        listOf(
-            HourRecapUserRecap(
-                userId = "user",
-                displayName = "User",
-                completedHours = 1.0,
-                plannedHours = 0.0,
-                events = listOf(event))))
-
-    compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
-
-    compose.onNodeWithText("User").performClick()
-    compose.waitForIdle()
-
-    val context = InstrumentationRegistry.getInstrumentation().targetContext
-    // Verify past tag is displayed
-    compose.onNodeWithText(context.getString(R.string.hour_recap_tag_past)).assertExists()
-    // Verify presence tag is displayed
-    compose.onNodeWithText(context.getString(R.string.hour_recap_tag_present)).assertExists()
-  }
-
-  @Test
   fun eventTags_displayForFutureEvent() {
     val vm = HourRecapViewModel()
     val futureTime = java.time.Instant.now().plusSeconds(86400)

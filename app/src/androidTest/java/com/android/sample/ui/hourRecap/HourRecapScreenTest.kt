@@ -7,6 +7,8 @@ import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeDown
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.sample.R
 import com.android.sample.utils.FirebaseEmulatedTest
@@ -237,8 +239,8 @@ class HourRecapScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
     compose.onNodeWithText("User").performClick()
     compose.waitForIdle()
 
-    // Close the sheet
-    compose.onNodeWithText("Close").performClick()
+    // Dismiss the sheet by swiping down
+    compose.onNodeWithTag(HourRecapTestTags.RECAP_SHEET).performTouchInput { swipeDown() }
     compose.waitForIdle()
 
     // Verify sheet is no longer displayed

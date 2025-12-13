@@ -208,9 +208,12 @@ class HourRecapViewModelTest {
     advanceUntilIdle()
 
     val recaps = vm.uiState.value.userRecaps
-    assertEquals(1, recaps.size)
-    assertEquals("Bob", recaps.first().displayName)
-    assertEquals(2, recaps.first().events.size)
+    // Both Bob and Alice should appear: Bob has past event + is assigned to future event,
+    // Alice participates in and is assigned to future event
+    assertEquals(2, recaps.size)
+    val bobRecap = recaps.find { it.userId == user.id }
+    assertEquals("Bob", bobRecap?.displayName)
+    assertEquals(2, bobRecap?.events?.size) // Both past and future events
   }
 
   @Test
@@ -478,16 +481,18 @@ class HourRecapViewModelTest {
             endDate = futureTime.plus(3, ChronoUnit.HOURS),
             participants = setOf(otherUser.id))
 
-    repo.result = listOf(user.id to 2.0)
+    repo.result = listOf(user.id to 2.0, otherUser.id to 2.0)
     repo.events = userEvent + otherEvent
 
     vm.calculateWorkedHours(Instant.now(), Instant.now().plus(2, ChronoUnit.DAYS))
     advanceUntilIdle()
 
     val recaps = vm.uiState.value.userRecaps
-    assertEquals(1, recaps.size)
-    assertEquals(1, recaps.first().events.size)
-    assertEquals(userEvent.first().id, recaps.first().events.first().id)
+    // Both users should appear, each with their own event
+    assertEquals(2, recaps.size)
+    val bobRecap = recaps.find { it.userId == user.id }
+    assertEquals(1, bobRecap?.events?.size)
+    assertEquals(userEvent.first().id, bobRecap?.events?.first()?.id)
   }
 
   @Test

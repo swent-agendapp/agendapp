@@ -156,11 +156,6 @@ class CalendarViewModel(
         errorMessage = "Failed to load events between $start and $end")
   }
 
-  // Placeholder for applying filters to the events
-  fun applyFilters(filters: Any) {
-    // Implementation for applying filters goes here
-  }
-
   /**
    * Refreshes events for the current date range (pull-to-refresh functionality).
    *
@@ -255,22 +250,23 @@ class CalendarViewModel(
   }
 
   fun applyFilters(filters: EventFilters) {
-    val all = uiState.value.events
-    var result = all
+    val allEvents = uiState.value.events
 
-    // Participants (safe to implement now)
-    if (filters.participants.isNotEmpty()) {
-      result = result.filter { e -> filters.participants.all { it in e.participants } }
-    }
+    val filtered =
+        allEvents.filter { event ->
+          val participantsMatch =
+              filters.participants.isEmpty() ||
+                  event.participants.any { it in filters.participants }
 
-    // Later: Event type filtering
-    // Wait for event type field update (category? type? enum?)
-    // result = result.filter { it.category in filters.eventTypes }
+          val eventTypeMatch =
+              filters.eventTypes.isEmpty() || filters.eventTypes.contains(event.category.label)
 
-    // Later: Location filtering
-    // Wait for event location definition in Event class
-    // result = result.filter { it.location in filters.locations }
+          val locationMatch =
+              filters.locations.isEmpty() ||
+                  (event.location != null && filters.locations.contains(event.location))
+          participantsMatch && eventTypeMatch && locationMatch
+        }
 
-    _uiState.update { it.copy(events = result) }
+    _uiState.update { it.copy(events = filtered) }
   }
 }

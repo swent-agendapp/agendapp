@@ -2,12 +2,12 @@ package com.android.sample.ui.calendar.filters
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.android.sample.model.authentication.AuthRepository
-import com.android.sample.model.authentication.AuthRepositoryProvider
-import com.android.sample.model.metadata.EventMetadataRepository
-import com.android.sample.model.metadata.EventMetadataRepositoryProvider
-import com.android.sample.model.organization.repository.OrganizationRepository
-import com.android.sample.model.organization.repository.OrganizationRepositoryProvider
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UserRepositoryProvider
+import com.android.sample.model.category.EventCategoryRepository
+import com.android.sample.model.category.EventCategoryRepositoryProvider
+import com.android.sample.model.map.MapRepository
+import com.android.sample.model.map.MapRepositoryProvider
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,12 +24,11 @@ data class EventFilters(
   fun isEmpty(): Boolean = eventTypes.isEmpty() && locations.isEmpty() && participants.isEmpty()
 }
 
-/** ViewModel dedicated to storing filter selections + loading metadata lists from repo. */
+/** ViewModel dedicated to storing filter selections + loading filter options from repositories. */
 class FilterViewModel(
-    private val metadataRepo: EventMetadataRepository = EventMetadataRepositoryProvider.repository,
-    private val organizationRepo: OrganizationRepository =
-        OrganizationRepositoryProvider.repository,
-    private val authRepo: AuthRepository = AuthRepositoryProvider.repository,
+    private val categoryRepo: EventCategoryRepository = EventCategoryRepositoryProvider.repository,
+    private val userRepo: UserRepository = UserRepositoryProvider.repository,
+    private val mapRepo: MapRepository = MapRepositoryProvider.repository,
     private val orgVM: SelectedOrganizationViewModel = SelectedOrganizationVMProvider.viewModel
 ) : ViewModel() {
 
@@ -40,14 +39,18 @@ class FilterViewModel(
   val filters: StateFlow<EventFilters> = _filters
 
   // ---------------------------
-  // Available metadata options
+  // Available filter options
   // ---------------------------
+
+  // Event types (categories)
   private val _eventTypes = MutableStateFlow<List<String>>(emptyList())
   val eventTypes: StateFlow<List<String>> = _eventTypes
 
+  // Location labels
   private val _locations = MutableStateFlow<List<String>>(emptyList())
   val locations: StateFlow<List<String>> = _locations
 
+  // Participants (organization members)
   private val _participants = MutableStateFlow<List<String>>(emptyList())
   val participants: StateFlow<List<String>> = _participants
 
@@ -55,7 +58,7 @@ class FilterViewModel(
     observeOrganizationChanges()
   }
 
-  /** Reload metadata whenever organization changes */
+  /** Reload filter options whenever selected organization changes */
   private fun observeOrganizationChanges() {
     viewModelScope.launch {
       orgVM.selectedOrganizationId.collect { orgId ->
@@ -70,22 +73,21 @@ class FilterViewModel(
     _participants.value = emptyList()
   }
 
-  /** Loads event types, locations, and participants */
   private suspend fun loadMetadata(orgId: String) {
     try {
-      // ------------- Event Types & Locations (from metadata repo)
-      _eventTypes.value = metadataRepo.getEventTypes(orgId)
-      _locations.value = metadataRepo.getLocations(orgId)
+      // -------- Event Types
+      _eventTypes.value = categoryRepo.getAllCategories(orgId).map { it.label }
 
-      // ------------- Participants (from organization members)
-      val currentUser =
-          authRepo.getCurrentUser() ?: throw IllegalStateException("User not logged in")
+      // -------- Locations
+      _locations.value = mapRepo.getAllAreas(orgId).map { it.label }
 
-      val members = organizationRepo.getMembersOfOrganization(orgId, currentUser)
+      // -------- Participants
+      val memberIds = userRepo.getMembersIds(orgId)
+      val users = userRepo.getUsersByIds(memberIds)
 
-      _participants.value = members.map { it.displayName ?: it.email ?: "Unknown" }
+      _participants.value = users.map { it.displayName ?: it.email ?: "Unknown" }
     } catch (e: Exception) {
-      // Optionally handle errors
+      // optional: expose error state later
     }
   }
 
@@ -102,10 +104,6 @@ class FilterViewModel(
 
   fun setParticipants(names: List<String>) {
     _filters.update { it.copy(participants = names.toSet()) }
-  }
-
-  fun setFilters(filters: EventFilters) {
-    _filters.value = filters
   }
 
   fun clearFilters() {

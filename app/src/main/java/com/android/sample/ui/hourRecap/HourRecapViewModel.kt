@@ -117,10 +117,7 @@ class HourRecapViewModel(
     val pastHours = eventRepository.calculateWorkedHoursPastEvents(orgId, start, end).toMap()
     val futureHours = eventRepository.calculateWorkedHoursFutureEvents(orgId, start, end).toMap()
     val events = eventRepository.getEventsBetweenDates(orgId, start, end)
-    val eventParticipants =
-        events.flatMap { event ->
-          event.participants + event.assignedUsers + event.presence.keys
-        }
+    val eventParticipants = events.flatMap { event -> event.allEventUserIds() }
     val allEmployeeIds = (pastHours.keys + futureHours.keys + eventParticipants).distinct()
     val users = userRepository.getUsersByIds(allEmployeeIds)
     val userMap = users.associateBy { it.id }
@@ -132,7 +129,7 @@ class HourRecapViewModel(
       val planned = futureHours[userId] ?: 0.0
       val userEvents =
           events
-              .filter { event -> userId in event.participants || userId in event.assignedUsers }
+              .filter { event -> userId in event.allEventUserIds() }
               .map { event -> event.toHourRecapEntry(userId, now) }
               .sortedBy { it.startDate }
 
@@ -164,6 +161,10 @@ class HourRecapViewModel(
         tookReplacement = tookReplacement,
         categoryColor = category.color,
     )
+  }
+
+  private fun Event.allEventUserIds(): Set<String> {
+    return participants + assignedUsers + presence.keys
   }
 
   companion object {

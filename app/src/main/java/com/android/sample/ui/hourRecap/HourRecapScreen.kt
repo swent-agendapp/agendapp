@@ -38,6 +38,7 @@ import com.android.sample.ui.theme.ElevationLow
 import com.android.sample.ui.theme.PaddingExtraSmall
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.PaddingSmall
+import com.android.sample.ui.theme.Palette
 import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingMedium
 import com.android.sample.ui.theme.Weight
@@ -474,14 +475,13 @@ private fun EventTagsRow(event: HourRecapEventEntry) {
 
     if (event.wasReplaced) {
       RecapTag(
-          label = stringResource(R.string.hour_recap_tag_replaced),
-          containerColor = Color(0xFFFF9800))
+          label = stringResource(R.string.hour_recap_tag_replaced), containerColor = Palette.Orange)
     }
 
     if (event.tookReplacement) {
       RecapTag(
           label = stringResource(R.string.hour_recap_tag_replacement_taken),
-          containerColor = Color(0xFF00BCD4))
+          containerColor = Palette.Cyan)
     }
   }
 }
@@ -489,10 +489,7 @@ private fun EventTagsRow(event: HourRecapEventEntry) {
 @Composable
 private fun getPresenceTagInfo(wasPresent: Boolean?): Pair<String, Color> {
   return when (wasPresent) {
-    true ->
-        Pair(
-            stringResource(R.string.hour_recap_tag_present),
-            Color(0xFF4CAF50)) // Green for presence confirmed
+    true -> Pair(stringResource(R.string.hour_recap_tag_present), Palette.Green)
     false ->
         Pair(
             stringResource(R.string.hour_recap_tag_absent),

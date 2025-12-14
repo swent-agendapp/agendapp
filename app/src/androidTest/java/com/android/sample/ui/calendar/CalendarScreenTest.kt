@@ -27,9 +27,13 @@ import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryInMemory
 import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.calendar.createEvent
+import com.android.sample.model.filter.FakeEventCategoryRepository
+import com.android.sample.model.filter.FakeSelectedOrganizationViewModel
+import com.android.sample.model.filter.FakeUserRepository
 import com.android.sample.model.map.MapRepository
 import com.android.sample.model.map.MapRepositoryLocal
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
+import com.android.sample.ui.calendar.filters.FilterViewModel
 import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.style.CalendarDefaults.DEFAULT_SWIPE_THRESHOLD
 import com.android.sample.ui.calendar.utils.DateTimeUtils
@@ -309,14 +313,21 @@ abstract class BaseCalendarScreenTest : RequiresSelectedOrganizationTestBase {
       private val eventRepo: EventRepository,
       private val mapRepo: MapRepository
   ) : ViewModelProvider.Factory {
+
     override fun <T : ViewModel> create(modelClass: Class<T>): T =
         when {
-          // Provide CalendarViewModel wired to the local repos for tests
           modelClass.isAssignableFrom(CalendarViewModel::class.java) ->
               CalendarViewModel(
                   app = ApplicationProvider.getApplicationContext(),
                   eventRepository = eventRepo,
                   mapRepository = mapRepo)
+                  as T
+          modelClass.isAssignableFrom(FilterViewModel::class.java) ->
+              FilterViewModel(
+                  categoryRepo = FakeEventCategoryRepository(),
+                  userRepo = FakeUserRepository(),
+                  mapRepo = mapRepo,
+                  orgVM = FakeSelectedOrganizationViewModel().apply { setOrg("org123") })
                   as T
           else -> error("Unknown ViewModel class: $modelClass")
         }

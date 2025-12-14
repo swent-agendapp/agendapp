@@ -373,7 +373,7 @@ private fun EmptyRecapCard() {
         Column(
             modifier =
                 Modifier.fillMaxWidth()
-                    .padding(horizontal = SpacingLarge, vertical = SpacingMedium),
+                    .padding(horizontal = SpacingMedium, vertical = PaddingSmall),
             horizontalAlignment = Alignment.CenterHorizontally) {
               Icon(
                   imageVector = Icons.Default.Info,

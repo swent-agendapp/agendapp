@@ -126,8 +126,16 @@ fun AddEventTimeAndRecurrenceScreen(
               label = stringResource(R.string.startDatePickerLabel),
               modifier = Modifier.testTag(AddEventTestTags.START_DATE_FIELD),
               onDateSelected = { date ->
-                addEventViewModel.setStartInstant(
-                    DateTimeUtils.instantWithDate(newEventUIState.startInstant, date = date))
+                  val newStart =
+                      DateTimeUtils.instantWithDate(newEventUIState.startInstant, date = date)
+
+                  addEventViewModel.setStartInstant(newStart)
+
+                  if (newEventUIState.endInstant < newStart) {
+                      val newEnd =
+                          DateTimeUtils.instantWithDate(newEventUIState.endInstant, date = date)
+                      addEventViewModel.setEndInstant(newEnd)
+                  }
               },
               initialInstant = newEventUIState.startInstant,
               enabled = true)

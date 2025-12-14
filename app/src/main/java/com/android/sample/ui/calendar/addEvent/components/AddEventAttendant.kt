@@ -3,7 +3,6 @@ package com.android.sample.ui.calendar.addEvent.components
 import StepHeader
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -34,15 +33,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags.CHECK_BOX_EMPLOYEE
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
 import com.android.sample.ui.common.BottomNavigationButtons
+import com.android.sample.ui.common.MemberSelectionList
+import com.android.sample.ui.common.MemberSelectionListOptions
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.DefaultCardElevation
 import com.android.sample.ui.theme.PaddingExtraLarge
@@ -65,88 +64,54 @@ fun AddEventAttendantScreen(
     addEventViewModel: AddEventViewModel = viewModel(),
 ) {
 
-    val newEventUIState by addEventViewModel.uiState.collectAsState()
+  val newEventUIState by addEventViewModel.uiState.collectAsState()
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = PaddingExtraLarge),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
-    ) {
+  Column(
+      modifier = modifier.fillMaxSize().padding(horizontal = PaddingExtraLarge),
+      horizontalAlignment = Alignment.CenterHorizontally,
+      verticalArrangement = Arrangement.Top) {
         Spacer(modifier = Modifier.height(SpacingExtraLarge))
         StepHeader(
             stepText = stringResource(R.string.add_event_step_3_of_3),
             title = stringResource(R.string.add_event_attendees_title),
             subtitle = stringResource(R.string.add_event_attendees_subtitle),
-            icon = {Icon(Icons.Outlined.Group, contentDescription = null)},
-            progress = 1f
-        )
+            icon = { Icon(Icons.Outlined.Group, contentDescription = null) },
+            progress = 1f)
 
         Spacer(modifier = Modifier.padding(vertical = PaddingSmall))
 
         Card(
             modifier =
-                Modifier
-                    .fillMaxWidth()
+                Modifier.fillMaxWidth()
                     .weight(WeightExtraHeavy)
                     .padding(vertical = PaddingSmall)
                     .testTag(AddEventTestTags.LIST_USER),
             shape = RoundedCornerShape(CornerRadiusLarge),
-            elevation = CardDefaults.cardElevation(DefaultCardElevation)
-        ) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize().padding(PaddingMedium)
-            ) {
-                items(newEventUIState.users) { participant ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    val action =
-                                        if (participant in newEventUIState.participants)
-                                            addEventViewModel::removeParticipant
-                                        else addEventViewModel::addParticipant
-                                    action(participant)
-                                }
-                                .padding(vertical = PaddingSmall)
-                                .testTag(CHECK_BOX_EMPLOYEE)
-                    ) {
-                        Checkbox(
-                            checked = newEventUIState.participants.contains(participant),
-                            onCheckedChange = { checked ->
-                                val action =
-                                    if (checked) addEventViewModel::addParticipant
-                                    else addEventViewModel::removeParticipant
-                                action(participant)
-                            }
-                        )
+            elevation = CardDefaults.cardElevation(DefaultCardElevation)) {
 
-                        Spacer(modifier = Modifier.width(SpacingSmall))
+            MemberSelectionList(
+                members = newEventUIState.users,
+                selectedMembers = newEventUIState.participants.toSet(),
+                onSelectionChanged = { selection ->
 
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = participant.displayName ?: participant.email ?: stringResource(R.string.no_name),
-                                style = MaterialTheme.typography.bodyLarge
-                            )
-                            val secondary = participant.email
-                            if (!secondary.isNullOrBlank() && secondary != (participant.displayName ?: "")) {
-                                Text(
-                                    text = secondary,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                        }
+                    (newEventUIState.participants.toSet() - selection).forEach { removed ->
+                        addEventViewModel.removeParticipant(removed)
                     }
 
-                    HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
-                }
-            }
+                    (selection - newEventUIState.participants.toSet()).forEach { added ->
+                        addEventViewModel.addParticipant(added)
+                    }
+                },
+                modifier = Modifier.fillMaxSize(),
+                options =
+                    MemberSelectionListOptions(
+                        isSingleSelection = false,
+                        listTestTag = AddEventTestTags.LIST_USER,
+                    ),
+            )
+
         }
-    }
+      }
 }
 
 @Composable
@@ -157,9 +122,8 @@ fun AddEventAttendantBottomBar(
 ) {
   val newEventUIState by addEventViewModel.uiState.collectAsState()
 
-    val canGoNext by remember(newEventUIState) {
-        derivedStateOf { newEventUIState.participants.isNotEmpty() }
-    }
+  val canGoNext by
+      remember(newEventUIState) { derivedStateOf { newEventUIState.participants.isNotEmpty() } }
 
   BottomNavigationButtons(
       onNext = onNext,

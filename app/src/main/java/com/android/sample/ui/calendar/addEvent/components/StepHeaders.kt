@@ -1,3 +1,4 @@
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -6,7 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
+import com.android.sample.ui.theme.GeneralPalette
+import com.android.sample.ui.theme.GeneralPaletteDark
 import com.android.sample.ui.theme.PaddingSmallMedium
 import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingSmall
@@ -20,62 +22,54 @@ fun StepHeader(
     icon: @Composable () -> Unit,
     progress: Float,
 ) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Surface(
-            shape = MaterialTheme.shapes.large,
-            color = MaterialTheme.colorScheme.surfaceVariant
-        ) {
-            Box(
-                modifier = Modifier.padding(PaddingSmallMedium),
-                contentAlignment = Alignment.Center
-            ) { icon() }
-        }
+    val surfaceVariant = if (isSystemInDarkTheme()) GeneralPaletteDark.SurfaceVariant else GeneralPalette.SurfaceVariant
+    val onSurfaceVariant = if (isSystemInDarkTheme()) GeneralPaletteDark.OnSurfaceVariant else GeneralPalette.OnSurfaceVariant
+    val secondary = if (isSystemInDarkTheme()) GeneralPaletteDark.Secondary else GeneralPalette.Secondary
 
-        Spacer(modifier = Modifier.width(SpacingSmall))
-        Text(
-            text = stepText,
-            style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+    Surface(shape = MaterialTheme.shapes.large, color = surfaceVariant) {
+      Box(modifier = Modifier.padding(PaddingSmallMedium), contentAlignment = Alignment.Center) {
+        icon()
+      }
     }
 
-    Spacer(modifier = Modifier.height(SpacingSmall))
-
+    Spacer(modifier = Modifier.width(SpacingSmall))
     Text(
-        text = title,
-        style = MaterialTheme.typography.headlineLarge,
-        textAlign = TextAlign.Start,
-        modifier = Modifier.fillMaxWidth()
-    )
+        text = stepText,
+        style = MaterialTheme.typography.labelLarge,
+        color = onSurfaceVariant)
+  }
 
-    Spacer(modifier = Modifier.height(SpacingSmall))
+  Spacer(modifier = Modifier.height(SpacingSmall))
 
-    if (subtitle.isNotBlank()) {
-        Text(
-            text = subtitle,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(SpacingLarge))
-    } else {
-        Spacer(modifier = Modifier.height(SpacingLarge))
-    }
+  Text(
+      text = title,
+      style = MaterialTheme.typography.headlineLarge,
+      textAlign = TextAlign.Start,
+      modifier = Modifier.fillMaxWidth())
 
+  Spacer(modifier = Modifier.height(SpacingSmall))
+
+  if (subtitle.isNotBlank()) {
+    Text(
+        text = subtitle,
+        style = MaterialTheme.typography.bodyLarge,
+        color = onSurfaceVariant,
+        modifier = Modifier.fillMaxWidth())
     Spacer(modifier = Modifier.height(SpacingLarge))
+  } else {
+    Spacer(modifier = Modifier.height(SpacingLarge))
+  }
 
-    Surface(
-        modifier = Modifier.fillMaxWidth().height(heightSmall),
-        shape = MaterialTheme.shapes.small,
-        color = MaterialTheme.colorScheme.surfaceVariant
-    ) {
+  Spacer(modifier = Modifier.height(SpacingLarge))
+
+  Surface(
+      modifier = Modifier.fillMaxWidth().height(heightSmall),
+      shape = MaterialTheme.shapes.small,
+      color = MaterialTheme.colorScheme.surfaceVariant) {
         Surface(
             modifier = Modifier.fillMaxWidth(progress),
             shape = MaterialTheme.shapes.small,
-            color = MaterialTheme.colorScheme.primary
-        ) {}
-    }
+            color = secondary) {}
+      }
 }

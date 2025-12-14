@@ -6,10 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.android.sample.R
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.ui.calendar.addEvent.components.AddEventAttendantBottomBar
 import com.android.sample.ui.calendar.addEvent.components.AddEventAttendantScreen
@@ -19,8 +16,6 @@ import com.android.sample.ui.calendar.addEvent.components.AddEventTimeAndRecurre
 import com.android.sample.ui.calendar.addEvent.components.AddEventTimeAndRecurrenceScreen
 import com.android.sample.ui.calendar.addEvent.components.AddEventTitleAndDescriptionBottomBar
 import com.android.sample.ui.calendar.addEvent.components.AddEventTitleAndDescriptionScreen
-import com.android.sample.ui.common.SecondaryPageTopBar
-import com.android.sample.ui.map.MapScreenTestTags
 
 // Assisted by AI
 

@@ -1,8 +1,8 @@
 package com.android.sample.ui.calendar.addEvent.components
 
 import StepHeader
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,7 +18,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButtonDefaults.Icon
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -38,6 +37,8 @@ import com.android.sample.ui.calendar.addEvent.AddEventViewModel
 import com.android.sample.ui.calendar.components.ValidatingTextField
 import com.android.sample.ui.category.components.CategorySelector
 import com.android.sample.ui.common.BottomNavigationButtons
+import com.android.sample.ui.theme.GeneralPalette
+import com.android.sample.ui.theme.GeneralPaletteDark
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.SpacingExtraLarge
 import com.android.sample.ui.theme.SpacingLarge
@@ -45,36 +46,33 @@ import com.android.sample.ui.theme.SpacingSmall
 
 private const val DESCRIPTION_FIELD_MIN_LINES = 12
 
-/**
- * First step of the event creation flow.
- *
- */
+/** First step of the event creation flow. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEventTitleAndDescriptionScreen(
     modifier: Modifier = Modifier,
     addEventViewModel: AddEventViewModel = viewModel(),
 ) {
-  val newEventUIState by addEventViewModel.uiState.collectAsState()
+    val secondary = if (isSystemInDarkTheme()) GeneralPaletteDark.Secondary else GeneralPalette.Secondary
+    val newEventUIState by addEventViewModel.uiState.collectAsState()
 
   var titleTouched by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = PaddingExtraLarge)
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
-    ) {
+  Column(
+      modifier =
+          modifier
+              .fillMaxSize()
+              .padding(horizontal = PaddingExtraLarge)
+              .verticalScroll(rememberScrollState()),
+      horizontalAlignment = Alignment.CenterHorizontally,
+      verticalArrangement = Arrangement.Top) {
         Spacer(modifier = Modifier.height(SpacingExtraLarge))
         StepHeader(
             stepText = stringResource(R.string.add_event_step_1_of_2),
             title = stringResource(R.string.add_event_create_title),
             subtitle = "",
             icon = { Icon(Icons.Outlined.CalendarMonth, contentDescription = null) },
-            progress = 1f/3f
-        )
+            progress = 0.3f)
 
         Spacer(modifier = Modifier.height(SpacingExtraLarge))
 
@@ -86,8 +84,7 @@ fun AddEventTitleAndDescriptionScreen(
             errorMessage = stringResource(R.string.title_empty_error),
             value = newEventUIState.title,
             onValueChange = { addEventViewModel.setTitle(it) },
-            onFocusChange = { focusState -> if (focusState.isFocused) titleTouched = true }
-        )
+            onFocusChange = { focusState -> if (focusState.isFocused) titleTouched = true })
 
         Spacer(modifier = Modifier.height(SpacingLarge))
 
@@ -99,20 +96,14 @@ fun AddEventTitleAndDescriptionScreen(
 
         Spacer(modifier = Modifier.height(SpacingLarge))
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.Bottom
-        ) {
-            Text(
-                text = stringResource(R.string.eventDescription),
-                style = MaterialTheme.typography.labelLarge
-            )
-            Spacer(modifier = Modifier.padding(horizontal = SpacingSmall))
-            Text(
-                text = stringResource(R.string.optional_label),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.primary
-            )
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
+          Text(
+              text = stringResource(R.string.eventDescription),
+              style = MaterialTheme.typography.labelLarge)
+          Spacer(modifier = Modifier.padding(horizontal = SpacingSmall))
+          Text(
+              text = stringResource(R.string.optional_label),
+              style = MaterialTheme.typography.labelMedium)
         }
 
         Spacer(modifier = Modifier.height(SpacingSmall))
@@ -125,13 +116,12 @@ fun AddEventTitleAndDescriptionScreen(
             errorMessage = "",
             value = newEventUIState.description,
             onValueChange = { addEventViewModel.setDescription(it) },
-            onFocusChange = { },
+            onFocusChange = {},
             singleLine = false,
-            minLines = DESCRIPTION_FIELD_MIN_LINES
-        )
+            minLines = DESCRIPTION_FIELD_MIN_LINES)
 
         Spacer(modifier = Modifier.height(SpacingExtraLarge))
-    }
+      }
 }
 
 @Composable
@@ -140,24 +130,22 @@ fun AddEventTitleAndDescriptionBottomBar(
     onNext: () -> Unit = {},
     onCancel: () -> Unit = {},
 ) {
-    val newEventUIState by addEventViewModel.uiState.collectAsState()
-    val titleValid by remember(newEventUIState) {
-        derivedStateOf { !addEventViewModel.titleIsBlank() }
-    }
+  val newEventUIState by addEventViewModel.uiState.collectAsState()
+  val titleValid by
+      remember(newEventUIState) { derivedStateOf { !addEventViewModel.titleIsBlank() } }
 
-    BottomNavigationButtons(
-        onNext = onNext,
-        onBack = onCancel,
-        backButtonText = stringResource(R.string.cancel),
-        nextButtonText = stringResource(R.string.next),
-        canGoNext = titleValid,
-        backButtonTestTag = AddEventTestTags.CANCEL_BUTTON,
-        nextButtonTestTag = AddEventTestTags.NEXT_BUTTON
-    )
+  BottomNavigationButtons(
+      onNext = onNext,
+      onBack = onCancel,
+      backButtonText = stringResource(R.string.cancel),
+      nextButtonText = stringResource(R.string.next),
+      canGoNext = titleValid,
+      backButtonTestTag = AddEventTestTags.CANCEL_BUTTON,
+      nextButtonTestTag = AddEventTestTags.NEXT_BUTTON)
 }
 
 @Preview(showBackground = true)
 @Composable
 fun AddEventTitleAndDescriptionScreenPreview() {
-    AddEventTitleAndDescriptionScreen()
+  AddEventTitleAndDescriptionScreen()
 }

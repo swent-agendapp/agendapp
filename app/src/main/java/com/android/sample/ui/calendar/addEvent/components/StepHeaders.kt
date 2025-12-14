@@ -22,11 +22,16 @@ fun StepHeader(
     icon: @Composable () -> Unit,
     progress: Float,
 ) {
-    val surfaceVariant = if (isSystemInDarkTheme()) GeneralPaletteDark.SurfaceVariant else GeneralPalette.SurfaceVariant
-    val onSurfaceVariant = if (isSystemInDarkTheme()) GeneralPaletteDark.OnSurfaceVariant else GeneralPalette.OnSurfaceVariant
-    val secondary = if (isSystemInDarkTheme()) GeneralPaletteDark.Secondary else GeneralPalette.Secondary
+  val surfaceVariant =
+      if (isSystemInDarkTheme()) GeneralPaletteDark.SurfaceVariant
+      else GeneralPalette.SurfaceVariant
+  val onSurfaceVariant =
+      if (isSystemInDarkTheme()) GeneralPaletteDark.OnSurfaceVariant
+      else GeneralPalette.OnSurfaceVariant
+  val secondary =
+      if (isSystemInDarkTheme()) GeneralPaletteDark.Secondary else GeneralPalette.Secondary
 
-    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+  Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
     Surface(shape = MaterialTheme.shapes.large, color = surfaceVariant) {
       Box(modifier = Modifier.padding(PaddingSmallMedium), contentAlignment = Alignment.Center) {
         icon()
@@ -34,10 +39,7 @@ fun StepHeader(
     }
 
     Spacer(modifier = Modifier.width(SpacingSmall))
-    Text(
-        text = stepText,
-        style = MaterialTheme.typography.labelLarge,
-        color = onSurfaceVariant)
+    Text(text = stepText, style = MaterialTheme.typography.labelLarge, color = onSurfaceVariant)
   }
 
   Spacer(modifier = Modifier.height(SpacingSmall))

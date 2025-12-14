@@ -18,7 +18,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material.icons.outlined.CalendarMonth
-import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Repeat
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -40,7 +39,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.model.calendar.RecurrenceStatus
@@ -103,12 +101,11 @@ fun AddEventTimeAndRecurrenceScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(SpacingMedium)) {
               Column(modifier = Modifier.weight(WeightExtraHeavy)) {
-                  Box(modifier = Modifier.fillMaxWidth()) {
-                      FieldLabelWithIcon(
-                          icon = { Icon(Icons.Outlined.CalendarMonth, contentDescription = null) },
-                          label = stringResource(R.string.startDatePickerLabel)
-                      )
-                  }
+                Box(modifier = Modifier.fillMaxWidth()) {
+                  FieldLabelWithIcon(
+                      icon = { Icon(Icons.Outlined.CalendarMonth, contentDescription = null) },
+                      label = stringResource(R.string.startDatePickerLabel))
+                }
                 Spacer(Modifier.height(SpacingSmall))
                 DatePickerFieldToModal(
                     label = "",
@@ -261,7 +258,9 @@ fun AddEventTimeAndRecurrenceBottomBar(
 
 @Composable
 private fun FieldLabelWithIcon(icon: @Composable () -> Unit, label: String) {
-    val surfaceVariant = if (isSystemInDarkTheme()) GeneralPaletteDark.SurfaceVariant else GeneralPalette.SurfaceVariant
+  val surfaceVariant =
+      if (isSystemInDarkTheme()) GeneralPaletteDark.SurfaceVariant
+      else GeneralPalette.SurfaceVariant
   Row(verticalAlignment = Alignment.CenterVertically) {
     Surface(shape = MaterialTheme.shapes.small, color = surfaceVariant) {
       Box(modifier = Modifier.padding(PaddingExtraSmall), contentAlignment = Alignment.Center) {
@@ -290,13 +289,15 @@ private fun RecurrenceOptionCard(
     onClick: () -> Unit,
     testTag: String
 ) {
-    val surface = if (isSystemInDarkTheme()) GeneralPaletteDark.Surface else GeneralPalette.Surface
-    val secondary = if (isSystemInDarkTheme()) GeneralPaletteDark.Secondary else GeneralPalette.Secondary
-    val secondarySelected = secondary.copy(alpha = AlphaLowLow)
-    val onSurface = if (isSystemInDarkTheme()) GeneralPaletteDark.OnSurface else GeneralPalette.OnSurface
+  val surface = if (isSystemInDarkTheme()) GeneralPaletteDark.Surface else GeneralPalette.Surface
+  val secondary =
+      if (isSystemInDarkTheme()) GeneralPaletteDark.Secondary else GeneralPalette.Secondary
+  val secondarySelected = secondary.copy(alpha = AlphaLowLow)
+  val onSurface =
+      if (isSystemInDarkTheme()) GeneralPaletteDark.OnSurface else GeneralPalette.OnSurface
 
-    val bg = if (selected) secondarySelected else surface
-    val content = onSurface
+  val bg = if (selected) secondarySelected else surface
+  val content = onSurface
 
   OutlinedCard(
       modifier = Modifier.fillMaxWidth().testTag(testTag).clickable { onClick() },

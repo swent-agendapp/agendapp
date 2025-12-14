@@ -4,10 +4,8 @@ import StepHeader
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -16,9 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButtonDefaults.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -53,8 +49,9 @@ fun AddEventTitleAndDescriptionScreen(
     modifier: Modifier = Modifier,
     addEventViewModel: AddEventViewModel = viewModel(),
 ) {
-    val secondary = if (isSystemInDarkTheme()) GeneralPaletteDark.Secondary else GeneralPalette.Secondary
-    val newEventUIState by addEventViewModel.uiState.collectAsState()
+  val secondary =
+      if (isSystemInDarkTheme()) GeneralPaletteDark.Secondary else GeneralPalette.Secondary
+  val newEventUIState by addEventViewModel.uiState.collectAsState()
 
   var titleTouched by remember { mutableStateOf(false) }
 
@@ -96,18 +93,17 @@ fun AddEventTitleAndDescriptionScreen(
 
         Spacer(modifier = Modifier.height(SpacingLarge))
 
-      ValidatingTextField(
-          label = stringResource(R.string.eventDescription),
-          placeholder = stringResource(R.string.eventDescriptionPlaceholder),
-          testTag = AddEventTestTags.DESCRIPTION_TEXT_FIELD,
-          isError = false,
-          errorMessage = "",
-          value = newEventUIState.description,
-          onValueChange = { addEventViewModel.setDescription(it) },
-          onFocusChange = {},
-          singleLine = false,
-          minLines = DESCRIPTION_FIELD_MIN_LINES
-      )
+        ValidatingTextField(
+            label = stringResource(R.string.eventDescription),
+            placeholder = stringResource(R.string.eventDescriptionPlaceholder),
+            testTag = AddEventTestTags.DESCRIPTION_TEXT_FIELD,
+            isError = false,
+            errorMessage = "",
+            value = newEventUIState.description,
+            onValueChange = { addEventViewModel.setDescription(it) },
+            onFocusChange = {},
+            singleLine = false,
+            minLines = DESCRIPTION_FIELD_MIN_LINES)
 
         Spacer(modifier = Modifier.height(SpacingSmall))
 

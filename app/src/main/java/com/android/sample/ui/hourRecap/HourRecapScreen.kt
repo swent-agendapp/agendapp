@@ -177,7 +177,9 @@ fun HourRecapScreen(
         onDismissRequest = { selectedUser = null },
         sheetState = bottomSheetState) {
           HourRecapUserEventsSheet(
-              recap = selectedUser!!, viewModel = hourRecapViewModel, modifier = Modifier.heightIn(min = minSheetHeight))
+              recap = selectedUser!!,
+              viewModel = hourRecapViewModel,
+              modifier = Modifier.heightIn(min = minSheetHeight))
         }
   }
 }
@@ -187,7 +189,11 @@ fun HourRecapScreen(
 /* -------------------------------------------------------------------------- */
 
 @Composable
-private fun HourRecapUserEventsSheet(recap: HourRecapUserRecap, viewModel: HourRecapViewModel, modifier: Modifier = Modifier) {
+private fun HourRecapUserEventsSheet(
+    recap: HourRecapUserRecap,
+    viewModel: HourRecapViewModel,
+    modifier: Modifier = Modifier
+) {
   val dateFormatter = remember { DateTimeFormatter.ofPattern("MMM dd, yyyy") }
   val timeFormatter = remember { DateTimeFormatter.ofPattern("HH:mm") }
 
@@ -209,7 +215,10 @@ private fun HourRecapUserEventsSheet(recap: HourRecapUserRecap, viewModel: HourR
         } else {
           recap.events.forEach { event ->
             HourRecapEventCard(
-                event = event, dateFormatter = dateFormatter, timeFormatter = timeFormatter, viewModel = viewModel)
+                event = event,
+                dateFormatter = dateFormatter,
+                timeFormatter = timeFormatter,
+                viewModel = viewModel)
             Spacer(Modifier.height(PaddingSmall))
           }
         }
@@ -485,19 +494,21 @@ private fun EventTagsRow(event: HourRecapEventEntry, viewModel: HourRecapViewMod
 
     if (event.isPast) {
       val (presenceType, _, useErrorColor) = viewModel.getPresenceTagInfo(event.wasPresent)
-      val presenceLabel = when (presenceType) {
-        "present" -> stringResource(R.string.hour_recap_tag_present)
-        "absent" -> stringResource(R.string.hour_recap_tag_absent)
-        else -> stringResource(R.string.hour_recap_tag_presence_unknown)
-      }
-      val presenceColor = if (useErrorColor) {
-        MaterialTheme.colorScheme.errorContainer
-      } else {
-        when (presenceType) {
-          "present" -> Palette.Green
-          else -> MaterialTheme.colorScheme.surfaceVariant
-        }
-      }
+      val presenceLabel =
+          when (presenceType) {
+            "present" -> stringResource(R.string.hour_recap_tag_present)
+            "absent" -> stringResource(R.string.hour_recap_tag_absent)
+            else -> stringResource(R.string.hour_recap_tag_presence_unknown)
+          }
+      val presenceColor =
+          if (useErrorColor) {
+            MaterialTheme.colorScheme.errorContainer
+          } else {
+            when (presenceType) {
+              "present" -> Palette.Green
+              else -> MaterialTheme.colorScheme.surfaceVariant
+            }
+          }
       RecapTag(label = presenceLabel, containerColor = presenceColor)
     }
 

@@ -162,8 +162,14 @@ class HourRecapScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
 
     compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
 
-    compose.onNodeWithTag("${HourRecapTestTags.RECAP_ITEM_ISSUE_MARKER}_alice").assertExists()
-    compose.onNodeWithTag("${HourRecapTestTags.RECAP_ITEM_ISSUE_MARKER}_bob").assertDoesNotExist()
+    compose.waitForIdle()
+
+    compose
+        .onNodeWithTag("${HourRecapTestTags.RECAP_ITEM_ISSUE_MARKER}_alice", useUnmergedTree = true)
+        .assertExists()
+    compose
+        .onNodeWithTag("${HourRecapTestTags.RECAP_ITEM_ISSUE_MARKER}_bob", useUnmergedTree = true)
+        .assertDoesNotExist()
   }
 
   @Test

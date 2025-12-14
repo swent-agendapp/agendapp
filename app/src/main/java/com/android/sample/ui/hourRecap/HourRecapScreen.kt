@@ -404,38 +404,35 @@ private fun RecapItemCard(recap: HourRecapUserRecap, onClick: () -> Unit) {
       onClick = onClick,
       elevation = CardDefaults.cardElevation(ElevationLow)) {
         Column(modifier = Modifier.fillMaxWidth().padding(PaddingMedium)) {
-          Row(
-              modifier = Modifier.fillMaxWidth(),
-              verticalAlignment = Alignment.CenterVertically) {
-                if (recap.hasPresenceIssue) {
-                  Box(
-                      modifier =
-                          Modifier.size(12.dp)
-                              .clip(CircleShape)
-                              .background(MaterialTheme.colorScheme.error)
-                              .testTag(
-                                  "${HourRecapTestTags.RECAP_ITEM_ISSUE_MARKER}_${recap.userId}"))
-                  Spacer(Modifier.width(PaddingSmall))
-                }
+          Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            if (recap.hasPresenceIssue) {
+              Box(
+                  modifier =
+                      Modifier.size(12.dp)
+                          .clip(CircleShape)
+                          .background(MaterialTheme.colorScheme.error)
+                          .testTag("${HourRecapTestTags.RECAP_ITEM_ISSUE_MARKER}_${recap.userId}"))
+              Spacer(Modifier.width(PaddingSmall))
+            }
 
-                Text(
-                    text = recap.displayName,
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.weight(Weight))
-                Surface(
-                    shape = MaterialTheme.shapes.small,
-                    color =
-                        MaterialTheme.colorScheme.surfaceVariant
-                            .copy(alpha = 0.6f)
-                            .compositeOver(MaterialTheme.colorScheme.surface)) {
-                      Text(
-                          modifier = Modifier.padding(horizontal = PaddingSmall),
-                          text = formatDecimalHoursToTime(recap.totalHours),
-                          style =
-                              MaterialTheme.typography.labelMedium.copy(
-                                  fontWeight = FontWeight.SemiBold))
-                    }
-              }
+            Text(
+                text = recap.displayName,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.weight(Weight))
+            Surface(
+                shape = MaterialTheme.shapes.small,
+                color =
+                    MaterialTheme.colorScheme.surfaceVariant
+                        .copy(alpha = 0.6f)
+                        .compositeOver(MaterialTheme.colorScheme.surface)) {
+                  Text(
+                      modifier = Modifier.padding(horizontal = PaddingSmall),
+                      text = formatDecimalHoursToTime(recap.totalHours),
+                      style =
+                          MaterialTheme.typography.labelMedium.copy(
+                              fontWeight = FontWeight.SemiBold))
+                }
+          }
 
           Spacer(Modifier.height(PaddingSmall))
 

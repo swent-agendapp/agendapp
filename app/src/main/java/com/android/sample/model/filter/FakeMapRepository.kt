@@ -4,6 +4,22 @@ import com.android.sample.model.map.Area
 import com.android.sample.model.map.MapRepository
 import com.android.sample.model.map.Marker
 
+// Assisted by AI
+
+/**
+ * Fake implementation of [MapRepository] used for unit tests.
+ *
+ * This repository provides a fixed, in-memory set of [Area] objects and is intended for tests that
+ * only require **read access** to location metadata (e.g. filter logic, ViewModel tests).
+ *
+ * All write operations (create, update, delete) are implemented as no-ops, because they are not
+ * required by the current test scenarios.
+ *
+ * This fake ensures:
+ * - Deterministic test behavior
+ * - No dependency on Firebase or real map services
+ * - Clear separation between production and test logic
+ */
 class FakeMapRepository : MapRepository {
 
   override suspend fun getAllAreas(orgId: String): List<Area> {

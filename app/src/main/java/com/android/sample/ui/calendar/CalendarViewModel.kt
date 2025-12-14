@@ -249,6 +249,12 @@ class CalendarViewModel(
     }
   }
 
+  /**
+   * Applies the given filters to the list of events and updates the UI state with the filtered
+   * events.
+   *
+   * @param filters The [EventFilters] object containing the filter criteria.
+   */
   fun applyFilters(filters: EventFilters) {
     val allEvents = uiState.value.events
 

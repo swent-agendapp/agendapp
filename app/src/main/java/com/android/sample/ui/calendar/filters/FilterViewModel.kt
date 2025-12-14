@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+// Assisted by AI
+
 /** Represents all filter selections used in the Calendar. */
 data class EventFilters(
     val eventTypes: Set<String> = emptySet(),
@@ -24,7 +26,26 @@ data class EventFilters(
   fun isEmpty(): Boolean = eventTypes.isEmpty() && locations.isEmpty() && participants.isEmpty()
 }
 
-/** ViewModel dedicated to storing filter selections + loading filter options from repositories. */
+/**
+ * ViewModel responsible for managing calendar event filters.
+ *
+ * This ViewModel:
+ * - Stores the currently selected filter values (event types, locations, participants)
+ * - Loads available filter options dynamically based on the selected organization
+ *
+ * ### Data sources
+ * - Event categories are loaded from [EventCategoryRepository]
+ * - Locations are derived from organization areas via [MapRepository]
+ * - Participants are resolved from organization members via [UserRepository]
+ *
+ * The ViewModel automatically refreshes available filter options whenever the selected organization
+ * changes.
+ *
+ * @param categoryRepo Repository providing event category metadata
+ * @param userRepo Repository providing organization user information
+ * @param mapRepo Repository providing organization location/area data
+ * @param orgVM ViewModel exposing the currently selected organization
+ */
 class FilterViewModel(
     private val categoryRepo: EventCategoryRepository = EventCategoryRepositoryProvider.repository,
     private val userRepo: UserRepository = UserRepositoryProvider.repository,

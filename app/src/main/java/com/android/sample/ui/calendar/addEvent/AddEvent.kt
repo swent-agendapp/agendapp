@@ -96,6 +96,10 @@ fun AddEventScreen(
               AddEventTitleAndDescriptionBottomBar(
                   addEventViewModel = addEventViewModel,
                   onNext = { addEventViewModel.nextStep() },
+                  onCancel = {
+                      addEventViewModel.resetUiState()
+                      onCancel()
+                  }
               )
           AddEventStep.TIME_AND_RECURRENCE ->
               AddEventTimeAndRecurrenceBottomBar(

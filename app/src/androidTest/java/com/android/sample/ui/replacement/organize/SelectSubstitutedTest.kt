@@ -10,11 +10,13 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepositoryProvider
+import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.ui.replacement.organize.components.SelectSubstitutedScreen
 import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import kotlinx.coroutines.runBlocking
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -32,6 +34,9 @@ class SelectSubstitutedScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrga
     super.setUp()
 
     setSelectedOrganization()
+
+    // Use local user repository for tests
+    UserRepositoryProvider.repository = UsersRepositoryLocal()
 
     // Add test members to user repository and to the selected organization
     val testMembers =
@@ -63,6 +68,13 @@ class SelectSubstitutedScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrga
     }
 
     members = fakeViewModel.uiState.value.memberList
+  }
+
+  @After
+  fun cleanUp() {
+    runBlocking {
+      members.forEach { user -> UserRepositoryProvider.repository.deleteUser(user.id) }
+    }
   }
 
   private fun labelOf(user: User): String {

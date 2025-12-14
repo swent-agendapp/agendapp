@@ -5,6 +5,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepositoryProvider
+import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.ui.calendar.editEvent.EditEventTestTags
 import com.android.sample.ui.calendar.editEvent.components.EditEventAttendantScreen
 import com.android.sample.ui.calendar.editEvent.components.EditEventScreen
@@ -32,6 +33,9 @@ class EditEventScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
     super.setUp()
 
     setSelectedOrganization()
+
+    // Use local user repository for tests
+    UserRepositoryProvider.repository = UsersRepositoryLocal()
   }
 
   // Test to verify that all UI elements are displayed on the Edit Event screen
@@ -113,6 +117,9 @@ class EditEventScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
 
     assert(saveClicked)
     assert(backClicked)
+
+    // Clean up by removing the user from the organization
+    runBlocking { UserRepositoryProvider.repository.deleteUser("1") }
   }
 
   @Ignore("This test is making the CI flaky, needs investigation")
@@ -127,11 +134,17 @@ class EditEventScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
 
     composeTestRule.setContent { SampleAppTheme { EditEventAttendantScreen() } }
 
+    // Click on the "Got it" button of the first pop-up
+    composeTestRule.onNodeWithTag(EditEventTestTags.ATTENDANCE_WARNING_ACK_BUTTON).performClick()
+
     val alice = composeTestRule.onNodeWithText("Alice")
 
     alice.assertExists()
     alice.performClick()
     alice.performClick()
+
+    // Clean up by removing the user from the organization
+    runBlocking { UserRepositoryProvider.repository.deleteUser("1") }
   }
 
   @Test

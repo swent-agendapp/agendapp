@@ -245,7 +245,13 @@
     <string name="work_duration_hours_minutes">%1$dh %2$dmin</string>
 
     <!-- Category -->
+    <string name="delete_category_message">Êtes-vous sûr de vouloir supprimer cette catégorie ?</string>
     <string name="default_category_label">Sans catégorie</string>
+    <string name="edit_category_title">Modifier vos catégories</string>
+    <string name="edit_category_empty_state_title">Aucune catégorie pour le moment.</string>
+    <string name="edit_category_empty_state_message">Créez votre première catégorie avec le bouton « + ».</string>
+    <string name="edit_category_name_label">Nom de la catégorie</string>
+    <string name="edit_category_save_button">Enregistrer la catégorie</string>
 
     <string name="hour_recap">Récapitulatif des heures</string>
     <string name="hour_recap_events_for_user">Événements pour %1$s</string>

@@ -38,8 +38,9 @@ class HourRecapWithVMTest : RequiresSelectedOrganizationTestBase {
 
     compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
 
-    // Advance time to allow LaunchedEffect to complete
-    compose.mainClock.advanceTimeBy(1000)
+    // Advance time to allow LaunchedEffect and snackbar to complete
+    // Snackbar has a default timeout of ~4 seconds, so we need to wait longer
+    compose.mainClock.advanceTimeBy(5000)
     compose.waitForIdle()
 
     // After LaunchedEffect, errorMsg must be cleared

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FileDownload
@@ -58,6 +59,7 @@ object HourRecapTestTags {
   const val GENERATE_BUTTON = "hour_recap_generate_button"
   const val RECAP_LIST = "hour_recap_list"
   const val RECAP_ITEM = "hour_recap_item"
+  const val RECAP_ITEM_ISSUE_MARKER = "hour_recap_item_issue_marker"
   const val RECAP_SHEET = "hour_recap_sheet"
   const val EXPORT_BUTTON = "hour_recap_export_button"
 }
@@ -404,8 +406,18 @@ private fun RecapItemCard(recap: HourRecapUserRecap, onClick: () -> Unit) {
         Column(modifier = Modifier.fillMaxWidth().padding(PaddingMedium)) {
           Row(
               modifier = Modifier.fillMaxWidth(),
-              horizontalArrangement = Arrangement.SpaceBetween,
               verticalAlignment = Alignment.CenterVertically) {
+                if (recap.hasPresenceIssue) {
+                  Box(
+                      modifier =
+                          Modifier.size(12.dp)
+                              .clip(CircleShape)
+                              .background(MaterialTheme.colorScheme.error)
+                              .testTag(
+                                  "${HourRecapTestTags.RECAP_ITEM_ISSUE_MARKER}_${recap.userId}"))
+                  Spacer(Modifier.width(PaddingSmall))
+                }
+
                 Text(
                     text = recap.displayName,
                     style = MaterialTheme.typography.bodyLarge,

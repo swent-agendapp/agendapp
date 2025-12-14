@@ -117,6 +117,58 @@ class HourRecapScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
   }
 
   @Test
+  fun recapItem_showsIssueMarkerWhenPresenceIsMissing() {
+    val vm = HourRecapViewModel()
+    val pastTime = java.time.Instant.now().minusSeconds(7200)
+
+    val missingPresenceEvent =
+        HourRecapEventEntry(
+            id = "event-missing",
+            title = "Morning Shift",
+            startDate = pastTime,
+            endDate = pastTime.plusSeconds(3600),
+            isPast = true,
+            wasPresent = null,
+            wasReplaced = false,
+            tookReplacement = false,
+            categoryColor = androidx.compose.ui.graphics.Color.Blue)
+
+    val confirmedPresenceEvent =
+        HourRecapEventEntry(
+            id = "event-confirmed",
+            title = "Afternoon Shift",
+            startDate = pastTime,
+            endDate = pastTime.plusSeconds(3600),
+            isPast = true,
+            wasPresent = true,
+            wasReplaced = false,
+            tookReplacement = false,
+            categoryColor = androidx.compose.ui.graphics.Color.Blue)
+
+    vm.setTestWorkedHours(
+        listOf(
+            HourRecapUserRecap(
+                userId = "alice",
+                displayName = "Alice",
+                completedHours = 2.0,
+                plannedHours = 0.0,
+                events = listOf(missingPresenceEvent)),
+            HourRecapUserRecap(
+                userId = "bob",
+                displayName = "Bob",
+                completedHours = 2.0,
+                plannedHours = 0.0,
+                events = listOf(confirmedPresenceEvent))))
+
+    compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
+
+    compose
+        .onNodeWithTag("${HourRecapTestTags.RECAP_ITEM_ISSUE_MARKER}_alice")
+        .assertExists()
+    compose.onNodeWithTag("${HourRecapTestTags.RECAP_ITEM_ISSUE_MARKER}_bob").assertDoesNotExist()
+  }
+
+  @Test
   fun emptyWorkedHours_showsEmptyList() {
     val vm = HourRecapViewModel()
     vm.setTestWorkedHours(emptyList())

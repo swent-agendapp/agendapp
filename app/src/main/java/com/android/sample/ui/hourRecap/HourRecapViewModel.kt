@@ -42,6 +42,9 @@ data class HourRecapUserRecap(
 ) {
   val totalHours: Double
     get() = completedHours + plannedHours
+
+  val hasPresenceIssue: Boolean
+    get() = events.any { it.isPast && it.wasPresent != true }
 }
 
 data class HourRecapUiState(

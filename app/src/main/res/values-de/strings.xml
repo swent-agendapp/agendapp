@@ -27,6 +27,13 @@
     <string name="confirmationMessage">Herzlichen Glückwunsch!\nIhr Ereignis wurde erfolgreich erstellt und zum Kalender hinzugefügt</string>
     <string name="cancel">Abbrechen</string>
     <string name="default_web_client_id">423898020035-fu7m7lmtsuu6cn7d3s4ev4mrf0ep68l3.apps.googleusercontent.com</string>
+    <string name="add_event_step_1_of_2">Schritt 1 von 2</string>
+    <string name="add_event_step_2_of_2">Schritt 2 von 2</string>
+    <string name="add_event_create_title">Ereignis erstellen</string>
+    <string name="optional_label">(optional)</string>
+    <string name="add_event_time_title">Planung</string>
+    <string name="add_event_time_subtitle">Legen Sie Datum, Uhrzeit und Wiederholung des Ereignisses fest</string>
+
 
     <!-- Common -->
     <string name="confirmed_replacements">Bestätigte Ersetzungen</string>

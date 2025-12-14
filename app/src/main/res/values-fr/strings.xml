@@ -27,6 +27,12 @@
     <string name="confirmationMessage">Félicitations !\nVotre événement a été créé et ajouté à votre calendrier</string>
     <string name="cancel">Annuler</string>
     <string name="default_web_client_id">423898020035-fu7m7lmtsuu6cn7d3s4ev4mrf0ep68l3.apps.googleusercontent.com</string>
+    <string name="add_event_step_1_of_2">Étape 1 sur 2</string>
+    <string name="add_event_step_2_of_2">Étape 2 sur 2</string>
+    <string name="add_event_create_title">Créer un événement</string>
+    <string name="optional_label">(optionnel)</string>
+    <string name="add_event_time_title">Planification</string>
+    <string name="add_event_time_subtitle">Définissez la date, l’heure et la récurrence de l’événement</string>
 
     <!-- Common -->
     <string name="confirmed_replacements">Remplacements confirmés</string>

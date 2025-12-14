@@ -6,6 +6,7 @@ import androidx.compose.ui.unit.sp
 // Padding
 val PaddingExtraSmall = 4.dp
 val PaddingSmall = 8.dp
+val PaddingSmallMedium = 10.dp
 val PaddingMedium = 16.dp
 val PaddingLarge = 24.dp
 val PaddingExtraLarge = 32.dp
@@ -62,6 +63,7 @@ val ElevationHigh = 12.dp
 val widthSmall = 48.dp
 val widthLarge = 120.dp
 val heightExtraSmall = 0.7.dp
+val  heightSmall = 4.dp
 val heightMedium = 40.dp
 val heightLarge = 60.dp
 val BarWidthSmall = 4.dp

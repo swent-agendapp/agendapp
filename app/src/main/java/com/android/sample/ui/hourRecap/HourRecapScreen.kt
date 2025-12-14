@@ -20,7 +20,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -33,23 +32,33 @@ import com.android.sample.ui.calendar.utils.formatDecimalHoursToTime
 import com.android.sample.ui.common.Loading
 import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.common.SecondaryPageTopBar
-import com.android.sample.ui.theme.ElevationLow
-import com.android.sample.ui.theme.PaddingExtraSmall
-import com.android.sample.ui.theme.PaddingMedium
-import com.android.sample.ui.theme.PaddingSmall
-import com.android.sample.ui.theme.Palette
-import com.android.sample.ui.theme.SpacingLarge
-import com.android.sample.ui.theme.SpacingMedium
-import com.android.sample.ui.theme.Weight
+import com.android.sample.ui.theme.*
 import java.time.Duration
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
-// Modularization assisted by AI
+/* -------------------------------------------------------------------------- */
+/* UI constants                                                                */
+/* -------------------------------------------------------------------------- */
 
-/** Test tags for HourRecapScreen UI tests. */
+private object HourRecapUiConstants {
+  const val BOTTOM_SHEET_HEIGHT_RATIO = 0.75f
+
+  const val EVENT_COLOR_BAR_WIDTH_DP = 10
+  const val ISSUE_MARKER_SIZE_DP = 12
+
+  const val END_OF_DAY_HOUR = 23
+  const val END_OF_DAY_MINUTE = 59
+
+  const val MINUTES_PER_HOUR = 60.0
+}
+
+/* -------------------------------------------------------------------------- */
+/* Test tags                                                                   */
+/* -------------------------------------------------------------------------- */
+
 object HourRecapTestTags {
   const val BACK_BUTTON = "hour_recap_back_button"
   const val SCREEN_ROOT = "hour_recap_screen_root"
@@ -64,26 +73,10 @@ object HourRecapTestTags {
   const val EXPORT_BUTTON = "hour_recap_export_button"
 }
 
-/**
- * HourRecapScreen
- *
- * A screen allowing an administrator to select a start and end date and visualize the total working
- * hours of all employees over the selected period.
- *
- * This screen currently uses fake recap data; the real implementation will later delegate the
- * date-range selection and recap generation to a dedicated ViewModel.
- *
- * UI structure:
- * - A top bar with a back button and an "Export to Excel" action button.
- * - Two date picker fields (start / end).
- * - A "Generate recap" button (enabled only when both dates are selected).
- * - A scrollable list summarizing each employee's worked hours.
- *
- * Test tags are provided through [HourRecapTestTags] to support UI testing.
- *
- * @param hourRecapViewModel ViewModel for hour recap.
- * @param onBackClick Callback invoked when the user presses the back navigation button.
- */
+/* -------------------------------------------------------------------------- */
+/* Screen                                                                      */
+/* -------------------------------------------------------------------------- */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HourRecapScreen(
@@ -91,8 +84,8 @@ fun HourRecapScreen(
     onBackClick: () -> Unit = {}
 ) {
   val uiState by hourRecapViewModel.uiState.collectAsState()
-  val context = LocalContext.current
   val snackbarHostState = remember { SnackbarHostState() }
+
   LaunchedEffect(uiState.errorMsg) {
     uiState.errorMsg?.let { message ->
       snackbarHostState.showSnackbar(message)
@@ -128,7 +121,7 @@ fun HourRecapScreen(
             backButtonTestTags = HourRecapTestTags.BACK_BUTTON,
             actions = {
               IconButton(
-                  onClick = { /* Later: Export */},
+                  onClick = { /* Export later */},
                   modifier = Modifier.testTag(HourRecapTestTags.EXPORT_BUTTON)) {
                     Icon(
                         imageVector = Icons.Default.FileDownload,
@@ -141,8 +134,7 @@ fun HourRecapScreen(
                 Modifier.padding(padding)
                     .padding(SpacingLarge)
                     .fillMaxSize()
-                    .testTag(HourRecapTestTags.SCREEN_ROOT),
-            verticalArrangement = Arrangement.Top) {
+                    .testTag(HourRecapTestTags.SCREEN_ROOT)) {
               DateRangePicker(
                   startDate = startDate,
                   endDate = endDate,
@@ -152,7 +144,12 @@ fun HourRecapScreen(
                     hasGenerated = true
                     hourRecapViewModel.calculateWorkedHours(
                         start = startDate!!.atStartOfDay().toInstant(ZoneOffset.UTC),
-                        end = endDate!!.atTime(23, 59).toInstant(ZoneOffset.UTC))
+                        end =
+                            endDate!!
+                                .atTime(
+                                    HourRecapUiConstants.END_OF_DAY_HOUR,
+                                    HourRecapUiConstants.END_OF_DAY_MINUTE)
+                                .toInstant(ZoneOffset.UTC))
                   })
 
               Spacer(Modifier.height(SpacingLarge))
@@ -171,7 +168,10 @@ fun HourRecapScreen(
       }
 
   if (selectedUser != null) {
-    val minSheetHeight = LocalConfiguration.current.screenHeightDp.dp * 0.75f
+    val minSheetHeight =
+        LocalConfiguration.current.screenHeightDp.dp *
+            HourRecapUiConstants.BOTTOM_SHEET_HEIGHT_RATIO
+
     ModalBottomSheet(
         modifier = Modifier.testTag(HourRecapTestTags.RECAP_SHEET),
         onDismissRequest = { selectedUser = null },
@@ -181,6 +181,10 @@ fun HourRecapScreen(
         }
   }
 }
+
+/* -------------------------------------------------------------------------- */
+/* Bottom sheet                                                                */
+/* -------------------------------------------------------------------------- */
 
 @Composable
 private fun HourRecapUserEventsSheet(recap: HourRecapUserRecap, modifier: Modifier = Modifier) {
@@ -193,13 +197,10 @@ private fun HourRecapUserEventsSheet(recap: HourRecapUserRecap, modifier: Modifi
               .fillMaxWidth()
               .verticalScroll(rememberScrollState())
               .padding(horizontal = SpacingLarge, vertical = SpacingMedium)) {
-        Row(modifier = Modifier.fillMaxWidth()) {
-          Text(
-              text = stringResource(R.string.hour_recap_events_for_user, recap.displayName),
-              style = MaterialTheme.typography.titleMedium,
-              fontWeight = FontWeight.Bold,
-          )
-        }
+        Text(
+            text = stringResource(R.string.hour_recap_events_for_user, recap.displayName),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold)
 
         Spacer(Modifier.height(SpacingMedium))
 
@@ -215,22 +216,27 @@ private fun HourRecapUserEventsSheet(recap: HourRecapUserRecap, modifier: Modifi
       }
 }
 
+/* -------------------------------------------------------------------------- */
+/* Event card                                                                  */
+/* -------------------------------------------------------------------------- */
+
 @Composable
 @OptIn(ExperimentalLayoutApi::class)
 private fun HourRecapEventCard(
     event: HourRecapEventEntry,
     dateFormatter: DateTimeFormatter,
-    timeFormatter: DateTimeFormatter,
+    timeFormatter: DateTimeFormatter
 ) {
   val durationHours =
       remember(event.startDate, event.endDate) {
-        val durationMinutes = Duration.between(event.startDate, event.endDate).toMinutes()
-        durationMinutes.toDouble() / 60.0
+        Duration.between(event.startDate, event.endDate).toMinutes().toDouble() /
+            HourRecapUiConstants.MINUTES_PER_HOUR
       }
-  val durationText = formatDecimalHoursToTime(durationHours)
 
+  val durationText = formatDecimalHoursToTime(durationHours)
   val start = event.startDate.atZone(ZoneId.systemDefault())
   val end = event.endDate.atZone(ZoneId.systemDefault())
+
   Card(modifier = Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(ElevationLow)) {
     Row(modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
       Column(modifier = Modifier.weight(1f).padding(PaddingMedium)) {
@@ -243,6 +249,7 @@ private fun HourRecapEventCard(
                   style = MaterialTheme.typography.titleSmall,
                   fontWeight = FontWeight.SemiBold,
                   modifier = Modifier.weight(1f))
+
               Surface(
                   shape = MaterialTheme.shapes.small,
                   color =
@@ -257,7 +264,9 @@ private fun HourRecapEventCard(
                                 fontWeight = FontWeight.SemiBold))
                   }
             }
+
         Spacer(Modifier.height(PaddingSmall))
+
         Text(
             text =
                 stringResource(
@@ -266,19 +275,25 @@ private fun HourRecapEventCard(
                     start.toLocalTime().format(timeFormatter),
                     end.toLocalTime().format(timeFormatter)),
             style = MaterialTheme.typography.bodyMedium)
+
         Spacer(Modifier.height(PaddingSmall))
+
         EventTagsRow(event = event)
       }
 
       Box(
           modifier =
-              Modifier.width(10.dp)
+              Modifier.width(HourRecapUiConstants.EVENT_COLOR_BAR_WIDTH_DP.dp)
                   .fillMaxHeight()
                   .clip(MaterialTheme.shapes.medium)
                   .background(event.categoryColor))
     }
   }
 }
+
+/* -------------------------------------------------------------------------- */
+/* Remaining composables unchanged (stats, list, tags)                         */
+/* -------------------------------------------------------------------------- */
 
 @Composable
 private fun HourRecapStat(

@@ -2,13 +2,14 @@ package com.android.sample.model.invitationRepositoryTest
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.sample.model.authentication.User
-import com.android.sample.model.authentication.UserRepositoryProvider
+import com.android.sample.model.authentication.UserRepository
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.invitation.InvitationRepository
 import com.android.sample.model.organization.invitation.InvitationRepositoryProvider
 import com.android.sample.model.organization.invitation.InvitationStatus
 import com.android.sample.utils.FirebaseEmulatedTest
 import kotlinx.coroutines.runBlocking
+import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -20,6 +21,7 @@ import org.junit.runner.RunWith
 class InvitationRepositoryFirebaseTest : FirebaseEmulatedTest() {
 
   private lateinit var repo: InvitationRepository
+  private lateinit var userRepo: UserRepository
 
   private lateinit var admin: User
   private lateinit var member: User
@@ -32,23 +34,35 @@ class InvitationRepositoryFirebaseTest : FirebaseEmulatedTest() {
     super.setUp()
     repo = InvitationRepositoryProvider.repository
 
+    // Use Firebase emulated test with local user repository for tests
+    userRepo = createInitializedUserRepository()
+
     // --- Create users ---
     admin = User(id = "adminA", displayName = "Admin A", email = "adminA@example.com")
     member = User(id = "memberA", displayName = "Member A", email = "memberA@example.com")
     outsider = User(id = "outsider", displayName = "Outsider", email = "outsider@example.com")
 
-    UserRepositoryProvider.repository.newUser(admin)
-    UserRepositoryProvider.repository.newUser(member)
-    UserRepositoryProvider.repository.newUser(outsider)
+    userRepo.newUser(admin)
+    userRepo.newUser(member)
+    userRepo.newUser(outsider)
 
     // --- Create organization ---
     organizationA = Organization(id = "orgA", name = "Org A")
 
     organizationB = Organization(id = "orgB", name = "Org B")
 
-    UserRepositoryProvider.repository.addAdminToOrganization(admin.id, organizationA.id)
-    UserRepositoryProvider.repository.addUserToOrganization(member.id, organizationA.id)
-    UserRepositoryProvider.repository.addAdminToOrganization(admin.id, organizationB.id)
+    userRepo.addAdminToOrganization(admin.id, organizationA.id)
+    userRepo.addUserToOrganization(member.id, organizationA.id)
+    userRepo.addAdminToOrganization(admin.id, organizationB.id)
+  }
+
+  @After
+  fun cleanRepo() = runBlocking {
+
+    // Remove users from the repository
+    userRepo.deleteUser(admin.id)
+    userRepo.deleteUser(member.id)
+    userRepo.deleteUser(outsider.id)
   }
 
   @Test

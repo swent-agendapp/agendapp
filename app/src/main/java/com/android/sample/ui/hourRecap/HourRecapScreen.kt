@@ -44,14 +44,8 @@ import java.time.format.DateTimeFormatter
 /* -------------------------------------------------------------------------- */
 
 private object HourRecapUiConstants {
-  const val BOTTOM_SHEET_HEIGHT_RATIO = 0.75f
-
-  const val EVENT_COLOR_BAR_WIDTH_DP = 10
-  const val ISSUE_MARKER_SIZE_DP = 12
-
   const val END_OF_DAY_HOUR = 23
   const val END_OF_DAY_MINUTE = 59
-
   const val MINUTES_PER_HOUR = 60.0
 }
 
@@ -168,9 +162,7 @@ fun HourRecapScreen(
       }
 
   if (selectedUser != null) {
-    val minSheetHeight =
-        LocalConfiguration.current.screenHeightDp.dp *
-            HourRecapUiConstants.BOTTOM_SHEET_HEIGHT_RATIO
+    val minSheetHeight = LocalConfiguration.current.screenHeightDp.dp * BOTTOM_SHEET_HEIGHT_RATIO
 
     ModalBottomSheet(
         modifier = Modifier.testTag(HourRecapTestTags.RECAP_SHEET),
@@ -293,7 +285,7 @@ private fun HourRecapEventCard(
 
       Box(
           modifier =
-              Modifier.width(HourRecapUiConstants.EVENT_COLOR_BAR_WIDTH_DP.dp)
+              Modifier.width(EVENT_COLOR_BAR_WIDTH_DP.dp)
                   .fillMaxHeight()
                   .clip(MaterialTheme.shapes.medium)
                   .background(event.categoryColor))

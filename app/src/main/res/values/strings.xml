@@ -10,7 +10,7 @@
     <string name="title_empty_error">Title cannot be empty</string>
     <string name="name_empty_error">Name cannot be empty</string>
     <string name="description_empty_error">Description cannot be empty</string>
-    <string name="eventDescriptionPlaceholder">Describe the event</string>
+    <string name="eventDescriptionPlaceholder">Describe the event (optional)</string>
     <string name="eventDescription">Description</string>
     <string name="goBack">Go Back</string>
     <string name="selectAttendants">Select the person attending this event.</string>
@@ -41,6 +41,9 @@
     <string name="add_event_attendees_title">Attendees</string>
     <string name="add_event_attendees_subtitle">Select people to invite</string>
     <string name="no_name">No name</string>
+    <string name="add_event_create_subtitle">
+    Set the basic details of your event
+</string>
 
     <!-- Common -->
     <string name="common_back">Back</string>

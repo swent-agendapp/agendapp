@@ -37,6 +37,9 @@
     <string name="add_event_attendees_title">Teilnehmende</string>
     <string name="add_event_attendees_subtitle">Wählen Sie Personen zum Einladen aus</string>
     <string name="no_name">Kein Name</string>
+    <string name="add_event_create_subtitle">
+    Legen Sie die grundlegenden Informationen Ihrer Veranstaltung fest
+</string>
 
     <!-- Common -->
     <string name="confirmed_replacements">Bestätigte Ersetzungen</string>

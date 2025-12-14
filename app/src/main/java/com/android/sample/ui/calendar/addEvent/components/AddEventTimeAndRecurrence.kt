@@ -87,7 +87,7 @@ fun AddEventTimeAndRecurrenceScreen(
               .fillMaxSize()
               .padding(horizontal = PaddingExtraLarge)
               .verticalScroll(rememberScrollState()),
-      horizontalAlignment = Alignment.CenterHorizontally,
+      horizontalAlignment = Alignment.Start,
       verticalArrangement = Arrangement.Top) {
         Spacer(modifier = Modifier.height(SpacingExtraLarge))
         StepHeader(
@@ -103,9 +103,12 @@ fun AddEventTimeAndRecurrenceScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(SpacingMedium)) {
               Column(modifier = Modifier.weight(WeightExtraHeavy)) {
-                FieldLabelWithIcon(
-                    icon = { Icon(Icons.Outlined.CalendarMonth, contentDescription = null) },
-                    label = stringResource(R.string.startDatePickerLabel))
+                  Box(modifier = Modifier.fillMaxWidth()) {
+                      FieldLabelWithIcon(
+                          icon = { Icon(Icons.Outlined.CalendarMonth, contentDescription = null) },
+                          label = stringResource(R.string.startDatePickerLabel)
+                      )
+                  }
                 Spacer(Modifier.height(SpacingSmall))
                 DatePickerFieldToModal(
                     label = "",
@@ -171,7 +174,7 @@ fun AddEventTimeAndRecurrenceScreen(
         Spacer(modifier = Modifier.height(SpacingLarge))
 
         FieldLabelWithIcon(
-            icon = { },
+            icon = { Icon(Icons.Outlined.Repeat, contentDescription = null) },
             label = stringResource(R.string.recurrenceMenuLabel))
         Spacer(Modifier.height(SpacingSmall))
 
@@ -309,9 +312,6 @@ private fun RecurrenceOptionCard(
                 style = MaterialTheme.typography.bodyLarge,
                 color = content,
                 modifier = Modifier.weight(WeightExtraHeavy))
-            if (selected) {
-              Icon(Icons.Outlined.Check, contentDescription = null, tint = content)
-            }
           }
     }
   }

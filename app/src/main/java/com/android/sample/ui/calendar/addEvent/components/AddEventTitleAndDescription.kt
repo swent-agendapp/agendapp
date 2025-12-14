@@ -70,7 +70,7 @@ fun AddEventTitleAndDescriptionScreen(
         StepHeader(
             stepText = stringResource(R.string.add_event_step_1_of_2),
             title = stringResource(R.string.add_event_create_title),
-            subtitle = "",
+            subtitle = stringResource(R.string.add_event_create_subtitle),
             icon = { Icon(Icons.Outlined.CalendarMonth, contentDescription = null) },
             progress = 0.3f)
 
@@ -96,15 +96,18 @@ fun AddEventTitleAndDescriptionScreen(
 
         Spacer(modifier = Modifier.height(SpacingLarge))
 
-        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
-          Text(
-              text = stringResource(R.string.eventDescription),
-              style = MaterialTheme.typography.labelLarge)
-          Spacer(modifier = Modifier.padding(horizontal = SpacingSmall))
-          Text(
-              text = stringResource(R.string.optional_label),
-              style = MaterialTheme.typography.labelMedium)
-        }
+      ValidatingTextField(
+          label = stringResource(R.string.eventDescription),
+          placeholder = stringResource(R.string.eventDescriptionPlaceholder),
+          testTag = AddEventTestTags.DESCRIPTION_TEXT_FIELD,
+          isError = false,
+          errorMessage = "",
+          value = newEventUIState.description,
+          onValueChange = { addEventViewModel.setDescription(it) },
+          onFocusChange = {},
+          singleLine = false,
+          minLines = DESCRIPTION_FIELD_MIN_LINES
+      )
 
         Spacer(modifier = Modifier.height(SpacingSmall))
 

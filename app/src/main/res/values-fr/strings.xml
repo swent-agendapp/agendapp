@@ -37,6 +37,9 @@
     <string name="add_event_attendees_title">Participants</string>
     <string name="add_event_attendees_subtitle">Choisissez les personnes à inviter</string>
     <string name="no_name">Sans nom</string>
+    <string name="add_event_create_subtitle">
+    Définissez les informations de base de votre événement
+</string>
 
     <!-- Common -->
     <string name="confirmed_replacements">Remplacements confirmés</string>

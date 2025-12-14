@@ -1,10 +1,13 @@
 package com.android.sample.ui.calendar
 
 import android.app.Application
+import androidx.compose.ui.graphics.Color
 import com.android.sample.model.calendar.*
+import com.android.sample.model.category.EventCategory
 import com.android.sample.model.map.MapRepository
 import com.android.sample.model.map.MapRepositoryLocal
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
+import com.android.sample.ui.calendar.filters.EventFilters
 import io.mockk.mockk
 import java.time.Instant
 import kotlinx.coroutines.Dispatchers
@@ -335,5 +338,86 @@ class CalendarViewModelTest {
     // Should only contain events within the specified range
     assertEquals(1, state.events.size)
     assertEquals("Meeting", state.events.first().title)
+  }
+
+  @Test
+  fun applyFilters_filtersByParticipants() = runTest {
+    val eventA =
+        createEvent(
+            organizationId = orgId, title = "Event A", participants = setOf("Alice", "Bob"))[0]
+
+    val eventB =
+        createEvent(organizationId = orgId, title = "Event B", participants = setOf("Charlie"))[0]
+
+    repositoryEvent.insertEvent(orgId, eventA)
+    repositoryEvent.insertEvent(orgId, eventB)
+
+    viewModel.loadAllEvents()
+    testDispatcher.scheduler.advanceUntilIdle()
+
+    viewModel.applyFilters(EventFilters(participants = setOf("Alice")))
+
+    val events = viewModel.uiState.value.events
+    assertEquals(1, events.size)
+    assertEquals("Event A", events.first().title)
+  }
+
+  @Test
+  fun applyFilters_filtersByEventType() = runTest {
+    val course =
+        createEvent(
+            organizationId = orgId,
+            title = "Course",
+            category = EventCategory(organizationId = orgId, label = "Course", color = Color.Red))[
+            0]
+
+    val meeting =
+        createEvent(
+            organizationId = orgId,
+            title = "Meeting",
+            category =
+                EventCategory(organizationId = orgId, label = "Meeting", color = Color.Blue))[0]
+
+    repositoryEvent.insertEvent(orgId, course)
+    repositoryEvent.insertEvent(orgId, meeting)
+
+    viewModel.loadAllEvents()
+    testDispatcher.scheduler.advanceUntilIdle()
+
+    viewModel.applyFilters(EventFilters(eventTypes = setOf("Course")))
+
+    val events = viewModel.uiState.value.events
+    assertEquals(1, events.size)
+    assertEquals("Course", events.first().title)
+  }
+
+  @Test
+  fun applyFilters_combinesParticipantAndLocation() = runTest {
+    val e1 =
+        createEvent(
+            organizationId = orgId,
+            title = "Event 1",
+            participants = setOf("Alice"),
+            location = "Salle 1")[0]
+
+    val e2 =
+        createEvent(
+            organizationId = orgId,
+            title = "Event 2",
+            participants = setOf("Alice"),
+            location = "Salle 2")[0]
+
+    repositoryEvent.insertEvent(orgId, e1)
+    repositoryEvent.insertEvent(orgId, e2)
+
+    viewModel.loadAllEvents()
+    testDispatcher.scheduler.advanceUntilIdle()
+
+    viewModel.applyFilters(
+        EventFilters(participants = setOf("Alice"), locations = setOf("Salle 1")))
+
+    val events = viewModel.uiState.value.events
+    assertEquals(1, events.size)
+    assertEquals("Event 1", events.first().title)
   }
 }

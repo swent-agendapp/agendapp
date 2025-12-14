@@ -487,40 +487,68 @@ private fun RecapItemCard(recap: HourRecapUserRecap, onClick: () -> Unit) {
 private fun EventTagsRow(event: HourRecapEventEntry, viewModel: HourRecapViewModel) {
   FlowRow(horizontalArrangement = Arrangement.spacedBy(PaddingSmall)) {
     if (!event.isPast) {
-      RecapTag(
-          label = stringResource(R.string.hour_recap_tag_future),
-          containerColor = MaterialTheme.colorScheme.tertiaryContainer)
+      FutureTag()
     }
 
     if (event.isPast) {
-      val (presenceType, _, useErrorColor) = viewModel.getPresenceTagInfo(event.wasPresent)
-      val presenceLabel =
-          when (presenceType) {
-            "present" -> stringResource(R.string.hour_recap_tag_present)
-            "absent" -> stringResource(R.string.hour_recap_tag_absent)
-            else -> stringResource(R.string.hour_recap_tag_presence_unknown)
-          }
-      val presenceColor =
-          if (useErrorColor) {
-            MaterialTheme.colorScheme.errorContainer
-          } else {
-            when (presenceType) {
-              "present" -> Palette.Green
-              else -> MaterialTheme.colorScheme.surfaceVariant
-            }
-          }
-      RecapTag(label = presenceLabel, containerColor = presenceColor)
+      PresenceTag(event = event, viewModel = viewModel)
     }
 
     if (event.wasReplaced) {
-      RecapTag(
-          label = stringResource(R.string.hour_recap_tag_replaced), containerColor = Palette.Orange)
+      ReplacedTag()
     }
 
     if (event.tookReplacement) {
-      RecapTag(
-          label = stringResource(R.string.hour_recap_tag_replacement_taken),
-          containerColor = Palette.Cyan)
+      ReplacementTakenTag()
     }
   }
+}
+
+@Composable
+private fun FutureTag() {
+  RecapTag(
+      label = stringResource(R.string.hour_recap_tag_future),
+      containerColor = MaterialTheme.colorScheme.tertiaryContainer)
+}
+
+@Composable
+private fun PresenceTag(event: HourRecapEventEntry, viewModel: HourRecapViewModel) {
+  val (presenceType, _, useErrorColor) = viewModel.getPresenceTagInfo(event.wasPresent)
+  val label = getPresenceLabel(presenceType)
+  val color = getPresenceColor(presenceType, useErrorColor)
+  RecapTag(label = label, containerColor = color)
+}
+
+@Composable
+private fun getPresenceLabel(presenceType: String): String {
+  return when (presenceType) {
+    "present" -> stringResource(R.string.hour_recap_tag_present)
+    "absent" -> stringResource(R.string.hour_recap_tag_absent)
+    else -> stringResource(R.string.hour_recap_tag_presence_unknown)
+  }
+}
+
+@Composable
+private fun getPresenceColor(presenceType: String, useErrorColor: Boolean): Color {
+  return if (useErrorColor) {
+    MaterialTheme.colorScheme.errorContainer
+  } else {
+    when (presenceType) {
+      "present" -> Palette.Green
+      else -> MaterialTheme.colorScheme.surfaceVariant
+    }
+  }
+}
+
+@Composable
+private fun ReplacedTag() {
+  RecapTag(
+      label = stringResource(R.string.hour_recap_tag_replaced), containerColor = Palette.Orange)
+}
+
+@Composable
+private fun ReplacementTakenTag() {
+  RecapTag(
+      label = stringResource(R.string.hour_recap_tag_replacement_taken),
+      containerColor = Palette.Cyan)
 }

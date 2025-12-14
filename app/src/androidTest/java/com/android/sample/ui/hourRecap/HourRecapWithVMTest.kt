@@ -40,9 +40,7 @@ class HourRecapWithVMTest : RequiresSelectedOrganizationTestBase {
 
     // Wait for the LaunchedEffect to trigger and clear the error
     // The snackbar's showSnackbar() is a suspend function that completes when dismissed
-    compose.waitUntil(timeoutMillis = 6000) {
-      vm.uiState.value.errorMsg == null
-    }
+    compose.waitUntil(timeoutMillis = 6000) { vm.uiState.value.errorMsg == null }
 
     // Verify error message was cleared
     assertNull(vm.uiState.value.errorMsg)

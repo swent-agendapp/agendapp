@@ -177,7 +177,7 @@ fun HourRecapScreen(
         onDismissRequest = { selectedUser = null },
         sheetState = bottomSheetState) {
           HourRecapUserEventsSheet(
-              recap = selectedUser!!, modifier = Modifier.heightIn(min = minSheetHeight))
+              recap = selectedUser!!, viewModel = hourRecapViewModel, modifier = Modifier.heightIn(min = minSheetHeight))
         }
   }
 }
@@ -187,7 +187,7 @@ fun HourRecapScreen(
 /* -------------------------------------------------------------------------- */
 
 @Composable
-private fun HourRecapUserEventsSheet(recap: HourRecapUserRecap, modifier: Modifier = Modifier) {
+private fun HourRecapUserEventsSheet(recap: HourRecapUserRecap, viewModel: HourRecapViewModel, modifier: Modifier = Modifier) {
   val dateFormatter = remember { DateTimeFormatter.ofPattern("MMM dd, yyyy") }
   val timeFormatter = remember { DateTimeFormatter.ofPattern("HH:mm") }
 
@@ -209,7 +209,7 @@ private fun HourRecapUserEventsSheet(recap: HourRecapUserRecap, modifier: Modifi
         } else {
           recap.events.forEach { event ->
             HourRecapEventCard(
-                event = event, dateFormatter = dateFormatter, timeFormatter = timeFormatter)
+                event = event, dateFormatter = dateFormatter, timeFormatter = timeFormatter, viewModel = viewModel)
             Spacer(Modifier.height(PaddingSmall))
           }
         }
@@ -225,7 +225,8 @@ private fun HourRecapUserEventsSheet(recap: HourRecapUserRecap, modifier: Modifi
 private fun HourRecapEventCard(
     event: HourRecapEventEntry,
     dateFormatter: DateTimeFormatter,
-    timeFormatter: DateTimeFormatter
+    timeFormatter: DateTimeFormatter,
+    viewModel: HourRecapViewModel
 ) {
   val durationHours =
       remember(event.startDate, event.endDate) {
@@ -278,7 +279,7 @@ private fun HourRecapEventCard(
 
         Spacer(Modifier.height(PaddingSmall))
 
-        EventTagsRow(event = event)
+        EventTagsRow(event = event, viewModel = viewModel)
       }
 
       Box(
@@ -474,7 +475,7 @@ private fun RecapItemCard(recap: HourRecapUserRecap, onClick: () -> Unit) {
 
 @Composable
 @OptIn(ExperimentalLayoutApi::class)
-private fun EventTagsRow(event: HourRecapEventEntry) {
+private fun EventTagsRow(event: HourRecapEventEntry, viewModel: HourRecapViewModel) {
   FlowRow(horizontalArrangement = Arrangement.spacedBy(PaddingSmall)) {
     if (!event.isPast) {
       RecapTag(
@@ -483,7 +484,20 @@ private fun EventTagsRow(event: HourRecapEventEntry) {
     }
 
     if (event.isPast) {
-      val (presenceLabel, presenceColor) = getPresenceTagInfo(event.wasPresent)
+      val (presenceType, _, useErrorColor) = viewModel.getPresenceTagInfo(event.wasPresent)
+      val presenceLabel = when (presenceType) {
+        "present" -> stringResource(R.string.hour_recap_tag_present)
+        "absent" -> stringResource(R.string.hour_recap_tag_absent)
+        else -> stringResource(R.string.hour_recap_tag_presence_unknown)
+      }
+      val presenceColor = if (useErrorColor) {
+        MaterialTheme.colorScheme.errorContainer
+      } else {
+        when (presenceType) {
+          "present" -> Palette.Green
+          else -> MaterialTheme.colorScheme.surfaceVariant
+        }
+      }
       RecapTag(label = presenceLabel, containerColor = presenceColor)
     }
 
@@ -497,20 +511,5 @@ private fun EventTagsRow(event: HourRecapEventEntry) {
           label = stringResource(R.string.hour_recap_tag_replacement_taken),
           containerColor = Palette.Cyan)
     }
-  }
-}
-
-@Composable
-private fun getPresenceTagInfo(wasPresent: Boolean?): Pair<String, Color> {
-  return when (wasPresent) {
-    true -> Pair(stringResource(R.string.hour_recap_tag_present), Palette.Green)
-    false ->
-        Pair(
-            stringResource(R.string.hour_recap_tag_absent),
-            MaterialTheme.colorScheme.errorContainer) // Red for absent
-    null ->
-        Pair(
-            stringResource(R.string.hour_recap_tag_presence_unknown),
-            MaterialTheme.colorScheme.surfaceVariant) // Grey for unknown
   }
 }

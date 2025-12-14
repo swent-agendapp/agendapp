@@ -170,6 +170,23 @@ class HourRecapViewModel(
     return participants + assignedUsers + presence.keys
   }
 
+  /**
+   * Returns tag information for a given presence status.
+   *
+   * @param wasPresent The presence status (true = present, false = absent, null = unknown)
+   * @return A Triple of (presenceType, colorType, useErrorColor) where:
+   *   - presenceType: String identifier for the tag type ("present", "absent", "unknown")
+   *   - colorType: String identifier for the color ("green", "error", "surfaceVariant")
+   *   - useErrorColor: Boolean indicating if MaterialTheme.colorScheme.errorContainer should be used
+   */
+  fun getPresenceTagInfo(wasPresent: Boolean?): Triple<String, String, Boolean> {
+    return when (wasPresent) {
+      true -> Triple("present", "green", false)
+      false -> Triple("absent", "error", true)
+      null -> Triple("unknown", "surfaceVariant", false)
+    }
+  }
+
   companion object {
     val Factory: ViewModelProvider.Factory = viewModelFactory {
       initializer { HourRecapViewModel() }

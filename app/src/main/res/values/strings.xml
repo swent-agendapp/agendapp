@@ -31,13 +31,16 @@
     <string name="organize_replacement">Organize a replacement</string>
     <string name="waiting_confirmation_replacement">Replacement request</string>
     <string name="confirmed_replacements">Upcoming replacements</string>
-    <string name="add_event_step_1_of_2">Step 1 of 2</string>
-    <string name="add_event_step_2_of_2">Step 2 of 2</string>
+    <string name="add_event_step_1_of_2">Step 1 of 3</string>
+    <string name="add_event_step_2_of_2">Step 2 of 3</string>
     <string name="add_event_create_title">New event</string>
     <string name="optional_label">(optional)</string>
     <string name="add_event_time_title">Scheduling</string>
     <string name="add_event_time_subtitle">Set the date, time, and recurrence of the event</string>
-
+    <string name="add_event_step_3_of_3">Step 3 of 3</string>
+    <string name="add_event_attendees_title">Attendees</string>
+    <string name="add_event_attendees_subtitle">Select people to invite</string>
+    <string name="no_name">No name</string>
 
     <!-- Common -->
     <string name="common_back">Back</string>

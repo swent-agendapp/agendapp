@@ -73,16 +73,6 @@ fun AddEventScreen(
 ) {
   val uiState by addEventViewModel.uiState.collectAsState()
   Scaffold(
-      topBar = {
-        SecondaryPageTopBar(
-            modifier = Modifier.testTag(MapScreenTestTags.MAP_TITLE),
-            title = stringResource(R.string.addEventTitle),
-            canGoBack = true,
-            onClick = {
-              onCancel()
-              addEventViewModel.resetUiState()
-            })
-      },
       content = { padding ->
         when (uiState.step) {
           AddEventStep.TITLE_AND_DESC ->

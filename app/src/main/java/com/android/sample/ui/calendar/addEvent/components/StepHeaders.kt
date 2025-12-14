@@ -53,12 +53,17 @@ fun StepHeader(
 
     Spacer(modifier = Modifier.height(SpacingSmall))
 
-    Text(
-        text = subtitle,
-        style = MaterialTheme.typography.bodyLarge,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = Modifier.fillMaxWidth()
-    )
+    if (subtitle.isNotBlank()) {
+        Text(
+            text = subtitle,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(SpacingLarge))
+    } else {
+        Spacer(modifier = Modifier.height(SpacingLarge))
+    }
 
     Spacer(modifier = Modifier.height(SpacingLarge))
 

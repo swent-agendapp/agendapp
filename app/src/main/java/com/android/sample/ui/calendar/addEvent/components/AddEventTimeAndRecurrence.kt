@@ -92,7 +92,7 @@ fun AddEventTimeAndRecurrenceScreen(
             title = stringResource(R.string.add_event_time_title),
             subtitle = stringResource(R.string.add_event_time_subtitle),
             icon = { Icon(Icons.Outlined.AccessTime, contentDescription = null) },
-            progress = 1f
+            progress = 2f/3f
         )
 
         Spacer(modifier = Modifier.height(SpacingExtraLarge))

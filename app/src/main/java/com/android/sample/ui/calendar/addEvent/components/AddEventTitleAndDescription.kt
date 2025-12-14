@@ -29,11 +29,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
@@ -41,8 +38,6 @@ import com.android.sample.ui.calendar.addEvent.AddEventViewModel
 import com.android.sample.ui.calendar.components.ValidatingTextField
 import com.android.sample.ui.category.components.CategorySelector
 import com.android.sample.ui.common.BottomNavigationButtons
-import com.android.sample.ui.theme.GeneralPalette.Surface
-import com.android.sample.ui.theme.GeneralPaletteDark.Surface
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.SpacingExtraLarge
 import com.android.sample.ui.theme.SpacingLarge
@@ -78,7 +73,7 @@ fun AddEventTitleAndDescriptionScreen(
             title = stringResource(R.string.add_event_create_title),
             subtitle = "",
             icon = { Icon(Icons.Outlined.CalendarMonth, contentDescription = null) },
-            progress = 0.5f
+            progress = 1f/3f
         )
 
         Spacer(modifier = Modifier.height(SpacingExtraLarge))

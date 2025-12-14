@@ -37,6 +37,9 @@ class ReplacementOrganizeFlowTest : FirebaseEmulatedTest(), RequiresSelectedOrga
           onProcessNow = {},
           onProcessLater = {})
     }
+
+    // Use new firebase emulated test with local user repository for tests
+    UserRepositoryProvider.repository = createInitializedUserRepository()
   }
 
   @Test
@@ -90,13 +93,29 @@ class ReplacementOrganizeFlowTest : FirebaseEmulatedTest(), RequiresSelectedOrga
 
     fakeViewModel.setStartInstant(Instant.parse("2024-01-01T00:00:00Z"))
     fakeViewModel.setEndInstant(Instant.parse("2024-01-05T00:00:00Z"))
+
+    composeTestRule.onNodeWithTag(ReplacementOrganizeTestTags.NEXT_BUTTON).assertIsEnabled()
+    composeTestRule
+        .onNodeWithTag(ReplacementOrganizeTestTags.DATE_RANGE_INVALID_TEXT)
+        .assertDoesNotExist()
+
+    composeTestRule.onNodeWithTag(ReplacementOrganizeTestTags.NEXT_BUTTON).performClick()
+    composeTestRule
+        .onNodeWithTag(ReplacementOrganizeTestTags.PROCESS_NOW_BUTTON)
+        .assertIsDisplayed()
+    composeTestRule
+        .onNodeWithTag(ReplacementOrganizeTestTags.PROCESS_LATER_BUTTON)
+        .assertIsDisplayed()
+
+    // Clean up - remove Alice from the repository
+    runBlocking { UserRepositoryProvider.repository.deleteUser("1") }
   }
 
   @Test
   fun backFromFirstStep_callsOnCancel() {
     composeTestRule
-        .onNodeWithTag(ReplacementOrganizeTestTags.BACK_BUTTON)
-        .assertIsDisplayed()
-        .performClick()
+      .onNodeWithTag(ReplacementOrganizeTestTags.BACK_BUTTON)
+      .assertIsDisplayed()
+      .performClick()
   }
 }

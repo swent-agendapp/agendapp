@@ -38,7 +38,8 @@ class HourRecapWithVMTest : RequiresSelectedOrganizationTestBase {
 
     compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
 
-    // Let LaunchedEffect run
+    // Advance time to allow LaunchedEffect to complete
+    compose.mainClock.advanceTimeBy(1000)
     compose.waitForIdle()
 
     // After LaunchedEffect, errorMsg must be cleared

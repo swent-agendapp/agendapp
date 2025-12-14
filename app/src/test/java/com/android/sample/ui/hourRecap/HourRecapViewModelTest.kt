@@ -3,13 +3,12 @@ package com.android.sample.ui.hourRecap
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepository
 import com.android.sample.model.authentication.UsersRepositoryLocal
-import com.android.sample.model.calendar.Event
-import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.repository.OrganizationRepositoryLocal
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
+import com.android.sample.utils.FakeEventRepository
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import kotlin.test.assertEquals
@@ -26,71 +25,12 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.*
 
-/** Minimal fake repository implementing only what HourRecapViewModel needs. */
-class SimpleFakeEventRepository : EventRepository {
-  var result: List<Pair<String, Double>> = emptyList()
-  var events: List<Event> = emptyList()
-  var shouldThrow = false
-
-  override fun getNewUid(): String {
-    error("Not needed in test")
-  }
-
-  override suspend fun getAllEvents(orgId: String): List<Event> {
-    error("Not needed in test")
-  }
-
-  override suspend fun deleteEvent(orgId: String, itemId: String) {
-    error("Not needed in test")
-  }
-
-  override suspend fun getEventById(orgId: String, itemId: String): Event? {
-    error("Not needed in test")
-  }
-
-  override suspend fun getEventsBetweenDates(
-      orgId: String,
-      startDate: Instant,
-      endDate: Instant
-  ): List<Event> {
-    return events.filter {
-      it.endDate >= startDate && it.startDate <= endDate && !it.hasBeenDeleted
-    }
-  }
-
-  override suspend fun calculateWorkedHoursPastEvents(
-      orgId: String,
-      start: Instant,
-      end: Instant
-  ): List<Pair<String, Double>> {
-    if (shouldThrow) throw IllegalArgumentException("Failed")
-    return result
-  }
-
-  override suspend fun calculateWorkedHoursFutureEvents(
-      orgId: String,
-      start: Instant,
-      end: Instant
-  ): List<Pair<String, Double>> {
-    return emptyList() // Default to no future hours in tests
-  }
-
-  override suspend fun calculateWorkedHours(
-      orgId: String,
-      start: Instant,
-      end: Instant
-  ): List<Pair<String, Double>> {
-    if (shouldThrow) throw RuntimeException("error!")
-    return result
-  }
-}
-
 /** Minimal ViewModel test, without complex fake VM providers. */
 @OptIn(ExperimentalCoroutinesApi::class)
 class HourRecapViewModelTest {
 
   private val testDispatcher = StandardTestDispatcher()
-  private lateinit var repo: SimpleFakeEventRepository
+  private lateinit var repo: FakeEventRepository
   private lateinit var userRepo: UserRepository
   private lateinit var organizationRepository: OrganizationRepositoryLocal
 
@@ -104,7 +44,7 @@ class HourRecapViewModelTest {
   @Before
   fun setup() = runBlocking {
     Dispatchers.setMain(testDispatcher)
-    repo = SimpleFakeEventRepository()
+    repo = FakeEventRepository()
     userRepo = UsersRepositoryLocal()
     organizationRepository = OrganizationRepositoryLocal(userRepository = userRepo)
 
@@ -184,7 +124,7 @@ class HourRecapViewModelTest {
   @Test
   fun `calculateWorkedHours loads data successfully`() = runTest {
     val vm = makeVm()
-    repo.result = listOf("Bob" to 10.5)
+    repo.workedHoursResult = listOf("Bob" to 10.5)
     val start = Instant.now().minus(3, ChronoUnit.DAYS)
     val end = Instant.now().plus(3, ChronoUnit.DAYS)
     val pastEvent =
@@ -202,7 +142,7 @@ class HourRecapViewModelTest {
             participants = setOf(otherUser.id),
             assignedUsers = setOf(user.id, otherUser.id),
             recurrence = RecurrenceStatus.OneTime)
-    repo.events = pastEvent + futureEvent
+    (pastEvent + futureEvent).forEach { repo.add(it) }
 
     vm.calculateWorkedHours(start = start, end = end)
     advanceUntilIdle()
@@ -219,7 +159,7 @@ class HourRecapViewModelTest {
   @Test
   fun `calculateWorkedHours sets error on exception`() = runTest {
     val vm = makeVm()
-    repo.shouldThrow = true
+    repo.shouldThrowOnCalculateWorkedHours = true
 
     vm.calculateWorkedHours(start = Instant.EPOCH, end = Instant.EPOCH)
     testDispatcher.scheduler.advanceUntilIdle()
@@ -238,15 +178,14 @@ class HourRecapViewModelTest {
             endDate = pastTime.plus(2, ChronoUnit.HOURS),
             participants = setOf(user.id))
 
-    repo.result = listOf(user.id to 2.0)
-    repo.events =
-        listOf(
-            createEvent(
-                    organizationId = selectedOrganizationID,
-                    startDate = pastTime,
-                    endDate = pastTime.plus(2, ChronoUnit.HOURS),
-                    participants = setOf(user.id))
-                .first())
+    repo.workedHoursResult = listOf(user.id to 2.0)
+    repo.add(
+        createEvent(
+                organizationId = selectedOrganizationID,
+                startDate = pastTime,
+                endDate = pastTime.plus(2, ChronoUnit.HOURS),
+                participants = setOf(user.id))
+            .first())
 
     vm.calculateWorkedHours(Instant.now().minus(3, ChronoUnit.DAYS), Instant.now())
     advanceUntilIdle()
@@ -266,8 +205,8 @@ class HourRecapViewModelTest {
             endDate = futureTime.plus(2, ChronoUnit.HOURS),
             participants = setOf(user.id))
 
-    repo.result = listOf(user.id to 2.0)
-    repo.events = futureEvent
+    repo.workedHoursResult = listOf(user.id to 2.0)
+    futureEvent.forEach { repo.add(it) }
 
     vm.calculateWorkedHours(Instant.now(), Instant.now().plus(3, ChronoUnit.DAYS))
     advanceUntilIdle()
@@ -288,8 +227,8 @@ class HourRecapViewModelTest {
             participants = setOf(user.id),
             presence = mapOf(user.id to true))
 
-    repo.result = listOf(user.id to 2.0)
-    repo.events = presentEvent
+    repo.workedHoursResult = listOf(user.id to 2.0)
+    presentEvent.forEach { repo.add(it) }
 
     vm.calculateWorkedHours(Instant.now().minus(2, ChronoUnit.DAYS), Instant.now())
     advanceUntilIdle()
@@ -310,8 +249,8 @@ class HourRecapViewModelTest {
             participants = setOf(user.id),
             presence = mapOf(user.id to false))
 
-    repo.result = listOf(user.id to 2.0)
-    repo.events = absentEvent
+    repo.workedHoursResult = listOf(user.id to 2.0)
+    absentEvent.forEach { repo.add(it) }
 
     vm.calculateWorkedHours(Instant.now().minus(2, ChronoUnit.DAYS), Instant.now())
     advanceUntilIdle()
@@ -332,8 +271,8 @@ class HourRecapViewModelTest {
             participants = setOf(user.id),
             presence = mapOf(user.id to false))
 
-    repo.result = emptyList()
-    repo.events = absentPastEvent
+    repo.workedHoursResult = emptyList()
+    absentPastEvent.forEach { repo.add(it) }
 
     vm.calculateWorkedHours(
         Instant.now().minus(3, ChronoUnit.DAYS), Instant.now().minus(1, ChronoUnit.DAYS))
@@ -358,8 +297,8 @@ class HourRecapViewModelTest {
             assignedUsers = emptySet(),
             presence = mapOf(user.id to false))
 
-    repo.result = emptyList()
-    repo.events = presenceOnlyEvent
+    repo.workedHoursResult = emptyList()
+    presenceOnlyEvent.forEach { repo.add(it) }
 
     vm.calculateWorkedHours(
         Instant.now().minus(3, ChronoUnit.DAYS), Instant.now().minus(1, ChronoUnit.DAYS))
@@ -382,8 +321,8 @@ class HourRecapViewModelTest {
             endDate = futureTime.plus(2, ChronoUnit.HOURS),
             participants = setOf(user.id))
 
-    repo.result = listOf(user.id to 2.0)
-    repo.events = futureEvent
+    repo.workedHoursResult = listOf(user.id to 2.0)
+    futureEvent.forEach { repo.add(it) }
 
     vm.calculateWorkedHours(Instant.now(), Instant.now().plus(2, ChronoUnit.DAYS))
     advanceUntilIdle()
@@ -405,8 +344,8 @@ class HourRecapViewModelTest {
             assignedUsers = setOf(user.id, otherUser.id),
             participants = setOf(otherUser.id)) // User is assigned but not participating
 
-    repo.result = listOf(user.id to 0.0)
-    repo.events = replacedEvent
+    repo.workedHoursResult = listOf(user.id to 0.0)
+    replacedEvent.forEach { repo.add(it) }
 
     vm.calculateWorkedHours(Instant.now(), Instant.now().plus(2, ChronoUnit.DAYS))
     advanceUntilIdle()
@@ -428,8 +367,8 @@ class HourRecapViewModelTest {
             assignedUsers = setOf(otherUser.id),
             participants = setOf(user.id)) // User is participating but wasn't assigned
 
-    repo.result = listOf(user.id to 2.0)
-    repo.events = replacementEvent
+    repo.workedHoursResult = listOf(user.id to 2.0)
+    replacementEvent.forEach { repo.add(it) }
 
     vm.calculateWorkedHours(Instant.now(), Instant.now().plus(2, ChronoUnit.DAYS))
     advanceUntilIdle()
@@ -451,8 +390,8 @@ class HourRecapViewModelTest {
             assignedUsers = setOf(user.id),
             participants = setOf(user.id))
 
-    repo.result = listOf(user.id to 2.0)
-    repo.events = normalEvent
+    repo.workedHoursResult = listOf(user.id to 2.0)
+    normalEvent.forEach { repo.add(it) }
 
     vm.calculateWorkedHours(Instant.now(), Instant.now().plus(2, ChronoUnit.DAYS))
     advanceUntilIdle()
@@ -481,8 +420,8 @@ class HourRecapViewModelTest {
             endDate = futureTime.plus(3, ChronoUnit.HOURS),
             participants = setOf(otherUser.id))
 
-    repo.result = listOf(user.id to 2.0, otherUser.id to 2.0)
-    repo.events = userEvent + otherEvent
+    repo.workedHoursResult = listOf(user.id to 2.0, otherUser.id to 2.0)
+    (userEvent + otherEvent).forEach { repo.add(it) }
 
     vm.calculateWorkedHours(Instant.now(), Instant.now().plus(2, ChronoUnit.DAYS))
     advanceUntilIdle()
@@ -515,8 +454,8 @@ class HourRecapViewModelTest {
             .first()
             .copy(hasBeenDeleted = true)
 
-    repo.result = listOf(user.id to 2.0)
-    repo.events = activeEvent + listOf(deletedEvent)
+    repo.workedHoursResult = listOf(user.id to 2.0)
+    (activeEvent + listOf(deletedEvent)).forEach { repo.add(it) }
 
     vm.calculateWorkedHours(Instant.now(), Instant.now().plus(2, ChronoUnit.DAYS))
     advanceUntilIdle()
@@ -554,8 +493,8 @@ class HourRecapViewModelTest {
             participants = setOf(user.id))
 
     // Add events in random order
-    repo.result = listOf(user.id to 6.0)
-    repo.events = event3 + event1 + event2
+    repo.workedHoursResult = listOf(user.id to 6.0)
+    (event3 + event1 + event2).forEach { repo.add(it) }
 
     vm.calculateWorkedHours(Instant.now(), Instant.now().plus(4, ChronoUnit.DAYS))
     advanceUntilIdle()

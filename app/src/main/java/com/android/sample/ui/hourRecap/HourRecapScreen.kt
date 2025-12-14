@@ -1,6 +1,5 @@
 package com.android.sample.ui.hourRecap
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -93,10 +92,10 @@ fun HourRecapScreen(
 ) {
   val uiState by hourRecapViewModel.uiState.collectAsState()
   val context = LocalContext.current
-
+  val snackbarHostState = remember { SnackbarHostState() }
   LaunchedEffect(uiState.errorMsg) {
     uiState.errorMsg?.let { message ->
-      Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+      snackbarHostState.showSnackbar(message)
       hourRecapViewModel.clearErrorMsg()
     }
   }

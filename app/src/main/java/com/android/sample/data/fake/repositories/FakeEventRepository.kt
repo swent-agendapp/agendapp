@@ -1,6 +1,6 @@
 package com.android.sample.data.fake.repositories
 
-import com.android.sample.data.global.repositories.BaseEventRepository
+import com.android.sample.data.global.repositories.EventRepository
 import com.android.sample.model.calendar.Event
 import java.time.Instant
 import java.util.UUID
@@ -14,12 +14,16 @@ enum class RepoMethod {
   DELETE_EVENT,
   GET_EVENT_BY_ID,
   GET_EVENTS_BETWEEN_DATES,
-  ENSURE_ORG_EXISTS
+  ENSURE_ORG_EXISTS,
+  CALCULATE_WORKED_HOURS,
+  CALCULATE_WORKED_HOURS_PAST,
+  CALCULATE_WORKED_HOURS_FUTURE
 }
 
 /** simple FakeEventRepository only for test */
-class FakeEventRepository : BaseEventRepository() {
+class FakeEventRepository : EventRepository {
   private val events = mutableListOf<Event>()
+  var workedHoursResult: List<Pair<String, Double>> = emptyList()
   var deletedIds = mutableListOf<String>()
 
   // Map to simulate failures on any function by name
@@ -73,11 +77,40 @@ class FakeEventRepository : BaseEventRepository() {
       endDate: Instant
   ): List<Event> {
     failIfNeeded(method = RepoMethod.GET_EVENTS_BETWEEN_DATES)
-    return events.filter { e -> e.startDate <= endDate && e.endDate >= startDate }
+    return events.filter { e ->
+      e.startDate <= endDate && e.endDate >= startDate && !e.hasBeenDeleted
+    }
   }
 
-  override suspend fun ensureOrganizationExists(orgId: String) {
+  override suspend fun calculateWorkedHoursPastEvents(
+      orgId: String,
+      start: Instant,
+      end: Instant
+  ): List<Pair<String, Double>> {
+    failIfNeeded(method = RepoMethod.CALCULATE_WORKED_HOURS_PAST)
+    return workedHoursResult
+  }
+
+  override suspend fun calculateWorkedHoursFutureEvents(
+      orgId: String,
+      start: Instant,
+      end: Instant
+  ): List<Pair<String, Double>> {
+    failIfNeeded(method = RepoMethod.CALCULATE_WORKED_HOURS_FUTURE)
+    return emptyList()
+  }
+
+  override suspend fun calculateWorkedHours(
+      orgId: String,
+      start: Instant,
+      end: Instant
+  ): List<Pair<String, Double>> {
+    failIfNeeded(method = RepoMethod.CALCULATE_WORKED_HOURS)
+    return workedHoursResult
+  }
+
+  suspend fun ensureOrganizationExists(orgId: String) {
     failIfNeeded(RepoMethod.ENSURE_ORG_EXISTS)
-    // Do nothing, as this is a fake repository
+    // Do nothing, as this is a fake repository }
   }
 }

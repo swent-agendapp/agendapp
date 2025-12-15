@@ -10,6 +10,8 @@ import com.android.sample.data.local.repositories.EventRepositoryLocal
 import com.android.sample.model.calendar.CloudStorageStatus
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import io.objectbox.Box
 import io.objectbox.BoxStore
 import java.time.Instant
@@ -21,7 +23,7 @@ import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 
-class EventRepositoryHybridTest { // Later: Make this inherit RequireSelectedOrganization
+class EventRepositoryHybridTest : RequiresSelectedOrganizationTestBase {
   // Hybrid repository under test
   private lateinit var hybridRepository: EventRepositoryHybrid
 
@@ -42,10 +44,12 @@ class EventRepositoryHybridTest { // Later: Make this inherit RequireSelectedOrg
   private lateinit var event2: Event
 
   // Organization ID for testing
-  private val orgId: String = "test-org"
+  override val organizationId = DEFAULT_TEST_ORG_ID
 
   @Before
   fun setUp() {
+    setSelectedOrganization()
+
     // Initialize in-memory ObjectBox for testing
     boxStore =
         MyObjectBox.builder()
@@ -73,7 +77,7 @@ class EventRepositoryHybridTest { // Later: Make this inherit RequireSelectedOrg
     event1 =
         Event(
             id = hybridRepository.getNewUid(),
-            organizationId = orgId,
+            organizationId = organizationId,
             title = "Sample Event",
             description = "Description",
             startDate = Instant.now(),
@@ -88,7 +92,7 @@ class EventRepositoryHybridTest { // Later: Make this inherit RequireSelectedOrg
     event2 =
         Event(
             id = hybridRepository.getNewUid(),
-            organizationId = orgId,
+            organizationId = organizationId,
             title = "Another Event",
             description = "Another Description",
             startDate = Instant.now().plusSeconds(7200), // 2 hours later
@@ -124,12 +128,12 @@ class EventRepositoryHybridTest { // Later: Make this inherit RequireSelectedOrg
 
   @Test
   fun insertEvent_remoteSuccess_syncsLocal() = runBlocking {
-    hybridRepository.insertEvent(orgId = orgId, item = event1)
+    hybridRepository.insertEvent(orgId = organizationId, item = event1)
 
     assertNull(capturedError)
 
-    val localEvent = localRepository.getEventById(orgId = orgId, itemId = event1.id)
-    val remoteEvent = remoteRepository.getEventById(orgId = orgId, itemId = event1.id)
+    val localEvent = localRepository.getEventById(orgId = organizationId, itemId = event1.id)
+    val remoteEvent = remoteRepository.getEventById(orgId = organizationId, itemId = event1.id)
 
     assertNotNull(remoteEvent)
     assertNotNull(localEvent)
@@ -143,11 +147,11 @@ class EventRepositoryHybridTest { // Later: Make this inherit RequireSelectedOrg
   fun insertEvent_remoteFails_thenRecover() = runBlocking {
     simulateNetworkFailure(remoteRepository)
 
-    hybridRepository.insertEvent(orgId, event1)
+    hybridRepository.insertEvent(organizationId, event1)
 
     assertEquals(RemoteSyncError.REMOTE_INSERT_FAILED, capturedError)
 
-    val localEvent = localRepository.getEventById(orgId, event1.id)
+    val localEvent = localRepository.getEventById(organizationId, event1.id)
 
     assertNull(localEvent)
 
@@ -157,13 +161,13 @@ class EventRepositoryHybridTest { // Later: Make this inherit RequireSelectedOrg
 
     // Try inserting again after recovery
     val updatedEvent = event1.copy(title = "Updated after recovery")
-    hybridRepository.insertEvent(orgId = orgId, item = updatedEvent)
+    hybridRepository.insertEvent(orgId = organizationId, item = updatedEvent)
 
     assertNull(capturedError)
 
     // Verify both local and remote have the event after recovery
-    val remoteEvent = remoteRepository.getEventById(orgId, event1.id)
-    val updatedLocalEvent = localRepository.getEventById(orgId, event1.id)
+    val remoteEvent = remoteRepository.getEventById(organizationId, event1.id)
+    val updatedLocalEvent = localRepository.getEventById(organizationId, event1.id)
 
     assertNotNull(remoteEvent)
     assertNotNull(updatedLocalEvent)
@@ -177,26 +181,26 @@ class EventRepositoryHybridTest { // Later: Make this inherit RequireSelectedOrg
   fun getAllEvents_remoteSuccess_localIsSynced() = runBlocking {
 
     // Insert two events via hybrid repository
-    hybridRepository.insertEvent(orgId, event1)
-    hybridRepository.insertEvent(orgId, event2)
+    hybridRepository.insertEvent(organizationId, event1)
+    hybridRepository.insertEvent(organizationId, event2)
 
     // Get all events via hybrid repository
-    val events = hybridRepository.getAllEvents(orgId)
+    val events = hybridRepository.getAllEvents(organizationId)
 
     assertEquals(2, events.size)
-    assertNotNull(localRepository.getEventById(orgId, event1.id))
-    assertNotNull(localRepository.getEventById(orgId, event2.id))
+    assertNotNull(localRepository.getEventById(organizationId, event1.id))
+    assertNotNull(localRepository.getEventById(organizationId, event2.id))
   }
 
   @Test
   fun getAllEvents_remoteFails_returnsLocal() = runBlocking {
     // Insert one event
-    hybridRepository.insertEvent(orgId, event1)
+    hybridRepository.insertEvent(organizationId, event1)
 
     simulateNetworkFailure(remoteRepository)
 
     // try getting all events via hybrid repository
-    val events = hybridRepository.getAllEvents(orgId)
+    val events = hybridRepository.getAllEvents(organizationId)
 
     assertEquals(RemoteSyncError.REMOTE_GET_FAILED, capturedError)
 
@@ -207,14 +211,14 @@ class EventRepositoryHybridTest { // Later: Make this inherit RequireSelectedOrg
     resetCapturedErrors()
 
     // Try inserting another event while remote is still failing
-    hybridRepository.insertEvent(orgId, event2)
+    hybridRepository.insertEvent(organizationId, event2)
 
     assertEquals(RemoteSyncError.REMOTE_INSERT_FAILED, capturedError)
 
     resetCapturedErrors()
 
     // Try getting all events again
-    val eventsAfterInsert = hybridRepository.getAllEvents(orgId)
+    val eventsAfterInsert = hybridRepository.getAllEvents(organizationId)
     assertEquals(capturedError, RemoteSyncError.REMOTE_GET_FAILED)
     assertEquals(1, eventsAfterInsert.size)
     assertEquals(event1.id, eventsAfterInsert.first().id)
@@ -223,18 +227,18 @@ class EventRepositoryHybridTest { // Later: Make this inherit RequireSelectedOrg
   @Test
   fun updateEvent_remoteSuccess_syncsLocal() = runBlocking {
     // Insert an event first
-    hybridRepository.insertEvent(orgId, event1)
+    hybridRepository.insertEvent(organizationId, event1)
 
     // Update the event
     val updatedEvent = event1.copy(title = "Updated Title")
-    hybridRepository.updateEvent(orgId, event1.id, updatedEvent)
+    hybridRepository.updateEvent(organizationId, event1.id, updatedEvent)
 
     // No sync error should be reported
     assertNull(capturedError)
 
     // Verify both remote and local have the updated event
-    val remoteEvent = remoteRepository.getEventById(orgId, event1.id)
-    val localEvent = localRepository.getEventById(orgId, event1.id)
+    val remoteEvent = remoteRepository.getEventById(organizationId, event1.id)
+    val localEvent = localRepository.getEventById(organizationId, event1.id)
 
     assertNotNull(remoteEvent)
     assertNotNull(localEvent)
@@ -245,49 +249,49 @@ class EventRepositoryHybridTest { // Later: Make this inherit RequireSelectedOrg
   @Test
   fun updateEvent_remoteFails_fallsBackToLocal() = runBlocking {
     // Insert an event first
-    hybridRepository.insertEvent(orgId, event1)
+    hybridRepository.insertEvent(organizationId, event1)
 
     // Simulate network failure
     simulateNetworkFailure(remoteRepository)
 
     // Attempt to update the event
     val updatedEvent = event1.copy(title = "Updated While Offline")
-    hybridRepository.updateEvent(orgId, event1.id, updatedEvent)
+    hybridRepository.updateEvent(organizationId, event1.id, updatedEvent)
 
     // Remote sync error should be captured
     assertEquals(RemoteSyncError.REMOTE_UPDATE_FAILED, capturedError)
 
     // Local event should not be updated (still has original title)
-    val localEvent = localRepository.getEventById(orgId, event1.id)
+    val localEvent = localRepository.getEventById(organizationId, event1.id)
     assertEquals(event1.title, localEvent?.title)
 
     // Remote event also should not be updated
     simulateNetworkRecovery(remoteRepository) // Recover network to check remote state
-    val remoteEvent = remoteRepository.getEventById(orgId, event1.id)
+    val remoteEvent = remoteRepository.getEventById(organizationId, event1.id)
     assertEquals(event1.title, remoteEvent?.title)
   }
 
   @Test
   fun deleteEvent_remoteFails_localStillDeletes() = runBlocking {
     // Insert an event first
-    hybridRepository.insertEvent(orgId, event1)
+    hybridRepository.insertEvent(organizationId, event1)
 
     // Simulate network failure
     simulateNetworkFailure(remoteRepository)
 
     // Attempt to delete the event
-    hybridRepository.deleteEvent(orgId, event1.id)
+    hybridRepository.deleteEvent(organizationId, event1.id)
 
     // Remote sync error should be captured
     assertEquals(RemoteSyncError.REMOTE_DELETE_FAILED, capturedError)
 
     // Local event should not be deleted
-    val localEvent = localRepository.getEventById(orgId, event1.id)
+    val localEvent = localRepository.getEventById(organizationId, event1.id)
     assertNotNull(localEvent)
 
     // Remote event should also not be deleted
     simulateNetworkRecovery(remoteRepository) // Recover network to check remote state
-    val remoteEvent = remoteRepository.getEventById(orgId, event1.id)
+    val remoteEvent = remoteRepository.getEventById(organizationId, event1.id)
     assertNotNull(remoteEvent)
   }
 }

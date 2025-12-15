@@ -1,5 +1,7 @@
 package com.android.sample.ui.calendar
 
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.RecurrenceStatus
@@ -29,6 +31,7 @@ class ReplacementEmployeeViewModelTest {
 
   private lateinit var replacementRepo: ReplacementRepository
   private lateinit var eventRepo: EventRepository
+  private lateinit var userRepo: UserRepository
   private lateinit var vm: ReplacementEmployeeViewModel
 
   private val employeeId = "EMP001"
@@ -40,6 +43,7 @@ class ReplacementEmployeeViewModelTest {
     Dispatchers.setMain(testDispatcher)
     replacementRepo = FakeReplacementRepository()
     eventRepo = FakeEventRepository()
+    userRepo = UsersRepositoryLocal()
     vm = makeEmployeeVm()
 
     // Set selected organization in the VM provider
@@ -210,7 +214,7 @@ class ReplacementEmployeeViewModelTest {
 
   private fun makeEmployeeVm(): ReplacementEmployeeViewModel {
 
-    return ReplacementEmployeeViewModel(replacementRepo, eventRepo)
+    return ReplacementEmployeeViewModel(replacementRepo, eventRepo, userRepo)
   }
 }
 

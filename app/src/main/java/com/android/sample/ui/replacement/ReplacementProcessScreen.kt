@@ -55,9 +55,6 @@ object ProcessReplacementTestTags {
   fun memberTag(user: User): String = MEMBER_PREFIX + (user.displayName ?: user.email ?: user.id)
 }
 
-private val DefaultCandidates =
-    listOf("Emilien", "Haobin", "Noa", "Weifeng", "Timael", "Méline", "Nathan")
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProcessReplacementScreen(

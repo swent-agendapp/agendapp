@@ -33,6 +33,7 @@ enum class LocationStatus {
 /**
  * Represents the UI state for the Calendar screen.
  *
+ * @property allEvents A list of all Event objects fetched from the repository.
  * @property events A list of Event objects to be displayed in the Calendar screen.
  * @property errorMsg An error message to be shown when fetching events fails. Null if no error is
  *   present.
@@ -40,6 +41,7 @@ enum class LocationStatus {
  * @property locationStatus The current location status of the user relative to defined areas.
  */
 data class CalendarUIState(
+    val allEvents: List<Event> = emptyList(),
     val events: List<Event> = emptyList(),
     val errorMsg: String? = null,
     val isLoading: Boolean = false,
@@ -73,6 +75,7 @@ class CalendarViewModel(
   private val _uiState = MutableStateFlow(CalendarUIState())
   // Publicly exposed immutable UI state
   val uiState: StateFlow<CalendarUIState> = _uiState.asStateFlow()
+  private var currentFilters: EventFilters = EventFilters()
 
   private val selectedOrganizationId: StateFlow<String?> =
       selectedOrganizationViewModel.selectedOrganizationId
@@ -101,6 +104,10 @@ class CalendarViewModel(
     _uiState.value = _uiState.value.copy(events = events)
   }
 
+  private fun setAllEvents(allEvents: List<Event>) {
+    _uiState.value = _uiState.value.copy(allEvents = allEvents)
+  }
+
   /**
    * Helper function to load events using a provided suspend lambda.
    *
@@ -118,6 +125,8 @@ class CalendarViewModel(
       try {
         val events = loadEventsBlock()
         setEvents(events)
+        setAllEvents(events)
+        applyFilters(currentFilters)
       } catch (e: Exception) {
         setErrorMsg("$errorMessage: ${e.message}")
       } finally {
@@ -171,7 +180,10 @@ class CalendarViewModel(
       try {
         val events =
             eventRepository.getEventsBetweenDates(orgId = orgId, startDate = start, endDate = end)
-        _uiState.value = _uiState.value.copy(events = events, isRefreshing = false, errorMsg = null)
+        _uiState.value =
+            _uiState.value.copy(
+                allEvents = events, events = events, isRefreshing = false, errorMsg = null)
+        applyFilters(currentFilters)
       } catch (e: Exception) {
         setErrorMsg("Failed to refresh events: ${e.message}")
         _uiState.value = _uiState.value.copy(isRefreshing = false)
@@ -256,7 +268,8 @@ class CalendarViewModel(
    * @param filters The [EventFilters] object containing the filter criteria.
    */
   fun applyFilters(filters: EventFilters) {
-    val allEvents = uiState.value.events
+    currentFilters = filters
+    val allEvents = uiState.value.allEvents
 
     val filtered =
         allEvents.filter { event ->
@@ -265,11 +278,14 @@ class CalendarViewModel(
                   event.participants.any { it in filters.participants }
 
           val eventTypeMatch =
-              filters.eventTypes.isEmpty() || filters.eventTypes.contains(event.category.label)
+              filters.eventTypes.isEmpty() ||
+                  filters.eventTypes.any { it.equals(event.category.label, ignoreCase = true) }
 
           val locationMatch =
               filters.locations.isEmpty() ||
-                  (event.location != null && filters.locations.contains(event.location))
+                  (event.location != null &&
+                      filters.locations.any { it.equals(event.location, ignoreCase = true) })
+
           participantsMatch && eventTypeMatch && locationMatch
         }
 

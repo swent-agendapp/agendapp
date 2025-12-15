@@ -71,7 +71,7 @@ class FilterViewModelTest {
 
     assertEquals(listOf("Course", "Meeting", "Workshop"), state.eventTypes)
     assertEquals(listOf("Salle 1", "Salle 2"), state.locations)
-    assertEquals(listOf("Alice", "Bob"), state.participants)
+    assertEquals(listOf("Alice", "Bob"), state.participants.map { it.label })
   }
 
   @Test

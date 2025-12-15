@@ -80,7 +80,7 @@ fun FilterBottomSheet(onDismiss: () -> Unit, onApply: () -> Unit, filterVM: Filt
   val filters = uiState.filters
   val eventTypes = uiState.eventTypes
   val locations = uiState.locations
-  val participants = uiState.participants
+  val participants = uiState.participants.map { it.label }
 
   var currentPage by remember { mutableStateOf(FilterPage.MAIN) }
 
@@ -213,11 +213,17 @@ fun FilterBottomSheet(onDismiss: () -> Unit, onApply: () -> Unit, filterVM: Filt
             FilterListScreen(
                 title = stringResource(R.string.filter_participants),
                 items = participants,
-                selected = filters.participants.toList(),
+                selected =
+                    uiState.participants
+                        .filter { it.id in uiState.filters.participants }
+                        .map { it.label },
                 testTagPrefix = "ParticipantFilter",
                 onBack = { currentPage = FilterPage.MAIN },
-                onApply = {
-                  filterVM.setParticipants(it)
+                onApply = { selectedLabels ->
+                  val selectedIds =
+                      uiState.participants.filter { it.label in selectedLabels }.map { it.id }
+
+                  filterVM.setParticipants(selectedIds)
                   currentPage = FilterPage.MAIN
                 })
           }

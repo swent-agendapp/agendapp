@@ -31,8 +31,11 @@ data class FilterUiState(
     val filters: EventFilters = EventFilters(),
     val eventTypes: List<String> = emptyList(),
     val locations: List<String> = emptyList(),
-    val participants: List<String> = emptyList()
+    val participants: List<ParticipantUi> = emptyList()
 )
+
+/** UI representation of a participant for filtering purposes. */
+data class ParticipantUi(val id: String, val label: String)
 
 /**
  * ViewModel responsible for managing calendar event filters.
@@ -94,7 +97,8 @@ class FilterViewModel(
 
       val users = userRepo.getUsersByIds(userRepo.getMembersIds(orgId))
 
-      val participants = users.map { it.displayName ?: it.email ?: "Unknown" }
+      val participants =
+          users.map { ParticipantUi(id = it.id, label = it.displayName ?: it.email ?: "Unknown") }
 
       _uiState.update {
         it.copy(eventTypes = eventTypes, locations = locations, participants = participants)
@@ -115,8 +119,8 @@ class FilterViewModel(
     _uiState.update { it.copy(filters = it.filters.copy(locations = locations.toSet())) }
   }
 
-  fun setParticipants(names: List<String>) {
-    _uiState.update { it.copy(filters = it.filters.copy(participants = names.toSet())) }
+  fun setParticipants(ids: List<String>) {
+    _uiState.update { it.copy(filters = it.filters.copy(participants = ids.toSet())) }
   }
 
   fun clearFilters() {

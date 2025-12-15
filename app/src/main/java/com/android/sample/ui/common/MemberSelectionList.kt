@@ -72,7 +72,11 @@ fun MemberSelectionList(
 
   val filteredMembers =
       remember(searchQuery, members) {
-        members.filter { it.display().contains(searchQuery, ignoreCase = true) }
+        members
+            .asSequence()
+            .filter { it.display().contains(searchQuery, ignoreCase = true) }
+            .sortedBy { it.display().trim().lowercase() }
+            .toList()
       }
 
   Card(

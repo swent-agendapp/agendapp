@@ -1,6 +1,9 @@
 package com.android.sample.ui.calendar.editEvent.components
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -16,10 +19,14 @@ import com.android.sample.ui.calendar.editEvent.EditEventViewModel
 import com.android.sample.ui.common.BottomNavigationButtons
 import com.android.sample.ui.common.MemberSelectionList
 import com.android.sample.ui.common.MemberSelectionListOptions
-import com.android.sample.ui.common.SecondaryPageTopBar
+import com.android.sample.ui.theme.GeneralPalette
+import com.android.sample.ui.theme.GeneralPaletteDark
 import com.android.sample.ui.theme.PaddingHuge
 import com.android.sample.ui.theme.PaddingLarge
 import com.android.sample.ui.theme.PaddingSmall
+import com.android.sample.ui.theme.PaddingSmallMedium
+import com.android.sample.ui.theme.SpacingLarge
+import com.android.sample.ui.theme.SpacingSmall
 import com.android.sample.ui.theme.WeightExtraHeavy
 
 // Assisted by AI
@@ -50,11 +57,7 @@ fun EditEventAttendantScreen(
   var showWarningDialog by remember { mutableStateOf(true) }
 
   Scaffold(
-      topBar = {
-        SecondaryPageTopBar(
-            title = stringResource(R.string.edit_event_participants_screen_title),
-            canGoBack = false)
-      },
+      topBar = {},
       content = { paddingValues ->
         // Show the warning dialog when the screen is first displayed.
         if (showWarningDialog) {
@@ -86,6 +89,37 @@ fun EditEventAttendantScreen(
                     .padding(paddingValues),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround) {
+              val surfaceVariant =
+                  if (isSystemInDarkTheme()) GeneralPaletteDark.SurfaceVariant
+                  else GeneralPalette.SurfaceVariant
+              val onSurfaceVariant =
+                  if (isSystemInDarkTheme()) GeneralPaletteDark.OnSurfaceVariant
+                  else GeneralPalette.OnSurfaceVariant
+              Row(
+                  modifier = Modifier.fillMaxWidth(),
+                  verticalAlignment = Alignment.CenterVertically,
+                  horizontalArrangement = Arrangement.Start) {
+                    Surface(shape = MaterialTheme.shapes.large, color = surfaceVariant) {
+                      Box(
+                          modifier = Modifier.padding(PaddingSmallMedium),
+                          contentAlignment = Alignment.Center) {
+                            Icon(
+                                imageVector = Icons.Outlined.Edit,
+                                contentDescription = null,
+                            )
+                          }
+                    }
+
+                    Spacer(modifier = Modifier.width(SpacingSmall))
+
+                    Text(
+                        text = stringResource(R.string.edit_event_header_step),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = onSurfaceVariant)
+                  }
+
+              Spacer(Modifier.height(SpacingLarge))
+
               MemberSelectionList(
                   modifier =
                       Modifier.weight(WeightExtraHeavy)

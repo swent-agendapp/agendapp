@@ -124,3 +124,8 @@ val SmallCardElevation = 2.dp
 const val Weight = 1f
 // time
 const val Time = 700
+
+// Hour recap
+
+const val BOTTOM_SHEET_HEIGHT_RATIO = 0.75f
+const val EVENT_COLOR_BAR_WIDTH_DP = 10

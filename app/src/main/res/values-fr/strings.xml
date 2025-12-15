@@ -215,6 +215,8 @@
 
     <string name="hour_recap_results_title">Total d\'heures par employé pour la période sélectionnée :</string>
     <string name="hour_recap_generate">Générer le récapitulatif</string>
+    <string name="hour_recap_completed_hours_label">Terminées</string>
+    <string name="hour_recap_planned_hours_label">Planifiées</string>
     <string name="export_excel">Exporter vers Excel</string>
 
     <!-- Filters -->
@@ -268,5 +270,16 @@
     <string name="edit_category_save_button">Enregistrer la catégorie</string>
 
     <string name="hour_recap">Récapitulatif des heures</string>
+    <string name="hour_recap_events_for_user">Événements pour %1$s</string>
+    <string name="hour_recap_no_events_for_user">Aucun événement trouvé pour cet utilisateur.</string>
+    <string name="hour_recap_no_events_in_range_heading">Aucun événement pour ces dates</string>
+    <string name="hour_recap_no_events_in_range_details">Ajustez les dates ou élargissez la période pour voir toutes les plages.</string>
+    <string name="hour_recap_event_date_time">%1$s · %2$s - %3$s</string>
+    <string name="hour_recap_tag_future">Événement à venir</string>
+    <string name="hour_recap_tag_present">Présence confirmée</string>
+    <string name="hour_recap_tag_absent">Absence confirmée</string>
+    <string name="hour_recap_tag_presence_unknown">Présence non enregistrée</string>
+    <string name="hour_recap_tag_replaced">A été remplacé</string>
+    <string name="hour_recap_tag_replacement_taken">A pris un remplacement</string>
 
 </resources>

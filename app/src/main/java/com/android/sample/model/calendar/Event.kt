@@ -2,6 +2,7 @@ package com.android.sample.model.calendar
 
 import androidx.annotation.StringRes
 import com.android.sample.R
+import com.android.sample.data.global.repositories.EventRepository
 import com.android.sample.model.category.EventCategory
 import com.android.sample.ui.calendar.utils.DateTimeUtils
 import java.time.Instant
@@ -82,6 +83,7 @@ enum class RecurrenceStatus {
 /** Enum representing the cloud storage location of an event. */
 enum class CloudStorageStatus {
   FIRESTORE,
+  LOCAL
 }
 
 /**

@@ -115,9 +115,9 @@ fun AddEventTimeAndRecurrenceScreen(
                           DateTimeUtils.instantWithDate(newEventUIState.startInstant, date = date)
                       addEventViewModel.setStartInstant(newStart)
 
-                      val newEnd =
-                          DateTimeUtils.instantWithDate(newEventUIState.endInstant, date = date)
-                      addEventViewModel.setEndInstant(newEnd)
+                      if (newEventUIState.endInstant < newStart) {
+                        addEventViewModel.setEndInstant(newStart)
+                      }
                     },
                     initialInstant = newEventUIState.startInstant,
                     enabled = true)
@@ -132,8 +132,12 @@ fun AddEventTimeAndRecurrenceScreen(
                     label = "",
                     modifier = Modifier.testTag(AddEventTestTags.END_DATE_FIELD),
                     onDateSelected = { date ->
+                      val candidate =
+                          DateTimeUtils.instantWithDate(newEventUIState.endInstant, date = date)
+
                       addEventViewModel.setEndInstant(
-                          DateTimeUtils.instantWithDate(newEventUIState.endInstant, date = date))
+                          if (candidate < newEventUIState.startInstant) newEventUIState.startInstant
+                          else candidate)
                     },
                     initialInstant = newEventUIState.endInstant,
                     enabled = true)
@@ -274,7 +278,7 @@ private fun FieldLabelWithIcon(icon: @Composable () -> Unit, label: String) {
 
 @Composable
 private fun ClickableOutlinedField(value: String, testTag: String, onClick: () -> Unit) {
-  Box(modifier = Modifier.fillMaxWidth().testTag(testTag).clickable(onClick = onClick)) {
+  Box(modifier = Modifier.fillMaxWidth().testTag(testTag)) {
     OutlinedTextField(
         value = value,
         onValueChange = {},

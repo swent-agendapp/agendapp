@@ -274,25 +274,16 @@ private fun FieldLabelWithIcon(icon: @Composable () -> Unit, label: String) {
 
 @Composable
 private fun ClickableOutlinedField(value: String, testTag: String, onClick: () -> Unit) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .testTag(testTag)
-                .clickable(onClick = onClick)
-        ) {
-            OutlinedTextField(
-                value = value,
-                onValueChange = {},
-                readOnly = true,
-                enabled = true,
-                modifier = Modifier.fillMaxWidth().testTag(testTag).clickable { onClick() },
-                )
-            Box(
-                modifier = Modifier
-                    .matchParentSize()
-                    .clickable(onClick = onClick)
-            )
-        }
+  Box(modifier = Modifier.fillMaxWidth().testTag(testTag).clickable(onClick = onClick)) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = {},
+        readOnly = true,
+        enabled = true,
+        modifier = Modifier.fillMaxWidth().testTag(testTag).clickable { onClick() },
+    )
+    Box(modifier = Modifier.matchParentSize().clickable(onClick = onClick))
+  }
 }
 
 @Composable

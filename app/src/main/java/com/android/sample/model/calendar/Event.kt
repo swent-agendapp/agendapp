@@ -26,6 +26,8 @@ import java.util.UUID
  *   Firestore).
  * @property personalNotes Optional personal notes for the event.
  * @property participants Set of user IDs participating in the event.
+ * @property assignedUsers Set of user IDs that have been assigned to this event (including past
+ *   replacements).
  * @property version timestamp of last modification, used for conflict resolution.
  * @property presence Map of user IDs to their presence status at the event.
  * @property hasBeenDeleted Flag indicating if the event has been deleted.
@@ -44,6 +46,7 @@ data class Event(
     val locallyStoredBy: List<String> = emptyList(),
     val personalNotes: String?,
     val participants: Set<String>,
+    val assignedUsers: Set<String> = participants,
     val version: Long,
     val presence: Map<String, Boolean> = emptyMap(),
     val recurrenceStatus: RecurrenceStatus,
@@ -107,6 +110,7 @@ fun createEvent(
     cloudStorageStatuses: Set<CloudStorageStatus> = emptySet(),
     personalNotes: String? = null,
     participants: Set<String> = emptySet(),
+    assignedUsers: Set<String> = participants,
     presence: Map<String, Boolean> = emptyMap(),
     category: EventCategory = EventCategory.defaultCategory(),
     recurrence: RecurrenceStatus = RecurrenceStatus.OneTime,
@@ -129,6 +133,7 @@ fun createEvent(
                 cloudStorageStatuses = cloudStorageStatuses,
                 personalNotes = personalNotes,
                 participants = participants,
+                assignedUsers = assignedUsers,
                 version = System.currentTimeMillis(),
                 presence = presence,
                 recurrenceStatus = recurrence,
@@ -150,6 +155,7 @@ fun createEvent(
             cloudStorageStatuses = cloudStorageStatuses,
             personalNotes = personalNotes,
             participants = participants,
+            assignedUsers = assignedUsers,
             version = System.currentTimeMillis(),
             recurrenceStatus = recurrence,
             category = category,
@@ -172,6 +178,7 @@ fun createEvent(
             cloudStorageStatuses = cloudStorageStatuses,
             personalNotes = personalNotes,
             participants = participants,
+            assignedUsers = assignedUsers,
             version = System.currentTimeMillis(),
             presence = presence,
             recurrenceStatus = recurrence,
@@ -195,6 +202,7 @@ fun createEvent(
             cloudStorageStatuses = cloudStorageStatuses,
             personalNotes = personalNotes,
             participants = participants,
+            assignedUsers = assignedUsers,
             version = System.currentTimeMillis(),
             presence = presence,
             recurrenceStatus = recurrence,
@@ -218,6 +226,7 @@ fun createEvent(
             cloudStorageStatuses = cloudStorageStatuses,
             personalNotes = personalNotes,
             participants = participants,
+            assignedUsers = assignedUsers,
             version = System.currentTimeMillis(),
             presence = presence,
             recurrenceStatus = recurrence,

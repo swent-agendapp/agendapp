@@ -122,8 +122,8 @@ open class EventRepositoryFirebase(private val db: FirebaseFirestore) : BaseEven
 
     return snapshot
         .mapNotNull { EventMapper.fromDocument(document = it) }
-        // keep only events whose start is on/before the queried end
-        .filter { it.startDate <= endDate }
+        // keep only events whose start is on/before the queried end and are not deleted
+        .filter { it.startDate <= endDate && !it.hasBeenDeleted }
   }
 
   override suspend fun ensureOrganizationExists(orgId: String) {

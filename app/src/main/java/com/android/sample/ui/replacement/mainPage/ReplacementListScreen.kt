@@ -103,9 +103,6 @@ fun ReplacementEmployeeListScreen(
 ) {
   var showCreateOptions by remember { mutableStateOf(false) }
 
-  // SUPPRESS WHEN WE HAVE REAL REPLACEMENT REQUEST
-  val visibleRequests = if (requests.isEmpty()) sampleRequests else requests
-
   Scaffold(
       topBar = {
         MainPageTopBar(

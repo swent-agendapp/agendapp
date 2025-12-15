@@ -1,7 +1,7 @@
 package com.android.sample.model.eventRepositoryTest
 
+import com.android.sample.data.local.repositories.EventRepositoryInMemory
 import com.android.sample.model.calendar.Event
-import com.android.sample.model.calendar.EventRepositoryInMemory
 import com.android.sample.model.calendar.createEvent
 import java.time.Instant
 import kotlinx.coroutines.runBlocking

@@ -43,6 +43,7 @@ import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.PaddingExtraSmall
 import com.android.sample.ui.theme.PaddingLarge
 import com.android.sample.ui.theme.PaddingMedium
+import com.android.sample.ui.theme.PaddingSmallMedium
 import com.android.sample.ui.theme.SpacingExtraLarge
 import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingMedium
@@ -118,15 +119,43 @@ fun EditEventScreen(
         ) {
             Spacer(Modifier.height(SpacingExtraLarge))
 
-            StepHeader(
-                stepText = stringResource(R.string.edit_event_header_step),
-                title = stringResource(R.string.edit_event_header_title),
-                subtitle = stringResource(R.string.edit_event_header_subtitle),
-                icon = { Icon(Icons.Outlined.Edit, contentDescription = null) },
-                progress = 1f
-            )
+            val surfaceVariant =
+                if (isSystemInDarkTheme()) GeneralPaletteDark.SurfaceVariant else GeneralPalette.SurfaceVariant
+            val onSurfaceVariant =
+                if (isSystemInDarkTheme()) GeneralPaletteDark.OnSurfaceVariant else GeneralPalette.OnSurfaceVariant
+            val primary =
+                if (isSystemInDarkTheme()) GeneralPaletteDark.Primary else GeneralPalette.Primary
 
-            Spacer(Modifier.height(SpacingExtraLarge))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Surface(
+                    shape = MaterialTheme.shapes.large,
+                    color = surfaceVariant
+                ) {
+                    Box(
+                        modifier = Modifier.padding(PaddingSmallMedium),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Edit,
+                            contentDescription = null,
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.width(SpacingSmall))
+
+                Text(
+                    text = stringResource(R.string.edit_event_header_step),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = onSurfaceVariant
+                )
+            }
+
+            Spacer(Modifier.height(SpacingLarge))
 
             // Title
             ValidatingTextField(

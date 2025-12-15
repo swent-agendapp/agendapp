@@ -170,7 +170,7 @@ fun CalendarScreen(
           FilterBottomSheet(
               onDismiss = { showFilterSheet = false },
               onApply = {
-                calendarViewModel.applyFilters(filterVM.filters.value)
+                calendarViewModel.applyFilters(filterVM.uiState.value.filters)
                 showFilterSheet = false
               },
               filterVM = filterVM)

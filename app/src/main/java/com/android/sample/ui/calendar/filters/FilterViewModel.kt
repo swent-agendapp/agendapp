@@ -26,6 +26,14 @@ data class EventFilters(
   fun isEmpty(): Boolean = eventTypes.isEmpty() && locations.isEmpty() && participants.isEmpty()
 }
 
+/** UI state exposed by [FilterViewModel]. */
+data class FilterUiState(
+    val filters: EventFilters = EventFilters(),
+    val eventTypes: List<String> = emptyList(),
+    val locations: List<String> = emptyList(),
+    val participants: List<String> = emptyList()
+)
+
 /**
  * ViewModel responsible for managing calendar event filters.
  *
@@ -54,26 +62,10 @@ class FilterViewModel(
 ) : ViewModel() {
 
   // ---------------------------
-  // Selected filters
+  // UI State
   // ---------------------------
-  private val _filters = MutableStateFlow(EventFilters())
-  val filters: StateFlow<EventFilters> = _filters
-
-  // ---------------------------
-  // Available filter options
-  // ---------------------------
-
-  // Event types (categories)
-  private val _eventTypes = MutableStateFlow<List<String>>(emptyList())
-  val eventTypes: StateFlow<List<String>> = _eventTypes
-
-  // Location labels
-  private val _locations = MutableStateFlow<List<String>>(emptyList())
-  val locations: StateFlow<List<String>> = _locations
-
-  // Participants (organization members)
-  private val _participants = MutableStateFlow<List<String>>(emptyList())
-  val participants: StateFlow<List<String>> = _participants
+  private val _uiState = MutableStateFlow(FilterUiState())
+  val uiState: StateFlow<FilterUiState> = _uiState
 
   init {
     observeOrganizationChanges()
@@ -89,26 +81,26 @@ class FilterViewModel(
   }
 
   private fun clearMetadata() {
-    _eventTypes.value = emptyList()
-    _locations.value = emptyList()
-    _participants.value = emptyList()
+    _uiState.update {
+      it.copy(eventTypes = emptyList(), locations = emptyList(), participants = emptyList())
+    }
   }
 
   private suspend fun loadMetadata(orgId: String) {
     try {
-      // -------- Event Types
-      _eventTypes.value = categoryRepo.getAllCategories(orgId).map { it.label }
+      val eventTypes = categoryRepo.getAllCategories(orgId).map { it.label }
 
-      // -------- Locations
-      _locations.value = mapRepo.getAllAreas(orgId).map { it.label }
+      val locations = mapRepo.getAllAreas(orgId).map { it.label }
 
-      // -------- Participants
-      val memberIds = userRepo.getMembersIds(orgId)
-      val users = userRepo.getUsersByIds(memberIds)
+      val users = userRepo.getUsersByIds(userRepo.getMembersIds(orgId))
 
-      _participants.value = users.map { it.displayName ?: it.email ?: "Unknown" }
-    } catch (e: Exception) {
-      // optional: expose error state later
+      val participants = users.map { it.displayName ?: it.email ?: "Unknown" }
+
+      _uiState.update {
+        it.copy(eventTypes = eventTypes, locations = locations, participants = participants)
+      }
+    } catch (_: Exception) {
+      // Optional: add error state later
     }
   }
 
@@ -116,18 +108,18 @@ class FilterViewModel(
   // Filter selection setters
   // ---------------------------
   fun setEventTypes(types: List<String>) {
-    _filters.update { it.copy(eventTypes = types.toSet()) }
+    _uiState.update { it.copy(filters = it.filters.copy(eventTypes = types.toSet())) }
   }
 
   fun setLocations(locations: List<String>) {
-    _filters.update { it.copy(locations = locations.toSet()) }
+    _uiState.update { it.copy(filters = it.filters.copy(locations = locations.toSet())) }
   }
 
   fun setParticipants(names: List<String>) {
-    _filters.update { it.copy(participants = names.toSet()) }
+    _uiState.update { it.copy(filters = it.filters.copy(participants = names.toSet())) }
   }
 
   fun clearFilters() {
-    _filters.value = EventFilters()
+    _uiState.update { it.copy(filters = EventFilters()) }
   }
 }

@@ -51,12 +51,15 @@ class FilterViewModelTest {
 
   @Test
   fun `initial state is empty`() {
-    val state = vm.filters.value
+    val state = vm.uiState.value
 
-    assertTrue(state.isEmpty())
-    assertTrue(vm.eventTypes.value.isEmpty())
-    assertTrue(vm.locations.value.isEmpty())
-    assertTrue(vm.participants.value.isEmpty())
+    // Filters
+    assertTrue(state.filters.isEmpty())
+
+    // Available options
+    assertTrue(state.eventTypes.isEmpty())
+    assertTrue(state.locations.isEmpty())
+    assertTrue(state.participants.isEmpty())
   }
 
   @Test
@@ -64,9 +67,11 @@ class FilterViewModelTest {
     orgVM.setOrg("org123")
     advanceUntilIdle()
 
-    assertEquals(listOf("Course", "Meeting", "Workshop"), vm.eventTypes.value)
-    assertEquals(listOf("Salle 1", "Salle 2"), vm.locations.value)
-    assertEquals(listOf("Alice", "Bob"), vm.participants.value)
+    val state = vm.uiState.value
+
+    assertEquals(listOf("Course", "Meeting", "Workshop"), state.eventTypes)
+    assertEquals(listOf("Salle 1", "Salle 2"), state.locations)
+    assertEquals(listOf("Alice", "Bob"), state.participants)
   }
 
   @Test
@@ -75,7 +80,8 @@ class FilterViewModelTest {
     vm.setLocations(listOf("Salle 1"))
     vm.setParticipants(listOf("Alice"))
 
-    val filters = vm.filters.value
+    val filters = vm.uiState.value.filters
+
     assertEquals(setOf("Course"), filters.eventTypes)
     assertEquals(setOf("Salle 1"), filters.locations)
     assertEquals(setOf("Alice"), filters.participants)
@@ -84,8 +90,11 @@ class FilterViewModelTest {
   @Test
   fun `clearFilters resets filters`() {
     vm.setEventTypes(listOf("Course"))
+    vm.setLocations(listOf("Salle 1"))
+    vm.setParticipants(listOf("Alice"))
+
     vm.clearFilters()
 
-    assertTrue(vm.filters.value.isEmpty())
+    assertTrue(vm.uiState.value.filters.isEmpty())
   }
 }

@@ -73,11 +73,14 @@ enum class FilterPage {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FilterBottomSheet(onDismiss: () -> Unit, onApply: () -> Unit, filterVM: FilterViewModel) {
-  // Read current selections
-  val filters by filterVM.filters.collectAsState()
-  val eventTypes by filterVM.eventTypes.collectAsState()
-  val locations by filterVM.locations.collectAsState()
-  val participants by filterVM.participants.collectAsState()
+
+  // Observe the current UI state from the ViewModel
+  val uiState by filterVM.uiState.collectAsState()
+
+  val filters = uiState.filters
+  val eventTypes = uiState.eventTypes
+  val locations = uiState.locations
+  val participants = uiState.participants
 
   var currentPage by remember { mutableStateOf(FilterPage.MAIN) }
 

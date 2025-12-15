@@ -1,18 +1,15 @@
 package com.android.sample.ui.hourRecap
 
 import com.android.sample.data.fake.repositories.FakeEventRepository
-import com.android.sample.data.fake.repositories.RepoMethod
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepository
 import com.android.sample.model.authentication.UsersRepositoryLocal
-import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.repository.OrganizationRepositoryLocal
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.utils.FakeEventRepository
-import java.time.Duration
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import kotlin.test.assertEquals

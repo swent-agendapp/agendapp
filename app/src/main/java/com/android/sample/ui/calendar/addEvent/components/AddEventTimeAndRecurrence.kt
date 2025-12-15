@@ -40,6 +40,7 @@ import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.calendar.labelRes
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
+import com.android.sample.ui.calendar.components.DateRangePickerFields
 import com.android.sample.ui.calendar.components.DatePickerFieldToModal
 import com.android.sample.ui.calendar.utils.DateTimeUtils
 import com.android.sample.ui.common.BottomNavigationButtons
@@ -122,26 +123,21 @@ fun AddEventTimeAndRecurrenceScreen(
 
           Spacer(modifier = Modifier.height(SpacingLarge))
 
-          DatePickerFieldToModal(
-              label = stringResource(R.string.startDatePickerLabel),
-              modifier = Modifier.testTag(AddEventTestTags.START_DATE_FIELD),
-              onDateSelected = { date ->
+          DateRangePickerFields(
+              startLabel = stringResource(R.string.startDatePickerLabel),
+              endLabel = stringResource(R.string.endDatePickerLabel),
+              startFieldModifier = Modifier.testTag(AddEventTestTags.START_DATE_FIELD),
+              endFieldModifier = Modifier.testTag(AddEventTestTags.END_DATE_FIELD),
+              initialStartInstant = newEventUIState.startInstant,
+              initialEndInstant = newEventUIState.endInstant,
+              onStartDateSelected = { date ->
                 addEventViewModel.setStartInstant(
                     DateTimeUtils.instantWithDate(newEventUIState.startInstant, date = date))
               },
-              initialInstant = newEventUIState.startInstant,
-              enabled = true)
-
-          Spacer(modifier = Modifier.height(SpacingSmall))
-
-          DatePickerFieldToModal(
-              label = stringResource(R.string.endDatePickerLabel),
-              modifier = Modifier.testTag(AddEventTestTags.END_DATE_FIELD),
-              onDateSelected = { date ->
+              onEndDateSelected = { date ->
                 addEventViewModel.setEndInstant(
                     DateTimeUtils.instantWithDate(newEventUIState.endInstant, date = date))
               },
-              initialInstant = newEventUIState.endInstant,
               enabled = true)
 
           Spacer(modifier = Modifier.height(SpacingLarge))

@@ -27,7 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
-import com.android.sample.ui.calendar.components.DatePickerFieldToModal
+import com.android.sample.ui.calendar.components.DateRangePickerFields
 import com.android.sample.ui.calendar.utils.formatDecimalHoursToTime
 import com.android.sample.ui.common.Loading
 import com.android.sample.ui.common.PrimaryButton
@@ -338,17 +338,15 @@ private fun DateRangePicker(
     onEndDateSelected: (LocalDate) -> Unit,
     onGenerateClick: () -> Unit
 ) {
-  DatePickerFieldToModal(
-      label = stringResource(R.string.startDatePickerLabel),
-      modifier = Modifier.fillMaxWidth().testTag(HourRecapTestTags.START_DATE),
-      onDateSelected = onStartDateSelected)
-
-  Spacer(Modifier.height(SpacingMedium))
-
-  DatePickerFieldToModal(
-      label = stringResource(R.string.endDatePickerLabel),
-      modifier = Modifier.fillMaxWidth().testTag(HourRecapTestTags.END_DATE),
-      onDateSelected = onEndDateSelected)
+  DateRangePickerFields(
+      startLabel = stringResource(R.string.startDatePickerLabel),
+      endLabel = stringResource(R.string.endDatePickerLabel),
+      startFieldModifier = Modifier.fillMaxWidth().testTag(HourRecapTestTags.START_DATE),
+      endFieldModifier = Modifier.fillMaxWidth().testTag(HourRecapTestTags.END_DATE),
+      initialStartInstant = startDate?.atStartOfDay(ZoneId.systemDefault())?.toInstant(),
+      initialEndInstant = endDate?.atStartOfDay(ZoneId.systemDefault())?.toInstant(),
+      onStartDateSelected = onStartDateSelected,
+      onEndDateSelected = onEndDateSelected)
 
   Spacer(Modifier.height(SpacingMedium))
 

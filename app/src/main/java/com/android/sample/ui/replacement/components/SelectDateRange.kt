@@ -22,13 +22,12 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.android.sample.R
-import com.android.sample.ui.calendar.components.DatePickerFieldToModal
+import com.android.sample.ui.calendar.components.DateRangePickerFields
 import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.replacement.organize.ReplacementOrganizeTestTags
 import com.android.sample.ui.theme.CornerRadiusMedium
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.PaddingMedium
-import com.android.sample.ui.theme.SpacingExtraLarge
 import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.WeightExtraHeavy
 import java.time.Instant
@@ -106,22 +105,17 @@ fun SelectDateRangeScreen(
               Column(modifier = Modifier.weight(WeightExtraHeavy)) {
                 Spacer(modifier = Modifier.height(SpacingLarge))
 
-                DatePickerFieldToModal(
-                    label = stringResource(R.string.startDatePickerLabel),
-                    modifier = Modifier.testTag(ReplacementOrganizeTestTags.START_DATE_FIELD),
-                    onDateSelected = onStartDateSelected,
+                DateRangePickerFields(
+                    startLabel = stringResource(R.string.startDatePickerLabel),
+                    endLabel = stringResource(R.string.endDatePickerLabel),
+                    startFieldModifier =
+                        Modifier.testTag(ReplacementOrganizeTestTags.START_DATE_FIELD),
+                    endFieldModifier = Modifier.testTag(ReplacementOrganizeTestTags.END_DATE_FIELD),
+                    onStartDateSelected = onStartDateSelected,
+                    onEndDateSelected = onEndDateSelected,
+                    initialStartInstant = initialStartInstant,
+                    initialEndInstant = initialEndInstant,
                     enabled = true,
-                    initialInstant = initialStartInstant,
-                )
-
-                Spacer(modifier = Modifier.height(SpacingExtraLarge))
-
-                DatePickerFieldToModal(
-                    label = stringResource(R.string.endDatePickerLabel),
-                    modifier = Modifier.testTag(ReplacementOrganizeTestTags.END_DATE_FIELD),
-                    onDateSelected = onEndDateSelected,
-                    enabled = true,
-                    initialInstant = initialEndInstant,
                 )
               }
 

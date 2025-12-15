@@ -3,18 +3,23 @@ package com.android.sample.ui.calendar.components
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DateRangePicker
+import androidx.compose.material3.DateRangePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import com.android.sample.R
 import com.android.sample.ui.calendar.utils.DateTimeUtils.DATE_FORMAT_PATTERN
 import com.android.sample.ui.theme.CornerRadiusLarge
+import com.android.sample.ui.theme.SpacingLarge
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
@@ -113,6 +119,91 @@ fun DatePickerFieldToModal(
   }
 }
 
+@Composable
+fun DateRangePickerFields(
+    startLabel: String,
+    endLabel: String,
+    startFieldModifier: Modifier = Modifier,
+    endFieldModifier: Modifier = Modifier,
+    initialStartInstant: Instant? = null,
+    initialEndInstant: Instant? = null,
+    onStartDateSelected: (LocalDate) -> Unit,
+    onEndDateSelected: (LocalDate) -> Unit,
+    enabled: Boolean = true,
+) {
+  var selectedStartDateMillis by remember { mutableStateOf(initialStartInstant?.toEpochMilli()) }
+  var selectedEndDateMillis by remember { mutableStateOf(initialEndInstant?.toEpochMilli()) }
+  var showModal by remember { mutableStateOf(false) }
+
+  val placeholder = { Text(stringResource(R.string.date_picker_placeholder)) }
+  val trailingIcon = {
+    Icon(
+        Icons.Default.DateRange,
+        contentDescription = stringResource(R.string.date_picker_select_date_content_description))
+  }
+
+  OutlinedTextField(
+      value = selectedStartDateMillis?.let { convertMillisToDate(it) } ?: "",
+      onValueChange = {},
+      label = { Text(startLabel) },
+      placeholder = placeholder,
+      trailingIcon = trailingIcon,
+      modifier =
+          startFieldModifier.fillMaxWidth().pointerInput(selectedStartDateMillis, enabled) {
+            awaitEachGesture {
+              awaitFirstDown(pass = PointerEventPass.Initial)
+              val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
+              if (upEvent != null && enabled) {
+                showModal = true
+              }
+            }
+          },
+      shape = RoundedCornerShape(CornerRadiusLarge),
+      readOnly = true,
+      enabled = enabled)
+
+  Spacer(modifier = Modifier.height(SpacingLarge))
+
+  OutlinedTextField(
+      value = selectedEndDateMillis?.let { convertMillisToDate(it) } ?: "",
+      onValueChange = {},
+      label = { Text(endLabel) },
+      placeholder = placeholder,
+      trailingIcon = trailingIcon,
+      modifier =
+          endFieldModifier.fillMaxWidth().pointerInput(selectedEndDateMillis, enabled) {
+            awaitEachGesture {
+              awaitFirstDown(pass = PointerEventPass.Initial)
+              val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
+              if (upEvent != null && enabled) {
+                showModal = true
+              }
+            }
+          },
+      shape = RoundedCornerShape(CornerRadiusLarge),
+      readOnly = true,
+      enabled = enabled)
+
+  if (showModal) {
+    DateRangePickerModal(
+        initialSelectedStartDateMillis = selectedStartDateMillis,
+        initialSelectedEndDateMillis = selectedEndDateMillis,
+        onDateRangeSelected = { startDateMillis, endDateMillis ->
+          selectedStartDateMillis = startDateMillis
+          selectedEndDateMillis = endDateMillis
+          startDateMillis?.let { millis ->
+            onStartDateSelected(
+                Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDate())
+          }
+          endDateMillis?.let { millis ->
+            onEndDateSelected(
+                Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDate())
+          }
+        },
+        onDismiss = { showModal = false })
+  }
+}
+
 /**
  * Converts UNIX timestamp milliseconds to a human-readable date string formatted as `dd/MM/yyyy`.
  *
@@ -158,5 +249,39 @@ fun DatePickerModal(onDateSelected: (Long?) -> Unit, onDismiss: () -> Unit) {
         TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) }
       }) {
         DatePicker(state = datePickerState)
+      }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DateRangePickerModal(
+    onDateRangeSelected: (Long?, Long?) -> Unit,
+    onDismiss: () -> Unit,
+    initialSelectedStartDateMillis: Long? = null,
+    initialSelectedEndDateMillis: Long? = null,
+) {
+  val dateRangePickerState =
+      rememberDateRangePickerState(
+          initialSelectedStartDateMillis = initialSelectedStartDateMillis,
+          initialSelectedEndDateMillis = initialSelectedEndDateMillis)
+
+  DateRangePickerDialog(
+      onDismissRequest = onDismiss,
+      confirmButton = {
+        TextButton(
+            onClick = {
+              onDateRangeSelected(
+                  dateRangePickerState.selectedStartDateMillis,
+                  dateRangePickerState.selectedEndDateMillis)
+              onDismiss()
+            },
+            enabled =
+                dateRangePickerState.selectedStartDateMillis != null &&
+                    dateRangePickerState.selectedEndDateMillis != null) {
+              Text(stringResource(android.R.string.ok))
+            }
+      },
+      dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) } }) {
+        DateRangePicker(state = dateRangePickerState)
       }
 }

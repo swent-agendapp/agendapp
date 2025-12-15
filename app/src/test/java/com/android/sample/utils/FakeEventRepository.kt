@@ -5,7 +5,7 @@ import com.android.sample.model.calendar.EventRepository
 import java.time.Instant
 import java.util.UUID
 
-/** simple FakeEventRepository only for test */
+/** Fake EventRepository for unit tests in test source set */
 class FakeEventRepository : EventRepository {
 
   private val events = mutableListOf<Event>()

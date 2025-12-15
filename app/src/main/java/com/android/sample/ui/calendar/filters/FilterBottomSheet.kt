@@ -74,13 +74,21 @@ enum class FilterPage {
 @Composable
 fun FilterBottomSheet(onDismiss: () -> Unit, onApply: (Map<String, List<String>>) -> Unit) {
   // States for all filters
-  var eventTypeFilters by remember { mutableStateOf(listOf<String>()) }
-  var locationFilters by remember { mutableStateOf(listOf<String>()) }
-  var participantFilters by remember { mutableStateOf(listOf<String>()) }
+    var eventTypeFilters by remember { mutableStateOf(listOf<String>()) }
+    var locationFilters by remember { mutableStateOf(listOf<String>()) }
+    var participantFilters by remember { mutableStateOf(listOf<String>()) }
 
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
   // Page state (MAIN / EVENT_TYPE / LOCATION / PARTICIPANTS)
-  var currentPage by remember { mutableStateOf(FilterPage.MAIN) }
+    var currentPage by remember { mutableStateOf(FilterPage.MAIN) }
 
+    LaunchedEffect(currentPage) {
+        if (currentPage != FilterPage.MAIN) {
+            sheetState.expand()
+        }
+    }
   ModalBottomSheet(
       onDismissRequest = onDismiss,
       modifier = Modifier.testTag(CalendarScreenTestTags.FILTER_BOTTOM_SHEET)) {
@@ -110,14 +118,6 @@ fun FilterBottomSheet(onDismiss: () -> Unit, onApply: (Map<String, List<String>>
                                     fontWeight = FontWeight.SemiBold),
                             modifier = Modifier.testTag(FilterScreenTestTags.TITLE))
 
-                        IconButton(
-                            onClick = onDismiss,
-                            modifier = Modifier.testTag(FilterScreenTestTags.CLOSE_BUTTON)) {
-                              Icon(
-                                  imageVector = Icons.Default.Close,
-                                  contentDescription = stringResource(R.string.close),
-                                  tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                            }
                       }
 
                   Spacer(Modifier.height(SpacingLarge))
@@ -158,30 +158,6 @@ fun FilterBottomSheet(onDismiss: () -> Unit, onApply: (Map<String, List<String>>
                             tag = FilterScreenTestTags.CATEGORY_PARTICIPANTS,
                             onClick = { currentPage = FilterPage.PARTICIPANTS })
                       }
-
-                  Spacer(Modifier.height(SpacingExtraLarge))
-
-                  BottomNavigationButtons(
-                      onBack = {
-                        eventTypeFilters = emptyList()
-                        locationFilters = emptyList()
-                        participantFilters = emptyList()
-                      },
-                      onNext = {
-                        onApply(
-                            mapOf(
-                                "types" to eventTypeFilters,
-                                "locations" to locationFilters,
-                                "participants" to participantFilters))
-                      },
-                      canGoBack = true,
-                      canGoNext = true,
-                      backButtonText = stringResource(R.string.clear_all),
-                      nextButtonText = stringResource(R.string.apply),
-                      backButtonTestTag = FilterScreenTestTags.CLEAR_ALL,
-                      nextButtonTestTag = FilterScreenTestTags.APPLY)
-
-                  Spacer(Modifier.height(SpacingMedium))
                 }
           }
           // -------------------------------
@@ -217,9 +193,16 @@ fun FilterBottomSheet(onDismiss: () -> Unit, onApply: (Map<String, List<String>>
                 selected = eventTypeFilters,
                 testTagPrefix = "EventTypeFilter",
                 onBack = { currentPage = FilterPage.MAIN },
-                onApply = {
-                  eventTypeFilters = it
-                  currentPage = FilterPage.MAIN
+                onApply = {selections ->
+                    eventTypeFilters = selections
+                    onApply(
+                        mapOf(
+                            "types" to eventTypeFilters,
+                            "locations" to locationFilters,
+                            "participants" to participantFilters
+                        )
+                    )
+                    currentPage = FilterPage.MAIN
                 })
           }
 
@@ -236,8 +219,18 @@ fun FilterBottomSheet(onDismiss: () -> Unit, onApply: (Map<String, List<String>>
                 testTagPrefix = "LocationFilter",
                 onBack = { currentPage = FilterPage.MAIN },
                 onApply = {
-                  locationFilters = it
-                  currentPage = FilterPage.MAIN
+                        selections ->
+                    locationFilters = selections
+
+                    onApply(
+                        mapOf(
+                            "types" to eventTypeFilters,
+                            "locations" to locationFilters,
+                            "participants" to participantFilters
+                        )
+                    )
+
+                    currentPage = FilterPage.MAIN
                 })
           }
 
@@ -265,8 +258,18 @@ fun FilterBottomSheet(onDismiss: () -> Unit, onApply: (Map<String, List<String>>
                 testTagPrefix = "ParticipantFilter",
                 onBack = { currentPage = FilterPage.MAIN },
                 onApply = {
-                  participantFilters = it
-                  currentPage = FilterPage.MAIN
+                        selections ->
+                    participantFilters = selections
+
+                    onApply(
+                        mapOf(
+                            "types" to eventTypeFilters,
+                            "locations" to locationFilters,
+                            "participants" to participantFilters
+                        )
+                    )
+
+                    currentPage = FilterPage.MAIN
                 })
           }
         }

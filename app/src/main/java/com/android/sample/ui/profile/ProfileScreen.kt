@@ -473,6 +473,6 @@ private fun initialsFromName(name: String): String {
 
 private fun validateInputs(email: String, phone: String): Pair<Boolean, Boolean> {
   val emailValid = isValidEmail(email)
-  val phoneValid = isValidPhone(phone)
+  val phoneValid = isValidPhone(phone) || phone.isBlank()
   return emailValid to phoneValid
 }

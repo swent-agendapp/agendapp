@@ -125,8 +125,8 @@ fun EditEventScreen(
                     testTag = EditEventTestTags.DESCRIPTION_FIELD,
                     value = uiState.description,
                     onValueChange = { editEventViewModel.setDescription(it) },
-                    isError = uiState.description.isBlank(),
-                    errorMessage = stringResource(R.string.edit_event_description_error),
+                    isError = false,
+                    errorMessage = "",
                     singleLine = false,
                     minLines = DESCRIPTION_MIN_LINES)
                 Spacer(modifier = Modifier.height(SpacingExtraLarge))

@@ -12,7 +12,6 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DateRangePicker
-import androidx.compose.material3.DateRangePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -265,7 +264,7 @@ fun DateRangePickerModal(
           initialSelectedStartDateMillis = initialSelectedStartDateMillis,
           initialSelectedEndDateMillis = initialSelectedEndDateMillis)
 
-  DateRangePickerDialog(
+  DatePickerDialog(
       onDismissRequest = onDismiss,
       confirmButton = {
         TextButton(

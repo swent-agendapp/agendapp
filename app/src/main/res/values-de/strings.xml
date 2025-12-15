@@ -51,6 +51,9 @@
     <string name="warning_got_it">Verstanden</string>
 
     <!-- Edit Event Screen -->
+    <string name="edit_event_header_step">Bearbeitung</string>
+    <string name="edit_event_header_title">Ereignis bearbeiten</string>
+    <string name="edit_event_header_subtitle">Details, Zeitplan und Teilnehmende aktualisieren</string>
     <string name="edit_event_title">Ereignis bearbeiten</string>
 
     <!-- Fields -->

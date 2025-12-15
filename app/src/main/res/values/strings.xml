@@ -49,6 +49,9 @@
     <string name="common_back">Back</string>
 
     <!-- Edit Event Screen -->
+    <string name="edit_event_header_step">Editing</string>
+    <string name="edit_event_header_title">Edit your event</string>
+    <string name="edit_event_header_subtitle">Update details, schedule, and participants</string>
     <string name="edit_event_title">Edit Event</string>
 
     <!-- Fields -->

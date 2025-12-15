@@ -46,6 +46,9 @@
     <string name="common_back">Retour</string>
 
     <!-- Edit Event Screen -->
+    <string name="edit_event_header_step">Modification</string>
+    <string name="edit_event_header_title">Modifier votre événement</string>
+    <string name="edit_event_header_subtitle">Mettez à jour les détails, l’horaire et les participants</string>
     <string name="edit_event_title">Modifier l’événement</string>
 
     <!-- Fields -->

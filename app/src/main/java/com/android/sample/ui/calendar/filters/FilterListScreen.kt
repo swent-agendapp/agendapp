@@ -5,6 +5,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -56,27 +58,44 @@ fun FilterListScreen(
   Column(modifier = Modifier.padding(PaddingLarge).testTag(screenTag)) {
 
     // ----- Header -----
-    Row(
-        modifier = Modifier.fillMaxWidth().testTag(headerTag),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically) {
+      Row(
+          modifier = Modifier.fillMaxWidth().testTag(headerTag),
+          verticalAlignment = Alignment.CenterVertically
+      ) {
           IconButton(onClick = onBack, modifier = Modifier.testTag(backTag)) {
-            Icon(
-                Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = stringResource(com.android.sample.R.string.goBack))
+              Icon(
+                  Icons.AutoMirrored.Filled.ArrowBack,
+                  contentDescription = stringResource(com.android.sample.R.string.goBack)
+              )
           }
 
           Text(
               text = title,
               style = MaterialTheme.typography.titleLarge,
-              modifier = Modifier.testTag(titleTag))
+              modifier = Modifier.weight(1f).testTag(titleTag)
+          )
 
-          Spacer(modifier = Modifier.width(widthSmall))
-        }
+          // Clear
+          IconButton(onClick = { selections = emptyList() }, modifier = Modifier.testTag(clearTag)) {
+              Icon(
+                  imageVector = Icons.Default.DeleteSweep,
+                  contentDescription = stringResource(com.android.sample.R.string.clear_all),
+                  tint = MaterialTheme.colorScheme.onSurfaceVariant
+              )
+          }
 
-    Spacer(Modifier.height(SpacingMedium))
+          // Apply
+          IconButton(onClick = { onApply(selections) }, modifier = Modifier.testTag(applyTag)) {
+              Icon(
+                  imageVector = Icons.Default.Check,
+                  contentDescription = stringResource(com.android.sample.R.string.apply),
+                  tint = MaterialTheme.colorScheme.primary
+              )
+          }
+      }
 
-    // ----- Scrollable list -----
+
+      // ----- Scrollable list -----
     LazyColumn(modifier = Modifier.weight(Weight).testTag(listTag)) {
       items(items) { item ->
         Column(modifier = Modifier.testTag(itemPrefix + item)) {
@@ -93,18 +112,6 @@ fun FilterListScreen(
       }
     }
 
-    Spacer(Modifier.height(SpacingExtraLarge))
-
-    // ----- Bottom Buttons -----
-    BottomNavigationButtons(
-        onBack = { selections = emptyList() },
-        onNext = { onApply(selections) },
-        canGoBack = true,
-        canGoNext = true,
-        backButtonText = stringResource(com.android.sample.R.string.clear_all),
-        nextButtonText = stringResource(com.android.sample.R.string.apply),
-        backButtonTestTag = clearTag,
-        nextButtonTestTag = applyTag)
   }
 }
 

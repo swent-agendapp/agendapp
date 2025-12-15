@@ -129,7 +129,7 @@ fun HourRecapScreen(
                     .padding(SpacingLarge)
                     .fillMaxSize()
                     .testTag(HourRecapTestTags.SCREEN_ROOT)) {
-              DateRangePicker(
+              HourRecapDateRangePicker(
                   startDate = startDate,
                   endDate = endDate,
                   onStartDateSelected = { startDate = it },
@@ -331,7 +331,7 @@ private fun RecapTag(label: String, containerColor: Color) {
 }
 
 @Composable
-private fun DateRangePicker(
+private fun HourRecapDateRangePicker(
     startDate: LocalDate?,
     endDate: LocalDate?,
     onStartDateSelected: (LocalDate) -> Unit,

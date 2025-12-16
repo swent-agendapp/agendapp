@@ -27,7 +27,6 @@ data class OrganizationOverviewUIState(
     val memberList: List<User> = emptyList(),
     val adminList: List<User> = emptyList(),
     val isAdmin: Boolean = false,
-    val isLoading: Boolean = false,
     @StringRes val errorMessageId: Int? = null
 )
 
@@ -54,26 +53,17 @@ class OrganizationOverviewViewModel(
     _uiState.value = _uiState.value.copy(errorMessageId = null)
   }
 
-  /** Sets the loading state in the UI state. */
-  fun setLoading(isLoading: Boolean) {
-    _uiState.value = _uiState.value.copy(isLoading = isLoading)
-  }
-
   /** Fills the UI state with details of the selected organization by its ID. */
   fun fillSelectedOrganizationDetails(orgId: String) {
-    setLoading(true)
-
     // Ensure the current user is not null
     if (currentUser == null) {
       setError(R.string.error_no_authenticated_user)
-      setLoading(false)
       return
     }
 
     // Ensure an organization ID is provided
     if (orgId.isEmpty()) {
       setError(R.string.error_no_organization_selected)
-      setLoading(false)
       return
     }
     viewModelScope.launch {
@@ -82,7 +72,6 @@ class OrganizationOverviewViewModel(
           organizationRepository.getOrganizationById(organizationId = orgId, user = currentUser)
       if (org == null) {
         setError(R.string.error_organization_not_found)
-        setLoading(false)
         return@launch
       }
       // Fetch members of the organization
@@ -98,7 +87,6 @@ class OrganizationOverviewViewModel(
       setAdminList(admins)
       setOrganizationName(org.name)
       setIsAdmin(isAdmin)
-      setLoading(false)
     }
   }
 

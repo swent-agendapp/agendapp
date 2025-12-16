@@ -155,14 +155,6 @@ class OrganizationOverviewViewModelTest {
   }
 
   @Test
-  fun `setLoading updates UI state`() {
-    vm.setLoading(true)
-
-    val state = vm.uiState.value
-    assertTrue(state.isLoading)
-  }
-
-  @Test
   fun `setError updates UI state`() {
     vm.setError(R.string.error_no_organization_selected)
 

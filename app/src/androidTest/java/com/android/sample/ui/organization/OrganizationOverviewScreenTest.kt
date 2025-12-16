@@ -281,16 +281,4 @@ class OrganizationOverviewScreenTest {
     composeTestRule.onNodeWithTag(MemberListTestTags.memberItemTag(user1.id)).assertDoesNotExist()
     composeTestRule.onNodeWithTag(MemberListTestTags.memberItemTag(user3.id)).assertDoesNotExist()
   }
-
-  @Test
-  fun loadingIndicatorIsDisplayedWhileLoading() = runTest {
-    vm.setLoading(true)
-    composeTestRule.setContent {
-      OrganizationOverviewScreen(
-          organizationOverviewViewModel = vm, selectedOrganizationViewModel = selectedOrgVM)
-    }
-    composeTestRule
-        .onNodeWithTag(OrganizationOverviewScreenTestTags.ORG_DATA_LOADING_INDICATOR)
-        .assertIsDisplayed()
-  }
 }

@@ -65,6 +65,7 @@ object HourRecapTestTags {
   const val RECAP_ITEM_ISSUE_MARKER = "hour_recap_item_issue_marker"
   const val RECAP_SHEET = "hour_recap_sheet"
   const val EXPORT_BUTTON = "hour_recap_export_button"
+  const val EXTRA_STAT = "hour_recap_extra_stat"
 }
 
 /* -------------------------------------------------------------------------- */
@@ -303,9 +304,13 @@ private fun HourRecapStat(
     value: String,
     containerColor: Color,
     contentColor: Color,
+    modifier: Modifier = Modifier,
 ) {
   Surface(
-      color = containerColor, contentColor = contentColor, shape = MaterialTheme.shapes.medium) {
+      color = containerColor,
+      contentColor = contentColor,
+      shape = MaterialTheme.shapes.medium,
+      modifier = modifier) {
         Column(modifier = Modifier.padding(horizontal = PaddingMedium, vertical = PaddingSmall)) {
           Text(text = label, style = MaterialTheme.typography.labelSmall, color = contentColor)
           Text(
@@ -469,6 +474,15 @@ private fun RecapItemCard(recap: HourRecapUserRecap, onClick: () -> Unit) {
                     containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                     contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
                 )
+                if (recap.extraEventsCount > 0) {
+                  HourRecapStat(
+                      label = stringResource(R.string.hour_recap_extra_events_label),
+                      value = recap.extraEventsCount.toString(),
+                      containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                      contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                      modifier = Modifier.testTag(HourRecapTestTags.EXTRA_STAT),
+                  )
+                }
               }
         }
       }

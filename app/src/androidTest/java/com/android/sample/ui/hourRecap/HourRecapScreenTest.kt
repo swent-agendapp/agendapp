@@ -9,7 +9,9 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeDown
+import androidx.compose.ui.graphics.Color
 import androidx.test.platform.app.InstrumentationRegistry
+import java.time.Instant
 import com.android.sample.R
 import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
@@ -506,5 +508,35 @@ class HourRecapScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
     compose
         .onNodeWithText(context.getString(R.string.hour_recap_tag_presence_unknown))
         .assertExists()
+  }
+
+  @Test
+  fun extraStatDisplayedWhenUserHasExtras() {
+    val vm = HourRecapViewModel()
+    vm.setTestWorkedHours(
+        listOf(
+            HourRecapUserRecap(
+                userId = "alice",
+                displayName = "Alice",
+                completedHours = 1.0,
+                plannedHours = 2.0,
+                events =
+                    listOf(
+                        HourRecapEventEntry(
+                            id = "1",
+                            title = "Extra",
+                            startDate = Instant.now(),
+                            endDate = Instant.now(),
+                            isPast = true,
+                            wasPresent = true,
+                            wasReplaced = false,
+                            tookReplacement = false,
+                            categoryColor = Color.Red,
+                            isExtra = true)),
+                extraEventsCount = 1)))
+
+    compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
+
+    compose.onNodeWithTag(HourRecapTestTags.EXTRA_STAT).assertExists().assertIsDisplayed()
   }
 }

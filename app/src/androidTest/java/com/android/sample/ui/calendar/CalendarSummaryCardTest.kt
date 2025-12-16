@@ -53,7 +53,8 @@ class EventSummaryCardTest {
       end: Instant,
       recurrence: RecurrenceStatus = RecurrenceStatus.OneTime,
       participants: Set<String> = emptySet(),
-      category: EventCategory = EventCategory.defaultCategory()
+      category: EventCategory = EventCategory.defaultCategory(),
+      isExtra: Boolean = false,
   ) =
       Event(
           id = "e-test",
@@ -70,7 +71,8 @@ class EventSummaryCardTest {
           recurrenceStatus = recurrence,
           hasBeenDeleted = false,
           category = category,
-          location = null)
+          location = null,
+          isExtra = isExtra)
 
   private val zone: ZoneId = ZoneId.systemDefault()
   private val locale: Locale = Locale.getDefault()
@@ -139,6 +141,25 @@ class EventSummaryCardTest {
 
     // And: participants list exists and is displayed (not asserting scrollability)
     composeTestRule.onNodeWithTag(EventSummaryCardTags.PARTICIPANTS_LIST).assertIsDisplayed()
+  }
+
+  @Test
+  fun extraEvent_showsIndicatorAndInfoOnClick() {
+    val e =
+        event(
+            title = "Extra shift",
+            description = "",
+            start = base.plusSeconds(60 * 60),
+            end = base.plusSeconds(60 * 60 * 2),
+            isExtra = true)
+
+    composeTestRule.setContent {
+      EventSummaryCard(event = e, participantNames = emptyList())
+    }
+
+    composeTestRule.onNodeWithTag(EventSummaryCardTags.EXTRA_BADGE).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(EventSummaryCardTags.EXTRA_BADGE).performClick()
+    composeTestRule.onNodeWithTag(EventSummaryCardTags.EXTRA_INFO).assertIsDisplayed()
   }
 
   @Test

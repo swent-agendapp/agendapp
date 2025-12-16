@@ -48,7 +48,8 @@ class EventMapperTest {
             hasBeenDeleted = false,
             recurrenceStatus = RecurrenceStatus.OneTime,
             category = testCategory,
-            location = null)
+            location = null,
+            isExtra = true)
 
     emptyEvent =
         baseEvent.copy(
@@ -80,6 +81,7 @@ class EventMapperTest {
     assertEquals(baseEvent.locallyStoredBy, mappedBack.locallyStoredBy)
     assertEquals(baseEvent.participants, mappedBack.participants)
     assertEquals(baseEvent.presence, mappedBack.presence)
+    assertEquals(baseEvent.isExtra, mappedBack.isExtra)
   }
 
   @Test

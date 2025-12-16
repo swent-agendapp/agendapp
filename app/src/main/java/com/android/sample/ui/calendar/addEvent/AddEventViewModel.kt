@@ -53,6 +53,7 @@ data class AddCalendarEventUIState(
     val draftEvent: Event = createEvent(organizationId = "").first(),
     val step: AddEventStep = AddEventStep.TITLE_AND_DESC,
     val users: List<User> = emptyList(),
+    val isExtraEvent: Boolean = false,
 )
 
 /** Steps in the multi-screen Add Event flow. */
@@ -120,7 +121,8 @@ class AddEventViewModel(
                 participants = state.participants.map { it.id }.toSet(),
                 category = state.category,
                 recurrence = state.recurrenceMode,
-                endRecurrence = state.recurrenceEndInstant)
+                endRecurrence = state.recurrenceEndInstant,
+                isExtra = state.isExtraEvent)
             .first()
 
     _uiState.update { it.copy(draftEvent = draftEvent) }
@@ -152,7 +154,8 @@ class AddEventViewModel(
             category = state.category,
             participants = state.participants.map { it.id }.toSet(),
             recurrence = state.recurrenceMode,
-            endRecurrence = state.recurrenceEndInstant)
+            endRecurrence = state.recurrenceEndInstant,
+            isExtra = state.isExtraEvent)
 
     newEvents.forEach { addEventToRepository(it) }
   }
@@ -254,6 +257,10 @@ class AddEventViewModel(
   /** Updates the visual color tag for the event. */
   fun setCategory(category: EventCategory) {
     _uiState.update { it.copy(category = category) }
+  }
+
+  fun setIsExtra(isExtra: Boolean) {
+    _uiState.update { it.copy(isExtraEvent = isExtra) }
   }
 
   /** Adds a participant to the event draft. */

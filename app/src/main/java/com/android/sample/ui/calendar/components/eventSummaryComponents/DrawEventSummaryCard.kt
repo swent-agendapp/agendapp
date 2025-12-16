@@ -11,12 +11,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.icons.Icons
+import androidx.compose.material3.icons.filled.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import com.android.sample.model.authentication.User
 import com.android.sample.model.category.EventCategory
 import com.android.sample.ui.calendar.components.EventSummaryCardTags
@@ -60,6 +66,11 @@ fun DrawEventSummaryCard(
             endZdt = ZonedDateTime.now()),
     // Recurrence
     recurrenceText: String? = null,
+    // Extra event indicator
+    isExtra: Boolean = false,
+    showExtraInfo: Boolean = false,
+    onExtraToggle: () -> Unit = {},
+    extraInfoText: String? = null,
     // Description
     descriptionText: String = "No description provided...",
     isDescriptionExpanded: Boolean = false,
@@ -105,6 +116,13 @@ fun DrawEventSummaryCard(
 
                   // 2) Category
                   CategorySection(category = category)
+                  if (isExtra) {
+                    Spacer(Modifier.height(style.sectionGapSmall))
+                    ExtraEventSection(
+                        onToggle = onExtraToggle,
+                        showInfo = showExtraInfo,
+                        infoText = extraInfoText)
+                  }
                   Spacer(Modifier.height(style.sectionGapLarge))
 
                   // 3) Dates
@@ -136,4 +154,34 @@ fun DrawEventSummaryCard(
           }
         }
       }
+}
+
+@Composable
+private fun ExtraEventSection(onToggle: () -> Unit, showInfo: Boolean, infoText: String?) {
+  Column(modifier = Modifier.fillMaxWidth()) {
+    IconButton(
+        onClick = onToggle,
+        modifier = Modifier.testTag(EventSummaryCardTags.EXTRA_BADGE)) {
+          Icon(
+              imageVector = Icons.Filled.Star,
+              contentDescription = stringResource(id = R.string.extra_event_label),
+              tint = MaterialTheme.colorScheme.primary)
+        }
+
+    if (showInfo && !infoText.isNullOrBlank()) {
+      Surface(
+          modifier =
+              Modifier.fillMaxWidth()
+                  .padding(top = EventSummaryCardStyle().sectionGapSmall)
+                  .testTag(EventSummaryCardTags.EXTRA_INFO),
+          color = MaterialTheme.colorScheme.secondaryContainer,
+          shape = MaterialTheme.shapes.medium) {
+            Text(
+                text = infoText,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                modifier = Modifier.padding(horizontal = EventSummaryCardStyle().paddingH))
+          }
+    }
+  }
 }

@@ -31,6 +31,7 @@ data class HourRecapEventEntry(
     val wasReplaced: Boolean,
     val tookReplacement: Boolean,
     val categoryColor: Color,
+    val isExtra: Boolean = false,
 )
 
 data class HourRecapUserRecap(
@@ -39,6 +40,7 @@ data class HourRecapUserRecap(
     val completedHours: Double,
     val plannedHours: Double,
     val events: List<HourRecapEventEntry>,
+    val extraEventsCount: Int = 0,
 ) {
   val totalHours: Double
     get() = completedHours + plannedHours
@@ -135,13 +137,15 @@ class HourRecapViewModel(
               .filter { event -> userId in event.allEventUserIds() }
               .map { event -> event.toHourRecapEntry(userId, now) }
               .sortedBy { it.startDate }
+      val extraEventsCount = userEvents.count { it.isExtra }
 
       HourRecapUserRecap(
           userId = userId,
           displayName = user.display(),
           completedHours = completed,
           plannedHours = planned,
-          events = userEvents)
+          events = userEvents,
+          extraEventsCount = extraEventsCount)
     }
   }
 
@@ -163,6 +167,7 @@ class HourRecapViewModel(
         wasReplaced = wasReplaced,
         tookReplacement = tookReplacement,
         categoryColor = category.color,
+        isExtra = isExtra,
     )
   }
 

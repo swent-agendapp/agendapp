@@ -115,7 +115,7 @@ class HourRecapViewModelTest {
                 displayName = "Alice",
                 completedHours = 3.0,
                 plannedHours = 2.0,
-                events = emptyList()))
+                events = emptyList(), extraEventsCount = 0))
 
     vm.setTestWorkedHours(data)
 

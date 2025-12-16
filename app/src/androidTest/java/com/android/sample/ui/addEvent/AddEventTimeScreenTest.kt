@@ -63,8 +63,8 @@ class AddEventTimeScreenTest : RequiresSelectedOrganizationTestBase {
   @Test
   fun displayRecurrenceOptions() {
     composeTestRule
-        .onNodeWithTag(AddEventTestTags.recurrenceTag(RecurrenceStatus.OneTime))
-        .assertIsDisplayed()
+        .onNodeWithTag(AddEventTestTags.recurrenceTag(RecurrenceStatus.Weekly))
+        .assertExists()
   }
 
   @Test

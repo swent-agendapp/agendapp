@@ -154,80 +154,11 @@ fun OrganizationOverviewScreen(
               /* ----------------------------------------------------
                * 1. ORGANIZATION HEADER
                * ---------------------------------------------------- */
-              Box(modifier = Modifier.fillMaxWidth().padding(vertical = PaddingMedium)) {
-
-                // Switch organization button (top-left)
-                IconButton(
-                    onClick = {
-                      onChangeOrganization()
-                      selectedOrganizationViewModel.clearSelection()
-                    },
-                    modifier =
-                        Modifier.align(Alignment.TopStart)
-                            .testTag(
-                                OrganizationOverviewScreenTestTags.CHANGE_ORGANIZATION_BUTTON)) {
-                      Icon(
-                          imageVector = Icons.Outlined.SwapHoriz,
-                          contentDescription = "Change organization")
-                    }
-
-                // Edit button (top-right)
-                if (uiState.isAdmin) {
-                  IconButton(
-                      onClick = onEditOrganization,
-                      modifier =
-                          Modifier.align(Alignment.TopEnd)
-                              .testTag(
-                                  OrganizationOverviewScreenTestTags.EDIT_ORGANIZATION_BUTTON)) {
-                        Icon(
-                            imageVector = Icons.Default.Edit,
-                            contentDescription = "Edit organization")
-                      }
-                }
-
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally) {
-                      // Organization image
-                      Box(
-                          modifier =
-                              Modifier.size(SizeMassive)
-                                  .clip(CircleShape)
-                                  .background(MaterialTheme.colorScheme.surfaceVariant)
-                                  .testTag(OrganizationOverviewScreenTestTags.ORGANIZATION_IMAGE),
-                          contentAlignment = Alignment.Center) {
-                            Icon(
-                                imageVector = Icons.Default.Business,
-                                contentDescription = "Organization image",
-                                modifier = Modifier.size(SizeHuge))
-                          }
-                      Spacer(modifier = Modifier.height(SpacingMedium))
-
-                      // Organization name
-                      Text(
-                          modifier =
-                              Modifier.testTag(
-                                  OrganizationOverviewScreenTestTags.ORGANIZATION_NAME_TEXT),
-                          text = uiState.organizationName,
-                          style = MaterialTheme.typography.titleLarge,
-                          fontWeight = FontWeight.Bold)
-
-                      Spacer(modifier = Modifier.height(SpacingExtraSmall))
-
-                      // Member count
-                      Text(
-                          modifier =
-                              Modifier.testTag(
-                                  OrganizationOverviewScreenTestTags.MEMBER_COUNT_TEXT),
-                          text =
-                              pluralStringResource(
-                                  id = R.plurals.members_count,
-                                  count = uiState.memberList.size,
-                                  uiState.memberList.size),
-                          style = MaterialTheme.typography.bodyMedium,
-                          color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    }
-              }
+              OrganizationHeader(
+                  onChangeOrganization = onChangeOrganization,
+                  onEditOrganization = onEditOrganization,
+                  selectedOrganizationViewModel = selectedOrganizationViewModel,
+                  uiState = uiState)
 
               /* ----------------------------------------------------
                * 2. ACTION CARDS ROW
@@ -317,6 +248,86 @@ private fun OverviewActionCard(
                   textAlign = TextAlign.Center)
             }
       }
+}
+
+/**
+ * Composable displaying the header section of the organization overview screen.
+ *
+ * @param onChangeOrganization Callback for changing the selected organization.
+ * @param onEditOrganization Callback for editing the organization details.
+ * @param selectedOrganizationViewModel ViewModel managing the selected organization state.
+ * @param uiState Current UI state of the organization overview screen.
+ */
+@Composable
+private fun OrganizationHeader(
+    onChangeOrganization: () -> Unit,
+    onEditOrganization: () -> Unit,
+    selectedOrganizationViewModel: SelectedOrganizationViewModel,
+    uiState: OrganizationOverviewUIState
+) {
+
+  Box(modifier = Modifier.fillMaxWidth().padding(vertical = PaddingMedium)) {
+
+    // Switch organization button (top-left)
+    IconButton(
+        onClick = {
+          onChangeOrganization()
+          selectedOrganizationViewModel.clearSelection()
+        },
+        modifier =
+            Modifier.align(Alignment.TopStart)
+                .testTag(OrganizationOverviewScreenTestTags.CHANGE_ORGANIZATION_BUTTON)) {
+          Icon(imageVector = Icons.Outlined.SwapHoriz, contentDescription = "Change organization")
+        }
+
+    // Edit button (top-right)
+    if (uiState.isAdmin) {
+      IconButton(
+          onClick = onEditOrganization,
+          modifier =
+              Modifier.align(Alignment.TopEnd)
+                  .testTag(OrganizationOverviewScreenTestTags.EDIT_ORGANIZATION_BUTTON)) {
+            Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit organization")
+          }
+    }
+
+    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+      // Organization image
+      Box(
+          modifier =
+              Modifier.size(SizeMassive)
+                  .clip(CircleShape)
+                  .background(MaterialTheme.colorScheme.surfaceVariant)
+                  .testTag(OrganizationOverviewScreenTestTags.ORGANIZATION_IMAGE),
+          contentAlignment = Alignment.Center) {
+            Icon(
+                imageVector = Icons.Default.Business,
+                contentDescription = "Organization image",
+                modifier = Modifier.size(SizeHuge))
+          }
+      Spacer(modifier = Modifier.height(SpacingMedium))
+
+      // Organization name
+      Text(
+          modifier = Modifier.testTag(OrganizationOverviewScreenTestTags.ORGANIZATION_NAME_TEXT),
+          text = uiState.organizationName,
+          style = MaterialTheme.typography.titleLarge,
+          fontWeight = FontWeight.Bold)
+
+      Spacer(modifier = Modifier.height(SpacingExtraSmall))
+
+      // Member count
+      Text(
+          modifier = Modifier.testTag(OrganizationOverviewScreenTestTags.MEMBER_COUNT_TEXT),
+          text =
+              pluralStringResource(
+                  id = R.plurals.members_count,
+                  count = uiState.memberList.size,
+                  uiState.memberList.size),
+          style = MaterialTheme.typography.bodyMedium,
+          color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+  }
 }
 
 @Preview

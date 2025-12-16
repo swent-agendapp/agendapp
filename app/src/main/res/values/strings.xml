@@ -266,6 +266,7 @@
     <string name="members">Members</string>
     <string name="admin">Admin</string>
     <string name="invitations_button">Invitations</string>
+    <string name="organization_infos_loading">Loading organization information…</string>
 
     <!-- Edit Organization -->
     <string name="error_loading_organiation">Failed to load organization.</string>

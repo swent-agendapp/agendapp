@@ -51,6 +51,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.model.authentication.User
+import com.android.sample.ui.common.Loading
 import com.android.sample.ui.common.MemberList
 import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.theme.CornerRadiusExtraLarge
@@ -80,6 +81,7 @@ object OrganizationOverviewScreenTestTags {
   const val CATEGORIES_BUTTON = "categoriesButton"
   const val MEMBERS_LIST = "memberList"
   const val INVITATIONS_BUTTON = "invitationButton"
+  const val ORG_DATA_LOADING_INDICATOR = "orgDataLoadingIndicator"
   const val ERROR_SNACKBAR = "errorSnackBar"
 }
 
@@ -144,66 +146,74 @@ fun OrganizationOverviewScreen(
             modifier = Modifier.testTag(OrganizationOverviewScreenTestTags.ERROR_SNACKBAR))
       },
       modifier = Modifier.testTag(OrganizationOverviewScreenTestTags.ROOT)) { innerPadding ->
-        Column(
-            modifier =
-                Modifier.fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(horizontal = PaddingMedium)
-                    .verticalScroll(rememberScrollState())) {
+        if (uiState.isLoading) {
+          Loading(
+              label = stringResource(R.string.organization_infos_loading),
+              modifier =
+                  Modifier.fillMaxSize()
+                      .testTag(OrganizationOverviewScreenTestTags.ORG_DATA_LOADING_INDICATOR))
+        } else {
+          Column(
+              modifier =
+                  Modifier.fillMaxSize()
+                      .padding(innerPadding)
+                      .padding(horizontal = PaddingMedium)
+                      .verticalScroll(rememberScrollState())) {
 
-              /* ----------------------------------------------------
-               * 1. ORGANIZATION HEADER
-               * ---------------------------------------------------- */
-              OrganizationHeader(
-                  onChangeOrganization = onChangeOrganization,
-                  onEditOrganization = onEditOrganization,
-                  selectedOrganizationViewModel = selectedOrganizationViewModel,
-                  uiState = uiState)
+                /* ----------------------------------------------------
+                 * 1. ORGANIZATION HEADER
+                 * ---------------------------------------------------- */
+                OrganizationHeader(
+                    onChangeOrganization = onChangeOrganization,
+                    onEditOrganization = onEditOrganization,
+                    selectedOrganizationViewModel = selectedOrganizationViewModel,
+                    uiState = uiState)
 
-              /* ----------------------------------------------------
-               * 2. ACTION CARDS ROW
-               * ---------------------------------------------------- */
-              Row(
-                  modifier = Modifier.fillMaxWidth(),
-                  horizontalArrangement = Arrangement.SpaceBetween) {
-                    OverviewActionCard(
-                        modifier =
-                            Modifier.weight(WeightExtraHeavy)
-                                .testTag(OrganizationOverviewScreenTestTags.CATEGORIES_BUTTON),
-                        icon = Icons.Default.Category,
-                        label = stringResource(R.string.categories_button),
-                        onClick = onCategoriesClick)
+                /* ----------------------------------------------------
+                 * 2. ACTION CARDS ROW
+                 * ---------------------------------------------------- */
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween) {
+                      OverviewActionCard(
+                          modifier =
+                              Modifier.weight(WeightExtraHeavy)
+                                  .testTag(OrganizationOverviewScreenTestTags.CATEGORIES_BUTTON),
+                          icon = Icons.Default.Category,
+                          label = stringResource(R.string.categories_button),
+                          onClick = onCategoriesClick)
 
-                    OverviewActionCard(
-                        modifier =
-                            Modifier.weight(WeightExtraHeavy)
-                                .testTag(OrganizationOverviewScreenTestTags.INVITATIONS_BUTTON),
-                        icon = Icons.Default.PersonAdd,
-                        label = stringResource(R.string.invitations_button),
-                        onClick = onInvitationClick)
-                  }
+                      OverviewActionCard(
+                          modifier =
+                              Modifier.weight(WeightExtraHeavy)
+                                  .testTag(OrganizationOverviewScreenTestTags.INVITATIONS_BUTTON),
+                          icon = Icons.Default.PersonAdd,
+                          label = stringResource(R.string.invitations_button),
+                          onClick = onInvitationClick)
+                    }
 
-              Spacer(modifier = Modifier.height(SpacingLarge))
+                Spacer(modifier = Modifier.height(SpacingLarge))
 
-              /* ----------------------------------------------------
-               * 3. MEMBERS LIST
-               * ---------------------------------------------------- */
-              Text(
-                  text = stringResource(R.string.members),
-                  style = MaterialTheme.typography.titleMedium,
-                  fontWeight = FontWeight.SemiBold,
-                  modifier = Modifier.padding(start = PaddingMedium))
-              MemberList(
-                  modifier =
-                      Modifier.weight(WeightExtraHeavy)
-                          .testTag(OrganizationOverviewScreenTestTags.MEMBERS_LIST)
-                          .padding(PaddingMedium),
-                  onMemberClick = onMemberClick,
-                  members = uiState.memberList,
-                  admins = uiState.adminList)
+                /* ----------------------------------------------------
+                 * 3. MEMBERS LIST
+                 * ---------------------------------------------------- */
+                Text(
+                    text = stringResource(R.string.members),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(start = PaddingMedium))
+                MemberList(
+                    modifier =
+                        Modifier.weight(WeightExtraHeavy)
+                            .testTag(OrganizationOverviewScreenTestTags.MEMBERS_LIST)
+                            .padding(PaddingMedium),
+                    onMemberClick = onMemberClick,
+                    members = uiState.memberList,
+                    admins = uiState.adminList)
 
-              Spacer(modifier = Modifier.height(SpacingLarge))
-            }
+                Spacer(modifier = Modifier.height(SpacingLarge))
+              }
+        }
       }
 }
 

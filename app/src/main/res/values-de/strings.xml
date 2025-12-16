@@ -262,6 +262,7 @@
     <string name="members">Mitglieder</string>
     <string name="admin">Admin</string>
     <string name="invitations_button">Einladungscodes</string>
+    <string name="organization_infos_loading">Organisationsinformationen werden geladen…</string>
 
     <!-- Edit Organization -->
     <string name="error_loading_organiation">Organisation konnte nicht geladen werden.</string>

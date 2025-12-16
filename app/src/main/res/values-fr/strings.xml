@@ -203,7 +203,7 @@
 
     <!-- Organizations -->
     <string name="organization_list_title">Vos organisations</string>
-    <string name="organization_loading">Chergement des organisations</string>
+    <string name="organization_loading">Chargement des organisations</string>
     <string name="organization_name_label">Nom de l’organisation</string>
     <string name="organization_none_selected">Aucune organisation sélectionnée</string>
     <string name="organization_members">Membres</string>

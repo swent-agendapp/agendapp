@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import com.android.sample.R
+import com.android.sample.model.authentication.User
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.theme.AlphaLow
 import com.android.sample.ui.theme.CornerRadiusLarge
@@ -63,23 +64,21 @@ enum class FilterPage {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FilterBottomSheet(onDismiss: () -> Unit, onApply: (Map<String, List<String>>) -> Unit) {
+fun FilterBottomSheet(users: List<User>, onDismiss: () -> Unit, onApply: (Map<String, List<String>>) -> Unit) {
   // States for all filters
-    var eventTypeFilters by remember { mutableStateOf(listOf<String>()) }
-    var locationFilters by remember { mutableStateOf(listOf<String>()) }
-    var participantFilters by remember { mutableStateOf(listOf<String>()) }
+  var eventTypeFilters by remember { mutableStateOf(listOf<String>()) }
+  var locationFilters by remember { mutableStateOf(listOf<String>()) }
+  var participantFilters by remember { mutableStateOf(listOf<String>()) }
 
-    val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
+  val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
   // Page state (MAIN / EVENT_TYPE / LOCATION / PARTICIPANTS)
-    var currentPage by remember { mutableStateOf(FilterPage.MAIN) }
+  var currentPage by remember { mutableStateOf(FilterPage.MAIN) }
 
-    LaunchedEffect(currentPage) {
-        if (currentPage != FilterPage.MAIN) {
-            sheetState.expand()
-        }
+  LaunchedEffect(currentPage) {
+    if (currentPage != FilterPage.MAIN) {
+      sheetState.expand()
     }
+  }
   ModalBottomSheet(
       onDismissRequest = onDismiss,
       modifier = Modifier.testTag(CalendarScreenTestTags.FILTER_BOTTOM_SHEET)) {
@@ -94,36 +93,34 @@ fun FilterBottomSheet(onDismiss: () -> Unit, onApply: (Map<String, List<String>>
                     Modifier.padding(PaddingLarge)
                         .testTag(FilterScreenTestTags.FILTER_SHEET_CONTENT)) {
 
-                // ----- Header -----
-                Row(
-                    modifier =
-                        Modifier.fillMaxWidth()
-                            .padding(vertical = PaddingSmall)
-                            .testTag(FilterScreenTestTags.HEADER),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                  // ----- Header -----
+                  Row(
+                      modifier =
+                          Modifier.fillMaxWidth()
+                              .padding(vertical = PaddingSmall)
+                              .testTag(FilterScreenTestTags.HEADER),
+                      horizontalArrangement = Arrangement.SpaceBetween,
+                      verticalAlignment = Alignment.CenterVertically) {}
 
-                }
+                  Spacer(Modifier.height(SpacingLarge))
 
-                Spacer(Modifier.height(SpacingLarge))
-
-                // ====== Category Block ======
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(CornerRadiusLarge),
-                    colors =
-                        CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = AlphaLow)
-                        ),
-                ) {
+                  // ====== Category Block ======
+                  Card(
+                      modifier = Modifier.fillMaxWidth(),
+                      shape = RoundedCornerShape(CornerRadiusLarge),
+                      colors =
+                          CardDefaults.cardColors(
+                              containerColor =
+                                  MaterialTheme.colorScheme.surfaceVariant.copy(alpha = AlphaLow)),
+                  ) {
                     FilterCategoryItem(
                         title = stringResource(R.string.filter_event_type),
                         count = eventTypeFilters.size,
                         tag = FilterScreenTestTags.CATEGORY_EVENT_TYPE,
                         onClick = { currentPage = FilterPage.EVENT_TYPE },
                     )
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = AlphaLow))
+                    HorizontalDivider(
+                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = AlphaLow))
 
                     FilterCategoryItem(
                         title = stringResource(R.string.filter_location),
@@ -131,7 +128,8 @@ fun FilterBottomSheet(onDismiss: () -> Unit, onApply: (Map<String, List<String>>
                         tag = FilterScreenTestTags.CATEGORY_LOCATION,
                         onClick = { currentPage = FilterPage.LOCATION },
                     )
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = AlphaLow))
+                    HorizontalDivider(
+                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = AlphaLow))
 
                     FilterCategoryItem(
                         title = stringResource(R.string.filter_participants),
@@ -139,8 +137,8 @@ fun FilterBottomSheet(onDismiss: () -> Unit, onApply: (Map<String, List<String>>
                         tag = FilterScreenTestTags.CATEGORY_PARTICIPANTS,
                         onClick = { currentPage = FilterPage.PARTICIPANTS },
                     )
+                  }
                 }
-            }
           }
           // -------------------------------
           // EVENT TYPE FILTER SCREEN
@@ -175,16 +173,14 @@ fun FilterBottomSheet(onDismiss: () -> Unit, onApply: (Map<String, List<String>>
                 selected = eventTypeFilters,
                 testTagPrefix = "EventTypeFilter",
                 onBack = { currentPage = FilterPage.MAIN },
-                onApply = {selections ->
-                    eventTypeFilters = selections
-                    onApply(
-                        mapOf(
-                            "types" to eventTypeFilters,
-                            "locations" to locationFilters,
-                            "participants" to participantFilters
-                        )
-                    )
-                    currentPage = FilterPage.MAIN
+                onApply = { selections ->
+                  eventTypeFilters = selections
+                  onApply(
+                      mapOf(
+                          "types" to eventTypeFilters,
+                          "locations" to locationFilters,
+                          "participants" to participantFilters))
+                  currentPage = FilterPage.MAIN
                 })
           }
 
@@ -200,19 +196,16 @@ fun FilterBottomSheet(onDismiss: () -> Unit, onApply: (Map<String, List<String>>
                 selected = locationFilters,
                 testTagPrefix = "LocationFilter",
                 onBack = { currentPage = FilterPage.MAIN },
-                onApply = {
-                        selections ->
-                    locationFilters = selections
+                onApply = { selections ->
+                  locationFilters = selections
 
-                    onApply(
-                        mapOf(
-                            "types" to eventTypeFilters,
-                            "locations" to locationFilters,
-                            "participants" to participantFilters
-                        )
-                    )
+                  onApply(
+                      mapOf(
+                          "types" to eventTypeFilters,
+                          "locations" to locationFilters,
+                          "participants" to participantFilters))
 
-                    currentPage = FilterPage.MAIN
+                  currentPage = FilterPage.MAIN
                 })
           }
 
@@ -239,19 +232,16 @@ fun FilterBottomSheet(onDismiss: () -> Unit, onApply: (Map<String, List<String>>
                 selected = participantFilters,
                 testTagPrefix = "ParticipantFilter",
                 onBack = { currentPage = FilterPage.MAIN },
-                onApply = {
-                        selections ->
-                    participantFilters = selections
+                onApply = { selections ->
+                  participantFilters = selections
 
-                    onApply(
-                        mapOf(
-                            "types" to eventTypeFilters,
-                            "locations" to locationFilters,
-                            "participants" to participantFilters
-                        )
-                    )
+                  onApply(
+                      mapOf(
+                          "types" to eventTypeFilters,
+                          "locations" to locationFilters,
+                          "participants" to participantFilters))
 
-                    currentPage = FilterPage.MAIN
+                  currentPage = FilterPage.MAIN
                 })
           }
         }
@@ -261,44 +251,36 @@ fun FilterBottomSheet(onDismiss: () -> Unit, onApply: (Map<String, List<String>>
 /** Single filter category row. */
 @Composable
 private fun FilterCategoryItem(title: String, count: Int, tag: String, onClick: () -> Unit) {
-    ListItem(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .testTag(tag),
-        headlineContent = {
-            Text(
-                text = title,
-                modifier = Modifier.testTag("${tag}_Label"),
-                style = MaterialTheme.typography.bodyLarge
-            )
-        },
-        supportingContent = {
-            if (count > 0) {
-                Text(
-                    text = "$count selected",
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-        },
-        trailingContent = {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                if (count > 0) {
-                    Text(
-                        text = "($count)",
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.testTag("${tag}_Count"),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    Spacer(Modifier.width(PaddingSmall))
-                }
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+  ListItem(
+      modifier = Modifier.fillMaxWidth().clickable(onClick = onClick).testTag(tag),
+      headlineContent = {
+        Text(
+            text = title,
+            modifier = Modifier.testTag("${tag}_Label"),
+            style = MaterialTheme.typography.bodyLarge)
+      },
+      supportingContent = {
+        if (count > 0) {
+          Text(
+              text = "$count selected",
+              color = MaterialTheme.colorScheme.onSurfaceVariant,
+              style = MaterialTheme.typography.bodyMedium)
         }
-    )
+      },
+      trailingContent = {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+          if (count > 0) {
+            Text(
+                text = "($count)",
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.testTag("${tag}_Count"),
+                style = MaterialTheme.typography.bodyMedium)
+            Spacer(Modifier.width(PaddingSmall))
+          }
+          Icon(
+              imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+              contentDescription = null,
+              tint = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+      })
 }

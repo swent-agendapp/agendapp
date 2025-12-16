@@ -15,7 +15,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.ui.calendar.filters.components.FilterCheckbox
-import com.android.sample.ui.common.BottomNavigationButtons
 import com.android.sample.ui.theme.*
 
 // Assisted by AI
@@ -58,44 +57,39 @@ fun FilterListScreen(
   Column(modifier = Modifier.padding(PaddingLarge).testTag(screenTag)) {
 
     // ----- Header -----
-      Row(
-          modifier = Modifier.fillMaxWidth().testTag(headerTag),
-          verticalAlignment = Alignment.CenterVertically
-      ) {
+    Row(
+        modifier = Modifier.fillMaxWidth().testTag(headerTag),
+        verticalAlignment = Alignment.CenterVertically) {
           IconButton(onClick = onBack, modifier = Modifier.testTag(backTag)) {
-              Icon(
-                  Icons.AutoMirrored.Filled.ArrowBack,
-                  contentDescription = stringResource(com.android.sample.R.string.goBack)
-              )
+            Icon(
+                Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = stringResource(com.android.sample.R.string.goBack))
           }
 
           Text(
               text = title,
               style = MaterialTheme.typography.titleLarge,
-              modifier = Modifier.weight(1f).testTag(titleTag)
-          )
+              modifier = Modifier.weight(1f).testTag(titleTag))
 
           // Clear
-          IconButton(onClick = { selections = emptyList() }, modifier = Modifier.testTag(clearTag)) {
-              Icon(
-                  imageVector = Icons.Default.DeleteSweep,
-                  contentDescription = stringResource(com.android.sample.R.string.clear_all),
-                  tint = MaterialTheme.colorScheme.onSurfaceVariant
-              )
-          }
+          IconButton(
+              onClick = { selections = emptyList() }, modifier = Modifier.testTag(clearTag)) {
+                Icon(
+                    imageVector = Icons.Default.DeleteSweep,
+                    contentDescription = stringResource(com.android.sample.R.string.clear_all),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant)
+              }
 
           // Apply
           IconButton(onClick = { onApply(selections) }, modifier = Modifier.testTag(applyTag)) {
-              Icon(
-                  imageVector = Icons.Default.Check,
-                  contentDescription = stringResource(com.android.sample.R.string.apply),
-                  tint = MaterialTheme.colorScheme.primary
-              )
+            Icon(
+                imageVector = Icons.Default.Check,
+                contentDescription = stringResource(com.android.sample.R.string.apply),
+                tint = MaterialTheme.colorScheme.primary)
           }
-      }
+        }
 
-
-      // ----- Scrollable list -----
+    // ----- Scrollable list -----
     LazyColumn(modifier = Modifier.weight(Weight).testTag(listTag)) {
       items(items) { item ->
         Column(modifier = Modifier.testTag(itemPrefix + item)) {
@@ -111,7 +105,6 @@ fun FilterListScreen(
         Spacer(Modifier.height(SpacingSmall))
       }
     }
-
   }
 }
 

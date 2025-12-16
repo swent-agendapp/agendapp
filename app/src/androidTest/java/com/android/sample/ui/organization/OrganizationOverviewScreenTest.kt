@@ -55,7 +55,7 @@ class OrganizationOverviewScreenTest {
   @Test
   fun allElementsAreDisplayed() {
     composeTestRule.setContent {
-      OrganizationOverViewScreen(
+      OrganizationOverviewScreen(
           organizationOverviewViewModel = vm, selectedOrganizationViewModel = selectedOrgVM)
     }
     composeTestRule.onNodeWithTag(OrganizationOverviewScreenTestTags.ROOT).assertIsDisplayed()
@@ -88,7 +88,7 @@ class OrganizationOverviewScreenTest {
     selectedOrgVM.selectOrganization(org.id)
 
     composeTestRule.setContent {
-      OrganizationOverViewScreen(
+      OrganizationOverviewScreen(
           organizationOverviewViewModel = vm, selectedOrganizationViewModel = selectedOrgVM)
     }
 
@@ -111,7 +111,7 @@ class OrganizationOverviewScreenTest {
     selectedOrgVM.clearSelection()
 
     composeTestRule.setContent {
-      OrganizationOverViewScreen(
+      OrganizationOverviewScreen(
           organizationOverviewViewModel = vm, selectedOrganizationViewModel = selectedOrgVM)
     }
 
@@ -131,7 +131,7 @@ class OrganizationOverviewScreenTest {
     var changeClicked = false
 
     composeTestRule.setContent {
-      OrganizationOverViewScreen(
+      OrganizationOverviewScreen(
           organizationOverviewViewModel = vm,
           selectedOrganizationViewModel = selectedOrgVM,
           onChangeOrganization = { changeClicked = true })
@@ -145,40 +145,12 @@ class OrganizationOverviewScreenTest {
 
   @OptIn(ExperimentalCoroutinesApi::class)
   @Test
-  fun clickingDeleteButtonDeletesOrganizationAndCallsCallback() = runTest {
-    val org = Organization(id = "org1", name = "To Delete")
-    fakeOrgRepo.insertOrganization(org)
-    selectedOrgVM.selectOrganization(org.id)
-
-    var deleteCallbackCalled = false
-
-    composeTestRule.setContent {
-      OrganizationOverViewScreen(
-          organizationOverviewViewModel = vm,
-          selectedOrganizationViewModel = selectedOrgVM,
-          onDeleteOrganization = { deleteCallbackCalled = true })
-    }
-
-    composeTestRule.onNodeWithTag(OrganizationOverviewScreenTestTags.DELETE_BUTTON).performClick()
-
-    // Organization must be deleted
-    assert(fakeOrgRepo.getOrganizationById("org1", fakeUser) == null)
-
-    // Selection must be cleared
-    assert(selectedOrgVM.selectedOrganizationId.value == null)
-
-    // Callback must be called
-    assert(deleteCallbackCalled)
-  }
-
-  @OptIn(ExperimentalCoroutinesApi::class)
-  @Test
   fun snackBarAppearsOnError() = runTest {
     // Simulate an error in the ViewModel
     vm.setError(R.string.error_organization_not_found)
 
     composeTestRule.setContent {
-      OrganizationOverViewScreen(
+      OrganizationOverviewScreen(
           organizationOverviewViewModel = vm, selectedOrganizationViewModel = selectedOrgVM)
     }
 

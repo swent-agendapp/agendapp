@@ -30,6 +30,8 @@ class OrganizationOverviewViewModelTest {
   private val user2 = User(id = "user2", email = "user2@test.com")
   private val user3 = User(id = "user3", email = "user3@test.com")
 
+  private val memberList = listOf(user1, user2, user3)
+
   @Before
   fun setup() {
     authRepository = FakeAuthRepository(fakeUser)
@@ -58,7 +60,7 @@ class OrganizationOverviewViewModelTest {
 
     val state = vm.uiState.value
     assertEquals("My Organization", state.organizationName)
-    assertEquals(3, state.memberCount)
+    assertEquals(memberList.size, state.memberList.size)
     assertNull(state.errorMessageId)
   }
 
@@ -90,7 +92,7 @@ class OrganizationOverviewViewModelTest {
 
     val state = vm.uiState.value
     assertEquals("", state.organizationName)
-    assertEquals(0, state.memberCount)
+    assertEquals(listOf<User>(), state.memberList)
     assertNull(state.errorMessageId)
   }
 
@@ -107,7 +109,7 @@ class OrganizationOverviewViewModelTest {
 
     val state = vm.uiState.value
     assertEquals("", state.organizationName)
-    assertEquals(0, state.memberCount)
+    assertEquals(listOf<User>(), state.memberList)
     assertNull(state.errorMessageId)
   }
 

@@ -53,8 +53,7 @@ fun MainPageButton(item: ButtonItem, onClick: () -> Unit = {}, enabled: Boolean 
           Modifier.fillMaxWidth()
               .testTag(item.tag)
               .then(if (!enabled) Modifier.alpha(AlphaMedium) else Modifier),
-      onClick = onClick,
-      enabled = enabled) {
+      onClick = onClick) {
         Row(
             modifier = Modifier.padding(horizontal = PaddingMedium, vertical = PaddingLarge),
             verticalAlignment = Alignment.CenterVertically,

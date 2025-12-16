@@ -42,7 +42,7 @@ fun FloatingButton(
               } else {
                 Modifier
               }),
-      onClick = onClick.takeIf { enabled } ?: {},
+      onClick = onClick,
       containerColor =
           if (enabled) GeneralPalette.Primary else GeneralPalette.Primary.copy(alpha = WeightLight),
       contentColor = if (enabled) Color.White else Color.White.copy(alpha = WeightMedium),

@@ -70,7 +70,9 @@ import com.android.sample.ui.theme.WeightExtraHeavy
 import com.android.sample.ui.theme.WeightLight
 import com.android.sample.ui.theme.WeightMedium
 
-// Test tags for OrganizationOverviewScreen composables.
+// Assisted by AI
+
+/** Test tags for OrganizationOverviewScreen composable. */
 object OrganizationOverviewScreenTestTags {
   const val ROOT = "organizationOverviewScreenRoot"
   const val ORGANIZATION_NAME_TEXT = "organizationNameText"

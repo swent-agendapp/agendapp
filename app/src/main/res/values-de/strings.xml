@@ -244,6 +244,17 @@
     <string name="work_duration_hours">%1$d Std.</string>
     <string name="work_duration_hours_minutes">%1$d Std. %2$d Min.</string>
     <string name="hour_recap">Stundenübersicht</string>
+    <string name="hour_recap_events_for_user">Ereignisse für %1$s</string>
+    <string name="hour_recap_no_events_for_user">Keine Ereignisse für diesen Benutzer gefunden.</string>
+    <string name="hour_recap_no_events_in_range_heading">Keine Ereignisse für diesen Zeitraum</string>
+    <string name="hour_recap_no_events_in_range_details">Passen Sie die Daten an oder erweitern Sie den Zeitraum, um alle Schichten zu sehen.</string>
+    <string name="hour_recap_event_date_time">%1$s · %2$s - %3$s</string>
+    <string name="hour_recap_tag_future">Zukünftiges Ereignis</string>
+    <string name="hour_recap_tag_present">Anwesenheit bestätigt</string>
+    <string name="hour_recap_tag_absent">Abwesenheit bestätigt</string>
+    <string name="hour_recap_tag_presence_unknown">Anwesenheit nicht erfasst</string>
+    <string name="hour_recap_tag_replaced">Wurde ersetzt</string>
+    <string name="hour_recap_tag_replacement_taken">Vertretung übernommen</string>
 
     <!-- Category -->
     <string name="delete_category_message">Sind Sie sicher, dass Sie diese Kategorie löschen möchten?</string>
@@ -269,17 +280,4 @@
     <!-- Edit Organization -->
     <string name="error_loading_organiation">Organisation konnte nicht geladen werden.</string>
     <string name="error_editing_organization">Organisation konnte nicht aktualisiert werden.</string>
-    <string name="hour_recap">Stundenübersicht</string>
-    <string name="hour_recap_events_for_user">Ereignisse für %1$s</string>
-    <string name="hour_recap_no_events_for_user">Keine Ereignisse für diesen Benutzer gefunden.</string>
-    <string name="hour_recap_no_events_in_range_heading">Keine Ereignisse für diesen Zeitraum</string>
-    <string name="hour_recap_no_events_in_range_details">Passen Sie die Daten an oder erweitern Sie den Zeitraum, um alle Schichten zu sehen.</string>
-    <string name="hour_recap_event_date_time">%1$s · %2$s - %3$s</string>
-    <string name="hour_recap_tag_future">Zukünftiges Ereignis</string>
-    <string name="hour_recap_tag_present">Anwesenheit bestätigt</string>
-    <string name="hour_recap_tag_absent">Abwesenheit bestätigt</string>
-    <string name="hour_recap_tag_presence_unknown">Anwesenheit nicht erfasst</string>
-    <string name="hour_recap_tag_replaced">Wurde ersetzt</string>
-    <string name="hour_recap_tag_replacement_taken">Vertretung übernommen</string>
-
 </resources>

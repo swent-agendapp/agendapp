@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingQuantity">
     <string name="app_name">SampleApp</string>
     <string name="title_activity_main">Activité principale</string>
     <string name="next">Suivant</string>
@@ -241,6 +241,8 @@
     <string name="loading_hours">Chargement…</string>
     <string name="work_duration_hours">%1$dh</string>
     <string name="work_duration_hours_minutes">%1$dh %2$dmin</string>
+    <string name="hour_recap">Récapitulatif des heures</string>
+
 
     <!-- Category -->
     <string name="delete_category_message">Êtes-vous sûr de vouloir supprimer cette catégorie ?</string>
@@ -251,6 +253,15 @@
     <string name="edit_category_name_label">Nom de la catégorie</string>
     <string name="edit_category_save_button">Enregistrer la catégorie</string>
 
-    <string name="hour_recap">Récapitulatif des heures</string>
+    <!-- Organization Overview -->
+    <plurals name="members_count">
+        <item quantity="one">%d membre</item>
+        <item quantity="other">%d membres</item>
+    </plurals>
+    <string name="categories_button">Catégories</string>
+    <string name="areas_button">Zones</string>
+    <string name="members">Membres</string>
+    <string name="admin">Admin</string>
+    <string name="invitations_button">Invitations</string>
 
 </resources>

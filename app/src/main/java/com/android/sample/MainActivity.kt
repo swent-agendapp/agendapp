@@ -46,7 +46,7 @@ import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
 import com.android.sample.ui.organization.AddOrganizationScreen
 import com.android.sample.ui.organization.OrganizationListScreen
-import com.android.sample.ui.organization.OrganizationOverViewScreen
+import com.android.sample.ui.organization.OrganizationOverviewScreen
 import com.android.sample.ui.profile.AdminContactScreen
 import com.android.sample.ui.profile.ProfileScreen
 import com.android.sample.ui.replacement.ReplacementPendingListScreen
@@ -358,12 +358,14 @@ private fun NavGraphBuilder.settingsGraph(
 
     // Organization Overview Screen
     composable(Screen.OrganizationOverview.route) {
-      OrganizationOverViewScreen(
+      OrganizationOverviewScreen(
           onNavigateBack = { navigationActions.navigateBack() },
-          onNavigateToEditCategory = { navigationActions.navigateTo(Screen.EditCategory) },
           onChangeOrganization = { navigationActions.navigateTo(Screen.ChangeOrganization) },
-          onDeleteOrganization = { navigationActions.navigateTo(Screen.SelectOrganization) },
-          onInvitationClick = { navigationActions.navigateTo(Screen.InvitationOverview) })
+          onEditOrganization = {}, // Pending implementation
+          onCategoriesClick = { navigationActions.navigateTo(Screen.EditCategory) },
+          onInvitationClick = { navigationActions.navigateTo(Screen.InvitationOverview) },
+          onMemberClick = { member -> {} }, // Pending implementation
+      )
     }
 
     // Hour Recap Screen
@@ -372,7 +374,7 @@ private fun NavGraphBuilder.settingsGraph(
     }
     composable(Screen.ChangeOrganization.route) {
       OrganizationListScreen(
-          onOrganizationSelected = { navigationActions.navigateTo(Screen.Settings) },
+          onOrganizationSelected = { navigationActions.navigateTo(Screen.OrganizationOverview) },
           onAddOrganizationClicked = { navigationActions.navigateTo(Screen.AddOrganization) })
     }
   }

@@ -245,6 +245,7 @@
     <string name="work_duration_hours">%1$dh</string>
     <string name="work_duration_hours_minutes">%1$dh %2$dmin</string>
     <string name="location_status_inside">Present</string>
+    <string name="hour_recap">Hour Recap</string>
 
     <!-- Category -->
     <string name="edit_category_title">Edit your categories</string>
@@ -255,7 +256,17 @@
     <string name="delete_category_message">Are you sure you want to delete this category ?</string>
     <string name="default_category_label">Uncategorized</string>
 
-    <string name="hour_recap">Hour Recap</string>
+    <!-- Organization Overview -->
+    <plurals name="members_count">
+        <item quantity="one">%d member</item>
+        <item quantity="other">%d members</item>
+    </plurals>
+    <string name="categories_button">Categories</string>
+    <string name="areas_button">Areas</string>
+    <string name="members">Members</string>
+    <string name="admin">Admin</string>
+    <string name="invitations_button">Invitations</string>
+
 
 </resources>
 

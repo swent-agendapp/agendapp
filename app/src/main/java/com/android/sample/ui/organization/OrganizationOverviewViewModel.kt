@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.android.sample.R
 import com.android.sample.model.authentication.AuthRepository
 import com.android.sample.model.authentication.AuthRepositoryProvider
+import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepository
 import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.organization.repository.OrganizationRepository
@@ -24,7 +25,9 @@ const val ERROR_MESSAGE_NO_AUTHENTICATED_USER = "No authenticated user found."
  */
 data class OrganizationOverviewUIState(
     val organizationName: String = "",
-    val memberCount: Int = 0,
+    val memberList: List<User> = emptyList(),
+    val adminList: List<User> = emptyList(),
+    val isAdmin: Boolean = false,
     @StringRes val errorMessageId: Int? = null
 )
 
@@ -69,13 +72,44 @@ class OrganizationOverviewViewModel(
       // Fetch organization details from the repository
       val org =
           organizationRepository.getOrganizationById(organizationId = orgId, user = currentUser)
+      if (org == null) {
+        setError(R.string.error_organization_not_found)
+        return@launch
+      }
+      // Fetch members of the organization
       val members =
           userRepository.getUsersByIds(userRepository.getMembersIds(organizationId = orgId))
+      val admins = userRepository.getUsersByIds(userRepository.getAdminsIds(organizationId = orgId))
+
+      // Check if the current user is an admin of the organization
+      val isAdmin = userRepository.getAdminsIds(organizationId = orgId).contains(currentUser.id)
+
       // Update the UI state with organization details
-      _uiState.value =
-          OrganizationOverviewUIState(
-              organizationName = org?.name ?: "", memberCount = members.size)
+      setMemberList(members)
+      setAdminList(admins)
+      setOrganizationName(org.name)
+      setIsAdmin(isAdmin)
     }
+  }
+
+  /** Updates the organization name in the UI state. */
+  fun setOrganizationName(name: String) {
+    _uiState.value = _uiState.value.copy(organizationName = name)
+  }
+
+  /** Updates the member list in the UI state. */
+  fun setMemberList(members: List<User>) {
+    _uiState.value = _uiState.value.copy(memberList = members)
+  }
+
+  /** Updates the admin list in the UI state. */
+  fun setAdminList(admins: List<User>) {
+    _uiState.value = _uiState.value.copy(memberList = admins)
+  }
+
+  /** Sets whether the current user is an admin of the selected organization. */
+  fun setIsAdmin(isAdmin: Boolean) {
+    _uiState.value = _uiState.value.copy(isAdmin = isAdmin)
   }
 
   /** Clears the selected organization from the repository and resets the UI state. */

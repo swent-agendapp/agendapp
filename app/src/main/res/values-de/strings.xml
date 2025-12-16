@@ -241,6 +241,7 @@
     <string name="loading_hours">Laden…</string>
     <string name="work_duration_hours">%1$d Std.</string>
     <string name="work_duration_hours_minutes">%1$d Std. %2$d Min.</string>
+    <string name="hour_recap">Stundenübersicht</string>
 
     <!-- Category -->
     <string name="delete_category_message">Sind Sie sicher, dass Sie diese Kategorie löschen möchten?</string>
@@ -251,6 +252,19 @@
     <string name="edit_category_name_label">Name der Kategorie</string>
     <string name="edit_category_save_button">Kategorie speichern</string>
 
-    <string name="hour_recap">Stundenübersicht</string>
+    <!-- Organization Overview -->
+    <plurals name="members_count">
+        <item quantity="one">%d Mitglied</item>
+        <item quantity="other">%d Mitglieder</item>
+    </plurals>
+    <string name="categories_button">Kategorien</string>
+    <string name="areas_button">Gebiete</string>
+    <string name="members">Mitglieder</string>
+    <string name="admin">Admin</string>
+    <string name="invitations_button">Einladungscodes</string>
+
+
+
+
 
 </resources>

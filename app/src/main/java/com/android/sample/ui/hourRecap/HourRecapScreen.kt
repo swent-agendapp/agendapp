@@ -241,7 +241,7 @@ private fun HourRecapEventCard(
 
   Card(modifier = Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(ElevationLow)) {
     Row(modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
-      Column(modifier = Modifier.weight(1f).padding(PaddingMedium)) {
+      Column(modifier = Modifier.weight(WeightExtraHeavy).padding(PaddingMedium)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -250,7 +250,7 @@ private fun HourRecapEventCard(
                   text = event.title,
                   style = MaterialTheme.typography.titleSmall,
                   fontWeight = FontWeight.SemiBold,
-                  modifier = Modifier.weight(1f))
+                  modifier = Modifier.weight(WeightExtraHeavy))
 
               Surface(
                   shape = MaterialTheme.shapes.small,

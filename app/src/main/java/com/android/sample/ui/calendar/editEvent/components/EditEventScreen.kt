@@ -41,6 +41,7 @@ import com.android.sample.ui.theme.SpacingExtraLarge
 import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingMedium
 import com.android.sample.ui.theme.SpacingSmall
+import com.android.sample.ui.theme.WeightExtraHeavy
 
 // Assisted by AI
 
@@ -175,7 +176,7 @@ fun EditEventScreen(
               Row(
                   modifier = Modifier.fillMaxWidth(),
                   horizontalArrangement = Arrangement.spacedBy(SpacingMedium)) {
-                    Column(modifier = Modifier.weight(1f)) {
+                    Column(modifier = Modifier.weight(WeightExtraHeavy)) {
                       FieldLabelWithIcon(
                           icon = { Icon(Icons.Outlined.CalendarMonth, null) },
                           label = stringResource(R.string.edit_event_start_date_label))
@@ -194,7 +195,7 @@ fun EditEventScreen(
                           })
                     }
 
-                    Column(modifier = Modifier.weight(1f)) {
+                    Column(modifier = Modifier.weight(WeightExtraHeavy)) {
                       FieldLabelWithIcon(
                           icon = { Icon(Icons.Outlined.CalendarMonth, null) },
                           label = stringResource(R.string.edit_event_end_date_label))
@@ -218,7 +219,7 @@ fun EditEventScreen(
               Row(
                   modifier = Modifier.fillMaxWidth(),
                   horizontalArrangement = Arrangement.spacedBy(SpacingMedium)) {
-                    Column(modifier = Modifier.weight(1f)) {
+                    Column(modifier = Modifier.weight(WeightExtraHeavy)) {
                       FieldLabelWithIcon(
                           icon = { Icon(Icons.Outlined.AccessTime, null) },
                           label = stringResource(R.string.edit_event_start_time_label))
@@ -229,7 +230,7 @@ fun EditEventScreen(
                           onClick = { showStartTimePicker = true })
                     }
 
-                    Column(modifier = Modifier.weight(1f)) {
+                    Column(modifier = Modifier.weight(WeightExtraHeavy)) {
                       FieldLabelWithIcon(
                           icon = { Icon(Icons.Outlined.AccessTime, null) },
                           label = stringResource(R.string.edit_event_end_time_label))

@@ -69,7 +69,7 @@ fun FilterListScreen(
           Text(
               text = title,
               style = MaterialTheme.typography.titleLarge,
-              modifier = Modifier.weight(1f).testTag(titleTag))
+              modifier = Modifier.weight(WeightExtraHeavy).testTag(titleTag))
 
           // Clear
           IconButton(

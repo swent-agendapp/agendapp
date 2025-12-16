@@ -290,7 +290,7 @@ private fun ReplacementRequestCard(
         ) {
           OutlinedButton(
               onClick = onRefuse,
-              modifier = Modifier.weight(1f).testTag(refuseTag),
+              modifier = Modifier.weight(WeightExtraHeavy).testTag(refuseTag),
               shape = androidx.compose.foundation.shape.RoundedCornerShape(CornerRadiusLarge),
               border = BorderStroke(BorderWidthThin, CircusPalette.Primary),
               colors =

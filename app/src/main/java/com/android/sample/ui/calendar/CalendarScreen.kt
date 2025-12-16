@@ -92,10 +92,10 @@ fun CalendarScreen(
     onCreateEvent: () -> Unit = {},
     onEventClick: (Event) -> Unit = {}
 ) {
-    var users by remember { mutableStateOf<List<User>>(emptyList()) }
+  var users by remember { mutableStateOf<List<User>>(emptyList()) }
   // initialize the week from monday to friday
   var currentDateRange by remember { mutableStateOf(DefaultDateRange) }
-    var categories by remember { mutableStateOf<List<EventCategory>>(emptyList()) }
+  var categories by remember { mutableStateOf<List<EventCategory>>(emptyList()) }
   val context = LocalContext.current
   val uiState by calendarViewModel.uiState.collectAsState()
   val selectedOrgId by selectedOrganizationViewModel.selectedOrganizationId.collectAsState()
@@ -108,28 +108,25 @@ fun CalendarScreen(
   // Host state for displaying a snack bar in case of errors
   val snackbarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(selectedOrgId) {
-        val orgId = selectedOrgId ?: return@LaunchedEffect
-        if (orgId.isBlank()) return@LaunchedEffect
+  LaunchedEffect(selectedOrgId) {
+    val orgId = selectedOrgId ?: return@LaunchedEffect
+    if (orgId.isBlank()) return@LaunchedEffect
 
-        try {
-            val userRepo = UserRepositoryProvider.repository
-            val memberIds = userRepo.getMembersIds(orgId)
-            users = userRepo.getUsersByIds(memberIds)
-        } catch (_: Exception) {
-        }
-    }
-    LaunchedEffect(selectedOrgId) {
-        val orgId = selectedOrgId ?: return@LaunchedEffect
-        if (orgId.isBlank()) return@LaunchedEffect
+    try {
+      val userRepo = UserRepositoryProvider.repository
+      val memberIds = userRepo.getMembersIds(orgId)
+      users = userRepo.getUsersByIds(memberIds)
+    } catch (_: Exception) {}
+  }
+  LaunchedEffect(selectedOrgId) {
+    val orgId = selectedOrgId ?: return@LaunchedEffect
+    if (orgId.isBlank()) return@LaunchedEffect
 
-        try {
-            val categoryRepo = EventCategoryRepositoryProvider.repository
-            categories = categoryRepo.getAllCategories(orgId).sortedBy { it.label.trim().lowercase()}
-            } catch (_: Exception) {
-        }
-    }
-
+    try {
+      val categoryRepo = EventCategoryRepositoryProvider.repository
+      categories = categoryRepo.getAllCategories(orgId).sortedBy { it.label.trim().lowercase() }
+    } catch (_: Exception) {}
+  }
 
   // Fetch events when the screen is recomposed
   LaunchedEffect(currentDateRange, selectedOrgId) {

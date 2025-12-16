@@ -15,14 +15,11 @@ import com.android.sample.R
 import com.android.sample.model.authentication.User
 import com.android.sample.model.category.EventCategory
 import com.android.sample.ui.calendar.CalendarScreenTestTags
-import com.android.sample.ui.common.MemberSelectionList
-import com.android.sample.ui.common.MemberSelectionListOptions
 import com.android.sample.ui.theme.AlphaLow
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingLarge
 import com.android.sample.ui.theme.PaddingSmall
 import com.android.sample.ui.theme.SpacingLarge
-import com.android.sample.ui.theme.WeightVeryHeavy
 
 // Assisted by AI
 
@@ -68,7 +65,12 @@ enum class FilterPage {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FilterBottomSheet(users: List<User>, categories: List<EventCategory>, onDismiss: () -> Unit, onApply: (Map<String, List<String>>) -> Unit) {
+fun FilterBottomSheet(
+    users: List<User>,
+    categories: List<EventCategory>,
+    onDismiss: () -> Unit,
+    onApply: (Map<String, List<String>>) -> Unit
+) {
   // States for all filters
   var eventTypeFilters by remember { mutableStateOf(listOf<String>()) }
   var locationFilters by remember { mutableStateOf(listOf<String>()) }
@@ -119,7 +121,7 @@ fun FilterBottomSheet(users: List<User>, categories: List<EventCategory>, onDism
                   ) {
                     FilterCategoryItem(
                         title = stringResource(R.string.filter_event_type),
-                        count =  eventTypeFilters.size,
+                        count = eventTypeFilters.size,
                         tag = FilterScreenTestTags.CATEGORY_EVENT_TYPE,
                         onClick = { currentPage = FilterPage.EVENT_TYPE },
                     )
@@ -148,29 +150,24 @@ fun FilterBottomSheet(users: List<User>, categories: List<EventCategory>, onDism
           // EVENT TYPE FILTER SCREEN
           // -------------------------------
           FilterPage.EVENT_TYPE -> {
-              val labelToId = remember(categories) {
-                  categories.associateBy(
-                      keySelector = { it.label },
-                      valueTransform = { it.id }
-                  )
-              }
-              val idToLabel = remember(categories) {
-                  categories.associateBy(
-                      keySelector = { it.id },
-                      valueTransform = { it.label }
-                  )
-              }
+            val labelToId =
+                remember(categories) {
+                  categories.associateBy(keySelector = { it.label }, valueTransform = { it.id })
+                }
+            val idToLabel =
+                remember(categories) {
+                  categories.associateBy(keySelector = { it.id }, valueTransform = { it.label })
+                }
 
-              val categoryLabels = remember(categories) {
-                  categories
-                      .map { it.label }
-                      .distinct()
-                      .sortedBy { it.trim().lowercase() }
-              }
+            val categoryLabels =
+                remember(categories) {
+                  categories.map { it.label }.distinct().sortedBy { it.trim().lowercase() }
+                }
 
-              val selectedLabels = remember(eventTypeFilters, idToLabel) {
+            val selectedLabels =
+                remember(eventTypeFilters, idToLabel) {
                   eventTypeFilters.mapNotNull { idToLabel[it] }
-              }
+                }
 
             FilterListScreen(
                 title = stringResource(R.string.eventType),
@@ -179,7 +176,7 @@ fun FilterBottomSheet(users: List<User>, categories: List<EventCategory>, onDism
                 testTagPrefix = "EventTypeFilter",
                 onBack = { currentPage = FilterPage.MAIN },
                 onApply = { selectionsLabels ->
-                    eventTypeFilters = selectionsLabels.mapNotNull { labelToId[it] }
+                  eventTypeFilters = selectionsLabels.mapNotNull { labelToId[it] }
                   onApply(
                       mapOf(
                           "types" to eventTypeFilters,
@@ -218,28 +215,23 @@ fun FilterBottomSheet(users: List<User>, categories: List<EventCategory>, onDism
           // PARTICIPANTS FILTER SCREEN
           // -------------------------------
           FilterPage.PARTICIPANTS -> {
-              val labelToId = remember(users) {
-                  users.associateBy(
-                      keySelector = { it.display() },
-                      valueTransform = { it.id }
-                  )
-              }
-              val idToLabel = remember(users) {
-                  users.associateBy(
-                      keySelector = { it.id },
-                      valueTransform = { it.display() }
-                  )
-              }
-              val participantLabels = remember(users) {
-                  users
-                      .map { it.display() }
-                      .distinct()
-                      .sortedBy { it.trim().lowercase() }
-              }
+            val labelToId =
+                remember(users) {
+                  users.associateBy(keySelector = { it.display() }, valueTransform = { it.id })
+                }
+            val idToLabel =
+                remember(users) {
+                  users.associateBy(keySelector = { it.id }, valueTransform = { it.display() })
+                }
+            val participantLabels =
+                remember(users) {
+                  users.map { it.display() }.distinct().sortedBy { it.trim().lowercase() }
+                }
 
-              val selectedLabels = remember(participantFilters, idToLabel) {
+            val selectedLabels =
+                remember(participantFilters, idToLabel) {
                   participantFilters.mapNotNull { idToLabel[it] }
-              }
+                }
 
             FilterListScreen(
                 title = stringResource(R.string.filter_participants),
@@ -248,7 +240,7 @@ fun FilterBottomSheet(users: List<User>, categories: List<EventCategory>, onDism
                 testTagPrefix = "ParticipantFilter",
                 onBack = { currentPage = FilterPage.MAIN },
                 onApply = { selectionsLabels ->
-                    participantFilters = selectionsLabels.mapNotNull { labelToId[it] }
+                  participantFilters = selectionsLabels.mapNotNull { labelToId[it] }
 
                   onApply(
                       mapOf(

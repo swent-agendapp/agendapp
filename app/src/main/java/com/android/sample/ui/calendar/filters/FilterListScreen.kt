@@ -6,7 +6,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.DeleteSweep
+import androidx.compose.material.icons.filled.FilterAltOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -75,7 +75,7 @@ fun FilterListScreen(
           IconButton(
               onClick = { selections = emptyList() }, modifier = Modifier.testTag(clearTag)) {
                 Icon(
-                    imageVector = Icons.Default.DeleteSweep,
+                    imageVector = Icons.Default.FilterAltOff,
                     contentDescription = stringResource(com.android.sample.R.string.clear_all),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant)
               }
@@ -88,7 +88,7 @@ fun FilterListScreen(
                 tint = MaterialTheme.colorScheme.primary)
           }
         }
-      Spacer(Modifier.height(SpacingLarge))
+    Spacer(Modifier.height(SpacingLarge))
 
     // ----- Scrollable list -----
     LazyColumn(modifier = Modifier.weight(Weight).testTag(listTag)) {

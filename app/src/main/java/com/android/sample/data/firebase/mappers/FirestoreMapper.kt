@@ -1,4 +1,4 @@
-package com.android.sample.model.firestoreMappers
+package com.android.sample.data.firebase.mappers
 
 import com.google.firebase.firestore.DocumentSnapshot
 

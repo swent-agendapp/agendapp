@@ -3,6 +3,7 @@ package com.android.sample.ui.editEvent
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.sample.data.fake.repositories.FakeEventRepository
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.calendar.Event
@@ -13,7 +14,6 @@ import com.android.sample.ui.calendar.editEvent.EditEventViewModel
 import com.android.sample.ui.calendar.editEvent.components.EditEventAttendantScreen
 import com.android.sample.ui.calendar.editEvent.components.EditEventScreen
 import com.android.sample.ui.theme.SampleAppTheme
-import com.android.sample.utils.FakeEventRepository
 import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID

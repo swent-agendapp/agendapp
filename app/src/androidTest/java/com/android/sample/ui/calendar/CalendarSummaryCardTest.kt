@@ -153,9 +153,7 @@ class EventSummaryCardTest {
             end = base.plusSeconds(60 * 60 * 2),
             isExtra = true)
 
-    composeTestRule.setContent {
-      EventSummaryCard(event = e, participantNames = emptyList())
-    }
+    composeTestRule.setContent { EventSummaryCard(event = e, participantNames = emptyList()) }
 
     composeTestRule.onNodeWithTag(EventSummaryCardTags.EXTRA_BADGE).assertIsDisplayed()
     composeTestRule.onNodeWithTag(EventSummaryCardTags.EXTRA_BADGE).performClick()

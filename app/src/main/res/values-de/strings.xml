@@ -20,6 +20,10 @@
     <string name="endDatePickerLabel">Enddatum</string>
     <string name="recurrenceEndPickerLabel">Ende der Wiederholung</string>
     <string name="recurrenceMenuLabel">Wiederholung</string>
+    <string name="extra_event_label">Zusätzliches Ereignis</string>
+    <string name="extra_event_description_on">Dieses Ereignis ist als zusätzlich markiert und wird nicht stundenweise bezahlt.</string>
+    <string name="extra_event_description_off">Dieses Ereignis wird als reguläres Ereignis behandelt.</string>
+    <string name="extra_event_info">Dieses Ereignis ist als zusätzlich markiert und wird nicht stundenweise bezahlt.</string>
     <string name="finish">Fertig</string>
     <string name="create">Erstellen</string>
     <string name="change">Änderung</string>

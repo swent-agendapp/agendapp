@@ -21,9 +21,9 @@
     <string name="recurrenceEndPickerLabel">Recurrence end</string>
     <string name="recurrenceMenuLabel">Recurrence</string>
     <string name="extra_event_label">Extra event</string>
-    <string name="extra_event_description_on">This event will be paid hourly as an extra.</string>
+    <string name="extra_event_description_on">This event is marked as extra and will not be paid hourly.</string>
     <string name="extra_event_description_off">This event will be treated as a regular event.</string>
-    <string name="extra_event_info">This event is marked as extra and paid hourly.</string>
+    <string name="extra_event_info">This event is marked as extra and will not be paid hourly.</string>
     <string name="finish">Finish</string>
     <string name="create">Create</string>
     <string name="change">Change</string>

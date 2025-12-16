@@ -1,5 +1,6 @@
 package com.android.sample.ui.hourRecap
 
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -9,13 +10,12 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeDown
-import androidx.compose.ui.graphics.Color
 import androidx.test.platform.app.InstrumentationRegistry
-import java.time.Instant
 import com.android.sample.R
 import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
+import java.time.Instant
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

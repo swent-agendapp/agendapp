@@ -264,8 +264,7 @@ private fun HourRecapEventCard(
                     if (event.isExtra) {
                       Icon(
                           imageVector = Icons.Filled.Star,
-                          contentDescription =
-                              stringResource(id = R.string.extra_event_label),
+                          contentDescription = stringResource(id = R.string.extra_event_label),
                           tint = MaterialTheme.colorScheme.primary,
                           modifier =
                               Modifier.padding(horizontal = PaddingSmall)

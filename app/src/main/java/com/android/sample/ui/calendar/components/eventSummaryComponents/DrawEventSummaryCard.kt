@@ -19,11 +19,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.android.sample.R
 import com.android.sample.model.authentication.User
 import com.android.sample.model.category.EventCategory
@@ -118,13 +120,7 @@ fun DrawEventSummaryCard(
 
                   // 2) Category
                   CategorySection(category = category)
-                  if (isExtra) {
-                    Spacer(Modifier.height(style.sectionGapSmall))
-                    ExtraEventSection(
-                        onToggle = onExtraToggle,
-                        showInfo = showExtraInfo,
-                        infoText = extraInfoText)
-                  }
+
                   Spacer(Modifier.height(style.sectionGapLarge))
 
                   // 3) Dates
@@ -154,36 +150,59 @@ fun DrawEventSummaryCard(
                   )
                 }
           }
+
+          // Extra event star badge - positioned absolutely in top-right corner
+          if (isExtra) {
+            ExtraEventBadge(
+                modifier = Modifier.align(Alignment.TopEnd),
+                onToggle = onExtraToggle,
+                showInfo = showExtraInfo,
+                infoText = extraInfoText,
+                style = style)
+          }
         }
       }
 }
 
 @Composable
-private fun ExtraEventSection(onToggle: () -> Unit, showInfo: Boolean, infoText: String?) {
-  Column(modifier = Modifier.fillMaxWidth()) {
-    IconButton(
-        onClick = onToggle,
-        modifier = Modifier.testTag(EventSummaryCardTags.EXTRA_BADGE)) {
-          Icon(
-              imageVector = Icons.Filled.Star,
-              contentDescription = stringResource(id = R.string.extra_event_label),
-              tint = MaterialTheme.colorScheme.primary)
-        }
+private fun ExtraEventBadge(
+    modifier: Modifier = Modifier,
+    onToggle: () -> Unit,
+    showInfo: Boolean,
+    infoText: String?,
+    style: EventSummaryCardStyle
+) {
+  // Star button - fixed position at top-right
+  IconButton(
+      onClick = onToggle,
+      modifier =
+          modifier
+              .padding(horizontal = style.paddingH, vertical = style.paddingV)
+              .testTag(EventSummaryCardTags.EXTRA_BADGE)) {
+        Icon(
+            imageVector = Icons.Filled.Star,
+            contentDescription = stringResource(id = R.string.extra_event_label),
+            tint = MaterialTheme.colorScheme.primary)
+      }
 
-    if (showInfo && !infoText.isNullOrBlank()) {
-      Surface(
-          modifier =
-              Modifier.fillMaxWidth()
-                  .padding(top = EventSummaryCardStyle().sectionGapSmall)
-                  .testTag(EventSummaryCardTags.EXTRA_INFO),
-          color = MaterialTheme.colorScheme.secondaryContainer,
-          shape = MaterialTheme.shapes.medium) {
-            Text(
-                text = infoText,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                modifier = Modifier.padding(horizontal = EventSummaryCardStyle().paddingH))
-          }
-    }
+  // Info text - appears below the star when toggled, without affecting star position
+  if (showInfo && !infoText.isNullOrBlank()) {
+    Box(
+        modifier =
+            modifier.padding(
+                top = style.paddingV + 48.dp, // Position below the IconButton
+                start = style.paddingH,
+                end = style.paddingH)) {
+          Surface(
+              modifier = Modifier.testTag(EventSummaryCardTags.EXTRA_INFO),
+              color = MaterialTheme.colorScheme.secondaryContainer,
+              shape = MaterialTheme.shapes.medium) {
+                Text(
+                    text = infoText,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    modifier = Modifier.padding(style.paddingH))
+              }
+        }
   }
 }

@@ -11,9 +11,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
+import com.android.sample.ui.calendar.components.ExtraEventToggle
 import com.android.sample.ui.calendar.editEvent.EditEventTestTags
 import com.android.sample.ui.calendar.editEvent.EditEventViewModel
-import com.android.sample.ui.calendar.components.ExtraEventToggle
 import com.android.sample.ui.common.BottomNavigationButtons
 import com.android.sample.ui.common.MemberSelectionList
 import com.android.sample.ui.common.MemberSelectionListOptions

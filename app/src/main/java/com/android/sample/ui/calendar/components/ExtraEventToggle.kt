@@ -33,8 +33,7 @@ fun ExtraEventToggle(
       Switch(
           checked = isExtra,
           onCheckedChange = onToggle,
-          modifier =
-              toggleTestTag?.let { Modifier.testTag(it) } ?: Modifier)
+          modifier = toggleTestTag?.let { Modifier.testTag(it) } ?: Modifier)
     }
     Text(
         text =

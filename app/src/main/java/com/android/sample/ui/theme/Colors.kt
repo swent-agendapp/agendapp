@@ -118,6 +118,9 @@ object GeneralPalette {
   val Primary = CircusPalette.Primary
   val Secondary = CircusPalette.Secondary
   val Tertiary = CircusPalette.Tertiary
+
+  // Error
+  val Error = Palette.Firebrick
 }
 
 // General Color Scheme for Dark Mode

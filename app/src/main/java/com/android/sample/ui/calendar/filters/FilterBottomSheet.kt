@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import com.android.sample.R
 import com.android.sample.model.authentication.User
+import com.android.sample.model.category.EventCategory
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.common.MemberSelectionList
 import com.android.sample.ui.common.MemberSelectionListOptions
@@ -67,7 +68,7 @@ enum class FilterPage {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FilterBottomSheet(users: List<User>, onDismiss: () -> Unit, onApply: (Map<String, List<String>>) -> Unit) {
+fun FilterBottomSheet(users: List<User>, categories: List<EventCategory>, onDismiss: () -> Unit, onApply: (Map<String, List<String>>) -> Unit) {
   // States for all filters
   var eventTypeFilters by remember { mutableStateOf(listOf<String>()) }
   var locationFilters by remember { mutableStateOf(listOf<String>()) }
@@ -118,7 +119,7 @@ fun FilterBottomSheet(users: List<User>, onDismiss: () -> Unit, onApply: (Map<St
                   ) {
                     FilterCategoryItem(
                         title = stringResource(R.string.filter_event_type),
-                        count = participantFilters.size,
+                        count =  eventTypeFilters.size,
                         tag = FilterScreenTestTags.CATEGORY_EVENT_TYPE,
                         onClick = { currentPage = FilterPage.EVENT_TYPE },
                     )
@@ -147,37 +148,38 @@ fun FilterBottomSheet(users: List<User>, onDismiss: () -> Unit, onApply: (Map<St
           // EVENT TYPE FILTER SCREEN
           // -------------------------------
           FilterPage.EVENT_TYPE -> {
-            val eventTypes =
-                listOf(
-                    "Course",
-                    "Workshop",
-                    "Seminar",
-                    "Conference",
-                    "Training",
-                    "Meeting",
-                    "Lecture",
-                    "Webinar",
-                    "Lab Session",
-                    "Presentation",
-                    "Office Hours",
-                    "Hackathon",
-                    "Networking Event",
-                    "Panel Discussion",
-                    "Tutorial",
-                    "Exam",
-                    "Review Session",
-                    "Team Building",
-                    "Brainstorming",
-                    "Guest Talk")
+              val labelToId = remember(categories) {
+                  categories.associateBy(
+                      keySelector = { it.label },
+                      valueTransform = { it.id }
+                  )
+              }
+              val idToLabel = remember(categories) {
+                  categories.associateBy(
+                      keySelector = { it.id },
+                      valueTransform = { it.label }
+                  )
+              }
+
+              val categoryLabels = remember(categories) {
+                  categories
+                      .map { it.label }
+                      .distinct()
+                      .sortedBy { it.trim().lowercase() }
+              }
+
+              val selectedLabels = remember(eventTypeFilters, idToLabel) {
+                  eventTypeFilters.mapNotNull { idToLabel[it] }
+              }
 
             FilterListScreen(
                 title = stringResource(R.string.eventType),
-                items = eventTypes,
-                selected = eventTypeFilters,
+                items = categoryLabels,
+                selected = selectedLabels,
                 testTagPrefix = "EventTypeFilter",
                 onBack = { currentPage = FilterPage.MAIN },
-                onApply = { selections ->
-                  eventTypeFilters = selections
+                onApply = { selectionsLabels ->
+                    eventTypeFilters = selectionsLabels.mapNotNull { labelToId[it] }
                   onApply(
                       mapOf(
                           "types" to eventTypeFilters,
@@ -238,19 +240,6 @@ fun FilterBottomSheet(users: List<User>, onDismiss: () -> Unit, onApply: (Map<St
               val selectedLabels = remember(participantFilters, idToLabel) {
                   participantFilters.mapNotNull { idToLabel[it] }
               }
-
-//            val participants =
-//                listOf(
-//                    "Alice",
-//                    "Bob",
-//                    "Charlie",
-//                    "David",
-//                    "Emma",
-//                    "Lucas",
-//                    "Sophie",
-//                    "Martin",
-//                    "Olivia",
-//                    "Noah")
 
             FilterListScreen(
                 title = stringResource(R.string.filter_participants),

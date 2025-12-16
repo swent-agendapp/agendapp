@@ -34,6 +34,8 @@ import com.android.sample.R
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.calendar.Event
+import com.android.sample.model.category.EventCategory
+import com.android.sample.model.category.EventCategoryRepositoryProvider
 import com.android.sample.ui.calendar.filters.FilterBottomSheet
 import com.android.sample.ui.calendar.style.CalendarDefaults.DefaultDateRange
 import com.android.sample.ui.common.FloatingButton
@@ -93,7 +95,7 @@ fun CalendarScreen(
     var users by remember { mutableStateOf<List<User>>(emptyList()) }
   // initialize the week from monday to friday
   var currentDateRange by remember { mutableStateOf(DefaultDateRange) }
-
+    var categories by remember { mutableStateOf<List<EventCategory>>(emptyList()) }
   val context = LocalContext.current
   val uiState by calendarViewModel.uiState.collectAsState()
   val selectedOrgId by selectedOrganizationViewModel.selectedOrganizationId.collectAsState()
@@ -115,6 +117,16 @@ fun CalendarScreen(
             val memberIds = userRepo.getMembersIds(orgId)
             users = userRepo.getUsersByIds(memberIds)
         } catch (_: Exception) {
+        }
+    }
+    LaunchedEffect(selectedOrgId) {
+        val orgId = selectedOrgId ?: return@LaunchedEffect
+        if (orgId.isBlank()) return@LaunchedEffect
+
+        try {
+            val categoryRepo = EventCategoryRepositoryProvider.repository
+            categories = categoryRepo.getAllCategories(orgId).sortedBy { it.label.trim().lowercase()}
+            } catch (_: Exception) {
         }
     }
 
@@ -182,6 +194,7 @@ fun CalendarScreen(
         if (showFilterSheet) {
           FilterBottomSheet(
               users = users,
+              categories = categories,
               onDismiss = { showFilterSheet = false },
               onApply = { filters ->
                 calendarViewModel.applyFilters(filters)

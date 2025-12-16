@@ -511,6 +511,40 @@ class HourRecapScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
   }
 
   @Test
+  fun extraEvent_showsStarBadgeInDetails() {
+    val vm = HourRecapViewModel()
+    val pastTime = java.time.Instant.now().minusSeconds(7200)
+    val event =
+        HourRecapEventEntry(
+            id = "event1",
+            title = "Extra Shift",
+            startDate = pastTime,
+            endDate = pastTime.plusSeconds(3600),
+            isPast = true,
+            wasPresent = true,
+            wasReplaced = false,
+            tookReplacement = false,
+            categoryColor = androidx.compose.ui.graphics.Color.Blue,
+            isExtra = true)
+
+    vm.setTestWorkedHours(
+        listOf(
+            HourRecapUserRecap(
+                userId = "user",
+                displayName = "User",
+                completedHours = 1.0,
+                plannedHours = 0.0,
+                events = listOf(event))))
+
+    compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
+
+    compose.onNodeWithText("User").performClick()
+    compose.waitForIdle()
+
+    compose.onNodeWithTag(HourRecapTestTags.EXTRA_BADGE).assertIsDisplayed()
+  }
+
+  @Test
   fun extraStatDisplayedWhenUserHasExtras() {
     val vm = HourRecapViewModel()
     vm.setTestWorkedHours(

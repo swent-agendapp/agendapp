@@ -12,6 +12,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FileDownload
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -66,6 +67,7 @@ object HourRecapTestTags {
   const val RECAP_SHEET = "hour_recap_sheet"
   const val EXPORT_BUTTON = "hour_recap_export_button"
   const val EXTRA_STAT = "hour_recap_extra_stat"
+  const val EXTRA_BADGE = "hour_recap_extra_badge"
 }
 
 /* -------------------------------------------------------------------------- */
@@ -259,12 +261,23 @@ private fun HourRecapEventCard(
                       MaterialTheme.colorScheme.surfaceVariant
                           .copy(alpha = 0.6f)
                           .compositeOver(MaterialTheme.colorScheme.surface)) {
-                    Text(
-                        modifier = Modifier.padding(horizontal = PaddingSmall),
-                        text = durationText,
-                        style =
-                            MaterialTheme.typography.labelMedium.copy(
-                                fontWeight = FontWeight.SemiBold))
+                    if (event.isExtra) {
+                      Icon(
+                          imageVector = Icons.Filled.Star,
+                          contentDescription =
+                              stringResource(id = R.string.extra_event_label),
+                          tint = MaterialTheme.colorScheme.primary,
+                          modifier =
+                              Modifier.padding(horizontal = PaddingSmall)
+                                  .testTag(HourRecapTestTags.EXTRA_BADGE))
+                    } else {
+                      Text(
+                          modifier = Modifier.padding(horizontal = PaddingSmall),
+                          text = durationText,
+                          style =
+                              MaterialTheme.typography.labelMedium.copy(
+                                  fontWeight = FontWeight.SemiBold))
+                    }
                   }
             }
 

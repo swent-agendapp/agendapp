@@ -1,30 +1,23 @@
 package com.android.sample.ui.calendar.filters
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import com.android.sample.R
 import com.android.sample.ui.calendar.CalendarScreenTestTags
-import com.android.sample.ui.common.BottomNavigationButtons
 import com.android.sample.ui.theme.AlphaLow
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingLarge
-import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.PaddingSmall
-import com.android.sample.ui.theme.SpacingExtraLarge
 import com.android.sample.ui.theme.SpacingLarge
-import com.android.sample.ui.theme.SpacingMedium
 
 // Assisted by AI
 
@@ -43,8 +36,6 @@ object FilterScreenTestTags {
 
   // Header
   const val HEADER = "FilterSheet_Header"
-  const val TITLE = "FilterSheet_Title"
-  const val CLOSE_BUTTON = "FilterSheet_CloseButton"
 
   // Category items
   const val CATEGORY_EVENT_TYPE = "Filter_EventType"
@@ -103,62 +94,53 @@ fun FilterBottomSheet(onDismiss: () -> Unit, onApply: (Map<String, List<String>>
                     Modifier.padding(PaddingLarge)
                         .testTag(FilterScreenTestTags.FILTER_SHEET_CONTENT)) {
 
-                  // ----- Header -----
-                  Row(
-                      modifier =
-                          Modifier.fillMaxWidth()
-                              .padding(vertical = PaddingSmall)
-                              .testTag(FilterScreenTestTags.HEADER),
-                      horizontalArrangement = Arrangement.SpaceBetween,
-                      verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = stringResource(R.string.filter),
-                            style =
-                                MaterialTheme.typography.titleLarge.copy(
-                                    fontWeight = FontWeight.SemiBold),
-                            modifier = Modifier.testTag(FilterScreenTestTags.TITLE))
+                // ----- Header -----
+                Row(
+                    modifier =
+                        Modifier.fillMaxWidth()
+                            .padding(vertical = PaddingSmall)
+                            .testTag(FilterScreenTestTags.HEADER),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
 
-                      }
-
-                  Spacer(Modifier.height(SpacingLarge))
-
-                  // ====== Category Block ======
-                  Column(
-                      modifier =
-                          Modifier.fillMaxWidth()
-                              .clip(RoundedCornerShape(CornerRadiusLarge))
-                              .background(
-                                  MaterialTheme.colorScheme.surfaceVariant.copy(alpha = AlphaLow))
-                              .padding(vertical = PaddingSmall)) {
-
-                        // ----- Category: Event Type -----
-                        FilterCategoryItem(
-                            name = stringResource(R.string.filter_event_type),
-                            count = eventTypeFilters.size,
-                            tag = FilterScreenTestTags.CATEGORY_EVENT_TYPE,
-                            onClick = { currentPage = FilterPage.EVENT_TYPE })
-
-                        HorizontalDivider(
-                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = AlphaLow))
-
-                        // ----- Category: Location -----
-                        FilterCategoryItem(
-                            name = stringResource(R.string.filter_location),
-                            count = locationFilters.size,
-                            tag = FilterScreenTestTags.CATEGORY_LOCATION,
-                            onClick = { currentPage = FilterPage.LOCATION })
-
-                        HorizontalDivider(
-                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = AlphaLow))
-
-                        // ----- Category: Participants -----
-                        FilterCategoryItem(
-                            name = stringResource(R.string.filter_participants),
-                            count = participantFilters.size,
-                            tag = FilterScreenTestTags.CATEGORY_PARTICIPANTS,
-                            onClick = { currentPage = FilterPage.PARTICIPANTS })
-                      }
                 }
+
+                Spacer(Modifier.height(SpacingLarge))
+
+                // ====== Category Block ======
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(CornerRadiusLarge),
+                    colors =
+                        CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = AlphaLow)
+                        ),
+                ) {
+                    FilterCategoryItem(
+                        title = stringResource(R.string.filter_event_type),
+                        count = eventTypeFilters.size,
+                        tag = FilterScreenTestTags.CATEGORY_EVENT_TYPE,
+                        onClick = { currentPage = FilterPage.EVENT_TYPE },
+                    )
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = AlphaLow))
+
+                    FilterCategoryItem(
+                        title = stringResource(R.string.filter_location),
+                        count = locationFilters.size,
+                        tag = FilterScreenTestTags.CATEGORY_LOCATION,
+                        onClick = { currentPage = FilterPage.LOCATION },
+                    )
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = AlphaLow))
+
+                    FilterCategoryItem(
+                        title = stringResource(R.string.filter_participants),
+                        count = participantFilters.size,
+                        tag = FilterScreenTestTags.CATEGORY_PARTICIPANTS,
+                        onClick = { currentPage = FilterPage.PARTICIPANTS },
+                    )
+                }
+            }
           }
           // -------------------------------
           // EVENT TYPE FILTER SCREEN
@@ -278,24 +260,45 @@ fun FilterBottomSheet(onDismiss: () -> Unit, onApply: (Map<String, List<String>>
 
 /** Single filter category row. */
 @Composable
-private fun FilterCategoryItem(name: String, count: Int, tag: String, onClick: () -> Unit) {
-  Row(
-      modifier =
-          Modifier.fillMaxWidth()
-              .padding(vertical = PaddingMedium)
-              .clickable(onClick = onClick)
-              .testTag(tag),
-      horizontalArrangement = Arrangement.SpaceBetween,
-      verticalAlignment = Alignment.CenterVertically) {
-        Text(
-            text = name,
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.testTag("${tag}_Label"))
-
-        Text(
-            text = if (count > 0) "($count)" else "",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.testTag("${tag}_Count"))
-      }
+private fun FilterCategoryItem(title: String, count: Int, tag: String, onClick: () -> Unit) {
+    ListItem(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .testTag(tag),
+        headlineContent = {
+            Text(
+                text = title,
+                modifier = Modifier.testTag("${tag}_Label"),
+                style = MaterialTheme.typography.bodyLarge
+            )
+        },
+        supportingContent = {
+            if (count > 0) {
+                Text(
+                    text = "$count selected",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+        },
+        trailingContent = {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                if (count > 0) {
+                    Text(
+                        text = "($count)",
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.testTag("${tag}_Count"),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Spacer(Modifier.width(PaddingSmall))
+                }
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+    )
 }

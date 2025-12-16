@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.sample.data.global.providers.EventRepositoryProvider
 import com.android.sample.data.global.repositories.EventRepository
+import com.android.sample.model.authentication.AuthRepository
+import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepository
 import com.android.sample.model.authentication.UserRepositoryProvider
@@ -98,12 +100,12 @@ class ReplacementEmployeeViewModel(
   private val userRepository: UserRepository = UserRepositoryProvider.repository,
   private val selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel,
-  myUserId: String = "EMP001"
+  private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
 ) : ViewModel(), ReplacementEmployeeActions {
 
-  // Later: replace with real authenticated user id
-  private val currentUserId: String = myUserId
-
+  private val errorMessageNoAuthenticated = "No authenticated user found."
+  private val _userState = MutableStateFlow(authRepository.getCurrentUser())
+  val userState: StateFlow<User?> = _userState
   private val _uiState = MutableStateFlow(ReplacementEmployeeUiState())
   val uiState: StateFlow<ReplacementEmployeeUiState> = _uiState.asStateFlow()
 
@@ -134,9 +136,10 @@ class ReplacementEmployeeViewModel(
   fun createReplacementForEvent(event: Event) {
 
     viewModelScope.launch {
+      val user = userState.value ?: throw IllegalStateException(errorMessageNoAuthenticated)
       val r =
           Replacement(
-              absentUserId = currentUserId,
+              absentUserId = user.id,
               substituteUserId = "",
               event = event,
               status = ReplacementStatus.ToProcess)
@@ -152,12 +155,14 @@ class ReplacementEmployeeViewModel(
     val orgId = requireOrgId()
 
     viewModelScope.launch {
+      val user = userState.value ?: throw IllegalStateException(errorMessageNoAuthenticated)
+
       val events =
           eventRepository.getEventsBetweenDates(orgId = orgId, startDate = start, endDate = end)
       events.forEach { e ->
         val r =
             Replacement(
-                absentUserId = currentUserId,
+                absentUserId = user.id,
                 substituteUserId = "",
                 event = e,
                 status = ReplacementStatus.ToProcess)
@@ -173,12 +178,13 @@ class ReplacementEmployeeViewModel(
     viewModelScope.launch {
       _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
       try {
+        val user = userState.value ?: throw IllegalStateException(errorMessageNoAuthenticated)
         val orgId = requireOrgId()
         val list =
             replacementRepository.getReplacementsBySubstituteUser(
-                orgId = orgId, userId = currentUserId) // Substitute side
+                orgId = orgId, userId = user.id) // Substitute side
         _uiState.value =
-            _uiState.value.copy(incomingRequests = list, isLoading = false, errorMessage = null)
+            _uiState.value.copy(incomingRequests = list.filter { it.status == ReplacementStatus.WaitingForAnswer }, isLoading = false, errorMessage = null)
       } catch (e: Exception) {
         Log.e("ReplacementEmployeeVM", "Error loading incoming replacements", e)
         _uiState.value =
@@ -224,6 +230,7 @@ class ReplacementEmployeeViewModel(
           )
       try {
         val orgId = requireOrgId()
+        val user = userState.value ?: throw IllegalStateException(errorMessageNoAuthenticated)
 
         val replacement =
             replacementRepository.getReplacementById(
@@ -234,7 +241,7 @@ class ReplacementEmployeeViewModel(
         val event = replacement.event
 
         val updatedParticipants =
-            event.participants.minus(replacement.absentUserId).plus(currentUserId)
+            event.participants.minus(replacement.absentUserId).plus(user.id)
 
         val updatedEvent =
             event.copy(
@@ -250,7 +257,7 @@ class ReplacementEmployeeViewModel(
 
         val accepted =
             replacement.copy(
-                substituteUserId = currentUserId,
+                substituteUserId = user.id,
                 status = ReplacementStatus.Accepted,
             )
 
@@ -416,6 +423,8 @@ class ReplacementEmployeeViewModel(
     val eventId = _uiState.value.selectedEventId ?: return
     viewModelScope.launch {
       try {
+        val user = userState.value ?: throw IllegalStateException(errorMessageNoAuthenticated)
+
         val event: Event =
             eventRepository.getEventById(orgId = orgId, itemId = eventId)
                 ?: run {
@@ -426,7 +435,7 @@ class ReplacementEmployeeViewModel(
         val replacement =
             Replacement(
                 // Employee is asking to be replaced → they are the absent user
-                absentUserId = currentUserId,
+                absentUserId = user.id,
                 // Substitute not decided yet → empty string by convention
                 substituteUserId = "",
                 event = event,
@@ -478,6 +487,8 @@ class ReplacementEmployeeViewModel(
 
     viewModelScope.launch {
       try {
+        val user = userState.value ?: throw IllegalStateException(errorMessageNoAuthenticated)
+
         val startInstant = start.atStartOfDay(ZoneId.systemDefault()).toInstant()
         val endInstant = end.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant()
 
@@ -486,12 +497,12 @@ class ReplacementEmployeeViewModel(
                 orgId = orgId, startDate = startInstant, endDate = endInstant)
 
         val eligibleEvents =
-            eventsInRange.filter { event -> event.participants.contains(currentUserId) }
+            eventsInRange.filter { event -> event.participants.contains(user.id) }
 
         val created =
             eligibleEvents.map { event ->
               Replacement(
-                  absentUserId = currentUserId,
+                  absentUserId = user.id,
                   substituteUserId = "",
                   event = event,
                   status = ReplacementStatus.ToProcess)
@@ -589,10 +600,5 @@ class ReplacementEmployeeViewModel(
             _uiState.value.copy(errorMessage = "Could not send replacement requests: ${e.message}")
       }
     }
-  }
-
-  fun isEventEligibleForReplacement(event: Event): Boolean {
-    val now = Instant.now()
-    return event.participants.contains(currentUserId) && event.startDate.isAfter(now)
   }
 }

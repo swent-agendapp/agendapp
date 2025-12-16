@@ -9,6 +9,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
+import com.android.sample.model.authentication.User
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.ui.replacement.components.SelectDateRangeScreen
 import com.android.sample.ui.replacement.components.SelectEventScreen
@@ -57,7 +58,7 @@ fun ReplacementEmployeeFlow(
     ReplacementEmployeeStep.LIST,
     ReplacementEmployeeStep.CREATE_OPTIONS -> {
       ReplacementEmployeeListScreen(
-          requests = uiState.incomingRequests.map { it.toUi() },
+          requests = uiState.incomingRequests.map { it.toUi(uiState.allUser) },
           callbacks =
               ReplacementEmployeeCallbacks(
                   onAccept = { id -> viewModel.acceptRequest(id) },
@@ -135,13 +136,15 @@ fun ReplacementEmployeeFlow(
  * Date/time formatting is currently kept simple to avoid dependency on date utils. You can later
  * replace the `toString()` calls with proper formatting using `DateTimeUtils`.
  */
-fun Replacement.toUi(): ReplacementRequestUi {
+fun Replacement.toUi(list: List<User>? = null): ReplacementRequestUi {
   val start = event.startDate.atZone(ZoneId.systemDefault())
   val end = event.endDate.atZone(ZoneId.systemDefault())
 
   // Simple formatting; can be improved later
   val dateLabel = start.toLocalDate().toString()
   val timeRange = "${start.toLocalTime()} - ${end.toLocalTime()}"
+  val user =
+    list?.firstOrNull { it.id == absentUserId }?.display() ?: absentUserId
 
   return ReplacementRequestUi(
       id = id,
@@ -149,6 +152,6 @@ fun Replacement.toUi(): ReplacementRequestUi {
       timeRange = timeRange,
       title = event.title,
       description = event.description,
-      absentDisplayName = absentUserId,
+      absentDisplayName = user,
       color = event.category.color)
 }

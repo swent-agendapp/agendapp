@@ -71,8 +71,7 @@ fun AddEventAttendantScreen(
             modifier =
                 Modifier.fillMaxWidth()
                     .weight(WeightExtraHeavy)
-                    .padding(vertical = PaddingSmall)
-                    .testTag(AddEventTestTags.LIST_USER),
+                    .padding(vertical = PaddingSmall),
             shape = RoundedCornerShape(CornerRadiusLarge),
             elevation = CardDefaults.cardElevation(DefaultCardElevation)) {
               MemberSelectionList(

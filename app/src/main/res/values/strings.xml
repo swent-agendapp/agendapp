@@ -270,6 +270,9 @@
 
     <string name="hour_recap">Hour Recap</string>
 
+    <!-- Network -->
+    <string name="network_error_message">A network error has occurred. Please check your internet connection and try again.</string>
+
 </resources>
 
 

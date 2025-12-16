@@ -266,4 +266,7 @@
     <string name="hour_recap_tag_replaced">A été remplacé</string>
     <string name="hour_recap_tag_replacement_taken">A pris un remplacement</string>
 
+    <!-- Network -->
+    <string name="network_error_message">Une erreur réseau s\'est produite. Veuillez vérifier votre connexion internet et réessayer.</string>
+
 </resources>

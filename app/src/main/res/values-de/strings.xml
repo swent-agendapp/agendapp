@@ -266,4 +266,7 @@
     <string name="hour_recap_tag_replaced">Wurde ersetzt</string>
     <string name="hour_recap_tag_replacement_taken">Vertretung übernommen</string>
 
+    <!-- Network -->
+    <string name="network_error_message">Ein Netzwerkfehler ist aufgetreten. Bitte prüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.</string>
+
 </resources>

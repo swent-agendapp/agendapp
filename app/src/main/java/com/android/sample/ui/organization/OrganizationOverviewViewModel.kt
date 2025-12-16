@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-const val ERROR_MESSAGE_NO_AUTHENTICATED_USER = "No authenticated user found."
 /**
  * UI state data class for the Organization Overview screen.
  *

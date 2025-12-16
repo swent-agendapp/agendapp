@@ -4,14 +4,7 @@ import android.Manifest
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
-import androidx.compose.ui.test.assertTextContains
-import androidx.compose.ui.test.hasAnyAncestor
-import androidx.compose.ui.test.hasClickAction
-import androidx.compose.ui.test.hasTestTag
-import androidx.compose.ui.test.isToggleable
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onChildAt
-import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -115,52 +108,53 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
 
   @Test
   fun addEventAndResetsTheFieldsTheNextTime() {
-      composeTestRule.setContent { Agendapp() }
+    composeTestRule.setContent { Agendapp() }
 
-      createOrganizationAndNavigateToCalendar()
+    createOrganizationAndNavigateToCalendar()
 
-      composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertExists().performClick()
+    composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertExists().performClick()
 
-      // Step 1: Title + description
-      composeTestRule.onNodeWithTag(AddEventTestTags.TITLE_TEXT_FIELD).assertExists()
-          .performTextInput("Test Event")
+    // Step 1: Title + description
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.TITLE_TEXT_FIELD)
+        .assertExists()
+        .performTextInput("Test Event")
 
-      composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
+    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
 
-      // Step 2: Time + recurrence
-      // OneTime => end recurrence exists but disabled
-      composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).assertExists()
-      composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).assertIsNotEnabled()
+    // Step 2: Time + recurrence
+    // OneTime => end recurrence exists but disabled
+    composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).assertExists()
+    composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).assertIsNotEnabled()
 
-      // Select Weekly recurrence
-      composeTestRule.onNodeWithTag(AddEventTestTags.recurrenceTag(RecurrenceStatus.Weekly))
-          .assertExists()
-          .performClick()
+    // Select Weekly recurrence
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.recurrenceTag(RecurrenceStatus.Weekly))
+        .assertExists()
+        .performClick()
 
-      composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).assertExists()
-      composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).assertIsEnabled()
+    composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).assertExists()
+    composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).assertIsEnabled()
 
-      composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
+    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
 
-      // Step 3: Participants => MUST select at least one
-      composeTestRule.onNodeWithText("12345", useUnmergedTree = true)
-          .assertExists()
-          .assertIsDisplayed()
-          .performClick()
+    // Step 3: Participants => MUST select at least one
+    composeTestRule
+        .onNodeWithText("12345", useUnmergedTree = true)
+        .assertExists()
+        .assertIsDisplayed()
+        .performClick()
 
-      composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
+    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
 
+    // Confirmation / create
+    composeTestRule.onNodeWithTag(AddEventTestTags.CREATE_BUTTON).assertExists().performClick()
 
-      // Confirmation / create
-      composeTestRule
-          .onNodeWithTag(AddEventTestTags.CREATE_BUTTON)
-          .assertExists()
-          .performClick()
-
-      // Back to calendar
-      composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertIsDisplayed()
-      composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).performClick()
+    // Back to calendar
+    composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).performClick()
   }
+
   @Test
   fun goBottomBarIcons() {
     composeTestRule.setContent { Agendapp() }

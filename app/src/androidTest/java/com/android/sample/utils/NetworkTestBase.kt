@@ -2,6 +2,7 @@ package com.android.sample.utils
 
 import com.android.sample.model.network.FakeConnectivityChecker
 import com.android.sample.model.network.NetworkStatusRepository
+import com.android.sample.model.network.NetworkStatusRepositoryProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 
@@ -37,6 +38,13 @@ interface NetworkTestBase {
   @Before
   fun setupNetworkTestBase() {
     fakeChecker.setInternet(initialInternetState)
+
+    // Inject the fake network repository into the provider using reflection
+    NetworkStatusRepositoryProvider::class
+        .java
+        .getDeclaredField("_repository")
+        .apply { isAccessible = true }
+        .set(NetworkStatusRepositoryProvider, networkRepo)
   }
 
   /** Simulates loss of internet connectivity. */

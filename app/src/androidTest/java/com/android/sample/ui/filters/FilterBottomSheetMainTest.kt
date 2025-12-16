@@ -17,40 +17,63 @@ class FilterBottomSheetMainTest {
   @get:Rule val compose = createComposeRule()
 
   private val fakeUsers =
-    listOf(
-      User(
-        id = "u1",
-        displayName = "Alice",
-        email = "alice@test.com",
-        phoneNumber = null,
-        organizations = emptyList()
-      ),
-      User(id = "u2", displayName = "Bob", email = "bob@test.com", phoneNumber = null, organizations = emptyList()),
-    )
+      listOf(
+          User(
+              id = "u1",
+              displayName = "Alice",
+              email = "alice@test.com",
+              phoneNumber = null,
+              organizations = emptyList()),
+          User(
+              id = "u2",
+              displayName = "Bob",
+              email = "bob@test.com",
+              phoneNumber = null,
+              organizations = emptyList()),
+      )
 
   private val fakeCategories =
-    listOf(
-      EventCategory(id = "c1", organizationId = "org1", label = "Course", isDefault = false, color = EventPalette.Purple),
-      EventCategory(id = "c2", organizationId = "org1", label = "Meeting", isDefault = false, color = EventPalette.Purple),
-    )
+      listOf(
+          EventCategory(
+              id = "c1",
+              organizationId = "org1",
+              label = "Course",
+              isDefault = false,
+              color = EventPalette.Purple),
+          EventCategory(
+              id = "c2",
+              organizationId = "org1",
+              label = "Meeting",
+              isDefault = false,
+              color = EventPalette.Purple),
+      )
 
   /** Ensures the bottom sheet main page loads correctly */
   @Test
   fun filterBottomSheet_mainPage_displaysCategoryItems() {
     compose.setContent {
       FilterBottomSheet(
-        users = fakeUsers,
-        categories = fakeCategories,
-        onDismiss = {},
-        onApply = {})
+          users = fakeUsers, categories = fakeCategories, onDismiss = {}, onApply = {})
     }
 
-    compose.onNodeWithTag(CalendarScreenTestTags.FILTER_BOTTOM_SHEET).assertExists().assertIsDisplayed()
-    compose.onNodeWithTag(FilterScreenTestTags.FILTER_SHEET_CONTENT).assertExists().assertIsDisplayed()
+    compose
+        .onNodeWithTag(CalendarScreenTestTags.FILTER_BOTTOM_SHEET)
+        .assertExists()
+        .assertIsDisplayed()
+    compose
+        .onNodeWithTag(FilterScreenTestTags.FILTER_SHEET_CONTENT)
+        .assertExists()
+        .assertIsDisplayed()
 
-    compose.onNodeWithTag(FilterScreenTestTags.CATEGORY_EVENT_TYPE).assertExists().assertIsDisplayed()
+    compose
+        .onNodeWithTag(FilterScreenTestTags.CATEGORY_EVENT_TYPE)
+        .assertExists()
+        .assertIsDisplayed()
     compose.onNodeWithTag(FilterScreenTestTags.CATEGORY_LOCATION).assertExists().assertIsDisplayed()
-    compose.onNodeWithTag(FilterScreenTestTags.CATEGORY_PARTICIPANTS).assertExists().assertIsDisplayed()
+    compose
+        .onNodeWithTag(FilterScreenTestTags.CATEGORY_PARTICIPANTS)
+        .assertExists()
+        .assertIsDisplayed()
   }
 
   /** Clicking "Event Type" navigates to EventType filter screen */
@@ -58,10 +81,7 @@ class FilterBottomSheetMainTest {
   fun clickingEventType_opensEventTypeScreen() {
     compose.setContent {
       FilterBottomSheet(
-        users = fakeUsers,
-        categories = fakeCategories,
-        onDismiss = {},
-        onApply = {})
+          users = fakeUsers, categories = fakeCategories, onDismiss = {}, onApply = {})
     }
 
     compose.onNodeWithTag(FilterScreenTestTags.CATEGORY_EVENT_TYPE).performClick()
@@ -73,10 +93,7 @@ class FilterBottomSheetMainTest {
   fun clickingLocation_opensLocationScreen() {
     compose.setContent {
       FilterBottomSheet(
-        users = fakeUsers,
-        categories = fakeCategories,
-        onDismiss = {},
-        onApply = {})
+          users = fakeUsers, categories = fakeCategories, onDismiss = {}, onApply = {})
     }
 
     compose.onNodeWithTag(FilterScreenTestTags.CATEGORY_LOCATION).performClick()
@@ -88,10 +105,7 @@ class FilterBottomSheetMainTest {
   fun clickingParticipants_opensParticipantsScreen() {
     compose.setContent {
       FilterBottomSheet(
-        users = fakeUsers,
-        categories = fakeCategories,
-        onDismiss = {},
-        onApply = {})
+          users = fakeUsers, categories = fakeCategories, onDismiss = {}, onApply = {})
     }
 
     compose.onNodeWithTag(FilterScreenTestTags.CATEGORY_PARTICIPANTS).performClick()

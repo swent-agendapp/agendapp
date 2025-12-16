@@ -264,4 +264,8 @@
     <string name="admin">Admin</string>
     <string name="invitations_button">Invitations</string>
 
+    <!-- Edit Organization -->
+    <string name="error_loading_organiation">Impossible de charger l’organisation.</string>
+    <string name="error_editing_organization">Impossible de mettre à jour l’organisation.</string>
+
 </resources>

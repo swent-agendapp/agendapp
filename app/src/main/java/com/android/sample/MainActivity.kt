@@ -45,6 +45,7 @@ import com.android.sample.ui.map.MapScreen
 import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
 import com.android.sample.ui.organization.AddOrganizationScreen
+import com.android.sample.ui.organization.EditOrganizationScreen
 import com.android.sample.ui.organization.OrganizationListScreen
 import com.android.sample.ui.organization.OrganizationOverviewScreen
 import com.android.sample.ui.profile.AdminContactScreen
@@ -359,9 +360,9 @@ private fun NavGraphBuilder.settingsGraph(
     // Organization Overview Screen
     composable(Screen.OrganizationOverview.route) {
       OrganizationOverviewScreen(
-          onNavigateBack = { navigationActions.navigateBack() },
+          onNavigateBack = { navigationActions.navigateTo(Screen.Settings) },
           onChangeOrganization = { navigationActions.navigateTo(Screen.ChangeOrganization) },
-          onEditOrganization = {}, // Pending implementation
+          onEditOrganization = { navigationActions.navigateTo(Screen.EditOrganization) },
           onCategoriesClick = { navigationActions.navigateTo(Screen.EditCategory) },
           onInvitationClick = { navigationActions.navigateTo(Screen.InvitationOverview) },
           onMemberClick = { member -> {} }, // Pending implementation
@@ -376,6 +377,12 @@ private fun NavGraphBuilder.settingsGraph(
       OrganizationListScreen(
           onOrganizationSelected = { navigationActions.navigateTo(Screen.OrganizationOverview) },
           onAddOrganizationClicked = { navigationActions.navigateTo(Screen.AddOrganization) })
+    }
+
+    composable(Screen.EditOrganization.route) {
+      EditOrganizationScreen(
+          onNavigateBack = { navigationActions.navigateBack() },
+          onFinish = { navigationActions.navigateTo(Screen.OrganizationOverview) })
     }
   }
 }

@@ -267,6 +267,10 @@
     <string name="admin">Admin</string>
     <string name="invitations_button">Invitations</string>
 
+    <!-- Edit Organization -->
+    <string name="error_loading_organiation">Failed to load organization.</string>
+    <string name="error_editing_organization">Failed to update organization.</string>
+
 
 </resources>
 

@@ -208,7 +208,7 @@ fun OrganizationOverviewScreen(
                     modifier =
                         Modifier.weight(WeightExtraHeavy)
                             .testTag(OrganizationOverviewScreenTestTags.MEMBERS_LIST)
-                            .padding(PaddingMedium),
+                            .padding(vertical = PaddingMedium, horizontal = PaddingSmall),
                     onMemberClick = onMemberClick,
                     members = uiState.memberList,
                     admins = uiState.adminList)

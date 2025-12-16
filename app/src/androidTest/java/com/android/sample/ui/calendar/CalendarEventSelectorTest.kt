@@ -6,8 +6,8 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.android.sample.data.local.repositories.EventRepositoryInMemory
 import com.android.sample.model.calendar.Event
-import com.android.sample.model.calendar.EventRepositoryInMemory
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.model.map.MapRepositoryLocal
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository

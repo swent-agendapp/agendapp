@@ -223,6 +223,8 @@
 
     <string name="hour_recap_results_title">Gesamtstunden pro Mitarbeiter im ausgewählten Zeitraum:</string>
     <string name="hour_recap_generate">Zusammenfassung erstellen</string>
+    <string name="hour_recap_completed_hours_label">Abgeschlossen</string>
+    <string name="hour_recap_planned_hours_label">Geplant</string>
     <string name="export_excel">Nach Excel exportieren</string>
 
     <!-- Filters -->
@@ -276,5 +278,16 @@
     <string name="edit_category_save_button">Kategorie speichern</string>
 
     <string name="hour_recap">Stundenübersicht</string>
+    <string name="hour_recap_events_for_user">Ereignisse für %1$s</string>
+    <string name="hour_recap_no_events_for_user">Keine Ereignisse für diesen Benutzer gefunden.</string>
+    <string name="hour_recap_no_events_in_range_heading">Keine Ereignisse für diesen Zeitraum</string>
+    <string name="hour_recap_no_events_in_range_details">Passen Sie die Daten an oder erweitern Sie den Zeitraum, um alle Schichten zu sehen.</string>
+    <string name="hour_recap_event_date_time">%1$s · %2$s - %3$s</string>
+    <string name="hour_recap_tag_future">Zukünftiges Ereignis</string>
+    <string name="hour_recap_tag_present">Anwesenheit bestätigt</string>
+    <string name="hour_recap_tag_absent">Abwesenheit bestätigt</string>
+    <string name="hour_recap_tag_presence_unknown">Anwesenheit nicht erfasst</string>
+    <string name="hour_recap_tag_replaced">Wurde ersetzt</string>
+    <string name="hour_recap_tag_replacement_taken">Vertretung übernommen</string>
 
 </resources>

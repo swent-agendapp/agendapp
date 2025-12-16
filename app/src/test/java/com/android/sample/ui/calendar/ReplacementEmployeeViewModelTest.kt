@@ -2,8 +2,10 @@ package com.android.sample.ui.calendar
 
 import com.android.sample.model.authentication.UserRepository
 import com.android.sample.model.authentication.UsersRepositoryLocal
+import com.android.sample.data.fake.repositories.FakeEventRepository
+import com.android.sample.data.fake.repositories.FakeReplacementRepository
+import com.android.sample.data.global.repositories.EventRepository
 import com.android.sample.model.calendar.Event
-import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.category.EventCategory
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
@@ -215,99 +217,5 @@ class ReplacementEmployeeViewModelTest {
   private fun makeEmployeeVm(): ReplacementEmployeeViewModel {
 
     return ReplacementEmployeeViewModel(replacementRepo, eventRepo, userRepo)
-  }
-}
-
-// ========================================================================
-// Fake Repositories
-// ========================================================================
-class FakeReplacementRepository : ReplacementRepository {
-
-  private val storage = mutableListOf<Replacement>()
-
-  override suspend fun getAllReplacements(orgId: String): List<Replacement> = storage.toList()
-
-  override suspend fun insertReplacement(orgId: String, item: Replacement) {
-    storage.add(item)
-  }
-
-  override suspend fun updateReplacement(orgId: String, itemId: String, item: Replacement) {
-    val idx = storage.indexOfFirst { it.id == itemId }
-    if (idx != -1) storage[idx] = item
-  }
-
-  override suspend fun deleteReplacement(orgId: String, itemId: String) {
-    storage.removeAll { it.id == itemId }
-  }
-
-  override suspend fun getReplacementById(orgId: String, itemId: String): Replacement? =
-      storage.find { it.id == itemId }
-
-  override suspend fun getReplacementsByAbsentUser(
-      orgId: String,
-      userId: String
-  ): List<Replacement> = storage.filter { it.absentUserId == userId }
-
-  override suspend fun getReplacementsBySubstituteUser(
-      orgId: String,
-      userId: String
-  ): List<Replacement> = storage.filter { it.substituteUserId == userId }
-
-  override suspend fun getReplacementsByStatus(
-      orgId: String,
-      status: ReplacementStatus
-  ): List<Replacement> = storage.filter { it.status == status }
-}
-
-class FakeEventRepository : EventRepository {
-
-  private val events = mutableListOf<Event>()
-
-  override fun getNewUid(): String = "fake-uid"
-
-  override suspend fun getAllEvents(orgId: String): List<Event> = events.toList()
-
-  override suspend fun insertEvent(orgId: String, item: Event) {
-    events.add(item)
-  }
-
-  override suspend fun updateEvent(orgId: String, itemId: String, item: Event) {}
-
-  override suspend fun deleteEvent(orgId: String, itemId: String) {}
-
-  override suspend fun getEventById(orgId: String, itemId: String): Event? =
-      events.find { it.id == itemId }
-
-  override suspend fun getEventsBetweenDates(
-      orgId: String,
-      startDate: Instant,
-      endDate: Instant
-  ): List<Event> = events.filter { e -> e.startDate <= endDate && e.endDate >= startDate }
-
-  override suspend fun calculateWorkedHoursPastEvents(
-      orgId: String,
-      start: Instant,
-      end: Instant
-  ): List<Pair<String, Double>> {
-    // Stub implementation for testing - not used in these tests
-    return emptyList()
-  }
-
-  override suspend fun calculateWorkedHoursFutureEvents(
-      orgId: String,
-      start: Instant,
-      end: Instant
-  ): List<Pair<String, Double>> {
-    // Stub implementation for testing - not used in these tests
-    return emptyList()
-  }
-
-  override suspend fun calculateWorkedHours(
-      orgId: String,
-      start: Instant,
-      end: Instant
-  ): List<Pair<String, Double>> {
-    // Stub implementation for testing - not used in these tests
-    return emptyList()
   }
 }

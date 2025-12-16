@@ -1,8 +1,8 @@
 package com.android.sample.model.map
 
+import com.android.sample.data.firebase.mappers.AreaMapper
 import com.android.sample.model.constants.FirestoreConstants.MAP_COLLECTION_PATH
 import com.android.sample.model.constants.FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH
-import com.android.sample.model.firestoreMappers.AreaMapper
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.concurrent.ConcurrentHashMap
 import kotlinx.coroutines.tasks.await

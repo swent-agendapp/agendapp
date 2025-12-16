@@ -1,7 +1,7 @@
 package com.android.sample.model.firestoreMappersTests
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.android.sample.model.firestoreMappers.LocationMapper
+import com.android.sample.data.firebase.mappers.LocationMapper
 import com.android.sample.model.map.Location
 import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.coroutines.runBlocking

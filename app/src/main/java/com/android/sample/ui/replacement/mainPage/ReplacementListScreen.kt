@@ -124,7 +124,7 @@ fun ReplacementEmployeeListScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(PaddingExtraSmall),
         ) {
-          if (true) { // change to if is admin when implemented
+          if (isAdmin) { // change to if is admin when implemented
             SecondaryButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(R.string.organize_replacement),

@@ -27,8 +27,8 @@ import kotlinx.coroutines.launch
 
 interface ReplacementEmployeeActions {
   fun loadReplacementForProcessing(
-    replacementId: String,
-    onResult: (replacement: Replacement?, users: List<User>) -> Unit,
+      replacementId: String,
+      onResult: (replacement: Replacement?, users: List<User>) -> Unit,
   )
 
   fun sendRequestsForPendingReplacement(
@@ -59,25 +59,26 @@ enum class ReplacementEmployeeStep {
 
 /** UI state for the employee replacement flow. */
 data class ReplacementEmployeeUiState(
-  val step: ReplacementEmployeeStep = ReplacementEmployeeStep.LIST,
-  val isLoading: Boolean = false,
-  val errorMessage: String? = null,
-  val incomingRequests: List<Replacement> = emptyList(),
-  val allUser: List<User> = emptyList(),
+    val step: ReplacementEmployeeStep = ReplacementEmployeeStep.LIST,
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null,
+    val incomingRequests: List<Replacement> = emptyList(),
+    val allUser: List<User> = emptyList(),
+    val isAdmin: Boolean = false,
 
     // Creation via "select event"
-  val selectedEventId: String? = null,
+    val selectedEventId: String? = null,
 
     // Creation via "date range"
-  val startDate: LocalDate? = null,
-  val endDate: LocalDate? = null,
+    val startDate: LocalDate? = null,
+    val endDate: LocalDate? = null,
 
     // For debugging / future UI feedback
-  val lastCreatedReplacements: List<Replacement> = emptyList(),
+    val lastCreatedReplacements: List<Replacement> = emptyList(),
     // Requests currently being processed (accept/refuse in progress)
-  val processingRequestIds: Set<String> = emptySet(),
+    val processingRequestIds: Set<String> = emptySet(),
     // Last user action on a request (for UI feedback)
-  val lastAction: ReplacementEmployeeLastAction? = null,
+    val lastAction: ReplacementEmployeeLastAction? = null,
 )
 
 /**
@@ -94,13 +95,13 @@ data class ReplacementEmployeeUiState(
  * authentication repository later (e.g., AuthRepository.getCurrentUser()).
  */
 class ReplacementEmployeeViewModel(
-  private val replacementRepository: ReplacementRepository =
+    private val replacementRepository: ReplacementRepository =
         ReplacementRepositoryProvider.repository,
-  private val eventRepository: EventRepository = EventRepositoryProvider.repository,
-  private val userRepository: UserRepository = UserRepositoryProvider.repository,
-  private val selectedOrganizationViewModel: SelectedOrganizationViewModel =
+    private val eventRepository: EventRepository = EventRepositoryProvider.repository,
+    private val userRepository: UserRepository = UserRepositoryProvider.repository,
+    private val selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel,
-  private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
+    private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
 ) : ViewModel(), ReplacementEmployeeActions {
 
   private val errorMessageNoAuthenticated = "No authenticated user found."
@@ -115,6 +116,7 @@ class ReplacementEmployeeViewModel(
   init {
     refreshIncomingRequests()
     refreshAllUsers()
+    initCurrentUser()
   }
 
   // ---------------------------------------------------------------------------
@@ -184,7 +186,10 @@ class ReplacementEmployeeViewModel(
             replacementRepository.getReplacementsBySubstituteUser(
                 orgId = orgId, userId = user.id) // Substitute side
         _uiState.value =
-            _uiState.value.copy(incomingRequests = list.filter { it.status == ReplacementStatus.WaitingForAnswer }, isLoading = false, errorMessage = null)
+            _uiState.value.copy(
+                incomingRequests = list.filter { it.status == ReplacementStatus.WaitingForAnswer },
+                isLoading = false,
+                errorMessage = null)
       } catch (e: Exception) {
         Log.e("ReplacementEmployeeVM", "Error loading incoming replacements", e)
         _uiState.value =
@@ -199,14 +204,28 @@ class ReplacementEmployeeViewModel(
       _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
       try {
         val orgId = requireOrgId()
-        val listId =
-          userRepository.getMembersIds(organizationId = orgId)
-        val list =
-          userRepository.getUsersByIds(userIds = listId)
-        _uiState.value =
-          _uiState.value.copy(allUser = list, isLoading = false, errorMessage = null)
+        val listId = userRepository.getMembersIds(organizationId = orgId)
+        val list = userRepository.getUsersByIds(userIds = listId)
+        _uiState.value = _uiState.value.copy(allUser = list, isLoading = false, errorMessage = null)
       } catch (e: Exception) {
         Log.e("ReplacementEmployeeVM", "Error loading incoming users", e)
+        _uiState.value =
+            _uiState.value.copy(
+                isLoading = false, errorMessage = "Failed to load users: ${e.message}")
+      }
+    }
+  }
+
+  fun initCurrentUser() {
+    viewModelScope.launch {
+      try {
+        val orgId = requireOrgId()
+        val user = userState.value ?: throw IllegalStateException(errorMessageNoAuthenticated)
+        val adminsId = userRepository.getAdminsIds(organizationId = orgId)
+        val isAdmin = adminsId.contains(user.id)
+        _uiState.value = _uiState.value.copy(isAdmin = isAdmin, isLoading = false, errorMessage = null)
+      } catch (e: Exception) {
+        Log.e("ReplacementEmployeeVM", "Error loading user's right", e)
         _uiState.value =
           _uiState.value.copy(
             isLoading = false, errorMessage = "Failed to load users: ${e.message}")
@@ -240,8 +259,7 @@ class ReplacementEmployeeViewModel(
 
         val event = replacement.event
 
-        val updatedParticipants =
-            event.participants.minus(replacement.absentUserId).plus(user.id)
+        val updatedParticipants = event.participants.minus(replacement.absentUserId).plus(user.id)
 
         val updatedEvent =
             event.copy(
@@ -496,8 +514,7 @@ class ReplacementEmployeeViewModel(
             eventRepository.getEventsBetweenDates(
                 orgId = orgId, startDate = startInstant, endDate = endInstant)
 
-        val eligibleEvents =
-            eventsInRange.filter { event -> event.participants.contains(user.id) }
+        val eligibleEvents = eventsInRange.filter { event -> event.participants.contains(user.id) }
 
         val created =
             eligibleEvents.map { event ->
@@ -542,9 +559,10 @@ class ReplacementEmployeeViewModel(
                 itemId = replacementId,
             )
         val users =
-          userRepository.getUsersByIds(userRepository.getMembersIds(
-            organizationId = orgId,
-          ))
+            userRepository.getUsersByIds(
+                userRepository.getMembersIds(
+                    organizationId = orgId,
+                ))
         onResult(replacement, users)
       } catch (e: Exception) {
         Log.e("ReplacementEmployeeVM", "Error loading replacement $replacementId", e)

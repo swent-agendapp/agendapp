@@ -1,10 +1,10 @@
 package com.android.sample.ui.calendar
 
-import com.android.sample.model.authentication.UserRepository
-import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.data.fake.repositories.FakeEventRepository
 import com.android.sample.data.fake.repositories.FakeReplacementRepository
 import com.android.sample.data.global.repositories.EventRepository
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.category.EventCategory

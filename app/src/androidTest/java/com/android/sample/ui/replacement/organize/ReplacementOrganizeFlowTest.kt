@@ -114,8 +114,8 @@ class ReplacementOrganizeFlowTest : FirebaseEmulatedTest(), RequiresSelectedOrga
   @Test
   fun backFromFirstStep_callsOnCancel() {
     composeTestRule
-      .onNodeWithTag(ReplacementOrganizeTestTags.BACK_BUTTON)
-      .assertIsDisplayed()
-      .performClick()
+        .onNodeWithTag(ReplacementOrganizeTestTags.BACK_BUTTON)
+        .assertIsDisplayed()
+        .performClick()
   }
 }

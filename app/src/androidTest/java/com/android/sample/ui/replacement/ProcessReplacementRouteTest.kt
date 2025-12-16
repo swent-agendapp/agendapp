@@ -19,9 +19,9 @@ import org.junit.Test
 
 // Asisted by IA
 class FakeReplacementEmployeeViewModel(
-  var replacementToReturn: Replacement? = null,
-  var usersToReturn: List<User> = listOf(),
-  var autoCompleteLoad: Boolean = true,
+    var replacementToReturn: Replacement? = null,
+    var usersToReturn: List<User> = listOf(),
+    var autoCompleteLoad: Boolean = true,
 ) : ReplacementEmployeeActions {
 
   var lastLoadedReplacementId: String? = null
@@ -44,9 +44,9 @@ class FakeReplacementEmployeeViewModel(
   }
 
   override fun sendRequestsForPendingReplacement(
-    replacementId: String,
-    selectedSubstitutes: List<User>,
-    onFinished: () -> Unit
+      replacementId: String,
+      selectedSubstitutes: List<User>,
+      onFinished: () -> Unit
   ) {
     lastSendRequestsReplacementId = replacementId
     lastSelectedSubstitutes = selectedSubstitutes
@@ -162,7 +162,9 @@ class ProcessReplacementRouteTest {
 
     compose.waitForIdle()
     compose
-        .onNodeWithTag(ProcessReplacementTestTags.memberTag(fakeVm.usersToReturn.first { it.id == "emilien" }), useUnmergedTree = true)
+        .onNodeWithTag(
+            ProcessReplacementTestTags.memberTag(fakeVm.usersToReturn.first { it.id == "emilien" }),
+            useUnmergedTree = true)
         .performClick()
 
     compose.onNodeWithTag(ProcessReplacementTestTags.SEND_BUTTON).performClick()

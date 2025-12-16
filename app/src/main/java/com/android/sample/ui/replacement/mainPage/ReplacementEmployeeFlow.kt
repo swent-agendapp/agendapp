@@ -64,7 +64,7 @@ fun ReplacementEmployeeFlow(
                   onAccept = { id -> viewModel.acceptRequest(id) },
                   onRefuse = { id -> viewModel.refuseRequest(id) },
               ),
-          isAdmin = false,
+          isAdmin = uiState.isAdmin,
           adminActions =
               ReplacementAdminActions(
                   onOrganizeClick = onOrganizeClick,
@@ -143,8 +143,7 @@ fun Replacement.toUi(list: List<User>? = null): ReplacementRequestUi {
   // Simple formatting; can be improved later
   val dateLabel = start.toLocalDate().toString()
   val timeRange = "${start.toLocalTime()} - ${end.toLocalTime()}"
-  val user =
-    list?.firstOrNull { it.id == absentUserId }?.display() ?: absentUserId
+  val user = list?.firstOrNull { it.id == absentUserId }?.display() ?: absentUserId
 
   return ReplacementRequestUi(
       id = id,

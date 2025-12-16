@@ -198,6 +198,8 @@
     <string name="select_date_range_instruction">Select the date range for which you need a replacement.</string>
     <string name="hour_recap_results_title">Total hours per employee for the selected period:</string>
     <string name="hour_recap_generate">Generate summary</string>
+    <string name="hour_recap_completed_hours_label">Completed</string>
+    <string name="hour_recap_planned_hours_label">Planned</string>
     <string name="export_excel">Export to Excel</string>
 
     <!-- Filters -->
@@ -246,6 +248,17 @@
     <string name="work_duration_hours_minutes">%1$dh %2$dmin</string>
     <string name="location_status_inside">Present</string>
     <string name="hour_recap">Hour Recap</string>
+    <string name="hour_recap_events_for_user">Events for %1$s</string>
+    <string name="hour_recap_no_events_for_user">No events found for this user.</string>
+    <string name="hour_recap_no_events_in_range_heading">No events for these dates</string>
+    <string name="hour_recap_no_events_in_range_details">Try adjusting your dates or widening the range to see everyone\'s shifts.</string>
+    <string name="hour_recap_event_date_time">%1$s · %2$s - %3$s</string>
+    <string name="hour_recap_tag_future">Upcoming event</string>
+    <string name="hour_recap_tag_present">Marked present</string>
+    <string name="hour_recap_tag_absent">Marked absent</string>
+    <string name="hour_recap_tag_presence_unknown">Presence not recorded</string>
+    <string name="hour_recap_tag_replaced">Replaced</string>
+    <string name="hour_recap_tag_replacement_taken">Replacement shift</string>
 
     <!-- Category -->
     <string name="edit_category_title">Edit your categories</string>

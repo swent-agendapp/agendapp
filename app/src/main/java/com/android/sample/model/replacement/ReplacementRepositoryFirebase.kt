@@ -1,8 +1,8 @@
 package com.android.sample.model.replacement
 
+import com.android.sample.data.firebase.mappers.ReplacementMapper
 import com.android.sample.model.constants.FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH
 import com.android.sample.model.constants.FirestoreConstants.REPLACEMENTS_COLLECTION_PATH
-import com.android.sample.model.firestoreMappers.ReplacementMapper
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 

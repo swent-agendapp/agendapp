@@ -1,7 +1,7 @@
 package com.android.sample.model.eventRepositoryTest
 
+import com.android.sample.data.firebase.repositories.EventRepositoryFirebase
 import com.android.sample.model.calendar.Event
-import com.android.sample.model.calendar.EventRepositoryFirebase
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.model.constants.FirestoreConstants
 import com.google.android.gms.tasks.Tasks

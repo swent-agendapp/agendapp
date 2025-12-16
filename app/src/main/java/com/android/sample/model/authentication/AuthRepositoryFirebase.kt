@@ -2,8 +2,8 @@ package com.android.sample.model.authentication
 
 import androidx.credentials.Credential
 import androidx.credentials.CustomCredential
+import com.android.sample.data.firebase.mappers.UserMapper
 import com.android.sample.model.constants.FirestoreConstants.COLLECTION_USERS
-import com.android.sample.model.firestoreMappers.UserMapper
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
 import com.google.firebase.Firebase

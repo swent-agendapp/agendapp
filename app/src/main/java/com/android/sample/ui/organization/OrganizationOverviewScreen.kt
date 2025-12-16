@@ -72,13 +72,10 @@ import com.android.sample.ui.theme.WeightMedium
 // Test tags for OrganizationOverviewScreen composables.
 object OrganizationOverviewScreenTestTags {
   const val ROOT = "organizationOverviewScreenRoot"
-  const val TOP_BAR_TITLE = "organizationOverviewTopBarTitle"
   const val ORGANIZATION_NAME_TEXT = "organizationNameText"
   const val ORGANIZATION_IMAGE = "organizationImage"
   const val MEMBER_COUNT_TEXT = "memberCountText"
   const val CATEGORIES_BUTTON = "categoriesButton"
-  const val AREAS_BUTTON = "areasButton"
-  const val HOUR_RECAP_BUTTON = "hourRecapButton"
   const val MEMBERS_LIST = "membersList"
   const val INVITE_MEMBERS_BUTTON = "inviteMembersButton"
   const val CHANGE_BUTTON = "changeButton"
@@ -113,7 +110,7 @@ fun OrganizationOverviewScreen(
         SelectedOrganizationVMProvider.viewModel,
 ) {
 
-  // Remember coroutine scope and snackbar host state for handling async operations and messages
+  // Remember snackbar host state to handle error messages
   val snackBarHostState = remember { SnackbarHostState() }
 
   // Collect state from ViewModels

@@ -88,6 +88,7 @@ fun FilterListScreen(
                 tint = MaterialTheme.colorScheme.primary)
           }
         }
+      Spacer(Modifier.height(SpacingLarge))
 
     // ----- Scrollable list -----
     LazyColumn(modifier = Modifier.weight(Weight).testTag(listTag)) {

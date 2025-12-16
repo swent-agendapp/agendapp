@@ -14,11 +14,14 @@ import androidx.compose.ui.res.stringResource
 import com.android.sample.R
 import com.android.sample.model.authentication.User
 import com.android.sample.ui.calendar.CalendarScreenTestTags
+import com.android.sample.ui.common.MemberSelectionList
+import com.android.sample.ui.common.MemberSelectionListOptions
 import com.android.sample.ui.theme.AlphaLow
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingLarge
 import com.android.sample.ui.theme.PaddingSmall
 import com.android.sample.ui.theme.SpacingLarge
+import com.android.sample.ui.theme.WeightVeryHeavy
 
 // Assisted by AI
 
@@ -115,7 +118,7 @@ fun FilterBottomSheet(users: List<User>, onDismiss: () -> Unit, onApply: (Map<St
                   ) {
                     FilterCategoryItem(
                         title = stringResource(R.string.filter_event_type),
-                        count = eventTypeFilters.size,
+                        count = participantFilters.size,
                         tag = FilterScreenTestTags.CATEGORY_EVENT_TYPE,
                         onClick = { currentPage = FilterPage.EVENT_TYPE },
                     )
@@ -213,27 +216,50 @@ fun FilterBottomSheet(users: List<User>, onDismiss: () -> Unit, onApply: (Map<St
           // PARTICIPANTS FILTER SCREEN
           // -------------------------------
           FilterPage.PARTICIPANTS -> {
-            val participants =
-                listOf(
-                    "Alice",
-                    "Bob",
-                    "Charlie",
-                    "David",
-                    "Emma",
-                    "Lucas",
-                    "Sophie",
-                    "Martin",
-                    "Olivia",
-                    "Noah")
+              val labelToId = remember(users) {
+                  users.associateBy(
+                      keySelector = { it.display() },
+                      valueTransform = { it.id }
+                  )
+              }
+              val idToLabel = remember(users) {
+                  users.associateBy(
+                      keySelector = { it.id },
+                      valueTransform = { it.display() }
+                  )
+              }
+              val participantLabels = remember(users) {
+                  users
+                      .map { it.display() }
+                      .distinct()
+                      .sortedBy { it.trim().lowercase() }
+              }
+
+              val selectedLabels = remember(participantFilters, idToLabel) {
+                  participantFilters.mapNotNull { idToLabel[it] }
+              }
+
+//            val participants =
+//                listOf(
+//                    "Alice",
+//                    "Bob",
+//                    "Charlie",
+//                    "David",
+//                    "Emma",
+//                    "Lucas",
+//                    "Sophie",
+//                    "Martin",
+//                    "Olivia",
+//                    "Noah")
 
             FilterListScreen(
                 title = stringResource(R.string.filter_participants),
-                items = participants,
-                selected = participantFilters,
+                items = participantLabels,
+                selected = selectedLabels,
                 testTagPrefix = "ParticipantFilter",
                 onBack = { currentPage = FilterPage.MAIN },
-                onApply = { selections ->
-                  participantFilters = selections
+                onApply = { selectionsLabels ->
+                    participantFilters = selectionsLabels.mapNotNull { labelToId[it] }
 
                   onApply(
                       mapOf(

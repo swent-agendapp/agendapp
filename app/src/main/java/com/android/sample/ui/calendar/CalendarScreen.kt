@@ -31,6 +31,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
+import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.calendar.Event
 import com.android.sample.ui.calendar.filters.FilterBottomSheet
 import com.android.sample.ui.calendar.style.CalendarDefaults.DefaultDateRange
@@ -88,6 +90,7 @@ fun CalendarScreen(
     onCreateEvent: () -> Unit = {},
     onEventClick: (Event) -> Unit = {}
 ) {
+    var users by remember { mutableStateOf<List<User>>(emptyList()) }
   // initialize the week from monday to friday
   var currentDateRange by remember { mutableStateOf(DefaultDateRange) }
 
@@ -102,6 +105,19 @@ fun CalendarScreen(
 
   // Host state for displaying a snack bar in case of errors
   val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(selectedOrgId) {
+        val orgId = selectedOrgId ?: return@LaunchedEffect
+        if (orgId.isBlank()) return@LaunchedEffect
+
+        try {
+            val userRepo = UserRepositoryProvider.repository
+            val memberIds = userRepo.getMembersIds(orgId)
+            users = userRepo.getUsersByIds(memberIds)
+        } catch (_: Exception) {
+        }
+    }
+
 
   // Fetch events when the screen is recomposed
   LaunchedEffect(currentDateRange, selectedOrgId) {
@@ -165,6 +181,7 @@ fun CalendarScreen(
             onEventClick = onEventClick)
         if (showFilterSheet) {
           FilterBottomSheet(
+              users = users,
               onDismiss = { showFilterSheet = false },
               onApply = { filters ->
                 calendarViewModel.applyFilters(filters)

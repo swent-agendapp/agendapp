@@ -42,13 +42,13 @@ import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.DefaultCardElevation
 import com.android.sample.ui.theme.GeneralPalette
 import com.android.sample.ui.theme.PaddingMedium
+import com.android.sample.ui.theme.WeightExtraHeavy
 import com.android.sample.ui.theme.WeightVeryHeavy
 
 // Assisted by AI
 
-/** Test tags for MemberList composables. */
+/** Test tags for MemberList composable. */
 object MemberListTestTags {
-  const val MEMBER_LIST = "member_list"
   const val MEMBER_SEARCH_BAR = "member_search_bar"
 
   fun memberItemTag(memberId: String): String = "member_item_$memberId"
@@ -86,7 +86,7 @@ fun MemberList(
               disabledContentColor = GeneralPalette.OnSurface),
       elevation = CardDefaults.cardElevation(defaultElevation = DefaultCardElevation),
       shape = RoundedCornerShape(CornerRadiusLarge)) {
-        Column(modifier = modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
           MemberSearchBar(
               searchQuery = searchQuery,
               onSearchQueryChange = { searchQuery = it },
@@ -139,41 +139,39 @@ private fun MemberLazyList(
     admins: List<User> = emptyList(),
     onMemberClick: (User) -> Unit = {},
 ) {
-  LazyColumn(
-      modifier = modifier.fillMaxWidth().testTag(MemberListTestTags.MEMBER_LIST),
-      verticalArrangement = Arrangement.Top) {
-        items(members) { member ->
-          val isAdmin = admins.any { it.id == member.id }
+  LazyColumn(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Top) {
+    items(members) { member ->
+      val isAdmin = admins.any { it.id == member.id }
 
-          Box(
-              modifier =
-                  modifier
-                      .fillMaxWidth()
-                      .background(Color.White)
-                      .clickable { onMemberClick(member) }
-                      .padding(vertical = PaddingMedium)
-                      .testTag(MemberListTestTags.memberItemTag(member.id)),
-              contentAlignment = Alignment.CenterStart) {
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = PaddingMedium),
-                    verticalAlignment = Alignment.CenterVertically) {
-                      Text(text = member.display(), textAlign = TextAlign.Center)
+      Box(
+          modifier =
+              modifier
+                  .fillMaxWidth()
+                  .background(Color.White)
+                  .clickable { onMemberClick(member) }
+                  .padding(vertical = PaddingMedium)
+                  .testTag(MemberListTestTags.memberItemTag(member.id)),
+          contentAlignment = Alignment.CenterStart) {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = PaddingMedium),
+                verticalAlignment = Alignment.CenterVertically) {
+                  Text(text = member.display(), textAlign = TextAlign.Center)
 
-                      Spacer(modifier = Modifier.weight(1f))
+                  Spacer(modifier = Modifier.weight(WeightExtraHeavy))
 
-                      if (isAdmin) {
-                        Text(
-                            text = stringResource(R.string.admin),
-                            style = MaterialTheme.typography.labelMedium,
-                            fontStyle = FontStyle.Italic,
-                            color = Color.Gray)
-                      }
-                    }
-              }
-          HorizontalDivider(
-              thickness = DividerDefaults.Thickness,
-              color = DividerDefaults.color,
-          )
-        }
-      }
+                  if (isAdmin) {
+                    Text(
+                        text = stringResource(R.string.admin),
+                        style = MaterialTheme.typography.labelMedium,
+                        fontStyle = FontStyle.Italic,
+                        color = Color.Gray)
+                  }
+                }
+          }
+      HorizontalDivider(
+          thickness = DividerDefaults.Thickness,
+          color = DividerDefaults.color,
+      )
+    }
+  }
 }

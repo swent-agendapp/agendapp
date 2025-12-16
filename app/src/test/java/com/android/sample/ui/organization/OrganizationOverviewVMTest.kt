@@ -121,4 +121,52 @@ class OrganizationOverviewViewModelTest {
     val state = vm.uiState.value
     assertEquals(R.string.error_no_organization_to_delete, state.errorMessageId)
   }
+
+  @Test
+  fun `setOrganizationName updates UI state`() {
+    vm.setOrganizationName("New Org Name")
+
+    val state = vm.uiState.value
+    assertEquals("New Org Name", state.organizationName)
+  }
+
+  @Test
+  fun `setMemberList updates UI state`() {
+    vm.setMemberList(memberList)
+
+    val state = vm.uiState.value
+    assertEquals(memberList, state.memberList)
+  }
+
+  @Test
+  fun `setAdminList updates UI state`() {
+    vm.setAdminList(memberList)
+
+    val state = vm.uiState.value
+    assertEquals(memberList, state.adminList)
+  }
+
+  @Test
+  fun `setIsAdmin updates UI state`() {
+    vm.setIsAdmin(true)
+
+    val state = vm.uiState.value
+    assertTrue(state.isAdmin)
+  }
+
+  @Test
+  fun `setLoading updates UI state`() {
+    vm.setLoading(true)
+
+    val state = vm.uiState.value
+    assertTrue(state.isLoading)
+  }
+
+  @Test
+  fun `setError updates UI state`() {
+    vm.setError(R.string.error_no_organization_selected)
+
+    val state = vm.uiState.value
+    assertEquals(R.string.error_no_organization_selected, state.errorMessageId)
+  }
 }

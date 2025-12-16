@@ -75,13 +75,11 @@ object OrganizationOverviewScreenTestTags {
   const val ORGANIZATION_NAME_TEXT = "organizationNameText"
   const val ORGANIZATION_IMAGE = "organizationImage"
   const val MEMBER_COUNT_TEXT = "memberCountText"
+  const val CHANGE_ORGANIZATION_BUTTON = "changeOrganizationButton"
+  const val EDIT_ORGANIZATION_BUTTON = "editOrganizationButton"
   const val CATEGORIES_BUTTON = "categoriesButton"
-  const val MEMBERS_LIST = "membersList"
-  const val INVITE_MEMBERS_BUTTON = "inviteMembersButton"
-  const val CHANGE_BUTTON = "changeButton"
-  const val DELETE_BUTTON = "deleteButton"
-  const val INVITATION_BUTTON = "invitationButton"
-  const val EDIT_CATEGORY_BUTTON = "editCategoryButton"
+  const val MEMBERS_LIST = "memberList"
+  const val INVITATIONS_BUTTON = "invitationButton"
   const val ERROR_SNACKBAR = "errorSnackBar"
 }
 
@@ -160,7 +158,14 @@ fun OrganizationOverviewScreen(
 
                 // Switch organization button (top-left)
                 IconButton(
-                    onClick = onChangeOrganization, modifier = Modifier.align(Alignment.TopStart)) {
+                    onClick = {
+                      onChangeOrganization()
+                      selectedOrganizationViewModel.clearSelection()
+                    },
+                    modifier =
+                        Modifier.align(Alignment.TopStart)
+                            .testTag(
+                                OrganizationOverviewScreenTestTags.CHANGE_ORGANIZATION_BUTTON)) {
                       Icon(
                           imageVector = Icons.Outlined.SwapHoriz,
                           contentDescription = "Change organization")
@@ -169,7 +174,11 @@ fun OrganizationOverviewScreen(
                 // Edit button (top-right)
                 if (uiState.isAdmin) {
                   IconButton(
-                      onClick = onEditOrganization, modifier = Modifier.align(Alignment.TopEnd)) {
+                      onClick = onEditOrganization,
+                      modifier =
+                          Modifier.align(Alignment.TopEnd)
+                              .testTag(
+                                  OrganizationOverviewScreenTestTags.EDIT_ORGANIZATION_BUTTON)) {
                         Icon(
                             imageVector = Icons.Default.Edit,
                             contentDescription = "Edit organization")
@@ -184,21 +193,21 @@ fun OrganizationOverviewScreen(
                           modifier =
                               Modifier.size(SizeMassive)
                                   .clip(CircleShape)
-                                  .background(MaterialTheme.colorScheme.surfaceVariant),
+                                  .background(MaterialTheme.colorScheme.surfaceVariant)
+                                  .testTag(OrganizationOverviewScreenTestTags.ORGANIZATION_IMAGE),
                           contentAlignment = Alignment.Center) {
                             Icon(
                                 imageVector = Icons.Default.Business,
                                 contentDescription = "Organization image",
-                                modifier =
-                                    Modifier.size(SizeHuge)
-                                        .testTag(
-                                            OrganizationOverviewScreenTestTags.ORGANIZATION_IMAGE))
+                                modifier = Modifier.size(SizeHuge))
                           }
-
                       Spacer(modifier = Modifier.height(SpacingMedium))
 
                       // Organization name
                       Text(
+                          modifier =
+                              Modifier.testTag(
+                                  OrganizationOverviewScreenTestTags.ORGANIZATION_NAME_TEXT),
                           text = uiState.organizationName,
                           style = MaterialTheme.typography.titleLarge,
                           fontWeight = FontWeight.Bold)
@@ -207,6 +216,9 @@ fun OrganizationOverviewScreen(
 
                       // Member count
                       Text(
+                          modifier =
+                              Modifier.testTag(
+                                  OrganizationOverviewScreenTestTags.MEMBER_COUNT_TEXT),
                           text =
                               pluralStringResource(
                                   id = R.plurals.members_count,
@@ -234,7 +246,7 @@ fun OrganizationOverviewScreen(
                     OverviewActionCard(
                         modifier =
                             Modifier.weight(WeightExtraHeavy)
-                                .testTag(OrganizationOverviewScreenTestTags.INVITE_MEMBERS_BUTTON),
+                                .testTag(OrganizationOverviewScreenTestTags.INVITATIONS_BUTTON),
                         icon = Icons.Default.PersonAdd,
                         label = stringResource(R.string.invitations_button),
                         onClick = onInvitationClick)

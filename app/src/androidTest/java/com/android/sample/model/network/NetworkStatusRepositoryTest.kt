@@ -11,14 +11,12 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class NetworkStatusRepositoryTest : NetworkTestBase {
-  override lateinit var fakeChecker: FakeConnectivityChecker
-  override lateinit var networkRepo: NetworkStatusRepository
+  override val fakeChecker = FakeConnectivityChecker(state = true)
+  override val networkRepo = NetworkStatusRepository(fakeChecker)
 
   @Before
   fun setup() {
-    // Initialize with fake checker to control connectivity state
-    fakeChecker = FakeConnectivityChecker(state = true) // Default state is connected
-    networkRepo = NetworkStatusRepository(fakeChecker)
+    setupNetworkTestBase()
   }
 
   @Test
@@ -29,7 +27,7 @@ class NetworkStatusRepositoryTest : NetworkTestBase {
 
   @Test
   fun testInitialNoConnectivityState() = runBlocking {
-    fakeChecker.setInternet(false)
+    simulateNoInternet()
 
     val isConnected = networkRepo.isConnected.value
     Assert.assertFalse(isConnected)
@@ -41,11 +39,11 @@ class NetworkStatusRepositoryTest : NetworkTestBase {
     assertTrue(networkRepo.isConnected.value)
 
     // Simulate loss of connectivity
-    fakeChecker.setInternet(false)
+    simulateNoInternet()
     Assert.assertEquals(false, networkRepo.isConnected.value)
 
     // Simulate restoration of connectivity
-    fakeChecker.setInternet(true)
+    simulateInternetRestored()
     Assert.assertEquals(true, networkRepo.isConnected.value)
   }
 }

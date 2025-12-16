@@ -106,20 +106,6 @@ fun AddEventTitleAndDescriptionScreen(
             minLines = DESCRIPTION_FIELD_MIN_LINES)
 
         Spacer(modifier = Modifier.height(SpacingSmall))
-
-        ValidatingTextField(
-            label = "",
-            placeholder = stringResource(R.string.eventDescriptionPlaceholder),
-            testTag = AddEventTestTags.DESCRIPTION_TEXT_FIELD,
-            isError = false,
-            errorMessage = "",
-            value = newEventUIState.description,
-            onValueChange = { addEventViewModel.setDescription(it) },
-            onFocusChange = {},
-            singleLine = false,
-            minLines = DESCRIPTION_FIELD_MIN_LINES)
-
-        Spacer(modifier = Modifier.height(SpacingExtraLarge))
       }
 }
 

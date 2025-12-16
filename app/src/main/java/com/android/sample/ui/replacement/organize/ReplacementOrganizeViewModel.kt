@@ -181,9 +181,9 @@ class ReplacementOrganizeViewModel(
             )
           }
 
-      replacements.forEach { replacement -> addReplacementToRepository(replacement) }
-
       onReplacementsCreated(replacements)
+
+      replacements.forEach { replacement -> addReplacementToRepository(replacement) }
     }
   }
 

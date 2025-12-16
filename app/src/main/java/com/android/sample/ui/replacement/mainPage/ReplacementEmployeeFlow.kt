@@ -11,6 +11,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.model.authentication.User
 import com.android.sample.model.replacement.Replacement
+import com.android.sample.model.replacement.ReplacementStatus
 import com.android.sample.ui.replacement.components.SelectDateRangeScreen
 import com.android.sample.ui.replacement.components.SelectEventScreen
 import java.time.LocalDate
@@ -58,7 +59,10 @@ fun ReplacementEmployeeFlow(
     ReplacementEmployeeStep.LIST,
     ReplacementEmployeeStep.CREATE_OPTIONS -> {
       ReplacementEmployeeListScreen(
-          requests = uiState.incomingRequests.map { it.toUi(uiState.allUser) },
+          requests =
+              uiState.incomingRequests
+                  .filter { it.status == ReplacementStatus.WaitingForAnswer }
+                  .map { it.toUi(uiState.allUser) },
           callbacks =
               ReplacementEmployeeCallbacks(
                   onAccept = { id -> viewModel.acceptRequest(id) },

@@ -186,10 +186,7 @@ class ReplacementEmployeeViewModel(
             replacementRepository.getReplacementsBySubstituteUser(
                 orgId = orgId, userId = user.id) // Substitute side
         _uiState.value =
-            _uiState.value.copy(
-                incomingRequests = list.filter { it.status == ReplacementStatus.WaitingForAnswer },
-                isLoading = false,
-                errorMessage = null)
+            _uiState.value.copy(incomingRequests = list, isLoading = false, errorMessage = null)
       } catch (e: Exception) {
         Log.e("ReplacementEmployeeVM", "Error loading incoming replacements", e)
         _uiState.value =
@@ -223,12 +220,13 @@ class ReplacementEmployeeViewModel(
         val user = userState.value ?: throw IllegalStateException(errorMessageNoAuthenticated)
         val adminsId = userRepository.getAdminsIds(organizationId = orgId)
         val isAdmin = adminsId.contains(user.id)
-        _uiState.value = _uiState.value.copy(isAdmin = isAdmin, isLoading = false, errorMessage = null)
+        _uiState.value =
+            _uiState.value.copy(isAdmin = isAdmin, isLoading = false, errorMessage = null)
       } catch (e: Exception) {
         Log.e("ReplacementEmployeeVM", "Error loading user's right", e)
         _uiState.value =
-          _uiState.value.copy(
-            isLoading = false, errorMessage = "Failed to load users: ${e.message}")
+            _uiState.value.copy(
+                isLoading = false, errorMessage = "Failed to load users: ${e.message}")
       }
     }
   }
@@ -610,13 +608,12 @@ class ReplacementEmployeeViewModel(
             orgId = orgId,
             itemId = replacementId,
         )
-
-        onFinished()
       } catch (e: Exception) {
         Log.e("ReplacementEmployeeVM", "Error sending requests", e)
         _uiState.value =
             _uiState.value.copy(errorMessage = "Could not send replacement requests: ${e.message}")
       }
     }
+    onFinished()
   }
 }

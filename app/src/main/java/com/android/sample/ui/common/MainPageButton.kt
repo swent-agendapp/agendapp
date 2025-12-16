@@ -11,9 +11,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
+import com.android.sample.ui.theme.AlphaMedium
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.GeneralPalette
 import com.android.sample.ui.theme.PaddingLarge
@@ -44,11 +46,15 @@ data class ButtonItem(
  * @param onClick The callback executed when the card is clicked.
  */
 @Composable
-fun MainPageButton(item: ButtonItem, onClick: () -> Unit = {}) {
+fun MainPageButton(item: ButtonItem, onClick: () -> Unit = {}, enabled: Boolean = true) {
   Card(
       shape = RoundedCornerShape(CornerRadiusLarge),
-      modifier = Modifier.fillMaxWidth().testTag(item.tag),
-      onClick = onClick) {
+      modifier =
+          Modifier.fillMaxWidth()
+              .testTag(item.tag)
+              .then(if (!enabled) Modifier.alpha(AlphaMedium) else Modifier),
+      onClick = onClick,
+      enabled = enabled) {
         Row(
             modifier = Modifier.padding(horizontal = PaddingMedium, vertical = PaddingLarge),
             verticalAlignment = Alignment.CenterVertically,

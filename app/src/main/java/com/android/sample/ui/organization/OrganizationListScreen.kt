@@ -26,8 +26,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -80,6 +82,18 @@ fun OrganizationListScreen(
   val useInvitationUIState by useInvitationViewModel.uiState.collectAsState()
   val snackBarHostState = remember { SnackbarHostState() }
 
+  // To trigger a Snackbar if the disabled button is clicked
+  var disabledButtonClicked by remember { mutableStateOf(false) }
+
+  val noNetworkErrorMsg = stringResource(R.string.network_error_message)
+  // Observe the disabled button click and show Snackbar
+  LaunchedEffect(disabledButtonClicked) {
+    if (disabledButtonClicked) {
+      snackBarHostState.showSnackbar(noNetworkErrorMsg)
+      disabledButtonClicked = false
+    }
+  }
+
   val useInvitationErrMsg =
       useInvitationUIState.errorMessageId?.let {
         stringResource(id = useInvitationUIState.errorMessageId!!)
@@ -116,18 +130,31 @@ fun OrganizationListScreen(
                   verticalArrangement = Arrangement.spacedBy(PaddingMedium)) {
                     FloatingButton(
                         onClick = {
-                          scope.launch { sheetState.show() }
-                          organizationViewModel.setShowUseInvitationBottomSheet(true)
+                          if (organizationUIState.networkAvailable) {
+                            scope.launch { sheetState.show() }
+                            organizationViewModel.setShowUseInvitationBottomSheet(true)
+                          } else {
+                            disabledButtonClicked = true
+                          }
                         },
                         icon = Icons.AutoMirrored.Filled.Login,
                         modifier =
-                            Modifier.testTag(OrganizationListScreenTestTags.USE_INVITATION_BUTTON))
+                            Modifier.testTag(OrganizationListScreenTestTags.USE_INVITATION_BUTTON),
+                        enabled = organizationUIState.networkAvailable)
                     FloatingButton(
-                        onClick = onAddOrganizationClicked,
+                        onClick = {
+                          if (organizationUIState.networkAvailable) {
+                            onAddOrganizationClicked()
+                          } else {
+                            disabledButtonClicked = true
+                          }
+                        },
                         icon = Icons.Default.Add,
                         modifier =
                             Modifier.testTag(
-                                OrganizationListScreenTestTags.ADD_ORGANIZATION_BUTTON))
+                                OrganizationListScreenTestTags.ADD_ORGANIZATION_BUTTON),
+                        enabled = organizationUIState.networkAvailable,
+                    )
                   }
             }
       },
@@ -164,13 +191,15 @@ fun OrganizationListScreen(
                       OrganizationList(
                           organizations = organizationUIState.organizations,
                           onOrganizationSelected = { organization ->
-                            // Update selected organization in ViewModel
-                            selectedOrganizationViewModel.selectOrganization(
-                                orgId = organization.id)
-
-                            // Invoke given callback after selection
-                            onOrganizationSelected()
-                          })
+                            if (organizationUIState.networkAvailable) {
+                              selectedOrganizationViewModel.selectOrganization(
+                                  orgId = organization.id)
+                              onOrganizationSelected()
+                            } else {
+                              disabledButtonClicked = true
+                            }
+                          },
+                          enabled = organizationUIState.networkAvailable)
                     }
                   }
             }
@@ -199,6 +228,7 @@ fun OrganizationList(
     modifier: Modifier = Modifier,
     organizations: List<Organization> = emptyList(),
     onOrganizationSelected: (Organization) -> Unit = {},
+    enabled: Boolean = true,
 ) {
   Column(modifier = modifier.testTag(OrganizationListScreenTestTags.ORGANIZATION_LIST)) {
     organizations.forEach { organization ->
@@ -207,7 +237,10 @@ fun OrganizationList(
               title = organization.name,
               icon = Icons.Default.Business,
               tag = OrganizationListScreenTestTags.organizationItemTag(organization.name))
-      MainPageButton(item = organizationItem, onClick = { onOrganizationSelected(organization) })
+      MainPageButton(
+          item = organizationItem,
+          onClick = { onOrganizationSelected(organization) },
+          enabled = enabled)
       Spacer(modifier = modifier.height(SpacingMedium))
     }
   }

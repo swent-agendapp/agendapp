@@ -104,7 +104,7 @@ class OrganizationOverviewViewModel(
 
   /** Updates the admin list in the UI state. */
   fun setAdminList(admins: List<User>) {
-    _uiState.value = _uiState.value.copy(memberList = admins)
+    _uiState.value = _uiState.value.copy(adminList = admins)
   }
 
   /** Sets whether the current user is an admin of the selected organization. */

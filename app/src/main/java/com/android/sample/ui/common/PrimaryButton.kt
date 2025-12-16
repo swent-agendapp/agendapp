@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import com.android.sample.ui.theme.ButtonElevationMedium
@@ -64,7 +65,7 @@ fun PrimaryButton(
         text = unabledText,
         style = MaterialTheme.typography.bodyMedium,
         color = GeneralPalette.Error,
-        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+        textAlign = TextAlign.Center,
         modifier =
             Modifier.fillMaxWidth().padding(horizontal = PaddingMedium).testTag(unabledTextTestTag))
   }

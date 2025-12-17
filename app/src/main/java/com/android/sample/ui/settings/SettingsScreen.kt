@@ -66,17 +66,12 @@ fun SettingsScreen(
     onNavigateToOrganizationList: () -> Unit = {},
     onNavigateToHourRecap: () -> Unit = {}
 ) {
-
   val uiState by settingsViewModel.uiState.collectAsState()
-
-  // Host state for displaying a snack bar in case of errors
   val snackbarHostState = remember { SnackbarHostState() }
-
-  // To trigger a Snackbar if the disabled button is clicked
   var disabledButtonClicked by remember { mutableStateOf(false) }
-
   val noNetworkErrorMsg = stringResource(R.string.network_error_message)
-  // Observe the disabled button click and show Snackbar
+
+  // Show snackbar if a disabled button was clicked
   LaunchedEffect(disabledButtonClicked) {
     if (disabledButtonClicked) {
       snackbarHostState.showSnackbar(noNetworkErrorMsg)
@@ -84,17 +79,40 @@ fun SettingsScreen(
     }
   }
 
+  fun safeClick(enabled: Boolean, action: () -> Unit) {
+    if (enabled) action() else disabledButtonClicked = true
+  }
+
+  val settingsItems =
+      listOf(
+          Triple(
+              stringResource(R.string.settings_profile_button),
+              Icons.Default.Person,
+              onNavigateToUserProfile),
+          Triple(
+              stringResource(R.string.settings_admin_info_button),
+              Icons.Default.AdminPanelSettings,
+              onNavigateToAdminInfo),
+          Triple(stringResource(R.string.settings_map_settings_button), Icons.Default.Map) {
+            safeClick(uiState.networkAvailable, onNavigateToMapSettings)
+          },
+          Triple(
+              stringResource(R.string.settings_organization_selection_button),
+              Icons.Default.Business) {
+                safeClick(uiState.networkAvailable, onNavigateToOrganizationList)
+              },
+          Triple(stringResource(R.string.hour_recap), Icons.Default.AccessTime) {
+            safeClick(uiState.networkAvailable, onNavigateToHourRecap)
+          })
+
   Scaffold(
       snackbarHost = {
         SnackbarHost(
             hostState = snackbarHostState,
             modifier = Modifier.testTag(SettingsScreenTestTags.SNACKBAR))
       },
-      topBar = {
-        MainPageTopBar(
-            title = stringResource(R.string.settings_screen_title),
-        )
-      }) { innerPadding ->
+      topBar = { MainPageTopBar(title = stringResource(R.string.settings_screen_title)) }) {
+          innerPadding ->
         Column(
             modifier =
                 Modifier.padding(innerPadding).padding(PaddingMedium).fillMaxSize().semantics {
@@ -107,66 +125,34 @@ fun SettingsScreen(
                   colors =
                       CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
                     Column(modifier = Modifier.padding(vertical = SpacingSmall)) {
-                      SettingsItemRow(
-                          title = stringResource(R.string.settings_profile_button),
-                          icon = Icons.Default.Person,
-                          testTag = SettingsScreenTestTags.PROFILE_BUTTON,
-                          onClick = onNavigateToUserProfile)
-
-                      DividerSpacer()
-
-                      SettingsItemRow(
-                          title = stringResource(R.string.settings_admin_info_button),
-                          icon = Icons.Default.AdminPanelSettings,
-                          testTag = SettingsScreenTestTags.ADMIN_BUTTON,
-                          onClick = onNavigateToAdminInfo)
-
-                      DividerSpacer()
-
-                      SettingsItemRow(
-                          title = stringResource(R.string.settings_map_settings_button),
-                          icon = Icons.Default.Map,
-                          testTag = SettingsScreenTestTags.MAP_SETTINGS_BUTTON,
-                          onClick = {
-                            if (uiState.networkAvailable) {
-                              onNavigateToMapSettings()
-                            } else {
-                              disabledButtonClicked = true
-                            }
-                          },
-                          enabled = uiState.networkAvailable)
-
-                      DividerSpacer()
-
-                      SettingsItemRow(
-                          title = stringResource(R.string.settings_organization_selection_button),
-                          icon = Icons.Default.Business,
-                          testTag = SettingsScreenTestTags.ORGANIZATION_BUTTON,
-                          onClick = {
-                            if (uiState.networkAvailable) {
-                              onNavigateToOrganizationList()
-                            } else {
-                              disabledButtonClicked = true
-                            }
-                          },
-                          enabled = uiState.networkAvailable)
-
-                      DividerSpacer()
-
-                      SettingsItemRow(
-                          title = stringResource(R.string.hour_recap),
-                          icon = Icons.Default.AccessTime,
-                          testTag = SettingsScreenTestTags.HOURRECAP_BUTTON,
-                          onClick = {
-                            if (uiState.networkAvailable) {
-                              onNavigateToHourRecap()
-                            } else {
-                              disabledButtonClicked = true
-                            }
-                          },
-                          enabled = uiState.networkAvailable)
-
-                      DividerSpacer()
+                      settingsItems.forEachIndexed { index, (title, icon, onClick) ->
+                        SettingsItemRow(
+                            title = title,
+                            icon = icon,
+                            testTag =
+                                when (title) {
+                                  stringResource(R.string.settings_profile_button) ->
+                                      SettingsScreenTestTags.PROFILE_BUTTON
+                                  stringResource(R.string.settings_admin_info_button) ->
+                                      SettingsScreenTestTags.ADMIN_BUTTON
+                                  stringResource(R.string.settings_map_settings_button) ->
+                                      SettingsScreenTestTags.MAP_SETTINGS_BUTTON
+                                  stringResource(R.string.settings_organization_selection_button) ->
+                                      SettingsScreenTestTags.ORGANIZATION_BUTTON
+                                  stringResource(R.string.hour_recap) ->
+                                      SettingsScreenTestTags.HOURRECAP_BUTTON
+                                  else -> "unknown_button"
+                                },
+                            onClick = onClick,
+                            enabled =
+                                when (title) {
+                                  stringResource(R.string.settings_map_settings_button),
+                                  stringResource(R.string.settings_organization_selection_button),
+                                  stringResource(R.string.hour_recap) -> uiState.networkAvailable
+                                  else -> true
+                                })
+                        if (index < settingsItems.lastIndex) DividerSpacer()
+                      }
                     }
                   }
             }

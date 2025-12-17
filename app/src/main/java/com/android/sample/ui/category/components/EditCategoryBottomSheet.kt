@@ -71,6 +71,7 @@ fun CategoryEditBottomSheet(
         initialLabel = initialLabel,
         initialColor = initialColor ?: EventCategory.defaultCategory().color,
         onSave = onSave,
+        onDismiss = onDismiss,
     )
   }
 }
@@ -80,9 +81,8 @@ private fun CategoryEditBottomSheetContent(
     initialLabel: String? = EventCategory.defaultCategory().label,
     initialColor: Color = EventCategory.defaultCategory().color,
     onSave: (String, Color) -> Unit = { _, _ -> },
+    onDismiss: () -> Unit = {},
 ) {
-  // NOW: local bottom-sheet state driven by selectedCategory
-  // LATER: this entire content will be bound to ViewModel uiState and events
   var currentColor by remember(initialColor) { mutableStateOf(initialColor) }
   var label by remember(initialLabel) { mutableStateOf(initialLabel ?: "") }
 
@@ -93,8 +93,6 @@ private fun CategoryEditBottomSheetContent(
               .testTag(EditCategoryScreenTestTags.BOTTOM_SHEET)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
           // Color selector.
-          // NOW: default to EventCategory.defaultCategory() if no selection
-          // LATER: use ViewModel's selectedCategory.color
           Column {
             // this Spacer is a trick visually to align the ColorSelector with the OutlinedTextField
             Spacer(modifier = Modifier.height(SpacingSmall))
@@ -107,8 +105,6 @@ private fun CategoryEditBottomSheetContent(
           Spacer(modifier = Modifier.width(SpacingMedium))
 
           // Text field for the label
-          // NOW: local state derived from selectedCategory
-          // LATER: call editCategoryViewModel.setLabel(categoryId, newLabel)
           OutlinedTextField(
               value = label,
               onValueChange = { newValue -> label = newValue },
@@ -124,6 +120,9 @@ private fun CategoryEditBottomSheetContent(
             modifier = Modifier.testTag(EditCategoryScreenTestTags.BOTTOM_SHEET_SAVE_BUTTON),
             text = stringResource(R.string.edit_category_save_button),
             enabled = label.trim().isNotEmpty(),
-            onClick = { onSave(label, currentColor) })
+            onClick = {
+              onSave(label.trim(), currentColor)
+              onDismiss()
+            })
       }
 }

@@ -1,5 +1,7 @@
 package com.android.sample.ui.filter
 
+import com.android.sample.model.category.EventCategory
+import com.android.sample.model.category.EventCategoryRepository
 import com.android.sample.model.filter.FakeEventCategoryRepository
 import com.android.sample.model.filter.FakeMapRepository
 import com.android.sample.model.filter.FakeUserRepository
@@ -121,5 +123,44 @@ class FilterViewModelTest {
     vm.clearFilters()
 
     assertTrue(vm.uiState.value.filters.isEmpty())
+  }
+
+  @Test
+  fun `does not crash when repository throws exception`() = runTest {
+    // GIVEN: a repository that throws
+    val throwingCategoryRepo = ThrowingEventCategoryRepository()
+
+    val vmWithError =
+        FilterViewModel(categoryRepo = throwingCategoryRepo, userRepo = userRepo, mapRepo = mapRepo)
+
+    // WHEN: organization is already selected -> metadata loading is triggered
+    advanceUntilIdle()
+
+    // THEN: ViewModel is still alive and state is safe
+    val state = vmWithError.uiState.value
+
+    assertTrue(state.eventTypes.isEmpty())
+    assertTrue(state.locations.isEmpty())
+    assertTrue(state.participants.isEmpty())
+  }
+}
+
+private class ThrowingEventCategoryRepository : EventCategoryRepository {
+  override fun getNewUid(): String {
+    // Not needed for this test
+    return "unused"
+  }
+
+  override suspend fun getAllCategories(orgId: String): List<EventCategory> {
+    throw RuntimeException("Test exception")
+  }
+
+  override suspend fun deleteCategory(orgId: String, itemId: String) {
+    // Not needed for this test
+  }
+
+  override suspend fun getCategoryById(orgId: String, itemId: String): EventCategory? {
+    // Not needed for this test
+    return null
   }
 }

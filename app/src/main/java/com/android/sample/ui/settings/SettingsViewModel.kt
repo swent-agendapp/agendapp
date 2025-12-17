@@ -17,7 +17,7 @@ open class SettingsViewModel(
     private val networkStatusRepository: NetworkStatusRepository =
         NetworkStatusRepositoryProvider.repository
 ) : ViewModel() {
-  val _uiState = MutableStateFlow(SettingsUiState())
+  private val _uiState = MutableStateFlow(SettingsUiState())
   val uiState: StateFlow<SettingsUiState> = _uiState
 
   init {

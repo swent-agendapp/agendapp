@@ -19,7 +19,7 @@ object EventCategoryMapper : FirestoreMapper<EventCategory> {
   override fun fromDocument(document: DocumentSnapshot): EventCategory? {
     val id = document.id
     val organizationId = document.getString(ORGANIZATION_ID_FIELD) ?: return null
-    val index = document.getLong(INDEX_FIELD) ?: -1
+    val index = document.getLong(INDEX_FIELD) ?: 0
     val label = document.getString(LABEL_FIELD) ?: "Uncategorized"
     val color = document.getLong(COLOR_FIELD) ?: EventPalette.NoCategory.value.toLong()
     val isDefault = document.getBoolean(IS_DEFAULT_FIELD) ?: true
@@ -36,7 +36,7 @@ object EventCategoryMapper : FirestoreMapper<EventCategory> {
   override fun fromMap(data: Map<String, Any?>): EventCategory? {
     val id = data[ID_FIELD] as? String ?: return null
     val organizationId = data[ORGANIZATION_ID_FIELD] as? String ?: return null
-    val index = data[INDEX_FIELD] as? Long ?: -1
+    val index = data[INDEX_FIELD] as? Long ?: 0
     val label = data[LABEL_FIELD] as? String ?: "Uncategorized"
     val color = data[COLOR_FIELD] as? Long ?: EventPalette.NoCategory.value.toLong()
     val isDefault = data[IS_DEFAULT_FIELD] as? Boolean ?: true

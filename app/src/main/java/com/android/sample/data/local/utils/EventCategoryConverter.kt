@@ -38,7 +38,7 @@ class EventCategoryConverter : PropertyConverter<EventCategory, String> {
     val json = JSONObject(databaseValue)
     val id = json.optString(KEY_ID, UUID.randomUUID().toString())
     val organizationId = json.optString(KEY_ORG_ID, UUID.randomUUID().toString())
-    val index = json.optInt(KEY_INDEX, 0)
+    val index = json.optInt(KEY_INDEX, -1)
     val label = json.optString(KEY_LABEL, "")
     val colorLong = json.optLong(KEY_COLOR, EventPalette.NoCategory.value.toLong())
     val color = Color(colorLong.toULong())

@@ -148,6 +148,7 @@ fun AddEventTimeAndRecurrenceScreen(
                     icon = { Icon(Icons.Outlined.CalendarMonth, contentDescription = null) },
                     label = stringResource(R.string.endDatePickerLabel))
                 Spacer(Modifier.height(SpacingSmall))
+
                 DatePickerFieldToModal(
                     label = "",
                     modifier = Modifier.fillMaxWidth().testTag(AddEventTestTags.END_DATE_FIELD),
@@ -192,7 +193,9 @@ fun AddEventTimeAndRecurrenceScreen(
         }
 
         Spacer(modifier = Modifier.height(SpacingLarge))
-
+        val recurrenceEndRequired = selectedRecurrence != RecurrenceStatus.OneTime
+        val recurrenceEndMissing =
+            recurrenceEndRequired && newEventUIState.recurrenceEndInstant == null
         DatePickerFieldToModal(
             label = stringResource(R.string.recurrenceEndPickerLabel),
             modifier = Modifier.testTag(AddEventTestTags.END_RECURRENCE_FIELD),
@@ -200,9 +203,8 @@ fun AddEventTimeAndRecurrenceScreen(
               addEventViewModel.setRecurrenceEndTime(
                   DateTimeUtils.instantWithDate(newEventUIState.startInstant, date = date))
             },
-            enabled = (selectedRecurrence != RecurrenceStatus.OneTime),
-            initialInstant = newEventUIState.recurrenceEndInstant)
-
+            enabled = recurrenceEndRequired,
+            initialInstant = newEventUIState.recurrenceEndInstant ?: newEventUIState.startInstant)
         Spacer(modifier = Modifier.height(SpacingExtraLarge))
       }
 
@@ -252,13 +254,19 @@ fun AddEventTimeAndRecurrenceBottomBar(
   val newEventUIState by addEventViewModel.uiState.collectAsState()
   val timeIsCoherent by
       remember(newEventUIState) { derivedStateOf { !addEventViewModel.startTimeIsAfterEndTime() } }
-
+  val recurrenceEndOk by
+      remember(newEventUIState) {
+        derivedStateOf {
+          newEventUIState.recurrenceMode == RecurrenceStatus.OneTime ||
+              newEventUIState.recurrenceEndInstant != null
+        }
+      }
   BottomNavigationButtons(
       onNext = onNext,
       onBack = onBack,
       backButtonText = stringResource(R.string.goBack),
       nextButtonText = stringResource(R.string.next),
-      canGoNext = timeIsCoherent,
+      canGoNext = timeIsCoherent && recurrenceEndOk,
       backButtonTestTag = AddEventTestTags.BACK_BUTTON,
       nextButtonTestTag = AddEventTestTags.NEXT_BUTTON)
 }

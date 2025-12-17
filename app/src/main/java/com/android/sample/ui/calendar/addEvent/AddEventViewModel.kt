@@ -45,7 +45,7 @@ data class AddCalendarEventUIState(
     val description: String = "",
     val startInstant: Instant = Instant.now(),
     val endInstant: Instant = Instant.now().plus(Duration.ofHours(1)),
-    val recurrenceEndInstant: Instant = Instant.now().plus(Duration.ofHours(1)),
+    val recurrenceEndInstant: Instant? = null,
     val recurrenceMode: RecurrenceStatus = RecurrenceStatus.OneTime,
     val participants: Set<User> = emptySet(),
     val category: EventCategory = EventCategory.defaultCategory(),
@@ -120,7 +120,7 @@ class AddEventViewModel(
                 participants = state.participants.map { it.id }.toSet(),
                 category = state.category,
                 recurrence = state.recurrenceMode,
-                endRecurrence = state.recurrenceEndInstant)
+                endRecurrence = state.recurrenceEndInstant ?: state.endInstant)
             .first()
 
     _uiState.update { it.copy(draftEvent = draftEvent) }
@@ -152,7 +152,7 @@ class AddEventViewModel(
             category = state.category,
             participants = state.participants.map { it.id }.toSet(),
             recurrence = state.recurrenceMode,
-            endRecurrence = state.recurrenceEndInstant)
+            endRecurrence = state.recurrenceEndInstant ?: state.endInstant)
 
     newEvents.forEach { addEventToRepository(it) }
   }
@@ -189,9 +189,11 @@ class AddEventViewModel(
    * @return `true` if the recurrence mode is active and the start time occurs after the recurrence
    *   end time.
    */
-  fun startTimeIsAfterEndRecurrenceTime() =
-      _uiState.value.recurrenceMode != RecurrenceStatus.OneTime &&
-          _uiState.value.startInstant.isAfter(_uiState.value.recurrenceEndInstant)
+  fun startTimeIsAfterEndRecurrenceTime(): Boolean {
+    val state = _uiState.value
+    val end = state.recurrenceEndInstant ?: return false
+    return state.recurrenceMode != RecurrenceStatus.OneTime && state.startInstant.isAfter(end)
+  }
 
   /**
    * @return `true` if all essential fields are valid.
@@ -201,7 +203,11 @@ class AddEventViewModel(
    * - Description must not be blank
    * - Start time must precede end time
    */
-  fun allFieldsValid() = !(titleIsBlank() || descriptionIsBlank() || startTimeIsAfterEndTime())
+  fun allFieldsValid() =
+      !(titleIsBlank() ||
+          descriptionIsBlank() ||
+          startTimeIsAfterEndTime() ||
+          recurrenceEndIsMissing())
 
   /** Advances the add-event wizard to the next step, if any. */
   fun nextStep() {
@@ -223,7 +229,17 @@ class AddEventViewModel(
 
   /** Sets a new recurrence mode for the event draft. */
   fun setRecurrenceMode(mode: RecurrenceStatus) {
-    _uiState.update { it.copy(recurrenceMode = mode) }
+    _uiState.update { state ->
+      val newEnd =
+          when (mode) {
+            RecurrenceStatus.OneTime -> null
+            else ->
+                if (state.recurrenceMode == RecurrenceStatus.OneTime) null
+                else state.recurrenceEndInstant
+          }
+
+      state.copy(recurrenceMode = mode, recurrenceEndInstant = newEnd)
+    }
   }
 
   /** Updates the event title. */
@@ -276,4 +292,8 @@ class AddEventViewModel(
   fun resetUiState() {
     _uiState.value = AddCalendarEventUIState()
   }
+
+  fun recurrenceEndIsMissing() =
+      _uiState.value.recurrenceMode != RecurrenceStatus.OneTime &&
+          _uiState.value.recurrenceEndInstant == null
 }

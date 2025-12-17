@@ -11,6 +11,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
+import com.android.sample.ui.calendar.components.ExtraEventToggle
 import com.android.sample.ui.calendar.editEvent.EditEventTestTags
 import com.android.sample.ui.calendar.editEvent.EditEventViewModel
 import com.android.sample.ui.common.BottomNavigationButtons
@@ -86,6 +87,13 @@ fun EditEventAttendantScreen(
                     .padding(paddingValues),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround) {
+              ExtraEventToggle(
+                  isExtra = uiState.isExtraEvent,
+                  onToggle = editEventViewModel::setIsExtra,
+                  modifier = Modifier.fillMaxWidth().padding(bottom = PaddingLarge),
+                  toggleTestTag = EditEventTestTags.EXTRA_EVENT_TOGGLE,
+                  descriptionTestTag = EditEventTestTags.EXTRA_EVENT_DESCRIPTION,
+              )
               MemberSelectionList(
                   modifier =
                       Modifier.weight(WeightExtraHeavy)

@@ -33,6 +33,7 @@ object EventMapper {
         recurrenceStatus = recurrenceStatus.name,
         category = category,
         location = location,
+        isExtra = isExtra,
     )
   }
 
@@ -59,6 +60,7 @@ object EventMapper {
             runCatching { RecurrenceStatus.valueOf(recurrenceStatus) }
                 .getOrDefault(RecurrenceStatus.OneTime),
         category = category,
-        location = location)
+        location = location,
+        isExtra = isExtra)
   }
 }

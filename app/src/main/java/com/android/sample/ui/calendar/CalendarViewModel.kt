@@ -229,42 +229,40 @@ class CalendarViewModel(
    */
   fun checkUserLocationStatus() {
     viewModelScope.launch {
-      val orgId = selectedOrganizationId.value
-      if (orgId == null) {
-        setErrorMsg("No organization selected")
-        return@launch
-      }
+      val orgId =
+          selectedOrganizationId.value
+              ?: run {
+                setErrorMsg("No organization selected")
+                return@launch
+              }
 
       try {
         val areas = mapRepository.getAllAreas(orgId = orgId)
         val isInside = locationRepository.isUserLocationInAreas(areas, true)
+
         _uiState.value =
             _uiState.value.copy(
                 locationStatus =
                     if (isInside) LocationStatus.INSIDE_AREA else LocationStatus.OUTSIDE_AREA)
 
-        if (isInside) {
-          // Get current user ID
-          val currentUser = authRepository.getCurrentUser()
-          if (currentUser != null) {
-            val now = Instant.now()
-            val startTime = now.minus(2, ChronoUnit.HOURS)
-            val endTime = now.plus(6, ChronoUnit.HOURS)
+        if (!isInside) return@launch
 
-            val events = eventRepository.getEventsBetweenDates(orgId, startTime, endTime)
+        val currentUser = authRepository.getCurrentUser() ?: return@launch
 
-            events.forEach { event ->
-              if (event.participants.contains(currentUser.id)) {
-                val updatedPresence = event.presence.toMutableMap()
-                updatedPresence[currentUser.id] = true
-                val updatedEvent = event.copy(presence = updatedPresence)
-                eventRepository.updateEvent(orgId, event.id, updatedEvent)
-              }
-            }
+        val now = Instant.now()
+        val startTime = now.minus(2, ChronoUnit.HOURS)
+        val endTime = now.plus(6, ChronoUnit.HOURS)
+
+        val events = eventRepository.getEventsBetweenDates(orgId, startTime, endTime)
+
+        events.forEach { event ->
+          if (event.participants.contains(currentUser.id)) {
+            val updatedPresence = event.presence.toMutableMap()
+            updatedPresence[currentUser.id] = true
+            val updatedEvent = event.copy(presence = updatedPresence)
+            eventRepository.updateEvent(orgId, event.id, updatedEvent)
           }
         }
-      } catch (e: SecurityException) {
-        _uiState.value = _uiState.value.copy(locationStatus = LocationStatus.NO_PERMISSION)
       } catch (e: Exception) {
         _uiState.value = _uiState.value.copy(locationStatus = LocationStatus.NO_PERMISSION)
       }

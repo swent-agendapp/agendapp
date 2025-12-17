@@ -30,12 +30,17 @@ import com.android.sample.data.global.repositories.EventRepository
 import com.android.sample.data.local.repositories.EventRepositoryInMemory
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.createEvent
+import com.android.sample.model.filter.FakeEventCategoryRepository
+import com.android.sample.model.filter.FakeSelectedOrganizationViewModel
+import com.android.sample.model.filter.FakeUserRepository
 import com.android.sample.model.map.MapRepository
 import com.android.sample.model.map.MapRepositoryLocal
 import com.android.sample.model.network.FakeConnectivityChecker
 import com.android.sample.model.network.NetworkStatusRepository
 import com.android.sample.model.network.NetworkTestBase
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
+import com.android.sample.ui.calendar.filters.FilterScreenTestTags
+import com.android.sample.ui.calendar.filters.FilterViewModel
 import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.style.CalendarDefaults.DEFAULT_SWIPE_THRESHOLD
 import com.android.sample.ui.calendar.utils.DateTimeUtils
@@ -320,14 +325,21 @@ abstract class BaseCalendarScreenTest : RequiresSelectedOrganizationTestBase, Ne
       private val eventRepo: EventRepository,
       private val mapRepo: MapRepository
   ) : ViewModelProvider.Factory {
+
     override fun <T : ViewModel> create(modelClass: Class<T>): T =
         when {
-          // Provide CalendarViewModel wired to the local repos for tests
           modelClass.isAssignableFrom(CalendarViewModel::class.java) ->
               CalendarViewModel(
                   app = ApplicationProvider.getApplicationContext(),
                   eventRepository = eventRepo,
                   mapRepository = mapRepo)
+                  as T
+          modelClass.isAssignableFrom(FilterViewModel::class.java) ->
+              FilterViewModel(
+                  categoryRepo = FakeEventCategoryRepository(),
+                  userRepo = FakeUserRepository(),
+                  mapRepo = mapRepo,
+                  orgVM = FakeSelectedOrganizationViewModel().apply { setOrg("org123") })
                   as T
           else -> error("Unknown ViewModel class: $modelClass")
         }
@@ -695,6 +707,24 @@ class CalendarPullToRefreshTests : BaseCalendarScreenTest() {
 
     // Assert that pull-to-refresh component is present
     composeTestRule.onNodeWithTag("CalendarPullToRefresh").assertExists()
+  }
+
+  @Test
+  fun clickingApplyButton_appliesFilters_and_closesFilterSheet() {
+    // GIVEN
+    setContentWithLocalRepo()
+
+    // Open Filter BottomSheet
+    composeTestRule.onNodeWithTag(CalendarScreenTestTags.FILTER_BUTTON).performClick()
+
+    // BottomSheet show
+    composeTestRule.onNodeWithTag(FilterScreenTestTags.FILTER_SHEET_CONTENT).assertIsDisplayed()
+
+    // WHEN：click Apply
+    composeTestRule.onNodeWithTag(FilterScreenTestTags.APPLY).performClick()
+
+    // THEN：BottomSheet
+    composeTestRule.onNodeWithTag(FilterScreenTestTags.FILTER_SHEET_CONTENT).assertDoesNotExist()
   }
 }
 

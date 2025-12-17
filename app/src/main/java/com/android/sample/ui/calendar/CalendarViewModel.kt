@@ -16,6 +16,7 @@ import com.android.sample.model.map.MapRepository
 import com.android.sample.model.map.MapRepositoryProvider
 import com.android.sample.model.network.NetworkStatusRepository
 import com.android.sample.model.network.NetworkStatusRepositoryProvider
+import com.android.sample.ui.calendar.filters.EventFilters
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import java.time.Instant
@@ -34,6 +35,7 @@ enum class LocationStatus {
 /**
  * Represents the UI state for the Calendar screen.
  *
+ * @property allEvents A list of all Event objects fetched from the repository.
  * @property events A list of Event objects to be displayed in the Calendar screen.
  * @property errorMsg An error message to be shown when fetching events fails. Null if no error is
  *   present.
@@ -45,6 +47,7 @@ enum class LocationStatus {
  * @property networkAvailable Indicates if the network is available.
  */
 data class CalendarUIState(
+    val allEvents: List<Event> = emptyList(),
     val events: List<Event> = emptyList(),
     val errorMsg: String? = null,
     val isLoading: Boolean = false,
@@ -81,6 +84,7 @@ class CalendarViewModel(
   private val _uiState = MutableStateFlow(CalendarUIState())
   // Publicly exposed immutable UI state
   val uiState: StateFlow<CalendarUIState> = _uiState.asStateFlow()
+  private var currentFilters: EventFilters = EventFilters()
 
   private val selectedOrganizationId: StateFlow<String?> =
       selectedOrganizationViewModel.selectedOrganizationId
@@ -119,6 +123,10 @@ class CalendarViewModel(
     _uiState.value = _uiState.value.copy(events = events)
   }
 
+  private fun setAllEvents(allEvents: List<Event>) {
+    _uiState.value = _uiState.value.copy(allEvents = allEvents)
+  }
+
   /**
    * Helper function to load events using a provided suspend lambda.
    *
@@ -136,6 +144,8 @@ class CalendarViewModel(
       try {
         val events = loadEventsBlock()
         setEvents(events)
+        setAllEvents(events)
+        applyFilters(currentFilters)
       } catch (e: Exception) {
         setErrorMsg("$errorMessage: ${e.message}")
       } finally {
@@ -174,11 +184,6 @@ class CalendarViewModel(
         errorMessage = "Failed to load events between $start and $end")
   }
 
-  // Placeholder for applying filters to the events
-  fun applyFilters(filters: Any) {
-    // Implementation for applying filters goes here
-  }
-
   /**
    * Refreshes events for the current date range (pull-to-refresh functionality).
    *
@@ -194,7 +199,10 @@ class CalendarViewModel(
       try {
         val events =
             eventRepository.getEventsBetweenDates(orgId = orgId, startDate = start, endDate = end)
-        _uiState.value = _uiState.value.copy(events = events, isRefreshing = false, errorMsg = null)
+        _uiState.value =
+            _uiState.value.copy(
+                allEvents = events, events = events, isRefreshing = false, errorMsg = null)
+        applyFilters(currentFilters)
       } catch (e: Exception) {
         setErrorMsg("Failed to refresh events: ${e.message}")
         _uiState.value = _uiState.value.copy(isRefreshing = false)
@@ -270,5 +278,36 @@ class CalendarViewModel(
         CalendarViewModel(app = app)
       }
     }
+  }
+
+  /**
+   * Applies the given filters to the list of events and updates the UI state with the filtered
+   * events.
+   *
+   * @param filters The [EventFilters] object containing the filter criteria.
+   */
+  fun applyFilters(filters: EventFilters) {
+    currentFilters = filters
+    val allEvents = uiState.value.allEvents
+
+    val filtered =
+        allEvents.filter { event ->
+          val participantsMatch =
+              filters.participants.isEmpty() ||
+                  event.participants.any { it in filters.participants }
+
+          val eventTypeMatch =
+              filters.eventTypes.isEmpty() ||
+                  filters.eventTypes.any { it.equals(event.category.label, ignoreCase = true) }
+
+          val locationMatch =
+              filters.locations.isEmpty() ||
+                  (event.location != null &&
+                      filters.locations.any { it.equals(event.location, ignoreCase = true) })
+
+          participantsMatch && eventTypeMatch && locationMatch
+        }
+
+    _uiState.update { it.copy(events = filtered) }
   }
 }

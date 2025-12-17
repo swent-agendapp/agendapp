@@ -14,9 +14,9 @@ import com.android.sample.model.map.LocationRepository
 import com.android.sample.model.map.LocationRepositoryAndroid
 import com.android.sample.model.map.MapRepository
 import com.android.sample.model.map.MapRepositoryProvider
-import com.android.sample.ui.calendar.filters.EventFilters
 import com.android.sample.model.network.NetworkStatusRepository
 import com.android.sample.model.network.NetworkStatusRepositoryProvider
+import com.android.sample.ui.calendar.filters.EventFilters
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import java.time.Instant

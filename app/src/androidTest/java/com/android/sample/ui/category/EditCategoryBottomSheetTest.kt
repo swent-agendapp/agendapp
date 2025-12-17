@@ -9,6 +9,7 @@ import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -16,6 +17,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.sample.R
 import com.android.sample.model.category.EventCategory
 import com.android.sample.ui.category.components.CategoryEditBottomSheet
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -23,15 +25,6 @@ import org.junit.runner.RunWith
 
 // Assisted by AI
 
-/**
- * UI tests for [com.android.sample.ui.category.components.CategoryEditBottomSheet].
- *
- * NOTE (NOW vs LATER):
- * - NOW: we pass [initialLabel] and [initialColor] directly to the composable.
- * - LATER: when the bottom sheet is driven by an EditCategoryViewModel, the setup in this file
- *   should be adapted to initialize a fake ViewModel in @Before and drive the sheet through its
- *   uiState instead of passing these parameters.
- */
 @RunWith(AndroidJUnit4::class)
 class CategoryEditBottomSheetTest {
 
@@ -39,16 +32,12 @@ class CategoryEditBottomSheetTest {
 
   private var defaultColor: Color = EventCategory.defaultCategory().color
   private lateinit var nameLabelString: String
+  private var dismissCalled = false
 
   @Before
   fun setUp() {
     val context = InstrumentationRegistry.getInstrumentation().targetContext
     nameLabelString = context.getString(R.string.edit_category_name_label)
-
-    // LATER: when using a ViewModel, create and configure a fake EditCategoryViewModel here.
-    // For example:
-    // fakeViewModel = FakeEditCategoryViewModel(initialUiState = ...)
-    // and drive the sheet with fakeViewModel.uiState in setContent().
   }
 
   @OptIn(ExperimentalMaterial3Api::class)
@@ -63,14 +52,12 @@ class CategoryEditBottomSheetTest {
               skipPartiallyExpanded = true,
           )
 
-      // LATER: when using a ViewModel, remove initialLabel / initialColor parameters
-      // and instead pass the ViewModel instance down (or read its uiState here).
       CategoryEditBottomSheet(
           showBottomSheet = showBottomSheet,
           sheetState = sheetState,
           initialLabel = initialLabel,
           initialColor = initialColor,
-          onDismiss = {},
+          onDismiss = { dismissCalled = true },
           onSave = { _, _ -> },
       )
     }
@@ -88,7 +75,6 @@ class CategoryEditBottomSheetTest {
         .assertExists()
         .assertIsDisplayed()
 
-    // Label text field, pre-filled with initial label
     composeTestRule.onNodeWithText(label).assertExists().assertIsDisplayed()
 
     // Save button is visible and enabled when label is non-blank
@@ -97,10 +83,6 @@ class CategoryEditBottomSheetTest {
         .assertExists()
         .assertIsDisplayed()
         .assertIsEnabled()
-
-    // NOTE: we do not assert the ColorSelector directly here because it does not receive a
-    // dedicated testTag from this composable.
-    // LATER: if we expose a tag or drive the color from ViewModel, we can assert its state too.
   }
 
   @Test
@@ -138,9 +120,6 @@ class CategoryEditBottomSheetTest {
     // Clear text -> button becomes disabled again
     textField.performTextClearance()
     saveButton.assertIsNotEnabled()
-
-    // LATER: with ViewModel, instead of checking only button state, we might also assert that
-    // the ViewModel receives the updated label (through its events).
   }
 
   @Test
@@ -163,7 +142,20 @@ class CategoryEditBottomSheetTest {
     // Clear text -> button becomes disabled again
     textField.performTextClearance()
     saveButton.assertIsNotEnabled()
+  }
 
-    // LATER: this test can also assert the ViewModel's uiState when the text value changes.
+  @Test
+  fun saveButton_callsOnDismiss() {
+    val label = "My category"
+    setContent(showBottomSheet = true, initialLabel = label, initialColor = defaultColor)
+
+    // Click Save
+    composeTestRule
+        .onNodeWithTag(EditCategoryScreenTestTags.BOTTOM_SHEET_SAVE_BUTTON)
+        .assertIsEnabled()
+        .performClick()
+
+    // onDismiss must have been called
+    composeTestRule.runOnIdle { assertTrue(dismissCalled) }
   }
 }

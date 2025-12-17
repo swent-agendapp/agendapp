@@ -21,6 +21,7 @@ import java.util.UUID
 data class EventCategory(
     val id: String = UUID.randomUUID().toString(),
     val organizationId: String,
+    val index: Int = 0,
     val label: String,
     val color: Color,
     val isDefault: Boolean = false,

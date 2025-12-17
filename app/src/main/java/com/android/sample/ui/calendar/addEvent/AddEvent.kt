@@ -68,6 +68,7 @@ object AddEventTestTags {
 @Composable
 fun AddEventScreen(
     addEventViewModel: AddEventViewModel = viewModel(),
+    onNavigateToEditCategories: () -> Unit = {},
     onFinish: () -> Unit = {},
     onCancel: () -> Unit = {}
 ) {
@@ -89,6 +90,7 @@ fun AddEventScreen(
               AddEventTitleAndDescriptionScreen(
                   modifier = Modifier.padding(padding),
                   addEventViewModel = addEventViewModel,
+                  onNavigateToEditCategories = onNavigateToEditCategories,
               )
           AddEventStep.TIME_AND_RECURRENCE ->
               AddEventTimeAndRecurrenceScreen(

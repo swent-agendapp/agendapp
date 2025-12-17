@@ -63,6 +63,7 @@ private const val DESCRIPTION_MIN_LINES = 4
 fun EditEventScreen(
     eventId: String,
     editEventViewModel: EditEventViewModel = viewModel(),
+    onNavigateToEditCategories: () -> Unit = {},
     onSave: () -> Unit = {},
     onCancel: () -> Unit = {},
     onEditParticipants: () -> Unit = {},
@@ -122,6 +123,7 @@ fun EditEventScreen(
                 CategorySelector(
                     selectedCategory = uiState.category,
                     onCategorySelected = { editEventViewModel.setCategory(it) },
+                    onNavigateToEditCategories = onNavigateToEditCategories,
                     testTag = EditEventTestTags.CATEGORY_SELECTOR,
                     categories = uiState.categoriesList,
                     isLoading = uiState.isLoadingCategories)

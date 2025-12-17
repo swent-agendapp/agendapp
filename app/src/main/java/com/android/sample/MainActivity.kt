@@ -247,7 +247,8 @@ private fun NavGraphBuilder.editEventGraph(navigationActions: NavigationActions)
         EditEventFlow(
             eventId = it,
             onCancel = { navigationActions.navigateBack() },
-            onFinish = { navigationActions.navigateBack() })
+            onFinish = { navigationActions.navigateBack() },
+            onNavigateToEditCategories = { navigationActions.navigateTo(Screen.EditCategory) })
       } ?: run { Log.e("EditEventScreen", "Event id is null") }
     }
   }
@@ -258,6 +259,7 @@ private fun NavGraphBuilder.addEventGraph(navigationActions: NavigationActions) 
   navigation(startDestination = Screen.AddEvent.route, route = "Add Event") {
     composable(Screen.AddEvent.route) {
       AddEventScreen(
+          onNavigateToEditCategories = { navigationActions.navigateTo(Screen.EditCategory) },
           onFinish = { navigationActions.navigateTo(Screen.Calendar) },
           onCancel = { navigationActions.navigateBack() })
     }

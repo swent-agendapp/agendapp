@@ -53,6 +53,7 @@ private const val DESCRIPTION_FIELD_MIN_LINES = 12
 fun AddEventTitleAndDescriptionScreen(
     modifier: Modifier = Modifier,
     addEventViewModel: AddEventViewModel = viewModel(),
+    onNavigateToEditCategories: () -> Unit = {},
 ) {
   val newEventUIState by addEventViewModel.uiState.collectAsState()
 
@@ -95,6 +96,7 @@ fun AddEventTitleAndDescriptionScreen(
           CategorySelector(
               selectedCategory = newEventUIState.category,
               onCategorySelected = { addEventViewModel.setCategory(it) },
+              onNavigateToEditCategories = onNavigateToEditCategories,
               testTag = AddEventTestTags.CATEGORY_SELECTOR,
               categories = newEventUIState.categoriesList,
               isLoading = newEventUIState.isLoadingCategories)

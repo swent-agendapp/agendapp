@@ -34,6 +34,7 @@ object EditEventTestTags {
 fun EditEventFlow(
     eventId: String,
     editEventViewModel: EditEventViewModel = viewModel(),
+    onNavigateToEditCategories: () -> Unit = {},
     onFinish: () -> Unit = {},
     onCancel: () -> Unit = {},
 ) {
@@ -44,6 +45,7 @@ fun EditEventFlow(
       EditEventScreen(
           eventId = eventId,
           editEventViewModel = editEventViewModel,
+          onNavigateToEditCategories = onNavigateToEditCategories,
           onSave = {
             onFinish()
             editEventViewModel.resetUiState()

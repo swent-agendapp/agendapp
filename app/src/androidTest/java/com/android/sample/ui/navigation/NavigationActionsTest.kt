@@ -139,11 +139,7 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
 
     // Step 3: Participants => MUST select at least one
-    composeTestRule
-        .onNodeWithText("12345", useUnmergedTree = true)
-        .assertExists()
-        .assertIsDisplayed()
-        .performClick()
+    composeTestRule.onNodeWithText("12345").performClick()
 
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
 

@@ -5,6 +5,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -18,6 +19,8 @@ import com.android.sample.ui.authentication.SignInScreenTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
+import com.android.sample.ui.calendar.editEvent.EditEventTestTags
+import com.android.sample.ui.calendar.eventOverview.EventOverviewScreenTestTags
 import com.android.sample.ui.category.EditCategoryScreenTestTags
 import com.android.sample.ui.common.BottomBarTestTags
 import com.android.sample.ui.hourRecap.HourRecapTestTags
@@ -224,6 +227,76 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
         .assertIsDisplayed()
         .performClick()
 
+    composeTestRule.onNodeWithTag(EditCategoryScreenTestTags.SCREEN_ROOT).assertIsDisplayed()
+  }
+
+  @Test
+  fun navigate_fromAddEvent_toEditCategories_viaCategorySelector() {
+    composeTestRule.setContent { Agendapp() }
+
+    // Create organization and navigate to calendar
+    createOrganizationAndNavigateToCalendar()
+
+    // Go to add event screen
+    composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertExists().performClick()
+
+    // Open the category selector
+    composeTestRule.onNodeWithTag(AddEventTestTags.CATEGORY_SELECTOR).assertExists().performClick()
+
+    // Click the dedicated option at the bottom of the dropdown
+    composeTestRule.onNodeWithTag("category_selector_create_category").assertExists().performClick()
+
+    // Verify Edit Category screen is displayed
+    composeTestRule.onNodeWithTag(EditCategoryScreenTestTags.SCREEN_ROOT).assertIsDisplayed()
+  }
+
+  @Test
+  fun navigate_fromEditEvent_toEditCategories_viaCategorySelector() {
+    composeTestRule.setContent { Agendapp() }
+
+    // Create organization and navigate to calendar
+    createOrganizationAndNavigateToCalendar()
+
+    // Create an event first
+    composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertExists().performClick()
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.TITLE_TEXT_FIELD)
+        .assertExists()
+        .performTextInput("Test Event")
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.DESCRIPTION_TEXT_FIELD)
+        .assertExists()
+        .performTextInput("Test Description")
+    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.RECURRENCE_STATUS_DROPDOWN)
+        .assertExists()
+        .performClick()
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.recurrenceTag(RecurrenceStatus.Weekly))
+        .assertExists()
+        .performClick()
+    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
+    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
+    composeTestRule.onNodeWithTag(AddEventTestTags.CREATE_BUTTON).assertExists().performClick()
+
+    // Open the created event
+    composeTestRule.onNodeWithText("Test Event").assertExists().performClick()
+
+    // Open Edit screen
+    composeTestRule
+        .onNodeWithTag(EventOverviewScreenTestTags.MODIFY_BUTTON)
+        .assertExists()
+        .performClick()
+    composeTestRule.onNodeWithTag(EditEventTestTags.TITLE_FIELD).assertIsDisplayed()
+
+    // Open the category selector
+    composeTestRule.onNodeWithTag(EditEventTestTags.CATEGORY_SELECTOR).assertExists().performClick()
+
+    // Click the dedicated option at the bottom of the dropdown
+    composeTestRule.onNodeWithTag("category_selector_create_category").assertExists().performClick()
+
+    // Verify Edit Category screen is displayed
     composeTestRule.onNodeWithTag(EditCategoryScreenTestTags.SCREEN_ROOT).assertIsDisplayed()
   }
 

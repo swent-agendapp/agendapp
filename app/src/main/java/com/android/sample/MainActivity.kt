@@ -45,8 +45,9 @@ import com.android.sample.ui.map.MapScreen
 import com.android.sample.ui.navigation.NavigationActions
 import com.android.sample.ui.navigation.Screen
 import com.android.sample.ui.organization.AddOrganizationScreen
+import com.android.sample.ui.organization.EditOrganizationScreen
 import com.android.sample.ui.organization.OrganizationListScreen
-import com.android.sample.ui.organization.OrganizationOverViewScreen
+import com.android.sample.ui.organization.OrganizationOverviewScreen
 import com.android.sample.ui.profile.AdminContactScreen
 import com.android.sample.ui.profile.ProfileScreen
 import com.android.sample.ui.replacement.ReplacementPendingListScreen
@@ -358,12 +359,13 @@ private fun NavGraphBuilder.settingsGraph(
 
     // Organization Overview Screen
     composable(Screen.OrganizationOverview.route) {
-      OrganizationOverViewScreen(
-          onNavigateBack = { navigationActions.navigateBack() },
-          onNavigateToEditCategory = { navigationActions.navigateTo(Screen.EditCategory) },
+      OrganizationOverviewScreen(
+          onNavigateBack = { navigationActions.navigateTo(Screen.Settings) },
           onChangeOrganization = { navigationActions.navigateTo(Screen.ChangeOrganization) },
-          onDeleteOrganization = { navigationActions.navigateTo(Screen.SelectOrganization) },
-          onInvitationClick = { navigationActions.navigateTo(Screen.InvitationOverview) })
+          onEditOrganization = { navigationActions.navigateTo(Screen.EditOrganization) },
+          onCategoriesClick = { navigationActions.navigateTo(Screen.EditCategory) },
+          onInvitationClick = { navigationActions.navigateTo(Screen.InvitationOverview) },
+      )
     }
 
     // Hour Recap Screen
@@ -372,8 +374,14 @@ private fun NavGraphBuilder.settingsGraph(
     }
     composable(Screen.ChangeOrganization.route) {
       OrganizationListScreen(
-          onOrganizationSelected = { navigationActions.navigateTo(Screen.Settings) },
+          onOrganizationSelected = { navigationActions.navigateTo(Screen.OrganizationOverview) },
           onAddOrganizationClicked = { navigationActions.navigateTo(Screen.AddOrganization) })
+    }
+
+    composable(Screen.EditOrganization.route) {
+      EditOrganizationScreen(
+          onNavigateBack = { navigationActions.navigateBack() },
+          onFinish = { navigationActions.navigateTo(Screen.OrganizationOverview) })
     }
   }
 }

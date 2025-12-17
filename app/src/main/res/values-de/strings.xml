@@ -22,7 +22,6 @@
     <string name="recurrenceMenuLabel">Wiederholung</string>
     <string name="finish">Fertig</string>
     <string name="create">Erstellen</string>
-    <string name="change">Änderung</string>
     <string name="delete">Löschen</string>
     <string name="confirmationMessage">Herzlichen Glückwunsch!\nIhr Ereignis wurde erfolgreich erstellt und zum Kalender hinzugefügt</string>
     <string name="cancel">Abbrechen</string>
@@ -189,8 +188,6 @@
     <string name="organization_list_title">Ihre organisationen</string>
     <string name="organization_loading">Organisationen werden geladen</string>
     <string name="organization_name_label">Name der Organisation</string>
-    <string name="organization_none_selected">Keine Organisation ausgewählt</string>
-    <string name="organization_members">Mitglieder</string>
     <string name="error_no_authenticated_user">Kein authentifizierter Benutzer gefunden.</string>
     <string name="error_no_organization_selected">Keine Organisation ausgewählt.</string>
     <string name="error_organization_not_found">Organisation nicht gefunden.</string>
@@ -243,16 +240,6 @@
     <string name="loading_hours">Laden…</string>
     <string name="work_duration_hours">%1$d Std.</string>
     <string name="work_duration_hours_minutes">%1$d Std. %2$d Min.</string>
-
-    <!-- Category -->
-    <string name="delete_category_message">Sind Sie sicher, dass Sie diese Kategorie löschen möchten?</string>
-    <string name="default_category_label">Ohne Kategorie</string>
-    <string name="edit_category_title">Kategorien bearbeiten</string>
-    <string name="edit_category_empty_state_title">Noch keine Kategorien vorhanden.</string>
-    <string name="edit_category_empty_state_message">Erstellen Sie Ihre erste Kategorie über die „+“-Schaltfläche.</string>
-    <string name="edit_category_name_label">Name der Kategorie</string>
-    <string name="edit_category_save_button">Kategorie speichern</string>
-
     <string name="hour_recap">Stundenübersicht</string>
     <string name="hour_recap_events_for_user">Ereignisse für %1$s</string>
     <string name="hour_recap_no_events_for_user">Keine Ereignisse für diesen Benutzer gefunden.</string>
@@ -266,4 +253,26 @@
     <string name="hour_recap_tag_replaced">Wurde ersetzt</string>
     <string name="hour_recap_tag_replacement_taken">Vertretung übernommen</string>
 
+    <!-- Category -->
+    <string name="delete_category_message">Sind Sie sicher, dass Sie diese Kategorie löschen möchten?</string>
+    <string name="default_category_label">Ohne Kategorie</string>
+    <string name="edit_category_title">Kategorien bearbeiten</string>
+    <string name="edit_category_empty_state_title">Noch keine Kategorien vorhanden.</string>
+    <string name="edit_category_empty_state_message">Erstellen Sie Ihre erste Kategorie über die „+“-Schaltfläche.</string>
+    <string name="edit_category_name_label">Name der Kategorie</string>
+    <string name="edit_category_save_button">Kategorie speichern</string>
+
+    <!-- Organization Overview -->
+    <plurals name="members_count">
+        <item quantity="one">%d Mitglied</item>
+        <item quantity="other">%d Mitglieder</item>
+    </plurals>
+    <string name="categories_button">Kategorien</string>
+    <string name="members">Mitglieder</string>
+    <string name="admin">Admin</string>
+    <string name="invitations_button">Einladungscodes</string>
+
+    <!-- Edit Organization -->
+    <string name="error_loading_organization">Organisation konnte nicht geladen werden.</string>
+    <string name="error_editing_organization">Organisation konnte nicht aktualisiert werden.</string>
 </resources>

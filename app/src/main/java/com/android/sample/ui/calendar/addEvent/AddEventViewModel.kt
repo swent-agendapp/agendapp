@@ -121,8 +121,7 @@ class AddEventViewModel(
                 participants = state.participants.map { it.id }.toSet(),
                 category = state.category,
                 recurrence = state.recurrenceMode,
-                endRecurrence = state.recurrenceEndInstant,
-                isExtra = state.isExtraEvent)
+            endRecurrence = state.recurrenceEndInstant ?: state.endInstant,                isExtra = state.isExtraEvent)
             .first()
 
     _uiState.update { it.copy(draftEvent = draftEvent) }
@@ -154,7 +153,7 @@ class AddEventViewModel(
             category = state.category,
             participants = state.participants.map { it.id }.toSet(),
             recurrence = state.recurrenceMode,
-            endRecurrence = state.recurrenceEndInstant,
+            endRecurrence = state.recurrenceEndInstant ?: state.endInstant,
             isExtra = state.isExtraEvent)
 
     newEvents.forEach { addEventToRepository(it) }

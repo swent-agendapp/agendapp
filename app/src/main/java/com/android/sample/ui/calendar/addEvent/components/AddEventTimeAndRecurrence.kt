@@ -59,6 +59,8 @@ import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingMedium
 import com.android.sample.ui.theme.SpacingSmall
 import com.android.sample.ui.theme.WeightExtraHeavy
+import com.android.sample.ui.theme.WeightLight
+import com.android.sample.ui.theme.WeightMedium
 
 /**
  * Second step of event creation flow: select start/end date and time, plus optional recurrence
@@ -97,59 +99,31 @@ fun AddEventTimeAndRecurrenceScreen(
 
         Spacer(modifier = Modifier.height(SpacingExtraLarge))
 
+        // Start row: Start Date + Start Time
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(SpacingMedium)) {
-              Column(modifier = Modifier.weight(WeightExtraHeavy)) {
-                Box(modifier = Modifier.fillMaxWidth()) {
-                  FieldLabelWithIcon(
-                      icon = { Icon(Icons.Outlined.CalendarMonth, contentDescription = null) },
-                      label = stringResource(R.string.startDatePickerLabel))
-                }
-                Spacer(Modifier.height(SpacingSmall))
-                DatePickerFieldToModal(
-                    label = "",
-                    modifier = Modifier.testTag(AddEventTestTags.START_DATE_FIELD),
-                    onDateSelected = { date ->
-                      val newStart =
-                          DateTimeUtils.instantWithDate(newEventUIState.startInstant, date = date)
-                      addEventViewModel.setStartInstant(newStart)
-
-                      if (newEventUIState.endInstant < newStart) {
-                        addEventViewModel.setEndInstant(newStart)
-                      }
-                    },
-                    initialInstant = newEventUIState.startInstant,
-                    enabled = true)
-              }
-
-              Column(modifier = Modifier.weight(WeightExtraHeavy)) {
+            horizontalArrangement = Arrangement.spacedBy(SpacingMedium),
+            verticalAlignment = Alignment.Bottom) {
+              Column(modifier = Modifier.weight(WeightMedium)) {
                 FieldLabelWithIcon(
                     icon = { Icon(Icons.Outlined.CalendarMonth, contentDescription = null) },
-                    label = stringResource(R.string.endDatePickerLabel))
+                    label = stringResource(R.string.startDatePickerLabel))
                 Spacer(Modifier.height(SpacingSmall))
                 DatePickerFieldToModal(
                     label = "",
-                    modifier = Modifier.testTag(AddEventTestTags.END_DATE_FIELD),
+                    modifier = Modifier.fillMaxWidth().testTag(AddEventTestTags.START_DATE_FIELD),
+                    initialInstant = newEventUIState.startInstant,
+                    enabled = true,
                     onDateSelected = { date ->
-                      val candidate =
-                          DateTimeUtils.instantWithDate(newEventUIState.endInstant, date = date)
-
-                      addEventViewModel.setEndInstant(
-                          if (candidate < newEventUIState.startInstant) newEventUIState.startInstant
-                          else candidate)
-                    },
-                    initialInstant = newEventUIState.endInstant,
-                    enabled = true)
+                      val newStart =
+                          DateTimeUtils.instantWithDate(newEventUIState.startInstant, date)
+                      addEventViewModel.setStartInstant(newStart)
+                      if (newEventUIState.endInstant < newStart)
+                          addEventViewModel.setEndInstant(newStart)
+                    })
               }
-            }
 
-        Spacer(modifier = Modifier.height(SpacingLarge))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(SpacingMedium)) {
-              Column(modifier = Modifier.weight(WeightExtraHeavy)) {
+              Column(modifier = Modifier.weight(WeightLight)) {
                 FieldLabelWithIcon(
                     icon = { Icon(Icons.Outlined.AccessTime, contentDescription = null) },
                     label = stringResource(R.string.startTime))
@@ -157,10 +131,38 @@ fun AddEventTimeAndRecurrenceScreen(
                 ClickableOutlinedField(
                     value = DateTimeUtils.formatInstantToTime(newEventUIState.startInstant),
                     testTag = AddEventTestTags.START_TIME_BUTTON,
-                    onClick = { showStartTimePicker = true })
+                    onClick = { showStartTimePicker = true },
+                    modifier = Modifier.fillMaxWidth())
+              }
+            }
+
+        Spacer(modifier = Modifier.height(SpacingLarge))
+
+        // End row: End Date + End Time
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(SpacingMedium),
+            verticalAlignment = Alignment.Bottom) {
+              Column(modifier = Modifier.weight(WeightMedium)) {
+                FieldLabelWithIcon(
+                    icon = { Icon(Icons.Outlined.CalendarMonth, contentDescription = null) },
+                    label = stringResource(R.string.endDatePickerLabel))
+                Spacer(Modifier.height(SpacingSmall))
+                DatePickerFieldToModal(
+                    label = "",
+                    modifier = Modifier.fillMaxWidth().testTag(AddEventTestTags.END_DATE_FIELD),
+                    initialInstant = newEventUIState.endInstant,
+                    enabled = true,
+                    onDateSelected = { date ->
+                      val candidate =
+                          DateTimeUtils.instantWithDate(newEventUIState.endInstant, date)
+                      addEventViewModel.setEndInstant(
+                          if (candidate < newEventUIState.startInstant) newEventUIState.startInstant
+                          else candidate)
+                    })
               }
 
-              Column(modifier = Modifier.weight(WeightExtraHeavy)) {
+              Column(modifier = Modifier.weight(WeightLight)) {
                 FieldLabelWithIcon(
                     icon = { Icon(Icons.Outlined.AccessTime, contentDescription = null) },
                     label = stringResource(R.string.endTime))
@@ -168,7 +170,8 @@ fun AddEventTimeAndRecurrenceScreen(
                 ClickableOutlinedField(
                     value = DateTimeUtils.formatInstantToTime(newEventUIState.endInstant),
                     testTag = AddEventTestTags.END_TIME_BUTTON,
-                    onClick = { showEndTimePicker = true })
+                    onClick = { showEndTimePicker = true },
+                    modifier = Modifier.fillMaxWidth())
               }
             }
 
@@ -277,16 +280,20 @@ private fun FieldLabelWithIcon(icon: @Composable () -> Unit, label: String) {
 }
 
 @Composable
-private fun ClickableOutlinedField(value: String, testTag: String, onClick: () -> Unit) {
-  Box(modifier = Modifier.fillMaxWidth().testTag(testTag)) {
+private fun ClickableOutlinedField(
+    value: String,
+    testTag: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+  Box(modifier = modifier.fillMaxWidth().testTag(testTag).clickable(onClick = onClick)) {
     OutlinedTextField(
         value = value,
         onValueChange = {},
         readOnly = true,
         enabled = true,
-        modifier = Modifier.fillMaxWidth().clickable { onClick() },
+        modifier = Modifier.fillMaxWidth(),
     )
-    Box(modifier = Modifier.matchParentSize().clickable(onClick = onClick))
   }
 }
 

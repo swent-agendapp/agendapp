@@ -1,10 +1,12 @@
 package com.android.sample.e2eTests
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
@@ -147,9 +149,6 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).performClick()
     composeTestRule.waitForIdle()
 
-    composeTestRule.onNodeWithTag(AddEventTestTags.RECURRENCE_STATUS_DROPDOWN).performClick()
-    composeTestRule.waitForIdle()
-
     composeTestRule
         .onNodeWithTag(AddEventTestTags.recurrenceTag(RecurrenceStatus.Weekly))
         .performClick()
@@ -157,11 +156,10 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).performClick()
     composeTestRule.waitForIdle()
 
-    composeTestRule.onAllNodesWithTag(AddEventTestTags.CHECK_BOX_EMPLOYEE)[0].performClick()
+    composeTestRule.onNodeWithText(expectedName).performClick()
     composeTestRule.waitForIdle()
 
-    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).performClick()
-    composeTestRule.waitForIdle()
+    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertIsEnabled().performClick()
 
     composeTestRule.onNodeWithTag(AddEventTestTags.CREATE_BUTTON).performClick()
     composeTestRule.waitForIdle()

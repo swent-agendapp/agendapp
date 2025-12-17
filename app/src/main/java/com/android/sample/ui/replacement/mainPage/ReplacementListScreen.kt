@@ -99,7 +99,6 @@ fun ReplacementEmployeeListScreen(
     isAdmin: Boolean = false,
     adminActions: ReplacementAdminActions = ReplacementAdminActions(),
     createRequestActions: ReplacementCreateRequestActions = ReplacementCreateRequestActions(),
-    processingRequestIds: Set<String> = emptySet(),
 ) {
   var showCreateOptions by remember { mutableStateOf(false) }
 

@@ -136,4 +136,99 @@ class ReplacementPendingViewModelTest {
     assertNotNull(state.errorMessage)
     assertTrue(state.errorMessage!!.contains("Failed to load pending replacements"))
   }
+
+  @Test
+  fun `refresh loads replacements and users`() = runTest {
+    val user1 = User(id = "user1", displayName = "Alice", email = "alice@test.com")
+    val user2 = User(id = "user2", displayName = "Bob", email = "bob@test.com")
+    val users = listOf(user1, user2)
+
+    val mockReplacements = com.android.sample.model.replacement.mockData.getMockReplacements()
+    val event = mockReplacements.first().event
+    val replacement1 =
+        Replacement(
+            id = "repl1",
+            absentUserId = user1.id,
+            substituteUserId = "",
+            event = event,
+            status = com.android.sample.model.replacement.ReplacementStatus.ToProcess)
+
+    val vm = makeVm(replacements = listOf(replacement1), users = users)
+
+    vm.refresh()
+    testDispatcher.scheduler.advanceUntilIdle()
+
+    val state = vm.uiState.value
+    assertFalse(state.isLoading)
+    assertEquals(1, state.toProcess.size)
+    assertEquals(2, state.users.size)
+    assertNull(state.errorMessage)
+  }
+
+  @Test
+  fun `refresh filters out toProcess that have waiting replacements`() = runTest {
+    val mockReplacements = com.android.sample.model.replacement.mockData.getMockReplacements()
+    val event = mockReplacements.first().event
+    val absentUserId = "user1"
+
+    val toProcessReplacement =
+        Replacement(
+            id = "repl1",
+            absentUserId = absentUserId,
+            substituteUserId = "",
+            event = event,
+            status = com.android.sample.model.replacement.ReplacementStatus.ToProcess)
+
+    val waitingReplacement =
+        Replacement(
+            id = "repl2",
+            absentUserId = absentUserId,
+            substituteUserId = "user2",
+            event = event,
+            status = com.android.sample.model.replacement.ReplacementStatus.WaitingForAnswer)
+
+    val vm = makeVm(replacements = listOf(toProcessReplacement, waitingReplacement))
+
+    vm.refresh()
+    testDispatcher.scheduler.advanceUntilIdle()
+
+    val state = vm.uiState.value
+    // toProcess should be filtered out since there's a waiting replacement for same event+user
+    assertEquals(0, state.toProcess.size)
+    assertEquals(1, state.waitingForAnswer.size)
+  }
+
+  @Test
+  fun `refresh separates toProcess and waitingForAnswer correctly`() = runTest {
+    val mockReplacements = com.android.sample.model.replacement.mockData.getMockReplacements()
+    val event1 = mockReplacements[0].event
+    val event2 = mockReplacements[1].event
+
+    val toProcessReplacement =
+        Replacement(
+            id = "repl1",
+            absentUserId = "user1",
+            substituteUserId = "",
+            event = event1,
+            status = com.android.sample.model.replacement.ReplacementStatus.ToProcess)
+
+    val waitingReplacement =
+        Replacement(
+            id = "repl2",
+            absentUserId = "user2",
+            substituteUserId = "user3",
+            event = event2,
+            status = com.android.sample.model.replacement.ReplacementStatus.WaitingForAnswer)
+
+    val vm = makeVm(replacements = listOf(toProcessReplacement, waitingReplacement))
+
+    vm.refresh()
+    testDispatcher.scheduler.advanceUntilIdle()
+
+    val state = vm.uiState.value
+    assertEquals(1, state.toProcess.size)
+    assertEquals(1, state.waitingForAnswer.size)
+    assertEquals("repl1", state.toProcess[0].id)
+    assertEquals("repl2", state.waitingForAnswer[0].id)
+  }
 }

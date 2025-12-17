@@ -327,7 +327,7 @@ private fun ClickableOutlinedField(value: String, testTag: String, onClick: () -
         onValueChange = {},
         readOnly = true,
         enabled = true,
-        modifier = Modifier.fillMaxWidth().testTag(testTag).clickable { onClick() },
+        modifier = Modifier.fillMaxWidth().clickable { onClick() },
     )
     Box(modifier = Modifier.matchParentSize().clickable(onClick = onClick))
   }

@@ -50,27 +50,22 @@ class EditEventScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
 
     composeTestRule
         .onNodeWithTag(EditEventTestTags.TITLE_FIELD, useUnmergedTree = true)
-        .performScrollTo()
         .assertExists()
 
     composeTestRule
         .onNodeWithTag(EditEventTestTags.START_DATE_FIELD, useUnmergedTree = true)
-        .performScrollTo()
         .assertExists()
 
     composeTestRule
         .onNodeWithTag(EditEventTestTags.END_DATE_FIELD, useUnmergedTree = true)
-        .performScrollTo()
         .assertExists()
 
     composeTestRule
         .onNodeWithTag(EditEventTestTags.START_TIME_BUTTON, useUnmergedTree = true)
-        .performScrollTo()
         .assertExists()
 
     composeTestRule
         .onNodeWithTag(EditEventTestTags.END_TIME_BUTTON, useUnmergedTree = true)
-        .performScrollTo()
         .assertExists()
 
     composeTestRule.waitForIdle()

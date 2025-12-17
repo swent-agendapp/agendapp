@@ -37,6 +37,8 @@ object AddEventTestTags {
   const val START_TIME_BUTTON = "start_time_button"
   const val END_TIME_BUTTON = "end_time_button"
   const val CHECK_BOX_EMPLOYEE = "check_box_employee"
+  const val EXTRA_EVENT_TOGGLE = "extra_event_toggle"
+  const val EXTRA_EVENT_DESCRIPTION = "extra_event_description"
   const val RECURRENCE_STATUS_DROPDOWN = "recurrence_status_dropdown"
   const val NEXT_BUTTON = "next_button"
   const val BACK_BUTTON = "back_button"

@@ -20,6 +20,10 @@
     <string name="endDatePickerLabel">Date de fin</string>
     <string name="recurrenceEndPickerLabel">Fin de récurrence</string>
     <string name="recurrenceMenuLabel">Récurrence</string>
+    <string name="extra_event_label">Événement supplémentaire</string>
+    <string name="extra_event_description_on">Cet événement est marqué comme supplémentaire et ne sera pas payé à l\'heure.</string>
+    <string name="extra_event_description_off">Cet événement sera traité comme un événement régulier.</string>
+    <string name="extra_event_info">Cet événement est marqué comme supplémentaire et ne sera pas payé à l\'heure.</string>
     <string name="finish">Terminer</string>
     <string name="create">Créer</string>
     <string name="delete">Supprimer</string>
@@ -198,6 +202,7 @@
     <string name="hour_recap_generate">Générer le récapitulatif</string>
     <string name="hour_recap_completed_hours_label">Terminées</string>
     <string name="hour_recap_planned_hours_label">Planifiées</string>
+    <string name="hour_recap_extra_events_label">Extra</string>
     <string name="export_excel">Exporter vers Excel</string>
 
     <!-- Filters -->

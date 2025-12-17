@@ -37,6 +37,7 @@ import com.android.sample.R
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags.CHECK_BOX_EMPLOYEE
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
+import com.android.sample.ui.calendar.components.ExtraEventToggle
 import com.android.sample.ui.common.BottomNavigationButtons
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.PaddingExtraLarge
@@ -72,6 +73,13 @@ fun AddEventAttendantScreen(
                   style = MaterialTheme.typography.headlineMedium,
                   modifier = Modifier.testTag(AddEventTestTags.INSTRUCTION_TEXT))
             }
+        ExtraEventToggle(
+            isExtra = newEventUIState.isExtraEvent,
+            onToggle = addEventViewModel::setIsExtra,
+            modifier = Modifier.fillMaxWidth().padding(vertical = PaddingSmall),
+            toggleTestTag = AddEventTestTags.EXTRA_EVENT_TOGGLE,
+            descriptionTestTag = AddEventTestTags.EXTRA_EVENT_DESCRIPTION,
+        )
         Card(
             modifier =
                 Modifier.weight(WeightExtraHeavy)

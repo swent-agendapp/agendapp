@@ -196,6 +196,21 @@ class AddEventViewModelTest {
     assertTrue(events.any { it.title == "Meeting" && it.description == "Team sync" })
   }
 
+  @Test
+  fun `setIsExtra flags event as extra`() = runTest {
+    val vm = makeVm()
+
+    vm.setTitle("Extra shift")
+    vm.setDescription("Evening support")
+    vm.setIsExtra(true)
+
+    vm.addEvent()
+    testDispatcher.scheduler.advanceUntilIdle()
+
+    val events = eventRepository.getAllEvents(selectedOrganizationID)
+    assertTrue(events.any { it.isExtra })
+  }
+
   // ------------------------------------------------------------
   // Helpers
   // ------------------------------------------------------------

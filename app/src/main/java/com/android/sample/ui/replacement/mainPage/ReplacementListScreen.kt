@@ -203,7 +203,6 @@ fun ReplacementEmployeeListScreen(
                 }
               } else {
                 items(requests, key = { it.id }) { req ->
-                  val isProcessing = processingRequestIds.contains(req.id)
                   ReplacementRequestCard(
                       data = req,
                       onAccept = { callbacks.onAccept(req.id) },

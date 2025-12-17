@@ -50,9 +50,7 @@ fun ReplacementEmployeeFlow(
       null -> Unit
     }
 
-    if (uiState.lastAction != null) {
-      viewModel.clearLastAction()
-    }
+    uiState.lastAction?.let { viewModel.clearLastAction() }
   }
 
   when (uiState.step) {

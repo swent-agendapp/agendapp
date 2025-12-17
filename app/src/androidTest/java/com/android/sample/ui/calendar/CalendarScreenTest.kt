@@ -11,6 +11,7 @@ import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeDown
 import androidx.compose.ui.test.swipeUp
@@ -33,6 +34,7 @@ import com.android.sample.model.filter.FakeUserRepository
 import com.android.sample.model.map.MapRepository
 import com.android.sample.model.map.MapRepositoryLocal
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
+import com.android.sample.ui.calendar.filters.FilterScreenTestTags
 import com.android.sample.ui.calendar.filters.FilterViewModel
 import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.style.CalendarDefaults.DEFAULT_SWIPE_THRESHOLD
@@ -692,5 +694,23 @@ class CalendarPullToRefreshTests : BaseCalendarScreenTest() {
 
     // Assert that pull-to-refresh component is present
     composeTestRule.onNodeWithTag("CalendarPullToRefresh").assertExists()
+  }
+
+  @Test
+  fun clickingApplyButton_appliesFilters_and_closesFilterSheet() {
+    // GIVEN
+    setContentWithLocalRepo()
+
+    // Open Filter BottomSheet
+    composeTestRule.onNodeWithTag(CalendarScreenTestTags.FILTER_BUTTON).performClick()
+
+    // BottomSheet show
+    composeTestRule.onNodeWithTag(FilterScreenTestTags.FILTER_SHEET_CONTENT).assertIsDisplayed()
+
+    // WHEN：click Apply
+    composeTestRule.onNodeWithTag(FilterScreenTestTags.APPLY).performClick()
+
+    // THEN：BottomSheet
+    composeTestRule.onNodeWithTag(FilterScreenTestTags.FILTER_SHEET_CONTENT).assertDoesNotExist()
   }
 }

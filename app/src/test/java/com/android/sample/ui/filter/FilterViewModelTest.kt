@@ -2,9 +2,9 @@ package com.android.sample.ui.filter
 
 import com.android.sample.model.filter.FakeEventCategoryRepository
 import com.android.sample.model.filter.FakeMapRepository
-import com.android.sample.model.filter.FakeSelectedOrganizationViewModel
 import com.android.sample.model.filter.FakeUserRepository
 import com.android.sample.model.map.Area
+import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.filters.FilterViewModel
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -27,20 +27,23 @@ class FilterViewModelTest {
   private lateinit var categoryRepo: FakeEventCategoryRepository
   private lateinit var userRepo: FakeUserRepository
   private lateinit var mapRepo: FakeMapRepository
-  private lateinit var orgVM: FakeSelectedOrganizationViewModel
 
   private lateinit var vm: FilterViewModel
 
+  private val selectedOrganizationID = "org123"
+
   @Before
   fun setup() {
+    // Required because ViewModel uses viewModelScope (Dispatchers.Main)
     Dispatchers.setMain(dispatcher)
 
     categoryRepo = FakeEventCategoryRepository()
     userRepo = FakeUserRepository()
     mapRepo = FakeMapRepository()
 
+    // Seed map data
     mapRepo.seedAreas(
-        orgId = "org123",
+        orgId = selectedOrganizationID,
         areas =
             listOf(
                 Area(
@@ -53,17 +56,23 @@ class FilterViewModelTest {
                     label = "Salle 2",
                     marker = mapRepo.fakeMarker("Salle 2"),
                     radius = 15.0)))
-    orgVM = FakeSelectedOrganizationViewModel()
 
-    vm =
-        FilterViewModel(
-            categoryRepo = categoryRepo, userRepo = userRepo, mapRepo = mapRepo, orgVM = orgVM)
+    // Use real selected organization (global app state)
+    SelectedOrganizationRepository.changeSelectedOrganization(selectedOrganizationID)
+
+    vm = FilterViewModel(categoryRepo = categoryRepo, userRepo = userRepo, mapRepo = mapRepo)
   }
 
   @After
   fun teardown() {
     Dispatchers.resetMain()
+    // Optional but good practice if available
+    // SelectedOrganizationRepository.clear()
   }
+
+  // ------------------------------------------------------------
+  //  UI State tests
+  // ------------------------------------------------------------
 
   @Test
   fun `initial state is empty`() {
@@ -79,8 +88,8 @@ class FilterViewModelTest {
   }
 
   @Test
-  fun `loads metadata when organization changes`() = runTest {
-    orgVM.setOrg("org123")
+  fun `loads metadata when organization is selected`() = runTest {
+    // Organization already set in @Before
     advanceUntilIdle()
 
     val state = vm.uiState.value

@@ -282,4 +282,8 @@
     <!-- Edit Organization -->
     <string name="error_loading_organization">Impossible de charger l’organisation.</string>
     <string name="error_editing_organization">Impossible de mettre à jour l’organisation.</string>
+
+    <!-- Network -->
+    <string name="network_error_message">Une erreur réseau s\'est produite. Veuillez vérifier votre connexion internet et réessayer.</string>
+
 </resources>

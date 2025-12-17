@@ -283,4 +283,8 @@
     <!-- Edit Organization -->
     <string name="error_loading_organization">Organisation konnte nicht geladen werden.</string>
     <string name="error_editing_organization">Organisation konnte nicht aktualisiert werden.</string>
+
+    <!-- Network -->
+    <string name="network_error_message">Ein Netzwerkfehler ist aufgetreten. Bitte prüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.</string>
+
 </resources>

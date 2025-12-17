@@ -129,6 +129,15 @@ fun CalendarScreen(
       categories = categoryRepo.getAllCategories(orgId).sortedBy { it.label.trim().lowercase() }
     } catch (_: Exception) {
       calendarViewModel.setErrorMsg("Unexpected error while loading data")
+  // To trigger a Snackbar if the disabled button is clicked
+  var disabledButtonClicked by remember { mutableStateOf(false) }
+
+  val noNetworkErrorMsg = stringResource(R.string.network_error_message)
+  // Observe the disabled button click and show Snackbar
+  LaunchedEffect(disabledButtonClicked) {
+    if (disabledButtonClicked) {
+      snackbarHostState.showSnackbar(noNetworkErrorMsg)
+      disabledButtonClicked = false
     }
   }
 
@@ -182,7 +191,14 @@ fun CalendarScreen(
       floatingActionButton = {
         FloatingButton(
             modifier = Modifier.testTag(CalendarScreenTestTags.ADD_EVENT_BUTTON),
-            onClick = onCreateEvent,
+            onClick = {
+              if (uiState.networkAvailable) {
+                onCreateEvent()
+              } else {
+                disabledButtonClicked = true
+              }
+            },
+            enabled = uiState.networkAvailable,
             icon = Icons.Default.Add)
       }) { paddingValues ->
         CalendarContainer(

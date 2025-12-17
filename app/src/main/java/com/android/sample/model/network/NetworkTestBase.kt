@@ -1,0 +1,54 @@
+package com.android.sample.model.network
+
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+
+/**
+ * An interface to be implemented by tests that require network connectivity manipulation.
+ *
+ * This interface provides methods to simulate changes in network connectivity before and during
+ * tests.
+ */
+@OptIn(ExperimentalCoroutinesApi::class)
+interface NetworkTestBase {
+
+  /** The initial internet connectivity state for the test. Default is connected (true). */
+  val initialInternetState: Boolean
+    get() = DEFAULT_INTERNET_STATE
+
+  val fakeChecker: FakeConnectivityChecker
+
+  /** The network status repository used in the tests. */
+  val networkRepo: NetworkStatusRepository
+
+  /** Default internet state constant (true). */
+  companion object {
+    const val DEFAULT_INTERNET_STATE = true
+  }
+
+  /**
+   * Sets up the network test base before each test.
+   *
+   * Call this method in a @Before annotated function (e.g., in the setUp() method) of the test
+   * class.
+   */
+  fun setupNetworkTestBase() {
+    fakeChecker.setInternet(initialInternetState)
+
+    // Inject the fake network repository into the provider using reflection
+    NetworkStatusRepositoryProvider::class
+        .java
+        .getDeclaredField("_repository")
+        .apply { isAccessible = true }
+        .set(NetworkStatusRepositoryProvider, networkRepo)
+  }
+
+  /** Simulates loss of internet connectivity. */
+  fun simulateNoInternet() {
+    fakeChecker.setInternet(false)
+  }
+
+  /** Simulates restoration of internet connectivity. */
+  fun simulateInternetRestored() {
+    fakeChecker.setInternet(true)
+  }
+}

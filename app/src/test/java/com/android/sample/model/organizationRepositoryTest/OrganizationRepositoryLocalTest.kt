@@ -272,4 +272,33 @@ class OrganizationRepositoryLocalTest {
       assertTrue(members.isEmpty())
     }
   }
+
+  @Test
+  fun getUserById_correctly_retrieves() = runBlocking {
+    val user =
+        User(
+            id = "user-get",
+            displayName = "Get User",
+            email = "get@user.com",
+            organizations = listOf(orgA.id))
+
+    // Insert organization (required for consistency, even if not strictly needed)
+    organizationRepository.insertOrganization(orgA)
+
+    // Insert user
+    userRepository.newUser(user)
+
+    // Retrieve user
+    val retrieved = userRepository.getUserById("user-get")
+
+    assertNotNull(retrieved)
+    assertEquals("user-get", retrieved!!.id)
+    assertEquals("Get User", retrieved.displayName)
+    assertEquals("get@user.com", retrieved.email)
+    assertTrue(retrieved.organizations.contains(orgA.id))
+
+    // Non-existing user should return null
+    val missing = userRepository.getUserById("does-not-exist")
+    assertNull(missing)
+  }
 }

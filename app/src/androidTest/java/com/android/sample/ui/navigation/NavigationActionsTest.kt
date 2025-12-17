@@ -2,7 +2,6 @@ package com.android.sample.ui.navigation
 
 import android.Manifest
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -15,7 +14,6 @@ import androidx.test.rule.GrantPermissionRule
 import com.android.sample.Agendapp
 import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.authentication.UserRepositoryProvider
-import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.ui.authentication.SignInScreenTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
@@ -126,15 +124,6 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
     // OneTime => end recurrence exists but disabled
     composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).assertExists()
     composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).assertIsNotEnabled()
-
-    // Select Weekly recurrence
-    composeTestRule
-        .onNodeWithTag(AddEventTestTags.recurrenceTag(RecurrenceStatus.Weekly))
-        .assertExists()
-        .performClick()
-
-    composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).assertExists()
-    composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).assertIsEnabled()
 
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
 

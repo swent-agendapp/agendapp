@@ -205,4 +205,33 @@ class UserRepositoryFirebaseTest : FirebaseEmulatedTest(), RequiresSelectedOrgan
     // Clean up
     repository.deleteUser("user-admin")
   }
+
+  @Test
+  fun getUserById_correctly_retrieves() = runBlocking {
+    val user =
+        User(
+            id = "user-get",
+            displayName = "Get User",
+            email = "get@user.com",
+            organizations = listOf(organizationId))
+
+    // Insert user
+    repository.newUser(user)
+
+    // Retrieve user
+    val retrieved = repository.getUserById("user-get")
+
+    Assert.assertNotNull(retrieved)
+    Assert.assertEquals("user-get", retrieved!!.id)
+    Assert.assertEquals("Get User", retrieved.displayName)
+    Assert.assertEquals("get@user.com", retrieved.email)
+    Assert.assertTrue(retrieved.organizations.contains(organizationId))
+
+    // Non-existing user should return null
+    val missing = repository.getUserById("does-not-exist")
+    Assert.assertNull(missing)
+
+    // Clean up
+    repository.deleteUser("user-get")
+  }
 }

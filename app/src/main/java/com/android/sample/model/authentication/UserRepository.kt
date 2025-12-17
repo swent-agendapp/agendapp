@@ -15,6 +15,12 @@ interface UserRepository {
   suspend fun getAdminsIds(organizationId: String): List<String>
 
   /**
+   * @param userId the user ID to retrieve
+   * @return The user corresponding to the provided ID, or null if not found.
+   */
+  suspend fun getUserById(userId: String): User?
+
+  /**
    * @param userIds the list of user IDs to retrieve
    * @return The list of users corresponding to the provided IDs.
    */
@@ -38,7 +44,7 @@ interface UserRepository {
    * Add a user to an organization
    *
    * @param userId The user ID to add
-   * @param orgId The organization ID to which the user will be added
+   * @param organizationId The organization ID to which the user will be added
    */
   suspend fun addUserToOrganization(userId: String, organizationId: String)
 

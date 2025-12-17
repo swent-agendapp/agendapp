@@ -16,7 +16,7 @@ class UsersRepositoryFirebase(
 
   private fun usersCollection() = db.collection(COLLECTION_USERS)
 
-  /** -------------------------- USERS IDS -------------------------- */
+  /* -------------------------- USERS IDS -------------------------- */
   override suspend fun getAdminsIds(organizationId: String): List<String> {
     val snap =
         db.collection(ORGANIZATIONS_COLLECTION_PATH)
@@ -39,14 +39,20 @@ class UsersRepositoryFirebase(
     return snap.documents.map { it.id }
   }
 
-  /** -------------------------- USERS DETAILS -------------------------- */
+  /* -------------------------- USERS DETAILS -------------------------- */
+
+  override suspend fun getUserById(userId: String): User? {
+    val doc = usersCollection().document(userId).get().await()
+    return UserMapper.fromDocument(doc)
+  }
+
   override suspend fun getUsersByIds(userIds: List<String>): List<User> {
     val all = usersCollection().get().await().documents.mapNotNull { UserMapper.fromDocument(it) }
 
     return all.filter { userIds.contains(it.id) }
   }
 
-  /** -------------------------- UPSERT / MODIFY -------------------------- */
+  /* -------------------------- UPSERT / MODIFY -------------------------- */
   override suspend fun newUser(user: User) {
     require(user.id.isNotBlank()) { "userId is required" }
     val data = UserMapper.toMap(user)
@@ -54,7 +60,7 @@ class UsersRepositoryFirebase(
     usersCollection().document(user.id).set(data, SetOptions.merge()).await()
   }
 
-  /** -------------------------- DELETE USER -------------------------- */
+  /* -------------------------- DELETE USER -------------------------- */
   override suspend fun deleteUser(userId: String) {
     val batch = db.batch()
 

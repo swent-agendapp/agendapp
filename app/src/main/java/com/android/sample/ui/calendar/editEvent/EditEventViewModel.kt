@@ -3,12 +3,12 @@ package com.android.sample.ui.calendar.editEvent
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.sample.data.global.providers.EventRepositoryProvider
+import com.android.sample.data.global.repositories.EventRepository
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepository
 import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.calendar.Event
-import com.android.sample.model.calendar.EventRepository
-import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.category.EventCategory
 import com.android.sample.model.category.EventCategoryRepository
@@ -39,7 +39,8 @@ data class EditCalendarEventUIState(
     val isLoadingCategories: Boolean = false,
     val errorMessage: String? = null,
     val users: List<User> = emptyList(),
-    val step: EditEventStep = EditEventStep.MAIN
+    val step: EditEventStep = EditEventStep.MAIN,
+    val isExtraEvent: Boolean = false,
 )
 
 /**
@@ -121,7 +122,8 @@ class EditEventViewModel(
                 recurrenceStatus = state.recurrenceMode,
                 hasBeenDeleted = false,
                 category = state.category,
-                location = null)
+                location = null,
+                isExtra = state.isExtraEvent)
         eventRepository.updateEvent(orgId = orgId, itemId = updated.id, item = updated)
       } catch (e: Exception) {
         Log.e("EditEventViewModel", "Error saving event changes: ${e.message}")
@@ -162,6 +164,7 @@ class EditEventViewModel(
                   participants =
                       _uiState.value.users.filter { it.id in event.participants }.toSet(),
                   category = event.category,
+                  isExtraEvent = event.isExtra,
                   isLoading = false)
         } else {
           _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = "Event not found.")
@@ -198,6 +201,10 @@ class EditEventViewModel(
 
   fun setRecurrenceMode(mode: RecurrenceStatus) {
     _uiState.value = _uiState.value.copy(recurrenceMode = mode)
+  }
+
+  fun setIsExtra(isExtra: Boolean) {
+    _uiState.value = _uiState.value.copy(isExtraEvent = isExtra)
   }
 
   fun addParticipant(name: User) {

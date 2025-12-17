@@ -1,8 +1,9 @@
-package com.android.sample.model.calendar
+package com.android.sample.data.firebase.repositories
 
-import com.android.sample.model.constants.FirestoreConstants.EVENTS_COLLECTION_PATH
-import com.android.sample.model.constants.FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH
-import com.android.sample.model.firestoreMappers.EventMapper
+import com.android.sample.data.firebase.mappers.EventMapper
+import com.android.sample.data.global.repositories.BaseEventRepository
+import com.android.sample.model.calendar.Event
+import com.android.sample.model.constants.FirestoreConstants
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import java.time.Instant
@@ -12,14 +13,14 @@ import kotlinx.coroutines.tasks.await
 open class EventRepositoryFirebase(private val db: FirebaseFirestore) : BaseEventRepository() {
 
   override fun getNewUid(): String {
-    return db.collection(EVENTS_COLLECTION_PATH).document().id
+    return db.collection(FirestoreConstants.EVENTS_COLLECTION_PATH).document().id
   }
 
   override suspend fun getAllEvents(orgId: String): List<Event> {
     val snapshot =
-        db.collection(ORGANIZATIONS_COLLECTION_PATH)
+        db.collection(FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH)
             .document(orgId)
-            .collection(EVENTS_COLLECTION_PATH)
+            .collection(FirestoreConstants.EVENTS_COLLECTION_PATH)
             .whereEqualTo("organizationId", orgId)
             .get()
             .await()
@@ -32,9 +33,9 @@ open class EventRepositoryFirebase(private val db: FirebaseFirestore) : BaseEven
 
     val data = EventMapper.toMap(item.copy(version = System.currentTimeMillis())).toMutableMap()
 
-    db.collection(ORGANIZATIONS_COLLECTION_PATH)
+    db.collection(FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH)
         .document(orgId)
-        .collection(EVENTS_COLLECTION_PATH)
+        .collection(FirestoreConstants.EVENTS_COLLECTION_PATH)
         .document(item.id)
         .set(data)
         .await()
@@ -46,9 +47,9 @@ open class EventRepositoryFirebase(private val db: FirebaseFirestore) : BaseEven
 
     val data = EventMapper.toMap(item.copy(version = System.currentTimeMillis())).toMutableMap()
 
-    db.collection(ORGANIZATIONS_COLLECTION_PATH)
+    db.collection(FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH)
         .document(orgId)
-        .collection(EVENTS_COLLECTION_PATH)
+        .collection(FirestoreConstants.EVENTS_COLLECTION_PATH)
         .document(itemId)
         .set(data)
         .await()
@@ -56,9 +57,9 @@ open class EventRepositoryFirebase(private val db: FirebaseFirestore) : BaseEven
 
   override suspend fun deleteEvent(orgId: String, itemId: String) {
     val retrievedItem =
-        db.collection(ORGANIZATIONS_COLLECTION_PATH)
+        db.collection(FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH)
             .document(orgId)
-            .collection(EVENTS_COLLECTION_PATH)
+            .collection(FirestoreConstants.EVENTS_COLLECTION_PATH)
             .document(itemId)
             .get()
             .await()
@@ -68,9 +69,9 @@ open class EventRepositoryFirebase(private val db: FirebaseFirestore) : BaseEven
     }
 
     // Soft delete: set hasBeenDeleted to true and update version
-    db.collection(ORGANIZATIONS_COLLECTION_PATH)
+    db.collection(FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH)
         .document(orgId)
-        .collection(EVENTS_COLLECTION_PATH)
+        .collection(FirestoreConstants.EVENTS_COLLECTION_PATH)
         .document(itemId)
         .update(mapOf("version" to System.currentTimeMillis(), "hasBeenDeleted" to true))
         .await()
@@ -78,9 +79,9 @@ open class EventRepositoryFirebase(private val db: FirebaseFirestore) : BaseEven
 
   override suspend fun getEventById(orgId: String, itemId: String): Event? {
     val document =
-        db.collection(ORGANIZATIONS_COLLECTION_PATH)
+        db.collection(FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH)
             .document(orgId)
-            .collection(EVENTS_COLLECTION_PATH)
+            .collection(FirestoreConstants.EVENTS_COLLECTION_PATH)
             .document(itemId)
             .get()
             .await()
@@ -105,9 +106,9 @@ open class EventRepositoryFirebase(private val db: FirebaseFirestore) : BaseEven
     require(startDate <= endDate) { "start date must be before or equal to end date" }
 
     val snapshot =
-        db.collection(ORGANIZATIONS_COLLECTION_PATH)
+        db.collection(FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH)
             .document(orgId)
-            .collection(EVENTS_COLLECTION_PATH)
+            .collection(FirestoreConstants.EVENTS_COLLECTION_PATH)
             // get all events that end on or after the start of the range
             .whereGreaterThanOrEqualTo("endDate", Timestamp(Date.from(startDate)))
             .get()
@@ -121,13 +122,17 @@ open class EventRepositoryFirebase(private val db: FirebaseFirestore) : BaseEven
 
     return snapshot
         .mapNotNull { EventMapper.fromDocument(document = it) }
-        // keep only events whose start is on/before the queried end
-        .filter { it.startDate <= endDate }
+        // keep only events whose start is on/before the queried end and are not deleted
+        .filter { it.startDate <= endDate && !it.hasBeenDeleted }
   }
 
   override suspend fun ensureOrganizationExists(orgId: String) {
     val orgExists =
-        db.collection(ORGANIZATIONS_COLLECTION_PATH).document(orgId).get().await().exists()
+        db.collection(FirestoreConstants.ORGANIZATIONS_COLLECTION_PATH)
+            .document(orgId)
+            .get()
+            .await()
+            .exists()
 
     require(orgExists) { "Organization with id $orgId not found" }
   }

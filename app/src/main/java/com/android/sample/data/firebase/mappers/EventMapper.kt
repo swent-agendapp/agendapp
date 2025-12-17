@@ -1,4 +1,4 @@
-package com.android.sample.model.firestoreMappers
+package com.android.sample.data.firebase.mappers
 
 import androidx.compose.ui.graphics.Color
 import com.android.sample.model.calendar.CloudStorageStatus
@@ -11,6 +11,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import java.time.Instant
 import java.util.Date
 import java.util.UUID
+import kotlin.collections.get
 
 /** Maps Firestore documents to [Event] objects and vice versa. */
 object EventMapper : FirestoreMapper<Event> {
@@ -24,12 +25,14 @@ object EventMapper : FirestoreMapper<Event> {
   const val PERSONAL_NOTES_FIELD = "personalNotes"
   const val LOCATION_FIELD = "location"
   const val PARTICIPANTS_FIELD = "participants"
+  const val ASSIGNED_USERS_FIELD = "assignedUsers"
   const val STORAGE_STATUS_FIELD = "storageStatus"
   const val RECURRENCE_STATUS_FIELD = "recurrenceStatus"
   const val PRESENCE_FIELD = "presence"
   const val VERSION_FIELD = "version"
   const val HAS_BEEN_DELETED_FIELD = "hasBeenDeleted"
   const val EVENT_CATEGORY_FIELD = "eventCategory"
+  const val IS_EXTRA_FIELD = "isExtra"
 
   override fun fromDocument(document: DocumentSnapshot): Event? {
     val id = document.id
@@ -44,6 +47,10 @@ object EventMapper : FirestoreMapper<Event> {
     val participants =
         (document[PARTICIPANTS_FIELD] as? List<*>)?.filterIsInstance<String>()?.toSet()
             ?: emptySet()
+
+    val assignedUsers =
+        (document[ASSIGNED_USERS_FIELD] as? List<*>)?.filterIsInstance<String>()?.toSet()
+            ?: participants
 
     val storageStatusList =
         (document[STORAGE_STATUS_FIELD] as? List<*>)
@@ -60,6 +67,7 @@ object EventMapper : FirestoreMapper<Event> {
     val version = document.getLong(VERSION_FIELD) ?: 0L
     val hasBeenDeleted = document.getBoolean(HAS_BEEN_DELETED_FIELD) ?: false
     val category = parseCategory(document[EVENT_CATEGORY_FIELD])
+    val isExtra = document.getBoolean(IS_EXTRA_FIELD) ?: false
 
     return Event(
         id = id,
@@ -71,12 +79,14 @@ object EventMapper : FirestoreMapper<Event> {
         cloudStorageStatuses = storageStatusList,
         personalNotes = personalNotes,
         participants = participants,
+        assignedUsers = assignedUsers,
         version = version,
         presence = presence,
         recurrenceStatus = recurrenceStatus,
         hasBeenDeleted = hasBeenDeleted,
         category = category,
-        location = location)
+        location = location,
+        isExtra = isExtra)
   }
 
   override fun fromMap(data: Map<String, Any?>): Event? {
@@ -102,6 +112,10 @@ object EventMapper : FirestoreMapper<Event> {
     val participants =
         (data[PARTICIPANTS_FIELD] as? List<*>)?.filterIsInstance<String>()?.toSet() ?: emptySet()
 
+    val assignedUsers =
+        (data[ASSIGNED_USERS_FIELD] as? List<*>)?.filterIsInstance<String>()?.toSet()
+            ?: participants
+
     val storageStatusList =
         (data[STORAGE_STATUS_FIELD] as? List<*>)
             ?.mapNotNull { runCatching { CloudStorageStatus.valueOf(it.toString()) }.getOrNull() }
@@ -118,6 +132,7 @@ object EventMapper : FirestoreMapper<Event> {
     val version = (data[VERSION_FIELD] as? Number)?.toLong() ?: 0L
     val hasBeenDeleted = data[HAS_BEEN_DELETED_FIELD] as? Boolean ?: false
     val category = parseCategory(data[EVENT_CATEGORY_FIELD])
+    val isExtra = data[IS_EXTRA_FIELD] as? Boolean ?: false
 
     return Event(
         id = id,
@@ -129,12 +144,14 @@ object EventMapper : FirestoreMapper<Event> {
         cloudStorageStatuses = storageStatusList,
         personalNotes = personalNotes,
         participants = participants,
+        assignedUsers = assignedUsers,
         version = version,
         presence = presence,
         recurrenceStatus = recurrenceStatus,
         location = location,
         hasBeenDeleted = hasBeenDeleted,
-        category = category)
+        category = category,
+        isExtra = isExtra)
   }
 
   override fun toMap(model: Event): Map<String, Any?> {
@@ -149,10 +166,12 @@ object EventMapper : FirestoreMapper<Event> {
         PERSONAL_NOTES_FIELD to model.personalNotes,
         LOCATION_FIELD to model.location,
         PARTICIPANTS_FIELD to model.participants.toList(),
+        ASSIGNED_USERS_FIELD to model.assignedUsers.toList(),
         VERSION_FIELD to model.version,
         PRESENCE_FIELD to model.presence,
         RECURRENCE_STATUS_FIELD to model.recurrenceStatus.name,
         HAS_BEEN_DELETED_FIELD to model.hasBeenDeleted,
+        IS_EXTRA_FIELD to model.isExtra,
         EVENT_CATEGORY_FIELD to
             mapOf(
                 EventCategoryMapper.ID_FIELD to model.category.id,

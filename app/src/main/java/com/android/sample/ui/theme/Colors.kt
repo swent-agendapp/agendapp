@@ -26,6 +26,8 @@ object Palette {
   // Base / Neutrals
   // ----------------------------------------
   val Magnolia = Color(color = 0xFFFFFBFE)
+  val Green = Color(0xFF4CAF50)
+  val Cyan = Color(0xFF00BCD4)
   val Platinum = Color(color = 0xFFE6E4E9)
   val LavenderMist = Color(color = 0xFFE7E0EC)
   val LavenderGray = Color(color = 0xFFE6E1E5)
@@ -75,6 +77,7 @@ object Palette {
   // ----------------------------------------
   // Oranges / Accents
   // ----------------------------------------
+  val Orange = Color(0xFFFF9800)
   val Coral = Color(color = 0xFFFF8A65)
   val PastelOrange = Color(color = 0xFFFFB74D)
   val Maize = Color(color = 0xFFFFF176)

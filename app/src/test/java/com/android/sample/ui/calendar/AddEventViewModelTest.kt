@@ -1,5 +1,7 @@
 package com.android.sample.ui.calendar
 
+import com.android.sample.data.global.repositories.EventRepository
+import com.android.sample.data.local.repositories.EventRepositoryInMemory
 import com.android.sample.model.authentication.AuthRepository
 import com.android.sample.model.authentication.FakeAuthRepository
 import com.android.sample.model.authentication.User
@@ -234,6 +236,21 @@ class AddEventViewModelTest {
 
     val events = eventRepository.getAllEvents(selectedOrganizationID)
     assertTrue(events.any { it.title == "Meeting" && it.description == "Team sync" })
+  }
+
+  @Test
+  fun `setIsExtra flags event as extra`() = runTest {
+    val vm = makeVm()
+
+    vm.setTitle("Extra shift")
+    vm.setDescription("Evening support")
+    vm.setIsExtra(true)
+
+    vm.addEvent()
+    testDispatcher.scheduler.advanceUntilIdle()
+
+    val events = eventRepository.getAllEvents(selectedOrganizationID)
+    assertTrue(events.any { it.isExtra })
   }
 
   // ------------------------------------------------------------

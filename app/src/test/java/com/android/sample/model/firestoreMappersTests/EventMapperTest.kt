@@ -1,10 +1,10 @@
 package com.android.sample.model.firestoreMappersTests
 
+import com.android.sample.data.firebase.mappers.EventMapper
 import com.android.sample.model.calendar.CloudStorageStatus
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.category.EventCategory
-import com.android.sample.model.firestoreMappers.EventMapper
 import com.android.sample.ui.theme.EventPalette
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.Timestamp
@@ -43,7 +43,8 @@ class EventMapperTest {
           presence = mapOf("participant1" to true, "participant2" to false),
           recurrenceStatus = RecurrenceStatus.OneTime,
           category = sampleCategory,
-          location = null)
+          location = null,
+          isExtra = true)
 
   private val sampleMap: Map<String, Any?> =
       mapOf(
@@ -59,6 +60,7 @@ class EventMapperTest {
           "version" to 5L,
           "presence" to mapOf("participant1" to true, "participant2" to false),
           "recurrenceStatus" to "OneTime",
+          "isExtra" to true,
           "eventCategory" to
               mapOf(
                   "id" to sampleCategory.id,
@@ -84,6 +86,7 @@ class EventMapperTest {
     `when`(doc.get("storageStatus")).thenReturn(listOf("FIRESTORE"))
     `when`(doc.getString("recurrenceStatus")).thenReturn("OneTime")
     `when`(doc.getLong("version")).thenReturn(5L)
+    `when`(doc.getBoolean("isExtra")).thenReturn(true)
     `when`(doc.get("presence")).thenReturn(mapOf("participant1" to true, "participant2" to false))
     `when`(doc.get("eventCategory"))
         .thenReturn(
@@ -183,6 +186,7 @@ class EventMapperTest {
     assertThat(map["version"]).isEqualTo(sampleEvent.version)
     assertThat(map["presence"]).isEqualTo(sampleEvent.presence)
     assertThat(map["recurrenceStatus"]).isEqualTo(sampleEvent.recurrenceStatus.name)
+    assertThat(map["isExtra"]).isEqualTo(true)
 
     val categoryMap = map["eventCategory"] as Map<*, *>
     assertThat(categoryMap["id"]).isEqualTo(sampleEvent.category.id)

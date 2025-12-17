@@ -2,14 +2,14 @@ package com.android.sample.ui.calendar.addEvent
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.sample.data.global.providers.EventRepositoryProvider
+import com.android.sample.data.global.repositories.EventRepository
 import com.android.sample.model.authentication.AuthRepository
 import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepository
 import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.calendar.Event
-import com.android.sample.model.calendar.EventRepository
-import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.model.category.EventCategory
@@ -57,6 +57,7 @@ data class AddCalendarEventUIState(
     val draftEvent: Event = createEvent(organizationId = "").first(),
     val step: AddEventStep = AddEventStep.TITLE_AND_DESC,
     val users: List<User> = emptyList(),
+    val isExtraEvent: Boolean = false,
 )
 
 /** Steps in the multi-screen Add Event flow. */
@@ -148,7 +149,8 @@ class AddEventViewModel(
                 participants = state.participants.map { it.id }.toSet(),
                 category = state.category,
                 recurrence = state.recurrenceMode,
-                endRecurrence = state.recurrenceEndInstant)
+                endRecurrence = state.recurrenceEndInstant,
+                isExtra = state.isExtraEvent)
             .first()
 
     _uiState.update { it.copy(draftEvent = draftEvent) }
@@ -180,7 +182,8 @@ class AddEventViewModel(
             category = state.category,
             participants = state.participants.map { it.id }.toSet(),
             recurrence = state.recurrenceMode,
-            endRecurrence = state.recurrenceEndInstant)
+            endRecurrence = state.recurrenceEndInstant,
+            isExtra = state.isExtraEvent)
 
     newEvents.forEach { addEventToRepository(it) }
   }
@@ -282,6 +285,10 @@ class AddEventViewModel(
   /** Updates the visual color tag for the event. */
   fun setCategory(category: EventCategory) {
     _uiState.update { it.copy(category = category) }
+  }
+
+  fun setIsExtra(isExtra: Boolean) {
+    _uiState.update { it.copy(isExtraEvent = isExtra) }
   }
 
   /** Adds a participant to the event draft. */

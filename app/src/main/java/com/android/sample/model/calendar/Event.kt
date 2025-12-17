@@ -2,6 +2,7 @@ package com.android.sample.model.calendar
 
 import androidx.annotation.StringRes
 import com.android.sample.R
+import com.android.sample.data.global.repositories.EventRepository
 import com.android.sample.model.category.EventCategory
 import com.android.sample.ui.calendar.utils.DateTimeUtils
 import java.time.Instant
@@ -25,6 +26,8 @@ import java.util.UUID
  *   Firestore).
  * @property personalNotes Optional personal notes for the event.
  * @property participants Set of user IDs participating in the event.
+ * @property assignedUsers Set of user IDs that have been assigned to this event (including past
+ *   replacements).
  * @property version timestamp of last modification, used for conflict resolution.
  * @property presence Map of user IDs to their presence status at the event.
  * @property hasBeenDeleted Flag indicating if the event has been deleted.
@@ -43,12 +46,14 @@ data class Event(
     val locallyStoredBy: List<String> = emptyList(),
     val personalNotes: String?,
     val participants: Set<String>,
+    val assignedUsers: Set<String> = participants,
     val version: Long,
     val presence: Map<String, Boolean> = emptyMap(),
     val recurrenceStatus: RecurrenceStatus,
     val hasBeenDeleted: Boolean = false,
     val category: EventCategory = EventCategory.defaultCategory(),
-    val location: String?
+    val location: String?,
+    val isExtra: Boolean = false,
 ) {
   // Returns the start date as a LocalDate in the system's default time zone
   val startLocalDate: LocalDate
@@ -79,6 +84,7 @@ enum class RecurrenceStatus {
 /** Enum representing the cloud storage location of an event. */
 enum class CloudStorageStatus {
   FIRESTORE,
+  LOCAL
 }
 
 /**
@@ -105,11 +111,13 @@ fun createEvent(
     cloudStorageStatuses: Set<CloudStorageStatus> = emptySet(),
     personalNotes: String? = null,
     participants: Set<String> = emptySet(),
+    assignedUsers: Set<String> = participants,
     presence: Map<String, Boolean> = emptyMap(),
     category: EventCategory = EventCategory.defaultCategory(),
     recurrence: RecurrenceStatus = RecurrenceStatus.OneTime,
     endRecurrence: Instant = Instant.now(),
     location: String? = null,
+    isExtra: Boolean = false,
 ): List<Event> {
   require(!endDate.isBefore(startDate)) { "End date cannot be before start date" }
   val zone = ZoneId.systemDefault()
@@ -127,11 +135,13 @@ fun createEvent(
                 cloudStorageStatuses = cloudStorageStatuses,
                 personalNotes = personalNotes,
                 participants = participants,
+                assignedUsers = assignedUsers,
                 version = System.currentTimeMillis(),
                 presence = presence,
                 recurrenceStatus = recurrence,
                 category = category,
-                location = location))
+                location = location,
+                isExtra = isExtra))
     RecurrenceStatus.Daily -> {
       val days =
           1 +
@@ -148,10 +158,12 @@ fun createEvent(
             cloudStorageStatuses = cloudStorageStatuses,
             personalNotes = personalNotes,
             participants = participants,
+            assignedUsers = assignedUsers,
             version = System.currentTimeMillis(),
             recurrenceStatus = recurrence,
             category = category,
-            location = location)
+            location = location,
+            isExtra = isExtra)
       }
     }
     RecurrenceStatus.Weekly -> {
@@ -170,11 +182,13 @@ fun createEvent(
             cloudStorageStatuses = cloudStorageStatuses,
             personalNotes = personalNotes,
             participants = participants,
+            assignedUsers = assignedUsers,
             version = System.currentTimeMillis(),
             presence = presence,
             recurrenceStatus = recurrence,
             category = category,
-            location = location)
+            location = location,
+            isExtra = isExtra)
       }
     }
     RecurrenceStatus.Monthly -> {
@@ -193,11 +207,13 @@ fun createEvent(
             cloudStorageStatuses = cloudStorageStatuses,
             personalNotes = personalNotes,
             participants = participants,
+            assignedUsers = assignedUsers,
             version = System.currentTimeMillis(),
             presence = presence,
             recurrenceStatus = recurrence,
             category = category,
-            location = location)
+            location = location,
+            isExtra = isExtra)
       }
     }
     RecurrenceStatus.Yearly -> {
@@ -216,11 +232,13 @@ fun createEvent(
             cloudStorageStatuses = cloudStorageStatuses,
             personalNotes = personalNotes,
             participants = participants,
+            assignedUsers = assignedUsers,
             version = System.currentTimeMillis(),
             presence = presence,
             recurrenceStatus = recurrence,
             category = category,
-            location = location)
+            location = location,
+            isExtra = isExtra)
       }
     }
   }

@@ -199,7 +199,7 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
 
     composeTestRule.onNodeWithTag(OrganizationOverviewScreenTestTags.ROOT).assertIsDisplayed()
     composeTestRule
-        .onNodeWithTag(OrganizationOverviewScreenTestTags.INVITATION_BUTTON)
+        .onNodeWithTag(OrganizationOverviewScreenTestTags.INVITATIONS_BUTTON)
         .assertIsDisplayed()
         .performClick()
 
@@ -223,7 +223,7 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
 
     composeTestRule.onNodeWithTag(OrganizationOverviewScreenTestTags.ROOT).assertIsDisplayed()
     composeTestRule
-        .onNodeWithTag(OrganizationOverviewScreenTestTags.EDIT_CATEGORY_BUTTON)
+        .onNodeWithTag(OrganizationOverviewScreenTestTags.CATEGORIES_BUTTON)
         .assertIsDisplayed()
         .performClick()
 

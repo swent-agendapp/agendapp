@@ -4,7 +4,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.android.sample.R
 import com.android.sample.model.authentication.User
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
@@ -35,6 +37,8 @@ object EventSummaryCardTags {
   const val TOGGLE_DESCRIPTION = "EventCard_ToggleDescription"
   const val PARTICIPANTS_LIST = "EventCard_ParticipantsList"
   const val SIDE_BAR = "EventCard_SideBar"
+  const val EXTRA_BADGE = "EventCard_Extra"
+  const val EXTRA_INFO = "EventCard_ExtraInfo"
 }
 
 /**
@@ -63,6 +67,7 @@ fun EventSummaryCard(
   var didTitleOverflow by remember { mutableStateOf(false) }
   var isDescriptionExpanded by remember { mutableStateOf(false) }
   var didDescriptionOverflow by remember { mutableStateOf(false) }
+  var showExtraInfo by remember { mutableStateOf(false) }
 
   // --- Derived temporal content for rendering (single source of truth for date strings) ---
   val dateModel = remember(event, zone, loc) { buildDatePresentation(event, zone, loc) }
@@ -70,6 +75,7 @@ fun EventSummaryCard(
   // --- Colors / shapes / participants ---
   val shape = RoundedCornerShape(style.cornerRadiusDp)
   val sideColor = event.category.color
+  val extraInfoText = stringResource(R.string.extra_event_info)
 
   // Recurrence text (hidden if no recurrence, meaning if the recurrence is OneTime)
   val recurrenceText: String? =
@@ -95,6 +101,10 @@ fun EventSummaryCard(
       datePresentation = dateModel,
       // Recurrence
       recurrenceText = recurrenceText,
+      isExtra = event.isExtra,
+      showExtraInfo = showExtraInfo,
+      onExtraToggle = { showExtraInfo = !showExtraInfo },
+      extraInfoText = extraInfoText,
       // Description
       descriptionText = event.description,
       isDescriptionExpanded = isDescriptionExpanded,

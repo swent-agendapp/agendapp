@@ -1,17 +1,31 @@
 package com.android.sample.ui.hourRecap
 
-import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FileDownload
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.calendar.components.DatePickerFieldToModal
@@ -19,18 +33,27 @@ import com.android.sample.ui.calendar.utils.formatDecimalHoursToTime
 import com.android.sample.ui.common.Loading
 import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.common.SecondaryPageTopBar
-import com.android.sample.ui.theme.ElevationLow
-import com.android.sample.ui.theme.PaddingMedium
-import com.android.sample.ui.theme.PaddingSmall
-import com.android.sample.ui.theme.SpacingLarge
-import com.android.sample.ui.theme.SpacingMedium
-import com.android.sample.ui.theme.Weight
+import com.android.sample.ui.theme.*
+import java.time.Duration
 import java.time.LocalDate
+import java.time.ZoneId
 import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
-// Modularization assisted by AI
+/* -------------------------------------------------------------------------- */
+/* UI constants                                                                */
+/* -------------------------------------------------------------------------- */
 
-/** Test tags for HourRecapScreen UI tests. */
+private object HourRecapUiConstants {
+  const val END_OF_DAY_HOUR = 23
+  const val END_OF_DAY_MINUTE = 59
+  const val MINUTES_PER_HOUR = 60.0
+}
+
+/* -------------------------------------------------------------------------- */
+/* Test tags                                                                   */
+/* -------------------------------------------------------------------------- */
+
 object HourRecapTestTags {
   const val BACK_BUTTON = "hour_recap_back_button"
   const val SCREEN_ROOT = "hour_recap_screen_root"
@@ -40,46 +63,50 @@ object HourRecapTestTags {
   const val GENERATE_BUTTON = "hour_recap_generate_button"
   const val RECAP_LIST = "hour_recap_list"
   const val RECAP_ITEM = "hour_recap_item"
+  const val RECAP_ITEM_ISSUE_MARKER = "hour_recap_item_issue_marker"
+  const val RECAP_SHEET = "hour_recap_sheet"
   const val EXPORT_BUTTON = "hour_recap_export_button"
+  const val EXTRA_STAT = "hour_recap_extra_stat"
+  const val EXTRA_BADGE = "hour_recap_extra_badge"
 }
 
-/**
- * HourRecapScreen
- *
- * A screen allowing an administrator to select a start and end date and visualize the total working
- * hours of all employees over the selected period.
- *
- * This screen currently uses fake recap data; the real implementation will later delegate the
- * date-range selection and recap generation to a dedicated ViewModel.
- *
- * UI structure:
- * - A top bar with a back button and an "Export to Excel" action button.
- * - Two date picker fields (start / end).
- * - A "Generate recap" button (enabled only when both dates are selected).
- * - A scrollable list summarizing each employee's worked hours.
- *
- * Test tags are provided through [HourRecapTestTags] to support UI testing.
- *
- * @param hourRecapViewModel ViewModel for hour recap.
- * @param onBackClick Callback invoked when the user presses the back navigation button.
- */
+/* -------------------------------------------------------------------------- */
+/* Screen                                                                      */
+/* -------------------------------------------------------------------------- */
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HourRecapScreen(
     hourRecapViewModel: HourRecapViewModel = viewModel(factory = HourRecapViewModel.Factory),
     onBackClick: () -> Unit = {}
 ) {
   val uiState by hourRecapViewModel.uiState.collectAsState()
-  val context = LocalContext.current
+  val snackbarHostState = remember { SnackbarHostState() }
 
   LaunchedEffect(uiState.errorMsg) {
     uiState.errorMsg?.let { message ->
-      Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+      snackbarHostState.showSnackbar(message)
       hourRecapViewModel.clearErrorMsg()
     }
   }
 
   var startDate by remember { mutableStateOf<LocalDate?>(null) }
   var endDate by remember { mutableStateOf<LocalDate?>(null) }
+  var selectedUser by remember { mutableStateOf<HourRecapUserRecap?>(null) }
+  val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
+  var hasGenerated by remember { mutableStateOf(false) }
+
+  LaunchedEffect(selectedUser) {
+    if (selectedUser != null) {
+      if (bottomSheetState.hasPartiallyExpandedState) {
+        bottomSheetState.partialExpand()
+      } else {
+        bottomSheetState.expand()
+      }
+    } else {
+      bottomSheetState.hide()
+    }
+  }
 
   Scaffold(
       topBar = {
@@ -91,7 +118,7 @@ fun HourRecapScreen(
             backButtonTestTags = HourRecapTestTags.BACK_BUTTON,
             actions = {
               IconButton(
-                  onClick = { /* Later: Export */},
+                  onClick = { /* Export later */},
                   modifier = Modifier.testTag(HourRecapTestTags.EXPORT_BUTTON)) {
                     Icon(
                         imageVector = Icons.Default.FileDownload,
@@ -104,79 +131,442 @@ fun HourRecapScreen(
                 Modifier.padding(padding)
                     .padding(SpacingLarge)
                     .fillMaxSize()
-                    .testTag(HourRecapTestTags.SCREEN_ROOT),
-            verticalArrangement = Arrangement.Top) {
-
-              // ---- Start date Picker ----
-              DatePickerFieldToModal(
-                  label = stringResource(R.string.startDatePickerLabel),
-                  modifier = Modifier.fillMaxWidth().testTag(HourRecapTestTags.START_DATE),
-                  onDateSelected = { startDate = it })
-
-              Spacer(Modifier.height(SpacingMedium))
-
-              // ---- End date Picker ----
-              DatePickerFieldToModal(
-                  label = stringResource(R.string.endDatePickerLabel),
-                  modifier = Modifier.fillMaxWidth().testTag(HourRecapTestTags.END_DATE),
-                  onDateSelected = { endDate = it })
-
-              Spacer(Modifier.height(SpacingMedium))
-
-              // ---- Generate Recap Button ----
-              PrimaryButton(
-                  modifier = Modifier.fillMaxWidth().testTag(HourRecapTestTags.GENERATE_BUTTON),
-                  text = stringResource(R.string.hour_recap_generate),
-                  enabled = startDate != null && endDate != null && !startDate!!.isAfter(endDate!!),
-                  onClick = {
+                    .testTag(HourRecapTestTags.SCREEN_ROOT)) {
+              DateRangePicker(
+                  startDate = startDate,
+                  endDate = endDate,
+                  onStartDateSelected = { startDate = it },
+                  onEndDateSelected = { endDate = it },
+                  onGenerateClick = {
+                    hasGenerated = true
                     hourRecapViewModel.calculateWorkedHours(
                         start = startDate!!.atStartOfDay().toInstant(ZoneOffset.UTC),
-                        end = endDate!!.atTime(23, 59).toInstant(ZoneOffset.UTC))
+                        end =
+                            endDate!!
+                                .atTime(
+                                    HourRecapUiConstants.END_OF_DAY_HOUR,
+                                    HourRecapUiConstants.END_OF_DAY_MINUTE)
+                                .toInstant(ZoneOffset.UTC))
                   })
 
               Spacer(Modifier.height(SpacingLarge))
 
-              // ---- Title ----
               Text(
                   text = stringResource(R.string.hour_recap_results_title),
                   style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
 
               Spacer(Modifier.height(SpacingMedium))
 
-              // ---- LOADING ----
-              if (uiState.isLoading) {
-                Loading(
-                    modifier = Modifier.fillMaxSize(),
-                    label = stringResource(R.string.loading_hours))
-              } else {
-                // ---- LIST OF WORKED HOURS ----
-                LazyColumn(modifier = Modifier.testTag(HourRecapTestTags.RECAP_LIST)) {
-                  items(uiState.workedHours) { pair ->
-                    val (name, hours) = pair
-
-                    Card(
-                        modifier =
-                            Modifier.fillMaxWidth()
-                                .padding(vertical = PaddingSmall)
-                                .testTag(HourRecapTestTags.RECAP_ITEM),
-                        elevation = CardDefaults.cardElevation(ElevationLow)) {
-                          Row(
-                              modifier = Modifier.fillMaxWidth().padding(PaddingMedium),
-                              horizontalArrangement = Arrangement.SpaceBetween) {
-                                Text(
-                                    text = name,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    modifier = Modifier.weight(Weight))
-                                Text(
-                                    text = formatDecimalHoursToTime(hours),
-                                    style =
-                                        MaterialTheme.typography.bodyLarge.copy(
-                                            fontWeight = FontWeight.Bold))
-                              }
-                        }
-                  }
-                }
-              }
+              RecapList(
+                  uiState = uiState,
+                  hasGenerated = hasGenerated,
+                  onUserClick = { selectedUser = it })
             }
       }
+
+  if (selectedUser != null) {
+    val minSheetHeight = LocalConfiguration.current.screenHeightDp.dp * BOTTOM_SHEET_HEIGHT_RATIO
+
+    ModalBottomSheet(
+        modifier = Modifier.testTag(HourRecapTestTags.RECAP_SHEET),
+        onDismissRequest = { selectedUser = null },
+        sheetState = bottomSheetState) {
+          HourRecapUserEventsSheet(
+              recap = selectedUser!!,
+              viewModel = hourRecapViewModel,
+              modifier = Modifier.heightIn(min = minSheetHeight))
+        }
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Bottom sheet                                                                */
+/* -------------------------------------------------------------------------- */
+
+@Composable
+private fun HourRecapUserEventsSheet(
+    recap: HourRecapUserRecap,
+    viewModel: HourRecapViewModel,
+    modifier: Modifier = Modifier
+) {
+  val dateFormatter = remember { DateTimeFormatter.ofPattern("MMM dd, yyyy") }
+  val timeFormatter = remember { DateTimeFormatter.ofPattern("HH:mm") }
+
+  Column(
+      modifier =
+          modifier
+              .fillMaxWidth()
+              .verticalScroll(rememberScrollState())
+              .padding(horizontal = SpacingLarge, vertical = SpacingMedium)) {
+        Text(
+            text = stringResource(R.string.hour_recap_events_for_user, recap.displayName),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold)
+
+        Spacer(Modifier.height(SpacingMedium))
+
+        if (recap.events.isEmpty()) {
+          Text(text = stringResource(R.string.hour_recap_no_events_for_user))
+        } else {
+          recap.events.forEach { event ->
+            HourRecapEventCard(
+                event = event,
+                dateFormatter = dateFormatter,
+                timeFormatter = timeFormatter,
+                viewModel = viewModel)
+            Spacer(Modifier.height(PaddingSmall))
+          }
+        }
+      }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Event card                                                                  */
+/* -------------------------------------------------------------------------- */
+
+@Composable
+@OptIn(ExperimentalLayoutApi::class)
+private fun HourRecapEventCard(
+    event: HourRecapEventEntry,
+    dateFormatter: DateTimeFormatter,
+    timeFormatter: DateTimeFormatter,
+    viewModel: HourRecapViewModel
+) {
+  val durationHours =
+      remember(event.startDate, event.endDate) {
+        Duration.between(event.startDate, event.endDate).toMinutes().toDouble() /
+            HourRecapUiConstants.MINUTES_PER_HOUR
+      }
+
+  val durationText = formatDecimalHoursToTime(durationHours)
+  val start = event.startDate.atZone(ZoneId.systemDefault())
+  val end = event.endDate.atZone(ZoneId.systemDefault())
+
+  Card(modifier = Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(ElevationLow)) {
+    Row(modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
+      Column(modifier = Modifier.weight(1f).padding(PaddingMedium)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically) {
+              Text(
+                  text = event.title,
+                  style = MaterialTheme.typography.titleSmall,
+                  fontWeight = FontWeight.SemiBold,
+                  modifier = Modifier.weight(1f))
+
+              Surface(
+                  shape = MaterialTheme.shapes.small,
+                  color =
+                      MaterialTheme.colorScheme.surfaceVariant
+                          .copy(alpha = 0.6f)
+                          .compositeOver(MaterialTheme.colorScheme.surface)) {
+                    if (event.isExtra) {
+                      Icon(
+                          imageVector = Icons.Filled.Star,
+                          contentDescription = stringResource(id = R.string.extra_event_label),
+                          tint = MaterialTheme.colorScheme.primary,
+                          modifier =
+                              Modifier.padding(horizontal = PaddingSmall)
+                                  .testTag(HourRecapTestTags.EXTRA_BADGE))
+                    } else {
+                      Text(
+                          modifier = Modifier.padding(horizontal = PaddingSmall),
+                          text = durationText,
+                          style =
+                              MaterialTheme.typography.labelMedium.copy(
+                                  fontWeight = FontWeight.SemiBold))
+                    }
+                  }
+            }
+
+        Spacer(Modifier.height(PaddingSmall))
+
+        Text(
+            text =
+                stringResource(
+                    R.string.hour_recap_event_date_time,
+                    start.toLocalDate().format(dateFormatter),
+                    start.toLocalTime().format(timeFormatter),
+                    end.toLocalTime().format(timeFormatter)),
+            style = MaterialTheme.typography.bodyMedium)
+
+        Spacer(Modifier.height(PaddingSmall))
+
+        EventTagsRow(event = event, viewModel = viewModel)
+      }
+
+      Box(
+          modifier =
+              Modifier.width(EVENT_COLOR_BAR_WIDTH_DP.dp)
+                  .fillMaxHeight()
+                  .clip(MaterialTheme.shapes.medium)
+                  .background(event.categoryColor))
+    }
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Remaining composables unchanged (stats, list, tags)                         */
+/* -------------------------------------------------------------------------- */
+
+@Composable
+private fun HourRecapStat(
+    label: String,
+    value: String,
+    containerColor: Color,
+    contentColor: Color,
+    modifier: Modifier = Modifier,
+) {
+  Surface(
+      color = containerColor,
+      contentColor = contentColor,
+      shape = MaterialTheme.shapes.medium,
+      modifier = modifier) {
+        Column(modifier = Modifier.padding(horizontal = PaddingMedium, vertical = PaddingSmall)) {
+          Text(text = label, style = MaterialTheme.typography.labelSmall, color = contentColor)
+          Text(
+              text = value,
+              style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+              color = contentColor)
+        }
+      }
+}
+
+@Composable
+private fun RecapTag(label: String, containerColor: Color) {
+  Surface(
+      color = containerColor,
+      contentColor = MaterialTheme.colorScheme.onSurface,
+      shape = MaterialTheme.shapes.small) {
+        Text(
+            text = label,
+            modifier = Modifier.padding(horizontal = PaddingSmall, vertical = PaddingExtraSmall),
+            style = MaterialTheme.typography.labelMedium,
+        )
+      }
+}
+
+@Composable
+private fun DateRangePicker(
+    startDate: LocalDate?,
+    endDate: LocalDate?,
+    onStartDateSelected: (LocalDate) -> Unit,
+    onEndDateSelected: (LocalDate) -> Unit,
+    onGenerateClick: () -> Unit
+) {
+  DatePickerFieldToModal(
+      label = stringResource(R.string.startDatePickerLabel),
+      modifier = Modifier.fillMaxWidth().testTag(HourRecapTestTags.START_DATE),
+      onDateSelected = onStartDateSelected)
+
+  Spacer(Modifier.height(SpacingMedium))
+
+  DatePickerFieldToModal(
+      label = stringResource(R.string.endDatePickerLabel),
+      modifier = Modifier.fillMaxWidth().testTag(HourRecapTestTags.END_DATE),
+      onDateSelected = onEndDateSelected)
+
+  Spacer(Modifier.height(SpacingMedium))
+
+  PrimaryButton(
+      modifier = Modifier.fillMaxWidth().testTag(HourRecapTestTags.GENERATE_BUTTON),
+      text = stringResource(R.string.hour_recap_generate),
+      enabled = startDate != null && endDate != null && !startDate.isAfter(endDate),
+      onClick = onGenerateClick)
+}
+
+@Composable
+private fun RecapList(
+    uiState: HourRecapUiState,
+    hasGenerated: Boolean,
+    onUserClick: (HourRecapUserRecap) -> Unit
+) {
+  if (uiState.isLoading) {
+    Loading(modifier = Modifier.fillMaxSize(), label = stringResource(R.string.loading_hours))
+  } else {
+    LazyColumn(modifier = Modifier.testTag(HourRecapTestTags.RECAP_LIST)) {
+      if (uiState.userRecaps.isEmpty() && hasGenerated) {
+        item { EmptyRecapCard() }
+      }
+
+      items(uiState.userRecaps, key = { it.userId }) { recap ->
+        RecapItemCard(recap = recap, onClick = { onUserClick(recap) })
+      }
+    }
+  }
+}
+
+@Composable
+private fun EmptyRecapCard() {
+  ElevatedCard(
+      modifier = Modifier.fillMaxWidth().padding(vertical = SpacingMedium),
+      colors =
+          CardDefaults.elevatedCardColors(
+              containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f))) {
+        Column(
+            modifier =
+                Modifier.fillMaxWidth()
+                    .padding(horizontal = SpacingLarge, vertical = SpacingMedium),
+            horizontalAlignment = Alignment.CenterHorizontally) {
+              Icon(
+                  imageVector = Icons.Default.Info,
+                  contentDescription = null,
+                  tint = MaterialTheme.colorScheme.primary)
+              Spacer(Modifier.height(PaddingSmall))
+              Text(
+                  text = stringResource(R.string.hour_recap_no_events_in_range_heading),
+                  style =
+                      MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold))
+              Spacer(Modifier.height(PaddingExtraSmall))
+              Text(
+                  text = stringResource(R.string.hour_recap_no_events_in_range_details),
+                  style = MaterialTheme.typography.bodyMedium,
+                  color = MaterialTheme.colorScheme.onSurfaceVariant,
+                  textAlign = TextAlign.Center)
+            }
+      }
+}
+
+@Composable
+private fun RecapItemCard(recap: HourRecapUserRecap, onClick: () -> Unit) {
+  Card(
+      modifier =
+          Modifier.fillMaxWidth()
+              .padding(vertical = PaddingSmall)
+              .testTag(HourRecapTestTags.RECAP_ITEM),
+      onClick = onClick,
+      elevation = CardDefaults.cardElevation(ElevationLow)) {
+        Column(modifier = Modifier.fillMaxWidth().padding(PaddingMedium)) {
+          Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            if (recap.hasPresenceIssue) {
+              Box(
+                  modifier =
+                      Modifier.size(12.dp)
+                          .clip(CircleShape)
+                          .background(MaterialTheme.colorScheme.error)
+                          .testTag("${HourRecapTestTags.RECAP_ITEM_ISSUE_MARKER}_${recap.userId}"))
+              Spacer(Modifier.width(PaddingSmall))
+            }
+
+            Text(
+                text = recap.displayName,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.weight(Weight))
+            Surface(
+                shape = MaterialTheme.shapes.small,
+                color =
+                    MaterialTheme.colorScheme.surfaceVariant
+                        .copy(alpha = 0.6f)
+                        .compositeOver(MaterialTheme.colorScheme.surface)) {
+                  Text(
+                      modifier = Modifier.padding(horizontal = PaddingSmall),
+                      text = formatDecimalHoursToTime(recap.totalHours),
+                      style =
+                          MaterialTheme.typography.labelMedium.copy(
+                              fontWeight = FontWeight.SemiBold))
+                }
+          }
+
+          Spacer(Modifier.height(PaddingSmall))
+
+          Row(
+              modifier = Modifier.fillMaxWidth(),
+              horizontalArrangement = Arrangement.spacedBy(PaddingSmall)) {
+                HourRecapStat(
+                    label = stringResource(R.string.hour_recap_completed_hours_label),
+                    value = formatDecimalHoursToTime(recap.completedHours),
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+
+                HourRecapStat(
+                    label = stringResource(R.string.hour_recap_planned_hours_label),
+                    value = formatDecimalHoursToTime(recap.plannedHours),
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                )
+                if (recap.extraEventsCount > 0) {
+                  HourRecapStat(
+                      label = stringResource(R.string.hour_recap_extra_events_label),
+                      value = recap.extraEventsCount.toString(),
+                      containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                      contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                      modifier = Modifier.testTag(HourRecapTestTags.EXTRA_STAT),
+                  )
+                }
+              }
+        }
+      }
+}
+
+@Composable
+@OptIn(ExperimentalLayoutApi::class)
+private fun EventTagsRow(event: HourRecapEventEntry, viewModel: HourRecapViewModel) {
+  FlowRow(horizontalArrangement = Arrangement.spacedBy(PaddingSmall)) {
+    if (!event.isPast) {
+      FutureTag()
+    }
+
+    if (event.isPast) {
+      PresenceTag(event = event, viewModel = viewModel)
+    }
+
+    if (event.wasReplaced) {
+      ReplacedTag()
+    }
+
+    if (event.tookReplacement) {
+      ReplacementTakenTag()
+    }
+  }
+}
+
+@Composable
+private fun FutureTag() {
+  RecapTag(
+      label = stringResource(R.string.hour_recap_tag_future),
+      containerColor = MaterialTheme.colorScheme.tertiaryContainer)
+}
+
+@Composable
+private fun PresenceTag(event: HourRecapEventEntry, viewModel: HourRecapViewModel) {
+  val (presenceType, _, useErrorColor) = viewModel.getPresenceTagInfo(event.wasPresent)
+  val label = getPresenceLabel(presenceType)
+  val color = getPresenceColor(presenceType, useErrorColor)
+  RecapTag(label = label, containerColor = color)
+}
+
+@Composable
+private fun getPresenceLabel(presenceType: String): String {
+  return when (presenceType) {
+    "present" -> stringResource(R.string.hour_recap_tag_present)
+    "absent" -> stringResource(R.string.hour_recap_tag_absent)
+    else -> stringResource(R.string.hour_recap_tag_presence_unknown)
+  }
+}
+
+@Composable
+private fun getPresenceColor(presenceType: String, useErrorColor: Boolean): Color {
+  return if (useErrorColor) {
+    MaterialTheme.colorScheme.errorContainer
+  } else {
+    when (presenceType) {
+      "present" -> Palette.Green
+      else -> MaterialTheme.colorScheme.surfaceVariant
+    }
+  }
+}
+
+@Composable
+private fun ReplacedTag() {
+  RecapTag(
+      label = stringResource(R.string.hour_recap_tag_replaced), containerColor = Palette.Orange)
+}
+
+@Composable
+private fun ReplacementTakenTag() {
+  RecapTag(
+      label = stringResource(R.string.hour_recap_tag_replacement_taken),
+      containerColor = Palette.Cyan)
 }

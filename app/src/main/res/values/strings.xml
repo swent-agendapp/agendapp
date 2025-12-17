@@ -20,9 +20,12 @@
     <string name="endDatePickerLabel">End date</string>
     <string name="recurrenceEndPickerLabel">Recurrence end</string>
     <string name="recurrenceMenuLabel">Recurrence</string>
+    <string name="extra_event_label">Extra event</string>
+    <string name="extra_event_description_on">This event is marked as extra and will not be paid hourly.</string>
+    <string name="extra_event_description_off">This event will be treated as a regular event.</string>
+    <string name="extra_event_info">This event is marked as extra and will not be paid hourly.</string>
     <string name="finish">Finish</string>
     <string name="create">Create</string>
-    <string name="change">Change</string>
     <string name="delete">Delete</string>
     <string name="confirmationMessage">Congratulation !\nYour event has been succefully created and added to your calendar</string>
     <string name="cancel">Cancel</string>
@@ -177,8 +180,6 @@
     <string name="organization_list_title">Your organizations</string>
     <string name="organization_loading">Loading organizations</string>
     <string name="organization_name_label">Name of organization</string>
-    <string name="organization_none_selected">No organization selected</string>
-    <string name="organization_members">Members</string>
     <string name="error_no_authenticated_user">No authenticated user found.</string>
     <string name="error_no_organization_selected">No organization selected.</string>
     <string name="error_organization_not_found">Organization not found.</string>
@@ -198,6 +199,9 @@
     <string name="select_date_range_instruction">Select the date range for which you need a replacement.</string>
     <string name="hour_recap_results_title">Total hours per employee for the selected period:</string>
     <string name="hour_recap_generate">Generate summary</string>
+    <string name="hour_recap_completed_hours_label">Completed</string>
+    <string name="hour_recap_planned_hours_label">Planned</string>
+    <string name="hour_recap_extra_events_label">Extra</string>
     <string name="export_excel">Export to Excel</string>
 
     <!-- Filters -->
@@ -245,6 +249,18 @@
     <string name="work_duration_hours">%1$dh</string>
     <string name="work_duration_hours_minutes">%1$dh %2$dmin</string>
     <string name="location_status_inside">Present</string>
+    <string name="hour_recap">Hour Recap</string>
+    <string name="hour_recap_events_for_user">Events for %1$s</string>
+    <string name="hour_recap_no_events_for_user">No events found for this user.</string>
+    <string name="hour_recap_no_events_in_range_heading">No events for these dates</string>
+    <string name="hour_recap_no_events_in_range_details">Try adjusting your dates or widening the range to see everyone\'s shifts.</string>
+    <string name="hour_recap_event_date_time">%1$s · %2$s - %3$s</string>
+    <string name="hour_recap_tag_future">Upcoming event</string>
+    <string name="hour_recap_tag_present">Marked present</string>
+    <string name="hour_recap_tag_absent">Marked absent</string>
+    <string name="hour_recap_tag_presence_unknown">Presence not recorded</string>
+    <string name="hour_recap_tag_replaced">Replaced</string>
+    <string name="hour_recap_tag_replacement_taken">Replacement shift</string>
 
     <!-- Category -->
     <string name="edit_category_title">Edit your categories</string>
@@ -257,8 +273,17 @@
     <string name="category_selector_create_category">Create a category</string>
     <string name="category_selector_edit_my_categories">Edit my categories</string>
 
-    <string name="hour_recap">Hour Recap</string>
+    <!-- Organization Overview -->
+    <plurals name="members_count">
+        <item quantity="one">%d member</item>
+        <item quantity="other">%d members</item>
+    </plurals>
+    <string name="categories_button">Categories</string>
+    <string name="members">Members</string>
+    <string name="admin">Admin</string>
+    <string name="invitations_button">Invitations</string>
 
+    <!-- Edit Organization -->
+    <string name="error_loading_organization">Failed to load organization.</string>
+    <string name="error_editing_organization">Failed to update organization.</string>
 </resources>
-
-

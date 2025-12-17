@@ -205,6 +205,7 @@
     <string name="hour_recap_generate">Zusammenfassung erstellen</string>
     <string name="hour_recap_completed_hours_label">Abgeschlossen</string>
     <string name="hour_recap_planned_hours_label">Geplant</string>
+    <string name="hour_recap_extra_events_label">Extra</string>
     <string name="export_excel">Nach Excel exportieren</string>
 
     <!-- Filters -->

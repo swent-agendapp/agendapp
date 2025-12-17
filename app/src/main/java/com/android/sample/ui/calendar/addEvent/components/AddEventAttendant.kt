@@ -67,16 +67,6 @@ fun AddEventAttendantScreen(
 
         Spacer(modifier = Modifier.padding(vertical = PaddingSmall))
 
-      verticalArrangement = Arrangement.SpaceAround) {
-        Box(
-            modifier = Modifier.weight(WeightExtraHeavy).fillMaxWidth(),
-            contentAlignment = Alignment.Center) {
-              Text(
-                  stringResource(R.string.selectAttendants),
-                  textAlign = TextAlign.Center,
-                  style = MaterialTheme.typography.headlineMedium,
-                  modifier = Modifier.testTag(AddEventTestTags.INSTRUCTION_TEXT))
-            }
         ExtraEventToggle(
             isExtra = newEventUIState.isExtraEvent,
             onToggle = addEventViewModel::setIsExtra,

@@ -50,5 +50,6 @@ data class EventEntity(
     var hasBeenDeleted: Boolean = false,
     var recurrenceStatus: String = RecurrenceStatus.OneTime.name,
     @Convert(converter = EventCategoryConverter::class, dbType = String::class)
-    var category: EventCategory = EventCategory.defaultCategory()
+    var category: EventCategory = EventCategory.defaultCategory(),
+    var isExtra: Boolean = false,
 )

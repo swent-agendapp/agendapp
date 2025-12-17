@@ -1,5 +1,7 @@
 package com.android.sample.ui.hourRecap
 
+import com.android.sample.data.fake.repositories.FakeEventRepository
+import com.android.sample.data.fake.repositories.RepoMethod
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepository
 import com.android.sample.model.authentication.UsersRepositoryLocal
@@ -8,7 +10,6 @@ import com.android.sample.model.calendar.createEvent
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.repository.OrganizationRepositoryLocal
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
-import com.android.sample.utils.FakeEventRepository
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import kotlin.test.assertEquals
@@ -114,7 +115,8 @@ class HourRecapViewModelTest {
                 displayName = "Alice",
                 completedHours = 3.0,
                 plannedHours = 2.0,
-                events = emptyList()))
+                events = emptyList(),
+                extraEventsCount = 0))
 
     vm.setTestWorkedHours(data)
 
@@ -159,12 +161,15 @@ class HourRecapViewModelTest {
   @Test
   fun `calculateWorkedHours sets error on exception`() = runTest {
     val vm = makeVm()
-    repo.shouldThrowOnCalculateWorkedHours = true
+    repo.failMethods.add(RepoMethod.CALCULATE_WORKED_HOURS_PAST)
 
     vm.calculateWorkedHours(start = Instant.EPOCH, end = Instant.EPOCH)
     testDispatcher.scheduler.advanceUntilIdle()
 
     assertTrue(vm.uiState.value.errorMsg?.contains("Failed") == true)
+
+    // Clear the failure for other tests
+    repo.failMethods.remove(element = RepoMethod.CALCULATE_WORKED_HOURS)
   }
 
   @Test

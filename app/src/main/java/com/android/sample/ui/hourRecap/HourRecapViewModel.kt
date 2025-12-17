@@ -7,11 +7,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.android.sample.data.global.providers.EventRepositoryProvider
+import com.android.sample.data.global.repositories.EventRepository
 import com.android.sample.model.authentication.UserRepository
 import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.calendar.Event
-import com.android.sample.model.calendar.EventRepository
-import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import java.time.Instant
@@ -31,6 +31,7 @@ data class HourRecapEventEntry(
     val wasReplaced: Boolean,
     val tookReplacement: Boolean,
     val categoryColor: Color,
+    val isExtra: Boolean = false,
 )
 
 data class HourRecapUserRecap(
@@ -39,6 +40,7 @@ data class HourRecapUserRecap(
     val completedHours: Double,
     val plannedHours: Double,
     val events: List<HourRecapEventEntry>,
+    val extraEventsCount: Int = 0,
 ) {
   val totalHours: Double
     get() = completedHours + plannedHours
@@ -135,13 +137,15 @@ class HourRecapViewModel(
               .filter { event -> userId in event.allEventUserIds() }
               .map { event -> event.toHourRecapEntry(userId, now) }
               .sortedBy { it.startDate }
+      val extraEventsCount = userEvents.count { it.isExtra }
 
       HourRecapUserRecap(
           userId = userId,
           displayName = user.display(),
           completedHours = completed,
           plannedHours = planned,
-          events = userEvents)
+          events = userEvents,
+          extraEventsCount = extraEventsCount)
     }
   }
 
@@ -163,6 +167,7 @@ class HourRecapViewModel(
         wasReplaced = wasReplaced,
         tookReplacement = tookReplacement,
         categoryColor = category.color,
+        isExtra = isExtra,
     )
   }
 

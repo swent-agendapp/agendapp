@@ -1,5 +1,6 @@
 package com.android.sample.ui.hourRecap
 
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -14,6 +15,7 @@ import com.android.sample.R
 import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
+import java.time.Instant
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -506,5 +508,72 @@ class HourRecapScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
     compose
         .onNodeWithText(context.getString(R.string.hour_recap_tag_presence_unknown))
         .assertExists()
+  }
+
+  @Test
+  fun extraEvent_showsStarBadgeInDetails() {
+    val vm = HourRecapViewModel()
+    val pastTime = java.time.Instant.now().minusSeconds(7200)
+    val event =
+        HourRecapEventEntry(
+            id = "event1",
+            title = "Extra Shift",
+            startDate = pastTime,
+            endDate = pastTime.plusSeconds(3600),
+            isPast = true,
+            wasPresent = true,
+            wasReplaced = false,
+            tookReplacement = false,
+            categoryColor = androidx.compose.ui.graphics.Color.Blue,
+            isExtra = true)
+
+    vm.setTestWorkedHours(
+        listOf(
+            HourRecapUserRecap(
+                userId = "user",
+                displayName = "User",
+                completedHours = 1.0,
+                plannedHours = 0.0,
+                events = listOf(event))))
+
+    compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
+
+    compose.onNodeWithText("User").performClick()
+    compose.waitForIdle()
+
+    compose.onNodeWithTag(HourRecapTestTags.EXTRA_BADGE).assertIsDisplayed()
+  }
+
+  @Test
+  fun extraStatDisplayedWhenUserHasExtras() {
+    val vm = HourRecapViewModel()
+    vm.setTestWorkedHours(
+        listOf(
+            HourRecapUserRecap(
+                userId = "alice",
+                displayName = "Alice",
+                completedHours = 1.0,
+                plannedHours = 2.0,
+                events =
+                    listOf(
+                        HourRecapEventEntry(
+                            id = "1",
+                            title = "Extra",
+                            startDate = Instant.now(),
+                            endDate = Instant.now(),
+                            isPast = true,
+                            wasPresent = true,
+                            wasReplaced = false,
+                            tookReplacement = false,
+                            categoryColor = Color.Red,
+                            isExtra = true)),
+                extraEventsCount = 1)))
+
+    compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
+
+    compose
+        .onNodeWithTag(HourRecapTestTags.EXTRA_STAT, useUnmergedTree = true)
+        .assertExists()
+        .assertIsDisplayed()
   }
 }

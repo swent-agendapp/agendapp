@@ -282,6 +282,6 @@
     <string name="organization_infos_loading">Loading organization information…</string>
 
     <!-- Edit Organization -->
-    <string name="error_loading_organiation">Failed to load organization.</string>
+    <string name="error_loading_organization">Failed to load organization.</string>
     <string name="error_editing_organization">Failed to update organization.</string>
 </resources>

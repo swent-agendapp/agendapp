@@ -49,7 +49,7 @@ open class EditOrganizationViewModel(
 
         updateName(organization.name)
       } catch (_: Exception) {
-        _uiState.update { it.copy(errorMsgID = R.string.error_loading_organiation) }
+        _uiState.update { it.copy(errorMsgID = R.string.error_loading_organization) }
       }
     }
   }

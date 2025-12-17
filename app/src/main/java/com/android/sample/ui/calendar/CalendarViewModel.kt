@@ -254,10 +254,12 @@ class CalendarViewModel(
             val events = eventRepository.getEventsBetweenDates(orgId, startTime, endTime)
 
             events.forEach { event ->
-              val updatedPresence = event.presence.toMutableMap()
-              updatedPresence[currentUser.id] = true
-              val updatedEvent = event.copy(presence = updatedPresence)
-              eventRepository.updateEvent(orgId, event.id, updatedEvent)
+              if (event.participants.contains(currentUser.id)) {
+                val updatedPresence = event.presence.toMutableMap()
+                updatedPresence[currentUser.id] = true
+                val updatedEvent = event.copy(presence = updatedPresence)
+                eventRepository.updateEvent(orgId, event.id, updatedEvent)
+              }
             }
           }
         }

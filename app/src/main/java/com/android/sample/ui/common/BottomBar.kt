@@ -5,8 +5,13 @@ import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.disabled
+import androidx.compose.ui.semantics.semantics
+import com.android.sample.ui.theme.WeightExtraHeavy
+import com.android.sample.ui.theme.WeightMedium
 
 /** Test tags for BottomBar and its items. */
 object BottomBarTestTags {
@@ -23,6 +28,8 @@ object BottomBarTestTags {
  * @param onClick The action to perform when the item is clicked.
  * @param contentDescription The content description for accessibility.
  * @param isSelected Whether the item is currently selected.
+ * @param testTag The test tag for UI testing.
+ * @param enabled Whether the item is enabled or disabled.
  */
 data class BottomBarItem(
     val icon: ImageVector? = null,
@@ -32,6 +39,7 @@ data class BottomBarItem(
     val contentDescription: String? = null,
     val isSelected: Boolean = false,
     val testTag: String = "",
+    val enabled: Boolean = true,
 )
 
 /**
@@ -53,10 +61,23 @@ fun BottomBar(
           icon = {
             Icon(
                 imageVector = item.icon ?: Icons.Default.Warning,
-                contentDescription = item.contentDescription)
+                contentDescription = item.contentDescription,
+                modifier = Modifier.alpha(if (item.enabled) WeightExtraHeavy else WeightMedium))
           },
-          label = { Text(text = item.label) },
-          modifier = modifier.testTag(item.testTag))
+          label = {
+            Text(
+                text = item.label,
+                modifier = Modifier.alpha(if (item.enabled) WeightExtraHeavy else WeightMedium))
+          },
+          modifier =
+              modifier
+                  .testTag(item.testTag)
+                  .then(
+                      if (!item.enabled) {
+                        Modifier.semantics { disabled() }
+                      } else {
+                        Modifier
+                      }))
     }
   }
 }

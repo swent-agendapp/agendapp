@@ -125,15 +125,30 @@ fun CalendarScreen(
     if (orgId.isBlank()) return@LaunchedEffect
 
     try {
+      val userRepo = UserRepositoryProvider.repository
+      val memberIds = userRepo.getMembersIds(orgId)
+      users = userRepo.getUsersByIds(memberIds)
+    } catch (_: Exception) {
+      calendarViewModel.setErrorMsg("Unexpected error while loading data")
+    }
+  }
+
+  LaunchedEffect(selectedOrgId) {
+    val orgId = selectedOrgId ?: return@LaunchedEffect
+    if (orgId.isBlank()) return@LaunchedEffect
+
+    try {
       val categoryRepo = EventCategoryRepositoryProvider.repository
       categories = categoryRepo.getAllCategories(orgId).sortedBy { it.label.trim().lowercase() }
     } catch (_: Exception) {
       calendarViewModel.setErrorMsg("Unexpected error while loading data")
+    }
+  }
+
   // To trigger a Snackbar if the disabled button is clicked
   var disabledButtonClicked by remember { mutableStateOf(false) }
-
   val noNetworkErrorMsg = stringResource(R.string.network_error_message)
-  // Observe the disabled button click and show Snackbar
+
   LaunchedEffect(disabledButtonClicked) {
     if (disabledButtonClicked) {
       snackbarHostState.showSnackbar(noNetworkErrorMsg)

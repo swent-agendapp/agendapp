@@ -17,7 +17,7 @@ interface NetworkTestBase {
 
   /** The initial internet connectivity state for the test. Default is connected (true). */
   val initialInternetState: Boolean
-    get() = true
+    get() = DEFAULT_INTERNET_STATE
 
   val fakeChecker: FakeConnectivityChecker
 

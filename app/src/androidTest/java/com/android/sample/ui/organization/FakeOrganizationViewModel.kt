@@ -7,7 +7,6 @@ import com.android.sample.model.network.NetworkStatusRepositoryProvider
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.repository.FakeOrganizationRepository
 import com.android.sample.model.organization.repository.OrganizationRepository
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.runBlocking
 
 /**
@@ -31,12 +30,12 @@ class FakeOrganizationViewModel(
 
   /** Simulate loading state */
   fun setLoading() {
-    _uiState.update { it.copy(isLoading = true) }
+    updateUiState { it.copy(isLoading = true) }
   }
 
   /** Simulate an error message */
   fun setError(message: String) {
-    _uiState.update { it.copy(isLoading = false, errorMsg = message) }
+    updateUiState { it.copy(isLoading = false, errorMsg = message) }
   }
 
   /** Simulate organizations loaded */
@@ -50,15 +49,15 @@ class FakeOrganizationViewModel(
     }
 
     // Update UI state
-    _uiState.update { it.copy(isLoading = false, organizations = organizations) }
+    updateUiState { it.copy(isLoading = false, organizations = organizations) }
   }
 
   /** Simulate refreshing state */
   fun setRefreshing(refreshing: Boolean = true) {
-    _uiState.update { it.copy(isRefreshing = refreshing) }
+    updateUiState { it.copy(isRefreshing = refreshing) }
   }
 
   override fun clearErrorMsg() {
-    _uiState.update { it.copy(errorMsg = null) }
+    updateUiState { it.copy(errorMsg = null) }
   }
 }

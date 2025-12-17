@@ -41,6 +41,11 @@ open class OrganizationViewModel(
   private val _userState = MutableStateFlow(authRepository.getCurrentUser())
   val userState: StateFlow<User?> = _userState
 
+  // Helper function to update the UI state (for tests only)
+  protected fun updateUiState(transform: (OrganizationUIState) -> OrganizationUIState) {
+    _uiState.update(transform)
+  }
+
   // Initialize by loading organizations
   init {
     loadOrganizations()

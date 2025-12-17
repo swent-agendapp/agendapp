@@ -49,6 +49,7 @@ object SignInScreenTestTags {
   const val LOGIN_BUTTON = "loginButton"
   const val LOGOUT_BUTTON = "logoutButton"
   const val END_SNACK_BAR = "snackBar"
+  const val NO_NETWORK_MESSAGE = "noNetworkMessage"
 }
 
 @Composable
@@ -126,17 +127,22 @@ fun SignInScreen(
           if (uiState.isLoading) {
             Loading(modifier = Modifier.size(SizeExtraLarge))
           } else if (uiState.signedOut) {
-            GoogleSignInButton(onSignInClick = { authViewModel.signIn(context, credentialManager) })
+            GoogleSignInButton(
+                onSignInClick = { authViewModel.signIn(context, credentialManager) },
+                enabled = uiState.isNetworkAvailable)
           }
         }
       })
 }
 
 @Composable
-fun GoogleSignInButton(onSignInClick: () -> Unit) {
+fun GoogleSignInButton(onSignInClick: () -> Unit, enabled: Boolean = true) {
   PrimaryButton(
-      modifier = Modifier.testTag(SignInScreenTestTags.LOGIN_BUTTON),
+      modifier = Modifier.testTag(tag = SignInScreenTestTags.LOGIN_BUTTON),
       text = stringResource(R.string.sign_in_button_text),
       onClick = onSignInClick,
-  )
+      enabled = enabled,
+      unabledText = stringResource(R.string.network_error_message),
+      showUnabledText = true,
+      unabledTextTestTag = SignInScreenTestTags.NO_NETWORK_MESSAGE)
 }

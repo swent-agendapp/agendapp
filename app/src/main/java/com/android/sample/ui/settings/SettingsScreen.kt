@@ -18,16 +18,26 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.common.MainPageTopBar
 import com.android.sample.ui.replacement.ReplacementOverviewTestTags
@@ -41,6 +51,7 @@ object SettingsScreenTestTags {
   const val MAP_SETTINGS_BUTTON = "map_settings_button"
   const val ORGANIZATION_BUTTON = "organization_selection_button"
   const val HOURRECAP_BUTTON = "hour_recap_button"
+  const val SNACKBAR = "snackbar"
 }
 
 /** Settings screen with navigation to profile. */
@@ -48,19 +59,60 @@ object SettingsScreenTestTags {
 @Preview
 @Composable
 fun SettingsScreen(
+    settingsViewModel: SettingsViewModel = viewModel(),
     onNavigateToUserProfile: () -> Unit = {},
     onNavigateToAdminInfo: () -> Unit = {},
     onNavigateToMapSettings: () -> Unit = {},
     onNavigateToOrganizationList: () -> Unit = {},
     onNavigateToHourRecap: () -> Unit = {}
 ) {
+  val uiState by settingsViewModel.uiState.collectAsState()
+  val snackbarHostState = remember { SnackbarHostState() }
+  var disabledButtonClicked by remember { mutableStateOf(false) }
+  val noNetworkErrorMsg = stringResource(R.string.network_error_message)
+
+  // Show snackbar if a disabled button was clicked
+  LaunchedEffect(disabledButtonClicked) {
+    if (disabledButtonClicked) {
+      snackbarHostState.showSnackbar(noNetworkErrorMsg)
+      disabledButtonClicked = false
+    }
+  }
+
+  fun safeClick(enabled: Boolean, action: () -> Unit) {
+    if (enabled) action() else disabledButtonClicked = true
+  }
+
+  val settingsItems =
+      listOf(
+          Triple(
+              stringResource(R.string.settings_profile_button),
+              Icons.Default.Person,
+              onNavigateToUserProfile),
+          Triple(
+              stringResource(R.string.settings_admin_info_button),
+              Icons.Default.AdminPanelSettings,
+              onNavigateToAdminInfo),
+          Triple(stringResource(R.string.settings_map_settings_button), Icons.Default.Map) {
+            safeClick(uiState.networkAvailable, onNavigateToMapSettings)
+          },
+          Triple(
+              stringResource(R.string.settings_organization_selection_button),
+              Icons.Default.Business) {
+                safeClick(uiState.networkAvailable, onNavigateToOrganizationList)
+              },
+          Triple(stringResource(R.string.hour_recap), Icons.Default.AccessTime) {
+            safeClick(uiState.networkAvailable, onNavigateToHourRecap)
+          })
 
   Scaffold(
-      topBar = {
-        MainPageTopBar(
-            title = stringResource(R.string.settings_screen_title),
-        )
-      }) { innerPadding ->
+      snackbarHost = {
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier.testTag(SettingsScreenTestTags.SNACKBAR))
+      },
+      topBar = { MainPageTopBar(title = stringResource(R.string.settings_screen_title)) }) {
+          innerPadding ->
         Column(
             modifier =
                 Modifier.padding(innerPadding).padding(PaddingMedium).fillMaxSize().semantics {
@@ -73,46 +125,34 @@ fun SettingsScreen(
                   colors =
                       CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
                     Column(modifier = Modifier.padding(vertical = SpacingSmall)) {
-                      SettingsItemRow(
-                          title = stringResource(R.string.settings_profile_button),
-                          icon = Icons.Default.Person,
-                          testTag = SettingsScreenTestTags.PROFILE_BUTTON,
-                          onClick = onNavigateToUserProfile)
-
-                      DividerSpacer()
-
-                      SettingsItemRow(
-                          title = stringResource(R.string.settings_admin_info_button),
-                          icon = Icons.Default.AdminPanelSettings,
-                          testTag = SettingsScreenTestTags.ADMIN_BUTTON,
-                          onClick = onNavigateToAdminInfo)
-
-                      DividerSpacer()
-
-                      SettingsItemRow(
-                          title = stringResource(R.string.settings_map_settings_button),
-                          icon = Icons.Default.Map,
-                          testTag = SettingsScreenTestTags.MAP_SETTINGS_BUTTON,
-                          onClick = onNavigateToMapSettings)
-
-                      DividerSpacer()
-
-                      SettingsItemRow(
-                          title = stringResource(R.string.settings_organization_selection_button),
-                          icon = Icons.Default.Business,
-                          testTag = SettingsScreenTestTags.ORGANIZATION_BUTTON,
-                          onClick = onNavigateToOrganizationList)
-
-                      DividerSpacer()
-
-                      SettingsItemRow(
-                          title = stringResource(R.string.hour_recap),
-                          icon = Icons.Default.AccessTime,
-                          testTag = SettingsScreenTestTags.HOURRECAP_BUTTON,
-                          onClick = onNavigateToHourRecap,
-                      )
-
-                      DividerSpacer()
+                      settingsItems.forEachIndexed { index, (title, icon, onClick) ->
+                        SettingsItemRow(
+                            title = title,
+                            icon = icon,
+                            testTag =
+                                when (title) {
+                                  stringResource(R.string.settings_profile_button) ->
+                                      SettingsScreenTestTags.PROFILE_BUTTON
+                                  stringResource(R.string.settings_admin_info_button) ->
+                                      SettingsScreenTestTags.ADMIN_BUTTON
+                                  stringResource(R.string.settings_map_settings_button) ->
+                                      SettingsScreenTestTags.MAP_SETTINGS_BUTTON
+                                  stringResource(R.string.settings_organization_selection_button) ->
+                                      SettingsScreenTestTags.ORGANIZATION_BUTTON
+                                  stringResource(R.string.hour_recap) ->
+                                      SettingsScreenTestTags.HOURRECAP_BUTTON
+                                  else -> "unknown_button"
+                                },
+                            onClick = onClick,
+                            enabled =
+                                when (title) {
+                                  stringResource(R.string.settings_map_settings_button),
+                                  stringResource(R.string.settings_organization_selection_button),
+                                  stringResource(R.string.hour_recap) -> uiState.networkAvailable
+                                  else -> true
+                                })
+                        if (index < settingsItems.lastIndex) DividerSpacer()
+                      }
                     }
                   }
             }
@@ -125,12 +165,14 @@ private fun SettingsItemRow(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     testTag: String,
     onClick: () -> Unit,
+    enabled: Boolean = true,
 ) {
   Row(
       modifier =
           Modifier.fillMaxWidth()
               .testTag(testTag)
               .clickable(onClick = onClick)
+              .then(if (!enabled) Modifier.alpha(AlphaMedium) else Modifier)
               .padding(horizontal = PaddingMedium, vertical = SpacingMedium),
       verticalAlignment = Alignment.CenterVertically) {
         Box(
@@ -152,7 +194,7 @@ private fun SettingsItemRow(
         Icon(
             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
             contentDescription = null,
-            tint = Palette.Gray)
+            tint = if (enabled) Palette.Gray else Palette.Gray.copy(alpha = AlphaMedium))
       }
 }
 

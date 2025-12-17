@@ -35,7 +35,8 @@ data class EditCalendarEventUIState(
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
     val users: List<User> = emptyList(),
-    val step: EditEventStep = EditEventStep.MAIN
+    val step: EditEventStep = EditEventStep.MAIN,
+    val isExtraEvent: Boolean = false,
 )
 
 /**
@@ -96,7 +97,8 @@ class EditEventViewModel(
                 recurrenceStatus = state.recurrenceMode,
                 hasBeenDeleted = false,
                 category = state.category,
-                location = null)
+                location = null,
+                isExtra = state.isExtraEvent)
         eventRepository.updateEvent(orgId = orgId, itemId = updated.id, item = updated)
       } catch (e: Exception) {
         Log.e("EditEventViewModel", "Error saving event changes: ${e.message}")
@@ -133,6 +135,7 @@ class EditEventViewModel(
                   participants =
                       _uiState.value.users.filter { it.id in event.participants }.toSet(),
                   category = event.category,
+                  isExtraEvent = event.isExtra,
                   isLoading = false)
         } else {
           _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = "Event not found.")
@@ -169,6 +172,10 @@ class EditEventViewModel(
 
   fun setRecurrenceMode(mode: RecurrenceStatus) {
     _uiState.value = _uiState.value.copy(recurrenceMode = mode)
+  }
+
+  fun setIsExtra(isExtra: Boolean) {
+    _uiState.value = _uiState.value.copy(isExtraEvent = isExtra)
   }
 
   fun addParticipant(name: User) {

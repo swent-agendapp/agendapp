@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.android.sample.model.authentication.AuthRepository
 import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.authentication.User
+import com.android.sample.model.network.NetworkStatusRepository
+import com.android.sample.model.network.NetworkStatusRepositoryProvider
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.repository.OrganizationRepository
 import com.android.sample.model.organization.repository.OrganizationRepositoryProvider
@@ -19,6 +21,7 @@ data class OrganizationUIState(
     val errorMsg: String? = null,
     val isRefreshing: Boolean = false,
     val showUseInvitationBottomSheet: Boolean = false,
+    val networkAvailable: Boolean = true,
 )
 
 // ViewModel for managing organization data for the current user
@@ -26,6 +29,8 @@ open class OrganizationViewModel(
     private val organizationRepository: OrganizationRepository =
         OrganizationRepositoryProvider.repository,
     private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
+    private val networkStatusRepository: NetworkStatusRepository =
+        NetworkStatusRepositoryProvider.repository
 ) : ViewModel() {
   private val errorMessageNoAuthenticated = "No authenticated user found."
   // State holding the UI state of the organizations of the current user
@@ -36,9 +41,24 @@ open class OrganizationViewModel(
   private val _userState = MutableStateFlow(authRepository.getCurrentUser())
   val userState: StateFlow<User?> = _userState
 
+  // Helper function to update the UI state (for tests only)
+  protected fun updateUiState(transform: (OrganizationUIState) -> OrganizationUIState) {
+    _uiState.update(transform)
+  }
+
   // Initialize by loading organizations
   init {
     loadOrganizations()
+    observeNetworkStatus()
+  }
+
+  // Observe network status changes
+  fun observeNetworkStatus() {
+    viewModelScope.launch {
+      networkStatusRepository.isConnected.collect { connected ->
+        _uiState.update { it.copy(networkAvailable = connected) }
+      }
+    }
   }
 
   // Load organizations for the current user

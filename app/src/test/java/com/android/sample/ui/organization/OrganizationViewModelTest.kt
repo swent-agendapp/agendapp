@@ -3,6 +3,9 @@ package com.android.sample.ui.organization
 import com.android.sample.model.authentication.AuthRepository
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UsersRepositoryLocal
+import com.android.sample.model.network.FakeConnectivityChecker
+import com.android.sample.model.network.NetworkStatusRepository
+import com.android.sample.model.network.NetworkTestBase
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.repository.OrganizationRepository
 import io.mockk.coEvery
@@ -26,7 +29,10 @@ import org.junit.Test
  * Tests the ViewModel's core functionality including loading and refreshing organizations.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-class OrganizationViewModelTest {
+class OrganizationViewModelTest : NetworkTestBase {
+
+  override val fakeChecker = FakeConnectivityChecker(state = true)
+  override val networkRepo = NetworkStatusRepository(fakeChecker)
 
   private val testDispatcher = StandardTestDispatcher()
   private lateinit var organizationRepository: OrganizationRepository
@@ -40,6 +46,8 @@ class OrganizationViewModelTest {
 
   @Before
   fun setUp() {
+    setupNetworkTestBase()
+
     Dispatchers.setMain(testDispatcher)
 
     // Create mock repositories

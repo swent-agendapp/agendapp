@@ -365,7 +365,6 @@ private fun NavGraphBuilder.settingsGraph(
           onEditOrganization = { navigationActions.navigateTo(Screen.EditOrganization) },
           onCategoriesClick = { navigationActions.navigateTo(Screen.EditCategory) },
           onInvitationClick = { navigationActions.navigateTo(Screen.InvitationOverview) },
-          onMemberClick = { member -> {} }, // Pending implementation
       )
     }
 

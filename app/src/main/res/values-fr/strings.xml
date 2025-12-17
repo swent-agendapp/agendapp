@@ -22,7 +22,6 @@
     <string name="recurrenceMenuLabel">Récurrence</string>
     <string name="finish">Terminer</string>
     <string name="create">Créer</string>
-    <string name="change">Changer</string>
     <string name="delete">Supprimer</string>
     <string name="confirmationMessage">Félicitations !\nVotre événement a été créé et ajouté à votre calendrier</string>
     <string name="cancel">Annuler</string>
@@ -189,8 +188,6 @@
     <string name="organization_list_title">Vos organisations</string>
     <string name="organization_loading">Chergement des organisations</string>
     <string name="organization_name_label">Nom de l’organisation</string>
-    <string name="organization_none_selected">Aucune organisation sélectionnée</string>
-    <string name="organization_members">Membres</string>
     <string name="error_no_authenticated_user">Aucun utilisateur authentifié.</string>
     <string name="error_no_organization_selected">Aucune organisation sélectionnée.</string>
     <string name="error_organization_not_found">Organisation introuvable.</string>
@@ -271,11 +268,9 @@
         <item quantity="other">%d membres</item>
     </plurals>
     <string name="categories_button">Catégories</string>
-    <string name="areas_button">Zones</string>
     <string name="members">Membres</string>
     <string name="admin">Admin</string>
     <string name="invitations_button">Invitations</string>
-    <string name="organization_infos_loading">Chargement des informations de l’organisation…</string>
 
     <!-- Edit Organization -->
     <string name="error_loading_organization">Impossible de charger l’organisation.</string>

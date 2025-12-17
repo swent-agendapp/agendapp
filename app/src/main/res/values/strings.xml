@@ -22,7 +22,6 @@
     <string name="recurrenceMenuLabel">Recurrence</string>
     <string name="finish">Finish</string>
     <string name="create">Create</string>
-    <string name="change">Change</string>
     <string name="delete">Delete</string>
     <string name="confirmationMessage">Congratulation !\nYour event has been succefully created and added to your calendar</string>
     <string name="cancel">Cancel</string>
@@ -177,8 +176,6 @@
     <string name="organization_list_title">Your organizations</string>
     <string name="organization_loading">Loading organizations</string>
     <string name="organization_name_label">Name of organization</string>
-    <string name="organization_none_selected">No organization selected</string>
-    <string name="organization_members">Members</string>
     <string name="error_no_authenticated_user">No authenticated user found.</string>
     <string name="error_no_organization_selected">No organization selected.</string>
     <string name="error_organization_not_found">Organization not found.</string>
@@ -275,11 +272,9 @@
         <item quantity="other">%d members</item>
     </plurals>
     <string name="categories_button">Categories</string>
-    <string name="areas_button">Areas</string>
     <string name="members">Members</string>
     <string name="admin">Admin</string>
     <string name="invitations_button">Invitations</string>
-    <string name="organization_infos_loading">Loading organization information…</string>
 
     <!-- Edit Organization -->
     <string name="error_loading_organization">Failed to load organization.</string>

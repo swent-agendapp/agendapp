@@ -34,7 +34,7 @@ open class OrganizationViewModel(
 ) : ViewModel() {
   private val errorMessageNoAuthenticated = "No authenticated user found."
   // State holding the UI state of the organizations of the current user
-  val _uiState = MutableStateFlow(OrganizationUIState()) // Protected for testing
+  private val _uiState = MutableStateFlow(OrganizationUIState())
   open val uiState: StateFlow<OrganizationUIState> = _uiState
 
   // State holding the current user

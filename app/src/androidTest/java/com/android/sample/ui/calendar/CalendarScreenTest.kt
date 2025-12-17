@@ -22,10 +22,10 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.test.core.app.ApplicationProvider
+import com.android.sample.data.global.providers.EventRepositoryProvider
+import com.android.sample.data.global.repositories.EventRepository
+import com.android.sample.data.local.repositories.EventRepositoryInMemory
 import com.android.sample.model.calendar.Event
-import com.android.sample.model.calendar.EventRepository
-import com.android.sample.model.calendar.EventRepositoryInMemory
-import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.model.map.MapRepository
 import com.android.sample.model.map.MapRepositoryLocal

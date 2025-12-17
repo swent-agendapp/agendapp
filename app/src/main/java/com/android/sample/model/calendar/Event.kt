@@ -2,6 +2,7 @@ package com.android.sample.model.calendar
 
 import androidx.annotation.StringRes
 import com.android.sample.R
+import com.android.sample.data.global.repositories.EventRepository
 import com.android.sample.model.category.EventCategory
 import com.android.sample.ui.calendar.utils.DateTimeUtils
 import java.time.Instant
@@ -51,7 +52,8 @@ data class Event(
     val recurrenceStatus: RecurrenceStatus,
     val hasBeenDeleted: Boolean = false,
     val category: EventCategory = EventCategory.defaultCategory(),
-    val location: String?
+    val location: String?,
+    val isExtra: Boolean = false,
 ) {
   // Returns the start date as a LocalDate in the system's default time zone
   val startLocalDate: LocalDate
@@ -82,6 +84,7 @@ enum class RecurrenceStatus {
 /** Enum representing the cloud storage location of an event. */
 enum class CloudStorageStatus {
   FIRESTORE,
+  LOCAL
 }
 
 /**
@@ -114,6 +117,7 @@ fun createEvent(
     recurrence: RecurrenceStatus = RecurrenceStatus.OneTime,
     endRecurrence: Instant = Instant.now(),
     location: String? = null,
+    isExtra: Boolean = false,
 ): List<Event> {
   require(!endDate.isBefore(startDate)) { "End date cannot be before start date" }
   val zone = ZoneId.systemDefault()
@@ -136,7 +140,8 @@ fun createEvent(
                 presence = presence,
                 recurrenceStatus = recurrence,
                 category = category,
-                location = location))
+                location = location,
+                isExtra = isExtra))
     RecurrenceStatus.Daily -> {
       val days =
           1 +
@@ -157,7 +162,8 @@ fun createEvent(
             version = System.currentTimeMillis(),
             recurrenceStatus = recurrence,
             category = category,
-            location = location)
+            location = location,
+            isExtra = isExtra)
       }
     }
     RecurrenceStatus.Weekly -> {
@@ -181,7 +187,8 @@ fun createEvent(
             presence = presence,
             recurrenceStatus = recurrence,
             category = category,
-            location = location)
+            location = location,
+            isExtra = isExtra)
       }
     }
     RecurrenceStatus.Monthly -> {
@@ -205,7 +212,8 @@ fun createEvent(
             presence = presence,
             recurrenceStatus = recurrence,
             category = category,
-            location = location)
+            location = location,
+            isExtra = isExtra)
       }
     }
     RecurrenceStatus.Yearly -> {
@@ -229,7 +237,8 @@ fun createEvent(
             presence = presence,
             recurrenceStatus = recurrence,
             category = category,
-            location = location)
+            location = location,
+            isExtra = isExtra)
       }
     }
   }

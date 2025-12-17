@@ -3,15 +3,16 @@ package com.android.sample.ui.calendar
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import com.android.sample.data.fake.repositories.FakeEventRepository
+import com.android.sample.data.fake.repositories.RepoMethod
+import com.android.sample.data.global.providers.EventRepositoryProvider
+import com.android.sample.data.global.repositories.EventRepository
 import com.android.sample.model.calendar.Event
-import com.android.sample.model.calendar.EventRepository
-import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.category.EventCategory
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreen
 import com.android.sample.ui.calendar.eventOverview.EventOverviewScreenTestTags
 import com.android.sample.ui.calendar.eventOverview.EventOverviewViewModel
-import com.android.sample.utils.FakeEventRepository
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import java.time.Duration
@@ -152,7 +153,9 @@ class EventOverviewScreenTest : RequiresSelectedOrganizationTestBase {
   @Test
   fun clickingDelete_whenRepositoryFails_setsErrorMsg() {
     val (vm, fakeRepo) = makeViewModelWith(sampleEvent())
-    fakeRepo.shouldFailDelete = true
+
+    // Simulate failure on deleteEvent
+    fakeRepo.failMethods.add(RepoMethod.DELETE_EVENT)
 
     composeRule.setContent {
       EventOverviewScreen(

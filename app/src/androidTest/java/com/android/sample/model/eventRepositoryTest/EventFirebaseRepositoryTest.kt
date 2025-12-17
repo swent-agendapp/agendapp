@@ -1,9 +1,9 @@
 package com.android.sample.model.eventRepositoryTest
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.sample.data.global.providers.EventRepositoryProvider.repository
 import com.android.sample.model.calendar.CloudStorageStatus
 import com.android.sample.model.calendar.Event
-import com.android.sample.model.calendar.EventRepositoryProvider.repository
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase

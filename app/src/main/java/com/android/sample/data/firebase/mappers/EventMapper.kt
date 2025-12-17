@@ -1,4 +1,4 @@
-package com.android.sample.model.firestoreMappers
+package com.android.sample.data.firebase.mappers
 
 import androidx.compose.ui.graphics.Color
 import com.android.sample.model.calendar.CloudStorageStatus
@@ -11,6 +11,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import java.time.Instant
 import java.util.Date
 import java.util.UUID
+import kotlin.collections.get
 
 /** Maps Firestore documents to [Event] objects and vice versa. */
 object EventMapper : FirestoreMapper<Event> {
@@ -31,6 +32,7 @@ object EventMapper : FirestoreMapper<Event> {
   const val VERSION_FIELD = "version"
   const val HAS_BEEN_DELETED_FIELD = "hasBeenDeleted"
   const val EVENT_CATEGORY_FIELD = "eventCategory"
+  const val IS_EXTRA_FIELD = "isExtra"
 
   override fun fromDocument(document: DocumentSnapshot): Event? {
     val id = document.id
@@ -65,6 +67,7 @@ object EventMapper : FirestoreMapper<Event> {
     val version = document.getLong(VERSION_FIELD) ?: 0L
     val hasBeenDeleted = document.getBoolean(HAS_BEEN_DELETED_FIELD) ?: false
     val category = parseCategory(document[EVENT_CATEGORY_FIELD])
+    val isExtra = document.getBoolean(IS_EXTRA_FIELD) ?: false
 
     return Event(
         id = id,
@@ -82,7 +85,8 @@ object EventMapper : FirestoreMapper<Event> {
         recurrenceStatus = recurrenceStatus,
         hasBeenDeleted = hasBeenDeleted,
         category = category,
-        location = location)
+        location = location,
+        isExtra = isExtra)
   }
 
   override fun fromMap(data: Map<String, Any?>): Event? {
@@ -128,6 +132,7 @@ object EventMapper : FirestoreMapper<Event> {
     val version = (data[VERSION_FIELD] as? Number)?.toLong() ?: 0L
     val hasBeenDeleted = data[HAS_BEEN_DELETED_FIELD] as? Boolean ?: false
     val category = parseCategory(data[EVENT_CATEGORY_FIELD])
+    val isExtra = data[IS_EXTRA_FIELD] as? Boolean ?: false
 
     return Event(
         id = id,
@@ -145,7 +150,8 @@ object EventMapper : FirestoreMapper<Event> {
         recurrenceStatus = recurrenceStatus,
         location = location,
         hasBeenDeleted = hasBeenDeleted,
-        category = category)
+        category = category,
+        isExtra = isExtra)
   }
 
   override fun toMap(model: Event): Map<String, Any?> {
@@ -165,6 +171,7 @@ object EventMapper : FirestoreMapper<Event> {
         PRESENCE_FIELD to model.presence,
         RECURRENCE_STATUS_FIELD to model.recurrenceStatus.name,
         HAS_BEEN_DELETED_FIELD to model.hasBeenDeleted,
+        IS_EXTRA_FIELD to model.isExtra,
         EVENT_CATEGORY_FIELD to
             mapOf(
                 EventCategoryMapper.ID_FIELD to model.category.id,

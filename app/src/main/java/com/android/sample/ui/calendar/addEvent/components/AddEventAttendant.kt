@@ -27,6 +27,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
+import com.android.sample.ui.calendar.components.ExtraEventToggle
 import com.android.sample.ui.common.BottomNavigationButtons
 import com.android.sample.ui.common.MemberSelectionList
 import com.android.sample.ui.common.MemberSelectionListOptions
@@ -66,6 +67,23 @@ fun AddEventAttendantScreen(
 
         Spacer(modifier = Modifier.padding(vertical = PaddingSmall))
 
+      verticalArrangement = Arrangement.SpaceAround) {
+        Box(
+            modifier = Modifier.weight(WeightExtraHeavy).fillMaxWidth(),
+            contentAlignment = Alignment.Center) {
+              Text(
+                  stringResource(R.string.selectAttendants),
+                  textAlign = TextAlign.Center,
+                  style = MaterialTheme.typography.headlineMedium,
+                  modifier = Modifier.testTag(AddEventTestTags.INSTRUCTION_TEXT))
+            }
+        ExtraEventToggle(
+            isExtra = newEventUIState.isExtraEvent,
+            onToggle = addEventViewModel::setIsExtra,
+            modifier = Modifier.fillMaxWidth().padding(vertical = PaddingSmall),
+            toggleTestTag = AddEventTestTags.EXTRA_EVENT_TOGGLE,
+            descriptionTestTag = AddEventTestTags.EXTRA_EVENT_DESCRIPTION,
+        )
         Card(
             modifier =
                 Modifier.fillMaxWidth().weight(WeightExtraHeavy).padding(vertical = PaddingSmall),

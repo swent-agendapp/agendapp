@@ -20,7 +20,7 @@ class ColorSelectorTest {
 
   private val colors: List<Color> =
       listOf(
-          EventPalette.Green,
+          EventPalette.LightGreen,
           EventPalette.Blue,
           EventPalette.Pink,
       )

@@ -22,7 +22,7 @@ class EventTest {
       EventCategory(
           organizationId = selectedOrganizationID,
           label = "Test Category",
-          color = EventPalette.Green,
+          color = EventPalette.LightGreen,
       )
 
   @Before
@@ -77,7 +77,7 @@ class EventTest {
   @Test
   fun customCategory_shouldBeUsedWhenSpecified() {
     assertEquals(testCategory, event.category)
-    assertEquals(EventPalette.Green, event.category.color)
+    assertEquals(EventPalette.LightGreen, event.category.color)
   }
 
   @Test

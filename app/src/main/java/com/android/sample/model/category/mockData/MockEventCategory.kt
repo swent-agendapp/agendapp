@@ -44,12 +44,12 @@ fun getMockEventCategory(orgId: String = "mock_orgId"): List<EventCategory> {
       EventCategory(
           organizationId = orgId,
           label = "Junior 1",
-          color = EventPalette.Green,
+          color = EventPalette.LightGreen,
       ),
       EventCategory(
           organizationId = orgId,
           label = "Junior 2",
-          color = EventPalette.Green,
+          color = EventPalette.LightGreen,
       ),
       EventCategory(
           organizationId = orgId,

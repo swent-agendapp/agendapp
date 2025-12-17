@@ -149,7 +149,7 @@ private val previewEvents: List<Event> by lazy {
           hasBeenDeleted = false,
           category =
               EventCategory(
-                  organizationId = "org1", label = "Category B", color = EventPalette.Green),
+                  organizationId = "org1", label = "Category B", color = EventPalette.LightGreen),
           location = null),
       // e2) Stress test: long title, long description, many participants
       Event(

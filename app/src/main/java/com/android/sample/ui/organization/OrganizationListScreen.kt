@@ -237,7 +237,9 @@ private fun OrganizationListContent(
                         if (organizationUIState.isLoading)
                             stringResource(R.string.organization_loading)
                         else stringResource(R.string.invitation_joining_organization),
-                    modifier = Modifier.testTag(OrganizationListScreenTestTags.LOADING_INDICATOR))
+                    modifier =
+                        Modifier.fillMaxSize()
+                            .testTag(OrganizationListScreenTestTags.LOADING_INDICATOR))
               } else {
                 Spacer(modifier = Modifier.height(SpacingMedium))
                 OrganizationList(

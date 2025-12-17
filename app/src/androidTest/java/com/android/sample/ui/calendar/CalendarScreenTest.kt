@@ -55,6 +55,8 @@ import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.experimental.runners.Enclosed
+import org.junit.runner.RunWith
 
 /**
  * Base class exposing shared helpers and setup for CalendarScreen tests.
@@ -700,6 +702,7 @@ class CalendarPullToRefreshTests : BaseCalendarScreenTest() {
 }
 
 /** Loading state tests. */
+@RunWith(Enclosed::class)
 class CalendarScreenLoadingTest : BaseCalendarScreenTest() {
 
   @Test
@@ -712,6 +715,8 @@ class CalendarScreenLoadingTest : BaseCalendarScreenTest() {
 
     // THEN: loading overlay is displayed
     composeTestRule.onNodeWithTag(LoadingTestTags.LOADING_OVERLAY).assertIsDisplayed()
+  }
+}
 /** Network status related tests. */
 class CalendarNetworkStatusTests : BaseCalendarScreenTest() {
   @Test

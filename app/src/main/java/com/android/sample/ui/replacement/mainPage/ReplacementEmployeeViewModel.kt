@@ -608,6 +608,7 @@ class ReplacementEmployeeViewModel(
             orgId = orgId,
             itemId = replacementId,
         )
+        refreshIncomingRequests()
       } catch (e: Exception) {
         Log.e("ReplacementEmployeeVM", "Error sending requests", e)
         _uiState.value =

@@ -113,6 +113,7 @@ fun EditEventScreen(
               val onSurfaceVariant =
                   if (isSystemInDarkTheme()) GeneralPaletteDark.OnSurfaceVariant
                   else GeneralPalette.OnSurfaceVariant
+
               Row(
                   modifier = Modifier.fillMaxWidth(),
                   verticalAlignment = Alignment.CenterVertically,
@@ -172,10 +173,10 @@ fun EditEventScreen(
 
               Spacer(Modifier.height(SpacingExtraLarge))
 
-              // Dates
               Row(
                   modifier = Modifier.fillMaxWidth(),
-                  horizontalArrangement = Arrangement.spacedBy(SpacingMedium)) {
+                  horizontalArrangement = Arrangement.spacedBy(SpacingMedium),
+                  verticalAlignment = Alignment.Bottom) {
                     Column(modifier = Modifier.weight(WeightExtraHeavy)) {
                       FieldLabelWithIcon(
                           icon = { Icon(Icons.Outlined.CalendarMonth, null) },
@@ -189,12 +190,30 @@ fun EditEventScreen(
                           onDateSelected = { date ->
                             val newStart = DateTimeUtils.instantWithDate(uiState.startInstant, date)
                             editEventViewModel.setStartInstant(newStart)
-                            if (uiState.endInstant < newStart) {
-                              editEventViewModel.setEndInstant(newStart)
-                            }
+                            if (uiState.endInstant < newStart)
+                                editEventViewModel.setEndInstant(newStart)
                           })
                     }
 
+                    Column(modifier = Modifier.weight(WeightExtraHeavy)) {
+                      FieldLabelWithIcon(
+                          icon = { Icon(Icons.Outlined.AccessTime, null) },
+                          label = stringResource(R.string.edit_event_start_time_label))
+                      Spacer(Modifier.height(SpacingSmall))
+                      ClickableOutlinedField(
+                          value = DateTimeUtils.formatInstantToTime(uiState.startInstant),
+                          testTag = EditEventTestTags.START_TIME_BUTTON,
+                          onClick = { showStartTimePicker = true })
+                    }
+                  }
+
+              Spacer(Modifier.height(SpacingLarge))
+
+              // End row: End Date + End Time
+              Row(
+                  modifier = Modifier.fillMaxWidth(),
+                  horizontalArrangement = Arrangement.spacedBy(SpacingMedium),
+                  verticalAlignment = Alignment.Bottom) {
                     Column(modifier = Modifier.weight(WeightExtraHeavy)) {
                       FieldLabelWithIcon(
                           icon = { Icon(Icons.Outlined.CalendarMonth, null) },
@@ -210,24 +229,6 @@ fun EditEventScreen(
                             editEventViewModel.setEndInstant(
                                 if (newEnd < uiState.startInstant) uiState.startInstant else newEnd)
                           })
-                    }
-                  }
-
-              Spacer(Modifier.height(SpacingLarge))
-
-              // Times
-              Row(
-                  modifier = Modifier.fillMaxWidth(),
-                  horizontalArrangement = Arrangement.spacedBy(SpacingMedium)) {
-                    Column(modifier = Modifier.weight(WeightExtraHeavy)) {
-                      FieldLabelWithIcon(
-                          icon = { Icon(Icons.Outlined.AccessTime, null) },
-                          label = stringResource(R.string.edit_event_start_time_label))
-                      Spacer(Modifier.height(SpacingSmall))
-                      ClickableOutlinedField(
-                          value = DateTimeUtils.formatInstantToTime(uiState.startInstant),
-                          testTag = EditEventTestTags.START_TIME_BUTTON,
-                          onClick = { showStartTimePicker = true })
                     }
 
                     Column(modifier = Modifier.weight(WeightExtraHeavy)) {

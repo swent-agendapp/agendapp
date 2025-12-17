@@ -61,8 +61,8 @@ fun EditOrganizationScreen(
                 onNext = {
                   if (editOrganizationViewModel.isValidOrganizationName()) {
                     editOrganizationViewModel.editOrganization()
+                    onFinish()
                   }
-                  onFinish()
                 },
                 onBack = onNavigateBack,
                 canGoBack = true,

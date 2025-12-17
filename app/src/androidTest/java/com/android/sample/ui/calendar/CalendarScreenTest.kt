@@ -23,6 +23,8 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.platform.app.InstrumentationRegistry
+import com.android.sample.R
 import com.android.sample.data.global.providers.EventRepositoryProvider
 import com.android.sample.data.global.repositories.EventRepository
 import com.android.sample.data.local.repositories.EventRepositoryInMemory
@@ -33,6 +35,9 @@ import com.android.sample.model.filter.FakeSelectedOrganizationViewModel
 import com.android.sample.model.filter.FakeUserRepository
 import com.android.sample.model.map.MapRepository
 import com.android.sample.model.map.MapRepositoryLocal
+import com.android.sample.model.network.FakeConnectivityChecker
+import com.android.sample.model.network.NetworkStatusRepository
+import com.android.sample.model.network.NetworkTestBase
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.filters.FilterScreenTestTags
 import com.android.sample.ui.calendar.filters.FilterViewModel
@@ -50,6 +55,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -60,7 +66,10 @@ import org.junit.Test
  * Rationale: Smaller focused subclasses improve maintainability (grouped by concern) while reusing
  * a single set of utilities.
  */
-abstract class BaseCalendarScreenTest : RequiresSelectedOrganizationTestBase {
+abstract class BaseCalendarScreenTest : RequiresSelectedOrganizationTestBase, NetworkTestBase {
+
+  override val fakeChecker = FakeConnectivityChecker(state = true)
+  override val networkRepo = NetworkStatusRepository(fakeChecker)
 
   @get:Rule open val composeTestRule = createComposeRule()
 
@@ -70,6 +79,7 @@ abstract class BaseCalendarScreenTest : RequiresSelectedOrganizationTestBase {
 
   @Before
   fun setUp() {
+    setupNetworkTestBase()
     setSelectedOrganization()
 
     repo = EventRepositoryProvider.repository
@@ -354,7 +364,10 @@ abstract class BaseCalendarScreenTest : RequiresSelectedOrganizationTestBase {
    * `ViewModelStoreOwner` exposing a default factory that builds the real `CalendarViewModel` with
    * our local repos. Mount the real screen, but make it read from our test data.
    */
-  protected fun setContentWithLocalRepo(events: List<Event> = buildTestEvents()) {
+  protected fun setContentWithLocalRepo(
+      events: List<Event> = buildTestEvents(),
+      onCreateEvent: () -> Unit = {},
+  ) {
     // Create in-memory repository instances for tests
     val eventRepo = EventRepositoryInMemory()
     val mapRepo = MapRepositoryLocal()
@@ -371,7 +384,7 @@ abstract class BaseCalendarScreenTest : RequiresSelectedOrganizationTestBase {
     composeTestRule.setContent {
       // Compose CalendarScreen, viewModel() will resolve using our TestOwner factory
       CompositionLocalProvider(LocalViewModelStoreOwner provides owner) {
-        CalendarScreen(calendarViewModel = viewModel)
+        CalendarScreen(calendarViewModel = viewModel, onCreateEvent = onCreateEvent)
       }
     }
   }
@@ -712,5 +725,48 @@ class CalendarPullToRefreshTests : BaseCalendarScreenTest() {
 
     // THEN：BottomSheet
     composeTestRule.onNodeWithTag(FilterScreenTestTags.FILTER_SHEET_CONTENT).assertDoesNotExist()
+  }
+}
+
+/** Network status related tests. */
+class CalendarNetworkStatusTests : BaseCalendarScreenTest() {
+  @Test
+  fun whenNoNetwork_disablesEventCreation() {
+    // Simulate no network
+    simulateNoInternet()
+
+    // Compose the screen with a failing onCreateEvent to verify it's not called
+    var addButtonClicked = false
+    setContentWithLocalRepo(onCreateEvent = { addButtonClicked = true })
+
+    // Click on the create event button
+    composeTestRule.onNodeWithTag(CalendarScreenTestTags.ADD_EVENT_BUTTON).performClick()
+
+    // Verify that the onCreateEvent lambda was not called
+    if (addButtonClicked) {
+      fail("Event creation should be disabled when there is no network.")
+    }
+
+    // Verify that a snackbar appears indicating no network
+    composeTestRule.onNodeWithTag(CalendarScreenTestTags.SNACK_BAR).assertIsDisplayed()
+
+    // Verify that right message is shown
+    val context = InstrumentationRegistry.getInstrumentation().targetContext
+    val expectedText = context.getString(R.string.network_error_message)
+    composeTestRule.onNodeWithText(expectedText).assertIsDisplayed()
+
+    // Click on the snackbar to dismiss
+    composeTestRule.onNodeWithTag(CalendarScreenTestTags.SNACK_BAR).performClick()
+
+    // Simulate network restoration
+    simulateInternetRestored()
+
+    // Click on the create event button again
+    composeTestRule.onNodeWithTag(CalendarScreenTestTags.ADD_EVENT_BUTTON).performClick()
+
+    // Verify that the onCreateEvent lambda was called this time
+    if (!addButtonClicked) {
+      fail("Event creation should be enabled when the network is restored.")
+    }
   }
 }

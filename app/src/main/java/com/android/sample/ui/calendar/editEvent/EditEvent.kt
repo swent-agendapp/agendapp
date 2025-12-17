@@ -22,6 +22,8 @@ object EditEventTestTags {
   const val EDIT_PARTICIPANTS_BUTTON = "edit_participants_button"
   const val ATTENDANCE_WARNING_ACK_BUTTON = "attendance_warning_ack_button"
   const val BACK_BUTTON = "edit_back_button"
+  const val EXTRA_EVENT_TOGGLE = "edit_extra_event_toggle"
+  const val EXTRA_EVENT_DESCRIPTION = "edit_extra_event_description"
 }
 
 /**

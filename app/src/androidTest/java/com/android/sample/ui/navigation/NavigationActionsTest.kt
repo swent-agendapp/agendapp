@@ -5,15 +5,22 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.android.sample.Agendapp
+import com.android.sample.MainActivityTestTags
+import com.android.sample.R
 import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.calendar.RecurrenceStatus
+import com.android.sample.model.network.FakeConnectivityChecker
+import com.android.sample.model.network.NetworkStatusRepository
+import com.android.sample.model.network.NetworkTestBase
 import com.android.sample.ui.authentication.SignInScreenTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags.ADD_EVENT_BUTTON
@@ -25,6 +32,7 @@ import com.android.sample.ui.invitation.InvitationOverviewScreenTestTags
 import com.android.sample.ui.organization.AddOrganizationScreenTestTags
 import com.android.sample.ui.organization.OrganizationListScreenTestTags
 import com.android.sample.ui.organization.OrganizationOverviewScreenTestTags
+import com.android.sample.ui.replacement.mainPage.ReplacementEmployeeListTestTags
 import com.android.sample.ui.settings.SettingsScreenTestTags
 import com.android.sample.utils.FakeCredentialManager
 import com.android.sample.utils.FakeJwtGenerator
@@ -43,7 +51,10 @@ import org.junit.runner.RunWith
  */
 @RunWith(AndroidJUnit4::class)
 @MediumTest
-class AgendappNavigationTest : FirebaseEmulatedTest() {
+class AgendappNavigationTest : FirebaseEmulatedTest(), NetworkTestBase {
+
+  override val fakeChecker = FakeConnectivityChecker(state = true)
+  override val networkRepo = NetworkStatusRepository(fakeChecker)
 
   // Create a fake Google ID token for testing
   val fakeGoogleIdToken =
@@ -62,6 +73,9 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
   @Before
   override fun setUp() {
     super.setUp()
+
+    setupNetworkTestBase()
+
     // Ensure a user is signed in before each test (use runBlocking to call suspend function)
     runBlocking {
       FirebaseEmulator.signInWithFakeGoogleUser(fakeGoogleIdToken)
@@ -196,7 +210,7 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
 
     composeTestRule.onNodeWithTag(OrganizationOverviewScreenTestTags.ROOT).assertIsDisplayed()
     composeTestRule
-        .onNodeWithTag(OrganizationOverviewScreenTestTags.INVITATION_BUTTON)
+        .onNodeWithTag(OrganizationOverviewScreenTestTags.INVITATIONS_BUTTON)
         .assertIsDisplayed()
         .performClick()
 
@@ -220,7 +234,7 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
 
     composeTestRule.onNodeWithTag(OrganizationOverviewScreenTestTags.ROOT).assertIsDisplayed()
     composeTestRule
-        .onNodeWithTag(OrganizationOverviewScreenTestTags.EDIT_CATEGORY_BUTTON)
+        .onNodeWithTag(OrganizationOverviewScreenTestTags.CATEGORIES_BUTTON)
         .assertIsDisplayed()
         .performClick()
 
@@ -269,5 +283,63 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
         .onNodeWithTag(AddOrganizationScreenTestTags.CREATE_BUTTON)
         .assertIsDisplayed()
         .performClick()
+  }
+
+  @Test
+  fun noNetwork_replacementIconDisabled() {
+    composeTestRule.setContent {
+      Agendapp(
+          networkStatusRepository = networkRepo,
+      )
+    }
+
+    createOrganizationAndNavigateToCalendar()
+
+    // Simulate no network connectivity
+    simulateNoInternet()
+
+    // Check we are in the Calendar screen
+    composeTestRule.onNodeWithTag(CalendarScreenTestTags.ROOT).assertIsDisplayed()
+
+    // Click on Replacement icon
+    composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_REPLACEMENT).assertExists().performClick()
+
+    // Check the Snackbar is displayed
+    composeTestRule.onNodeWithTag(MainActivityTestTags.SNACKBAR).assertIsDisplayed()
+
+    // Check the correct message is shown
+    val context = InstrumentationRegistry.getInstrumentation().targetContext
+    val expectedText = context.getString(R.string.network_error_message)
+    composeTestRule.onNodeWithText(expectedText).assertIsDisplayed()
+
+    // Click on snackbar action to dismiss
+    composeTestRule.onNodeWithTag(MainActivityTestTags.SNACKBAR).performClick()
+
+    // Check we are still in the Calendar screen since the replacement button is disabled
+    composeTestRule.onNodeWithTag(CalendarScreenTestTags.ROOT).assertIsDisplayed()
+
+    // Go to Settings screen
+    composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_SETTINGS).assertExists().performClick()
+
+    // Click on Replacement icon
+    composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_REPLACEMENT).assertExists().performClick()
+
+    // Check the Snackbar is displayed
+    composeTestRule.onNodeWithTag(MainActivityTestTags.SNACKBAR).assertIsDisplayed()
+
+    // Check the correct message is shown
+    composeTestRule.onNodeWithText(expectedText).assertIsDisplayed()
+
+    // Click on snackbar action to dismiss
+    composeTestRule.onNodeWithTag(MainActivityTestTags.SNACKBAR).performClick()
+
+    // Simulate network connectivity restored
+    simulateInternetRestored()
+
+    // Click on Replacement icon
+    composeTestRule.onNodeWithTag(BottomBarTestTags.ITEM_REPLACEMENT).assertExists().performClick()
+
+    // Check we are now in the Replacement screen
+    composeTestRule.onNodeWithTag(ReplacementEmployeeListTestTags.ROOT).assertIsDisplayed()
   }
 }

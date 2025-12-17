@@ -14,6 +14,8 @@ import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepository
 import com.android.sample.model.authentication.UserRepositoryProvider
+import com.android.sample.model.network.NetworkStatusRepository
+import com.android.sample.model.network.NetworkStatusRepositoryProvider
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,12 +29,14 @@ import kotlinx.coroutines.launch
  * @property user The currently signed-in [User], or null if not signed in.
  * @property errorMsg An error message to display, or null if there is no error.
  * @property signedOut True if a sign-out operation has completed.
+ * @property isNetworkAvailable True if the network is available.
  */
 data class AuthUIState(
     val isLoading: Boolean = false,
     val user: User? = null,
     val errorMsg: String? = null,
     val signedOut: Boolean = true,
+    val isNetworkAvailable: Boolean = true,
 )
 
 /**
@@ -43,6 +47,8 @@ data class AuthUIState(
 class SignInViewModel(
     private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
     private val userRepository: UserRepository = UserRepositoryProvider.repository,
+    private val networkStatusRepository: NetworkStatusRepository =
+        NetworkStatusRepositoryProvider.repository
 ) : ViewModel() {
 
   private val _uiState = MutableStateFlow(AuthUIState())
@@ -50,6 +56,16 @@ class SignInViewModel(
 
   init {
     checkCurrentUser()
+    observeNetworkStatus()
+  }
+
+  /** Observe network connectivity changes and update UI state accordingly */
+  private fun observeNetworkStatus() {
+    viewModelScope.launch {
+      networkStatusRepository.isConnected.collect { connected ->
+        _uiState.update { it.copy(isNetworkAvailable = connected) }
+      }
+    }
   }
 
   /** Checks if there's a persisted user session and restores it. */

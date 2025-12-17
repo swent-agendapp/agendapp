@@ -14,6 +14,9 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.calendar.components.DatePickerFieldToModal
@@ -74,7 +77,14 @@ fun EditEventScreen(
       editEventViewModel.loadEvent(eventId)
     }
   }
+  // refresh categories when the screen is re-displayed (after editing categories)
+  val lifecycleOwner = LocalLifecycleOwner.current
 
+  LaunchedEffect(lifecycleOwner) {
+    lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+      editEventViewModel.loadCategories()
+    }
+  }
   // Participants names
   val names =
       if (uiState.participants.isNotEmpty()) {
@@ -113,7 +123,8 @@ fun EditEventScreen(
                     selectedCategory = uiState.category,
                     onCategorySelected = { editEventViewModel.setCategory(it) },
                     testTag = EditEventTestTags.CATEGORY_SELECTOR,
-                )
+                    categories = uiState.categoriesList,
+                    isLoading = uiState.isLoadingCategories)
                 Spacer(modifier = Modifier.height(SpacingLarge))
               }
 

@@ -11,6 +11,8 @@ import com.android.sample.model.calendar.EventRepository
 import com.android.sample.model.calendar.EventRepositoryProvider
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.category.EventCategory
+import com.android.sample.model.category.EventCategoryRepository
+import com.android.sample.model.category.EventCategoryRepositoryProvider
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import java.time.Duration
@@ -30,9 +32,11 @@ data class EditCalendarEventUIState(
     val endInstant: Instant = Instant.now().plus(Duration.ofHours(1)),
     val recurrenceMode: RecurrenceStatus = RecurrenceStatus.OneTime,
     val participants: Set<User> = emptySet(),
+    val categoriesList: List<EventCategory> = emptyList(),
     val category: EventCategory = EventCategory.defaultCategory(),
     val notifications: List<String> = emptyList(),
     val isLoading: Boolean = false,
+    val isLoadingCategories: Boolean = false,
     val errorMessage: String? = null,
     val users: List<User> = emptyList(),
     val step: EditEventStep = EditEventStep.MAIN
@@ -60,6 +64,8 @@ enum class EditEventStep {
  */
 class EditEventViewModel(
     private val eventRepository: EventRepository = EventRepositoryProvider.repository,
+    private val categoryRepository: EventCategoryRepository =
+        EventCategoryRepositoryProvider.repository,
     private val userRepository: UserRepository = UserRepositoryProvider.repository,
     private val selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel
@@ -72,6 +78,25 @@ class EditEventViewModel(
 
   init {
     loadUsers()
+    loadCategories()
+  }
+
+  fun loadCategories() {
+    viewModelScope.launch {
+      _uiState.update { it.copy(isLoadingCategories = true) }
+      try {
+        val orgId = requireOrgId()
+        val freshCategoriesList =
+            categoryRepository.getAllCategories(orgId = orgId).sortedBy { it.index }
+        _uiState.value =
+            _uiState.value.copy(categoriesList = freshCategoriesList, isLoadingCategories = false)
+      } catch (e: Exception) {
+        _uiState.value =
+            _uiState.value.copy(
+                errorMessage = "Failed to load categories: ${e.message}",
+                isLoadingCategories = false)
+      }
+    }
   }
 
   fun saveEditEventChanges() {
@@ -106,11 +131,15 @@ class EditEventViewModel(
 
   fun loadUsers() {
     viewModelScope.launch {
-      val orgId = requireOrgId()
+      try {
+        val orgId = requireOrgId()
 
-      val userIds = userRepository.getMembersIds(orgId)
-      val users = userRepository.getUsersByIds(userIds)
-      _uiState.update { it.copy(users = users) }
+        val userIds = userRepository.getMembersIds(orgId)
+        val users = userRepository.getUsersByIds(userIds)
+        _uiState.update { it.copy(users = users) }
+      } catch (e: Exception) {
+        _uiState.value = _uiState.value.copy(errorMessage = "Failed to load users: ${e.message}")
+      }
     }
   }
 

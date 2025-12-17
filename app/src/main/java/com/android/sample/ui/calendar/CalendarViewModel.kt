@@ -243,6 +243,11 @@ class CalendarViewModel(
     _uiState.value = _uiState.value.copy(workedHours = hours)
   }
 
+  @VisibleForTesting
+  internal fun setLoadingForTest(loading: Boolean) {
+    _uiState.value = _uiState.value.copy(isLoading = loading)
+  }
+
   companion object {
     val Factory: ViewModelProvider.Factory = viewModelFactory {
       initializer {

@@ -8,10 +8,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import com.android.sample.ui.theme.AlphaLow
 import com.android.sample.ui.theme.BorderWidthExtraThick
 import com.android.sample.ui.theme.PaddingMedium
 
+/** Test tags for Loading composables. */
+object LoadingTestTags {
+  const val LOADING_OVERLAY = "LoadingOverlay"
+}
 /**
  * Displays a centered loading indicator with an optional label.
  *
@@ -61,7 +66,10 @@ fun Loading(modifier: Modifier = Modifier, label: String? = null) {
 @Composable
 fun LoadingOverlay(label: String? = null) {
   Box(
-      modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = AlphaLow)),
+      modifier =
+          Modifier.fillMaxSize()
+              .background(Color.Black.copy(alpha = AlphaLow))
+              .testTag(LoadingTestTags.LOADING_OVERLAY),
       contentAlignment = Alignment.Center) {
         Loading(label = label)
       }

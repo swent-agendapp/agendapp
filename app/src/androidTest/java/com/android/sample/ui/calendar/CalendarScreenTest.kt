@@ -33,6 +33,7 @@ import com.android.sample.model.organization.repository.SelectedOrganizationRepo
 import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.style.CalendarDefaults.DEFAULT_SWIPE_THRESHOLD
 import com.android.sample.ui.calendar.utils.DateTimeUtils
+import com.android.sample.ui.common.LoadingTestTags
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
@@ -681,5 +682,21 @@ class CalendarPullToRefreshTests : BaseCalendarScreenTest() {
 
     // Assert that pull-to-refresh component is present
     composeTestRule.onNodeWithTag("CalendarPullToRefresh").assertExists()
+  }
+}
+
+/** Loading state tests. */
+class CalendarScreenLoadingTest : BaseCalendarScreenTest() {
+
+  @Test
+  fun calendarScreen_showsLoadingOverlay_whenLoading() {
+    // GIVEN: calendar screen with data
+    setContentWithLocalRepo()
+
+    // WHEN: force loading state
+    composeTestRule.runOnUiThread { viewModel.setLoadingForTest(true) }
+
+    // THEN: loading overlay is displayed
+    composeTestRule.onNodeWithTag(LoadingTestTags.LOADING_OVERLAY).assertIsDisplayed()
   }
 }

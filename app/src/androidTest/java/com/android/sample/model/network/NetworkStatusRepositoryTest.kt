@@ -1,7 +1,6 @@
 package com.android.sample.model.network
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.android.sample.utils.NetworkTestBase
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Assert.assertTrue

@@ -11,11 +11,11 @@ import com.android.sample.R
 import com.android.sample.model.authentication.FakeAuthRepository
 import com.android.sample.model.network.FakeConnectivityChecker
 import com.android.sample.model.network.NetworkStatusRepository
+import com.android.sample.model.network.NetworkTestBase
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.invitation.FakeInvitationRepository
 import com.android.sample.model.organization.repository.FakeOrganizationRepository
 import com.android.sample.ui.invitation.useInvitation.UseInvitationViewModel
-import com.android.sample.utils.NetworkTestBase
 import org.junit.After
 import org.junit.Assert.fail
 import org.junit.Before

@@ -10,8 +10,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.sample.R
 import com.android.sample.model.network.FakeConnectivityChecker
 import com.android.sample.model.network.NetworkStatusRepository
+import com.android.sample.model.network.NetworkTestBase
 import com.android.sample.utils.FirebaseEmulator
-import com.android.sample.utils.NetworkTestBase
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

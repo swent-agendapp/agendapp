@@ -1,10 +1,6 @@
-package com.android.sample.utils
+package com.android.sample.model.network
 
-import com.android.sample.model.network.FakeConnectivityChecker
-import com.android.sample.model.network.NetworkStatusRepository
-import com.android.sample.model.network.NetworkStatusRepositoryProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.Before
 
 /**
  * An interface to be implemented by tests that require network connectivity manipulation.
@@ -35,7 +31,6 @@ interface NetworkTestBase {
    * Call this method in a @Before annotated function (e.g., in the setUp() method) of the test
    * class.
    */
-  @Before
   fun setupNetworkTestBase() {
     fakeChecker.setInternet(initialInternetState)
 

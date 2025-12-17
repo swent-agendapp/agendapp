@@ -34,12 +34,12 @@ import com.android.sample.model.map.MapRepository
 import com.android.sample.model.map.MapRepositoryLocal
 import com.android.sample.model.network.FakeConnectivityChecker
 import com.android.sample.model.network.NetworkStatusRepository
+import com.android.sample.model.network.NetworkTestBase
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.style.CalendarDefaults.DEFAULT_SWIPE_THRESHOLD
 import com.android.sample.ui.calendar.utils.DateTimeUtils
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
-import com.android.sample.utils.NetworkTestBase
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import java.time.DayOfWeek

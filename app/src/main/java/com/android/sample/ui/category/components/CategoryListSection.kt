@@ -40,7 +40,11 @@ fun CategoryListSection(
 ) {
   Column(modifier = modifier) {
     if (isLoading) {
-      Loading(modifier = Modifier.fillMaxWidth().padding(bottom = PaddingLarge).testTag(EditCategoryScreenTestTags.LOADING))
+      Loading(
+          modifier =
+              Modifier.fillMaxWidth()
+                  .padding(bottom = PaddingLarge)
+                  .testTag(EditCategoryScreenTestTags.LOADING))
     }
 
     // Main content list with reordering support

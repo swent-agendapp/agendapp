@@ -116,7 +116,9 @@ fun CalendarScreen(
       val userRepo = UserRepositoryProvider.repository
       val memberIds = userRepo.getMembersIds(orgId)
       users = userRepo.getUsersByIds(memberIds)
-    } catch (_: Exception) {}
+    } catch (_: Exception) {
+      calendarViewModel.setErrorMsg("Unexpected error while loading data")
+    }
   }
   LaunchedEffect(selectedOrgId) {
     val orgId = selectedOrgId ?: return@LaunchedEffect
@@ -125,7 +127,9 @@ fun CalendarScreen(
     try {
       val categoryRepo = EventCategoryRepositoryProvider.repository
       categories = categoryRepo.getAllCategories(orgId).sortedBy { it.label.trim().lowercase() }
-    } catch (_: Exception) {}
+    } catch (_: Exception) {
+      calendarViewModel.setErrorMsg("Unexpected error while loading data")
+    }
   }
 
   // Fetch events when the screen is recomposed

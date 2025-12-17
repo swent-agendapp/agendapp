@@ -1,7 +1,6 @@
 package com.android.sample.ui.calendar.addEvent.components
 
 import StepHeader
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,7 +13,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -33,8 +31,6 @@ import com.android.sample.ui.calendar.addEvent.AddEventViewModel
 import com.android.sample.ui.calendar.components.ValidatingTextField
 import com.android.sample.ui.category.components.CategorySelector
 import com.android.sample.ui.common.BottomNavigationButtons
-import com.android.sample.ui.theme.GeneralPalette
-import com.android.sample.ui.theme.GeneralPaletteDark
 import com.android.sample.ui.theme.PaddingExtraLarge
 import com.android.sample.ui.theme.SpacingExtraLarge
 import com.android.sample.ui.theme.SpacingLarge
@@ -49,8 +45,6 @@ fun AddEventTitleAndDescriptionScreen(
     modifier: Modifier = Modifier,
     addEventViewModel: AddEventViewModel = viewModel(),
 ) {
-  val secondary =
-      if (isSystemInDarkTheme()) GeneralPaletteDark.Secondary else GeneralPalette.Secondary
   val newEventUIState by addEventViewModel.uiState.collectAsState()
 
   var titleTouched by remember { mutableStateOf(false) }

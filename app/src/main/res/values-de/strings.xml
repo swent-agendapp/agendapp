@@ -3,17 +3,13 @@
     <string name="title_activity_main">Hauptaktivität</string>
     <string name="next">Weiter</string>
     <string name="addEventTitle">Neues Ereignis</string>
-    <string name="enterTitleAndDescription">Bitte geben Sie den Titel und die Beschreibung Ihres Ereignisses ein</string>
-    <string name="enterTimeAndRecurrence">Bitte wählen Sie den Ereignistyp und die Zeit</string>
     <string name="eventTitle">Titel</string>
     <string name="eventTitlePlaceholder">Titel eingeben</string>
     <string name="title_empty_error">Titel darf nicht leer sein</string>
     <string name="name_empty_error">Der Name darf nicht leer sein</string>
-    <string name="description_empty_error">Beschreibung darf nicht leer sein</string>
     <string name="eventDescriptionPlaceholder">Ereignis beschreiben</string>
     <string name="eventDescription">Beschreibung</string>
     <string name="goBack">Zurück</string>
-    <string name="selectAttendants">Wählen Sie die Personen, die an diesem Ereignis teilnehmen.</string>
     <string name="startTime">Startzeit</string>
     <string name="endTime">Endzeit</string>
     <string name="startDatePickerLabel">Startdatum</string>
@@ -33,13 +29,11 @@
     <string name="add_event_step_1_of_2">Schritt 1 von 3</string>
     <string name="add_event_step_2_of_2">Schritt 2 von 3</string>
     <string name="add_event_create_title">Ereignis erstellen</string>
-    <string name="optional_label">(optional)</string>
     <string name="add_event_time_title">Planung</string>
     <string name="add_event_time_subtitle">Legen Sie Datum, Uhrzeit und Wiederholung des Ereignisses fest</string>
     <string name="add_event_step_3_of_3">Schritt 3 von 3</string>
     <string name="add_event_attendees_title">Teilnehmende</string>
     <string name="add_event_attendees_subtitle">Wählen Sie Personen zum Einladen aus</string>
-    <string name="no_name">Kein Name</string>
     <string name="add_event_create_subtitle">
     Legen Sie die grundlegenden Informationen Ihrer Veranstaltung fest
 </string>
@@ -55,9 +49,6 @@
 
     <!-- Edit Event Screen -->
     <string name="edit_event_header_step">Bearbeitung</string>
-    <string name="edit_event_header_title">Ereignis bearbeiten</string>
-    <string name="edit_event_header_subtitle">Details, Zeitplan und Teilnehmende aktualisieren</string>
-    <string name="edit_event_title">Ereignis bearbeiten</string>
 
     <!-- Fields -->
     <string name="edit_event_title_label">Titel</string>
@@ -66,7 +57,6 @@
 
     <string name="edit_event_description_label">Beschreibung</string>
     <string name="edit_event_description_placeholder">Ereignisbeschreibung eingeben</string>
-    <string name="edit_event_description_error">Beschreibung darf nicht leer sein</string>
 
     <string name="edit_event_start_date_label">Startdatum</string>
     <string name="edit_event_end_date_label">Enddatum</string>
@@ -75,7 +65,6 @@
 
     <!-- Participants -->
     <string name="edit_event_edit_participants_button">Teilnehmer bearbeiten</string>
-    <string name="edit_event_participants_screen_title">Ereignisteilnehmer bearbeiten</string>
 
     <!-- Notifications -->
 
@@ -223,7 +212,6 @@
 
     <!-- Filters -->
     <string name="filter">Filter</string>
-    <string name="close">Schließen</string>
     <string name="filter_event_type">Ereignistyp</string>
     <string name="filter_location">Ort</string>
     <string name="filter_participants">Teilnehmer</string>

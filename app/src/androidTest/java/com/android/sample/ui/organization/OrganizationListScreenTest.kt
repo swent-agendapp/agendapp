@@ -16,6 +16,7 @@ import com.android.sample.model.organization.invitation.FakeInvitationRepository
 import com.android.sample.model.organization.repository.FakeOrganizationRepository
 import com.android.sample.ui.invitation.useInvitation.UseInvitationViewModel
 import com.android.sample.utils.NetworkTestBase
+import org.junit.After
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Rule
@@ -48,6 +49,12 @@ class OrganizationListScreenTest : NetworkTestBase {
             authRepository = FakeAuthRepository(),
             organizationRepository = FakeOrganizationRepository())
     selectedOrgVM = SelectedOrganizationVMProvider.viewModel
+  }
+
+  @After
+  fun tearDown() {
+    // Clear selected organization after each test
+    selectedOrgVM.clearSelection()
   }
 
   @Test

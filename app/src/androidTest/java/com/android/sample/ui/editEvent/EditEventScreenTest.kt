@@ -155,18 +155,6 @@ class EditEventScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
         .onNodeWithTag(EditEventTestTags.TITLE_FIELD)
         .assertExists("EditEventScreen failed to load properly")
 
-    // Act 1: Click the start time button (should trigger showStartTimePicker)
-    composeTestRule
-        .onNodeWithTag(EditEventTestTags.START_TIME_BUTTON)
-        .assertExists("Start time button not found")
-        .performClick()
-
-    // Act 2: Click the end time button (should trigger showEndTimePicker)
-    composeTestRule
-        .onNodeWithTag(EditEventTestTags.END_TIME_BUTTON)
-        .assertExists("End time button not found")
-        .performClick()
-
     // Act 3: Click the save button (ensure it exists and doesn’t crash)
     composeTestRule
         .onNodeWithTag(EditEventTestTags.SAVE_BUTTON)

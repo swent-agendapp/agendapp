@@ -25,6 +25,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -32,7 +34,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.credentials.CredentialManager
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
@@ -40,6 +41,7 @@ import com.android.sample.ui.authentication.SignInViewModel
 import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.theme.AlphaExtraLow
 import com.android.sample.ui.theme.CornerRadiusExtraLarge
+import com.android.sample.ui.theme.GeneralPalette
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.SizeHuge
 import com.android.sample.ui.theme.SpacingLarge
@@ -56,48 +58,52 @@ object ProfileScreenTestTags {
   const val CANCEL_BUTTON = "cancel_button"
   const val EDIT_BUTTON = "edit_button"
   const val SIGN_OUT_BUTTON = "sign_out_button"
+  const val PROMOTE_TO_ADMIN_BUTTON = "promote_to_admin_button"
 }
 
 @Composable
-fun LogoutRow(
-    text: String,
-    onClick: () -> Unit,
+fun BottomActionRow(
     modifier: Modifier = Modifier,
+    text: String,
+    iconImage: ImageVector,
+    onClick: () -> Unit,
+    backgroundColor: Color,
+    contentColor: Color,
+    enabled: Boolean
 ) {
-  val errorColor = MaterialTheme.colorScheme.error
-
   Row(
       modifier =
           modifier
               .fillMaxWidth()
               .clip(RoundedCornerShape(CornerRadiusExtraLarge))
-              .clickable(onClick = onClick)
-              .background(errorColor.copy(alpha = AlphaExtraLow))
+              .clickable(onClick = onClick, enabled = enabled)
+              .background(backgroundColor)
               .padding(horizontal = PaddingMedium, vertical = PaddingMedium),
       verticalAlignment = Alignment.CenterVertically,
       horizontalArrangement = Arrangement.Center) {
-        Icon(
-            imageVector = Icons.AutoMirrored.Filled.Logout,
-            contentDescription = null,
-            tint = errorColor)
+        Icon(imageVector = iconImage, contentDescription = null, tint = contentColor)
         Spacer(modifier = Modifier.width(SpacingSmall))
 
-        Text(text = text, style = MaterialTheme.typography.bodyLarge, color = errorColor)
+        Text(text = text, style = MaterialTheme.typography.bodyLarge, color = contentColor)
       }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
 fun ProfileScreen(
-    onNavigateBack: () -> Unit = {},
+    profileOwnerId: String,
     profileViewModel: ProfileViewModel = rememberProfileViewModel(),
+    onNavigateBack: () -> Unit = {},
     authViewModel: SignInViewModel = viewModel(),
     credentialManager: CredentialManager = CredentialManager.create(LocalContext.current),
-    onSignOut: () -> Unit = {}
+    onSignOut: () -> Unit = {},
+    onPromoteToAdmin: () -> Unit = {}
 ) {
+
   val uiState by profileViewModel.uiState.collectAsState()
   val screenState = rememberProfileScreenState(uiState, profileViewModel)
+
+  LaunchedEffect(profileOwnerId) { profileViewModel.loadProfile(profileOwnerId) }
 
   Scaffold(topBar = { ProfileTopBar(onNavigateBack) }) { innerPadding ->
     ProfileContent(
@@ -105,7 +111,11 @@ fun ProfileScreen(
         screenState = screenState,
         authViewModel = authViewModel,
         credentialManager = credentialManager,
-        onSignOut = onSignOut)
+        onSignOut = onSignOut,
+        onPromoteToAdmin = {
+          profileViewModel.promoteToAdmin(userId = uiState.profileOwnerId)
+          onPromoteToAdmin()
+        })
   }
 }
 
@@ -115,6 +125,7 @@ class ProfileScreenState(
     private val profileViewModel: ProfileViewModel
 ) {
   var isEditMode by mutableStateOf(false)
+  var privilege by mutableStateOf(uiState.privilege)
   var displayName by mutableStateOf(uiState.displayName)
   var email by mutableStateOf(uiState.email)
   var phone by mutableStateOf(uiState.phoneNumber)
@@ -122,7 +133,7 @@ class ProfileScreenState(
   var phoneError by mutableStateOf<String?>(null)
 
   fun onEdit() {
-    isEditMode = true
+    if (privilege != ProfilePrivilege.EMPLOYEE_TO_EMPLOYEES) isEditMode = true
   }
 
   fun onCancel() {
@@ -217,7 +228,8 @@ private fun ProfileContent(
     screenState: ProfileScreenState,
     authViewModel: SignInViewModel,
     credentialManager: CredentialManager,
-    onSignOut: () -> Unit
+    onSignOut: () -> Unit = {},
+    onPromoteToAdmin: () -> Unit = {},
 ) {
   val emailErrorMessage = stringResource(R.string.profile_email_error)
   val phoneErrorMessage = stringResource(R.string.profile_phone_error)
@@ -231,6 +243,9 @@ private fun ProfileContent(
         ProfileHeader(
             displayName = screenState.displayName,
             email = screenState.email,
+            isEditable =
+                screenState.privilege == ProfilePrivilege.ADMIN_TO_EMPLOYEES ||
+                    screenState.privilege == ProfilePrivilege.OWN_PROFILE,
             isEditMode = screenState.isEditMode,
             onEdit = screenState::onEdit,
             onCancel = screenState::onCancel,
@@ -254,13 +269,28 @@ private fun ProfileContent(
 
         Spacer(modifier = Modifier.weight(WeightExtraHeavy))
 
-        LogoutRow(
-            text = stringResource(R.string.sign_in_logout_content_description),
-            modifier = Modifier.testTag(ProfileScreenTestTags.SIGN_OUT_BUTTON),
-            onClick = {
-              authViewModel.signOut(credentialManager)
-              onSignOut()
-            })
+        if (screenState.uiState.privilege == ProfilePrivilege.OWN_PROFILE) {
+          BottomActionRow(
+              text = stringResource(R.string.sign_in_logout_content_description),
+              modifier = Modifier.testTag(ProfileScreenTestTags.SIGN_OUT_BUTTON),
+              onClick = {
+                authViewModel.signOut(credentialManager)
+                onSignOut()
+              },
+              iconImage = Icons.AutoMirrored.Filled.Logout,
+              backgroundColor = MaterialTheme.colorScheme.error.copy(alpha = AlphaExtraLow),
+              contentColor = MaterialTheme.colorScheme.error,
+              enabled = true)
+        } else if (screenState.uiState.privilege == ProfilePrivilege.ADMIN_TO_EMPLOYEES) {
+          BottomActionRow(
+              text = stringResource(R.string.promote_to_admin_button),
+              modifier = Modifier.testTag(ProfileScreenTestTags.PROMOTE_TO_ADMIN_BUTTON),
+              onClick = onPromoteToAdmin,
+              iconImage = Icons.Default.Edit,
+              backgroundColor = GeneralPalette.Primary,
+              contentColor = Color.White,
+              enabled = screenState.uiState.privilege == ProfilePrivilege.ADMIN_TO_EMPLOYEES)
+        }
       }
 }
 
@@ -271,7 +301,9 @@ private fun ProfileFieldsSection(screenState: ProfileScreenState) {
       ProfileTextField(
           label = stringResource(R.string.profile_display_name_label),
           value = screenState.displayName,
-          isEditMode = true,
+          editEnabled =
+              screenState.privilege == ProfilePrivilege.ADMIN_TO_EMPLOYEES ||
+                  screenState.privilege == ProfilePrivilege.OWN_PROFILE,
           onValueChange = screenState::onDisplayNameChange,
           testTag = ProfileScreenTestTags.DISPLAY_NAME_FIELD)
 
@@ -280,7 +312,7 @@ private fun ProfileFieldsSection(screenState: ProfileScreenState) {
       ProfileTextField(
           label = stringResource(R.string.profile_email_label),
           value = screenState.email,
-          isEditMode = true,
+          editEnabled = screenState.privilege == ProfilePrivilege.OWN_PROFILE,
           onValueChange = screenState::onEmailChange,
           error = screenState.emailError,
           keyboardType = KeyboardType.Email,
@@ -291,7 +323,7 @@ private fun ProfileFieldsSection(screenState: ProfileScreenState) {
       ProfileTextField(
           label = stringResource(R.string.profile_phone_label),
           value = screenState.phone,
-          isEditMode = true,
+          editEnabled = screenState.privilege == ProfilePrivilege.OWN_PROFILE,
           onValueChange = screenState::onPhoneChange,
           error = screenState.phoneError,
           keyboardType = KeyboardType.Phone,
@@ -339,7 +371,7 @@ private fun ProfileInfoRow(
         Spacer(Modifier.height(SpacingSmall))
 
         Text(
-            text = if (value.isBlank()) "-" else value,
+            text = value.ifBlank { "-" },
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.testTag(testTag),
@@ -357,6 +389,7 @@ private fun rememberProfileViewModel(): ProfileViewModel {
 private fun ProfileHeader(
     displayName: String,
     email: String,
+    isEditable: Boolean,
     isEditMode: Boolean,
     onEdit: () -> Unit,
     onCancel: () -> Unit,
@@ -385,9 +418,7 @@ private fun ProfileHeader(
 
               Column {
                 Text(
-                    text =
-                        if (displayName.isBlank()) stringResource(R.string.profile_title)
-                        else displayName,
+                    text = displayName.ifBlank { stringResource(R.string.profile_title) },
                     style = MaterialTheme.typography.titleLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis)
@@ -403,10 +434,12 @@ private fun ProfileHeader(
               }
             }
 
-        if (isEditMode) {
-          EditModeActions(onCancel = onCancel, onSave = onSave)
-        } else {
-          EditButton(onEdit = onEdit)
+        if (isEditable) {
+          if (isEditMode) {
+            EditModeActions(onCancel = onCancel, onSave = onSave)
+          } else {
+            EditButton(onEdit = onEdit)
+          }
         }
       }
 }
@@ -442,7 +475,7 @@ private fun EditButton(onEdit: () -> Unit) {
 private fun ProfileTextField(
     label: String,
     value: String,
-    isEditMode: Boolean,
+    editEnabled: Boolean,
     onValueChange: (String) -> Unit,
     error: String? = null,
     keyboardType: KeyboardType = KeyboardType.Text,
@@ -450,13 +483,13 @@ private fun ProfileTextField(
 ) {
   OutlinedTextField(
       value = value,
-      onValueChange = { if (isEditMode) onValueChange(it) },
+      onValueChange = { if (editEnabled) onValueChange(it) },
       label = { Text(label) },
       isError = error != null,
       supportingText = { error?.let { Text(it, color = MaterialTheme.colorScheme.error) } },
       modifier = Modifier.fillMaxWidth().testTag(testTag),
       singleLine = true,
-      enabled = isEditMode,
+      enabled = editEnabled,
       keyboardOptions = KeyboardOptions(keyboardType = keyboardType))
 }
 

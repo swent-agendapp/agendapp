@@ -270,6 +270,7 @@
     <string name="categories_button">Catégories</string>
     <string name="members">Membres</string>
     <string name="admin">Admin</string>
+    <string name="promote_to_admin_button">Promouvoir en administrateur</string>
     <string name="invitations_button">Invitations</string>
 
     <!-- Edit Organization -->

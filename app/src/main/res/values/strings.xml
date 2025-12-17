@@ -274,6 +274,7 @@
     <string name="categories_button">Categories</string>
     <string name="members">Members</string>
     <string name="admin">Admin</string>
+    <string name="promote_to_admin_button">Promote to admin</string>
     <string name="invitations_button">Invitations</string>
 
     <!-- Edit Organization -->

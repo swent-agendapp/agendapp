@@ -12,20 +12,37 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import com.android.sample.model.authentication.AuthRepository
 import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UserRepositoryProvider
+import com.android.sample.ui.organization.SelectedOrganizationVMProvider
+import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class ProfileUIState(
+    val profileOwnerId: String = "",
     val displayName: String = "",
     val email: String = "",
-    val phoneNumber: String = ""
+    val phoneNumber: String = "",
+    val privilege: ProfilePrivilege = ProfilePrivilege.EMPLOYEE_TO_EMPLOYEES
 )
+
+enum class ProfilePrivilege {
+  ADMIN_TO_ADMINS,
+  ADMIN_TO_EMPLOYEES,
+  EMPLOYEE_TO_ADMINS,
+  EMPLOYEE_TO_EMPLOYEES,
+  OWN_PROFILE
+}
 
 class ProfileViewModel(
     application: Application,
-    private val repository: AuthRepository = AuthRepositoryProvider.repository,
+    private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
+    private val userRepository: UserRepository = UserRepositoryProvider.repository,
+    private val selectedOrganizationViewModel: SelectedOrganizationViewModel =
+        SelectedOrganizationVMProvider.viewModel,
     private val preferences: SharedPreferences =
         application.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE),
 ) : AndroidViewModel(application) {
@@ -33,46 +50,85 @@ class ProfileViewModel(
   private val _uiState = MutableStateFlow(ProfileUIState())
   val uiState: StateFlow<ProfileUIState> = _uiState
 
+  private val selectedOrgId = selectedOrganizationViewModel.selectedOrganizationId.value
+
   private var cachedUser: User? = null
 
-  init {
-    viewModelScope.launch { loadCurrentUser() }
+  fun loadProfile(profileOwnerId: String) {
+    viewModelScope.launch {
+      val currentUser = authRepository.getCurrentUser()
+      val profileOwner = userRepository.getUserById(profileOwnerId)
+
+      profileOwner?.let { profileOwner ->
+        cachedUser = profileOwner
+        val displayNameOverride = readOverride(KEY_DISPLAY_NAME)
+        val emailOverride = readOverride(KEY_EMAIL)
+        val phoneOverride = readOverride(KEY_PHONE)
+
+        val adminList =
+            if (selectedOrgId != null) userRepository.getAdminsIds(selectedOrgId) else emptyList()
+
+        val currentUserIsAdmin = adminList.contains(currentUser?.id)
+        val profileOwnerIsAdmin = adminList.contains(profileOwnerId)
+
+        _uiState.update {
+          it.copy(
+              profileOwnerId = profileOwner.id,
+              displayName = displayNameOverride ?: profileOwner.displayName.orEmpty(),
+              email = emailOverride ?: profileOwner.email.orEmpty(),
+              phoneNumber = phoneOverride ?: profileOwner.phoneNumber.orEmpty(),
+              privilege =
+                  when {
+                    currentUser == null -> ProfilePrivilege.EMPLOYEE_TO_EMPLOYEES
+                    currentUser.id == profileOwner.id -> ProfilePrivilege.OWN_PROFILE
+                    currentUserIsAdmin && profileOwnerIsAdmin -> ProfilePrivilege.ADMIN_TO_ADMINS
+                    currentUserIsAdmin && !profileOwnerIsAdmin ->
+                        ProfilePrivilege.ADMIN_TO_EMPLOYEES
+                    !currentUserIsAdmin && profileOwnerIsAdmin ->
+                        ProfilePrivilege.EMPLOYEE_TO_ADMINS
+                    else -> ProfilePrivilege.EMPLOYEE_TO_EMPLOYEES
+                  })
+        }
+      }
+          ?: run {
+            cachedUser = null
+            _uiState.update { ProfileUIState() }
+          }
+    }
   }
 
-  private fun loadCurrentUser() {
-    val currentUser = repository.getCurrentUser()
-    currentUser?.let { user ->
-      cachedUser = user
-      val displayNameOverride = readOverride(KEY_DISPLAY_NAME)
-      val emailOverride = readOverride(KEY_EMAIL)
-      val phoneOverride = readOverride(KEY_PHONE)
-
-      _uiState.update {
-        it.copy(
-            displayName = displayNameOverride ?: user.displayName.orEmpty(),
-            email = emailOverride ?: user.email.orEmpty(),
-            phoneNumber = phoneOverride ?: user.phoneNumber.orEmpty())
+  /**
+   * Promotes a user to admin status within the specified organization.
+   *
+   * @param userId The ID of the user to promote.
+   */
+  fun promoteToAdmin(userId: String) {
+    viewModelScope.launch {
+      if (selectedOrgId == null) {
+        return@launch
       }
+      val orgId = selectedOrgId
+      userRepository.addAdminToOrganization(organizationId = orgId, userId = userId)
     }
-        ?: run {
-          cachedUser = null
-          _uiState.update { ProfileUIState() }
-        }
   }
 
   fun updateDisplayName(displayName: String) {
+    if (_uiState.value.privilege == ProfilePrivilege.EMPLOYEE_TO_EMPLOYEES) return
     _uiState.update { current -> current.copy(displayName = displayName) }
   }
 
   fun updateEmail(email: String) {
+    if (_uiState.value.privilege != ProfilePrivilege.OWN_PROFILE) return
     _uiState.update { current -> current.copy(email = email) }
   }
 
   fun updatePhoneNumber(phoneNumber: String) {
+    if (_uiState.value.privilege != ProfilePrivilege.OWN_PROFILE) return
     _uiState.update { current -> current.copy(phoneNumber = phoneNumber) }
   }
 
   fun saveProfile() {
+    if (_uiState.value.privilege == ProfilePrivilege.EMPLOYEE_TO_EMPLOYEES) return
     val currentState = uiState.value
     val trimmedDisplayName = currentState.displayName.trim()
     val trimmedEmail = currentState.email.trim()
@@ -126,12 +182,14 @@ class ProfileViewModel(
 
     fun provideFactory(
         application: Application,
-        repository: AuthRepository = AuthRepositoryProvider.repository
+        authRepository: AuthRepository = AuthRepositoryProvider.repository,
+        userRepository: UserRepository = UserRepositoryProvider.repository,
     ): ViewModelProvider.Factory {
       return object : ViewModelProvider.AndroidViewModelFactory(application) {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
           if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST") return ProfileViewModel(application, repository) as T
+            @Suppress("UNCHECKED_CAST")
+            return ProfileViewModel(application, authRepository, userRepository) as T
           }
           return super.create(modelClass)
         }
@@ -139,7 +197,8 @@ class ProfileViewModel(
         override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
           if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
             val app = extras[APPLICATION_KEY] ?: application
-            @Suppress("UNCHECKED_CAST") return ProfileViewModel(app, repository) as T
+            @Suppress("UNCHECKED_CAST")
+            return ProfileViewModel(app, authRepository, userRepository) as T
           }
           return super.create(modelClass, extras)
         }

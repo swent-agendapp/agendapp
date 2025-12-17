@@ -13,6 +13,11 @@ class NavigationActions(val navController: NavHostController) {
     navController.navigate(screen.route)
   }
 
+  /** Navigate to Profile screen with userId parameter. */
+  fun navigateToProfile(userId: String) {
+    navController.navigate(Screen.Profile.createRoute(userId))
+  }
+
   /** Navigate to EditEvent screen with eventId parameter. */
   fun navigateToEditEvent(eventId: String) {
     navController.navigate(Screen.EditEvent.createRoute(eventId))

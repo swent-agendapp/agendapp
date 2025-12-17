@@ -108,9 +108,9 @@ fun Agendapp(
   val configuration = LocalConfiguration.current
   val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
+  val currentUser = authRepository.getCurrentUser()
   val startDestination =
-      if (authRepository.getCurrentUser() != null) Screen.SelectOrganization.route
-      else Screen.Authentication.route
+      if (currentUser != null) Screen.SelectOrganization.route else Screen.Authentication.route
 
   val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
@@ -163,8 +163,9 @@ fun Agendapp(
               calendarGraph(navigationActions)
               editEventGraph(navigationActions)
               addEventGraph(navigationActions)
-              replacementGraph(navigationActions, credentialManager)
+              replacementGraph(navigationActions)
               invitationGraph(navigationActions)
+              settingsGraph(navigationActions, credentialManager, currentUser?.id)
             }
       }
 }
@@ -267,7 +268,6 @@ private fun NavGraphBuilder.addEventGraph(navigationActions: NavigationActions) 
 
 private fun NavGraphBuilder.replacementGraph(
     navigationActions: NavigationActions,
-    credentialManager: CredentialManager
 ) {
   // Replacement Overview Screen
   navigation(
@@ -315,34 +315,43 @@ private fun NavGraphBuilder.replacementGraph(
             )
           }
         }
-        // Settings Graph
-        settingsGraph(navigationActions, credentialManager)
       }
 }
 
 private fun NavGraphBuilder.settingsGraph(
     navigationActions: NavigationActions,
-    credentialManager: CredentialManager
+    credentialManager: CredentialManager,
+    currentUserId: String?
 ) {
   // Settings Graph
   navigation(startDestination = Screen.Settings.route, route = Screen.Settings.name) {
     // Settings Screen
-    composable(Screen.Settings.route) {
-      SettingsScreen(
-          onNavigateToUserProfile = { navigationActions.navigateTo(Screen.Profile) },
-          onNavigateToAdminInfo = { navigationActions.navigateTo(Screen.AdminContact) },
-          onNavigateToMapSettings = { navigationActions.navigateTo(Screen.Map) },
-          onNavigateToHourRecap = { navigationActions.navigateTo(Screen.HourRecap) },
-          onNavigateToOrganizationList = {
-            navigationActions.navigateTo(Screen.OrganizationOverview)
-          })
-    }
+    currentUserId?.let { userId ->
+      composable(Screen.Settings.route) {
+        SettingsScreen(
+            onNavigateToUserProfile = { navigationActions.navigateToProfile(userId) },
+            onNavigateToAdminInfo = { navigationActions.navigateTo(Screen.AdminContact) },
+            onNavigateToMapSettings = { navigationActions.navigateTo(Screen.Map) },
+            onNavigateToHourRecap = { navigationActions.navigateTo(Screen.HourRecap) },
+            onNavigateToOrganizationList = {
+              navigationActions.navigateTo(Screen.OrganizationOverview)
+            })
+      }
+    } ?: run { Log.e("SettingsScreen", "Current user id is null") }
     // User profile Screen
-    composable(Screen.Profile.route) {
-      ProfileScreen(
-          onNavigateBack = { navigationActions.navigateBack() },
-          credentialManager = credentialManager,
-          onSignOut = { navigationActions.navigateTo(Screen.Authentication) })
+    composable(Screen.Profile.route) { navBackStackEntry ->
+      // Get the User ID from the arguments
+      val userId = navBackStackEntry.arguments?.getString("userId")
+
+      // Create the Profile screen with the User ID
+      userId?.let {
+        ProfileScreen(
+            profileOwnerId = userId,
+            onNavigateBack = { navigationActions.navigateBack() },
+            credentialManager = credentialManager,
+            onSignOut = { navigationActions.navigateTo(Screen.Authentication) },
+            onPromoteToAdmin = { navigationActions.navigateTo(Screen.OrganizationOverview) })
+      } ?: run { Log.e("ProfileScreen", "User id is null") }
     }
     // Admin contact Screen
     composable(Screen.AdminContact.route) {
@@ -365,7 +374,7 @@ private fun NavGraphBuilder.settingsGraph(
           onEditOrganization = { navigationActions.navigateTo(Screen.EditOrganization) },
           onCategoriesClick = { navigationActions.navigateTo(Screen.EditCategory) },
           onInvitationClick = { navigationActions.navigateTo(Screen.InvitationOverview) },
-      )
+          onMemberClick = { navigationActions.navigateToProfile(it.id) })
     }
 
     // Hour Recap Screen

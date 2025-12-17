@@ -571,6 +571,9 @@ class HourRecapScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
 
     compose.setContent { HourRecapScreen(hourRecapViewModel = vm) }
 
-    compose.onNodeWithTag(HourRecapTestTags.EXTRA_STAT).assertExists().assertIsDisplayed()
+    compose
+        .onNodeWithTag(HourRecapTestTags.EXTRA_STAT, useUnmergedTree = true)
+        .assertExists()
+        .assertIsDisplayed()
   }
 }

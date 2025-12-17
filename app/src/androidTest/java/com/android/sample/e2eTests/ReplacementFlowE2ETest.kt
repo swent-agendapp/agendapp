@@ -56,7 +56,7 @@ class ReplacementFlowE2ETest : FirebaseEmulatedTest() {
 
   // Test a User info flow : signing in, viewing profile, viewing admin contact, and signing out
   @Test
-  fun signIn_createWeeklyEventTest() {
+  fun signIn_createWeeklyEventTest_checkReplacement() {
 
     // Check that no user is signed in at start
     assert(FirebaseEmulator.auth.currentUser == null)

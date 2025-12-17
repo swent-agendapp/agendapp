@@ -87,8 +87,7 @@ fun OrganizationListScreen(
   val snackBarHostState = remember { SnackbarHostState() }
   var disabledButtonClicked by remember { mutableStateOf(false) }
 
-  val noNetworkErrorMsg = stringResource(R.string.network_error_message)
-  handleErrors(
+  HandleErrors(
       disabledButtonClicked,
       onConsumed = { disabledButtonClicked = false },
       snackBarHostState = snackBarHostState,
@@ -131,7 +130,7 @@ fun OrganizationListScreen(
 }
 
 @Composable
-private fun handleErrors(
+private fun HandleErrors(
     disabledButtonClicked: Boolean,
     onConsumed: () -> Unit,
     snackBarHostState: SnackbarHostState,

@@ -250,6 +250,8 @@
     <string name="edit_category_empty_state_message">Créez votre première catégorie avec le bouton « + ».</string>
     <string name="edit_category_name_label">Nom de la catégorie</string>
     <string name="edit_category_save_button">Enregistrer la catégorie</string>
+    <string name="category_selector_create_category">Créer une catégorie</string>
+    <string name="category_selector_edit_my_categories">Modifier mes catégories</string>
 
     <string name="hour_recap">Récapitulatif des heures</string>
 

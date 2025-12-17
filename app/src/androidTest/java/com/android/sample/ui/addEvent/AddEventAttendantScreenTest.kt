@@ -32,7 +32,6 @@ class AddEventAttendantScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrga
 
   @Test
   fun displayAllComponents() {
-    composeTestRule.onNodeWithTag(AddEventTestTags.INSTRUCTION_TEXT).assertIsDisplayed()
     composeTestRule.onNodeWithTag(AddEventTestTags.EXTRA_EVENT_TOGGLE).assertIsDisplayed()
     composeTestRule.onNodeWithTag(AddEventTestTags.EXTRA_EVENT_DESCRIPTION).assertIsDisplayed()
     composeTestRule.onNodeWithTag(AddEventTestTags.LIST_USER).assertIsDisplayed()

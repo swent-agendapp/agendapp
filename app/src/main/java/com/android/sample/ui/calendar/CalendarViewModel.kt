@@ -65,14 +65,14 @@ data class CalendarUIState(
  *   organization.
  */
 class CalendarViewModel(
-  app: Application,
+    app: Application,
     // used to get Events
-  private val eventRepository: EventRepository = EventRepositoryProvider.repository,
-  private val locationRepository: LocationRepository = LocationRepositoryAndroid(app),
-  private val mapRepository: MapRepository = MapRepositoryProvider.repository,
-  private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
-  private val userRepository: UserRepository = UserRepositoryProvider.repository,
-  selectedOrganizationViewModel: SelectedOrganizationViewModel =
+    private val eventRepository: EventRepository = EventRepositoryProvider.repository,
+    private val locationRepository: LocationRepository = LocationRepositoryAndroid(app),
+    private val mapRepository: MapRepository = MapRepositoryProvider.repository,
+    private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
+    private val userRepository: UserRepository = UserRepositoryProvider.repository,
+    selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel
 ) : ViewModel() {
   private val _uiState = MutableStateFlow(CalendarUIState())
@@ -122,10 +122,11 @@ class CalendarViewModel(
       setLoading(true)
       try {
         val events = loadEventsBlock()
-        val eventWithMember = events.map { event ->
-          val users = userRepository.getUsersByIds(event.participants.toList())
-          event.copy(participants = users.map { it.display() }.toSet())
-        }
+        val eventWithMember =
+            events.map { event ->
+              val users = userRepository.getUsersByIds(event.participants.toList())
+              event.copy(participants = users.map { it.display() }.toSet())
+            }
         setEvents(eventWithMember)
       } catch (e: Exception) {
         setErrorMsg("$errorMessage: ${e.message}")

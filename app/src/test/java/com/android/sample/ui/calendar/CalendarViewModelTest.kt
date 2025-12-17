@@ -3,6 +3,11 @@ package com.android.sample.ui.calendar
 import android.app.Application
 import com.android.sample.data.global.repositories.EventRepository
 import com.android.sample.data.local.repositories.EventRepositoryInMemory
+import com.android.sample.model.authentication.AuthRepository
+import com.android.sample.model.authentication.FakeAuthRepository
+import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.calendar.*
 import com.android.sample.model.map.MapRepository
 import com.android.sample.model.map.MapRepositoryLocal
@@ -32,6 +37,8 @@ class CalendarViewModelTest {
   private val testDispatcher = StandardTestDispatcher()
   private lateinit var repositoryEvent: EventRepository
   private lateinit var repositoryMap: MapRepository
+  private lateinit var userRepository: UserRepository
+  private lateinit var authRepository: AuthRepository
   private lateinit var app: Application
   private lateinit var viewModel: CalendarViewModel
 
@@ -54,10 +61,16 @@ class CalendarViewModelTest {
 
     repositoryEvent = EventRepositoryInMemory()
     repositoryMap = MapRepositoryLocal()
+    authRepository = FakeAuthRepository(User("test", "test"))
+    userRepository = UsersRepositoryLocal()
 
     viewModel =
         CalendarViewModel(
-            app = app, eventRepository = repositoryEvent, mapRepository = repositoryMap)
+            app = app,
+            eventRepository = repositoryEvent,
+            mapRepository = repositoryMap,
+            authRepository = authRepository,
+            userRepository = userRepository)
 
     // Create two sample events for testing.
     event1 =

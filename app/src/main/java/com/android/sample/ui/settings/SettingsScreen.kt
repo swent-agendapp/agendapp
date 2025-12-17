@@ -203,8 +203,7 @@ private fun SettingsItemRow(
         Text(
             text = title,
             style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.weight(WeightExtraHeavy),
-            color = if (enabled) GeneralPalette.Surface else GeneralPalette.SurfaceVariant)
+            modifier = Modifier.weight(WeightExtraHeavy))
 
         Icon(
             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,

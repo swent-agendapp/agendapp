@@ -16,11 +16,11 @@ import com.android.sample.ui.theme.heightSmall
 
 @Composable
 fun StepHeader(
-    stepText: String,
-    title: String,
-    subtitle: String,
-    icon: @Composable () -> Unit,
-    progress: Float,
+    stepText: String = "",
+    title: String = "",
+    subtitle: String = "",
+    icon: @Composable () -> Unit = {},
+    progress: Float = 0f,
 ) {
   val surfaceVariant =
       if (isSystemInDarkTheme()) GeneralPaletteDark.SurfaceVariant

@@ -285,5 +285,7 @@
 
     <!-- Network -->
     <string name="network_error_message">Une erreur réseau s\'est produite. Veuillez vérifier votre connexion internet et réessayer.</string>
-
+    <string name="unexpected_error_while_loading_data">
+    Erreur inattendue lors du chargement des données
+</string>
 </resources>

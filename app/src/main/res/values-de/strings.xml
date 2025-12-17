@@ -286,5 +286,7 @@
 
     <!-- Network -->
     <string name="network_error_message">Ein Netzwerkfehler ist aufgetreten. Bitte prüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.</string>
-
+    <string name="unexpected_error_while_loading_data">
+    Unerwarteter Fehler beim Laden der Daten
+</string>
 </resources>

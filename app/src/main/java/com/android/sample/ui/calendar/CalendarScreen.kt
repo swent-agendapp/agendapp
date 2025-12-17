@@ -108,6 +108,8 @@ fun CalendarScreen(
   // Host state for displaying a snack bar in case of errors
   val snackbarHostState = remember { SnackbarHostState() }
 
+  val genericLoadErrorMsg = stringResource(R.string.unexpected_error_while_loading_data)
+
   LaunchedEffect(selectedOrgId) {
     val orgId = selectedOrgId ?: return@LaunchedEffect
     if (orgId.isBlank()) return@LaunchedEffect
@@ -117,7 +119,7 @@ fun CalendarScreen(
       val memberIds = userRepo.getMembersIds(orgId)
       users = userRepo.getUsersByIds(memberIds)
     } catch (_: Exception) {
-      calendarViewModel.setErrorMsg("Unexpected error while loading data")
+      calendarViewModel.setErrorMsg(genericLoadErrorMsg)
     }
   }
   LaunchedEffect(selectedOrgId) {
@@ -129,7 +131,7 @@ fun CalendarScreen(
       val memberIds = userRepo.getMembersIds(orgId)
       users = userRepo.getUsersByIds(memberIds)
     } catch (_: Exception) {
-      calendarViewModel.setErrorMsg("Unexpected error while loading data")
+      calendarViewModel.setErrorMsg(genericLoadErrorMsg)
     }
   }
 
@@ -141,7 +143,7 @@ fun CalendarScreen(
       val categoryRepo = EventCategoryRepositoryProvider.repository
       categories = categoryRepo.getAllCategories(orgId).sortedBy { it.label.trim().lowercase() }
     } catch (_: Exception) {
-      calendarViewModel.setErrorMsg("Unexpected error while loading data")
+      calendarViewModel.setErrorMsg(genericLoadErrorMsg)
     }
   }
 

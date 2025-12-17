@@ -46,13 +46,13 @@ import com.android.sample.model.calendar.labelRes
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
 import com.android.sample.ui.calendar.components.DatePickerFieldToModal
+import com.android.sample.ui.calendar.components.FieldLabelWithIcon
 import com.android.sample.ui.calendar.utils.DateTimeUtils
 import com.android.sample.ui.common.BottomNavigationButtons
 import com.android.sample.ui.theme.AlphaLowLow
 import com.android.sample.ui.theme.GeneralPalette
 import com.android.sample.ui.theme.GeneralPaletteDark
 import com.android.sample.ui.theme.PaddingExtraLarge
-import com.android.sample.ui.theme.PaddingExtraSmall
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.SpacingExtraLarge
 import com.android.sample.ui.theme.SpacingLarge
@@ -268,22 +268,6 @@ fun AddEventTimeAndRecurrenceBottomBar(
       canGoNext = timeIsCoherent && recurrenceEndOk,
       backButtonTestTag = AddEventTestTags.BACK_BUTTON,
       nextButtonTestTag = AddEventTestTags.NEXT_BUTTON)
-}
-
-@Composable
-private fun FieldLabelWithIcon(icon: @Composable () -> Unit, label: String) {
-  val surfaceVariant =
-      if (isSystemInDarkTheme()) GeneralPaletteDark.SurfaceVariant
-      else GeneralPalette.SurfaceVariant
-  Row(verticalAlignment = Alignment.CenterVertically) {
-    Surface(shape = MaterialTheme.shapes.small, color = surfaceVariant) {
-      Box(modifier = Modifier.padding(PaddingExtraSmall), contentAlignment = Alignment.Center) {
-        icon()
-      }
-    }
-    Spacer(modifier = Modifier.padding(horizontal = SpacingSmall))
-    Text(text = label, style = MaterialTheme.typography.labelLarge)
-  }
 }
 
 @Composable

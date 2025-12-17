@@ -2,7 +2,6 @@ package com.android.sample.ui.calendar.editEvent.components
 
 import android.app.TimePickerDialog
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -10,7 +9,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material.icons.outlined.CalendarMonth
-import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.calendar.components.DatePickerFieldToModal
+import com.android.sample.ui.calendar.components.FieldLabelWithIcon
 import com.android.sample.ui.calendar.components.ValidatingTextField
 import com.android.sample.ui.calendar.components.eventSummaryComponents.ParticipantsSection
 import com.android.sample.ui.calendar.editEvent.EditEventTestTags
@@ -31,12 +30,8 @@ import com.android.sample.ui.category.components.CategorySelector
 import com.android.sample.ui.common.BottomNavigationButtons
 import com.android.sample.ui.common.SecondaryButton
 import com.android.sample.ui.theme.CornerRadiusLarge
-import com.android.sample.ui.theme.GeneralPalette
-import com.android.sample.ui.theme.GeneralPaletteDark
 import com.android.sample.ui.theme.PaddingExtraLarge
-import com.android.sample.ui.theme.PaddingExtraSmall
 import com.android.sample.ui.theme.PaddingMedium
-import com.android.sample.ui.theme.PaddingSmallMedium
 import com.android.sample.ui.theme.SpacingExtraLarge
 import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingMedium
@@ -107,35 +102,7 @@ fun EditEventScreen(
             verticalArrangement = Arrangement.Top) {
               Spacer(Modifier.height(SpacingExtraLarge))
 
-              val surfaceVariant =
-                  if (isSystemInDarkTheme()) GeneralPaletteDark.SurfaceVariant
-                  else GeneralPalette.SurfaceVariant
-              val onSurfaceVariant =
-                  if (isSystemInDarkTheme()) GeneralPaletteDark.OnSurfaceVariant
-                  else GeneralPalette.OnSurfaceVariant
-
-              Row(
-                  modifier = Modifier.fillMaxWidth(),
-                  verticalAlignment = Alignment.CenterVertically,
-                  horizontalArrangement = Arrangement.Start) {
-                    Surface(shape = MaterialTheme.shapes.large, color = surfaceVariant) {
-                      Box(
-                          modifier = Modifier.padding(PaddingSmallMedium),
-                          contentAlignment = Alignment.Center) {
-                            Icon(
-                                imageVector = Icons.Outlined.Edit,
-                                contentDescription = null,
-                            )
-                          }
-                    }
-
-                    Spacer(modifier = Modifier.width(SpacingSmall))
-
-                    Text(
-                        text = stringResource(R.string.edit_event_header_step),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = onSurfaceVariant)
-                  }
+              EditEventHeaderRow()
 
               Spacer(Modifier.height(SpacingLarge))
 
@@ -302,22 +269,6 @@ fun EditEventScreen(
 @Composable
 fun EditEventScreenPreview() {
   EditEventScreen(eventId = "PREVIEW123", skipLoad = true)
-}
-
-@Composable
-private fun FieldLabelWithIcon(icon: @Composable () -> Unit, label: String) {
-  val surfaceVariant =
-      if (isSystemInDarkTheme()) GeneralPaletteDark.SurfaceVariant
-      else GeneralPalette.SurfaceVariant
-  Row(verticalAlignment = Alignment.CenterVertically) {
-    Surface(shape = MaterialTheme.shapes.small, color = surfaceVariant) {
-      Box(modifier = Modifier.padding(PaddingExtraSmall), contentAlignment = Alignment.Center) {
-        icon()
-      }
-    }
-    Spacer(modifier = Modifier.padding(horizontal = SpacingSmall))
-    Text(text = label, style = MaterialTheme.typography.labelLarge)
-  }
 }
 
 @Composable

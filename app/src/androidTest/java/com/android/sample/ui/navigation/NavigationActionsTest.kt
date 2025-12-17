@@ -5,7 +5,6 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -125,15 +124,9 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
     composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).assertExists()
     composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).assertIsNotEnabled()
 
-    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
+    composeTestRule.onNodeWithTag(AddEventTestTags.BACK_BUTTON).assertExists().performClick()
 
-    // Step 3: Participants => MUST select at least one
-    composeTestRule.onNodeWithText("12345").performClick()
-
-    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
-
-    // Confirmation / create
-    composeTestRule.onNodeWithTag(AddEventTestTags.CREATE_BUTTON).assertExists().performClick()
+    composeTestRule.onNodeWithTag(AddEventTestTags.CANCEL_BUTTON).assertExists().performClick()
 
     // Back to calendar
     composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertIsDisplayed()

@@ -2,7 +2,6 @@
     <string name="app_name">SampleApp</string>
     <string name="title_activity_main">Hauptaktivität</string>
     <string name="next">Weiter</string>
-    <string name="addEventTitle">Neues Ereignis</string>
     <string name="eventTitle">Titel</string>
     <string name="eventTitlePlaceholder">Titel eingeben</string>
     <string name="title_empty_error">Titel darf nicht leer sein</string>

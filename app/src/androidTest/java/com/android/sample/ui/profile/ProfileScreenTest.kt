@@ -13,26 +13,85 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.sample.model.authentication.AuthRepository
 import com.android.sample.model.authentication.FakeAuthRepository
 import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UsersRepositoryLocal
+import com.android.sample.model.organization.data.Organization
+import com.android.sample.model.organization.repository.FakeOrganizationRepository
+import com.android.sample.ui.organization.SelectedOrganizationVMProvider
+import com.android.sample.ui.organization.SelectedOrganizationViewModel
+import com.android.sample.utils.FirebaseEmulatedTest
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class ProfileScreenTest {
+class ProfileScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganizationTestBase {
 
   @get:Rule val composeTestRule = createComposeRule()
 
   private lateinit var application: Application
+  private lateinit var fakeOrganizationRepository: FakeOrganizationRepository
+  private lateinit var fakeAuthRepository: FakeAuthRepository
+  private lateinit var fakeUserRepository: UsersRepositoryLocal
+  private lateinit var selectedOrgVM: SelectedOrganizationViewModel
 
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
+
+  private val currentUser: User =
+      User(
+          id = "test123",
+          displayName = "Test User",
+          email = "test@example.com",
+          phoneNumber = "123-456-7890")
+  private val adminUser: User =
+      User(id = "admin123", displayName = "Admin User", email = "admin@example.com")
+
+  private val employeeUser: User =
+      User(id = "employee456", displayName = "Employee User", email = "employee@gmail.com")
+
+  private val employeeUser2: User =
+      User(id = "employee789", displayName = "Employee User 2", email = "employee2@gmail.com")
+
+  private val organization: Organization =
+      Organization(id = organizationId, name = "Test Organization")
+
+  @OptIn(ExperimentalCoroutinesApi::class)
   @Before
-  fun setUp() {
+  override fun setUp() = runBlocking {
     application =
         InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as Application
     clearPreferences()
+    fakeOrganizationRepository = FakeOrganizationRepository()
+    fakeOrganizationRepository.insertOrganization(organization)
+
+    setSelectedOrganization()
+
+    fakeAuthRepository = FakeAuthRepository(currentUser)
+
+    fakeUserRepository = UsersRepositoryLocal()
+    fakeUserRepository.newUser(employeeUser)
+    fakeUserRepository.newUser(employeeUser2)
+    fakeUserRepository.newUser(adminUser)
+    fakeUserRepository.newUser(currentUser)
+
+    fakeUserRepository.addUserToOrganization(
+        userId = employeeUser.id, organizationId = organization.id)
+    fakeUserRepository.addUserToOrganization(
+        userId = employeeUser2.id, organizationId = organization.id)
+
+    fakeUserRepository.addAdminToOrganization(
+        userId = adminUser.id, organizationId = organization.id)
+
+    selectedOrgVM = SelectedOrganizationVMProvider.viewModel
+    selectedOrgVM.selectOrganization(organization.id)
   }
 
   @After
-  fun tearDown() {
+  override fun tearDown() {
     clearPreferences()
   }
 
@@ -41,22 +100,21 @@ class ProfileScreenTest {
     prefs.edit().clear().apply()
   }
 
-  private fun createViewModel(repository: AuthRepository) =
-      ProfileViewModel(application, repository)
+  private fun createViewModel(authRepository: AuthRepository) =
+      ProfileViewModel(
+          application,
+          authRepository,
+          userRepository = fakeUserRepository,
+          selectedOrganizationViewModel = selectedOrgVM)
 
   @Test
   fun profileScreen_displaysUserInformation_inReadOnlyMode() {
-    val testUser =
-        User(
-            id = "test123",
-            displayName = "Test User",
-            email = "test@example.com",
-            phoneNumber = "123-456-7890")
+    val viewModel = createViewModel(fakeAuthRepository)
 
-    val fakeRepository = FakeAuthRepository(testUser)
-    val viewModel = createViewModel(fakeRepository)
-
-    composeTestRule.setContent { ProfileScreen(onNavigateBack = {}, profileViewModel = viewModel) }
+    composeTestRule.setContent {
+      ProfileScreen(
+          onNavigateBack = {}, profileOwnerId = currentUser.id, profileViewModel = viewModel)
+    }
 
     // Check that the fields are displayed in read-only mode
     composeTestRule
@@ -80,13 +138,12 @@ class ProfileScreenTest {
 
   @Test
   fun profileScreen_entersEditMode_whenEditButtonClicked() {
-    val testUser =
-        User(
-            id = "test123", displayName = "Test User", email = "test@example.com", phoneNumber = "")
-    val fakeRepository = FakeAuthRepository(testUser)
-    val viewModel = createViewModel(fakeRepository)
+    val viewModel = createViewModel(fakeAuthRepository)
 
-    composeTestRule.setContent { ProfileScreen(onNavigateBack = {}, profileViewModel = viewModel) }
+    composeTestRule.setContent {
+      ProfileScreen(
+          onNavigateBack = {}, profileOwnerId = currentUser.id, profileViewModel = viewModel)
+    }
 
     // Initially, the save button should not be visible
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.SAVE_BUTTON).assertDoesNotExist()
@@ -106,7 +163,9 @@ class ProfileScreenTest {
     val fakeRepository = FakeAuthRepository(testUser)
     val viewModel = createViewModel(fakeRepository)
 
-    composeTestRule.setContent { ProfileScreen(onNavigateBack = {}, profileViewModel = viewModel) }
+    composeTestRule.setContent {
+      ProfileScreen(onNavigateBack = {}, profileOwnerId = testUser.id, profileViewModel = viewModel)
+    }
 
     // Enter edit mode
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.EDIT_BUTTON).performClick()
@@ -134,7 +193,10 @@ class ProfileScreenTest {
     var backClicked = false
 
     composeTestRule.setContent {
-      ProfileScreen(onNavigateBack = { backClicked = true }, profileViewModel = viewModel)
+      ProfileScreen(
+          onNavigateBack = { backClicked = true },
+          profileOwnerId = currentUser.id,
+          profileViewModel = viewModel)
     }
 
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.BACK_BUTTON).performClick()
@@ -143,16 +205,12 @@ class ProfileScreenTest {
 
   @Test
   fun profileScreen_editAndCancel_restoresOriginalValues() {
-    val testUser =
-        User(
-            id = "test123",
-            displayName = "Original",
-            email = "orig@example.com",
-            phoneNumber = "000-111-2222")
-    val fakeRepository = FakeAuthRepository(testUser)
-    val viewModel = createViewModel(fakeRepository)
+    val viewModel = createViewModel(fakeAuthRepository)
 
-    composeTestRule.setContent { ProfileScreen(onNavigateBack = {}, profileViewModel = viewModel) }
+    composeTestRule.setContent {
+      ProfileScreen(
+          onNavigateBack = {}, profileOwnerId = currentUser.id, profileViewModel = viewModel)
+    }
 
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.EDIT_BUTTON).performClick()
 
@@ -168,21 +226,17 @@ class ProfileScreenTest {
     // Verify original value restored
     composeTestRule
         .onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD)
-        .assertTextContains("Original")
+        .assertTextContains("Test User")
   }
 
   @Test
-  fun profileScreen_savingBlankDisplayName_keepsPreviousValue() {
-    val testUser =
-        User(
-            id = "test123",
-            displayName = "Keep Me",
-            email = "keep@example.com",
-            phoneNumber = "000-111-2222")
-    val fakeRepository = FakeAuthRepository(testUser)
-    val viewModel = createViewModel(fakeRepository)
+  fun profileScreen_savingBlankDisplayName_keepsPreviousValue() = runTest {
+    val viewModel = createViewModel(fakeAuthRepository)
 
-    composeTestRule.setContent { ProfileScreen(onNavigateBack = {}, profileViewModel = viewModel) }
+    composeTestRule.setContent {
+      ProfileScreen(
+          onNavigateBack = {}, profileOwnerId = currentUser.id, profileViewModel = viewModel)
+    }
 
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.EDIT_BUTTON).performClick()
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD).performTextClearance()
@@ -190,7 +244,7 @@ class ProfileScreenTest {
 
     composeTestRule
         .onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD)
-        .assertTextContains("Keep Me")
+        .assertTextContains("Test User")
   }
 
   @Test
@@ -198,7 +252,10 @@ class ProfileScreenTest {
     val fakeRepository = FakeAuthRepository(null)
     val viewModel = createViewModel(fakeRepository)
 
-    composeTestRule.setContent { ProfileScreen(onNavigateBack = {}, profileViewModel = viewModel) }
+    composeTestRule.setContent {
+      ProfileScreen(
+          onNavigateBack = {}, profileOwnerId = currentUser.id, profileViewModel = viewModel)
+    }
 
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.PROFILE_SCREEN).assertIsDisplayed()
   }
@@ -208,28 +265,96 @@ class ProfileScreenTest {
     val fakeRepository = FakeAuthRepository(null)
     val viewModel = createViewModel(fakeRepository)
 
-    composeTestRule.setContent { ProfileScreen(profileViewModel = viewModel) }
+    composeTestRule.setContent {
+      ProfileScreen(profileOwnerId = currentUser.id, profileViewModel = viewModel)
+    }
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.BACK_BUTTON).assertIsDisplayed()
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD).assertIsDisplayed()
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.EMAIL_FIELD).assertIsDisplayed()
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.PHONE_FIELD).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(ProfileScreenTestTags.EDIT_BUTTON).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(ProfileScreenTestTags.SIGN_OUT_BUTTON).assertIsDisplayed()
   }
 
   @Test
   fun profileScreen_signOutButtonWorks() {
     var signOutClicked = false
 
-    val fakeRepository = FakeAuthRepository(null)
-    val viewModel = createViewModel(fakeRepository)
+    val viewModel = createViewModel(fakeAuthRepository)
 
     composeTestRule.setContent {
-      ProfileScreen(onSignOut = { signOutClicked = true }, profileViewModel = viewModel)
+      ProfileScreen(
+          onSignOut = { signOutClicked = true },
+          profileOwnerId = currentUser.id,
+          profileViewModel = viewModel)
     }
 
     composeTestRule.onNodeWithTag(ProfileScreenTestTags.SIGN_OUT_BUTTON).performClick()
     assert(signOutClicked)
+  }
+
+  @Test
+  fun profileScreen_promoteToAdminButtonWorks() {
+    var promoteToAdminClicked = false
+
+    val fakeAuthRepository = FakeAuthRepository(adminUser)
+    val viewModel = createViewModel(fakeAuthRepository)
+
+    composeTestRule.setContent {
+      ProfileScreen(
+          onPromoteToAdmin = { promoteToAdminClicked = true },
+          profileOwnerId = employeeUser.id,
+          profileViewModel = viewModel)
+    }
+
+    composeTestRule.onNodeWithTag(ProfileScreenTestTags.PROMOTE_TO_ADMIN_BUTTON).performClick()
+    assert(promoteToAdminClicked)
+  }
+
+  @Test
+  fun onlyDisplayNameIsEditableWhenAdminToEmployee() {
+    val fakeAuthRepository = FakeAuthRepository(adminUser)
+    val viewModel = createViewModel(fakeAuthRepository)
+
+    composeTestRule.setContent {
+      ProfileScreen(profileOwnerId = employeeUser.id, profileViewModel = viewModel)
+    }
+    composeTestRule
+        .onNodeWithTag(ProfileScreenTestTags.EDIT_BUTTON)
+        .assertIsDisplayed()
+        .performClick()
+    composeTestRule
+        .onNodeWithTag(ProfileScreenTestTags.DISPLAY_NAME_FIELD)
+        .assertIsDisplayed()
+        .assertIsEnabled()
+    composeTestRule
+        .onNodeWithTag(ProfileScreenTestTags.EMAIL_FIELD)
+        .assertIsDisplayed()
+        .assertIsNotEnabled()
+    composeTestRule
+        .onNodeWithTag(ProfileScreenTestTags.PHONE_FIELD)
+        .assertIsDisplayed()
+        .assertIsNotEnabled()
+  }
+
+  @Test
+  fun editButtonIsNotDisplayedWhenEmployeeToEmployee() {
+    val fakeAuthRepository = FakeAuthRepository(employeeUser)
+    val viewModel = createViewModel(fakeAuthRepository)
+
+    composeTestRule.setContent {
+      ProfileScreen(profileOwnerId = employeeUser2.id, profileViewModel = viewModel)
+    }
+    composeTestRule.onNodeWithTag(ProfileScreenTestTags.EDIT_BUTTON).assertIsNotDisplayed()
+  }
+
+  @Test
+  fun editButtonIsNotDisplayedWhenEmployeeToAdmin() {
+    val fakeAuthRepository = FakeAuthRepository(employeeUser)
+    val viewModel = createViewModel(fakeAuthRepository)
+
+    composeTestRule.setContent {
+      ProfileScreen(profileOwnerId = adminUser.id, profileViewModel = viewModel)
+    }
+    composeTestRule.onNodeWithTag(ProfileScreenTestTags.EDIT_BUTTON).assertIsNotDisplayed()
   }
 
   @Test
@@ -238,28 +363,23 @@ class ProfileScreenTest {
     val sharedPrefs = context.getSharedPreferences("test_prefs", Context.MODE_PRIVATE)
     sharedPrefs.edit().clear().commit()
 
-    val testUser =
-        User(
-            id = "test123",
-            displayName = "Original",
-            email = "orig@example.com",
-            phoneNumber = "000-111-2222")
-
-    val fakeRepository = FakeAuthRepository(testUser)
-
     fun createViewModel(): ProfileViewModel =
         ProfileViewModel(
             application = context as Application,
-            repository = fakeRepository,
+            authRepository = fakeAuthRepository,
+            userRepository = fakeUserRepository,
             preferences = sharedPrefs)
 
     lateinit var setVm: (ProfileViewModel) -> Unit
 
     composeTestRule.setContent {
       var vm by remember { mutableStateOf(createViewModel()) }
-      setVm = { newVm -> vm = newVm } // <-- assign into real compose state
+      setVm = { newVm ->
+        vm = newVm
+        vm.loadProfile(currentUser.id)
+      } // <-- assign into real compose state
 
-      ProfileScreen(onNavigateBack = {}, profileViewModel = vm)
+      ProfileScreen(onNavigateBack = {}, profileOwnerId = currentUser.id, profileViewModel = vm)
     }
 
     // --- Edit fields ---

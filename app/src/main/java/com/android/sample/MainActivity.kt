@@ -15,11 +15,21 @@ import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.credentials.CredentialManager
@@ -30,6 +40,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.android.sample.model.authentication.AuthRepositoryProvider
+import com.android.sample.model.network.NetworkStatusRepository
+import com.android.sample.model.network.NetworkStatusRepositoryProvider
 import com.android.sample.ui.authentication.SignInScreen
 import com.android.sample.ui.calendar.CalendarScreen
 import com.android.sample.ui.calendar.addEvent.AddEventScreen
@@ -60,6 +72,7 @@ import com.android.sample.ui.theme.SampleAppTheme
 
 object MainActivityTestTags {
   const val MAIN_SCREEN_CONTAINER = "main_screen_container"
+  const val SNACKBAR = "main_snackbar"
 }
 /**
  * Main entry point of the application. Sets up the theme and calls [Agendapp] to initialize
@@ -99,9 +112,24 @@ class MainActivity : ComponentActivity() {
 fun Agendapp(
     modifier: Modifier = Modifier,
     credentialManager: CredentialManager = CredentialManager.create(LocalContext.current),
+    networkStatusRepository: NetworkStatusRepository = NetworkStatusRepositoryProvider.repository
 ) {
   val navController = rememberNavController()
   val navigationActions = NavigationActions(navController)
+
+  val networkAvailable by networkStatusRepository.isConnected.collectAsState(initial = true)
+
+  val snackbarHostState = remember { SnackbarHostState() }
+  var disabledBottomBarClicked by remember { mutableStateOf(false) }
+
+  val noNetworkErrorMsg = stringResource(R.string.network_error_message)
+
+  LaunchedEffect(disabledBottomBarClicked) {
+    if (disabledBottomBarClicked) {
+      snackbarHostState.showSnackbar(noNetworkErrorMsg)
+      disabledBottomBarClicked = false
+    }
+  }
 
   val authRepository = AuthRepositoryProvider.repository
 
@@ -124,10 +152,17 @@ fun Agendapp(
               icon = Icons.Default.Accessibility,
               label = "Replacement",
               route = Screen.ReplacementOverview.route,
-              onClick = { navigationActions.navigateTo(Screen.ReplacementOverview) },
+              onClick = {
+                if (networkAvailable) {
+                  navigationActions.navigateTo(Screen.ReplacementOverview)
+                } else {
+                  disabledBottomBarClicked = true
+                }
+              },
               contentDescription = "Replacement",
               isSelected = currentRoute == Screen.ReplacementOverview.route,
-              testTag = BottomBarTestTags.ITEM_REPLACEMENT),
+              testTag = BottomBarTestTags.ITEM_REPLACEMENT,
+              enabled = networkAvailable),
           BottomBarItem(
               icon = Icons.Default.Event,
               label = "Calendar",
@@ -146,6 +181,11 @@ fun Agendapp(
               testTag = BottomBarTestTags.ITEM_SETTINGS))
 
   Scaffold(
+      snackbarHost = {
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier.testTag(tag = MainActivityTestTags.SNACKBAR))
+      },
       bottomBar = {
         AppBottomBar(
             isPortrait = isPortrait,

@@ -18,6 +18,8 @@ import com.android.sample.model.map.LocationRepository
 import com.android.sample.model.map.LocationRepositoryAndroid
 import com.android.sample.model.map.MapRepository
 import com.android.sample.model.map.MapRepositoryProvider
+import com.android.sample.model.network.NetworkStatusRepository
+import com.android.sample.model.network.NetworkStatusRepositoryProvider
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import java.time.Instant
@@ -25,6 +27,7 @@ import java.time.temporal.ChronoUnit
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 enum class LocationStatus {
@@ -41,6 +44,10 @@ enum class LocationStatus {
  *   present.
  * @property isLoading Indicates if the events are currently being loaded.
  * @property locationStatus The current location status of the user relative to defined areas.
+ * @property workedHours A list of pairs representing employee IDs and their corresponding worked
+ *   hours.
+ * @property isRefreshing Indicates if a pull-to-refresh operation is in progress.
+ * @property networkAvailable Indicates if the network is available.
  */
 data class CalendarUIState(
     val events: List<Event> = emptyList(),
@@ -48,7 +55,8 @@ data class CalendarUIState(
     val isLoading: Boolean = false,
     val workedHours: List<Pair<String, Double>> = emptyList(),
     val locationStatus: LocationStatus = LocationStatus.NO_PERMISSION,
-    val isRefreshing: Boolean = false
+    val isRefreshing: Boolean = false,
+    val networkAvailable: Boolean = true
 )
 
 /**
@@ -73,7 +81,9 @@ class CalendarViewModel(
     private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
     private val userRepository: UserRepository = UserRepositoryProvider.repository,
     selectedOrganizationViewModel: SelectedOrganizationViewModel =
-        SelectedOrganizationVMProvider.viewModel
+        SelectedOrganizationVMProvider.viewModel,
+    private val networkStatusRepository: NetworkStatusRepository =
+        NetworkStatusRepositoryProvider.repository
 ) : ViewModel() {
   private val _uiState = MutableStateFlow(CalendarUIState())
   // Publicly exposed immutable UI state
@@ -84,6 +94,16 @@ class CalendarViewModel(
 
   init {
     checkUserLocationStatus()
+    observeNetworkStatus()
+  }
+
+  // Observe network status changes
+  fun observeNetworkStatus() {
+    viewModelScope.launch {
+      networkStatusRepository.isConnected.collect { connected ->
+        _uiState.update { it.copy(networkAvailable = connected) }
+      }
+    }
   }
 
   /** Sets an error message in the UI state. */

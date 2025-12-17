@@ -12,6 +12,9 @@ import com.android.sample.model.calendar.*
 import com.android.sample.model.map.LocationRepository
 import com.android.sample.model.map.MapRepository
 import com.android.sample.model.map.MapRepositoryLocal
+import com.android.sample.model.network.FakeConnectivityChecker
+import com.android.sample.model.network.NetworkStatusRepository
+import com.android.sample.model.network.NetworkTestBase
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -33,7 +36,10 @@ import org.junit.Test
  *
  * Uses a test dispatcher to control coroutine execution for deterministic testing.
  */
-class CalendarViewModelTest {
+class CalendarViewModelTest : NetworkTestBase {
+
+  override val fakeChecker = FakeConnectivityChecker(state = true)
+  override val networkRepo = NetworkStatusRepository(fakeChecker)
 
   // StandardTestDispatcher allows manual control over coroutine execution in tests.
   private val testDispatcher = StandardTestDispatcher()
@@ -54,6 +60,8 @@ class CalendarViewModelTest {
 
   @Before
   fun setUp() {
+    setupNetworkTestBase()
+
     // Set the main dispatcher to the test dispatcher before each test.
     // This ensures all coroutines launched on Dispatchers.Main use the test dispatcher.
     Dispatchers.setMain(testDispatcher)

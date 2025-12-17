@@ -7,8 +7,6 @@ import com.android.sample.model.authentication.FakeAuthRepository
 import com.android.sample.model.authentication.User
 import com.android.sample.model.authentication.UserRepository
 import com.android.sample.model.authentication.UsersRepositoryLocal
-import com.android.sample.model.calendar.EventRepository
-import com.android.sample.model.calendar.EventRepositoryInMemory
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.category.EventCategory
 import com.android.sample.model.category.EventCategoryRepository

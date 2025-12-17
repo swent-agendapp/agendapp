@@ -284,4 +284,8 @@
     <!-- Edit Organization -->
     <string name="error_loading_organization">Failed to load organization.</string>
     <string name="error_editing_organization">Failed to update organization.</string>
+
+    <!-- Network -->
+    <string name="network_error_message">A network error has occurred. Please check your internet connection and try again.</string>
+
 </resources>

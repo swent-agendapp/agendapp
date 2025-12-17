@@ -13,7 +13,6 @@ import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeDown
 import androidx.compose.ui.test.swipeUp
 import com.android.sample.Agendapp
-import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.ui.authentication.SignInScreenTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
@@ -148,10 +147,6 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
 
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).performClick()
     composeTestRule.waitForIdle()
-
-    composeTestRule
-        .onNodeWithTag(AddEventTestTags.recurrenceTag(RecurrenceStatus.Weekly))
-        .performClick()
 
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).performClick()
     composeTestRule.waitForIdle()

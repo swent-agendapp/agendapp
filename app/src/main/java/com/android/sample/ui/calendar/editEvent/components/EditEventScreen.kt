@@ -269,7 +269,7 @@ fun EditEventScreen(
             },
             DateTimeUtils.getInstantHour(uiState.startInstant),
             DateTimeUtils.getInstantMinute(uiState.startInstant),
-            false)
+            true)
         .show()
     showStartTimePicker = false
   }
@@ -282,7 +282,7 @@ fun EditEventScreen(
             },
             DateTimeUtils.getInstantHour(uiState.endInstant),
             DateTimeUtils.getInstantMinute(uiState.endInstant),
-            false)
+            true)
         .show()
     showEndTimePicker = false
   }

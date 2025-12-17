@@ -204,7 +204,7 @@ fun AddEventTimeAndRecurrenceScreen(
                   },
                   DateTimeUtils.getInstantHour(newEventUIState.startInstant),
                   DateTimeUtils.getInstantMinute(newEventUIState.startInstant),
-                  false)
+                  true)
               .show()
           showStartTimePicker = false
         }
@@ -220,7 +220,7 @@ fun AddEventTimeAndRecurrenceScreen(
                   },
                   DateTimeUtils.getInstantHour(newEventUIState.endInstant),
                   DateTimeUtils.getInstantMinute(newEventUIState.endInstant),
-                  false)
+                  true)
               .show()
           showEndTimePicker = false
         }

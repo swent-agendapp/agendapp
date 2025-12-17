@@ -9,6 +9,10 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.android.sample.data.global.providers.EventRepositoryProvider
 import com.android.sample.data.global.repositories.EventRepository
+import com.android.sample.model.authentication.AuthRepository
+import com.android.sample.model.authentication.AuthRepositoryProvider
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.map.LocationRepository
 import com.android.sample.model.map.LocationRepositoryAndroid
@@ -17,6 +21,7 @@ import com.android.sample.model.map.MapRepositoryProvider
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import java.time.Instant
+import java.time.temporal.ChronoUnit
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -60,12 +65,14 @@ data class CalendarUIState(
  *   organization.
  */
 class CalendarViewModel(
-    app: Application,
+  app: Application,
     // used to get Events
-    private val eventRepository: EventRepository = EventRepositoryProvider.repository,
-    private val locationRepository: LocationRepository = LocationRepositoryAndroid(app),
-    private val mapRepository: MapRepository = MapRepositoryProvider.repository,
-    selectedOrganizationViewModel: SelectedOrganizationViewModel =
+  private val eventRepository: EventRepository = EventRepositoryProvider.repository,
+  private val locationRepository: LocationRepository = LocationRepositoryAndroid(app),
+  private val mapRepository: MapRepository = MapRepositoryProvider.repository,
+  private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
+  private val userRepository: UserRepository = UserRepositoryProvider.repository,
+  selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel
 ) : ViewModel() {
   private val _uiState = MutableStateFlow(CalendarUIState())
@@ -115,7 +122,11 @@ class CalendarViewModel(
       setLoading(true)
       try {
         val events = loadEventsBlock()
-        setEvents(events)
+        val eventWithMember = events.map { event ->
+          val users = userRepository.getUsersByIds(event.participants.toList())
+          event.copy(participants = users.map { it.display() }.toSet())
+        }
+        setEvents(eventWithMember)
       } catch (e: Exception) {
         setErrorMsg("$errorMessage: ${e.message}")
       } finally {
@@ -230,6 +241,25 @@ class CalendarViewModel(
             _uiState.value.copy(
                 locationStatus =
                     if (isInside) LocationStatus.INSIDE_AREA else LocationStatus.OUTSIDE_AREA)
+
+        if (isInside) {
+          // Get current user ID
+          val currentUser = authRepository.getCurrentUser()
+          if (currentUser != null) {
+            val now = Instant.now()
+            val startTime = now.minus(2, ChronoUnit.HOURS)
+            val endTime = now.plus(6, ChronoUnit.HOURS)
+
+            val events = eventRepository.getEventsBetweenDates(orgId, startTime, endTime)
+
+            events.forEach { event ->
+              val updatedPresence = event.presence.toMutableMap()
+              updatedPresence[currentUser.id] = true
+              val updatedEvent = event.copy(presence = updatedPresence)
+              eventRepository.updateEvent(orgId, event.id, updatedEvent)
+            }
+          }
+        }
       } catch (e: SecurityException) {
         _uiState.value = _uiState.value.copy(locationStatus = LocationStatus.NO_PERMISSION)
       } catch (e: Exception) {

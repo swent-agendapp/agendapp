@@ -15,10 +15,15 @@ import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeDown
-import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.sample.R
+import com.android.sample.model.category.EventCategoryRepository
+import com.android.sample.model.category.EventCategoryRepositoryLocal
+import com.android.sample.ui.organization.SelectedOrganizationVMProvider
+import com.android.sample.ui.organization.SelectedOrganizationViewModel
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase
+import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -35,14 +40,30 @@ import org.junit.runner.RunWith
  * these tests can be adapted to work with an EditCategoryViewModel.
  */
 @RunWith(AndroidJUnit4::class)
-class EditCategoryScreenTest {
+class EditCategoryScreenTest : RequiresSelectedOrganizationTestBase {
+  private companion object {
+    const val WAIT_UNTIL_NOT_LOADING_TIMEOUT_MS = 5_000L
+  }
+
+  override val organizationId: String = DEFAULT_TEST_ORG_ID
 
   @get:Rule val composeTestRule = createComposeRule()
+
+  private lateinit var categoryRepo: EventCategoryRepository
+  private lateinit var selectedOrgVM: SelectedOrganizationViewModel
+  private lateinit var editCategoryVM: EditCategoryViewModel
 
   private lateinit var titleString: String
 
   @Before
   fun setUp() {
+    // Ensure an organization is selected before running tests
+    setSelectedOrganization()
+
+    categoryRepo = EventCategoryRepositoryLocal()
+    selectedOrgVM = SelectedOrganizationVMProvider.viewModel
+    editCategoryVM = EditCategoryViewModel(categoryRepo, selectedOrgVM)
+
     val context = InstrumentationRegistry.getInstrumentation().targetContext
     titleString = context.getString(R.string.edit_category_title)
     // LATER: create and configure a fake EditCategoryViewModel here, then pass it down
@@ -52,21 +73,47 @@ class EditCategoryScreenTest {
   private fun setContent(onBack: () -> Unit = {}) {
     composeTestRule.setContent {
       // LATER: pass fakeViewModel here instead of local state when ViewModel is introduced.
-      EditCategoryScreen(onBack = onBack)
+      EditCategoryScreen(editCategoryViewModel = editCategoryVM, onBack = onBack)
     }
+  }
+
+  // Wait until the ViewModel finished loading the categories.
+  private fun waitUntilNotLoading() {
+    composeTestRule.waitUntil(timeoutMillis = WAIT_UNTIL_NOT_LOADING_TIMEOUT_MS) {
+      !editCategoryVM.uiState.value.isLoading
+    }
+  }
+
+  // Creates a category through the UI (FAB -> type label -> Save).
+  private fun createCategory(label: String) {
+    composeTestRule
+        .onNodeWithTag(EditCategoryScreenTestTags.CATEGORY_CARD_ADD_BUTTON)
+        .performClick()
+
+    val textField =
+        composeTestRule
+            .onNodeWithTag(EditCategoryScreenTestTags.BOTTOM_SHEET_LABEL_TEXT_FIELD)
+            .assertIsDisplayed()
+
+    textField.performTextInput(label)
+
+    composeTestRule
+        .onNodeWithTag(EditCategoryScreenTestTags.BOTTOM_SHEET_SAVE_BUTTON)
+        .assertIsEnabled()
+        .performClick()
+
+    // Bottom sheet closed
+    composeTestRule.onAllNodesWithTag(EditCategoryScreenTestTags.BOTTOM_SHEET).assertCountEquals(0)
   }
 
   // Initial state: screen, top bar, FAB and category list
   @Test
-  fun initialState_showsTopBarFabListAndMockCategories() {
+  fun initialState_showsTopBarFabListAndNoSheet() {
     setContent()
+    waitUntilNotLoading()
 
     // Root / list
     composeTestRule.onNodeWithTag(EditCategoryScreenTestTags.SCREEN_ROOT).assertIsDisplayed()
-    val cards = composeTestRule.onAllNodesWithTag(EditCategoryScreenTestTags.CATEGORY_CARD)
-    assertTrue(
-        "There should be at least one category card at start",
-        cards.fetchSemanticsNodes().isNotEmpty())
 
     // Top bar title
     composeTestRule.onNodeWithText(titleString).assertIsDisplayed()
@@ -101,49 +148,18 @@ class EditCategoryScreenTest {
   @Test
   fun fab_addCategory_thenReopenSheet_resetsSelection() {
     setContent()
+    waitUntilNotLoading()
 
-    val initialCardsCount = 3
-    deleteCategoriesUntilRemaining(initialCardsCount)
+    val initialCardsCount = currentCategoryCount()
 
-    // Open bottom sheet via FAB
-    composeTestRule
-        .onNodeWithTag(EditCategoryScreenTestTags.CATEGORY_CARD_ADD_BUTTON)
-        .performClick()
+    // Create a new category
+    createCategory("New category")
 
-    // Bottom sheet visible, label empty, Save disabled
-    val textField =
-        composeTestRule
-            .onNodeWithTag(EditCategoryScreenTestTags.BOTTOM_SHEET_LABEL_TEXT_FIELD)
-            .assertIsDisplayed()
-    composeTestRule
-        .onNodeWithTag(EditCategoryScreenTestTags.BOTTOM_SHEET_SAVE_BUTTON)
-        .assertIsNotEnabled()
-
-    // Type a valid label
-    textField.performTextInput("New category")
-
-    // Save becomes enabled and we save
-    val saveButton =
-        composeTestRule
-            .onNodeWithTag(EditCategoryScreenTestTags.BOTTOM_SHEET_SAVE_BUTTON)
-            .assertIsEnabled()
-    saveButton.performClick()
-
-    // Bottom sheet closed, list increased by 1
-    composeTestRule.onAllNodesWithTag(EditCategoryScreenTestTags.BOTTOM_SHEET).assertCountEquals(0)
-
-    composeTestRule.onNodeWithTag(EditCategoryScreenTestTags.SCREEN_ROOT).performTouchInput {
-      swipeUp()
-    }
-
-    val afterAddCount =
-        composeTestRule
-            .onAllNodesWithTag(EditCategoryScreenTestTags.CATEGORY_CARD)
-            .fetchSemanticsNodes()
-            .size
+    // List increased by 1
+    val afterAddCount = currentCategoryCount()
     assertEquals(initialCardsCount + 1, afterAddCount)
 
-    // Reopen via FAB: creation mode (label empty, Save disabled)
+    // Reopen via FAB: creation mode (Save disabled)
     composeTestRule
         .onNodeWithTag(EditCategoryScreenTestTags.CATEGORY_CARD_ADD_BUTTON)
         .performClick()
@@ -157,12 +173,9 @@ class EditCategoryScreenTest {
   @Test
   fun fab_dismissWithoutSaving_keepsListUnchanged() {
     setContent()
+    waitUntilNotLoading()
 
-    val initialCardsCount =
-        composeTestRule
-            .onAllNodesWithTag(EditCategoryScreenTestTags.CATEGORY_CARD)
-            .fetchSemanticsNodes()
-            .size
+    val initialCardsCount = currentCategoryCount()
 
     // Open creation sheet
     composeTestRule
@@ -181,11 +194,7 @@ class EditCategoryScreenTest {
 
     // Sheet is closed, list has not changed
     composeTestRule.onAllNodesWithTag(EditCategoryScreenTestTags.BOTTOM_SHEET).assertCountEquals(0)
-    val afterDismissCount =
-        composeTestRule
-            .onAllNodesWithTag(EditCategoryScreenTestTags.CATEGORY_CARD)
-            .fetchSemanticsNodes()
-            .size
+    val afterDismissCount = currentCategoryCount()
     assertEquals(initialCardsCount, afterDismissCount)
   }
 
@@ -193,6 +202,12 @@ class EditCategoryScreenTest {
   @Test
   fun editCategory_updatesItem_thenFabOpensEmptySheet() {
     setContent()
+    waitUntilNotLoading()
+
+    // Ensure at least one category exists
+    if (currentCategoryCount() == 0) {
+      createCategory("To edit")
+    }
 
     // Open edit bottom sheet via the Edit button of the first card
     composeTestRule
@@ -222,6 +237,12 @@ class EditCategoryScreenTest {
   @Test
   fun editCategory_dismissWithoutSaving_keepsOriginalLabel() {
     setContent()
+    waitUntilNotLoading()
+
+    // Ensure at least one category exists
+    if (currentCategoryCount() == 0) {
+      createCategory("Original label")
+    }
 
     // Open in edit mode
     composeTestRule
@@ -246,12 +267,14 @@ class EditCategoryScreenTest {
   @Test
   fun deleteDialog_cancelKeepsCategory() {
     setContent()
+    waitUntilNotLoading()
 
-    val initialCount =
-        composeTestRule
-            .onAllNodesWithTag(EditCategoryScreenTestTags.CATEGORY_CARD)
-            .fetchSemanticsNodes()
-            .size
+    // Ensure at least one category exists
+    if (currentCategoryCount() == 0) {
+      createCategory("To delete")
+    }
+
+    val initialCount = currentCategoryCount()
 
     // Open delete dialog for the first card
     composeTestRule
@@ -274,11 +297,7 @@ class EditCategoryScreenTest {
         .performClick()
 
     // Number of categories stays the same
-    val afterCancelCount =
-        composeTestRule
-            .onAllNodesWithTag(EditCategoryScreenTestTags.CATEGORY_CARD)
-            .fetchSemanticsNodes()
-            .size
+    val afterCancelCount = currentCategoryCount()
     assertEquals(initialCount, afterCancelCount)
   }
 
@@ -286,6 +305,12 @@ class EditCategoryScreenTest {
   @Test
   fun deleteTwoCategories_leadsToEmptyState_andNextSheetIsCreationMode() {
     setContent()
+    waitUntilNotLoading()
+
+    // Ensure exactly two categories exist
+    deleteCategoriesUntilRemaining(0)
+    createCategory("First")
+    createCategory("Second")
 
     deleteCategoriesUntilRemaining(0)
 
@@ -300,6 +325,7 @@ class EditCategoryScreenTest {
   // Helper to delete categories until only [remainingCount] are left
   private fun deleteCategoriesUntilRemaining(remainingCount: Int) {
     while (currentCategoryCount() > remainingCount) {
+      waitUntilNotLoading()
       composeTestRule
           .onAllNodesWithTag(EditCategoryScreenTestTags.CATEGORY_CARD_DELETE_BUTTON)
           .onFirst()

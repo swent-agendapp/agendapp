@@ -70,6 +70,7 @@ class FilterViewModel(
   private val _uiState = MutableStateFlow(FilterUiState())
   val uiState: StateFlow<FilterUiState> = _uiState
 
+  /** Observe organization changes to reload filter metadata */
   init {
     observeOrganizationChanges()
   }
@@ -83,12 +84,14 @@ class FilterViewModel(
     }
   }
 
+  /** Clear all loaded metadata (called when no organization is selected) */
   private fun clearMetadata() {
     _uiState.update {
       it.copy(eventTypes = emptyList(), locations = emptyList(), participants = emptyList())
     }
   }
 
+  /** Load available filter options for the given organization */
   private suspend fun loadMetadata(orgId: String) {
     try {
       val eventTypes = categoryRepo.getAllCategories(orgId).map { it.label }
@@ -111,18 +114,22 @@ class FilterViewModel(
   // ---------------------------
   // Filter selection setters
   // ---------------------------
+  /** Set selected event types */
   fun setEventTypes(types: List<String>) {
     _uiState.update { it.copy(filters = it.filters.copy(eventTypes = types.toSet())) }
   }
 
+  /** Set selected locations */
   fun setLocations(locations: List<String>) {
     _uiState.update { it.copy(filters = it.filters.copy(locations = locations.toSet())) }
   }
 
+  /** Set selected participants */
   fun setParticipants(ids: List<String>) {
     _uiState.update { it.copy(filters = it.filters.copy(participants = ids.toSet())) }
   }
 
+  /** Clear all selected filters */
   fun clearFilters() {
     _uiState.update { it.copy(filters = EventFilters()) }
   }

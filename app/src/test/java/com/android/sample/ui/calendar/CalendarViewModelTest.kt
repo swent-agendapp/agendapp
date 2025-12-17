@@ -15,6 +15,7 @@ import java.time.Instant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -354,9 +355,9 @@ class CalendarViewModelTest {
     repositoryEvent.insertEvent(orgId, eventA)
     repositoryEvent.insertEvent(orgId, eventB)
 
+    // runTest 会自动等待所有子 coroutine 完成
     viewModel.loadAllEvents()
-    testDispatcher.scheduler.advanceUntilIdle()
-
+    advanceUntilIdle()
     viewModel.applyFilters(EventFilters(participants = setOf("Alice")))
 
     val events = viewModel.uiState.value.events
@@ -384,8 +385,7 @@ class CalendarViewModelTest {
     repositoryEvent.insertEvent(orgId, meeting)
 
     viewModel.loadAllEvents()
-    testDispatcher.scheduler.advanceUntilIdle()
-
+    advanceUntilIdle()
     viewModel.applyFilters(EventFilters(eventTypes = setOf("Course")))
 
     val events = viewModel.uiState.value.events
@@ -413,8 +413,7 @@ class CalendarViewModelTest {
     repositoryEvent.insertEvent(orgId, e2)
 
     viewModel.loadAllEvents()
-    testDispatcher.scheduler.advanceUntilIdle()
-
+    advanceUntilIdle()
     viewModel.applyFilters(
         EventFilters(participants = setOf("Alice"), locations = setOf("Salle 1")))
 

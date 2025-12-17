@@ -4,6 +4,7 @@ import com.android.sample.model.filter.FakeEventCategoryRepository
 import com.android.sample.model.filter.FakeMapRepository
 import com.android.sample.model.filter.FakeSelectedOrganizationViewModel
 import com.android.sample.model.filter.FakeUserRepository
+import com.android.sample.model.map.Area
 import com.android.sample.ui.calendar.filters.FilterViewModel
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -11,10 +12,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
@@ -37,16 +36,26 @@ class FilterViewModelTest {
     categoryRepo = FakeEventCategoryRepository()
     userRepo = FakeUserRepository()
     mapRepo = FakeMapRepository()
+
+    mapRepo.seedAreas(
+        orgId = "org123",
+        areas =
+            listOf(
+                Area(
+                    id = "a1",
+                    label = "Salle 1",
+                    marker = mapRepo.fakeMarker("Salle 1"),
+                    radius = 10.0),
+                Area(
+                    id = "a2",
+                    label = "Salle 2",
+                    marker = mapRepo.fakeMarker("Salle 2"),
+                    radius = 15.0)))
     orgVM = FakeSelectedOrganizationViewModel()
 
     vm =
         FilterViewModel(
             categoryRepo = categoryRepo, userRepo = userRepo, mapRepo = mapRepo, orgVM = orgVM)
-  }
-
-  @After
-  fun teardown() {
-    Dispatchers.resetMain()
   }
 
   @Test

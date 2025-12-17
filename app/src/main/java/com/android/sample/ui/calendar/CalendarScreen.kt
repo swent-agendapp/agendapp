@@ -102,6 +102,7 @@ fun CalendarScreen(
   var showFilterSheet by remember { mutableStateOf(false) }
 
   val filterVM: FilterViewModel = viewModel()
+  val filterUiState by filterVM.uiState.collectAsState()
 
   // Host state for displaying a snack bar in case of errors
   val snackbarHostState = remember { SnackbarHostState() }
@@ -170,7 +171,7 @@ fun CalendarScreen(
           FilterBottomSheet(
               onDismiss = { showFilterSheet = false },
               onApply = {
-                calendarViewModel.applyFilters(filterVM.uiState.value.filters)
+                calendarViewModel.applyFilters(filterUiState.filters)
                 showFilterSheet = false
               },
               filterVM = filterVM)

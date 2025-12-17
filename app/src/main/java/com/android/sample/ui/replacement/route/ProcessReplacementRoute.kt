@@ -53,6 +53,7 @@ fun ProcessReplacementRoute(
       ProcessReplacementScreen(
           replacement = replacement!!,
           candidates = users.filter { it.id != replacement!!.absentUserId },
+          users = users,
           onSendRequests = { selectedSubstitutes ->
             viewModel.sendRequestsForPendingReplacement(
                 replacementId = replacementId,

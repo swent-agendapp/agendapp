@@ -60,6 +60,7 @@ object ProcessReplacementTestTags {
 fun ProcessReplacementScreen(
     replacement: Replacement,
     candidates: List<User> = emptyList(),
+    users: List<User> = emptyList(),
     onSendRequests: (List<User>) -> Unit = {},
     onBack: () -> Unit = {},
 ) {
@@ -73,6 +74,10 @@ fun ProcessReplacementScreen(
   val timeText =
       "${replacement.event.startLocalTime.format(timeFormatter)} - " +
           replacement.event.endLocalTime.format(timeFormatter)
+
+  // Find absent user display name
+  val absentUser = users.firstOrNull { it.id == replacement.absentUserId }
+  val absentUserDisplay = absentUser?.displayName ?: absentUser?.email ?: replacement.absentUserId
 
   val context = LocalContext.current
 
@@ -112,8 +117,7 @@ fun ProcessReplacementScreen(
                       Text(
                           text =
                               stringResource(
-                                  id = R.string.replacement_substituted_label,
-                                  replacement.absentUserId),
+                                  id = R.string.replacement_substituted_label, absentUserDisplay),
                           style = MaterialTheme.typography.bodySmall)
                     }
                   }

@@ -44,6 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
+import com.android.sample.model.authentication.User
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.mockData.getMockReplacements
 import com.android.sample.model.replacement.toProcessReplacements
@@ -99,6 +100,7 @@ private fun ReplacementAssistChip(
 fun ReplacementPendingListScreen(
     replacementsToProcess: List<Replacement> = emptyList(),
     replacementsWaitingForAnswer: List<Replacement> = emptyList(),
+    users: List<User> = emptyList(),
     onProcessReplacement: (Replacement) -> Unit = {},
     onBack: () -> Unit = {}
 ) {
@@ -144,6 +146,7 @@ fun ReplacementPendingListScreen(
                         items(replacementsToProcess, key = { it.id }) { replacement ->
                           ReplacementToProcessCard(
                               replacement = replacement,
+                              users = users,
                               onProcessClick = { onProcessReplacement(replacement) })
                         }
                       }
@@ -168,7 +171,7 @@ fun ReplacementPendingListScreen(
                                 .toList()
 
                         items(groupedWaiting) { group ->
-                          ReplacementWaitingCard(replacements = group)
+                          ReplacementWaitingCard(replacements = group, users = users)
                         }
                       }
                     }
@@ -181,6 +184,7 @@ fun ReplacementPendingListScreen(
 @Composable
 private fun ReplacementToProcessCard(
     replacement: Replacement,
+    users: List<User> = emptyList(),
     onProcessClick: () -> Unit,
 ) {
   val dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)
@@ -190,6 +194,10 @@ private fun ReplacementToProcessCard(
   val timeText =
       "${replacement.event.startLocalTime.format(timeFormatter)} - " +
           replacement.event.endLocalTime.format(timeFormatter)
+
+  // Find absent user display name
+  val absentUser = users.firstOrNull { it.id == replacement.absentUserId }
+  val absentUserDisplay = absentUser?.displayName ?: absentUser?.email ?: replacement.absentUserId
 
   Card(
       modifier =
@@ -244,7 +252,7 @@ private fun ReplacementToProcessCard(
             text =
                 stringResource(
                     id = R.string.replacement_substituted_label,
-                    replacement.absentUserId,
+                    absentUserDisplay,
                 ),
             style = MaterialTheme.typography.bodySmall,
         )
@@ -261,12 +269,22 @@ private fun ReplacementToProcessCard(
 }
 
 @Composable
-fun ReplacementWaitingCard(replacements: List<Replacement>) {
+fun ReplacementWaitingCard(replacements: List<Replacement>, users: List<User> = emptyList()) {
   if (replacements.isEmpty()) return
 
   val first = replacements.first()
   val event = first.event
   val absentUserId = first.absentUserId
+
+  // Find absent user display name
+  val absentUser = users.firstOrNull { it.id == absentUserId }
+  val absentUserDisplay = absentUser?.displayName ?: absentUser?.email ?: absentUserId
+
+  // Helper function to get user display name from ID
+  fun getUserDisplay(userId: String): String {
+    val user = users.firstOrNull { it.id == userId }
+    return user?.displayName ?: user?.email ?: userId
+  }
 
   val pending =
       replacements.filter {
@@ -333,7 +351,7 @@ fun ReplacementWaitingCard(replacements: List<Replacement>) {
         }
         Spacer(modifier = Modifier.height(SpacingMedium))
         Text(
-            text = stringResource(R.string.replacement_substituted_label, absentUserId),
+            text = stringResource(R.string.replacement_substituted_label, absentUserDisplay),
             style = MaterialTheme.typography.bodySmall,
         )
 
@@ -365,13 +383,13 @@ fun ReplacementWaitingCard(replacements: List<Replacement>) {
   if (showPendingDialog) {
     PeopleListDialog(
         title = stringResource(R.string.replacement_pending_people_title),
-        people = pending.map { it.substituteUserId },
+        people = pending.map { getUserDisplay(it.substituteUserId) },
         onDismiss = { showPendingDialog = false })
   }
   if (showDeclinedDialog) {
     PeopleListDialog(
         title = stringResource(R.string.replacement_declined_people_title),
-        people = declined.map { it.substituteUserId },
+        people = declined.map { getUserDisplay(it.substituteUserId) },
         onDismiss = { showDeclinedDialog = false })
   }
 }

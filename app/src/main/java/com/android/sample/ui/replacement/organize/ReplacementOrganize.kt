@@ -79,6 +79,8 @@ fun ReplacementOrganizeScreen(
             canGoNext = uiState.selectedEvents.isNotEmpty(),
             processActions =
                 ReplacementProcessActions(
+                    // Process Now: Create replacement(s) and immediately navigate to select
+                    // substitutes
                     onProcessNow = {
                       replacementOrganizeViewModel.addReplacement(
                           status = ReplacementStatus.ToProcess,
@@ -88,6 +90,8 @@ fun ReplacementOrganizeScreen(
                           },
                       )
                     },
+                    // Process Later: Create replacement(s) and return to list, admin will
+                    // process them later
                     onProcessLater = {
                       replacementOrganizeViewModel.addReplacement(
                           status = ReplacementStatus.ToProcess,
@@ -119,6 +123,8 @@ fun ReplacementOrganizeScreen(
                 ),
             errorMessage = stringResource(R.string.invalid_date_range_message),
             canGoNext = replacementOrganizeViewModel.dateRangeValid(),
+            // Process Now: Create replacements for all events in date range, then navigate to
+            // select substitutes for the first one
             onProcessNow = {
               replacementOrganizeViewModel.addReplacement(
                   status = ReplacementStatus.ToProcess,
@@ -128,6 +134,8 @@ fun ReplacementOrganizeScreen(
                   },
               )
             },
+            // Process Later: Create replacements for all events in date range and return to
+            // list
             onProcessLater = {
               replacementOrganizeViewModel.addReplacement(
                   status = ReplacementStatus.ToProcess,

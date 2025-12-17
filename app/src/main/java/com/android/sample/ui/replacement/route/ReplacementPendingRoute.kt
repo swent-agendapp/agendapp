@@ -35,6 +35,7 @@ fun ReplacementPendingRoute(
     ReplacementPendingListScreen(
         replacementsToProcess = state.toProcess,
         replacementsWaitingForAnswer = state.waitingForAnswer,
+        users = state.users,
         onProcessReplacement = onProcessReplacement,
         onBack = onBack,
     )

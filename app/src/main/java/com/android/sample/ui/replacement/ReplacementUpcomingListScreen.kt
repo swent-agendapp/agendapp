@@ -33,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
+import com.android.sample.model.authentication.User
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementStatus
 import com.android.sample.model.replacement.mockData.getMockReplacements
@@ -70,6 +71,7 @@ object ReplacementUpcomingTestTags {
 @Composable
 fun ReplacementUpcomingListScreen(
     replacements: List<Replacement> = getMockReplacements().filterUpcomingAccepted(),
+    users: List<User> = emptyList(),
     onBack: () -> Unit = {},
 ) {
   Scaffold(
@@ -103,7 +105,7 @@ fun ReplacementUpcomingListScreen(
                     modifier = Modifier.fillMaxSize().testTag(ReplacementUpcomingTestTags.LIST),
                     verticalArrangement = Arrangement.spacedBy(SpacingMedium)) {
                       items(replacements, key = { it.id }) { replacement ->
-                        ReplacementUpcomingCard(replacement = replacement)
+                        ReplacementUpcomingCard(replacement = replacement, users = users)
                       }
                     }
               }
@@ -113,7 +115,7 @@ fun ReplacementUpcomingListScreen(
 
 /** Card for a future confirmed replacement. */
 @Composable
-private fun ReplacementUpcomingCard(replacement: Replacement) {
+private fun ReplacementUpcomingCard(replacement: Replacement, users: List<User> = emptyList()) {
   val dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)
   val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
@@ -121,6 +123,15 @@ private fun ReplacementUpcomingCard(replacement: Replacement) {
   val timeText =
       "${replacement.event.startLocalTime.format(timeFormatter)} - " +
           replacement.event.endLocalTime.format(timeFormatter)
+
+  // Find absent user display name
+  val absentUser = users.firstOrNull { it.id == replacement.absentUserId }
+  val absentUserDisplay = absentUser?.displayName ?: absentUser?.email ?: replacement.absentUserId
+
+  // Find substitute user display name
+  val substituteUser = users.firstOrNull { it.id == replacement.substituteUserId }
+  val substituteUserDisplay =
+      substituteUser?.displayName ?: substituteUser?.email ?: replacement.substituteUserId
 
   Card(
       modifier =
@@ -172,7 +183,7 @@ private fun ReplacementUpcomingCard(replacement: Replacement) {
                 text =
                     androidx.compose.ui.res.stringResource(
                         id = R.string.replacement_substituted_label,
-                        replacement.absentUserId,
+                        absentUserDisplay,
                     ),
                 style = MaterialTheme.typography.bodySmall,
             )
@@ -181,7 +192,7 @@ private fun ReplacementUpcomingCard(replacement: Replacement) {
                 text =
                     androidx.compose.ui.res.stringResource(
                         id = R.string.replacement_substitute_label,
-                        replacement.substituteUserId,
+                        substituteUserDisplay,
                     ),
                 style = MaterialTheme.typography.bodySmall,
             )

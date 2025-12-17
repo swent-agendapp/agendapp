@@ -257,11 +257,11 @@ class ReplacementEmployeeViewModel(
 
         val event = replacement.event
 
-        val updatedParticipants = event.participants.minus(replacement.absentUserId).plus(user.id)
-
+        // Update event version to trigger sync, but don't modify participants
+        // The replacement record itself tracks who is substituting
+        // Actual attendance should be tracked via the presence system
         val updatedEvent =
             event.copy(
-                participants = updatedParticipants,
                 version = System.currentTimeMillis(),
             )
 
@@ -457,8 +457,6 @@ class ReplacementEmployeeViewModel(
                 event = event,
                 status = ReplacementStatus.ToProcess)
 
-        val orgId = requireOrgId()
-
         replacementRepository.insertReplacement(orgId = orgId, item = replacement)
 
         _uiState.value =
@@ -522,8 +520,6 @@ class ReplacementEmployeeViewModel(
                   event = event,
                   status = ReplacementStatus.ToProcess)
             }
-
-        val orgId = requireOrgId()
 
         created.forEach { replacementRepository.insertReplacement(orgId = orgId, item = it) }
 

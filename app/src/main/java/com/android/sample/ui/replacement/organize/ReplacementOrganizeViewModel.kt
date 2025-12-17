@@ -132,13 +132,26 @@ class ReplacementOrganizeViewModel(
    *
    * Event selection logic:
    * - If the user manually selected events → use those.
-   * - Otherwise, fetch events between [startInstant] and [endInstant].
+   * - Otherwise, fetch events between [startInstant] and [endInstant], filtered to only include
+   *   events where the absent member is a participant.
    *
    * Validation:
    * - A selected absent member is required
    * - If auto-selecting events, date range must be valid
+   * - Events must not be empty after filtering
    *
-   * For each event found, a [Replacement] object is constructed and stored.
+   * For each event found, a [Replacement] object is constructed with:
+   * - absentUserId: the selected member who needs replacement
+   * - substituteUserId: empty string (to be filled when admin selects substitutes)
+   * - status: typically ToProcess (admin will process later) or can be customized
+   *
+   * After creating replacements, they are:
+   * 1. Passed to the callback for potential navigation/processing
+   * 2. Persisted to the repository
+   *
+   * @param status The initial status for created replacements (default: ToProcess)
+   * @param onReplacementsCreated Callback invoked with the list of created replacements before
+   *   persistence
    */
   fun addReplacement(
       status: ReplacementStatus = ReplacementStatus.ToProcess,
@@ -162,8 +175,12 @@ class ReplacementOrganizeViewModel(
 
             val orgId = requireOrgId()
 
-            eventRepository.getEventsBetweenDates(
-                orgId = orgId, startDate = state.startInstant, endDate = state.endInstant)
+            val allEvents =
+                eventRepository.getEventsBetweenDates(
+                    orgId = orgId, startDate = state.startInstant, endDate = state.endInstant)
+
+            // Filter to only include events where the absent member is a participant
+            allEvents.filter { it.participants.contains(absentMember.id) }
           }
 
       if (events.isEmpty()) {

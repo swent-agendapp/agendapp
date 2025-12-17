@@ -194,8 +194,7 @@ fun AddEventTimeAndRecurrenceScreen(
 
         Spacer(modifier = Modifier.height(SpacingLarge))
         val recurrenceEndRequired = selectedRecurrence != RecurrenceStatus.OneTime
-        val recurrenceEndMissing =
-            recurrenceEndRequired && newEventUIState.recurrenceEndInstant == null
+
         DatePickerFieldToModal(
             label = stringResource(R.string.recurrenceEndPickerLabel),
             modifier = Modifier.testTag(AddEventTestTags.END_RECURRENCE_FIELD),
@@ -302,6 +301,7 @@ private fun ClickableOutlinedField(
         enabled = true,
         modifier = Modifier.fillMaxWidth(),
     )
+    Box(modifier = Modifier.matchParentSize().clickable(onClick = onClick))
   }
 }
 

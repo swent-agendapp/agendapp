@@ -1,5 +1,7 @@
 package com.android.sample.ui.replacement
 
+import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepository
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementRepository
 import com.android.sample.model.replacement.ReplacementRepositoryLocal
@@ -56,15 +58,39 @@ class ReplacementPendingViewModelTest {
     }
   }
 
+  private class FakeUserRepository(private val usersToReturn: List<User> = emptyList()) :
+      UserRepository {
+    override suspend fun getMembersIds(organizationId: String): List<String> {
+      return usersToReturn.map { it.id }
+    }
+
+    override suspend fun getUsersByIds(userIds: List<String>): List<User> {
+      return usersToReturn.filter { it.id in userIds }
+    }
+
+    override suspend fun getAdminsIds(organizationId: String): List<String> = emptyList()
+
+    override suspend fun newUser(user: User) {}
+
+    override suspend fun deleteUser(userId: String) {}
+
+    override suspend fun addUserToOrganization(userId: String, organizationId: String) {}
+
+    override suspend fun addAdminToOrganization(userId: String, organizationId: String) {}
+  }
+
   private fun makeVm(
       replacements: List<Replacement> = emptyList(),
+      users: List<User> = emptyList(),
       shouldThrow: Boolean = false
   ): ReplacementPendingViewModel {
     fakeRepository =
         FakeReplacementRepository(replacementsToReturn = replacements, shouldThrow = shouldThrow)
+    val fakeUserRepository = FakeUserRepository(usersToReturn = users)
 
     return ReplacementPendingViewModel(
         repository = fakeRepository,
+        userRepository = fakeUserRepository,
         selectedOrganizationViewModel = SelectedOrganizationVMProvider.viewModel)
   }
 
@@ -76,6 +102,7 @@ class ReplacementPendingViewModelTest {
     assertFalse(state.isLoading)
     assertTrue(state.toProcess.isEmpty())
     assertTrue(state.waitingForAnswer.isEmpty())
+    assertTrue(state.users.isEmpty())
     assertNull(state.errorMessage)
   }
 
@@ -90,6 +117,7 @@ class ReplacementPendingViewModelTest {
     assertFalse(state.isLoading)
     assertTrue(state.toProcess.isEmpty())
     assertTrue(state.waitingForAnswer.isEmpty())
+    assertTrue(state.users.isEmpty())
     assertNull(state.errorMessage)
 
     assertEquals(selectedOrganizationID, fakeRepository.lastOrgId)

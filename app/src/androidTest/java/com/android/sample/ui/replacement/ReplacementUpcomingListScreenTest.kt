@@ -9,6 +9,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.InstrumentationRegistry
 import com.android.sample.R
+import com.android.sample.model.authentication.User
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementStatus
 import com.android.sample.model.replacement.mockData.getMockReplacements
@@ -28,10 +29,19 @@ class ReplacementUpcomingListScreenTest {
     return getMockReplacements().take(3).map { it.copy(status = ReplacementStatus.Accepted) }
   }
 
+  private val mockUsers =
+      listOf(
+          User(id = "user1", displayName = "Alice", email = "alice@example.com"),
+          User(id = "user2", displayName = "Bob", email = "bob@example.com"),
+          User(id = "user3", displayName = "Charlie", email = "charlie@example.com"),
+      )
+
   @Test
   fun screen_displaysScreenAndList() {
     composeTestRule.setContent {
-      SampleAppTheme { ReplacementUpcomingListScreen(replacements = upcomingMocks()) }
+      SampleAppTheme {
+        ReplacementUpcomingListScreen(replacements = upcomingMocks(), users = mockUsers)
+      }
     }
 
     composeTestRule
@@ -48,7 +58,9 @@ class ReplacementUpcomingListScreenTest {
     val replacements = upcomingMocks()
 
     composeTestRule.setContent {
-      SampleAppTheme { ReplacementUpcomingListScreen(replacements = replacements) }
+      SampleAppTheme {
+        ReplacementUpcomingListScreen(replacements = replacements, users = mockUsers)
+      }
     }
 
     replacements.forEach { replacement ->
@@ -65,7 +77,9 @@ class ReplacementUpcomingListScreenTest {
     val first = replacements.first()
 
     composeTestRule.setContent {
-      SampleAppTheme { ReplacementUpcomingListScreen(replacements = replacements) }
+      SampleAppTheme {
+        ReplacementUpcomingListScreen(replacements = replacements, users = mockUsers)
+      }
     }
 
     composeTestRule.onNodeWithText(first.event.title).assertIsDisplayed()
@@ -82,7 +96,9 @@ class ReplacementUpcomingListScreenTest {
     val emptyText = context.getString(R.string.replacement_upcoming_empty_message)
 
     composeTestRule.setContent {
-      SampleAppTheme { ReplacementUpcomingListScreen(replacements = emptyList()) }
+      SampleAppTheme {
+        ReplacementUpcomingListScreen(replacements = emptyList(), users = emptyList())
+      }
     }
 
     composeTestRule
@@ -104,6 +120,7 @@ class ReplacementUpcomingListScreenTest {
       SampleAppTheme {
         ReplacementUpcomingListScreen(
             replacements = upcomingMocks(),
+            users = mockUsers,
             onBack = { backCalled = true },
         )
       }
@@ -134,7 +151,9 @@ class ReplacementUpcomingListScreenTest {
     val expectedLine = "$expectedDate • $expectedTime"
 
     composeTestRule.setContent {
-      SampleAppTheme { ReplacementUpcomingListScreen(replacements = replacements) }
+      SampleAppTheme {
+        ReplacementUpcomingListScreen(replacements = replacements, users = mockUsers)
+      }
     }
 
     composeTestRule.onNodeWithText(expectedLine).assertIsDisplayed()
@@ -142,7 +161,9 @@ class ReplacementUpcomingListScreenTest {
 
   @Test
   fun screen_usesDefaultReplacementsParameter() {
-    composeTestRule.setContent { SampleAppTheme { ReplacementUpcomingListScreen() } }
+    composeTestRule.setContent {
+      SampleAppTheme { ReplacementUpcomingListScreen(users = mockUsers) }
+    }
 
     composeTestRule
         .onNodeWithTag(ReplacementUpcomingTestTags.SCREEN, useUnmergedTree = true)

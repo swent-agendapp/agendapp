@@ -52,7 +52,8 @@ class ProcessReplacementScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrg
   fun screen_displaysBasicElements() {
     composeTestRule.setContent {
       SampleAppTheme {
-        ProcessReplacementScreen(replacement = replacement, candidates = candidates)
+        ProcessReplacementScreen(
+            replacement = replacement, candidates = candidates, users = candidates)
       }
     }
 
@@ -80,7 +81,8 @@ class ProcessReplacementScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrg
 
     composeTestRule.setContent {
       SampleAppTheme {
-        ProcessReplacementScreen(replacement = replacement, candidates = candidates)
+        ProcessReplacementScreen(
+            replacement = replacement, candidates = candidates, users = candidates)
       }
     }
 
@@ -101,6 +103,7 @@ class ProcessReplacementScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrg
         ProcessReplacementScreen(
             replacement = replacement,
             candidates = candidates,
+            users = candidates,
             onSendRequests = { sentMembers = it },
         )
       }
@@ -126,7 +129,8 @@ class ProcessReplacementScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrg
   fun searchFilter_filtersList() {
     composeTestRule.setContent {
       SampleAppTheme {
-        ProcessReplacementScreen(replacement = replacement, candidates = candidates)
+        ProcessReplacementScreen(
+            replacement = replacement, candidates = candidates, users = candidates)
       }
     }
 

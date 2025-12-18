@@ -150,7 +150,7 @@ class AddEventTitleScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganiza
   }
 
   @Test
-  fun selectingColorKeepsNextButtonEnabledWhenTitleAndDescriptionValid() {
+  fun selectingCategoryKeepsNextButtonEnabledWhenTitleAndDescriptionValid() {
     // Fill both fields with valid content
     composeTestRule.onNodeWithTag(AddEventTestTags.TITLE_TEXT_FIELD).performTextInput("Concert")
     composeTestRule
@@ -161,11 +161,13 @@ class AddEventTitleScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganiza
     // Next button should be enabled once both fields are valid
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertIsEnabled()
 
-    // Change the color using the ColorSelector
+    // Open the category selector and choose an option ("create", without navigation)
     composeTestRule.onNodeWithTag(AddEventTestTags.CATEGORY_SELECTOR).performClick()
-    composeTestRule.onNodeWithTag(AddEventTestTags.CATEGORY_SELECTOR + "_option_0").performClick()
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.CATEGORY_SELECTOR + "_create_category")
+        .performClick()
 
-    // Next button should remain enabled after changing the color
+    // Next button should remain enabled after changing the category
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertIsEnabled()
   }
 }

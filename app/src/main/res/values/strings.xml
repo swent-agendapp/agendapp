@@ -81,7 +81,8 @@
     <string name="replacement_declined_people_title">Declined</string>
     <string name="replacement_people_dialog_close">Close</string>
 
-    <string name="invalidDateRangeMessage">Invalid date range: end date must be after start date.</string>
+    <string name="invalid_date_range_message">Invalid date range: end date must be after start date.</string>
+    <string name="invalid_date_range_past_message">Invalid date range: dates cannot be in the past</string>
     <string name="process_now">Process now</string>
     <string name="process_later">Process later</string>
     <string name="select_replacement_date_range">Select the date range for which %1$s needs a replacement</string>
@@ -91,6 +92,12 @@
     <string name="select_events">Select events</string>
     <string name="select_date_range">Select date range</string>
     <string name="replacement_upcoming_title">Upcoming replacements</string>
+    <string name="replacement_accept_success">
+    You have successfully accepted this replacement request.
+</string>
+    <string name="replacement_refuse_success">
+    You have successfully refused this replacement request.
+</string>
 
     <string name="replacement_process_title">Organize a replacement</string>
     <plurals name="replacement_send_requests_button">
@@ -104,7 +111,21 @@
     <string name="replacement_selected_members_none">
     No member selected
 </string>
-
+    <string name="replacement_upcoming_empty_message">
+    No upcoming replacements
+</string>
+    <string name="replacement_requests_sent_success">
+    Requests have been sent successfully
+</string>
+    <string name="replacement_request_sent_success">
+    Your replacement request has been sent.
+</string>
+    <string name="replacement_no_incoming_requests">
+    You have no replacement requests at the moment
+</string>
+    <string name="replacement_pending_empty_message">
+    You have no replacement requests at the moment
+</string>
 
     <!-- Settings Screen -->
     <string name="settings_screen_title">Settings</string>

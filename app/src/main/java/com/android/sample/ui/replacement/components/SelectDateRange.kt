@@ -1,5 +1,6 @@
 package com.android.sample.ui.replacement.components
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -77,6 +79,7 @@ fun SelectDateRangeScreen(
     onProcessNow: (() -> Unit)? = null,
     onProcessLater: (() -> Unit)? = null,
 ) {
+  val context = LocalContext.current
   Scaffold(
       topBar = {
         SecondaryPageTopBar(
@@ -150,7 +153,15 @@ fun SelectDateRangeScreen(
         ReplacementBottomBarWithProcessOptions(
             canGoNext = canGoNext,
             onBack = onBack,
-            onNext = onNext,
+            onNext = {
+              onNext()
+              Toast.makeText(
+                      context,
+                      context.getString(R.string.replacement_request_sent_success),
+                      Toast.LENGTH_SHORT,
+                  )
+                  .show()
+            },
             onProcessNow = onProcessNow,
             onProcessLater = onProcessLater,
         )

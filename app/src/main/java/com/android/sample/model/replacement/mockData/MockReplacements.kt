@@ -1,5 +1,6 @@
 package com.android.sample.model.replacement.mockData
 
+import com.android.sample.model.authentication.User
 import com.android.sample.model.calendar.CloudStorageStatus
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.model.category.EventCategory
@@ -7,7 +8,12 @@ import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementStatus
 import java.time.Instant
 
-const val DEFAULT_NAME = "timael"
+const val WEIFENG = "weifeng"
+const val TIMAEL = "timael"
+const val HAOBIN = "haobin"
+const val ALICE = "alice"
+const val BOB = "bob"
+const val EMILIEN = "emilien"
 
 fun getMockReplacements(): List<Replacement> {
   val eventA =
@@ -43,26 +49,36 @@ fun getMockReplacements(): List<Replacement> {
   return listOf(
       Replacement(
           id = "r1",
-          absentUserId = "haobin",
-          substituteUserId = DEFAULT_NAME,
+          absentUserId = HAOBIN,
+          substituteUserId = TIMAEL,
           event = eventA[0],
           status = ReplacementStatus.ToProcess),
       Replacement(
           id = "r2",
-          absentUserId = "weifeng",
-          substituteUserId = DEFAULT_NAME,
+          absentUserId = WEIFENG,
+          substituteUserId = TIMAEL,
           event = eventB[0],
           status = ReplacementStatus.WaitingForAnswer),
       Replacement(
           id = "r3",
-          absentUserId = "emilien",
-          substituteUserId = DEFAULT_NAME,
+          absentUserId = EMILIEN,
+          substituteUserId = TIMAEL,
           event = eventC[0],
           status = ReplacementStatus.Accepted),
       Replacement(
           id = "r4",
-          absentUserId = "bob",
-          substituteUserId = "alice",
+          absentUserId = BOB,
+          substituteUserId = ALICE,
           event = eventB[0],
           status = ReplacementStatus.Declined))
 }
+
+fun getMockUsers(): List<User> =
+    listOf(
+        User(WEIFENG, WEIFENG),
+        User(EMILIEN, EMILIEN),
+        User(HAOBIN, HAOBIN),
+        User(ALICE, ALICE),
+        User(BOB, BOB),
+        User(TIMAEL, TIMAEL),
+    )

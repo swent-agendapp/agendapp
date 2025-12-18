@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SampleApp</string>
+    <string name="app_name">Agendapp</string>
     <string name="title_activity_main">Hauptaktivität</string>
     <string name="next">Weiter</string>
     <string name="addEventTitle">Neues Ereignis</string>

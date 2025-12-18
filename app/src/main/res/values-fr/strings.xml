@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingQuantity">
-    <string name="app_name">SampleApp</string>
+    <string name="app_name">Agendapp</string>
     <string name="title_activity_main">Activité principale</string>
     <string name="next">Suivant</string>
     <string name="addEventTitle">Nouvel événement</string>

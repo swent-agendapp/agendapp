@@ -3,13 +3,20 @@ package com.android.sample.ui.calendar
 import android.app.Application
 import com.android.sample.data.global.repositories.EventRepository
 import com.android.sample.data.local.repositories.EventRepositoryInMemory
+import com.android.sample.model.authentication.AuthRepository
+import com.android.sample.model.authentication.FakeAuthRepository
+import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.calendar.*
+import com.android.sample.model.map.LocationRepository
 import com.android.sample.model.map.MapRepository
 import com.android.sample.model.map.MapRepositoryLocal
 import com.android.sample.model.network.FakeConnectivityChecker
 import com.android.sample.model.network.NetworkStatusRepository
 import com.android.sample.model.network.NetworkTestBase
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
+import io.mockk.coEvery
 import io.mockk.mockk
 import java.time.Instant
 import kotlinx.coroutines.Dispatchers
@@ -38,13 +45,18 @@ class CalendarViewModelTest : NetworkTestBase {
   private val testDispatcher = StandardTestDispatcher()
   private lateinit var repositoryEvent: EventRepository
   private lateinit var repositoryMap: MapRepository
+  private lateinit var locationRepository: LocationRepository
+  private lateinit var userRepository: UserRepository
+  private lateinit var authRepository: AuthRepository
   private lateinit var app: Application
   private lateinit var viewModel: CalendarViewModel
 
   private lateinit var event1: Event
   private lateinit var event2: Event
+  private lateinit var event3: Event
 
   private val orgId: String = "org123"
+  private val user: User = User("test", "emilien")
 
   @Before
   fun setUp() {
@@ -62,10 +74,21 @@ class CalendarViewModelTest : NetworkTestBase {
 
     repositoryEvent = EventRepositoryInMemory()
     repositoryMap = MapRepositoryLocal()
+    authRepository = FakeAuthRepository(user)
+    userRepository = UsersRepositoryLocal()
+
+    // Mock LocationRepository to always return true for isUserLocationInAreas
+    locationRepository = mockk<LocationRepository>(relaxed = true)
+    coEvery { locationRepository.isUserLocationInAreas(any(), any()) } returns true
 
     viewModel =
         CalendarViewModel(
-            app = app, eventRepository = repositoryEvent, mapRepository = repositoryMap)
+            app = app,
+            eventRepository = repositoryEvent,
+            locationRepository = locationRepository,
+            mapRepository = repositoryMap,
+            authRepository = authRepository,
+            userRepository = userRepository)
 
     // Create two sample events for testing.
     event1 =
@@ -84,6 +107,16 @@ class CalendarViewModelTest : NetworkTestBase {
             description = "Tech event",
             startDate = Instant.parse("2025-02-01T09:00:00Z"),
             endDate = Instant.parse("2025-02-03T18:00:00Z"),
+        )[0]
+
+    event3 =
+        createEvent(
+            organizationId = orgId,
+            participants = setOf(user.id),
+            title = "Location",
+            description = "test location",
+            startDate = Instant.now(),
+            endDate = Instant.now().plusSeconds(1),
         )[0]
 
     // Insert the sample events into the repository before each test.
@@ -345,5 +378,19 @@ class CalendarViewModelTest : NetworkTestBase {
     // Should only contain events within the specified range
     assertEquals(1, state.events.size)
     assertEquals("Meeting", state.events.first().title)
+  }
+
+  @Test
+  fun testUserInArea() = runTest {
+    // Add event outside the refresh range
+    repositoryEvent.insertEvent(orgId, event3)
+
+    viewModel.checkUserLocationStatus()
+    testDispatcher.scheduler.advanceUntilIdle()
+
+    viewModel.loadAllEvents()
+    testDispatcher.scheduler.advanceUntilIdle()
+
+    assertEquals(1, viewModel.uiState.value.events.first { it.title == "Location" }.presence.size)
   }
 }

@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.R
@@ -31,7 +32,6 @@ import com.android.sample.ui.theme.*
 
 // Assisted by AI
 
-/** ---------- Test Tags ---------- */
 object ReplacementEmployeeListTestTags {
   const val ROOT = "replacement_employee_list_root"
   const val ASK_BUTTON = "replacement_employee_ask_button"
@@ -46,7 +46,6 @@ object ReplacementEmployeeListTestTags {
   fun refuse(id: String) = "replacement_employee_refuse_$id"
 }
 
-/** ---------- Simple UI structure (remove after VM is implemented) ---------- */
 data class ReplacementRequestUi(
     val id: String,
     val weekdayAndDay: String,
@@ -103,9 +102,6 @@ fun ReplacementEmployeeListScreen(
 ) {
   var showCreateOptions by remember { mutableStateOf(false) }
 
-  // SUPPRESS WHEN WE HAVE REAL REPLACEMENT REQUEST
-  val visibleRequests = if (requests.isEmpty()) sampleRequests else requests
-
   Scaffold(
       topBar = {
         MainPageTopBar(
@@ -127,7 +123,7 @@ fun ReplacementEmployeeListScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(PaddingExtraSmall),
         ) {
-          if (true) { // change to if is admin when implemented
+          if (isAdmin) { // change to if is admin when implemented
             SecondaryButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(R.string.organize_replacement),
@@ -195,15 +191,26 @@ fun ReplacementEmployeeListScreen(
                     bottom = PaddingExtraLarge,
                 ),
             verticalArrangement = Arrangement.spacedBy(PaddingSmall)) {
-              items(visibleRequests, key = { it.id }) { req ->
-                ReplacementRequestCard(
-                    data = req,
-                    onAccept = { callbacks.onAccept(req.id) },
-                    onRefuse = { callbacks.onRefuse(req.id) },
-                    testTag = ReplacementEmployeeListTestTags.card(req.id),
-                    acceptTag = ReplacementEmployeeListTestTags.accept(req.id),
-                    refuseTag = ReplacementEmployeeListTestTags.refuse(req.id),
-                )
+              if (requests.isEmpty()) {
+                item {
+                  Text(
+                      text = stringResource(R.string.replacement_no_incoming_requests),
+                      style = MaterialTheme.typography.bodyMedium,
+                      textAlign = TextAlign.Center,
+                  )
+                  Spacer(Modifier.height(SpacingMedium))
+                }
+              } else {
+                items(requests, key = { it.id }) { req ->
+                  ReplacementRequestCard(
+                      data = req,
+                      onAccept = { callbacks.onAccept(req.id) },
+                      onRefuse = { callbacks.onRefuse(req.id) },
+                      testTag = ReplacementEmployeeListTestTags.card(req.id),
+                      acceptTag = ReplacementEmployeeListTestTags.accept(req.id),
+                      refuseTag = ReplacementEmployeeListTestTags.refuse(req.id),
+                  )
+                }
               }
 
               item { Spacer(Modifier.height(SpacingMedium)) }
@@ -290,7 +297,7 @@ private fun ReplacementRequestCard(
         ) {
           OutlinedButton(
               onClick = onRefuse,
-              modifier = Modifier.weight(1f).testTag(refuseTag),
+              modifier = Modifier.weight(WeightExtraHeavy).testTag(refuseTag),
               shape = androidx.compose.foundation.shape.RoundedCornerShape(CornerRadiusLarge),
               border = BorderStroke(BorderWidthThin, CircusPalette.Primary),
               colors =

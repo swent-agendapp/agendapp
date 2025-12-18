@@ -12,9 +12,12 @@ import com.android.sample.model.organization.repository.SelectedOrganizationRepo
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementRepository
 import com.android.sample.model.replacement.ReplacementRepositoryProvider
+import com.android.sample.model.replacement.ReplacementStatus
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -129,15 +132,31 @@ class ReplacementOrganizeViewModel(
    *
    * Event selection logic:
    * - If the user manually selected events → use those.
-   * - Otherwise, fetch events between [startInstant] and [endInstant].
+   * - Otherwise, fetch events between [startInstant] and [endInstant], filtered to only include
+   *   events where the absent member is a participant.
    *
    * Validation:
    * - A selected absent member is required
    * - If auto-selecting events, date range must be valid
+   * - Events must not be empty after filtering
    *
-   * For each event found, a [Replacement] object is constructed and stored.
+   * For each event found, a [Replacement] object is constructed with:
+   * - absentUserId: the selected member who needs replacement
+   * - substituteUserId: empty string (to be filled when admin selects substitutes)
+   * - status: typically ToProcess (admin will process later) or can be customized
+   *
+   * After creating replacements, they are:
+   * 1. Passed to the callback for potential navigation/processing
+   * 2. Persisted to the repository
+   *
+   * @param status The initial status for created replacements (default: ToProcess)
+   * @param onReplacementsCreated Callback invoked with the list of created replacements before
+   *   persistence
    */
-  fun addReplacement() {
+  fun addReplacement(
+      status: ReplacementStatus = ReplacementStatus.ToProcess,
+      onReplacementsCreated: (List<Replacement>) -> Unit = {}
+  ) {
     viewModelScope.launch {
       val state = uiState.value
       val absentMember = state.selectedMember
@@ -156,8 +175,12 @@ class ReplacementOrganizeViewModel(
 
             val orgId = requireOrgId()
 
-            eventRepository.getEventsBetweenDates(
-                orgId = orgId, startDate = state.startInstant, endDate = state.endInstant)
+            val allEvents =
+                eventRepository.getEventsBetweenDates(
+                    orgId = orgId, startDate = state.startInstant, endDate = state.endInstant)
+
+            // Filter to only include events where the absent member is a participant
+            allEvents.filter { it.participants.contains(absentMember.id) }
           }
 
       if (events.isEmpty()) {
@@ -165,14 +188,19 @@ class ReplacementOrganizeViewModel(
         return@launch
       }
 
-      events.forEach { event ->
-        val replacement =
+      val replacements =
+          events.map { event ->
             Replacement(
                 absentUserId = absentMember.id,
-                substituteUserId = "", // selected in next steps
-                event = event)
-        addReplacementToRepository(replacement)
-      }
+                substituteUserId = "",
+                event = event,
+                status = status,
+            )
+          }
+
+      onReplacementsCreated(replacements)
+
+      replacements.forEach { replacement -> addReplacementToRepository(replacement) }
     }
   }
 
@@ -193,9 +221,16 @@ class ReplacementOrganizeViewModel(
     }
   }
 
-  /** @return `true` if the date range is valid (end instant strictly after start instant). */
-  fun dateRangeValid() = uiState.value.endInstant.isAfter(uiState.value.startInstant)
+  /** @return `true` if the date range is valid and not in the past. */
+  fun dateRangeValid(): Boolean {
+    val state = uiState.value
 
+    val startDate = state.startInstant.atZone(ZoneId.systemDefault()).toLocalDate()
+    val endDate = state.endInstant.atZone(ZoneId.systemDefault()).toLocalDate()
+    val today = LocalDate.now()
+
+    return !startDate.isBefore(today) && !endDate.isBefore(today) && !endDate.isBefore(startDate)
+  }
   /** Navigates to a specific step in the multi-step flow. */
   fun goToStep(step: ReplacementOrganizeStep) {
     _uiState.update { it.copy(step = step) }

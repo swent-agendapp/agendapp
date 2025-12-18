@@ -41,6 +41,7 @@ import com.android.sample.ui.calendar.style.CalendarDefaults.DEFAULT_SWIPE_THRES
 import com.android.sample.ui.calendar.utils.DateTimeUtils
 import com.android.sample.ui.common.LoadingTestTags
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
+import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import java.time.DayOfWeek
@@ -64,7 +65,8 @@ import org.junit.runner.RunWith
  * Rationale: Smaller focused subclasses improve maintainability (grouped by concern) while reusing
  * a single set of utilities.
  */
-abstract class BaseCalendarScreenTest : RequiresSelectedOrganizationTestBase, NetworkTestBase {
+abstract class BaseCalendarScreenTest :
+    FirebaseEmulatedTest(), RequiresSelectedOrganizationTestBase, NetworkTestBase {
 
   override val fakeChecker = FakeConnectivityChecker(state = true)
   override val networkRepo = NetworkStatusRepository(fakeChecker)
@@ -76,7 +78,8 @@ abstract class BaseCalendarScreenTest : RequiresSelectedOrganizationTestBase, Ne
   protected lateinit var viewModel: CalendarViewModel
 
   @Before
-  fun setUp() {
+  override fun setUp() {
+    super.setUp()
     setupNetworkTestBase()
     setSelectedOrganization()
 
@@ -631,17 +634,13 @@ class CalendarSwipeTests : BaseCalendarScreenTest() {
   @Test
   fun whenVerticalOrDiagonalSwipe_doesNotNavigate() {
     setContentWithLocalRepo()
-
     // Baseline
     assertEventVisible("First Event")
     assertEventAbsent("Next Event")
-
     // Vertical only
     swipeEventGridVertical(3 * DEFAULT_SWIPE_THRESHOLD)
-
     // Diagonal: small X below threshold, large Y
     swipeEventGridDiagonal(-(DEFAULT_SWIPE_THRESHOLD - 1f), 3 * DEFAULT_SWIPE_THRESHOLD)
-
     // Still current week
     assertEventVisible("First Event")
     assertEventAbsent("Next Event")

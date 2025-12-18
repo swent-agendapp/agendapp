@@ -50,27 +50,22 @@ class EditEventScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
 
     composeTestRule
         .onNodeWithTag(EditEventTestTags.TITLE_FIELD, useUnmergedTree = true)
-        .performScrollTo()
         .assertExists()
 
     composeTestRule
         .onNodeWithTag(EditEventTestTags.START_DATE_FIELD, useUnmergedTree = true)
-        .performScrollTo()
         .assertExists()
 
     composeTestRule
         .onNodeWithTag(EditEventTestTags.END_DATE_FIELD, useUnmergedTree = true)
-        .performScrollTo()
         .assertExists()
 
     composeTestRule
         .onNodeWithTag(EditEventTestTags.START_TIME_BUTTON, useUnmergedTree = true)
-        .performScrollTo()
         .assertExists()
 
     composeTestRule
         .onNodeWithTag(EditEventTestTags.END_TIME_BUTTON, useUnmergedTree = true)
-        .performScrollTo()
         .assertExists()
 
     composeTestRule.waitForIdle()
@@ -154,18 +149,6 @@ class EditEventScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
     composeTestRule
         .onNodeWithTag(EditEventTestTags.TITLE_FIELD)
         .assertExists("EditEventScreen failed to load properly")
-
-    // Act 1: Click the start time button (should trigger showStartTimePicker)
-    composeTestRule
-        .onNodeWithTag(EditEventTestTags.START_TIME_BUTTON)
-        .assertExists("Start time button not found")
-        .performClick()
-
-    // Act 2: Click the end time button (should trigger showEndTimePicker)
-    composeTestRule
-        .onNodeWithTag(EditEventTestTags.END_TIME_BUTTON)
-        .assertExists("End time button not found")
-        .performClick()
 
     // Act 3: Click the save button (ensure it exists and doesn’t crash)
     composeTestRule

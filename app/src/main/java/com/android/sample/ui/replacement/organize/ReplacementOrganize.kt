@@ -7,6 +7,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
+import com.android.sample.model.replacement.Replacement
+import com.android.sample.model.replacement.ReplacementStatus
 import com.android.sample.ui.calendar.utils.DateTimeUtils
 import com.android.sample.ui.replacement.components.ReplacementProcessActions
 import com.android.sample.ui.replacement.components.SelectDateRangeScreen
@@ -42,7 +44,7 @@ object ReplacementOrganizeTestTags {
 @Composable
 fun ReplacementOrganizeScreen(
     onCancel: () -> Unit = {},
-    onProcessNow: () -> Unit = {},
+    onProcessNow: (Replacement) -> Unit = {},
     onProcessLater: () -> Unit = {},
     replacementOrganizeViewModel: ReplacementOrganizeViewModel = viewModel()
 ) {
@@ -77,13 +79,24 @@ fun ReplacementOrganizeScreen(
             canGoNext = uiState.selectedEvents.isNotEmpty(),
             processActions =
                 ReplacementProcessActions(
+                    // Process Now: Create replacement(s) and immediately navigate to select
+                    // substitutes
                     onProcessNow = {
-                      onProcessNow()
-                      replacementOrganizeViewModel.addReplacement()
+                      replacementOrganizeViewModel.addReplacement(
+                          status = ReplacementStatus.ToProcess,
+                          onReplacementsCreated = { replacements ->
+                            val first = replacements.firstOrNull() ?: return@addReplacement
+                            onProcessNow(first)
+                          },
+                      )
                     },
+                    // Process Later: Create replacement(s) and return to list, admin will
+                    // process them later
                     onProcessLater = {
-                      onProcessLater()
-                      replacementOrganizeViewModel.addReplacement()
+                      replacementOrganizeViewModel.addReplacement(
+                          status = ReplacementStatus.ToProcess,
+                          onReplacementsCreated = { onProcessLater() },
+                      )
                     },
                 ))
     ReplacementOrganizeStep.SelectDateRange ->
@@ -108,15 +121,26 @@ fun ReplacementOrganizeScreen(
                     R.string.select_replacement_date_range,
                     memberLabel ?: "",
                 ),
-            errorMessage = stringResource(R.string.invalidDateRangeMessage),
+            errorMessage = stringResource(R.string.invalid_date_range_message),
             canGoNext = replacementOrganizeViewModel.dateRangeValid(),
+            // Process Now: Create replacements for all events in date range, then navigate to
+            // select substitutes for the first one
             onProcessNow = {
-              onProcessNow()
-              replacementOrganizeViewModel.addReplacement()
+              replacementOrganizeViewModel.addReplacement(
+                  status = ReplacementStatus.ToProcess,
+                  onReplacementsCreated = { replacements ->
+                    val first = replacements.firstOrNull() ?: return@addReplacement
+                    onProcessNow(first)
+                  },
+              )
             },
+            // Process Later: Create replacements for all events in date range and return to
+            // list
             onProcessLater = {
-              onProcessLater()
-              replacementOrganizeViewModel.addReplacement()
+              replacementOrganizeViewModel.addReplacement(
+                  status = ReplacementStatus.ToProcess,
+                  onReplacementsCreated = { onProcessLater() },
+              )
             },
         )
   }

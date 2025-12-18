@@ -9,6 +9,10 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.android.sample.data.global.providers.EventRepositoryProvider
 import com.android.sample.data.global.repositories.EventRepository
+import com.android.sample.model.authentication.AuthRepository
+import com.android.sample.model.authentication.AuthRepositoryProvider
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.map.LocationRepository
 import com.android.sample.model.map.LocationRepositoryAndroid
@@ -19,6 +23,7 @@ import com.android.sample.model.network.NetworkStatusRepositoryProvider
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import java.time.Instant
+import java.time.temporal.ChronoUnit
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -73,6 +78,8 @@ class CalendarViewModel(
     private val eventRepository: EventRepository = EventRepositoryProvider.repository,
     private val locationRepository: LocationRepository = LocationRepositoryAndroid(app),
     private val mapRepository: MapRepository = MapRepositoryProvider.repository,
+    private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
+    private val userRepository: UserRepository = UserRepositoryProvider.repository,
     selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel,
     private val networkStatusRepository: NetworkStatusRepository =
@@ -135,7 +142,12 @@ class CalendarViewModel(
       setLoading(true)
       try {
         val events = loadEventsBlock()
-        setEvents(events)
+        val eventWithMember =
+            events.map { event ->
+              val users = userRepository.getUsersByIds(event.participants.toList())
+              event.copy(participants = users.map { it.display() }.toSet())
+            }
+        setEvents(eventWithMember)
       } catch (e: Exception) {
         setErrorMsg("$errorMessage: ${e.message}")
       } finally {
@@ -237,21 +249,40 @@ class CalendarViewModel(
    */
   fun checkUserLocationStatus() {
     viewModelScope.launch {
-      val orgId = selectedOrganizationId.value
-      if (orgId == null) {
-        setErrorMsg("No organization selected")
-        return@launch
-      }
+      val orgId =
+          selectedOrganizationId.value
+              ?: run {
+                setErrorMsg("No organization selected")
+                return@launch
+              }
 
       try {
         val areas = mapRepository.getAllAreas(orgId = orgId)
         val isInside = locationRepository.isUserLocationInAreas(areas, true)
+
         _uiState.value =
             _uiState.value.copy(
                 locationStatus =
                     if (isInside) LocationStatus.INSIDE_AREA else LocationStatus.OUTSIDE_AREA)
-      } catch (e: SecurityException) {
-        _uiState.value = _uiState.value.copy(locationStatus = LocationStatus.NO_PERMISSION)
+
+        if (!isInside) return@launch
+
+        val currentUser = authRepository.getCurrentUser() ?: return@launch
+
+        val now = Instant.now()
+        val startTime = now.minus(2, ChronoUnit.HOURS)
+        val endTime = now.plus(6, ChronoUnit.HOURS)
+
+        val events = eventRepository.getEventsBetweenDates(orgId, startTime, endTime)
+
+        events.forEach { event ->
+          if (event.participants.contains(currentUser.id)) {
+            val updatedPresence = event.presence.toMutableMap()
+            updatedPresence[currentUser.id] = true
+            val updatedEvent = event.copy(presence = updatedPresence)
+            eventRepository.updateEvent(orgId, event.id, updatedEvent)
+          }
+        }
       } catch (e: Exception) {
         _uiState.value = _uiState.value.copy(locationStatus = LocationStatus.NO_PERMISSION)
       }

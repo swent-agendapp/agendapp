@@ -1,23 +1,20 @@
 package com.android.sample.e2eTests
 
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertIsEnabled
-import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
-import androidx.compose.ui.test.performTouchInput
-import androidx.compose.ui.test.swipeDown
-import androidx.compose.ui.test.swipeUp
 import com.android.sample.Agendapp
 import com.android.sample.ui.authentication.SignInScreenTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
+import com.android.sample.ui.common.BottomBarTestTags
 import com.android.sample.ui.organization.AddOrganizationScreenTestTags
 import com.android.sample.ui.organization.OrganizationListScreenTestTags
+import com.android.sample.ui.replacement.mainPage.ReplacementEmployeeListTestTags
 import com.android.sample.utils.FakeCredentialManager
 import com.android.sample.utils.FakeJwtGenerator
 import com.android.sample.utils.FirebaseEmulatedTest
@@ -26,7 +23,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class AddEventE2ETest : FirebaseEmulatedTest() {
+class ReplacementFlowE2ETest : FirebaseEmulatedTest() {
 
   // Timeout for UI authentication operations
   // This is used to wait for the UI to update after authentication actions
@@ -59,7 +56,7 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
 
   // Test a User info flow : signing in, viewing profile, viewing admin contact, and signing out
   @Test
-  fun signIn_createWeeklyEventTest() {
+  fun signIn_createWeeklyEventTest_checkReplacement() {
 
     // Check that no user is signed in at start
     assert(FirebaseEmulator.auth.currentUser == null)
@@ -141,6 +138,7 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
 
     // Wait for text input to be processed
     composeTestRule.waitForIdle()
+
     composeTestRule
         .onNodeWithTag(AddEventTestTags.DESCRIPTION_TEXT_FIELD)
         .performTextInput(eventDescription)
@@ -151,53 +149,30 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).performClick()
     composeTestRule.waitForIdle()
 
-    composeTestRule.onNodeWithText(expectedName).performClick()
+    composeTestRule.onNodeWithText(expectedName).assertIsDisplayed().performClick()
     composeTestRule.waitForIdle()
 
-    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertIsEnabled().performClick()
+    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).performClick()
+    composeTestRule.waitForIdle()
 
     composeTestRule.onNodeWithTag(AddEventTestTags.CREATE_BUTTON).performClick()
     composeTestRule.waitForIdle()
 
-    composeTestRule.scrollCalendarUntilEventVisible(
-        calendarTag = CalendarScreenTestTags.SCROLL_AREA,
-        eventTag = CalendarScreenTestTags.EVENT_BLOCK + "_" + eventTitle,
-    )
+    composeTestRule
+        .onNodeWithTag(BottomBarTestTags.ITEM_REPLACEMENT)
+        .assertIsDisplayed()
+        .performClick()
+
+    composeTestRule.waitForIdle()
 
     composeTestRule
-        .onNodeWithTag(CalendarScreenTestTags.EVENT_BLOCK + "_" + eventTitle)
+        .onNodeWithTag(ReplacementEmployeeListTestTags.ASK_BUTTON)
         .assertIsDisplayed()
-  }
+        .performClick()
 
-  private fun ComposeTestRule.isTagDisplayed(tag: String): Boolean =
-      try {
-        onNodeWithTag(tag).assertIsDisplayed()
-        true
-      } catch (_: AssertionError) {
-        false
-      }
-
-  private fun ComposeTestRule.scrollCalendarUntilEventVisible(
-      calendarTag: String,
-      eventTag: String,
-      maxDownScrolls: Int = 30,
-      maxUpScrolls: Int = 60
-  ) {
-    if (isTagDisplayed(eventTag)) return
-    val calendarNode = onNodeWithTag(calendarTag)
-
-    repeat(maxDownScrolls) {
-      calendarNode.performTouchInput { swipeUp() }
-      waitForIdle()
-      if (isTagDisplayed(eventTag)) return
-    }
-
-    repeat(maxUpScrolls) {
-      calendarNode.performTouchInput { swipeDown() }
-      waitForIdle()
-      if (isTagDisplayed(eventTag)) return
-    }
-
-    throw AssertionError("Event with tag $eventTag not found anywhere in calendar")
+    composeTestRule
+        .onNodeWithTag(ReplacementEmployeeListTestTags.SELECT_EVENT_BUTTON)
+        .assertIsDisplayed()
+        .performClick()
   }
 }

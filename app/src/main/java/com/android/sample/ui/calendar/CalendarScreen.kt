@@ -31,7 +31,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
+import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.calendar.Event
+import com.android.sample.model.category.EventCategory
+import com.android.sample.model.category.EventCategoryRepositoryProvider
 import com.android.sample.ui.calendar.filters.FilterBottomSheet
 import com.android.sample.ui.calendar.style.CalendarDefaults.DefaultDateRange
 import com.android.sample.ui.common.FloatingButton
@@ -89,9 +93,10 @@ fun CalendarScreen(
     onCreateEvent: () -> Unit = {},
     onEventClick: (Event) -> Unit = {}
 ) {
+  var users by remember { mutableStateOf<List<User>>(emptyList()) }
   // initialize the week from monday to friday
   var currentDateRange by remember { mutableStateOf(DefaultDateRange) }
-
+  var categories by remember { mutableStateOf<List<EventCategory>>(emptyList()) }
   val context = LocalContext.current
   val uiState by calendarViewModel.uiState.collectAsState()
   val selectedOrgId by selectedOrganizationViewModel.selectedOrganizationId.collectAsState()
@@ -104,11 +109,49 @@ fun CalendarScreen(
   // Host state for displaying a snack bar in case of errors
   val snackbarHostState = remember { SnackbarHostState() }
 
+  val genericLoadErrorMsg = stringResource(R.string.unexpected_error_while_loading_data)
+
+  LaunchedEffect(selectedOrgId) {
+    val orgId = selectedOrgId ?: return@LaunchedEffect
+    if (orgId.isBlank()) return@LaunchedEffect
+
+    try {
+      val userRepo = UserRepositoryProvider.repository
+      val memberIds = userRepo.getMembersIds(orgId)
+      users = userRepo.getUsersByIds(memberIds)
+    } catch (_: Exception) {
+      calendarViewModel.setErrorMsg(genericLoadErrorMsg)
+    }
+  }
+  LaunchedEffect(selectedOrgId) {
+    val orgId = selectedOrgId ?: return@LaunchedEffect
+    if (orgId.isBlank()) return@LaunchedEffect
+
+    try {
+      val userRepo = UserRepositoryProvider.repository
+      val memberIds = userRepo.getMembersIds(orgId)
+      users = userRepo.getUsersByIds(memberIds)
+    } catch (_: Exception) {
+      calendarViewModel.setErrorMsg(genericLoadErrorMsg)
+    }
+  }
+
+  LaunchedEffect(selectedOrgId) {
+    val orgId = selectedOrgId ?: return@LaunchedEffect
+    if (orgId.isBlank()) return@LaunchedEffect
+
+    try {
+      val categoryRepo = EventCategoryRepositoryProvider.repository
+      categories = categoryRepo.getAllCategories(orgId).sortedBy { it.label.trim().lowercase() }
+    } catch (_: Exception) {
+      calendarViewModel.setErrorMsg(genericLoadErrorMsg)
+    }
+  }
+
   // To trigger a Snackbar if the disabled button is clicked
   var disabledButtonClicked by remember { mutableStateOf(false) }
-
   val noNetworkErrorMsg = stringResource(R.string.network_error_message)
-  // Observe the disabled button click and show Snackbar
+
   LaunchedEffect(disabledButtonClicked) {
     if (disabledButtonClicked) {
       snackbarHostState.showSnackbar(noNetworkErrorMsg)
@@ -185,6 +228,8 @@ fun CalendarScreen(
             onEventClick = onEventClick)
         if (showFilterSheet) {
           FilterBottomSheet(
+              users = users,
+              categories = categories,
               onDismiss = { showFilterSheet = false },
               onApply = { filters ->
                 calendarViewModel.applyFilters(filters)

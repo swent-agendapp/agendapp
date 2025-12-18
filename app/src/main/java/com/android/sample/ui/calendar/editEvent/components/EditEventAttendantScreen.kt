@@ -17,10 +17,10 @@ import com.android.sample.ui.calendar.editEvent.EditEventViewModel
 import com.android.sample.ui.common.BottomNavigationButtons
 import com.android.sample.ui.common.MemberSelectionList
 import com.android.sample.ui.common.MemberSelectionListOptions
-import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.theme.PaddingHuge
 import com.android.sample.ui.theme.PaddingLarge
 import com.android.sample.ui.theme.PaddingSmall
+import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.WeightExtraHeavy
 
 // Assisted by AI
@@ -51,11 +51,7 @@ fun EditEventAttendantScreen(
   var showWarningDialog by remember { mutableStateOf(true) }
 
   Scaffold(
-      topBar = {
-        SecondaryPageTopBar(
-            title = stringResource(R.string.edit_event_participants_screen_title),
-            canGoBack = false)
-      },
+      topBar = {},
       content = { paddingValues ->
         // Show the warning dialog when the screen is first displayed.
         if (showWarningDialog) {
@@ -87,6 +83,10 @@ fun EditEventAttendantScreen(
                     .padding(paddingValues),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround) {
+              EditEventHeaderRow()
+
+              Spacer(Modifier.height(SpacingLarge))
+
               ExtraEventToggle(
                   isExtra = uiState.isExtraEvent,
                   onToggle = editEventViewModel::setIsExtra,
@@ -120,7 +120,7 @@ fun EditEventAttendantScreen(
                   },
                   options =
                       MemberSelectionListOptions(
-                          memberTagBuilder = { "${EditEventTestTags.PARTICIPANTS_LIST}_$it" }))
+                          memberTagBuilder = { "${EditEventTestTags.PARTICIPANTS_LIST}_${it.id}" }))
             }
       },
       bottomBar = {

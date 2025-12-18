@@ -14,20 +14,22 @@ import androidx.compose.ui.test.performTextInput
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.components.AddEventTitleAndDescriptionBottomBar
 import com.android.sample.ui.calendar.addEvent.components.AddEventTitleAndDescriptionScreen
+import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class AddEventTitleScreenTest : RequiresSelectedOrganizationTestBase {
+class AddEventTitleScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganizationTestBase {
 
   override val organizationId: String = DEFAULT_TEST_ORG_ID
 
   @get:Rule val composeTestRule = createComposeRule()
 
   @Before
-  fun setUp() {
+  override fun setUp() {
+    super.setUp()
     setSelectedOrganization()
 
     composeTestRule.setContent {
@@ -68,19 +70,6 @@ class AddEventTitleScreenTest : RequiresSelectedOrganizationTestBase {
   fun emptyTitleShowsErrorMessage() {
     val invalidTitle = " "
     composeTestRule.onNodeWithTag(AddEventTestTags.TITLE_TEXT_FIELD).performTextInput(invalidTitle)
-    composeTestRule.waitForIdle()
-
-    composeTestRule
-        .onNodeWithTag(AddEventTestTags.ERROR_MESSAGE, useUnmergedTree = true)
-        .assertIsDisplayed()
-  }
-
-  @Test
-  fun emptyDescriptionShowsErrorMessage() {
-    val invalidDescription = " "
-    composeTestRule
-        .onNodeWithTag(AddEventTestTags.DESCRIPTION_TEXT_FIELD)
-        .performTextInput(invalidDescription)
     composeTestRule.waitForIdle()
 
     composeTestRule

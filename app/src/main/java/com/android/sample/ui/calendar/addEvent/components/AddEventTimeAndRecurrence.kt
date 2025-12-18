@@ -205,6 +205,37 @@ fun AddEventTimeAndRecurrenceScreen(
             enabled = recurrenceEndRequired,
             initialInstant = newEventUIState.recurrenceEndInstant ?: newEventUIState.startInstant)
         Spacer(modifier = Modifier.height(SpacingExtraLarge))
+        if (showStartTimePicker) {
+          TimePickerDialog(
+                  context,
+                  { _, hour: Int, minute: Int ->
+                    val newInstant =
+                        DateTimeUtils.instantWithTime(
+                            instant = newEventUIState.startInstant, hour = hour, minute = minute)
+                    addEventViewModel.setStartInstant(newInstant)
+                  },
+                  DateTimeUtils.getInstantHour(newEventUIState.startInstant),
+                  DateTimeUtils.getInstantMinute(newEventUIState.startInstant),
+                  true)
+              .show()
+          showStartTimePicker = false
+        }
+
+        if (showEndTimePicker) {
+          TimePickerDialog(
+                  context,
+                  { _, hour: Int, minute: Int ->
+                    val newInstant =
+                        DateTimeUtils.instantWithTime(
+                            instant = newEventUIState.endInstant, hour = hour, minute = minute)
+                    addEventViewModel.setEndInstant(newInstant)
+                  },
+                  DateTimeUtils.getInstantHour(newEventUIState.endInstant),
+                  DateTimeUtils.getInstantMinute(newEventUIState.endInstant),
+                  true)
+              .show()
+          showEndTimePicker = false
+        }
       }
 
   if (showStartTimePicker) {

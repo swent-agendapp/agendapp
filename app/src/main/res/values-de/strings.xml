@@ -140,6 +140,30 @@
     <string name="down_sheet_button_create">Gebiet speichern</string>
 
     <!-- Replacement -->
+    <string name="replacement_pending_empty_message">
+    Sie haben derzeit keine Vertretungsanfragen.
+</string>
+    <string name="replacement_request_sent_success">
+    Ihre Vertretungsanfrage wurde erfolgreich gesendet
+</string>
+    <string name="replacement_upcoming_empty_message">
+    Sie haben keine anstehenden Vertretungen
+</string>
+    <string name="replacement_requests_sent_success">
+    Die Anfragen wurden erfolgreich gesendet
+</string>
+    <string name="replacement_no_incoming_requests">
+    Sie haben derzeit keine Vertretungsanfragen.
+</string>
+    <string name="invalid_date_range_past_message">
+    Ungültiger Datumsbereich: Daten dürfen nicht in der Vergangenheit liegen.
+</string>
+    <string name="replacement_accept_success">
+    Sie haben diese Vertretungsanfrage erfolgreich angenommen.
+</string>
+    <string name="replacement_refuse_success">
+    Sie haben diese Vertretungsanfrage erfolgreich abgelehnt.
+</string>
     <string name="replacement_requests_title">Vertretungsanfragen</string>
     <string name="replacement_substituted_label">Abwesende Person: %1$s</string>
     <string name="replacement_substitute_label">Vertretende Person: %1$s</string>
@@ -151,7 +175,7 @@
     <string name="replacement_pending_people_title">Ohne Antwort</string>
     <string name="replacement_declined_people_title">Abgelehnt</string>
     <string name="replacement_people_dialog_close">Schließen</string>
-    <string name="invalidDateRangeMessage">Ungültiger Zeitraum: Das Enddatum muss nach dem Startdatum liegen.</string>
+    <string name="invalid_date_range_message">Ungültiger Zeitraum: Das Enddatum muss nach dem Startdatum liegen.</string>
     <string name="process_now">Jetzt verarbeiten</string>
     <string name="process_later">Später verarbeiten</string>
     <string name="select_replacement_date_range">Wählen Sie den Datumsbereich aus, für den %1$s eine Vertretung benötigt</string>

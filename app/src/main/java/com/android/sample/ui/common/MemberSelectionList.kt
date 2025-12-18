@@ -56,7 +56,7 @@ data class MemberSelectionListOptions(
     val searchTestTag: String? = null,
     val listTestTag: String? = null,
     val summaryTestTag: String? = null,
-    val memberTagBuilder: ((String) -> String)? = null,
+    val memberTagBuilder: ((User) -> String)? = null,
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -169,7 +169,7 @@ private fun MemberSelectionLazyList(
                       .padding(vertical = PaddingMedium)
                       .let { base ->
                         if (options.memberTagBuilder != null) {
-                          base.testTag(options.memberTagBuilder.invoke(member.display()))
+                          base.testTag(options.memberTagBuilder.invoke(member))
                         } else {
                           base
                         }

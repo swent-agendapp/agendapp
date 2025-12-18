@@ -8,6 +8,7 @@ import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.sample.R
+import com.android.sample.model.authentication.User
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.mockData.getMockReplacements
 import com.android.sample.model.replacement.toProcessReplacements
@@ -25,6 +26,12 @@ class ReplacementPendingListScreenTest {
 
   private lateinit var replacementsToProcess: List<Replacement>
   private lateinit var waitingAndDeclined: List<Replacement>
+  private val mockUsers =
+      listOf(
+          User(id = "user1", displayName = "Alice", email = "alice@example.com"),
+          User(id = "user2", displayName = "Bob", email = "bob@example.com"),
+          User(id = "user3", displayName = "Charlie", email = "charlie@example.com"),
+      )
 
   @Before
   fun setUp() {
@@ -35,7 +42,8 @@ class ReplacementPendingListScreenTest {
     composeTestRule.setContent {
       ReplacementPendingListScreen(
           replacementsToProcess = replacementsToProcess,
-          replacementsWaitingForAnswer = waitingAndDeclined)
+          replacementsWaitingForAnswer = waitingAndDeclined,
+          users = mockUsers)
     }
   }
 

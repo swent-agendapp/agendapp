@@ -43,8 +43,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.android.sample.R
+import com.android.sample.model.authentication.User
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.mockData.getMockReplacements
 import com.android.sample.model.replacement.toProcessReplacements
@@ -54,8 +54,10 @@ import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.theme.BarWidthSmall
 import com.android.sample.ui.theme.CornerRadiusLarge
+import com.android.sample.ui.theme.ElevationExtraLow
 import com.android.sample.ui.theme.PaddingExtraSmall
 import com.android.sample.ui.theme.PaddingMedium
+import com.android.sample.ui.theme.SmallCardElevation
 import com.android.sample.ui.theme.SpacingLarge
 import com.android.sample.ui.theme.SpacingMedium
 import com.android.sample.ui.theme.SpacingSmall
@@ -96,17 +98,17 @@ private fun ReplacementAssistChip(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReplacementPendingListScreen(
-    replacementsToProcess: List<Replacement> = getMockReplacements().toProcessReplacements(),
-    replacementsWaitingForAnswer: List<Replacement> =
-        getMockReplacements().waitingForAnswerAndDeclinedReplacements(),
+    replacementsToProcess: List<Replacement> = emptyList(),
+    replacementsWaitingForAnswer: List<Replacement> = emptyList(),
+    users: List<User> = emptyList(),
     onProcessReplacement: (Replacement) -> Unit = {},
-    onNavigateBack: () -> Unit = {}
+    onBack: () -> Unit = {}
 ) {
   Scaffold(
       topBar = {
         SecondaryPageTopBar(
             title = stringResource(id = R.string.replacement_requests_title),
-            onClick = onNavigateBack,
+            onClick = onBack,
         )
       }) { paddingValues ->
         Column(
@@ -115,51 +117,65 @@ fun ReplacementPendingListScreen(
                     .padding(paddingValues)
                     .padding(PaddingMedium)
                     .testTag(ReplacementPendingTestTags.SCREEN)) {
-              LazyColumn(
-                  modifier = Modifier.fillMaxSize().testTag(ReplacementPendingTestTags.LIST),
-                  verticalArrangement = Arrangement.spacedBy(SpacingMedium)) {
-                    if (replacementsToProcess.isNotEmpty()) {
-                      item {
-                        Text(
-                            text =
-                                stringResource(id = R.string.replacement_to_process_section_title),
-                            style =
-                                MaterialTheme.typography.titleMedium.copy(
-                                    fontWeight = FontWeight.SemiBold))
-                        Spacer(modifier = Modifier.height(SpacingSmall))
+              if (replacementsToProcess.isEmpty() && replacementsWaitingForAnswer.isEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                  Text(
+                      text = stringResource(R.string.replacement_pending_empty_message),
+                      style = MaterialTheme.typography.bodyMedium,
+                  )
+                }
+              } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize().testTag(ReplacementPendingTestTags.LIST),
+                    verticalArrangement = Arrangement.spacedBy(SpacingMedium)) {
+                      if (replacementsToProcess.isNotEmpty()) {
+                        item {
+                          Text(
+                              text =
+                                  stringResource(
+                                      id = R.string.replacement_to_process_section_title),
+                              style =
+                                  MaterialTheme.typography.titleMedium.copy(
+                                      fontWeight = FontWeight.SemiBold))
+                          Spacer(modifier = Modifier.height(SpacingSmall))
+                        }
+
+                        items(replacementsToProcess, key = { it.id }) { replacement ->
+                          ReplacementToProcessCard(
+                              replacement = replacement,
+                              users = users,
+                              onProcessClick = { onProcessReplacement(replacement) })
+                        }
                       }
 
-                      items(replacementsToProcess, key = { it.id }) { replacement ->
-                        ReplacementToProcessCard(
-                            replacement = replacement,
-                            onProcessClick = { onProcessReplacement(replacement) })
+                      if (replacementsWaitingForAnswer.isNotEmpty()) {
+                        item {
+                          Spacer(modifier = Modifier.height(SpacingLarge))
+                          Text(
+                              text =
+                                  stringResource(
+                                      id = R.string.replacement_waiting_answer_section_title),
+                              style =
+                                  MaterialTheme.typography.titleMedium.copy(
+                                      fontWeight = FontWeight.SemiBold))
+                          Spacer(modifier = Modifier.height(SpacingSmall))
+                        }
+
+                        val groupedWaiting =
+                            replacementsWaitingForAnswer
+                                .groupBy { it.event to it.absentUserId }
+                                .values
+                                .toList()
+
+                        items(groupedWaiting) { group ->
+                          ReplacementWaitingCard(replacements = group, users = users)
+                        }
                       }
                     }
-
-                    if (replacementsWaitingForAnswer.isNotEmpty()) {
-                      item {
-                        Spacer(modifier = Modifier.height(SpacingLarge))
-                        Text(
-                            text =
-                                stringResource(
-                                    id = R.string.replacement_waiting_answer_section_title),
-                            style =
-                                MaterialTheme.typography.titleMedium.copy(
-                                    fontWeight = FontWeight.SemiBold))
-                        Spacer(modifier = Modifier.height(SpacingSmall))
-                      }
-
-                      val groupedWaiting =
-                          replacementsWaitingForAnswer
-                              .groupBy { it.event to it.absentUserId }
-                              .values
-                              .toList()
-
-                      items(groupedWaiting) { group ->
-                        ReplacementWaitingCard(replacements = group)
-                      }
-                    }
-                  }
+              }
             }
       }
 }
@@ -168,6 +184,7 @@ fun ReplacementPendingListScreen(
 @Composable
 private fun ReplacementToProcessCard(
     replacement: Replacement,
+    users: List<User> = emptyList(),
     onProcessClick: () -> Unit,
 ) {
   val dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)
@@ -178,11 +195,15 @@ private fun ReplacementToProcessCard(
       "${replacement.event.startLocalTime.format(timeFormatter)} - " +
           replacement.event.endLocalTime.format(timeFormatter)
 
+  // Find absent user display name
+  val absentUser = users.firstOrNull { it.id == replacement.absentUserId }
+  val absentUserDisplay = absentUser?.displayName ?: absentUser?.email ?: replacement.absentUserId
+
   Card(
       modifier =
           Modifier.fillMaxWidth().testTag(ReplacementPendingTestTags.itemTag(replacement.id)),
       shape = RoundedCornerShape(CornerRadiusLarge),
-      elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+      elevation = CardDefaults.cardElevation(defaultElevation = SmallCardElevation),
       colors =
           CardDefaults.cardColors(
               containerColor = MaterialTheme.colorScheme.surfaceVariant,
@@ -231,7 +252,7 @@ private fun ReplacementToProcessCard(
             text =
                 stringResource(
                     id = R.string.replacement_substituted_label,
-                    replacement.absentUserId,
+                    absentUserDisplay,
                 ),
             style = MaterialTheme.typography.bodySmall,
         )
@@ -248,12 +269,22 @@ private fun ReplacementToProcessCard(
 }
 
 @Composable
-fun ReplacementWaitingCard(replacements: List<Replacement>) {
+fun ReplacementWaitingCard(replacements: List<Replacement>, users: List<User> = emptyList()) {
   if (replacements.isEmpty()) return
 
   val first = replacements.first()
   val event = first.event
   val absentUserId = first.absentUserId
+
+  // Find absent user display name
+  val absentUser = users.firstOrNull { it.id == absentUserId }
+  val absentUserDisplay = absentUser?.displayName ?: absentUser?.email ?: absentUserId
+
+  // Helper function to get user display name from ID
+  fun getUserDisplay(userId: String): String {
+    val user = users.firstOrNull { it.id == userId }
+    return user?.displayName ?: user?.email ?: userId
+  }
 
   val pending =
       replacements.filter {
@@ -277,7 +308,7 @@ fun ReplacementWaitingCard(replacements: List<Replacement>) {
   Card(
       modifier = Modifier.fillMaxWidth(),
       shape = RoundedCornerShape(CornerRadiusLarge),
-      elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+      elevation = CardDefaults.cardElevation(defaultElevation = ElevationExtraLow),
       colors =
           CardDefaults.cardColors(
               containerColor = MaterialTheme.colorScheme.surfaceVariant,
@@ -320,13 +351,13 @@ fun ReplacementWaitingCard(replacements: List<Replacement>) {
         }
         Spacer(modifier = Modifier.height(SpacingMedium))
         Text(
-            text = stringResource(R.string.replacement_substituted_label, absentUserId),
+            text = stringResource(R.string.replacement_substituted_label, absentUserDisplay),
             style = MaterialTheme.typography.bodySmall,
         )
 
         Spacer(modifier = Modifier.height(SpacingMedium))
 
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(SpacingMedium)) {
           ReplacementAssistChip(
               count = pending.size,
               labelRes = R.string.replacement_no_response_label,
@@ -352,13 +383,13 @@ fun ReplacementWaitingCard(replacements: List<Replacement>) {
   if (showPendingDialog) {
     PeopleListDialog(
         title = stringResource(R.string.replacement_pending_people_title),
-        people = pending.map { it.substituteUserId },
+        people = pending.map { getUserDisplay(it.substituteUserId) },
         onDismiss = { showPendingDialog = false })
   }
   if (showDeclinedDialog) {
     PeopleListDialog(
         title = stringResource(R.string.replacement_declined_people_title),
-        people = declined.map { it.substituteUserId },
+        people = declined.map { getUserDisplay(it.substituteUserId) },
         onDismiss = { showDeclinedDialog = false })
   }
 }
@@ -369,7 +400,7 @@ private fun PeopleListDialog(title: String, people: List<String>, onDismiss: () 
       onDismissRequest = onDismiss,
       title = { Text(title) },
       text = {
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(SpacingSmall)) {
           if (people.isEmpty()) {
             Text("—")
           } else {
@@ -387,5 +418,9 @@ private fun PeopleListDialog(title: String, people: List<String>, onDismiss: () 
 @Preview(showBackground = true)
 @Composable
 fun ReplacementPendingListScreenPreview() {
-  ReplacementPendingListScreen()
+  ReplacementPendingListScreen(
+      replacementsToProcess = getMockReplacements().toProcessReplacements(),
+      replacementsWaitingForAnswer =
+          getMockReplacements().waitingForAnswerAndDeclinedReplacements(),
+  )
 }

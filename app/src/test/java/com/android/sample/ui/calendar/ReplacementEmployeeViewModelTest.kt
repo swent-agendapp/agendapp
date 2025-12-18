@@ -3,6 +3,11 @@ package com.android.sample.ui.calendar
 import com.android.sample.data.fake.repositories.FakeEventRepository
 import com.android.sample.data.fake.repositories.FakeReplacementRepository
 import com.android.sample.data.global.repositories.EventRepository
+import com.android.sample.model.authentication.AuthRepository
+import com.android.sample.model.authentication.FakeAuthRepository
+import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.category.EventCategory
@@ -31,6 +36,8 @@ class ReplacementEmployeeViewModelTest {
 
   private lateinit var replacementRepo: ReplacementRepository
   private lateinit var eventRepo: EventRepository
+  private lateinit var userRepo: UserRepository
+  private lateinit var authRepo: AuthRepository
   private lateinit var vm: ReplacementEmployeeViewModel
 
   private val employeeId = "EMP001"
@@ -42,6 +49,8 @@ class ReplacementEmployeeViewModelTest {
     Dispatchers.setMain(testDispatcher)
     replacementRepo = FakeReplacementRepository()
     eventRepo = FakeEventRepository()
+    userRepo = UsersRepositoryLocal()
+    authRepo = FakeAuthRepository(User(employeeId, employeeId))
     vm = makeEmployeeVm()
 
     // Set selected organization in the VM provider
@@ -212,6 +221,10 @@ class ReplacementEmployeeViewModelTest {
 
   private fun makeEmployeeVm(): ReplacementEmployeeViewModel {
 
-    return ReplacementEmployeeViewModel(replacementRepo, eventRepo)
+    return ReplacementEmployeeViewModel(
+        replacementRepository = replacementRepo,
+        eventRepository = eventRepo,
+        userRepository = userRepo,
+        authRepository = authRepo)
   }
 }

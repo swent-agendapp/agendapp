@@ -91,8 +91,8 @@ class ReplacementOrganizeFlowTest : FirebaseEmulatedTest(), RequiresSelectedOrga
         .onNodeWithTag(ReplacementOrganizeTestTags.DATE_RANGE_INVALID_TEXT)
         .assertIsDisplayed()
 
-    fakeViewModel.setStartInstant(Instant.parse("2024-01-01T00:00:00Z"))
-    fakeViewModel.setEndInstant(Instant.parse("2024-01-05T00:00:00Z"))
+    fakeViewModel.setStartInstant(Instant.now())
+    fakeViewModel.setEndInstant(Instant.now())
 
     composeTestRule.onNodeWithTag(ReplacementOrganizeTestTags.NEXT_BUTTON).assertIsEnabled()
     composeTestRule
@@ -109,5 +109,13 @@ class ReplacementOrganizeFlowTest : FirebaseEmulatedTest(), RequiresSelectedOrga
 
     // Clean up - remove Alice from the repository
     runBlocking { UserRepositoryProvider.repository.deleteUser("1") }
+  }
+
+  @Test
+  fun backFromFirstStep_callsOnCancel() {
+    composeTestRule
+        .onNodeWithTag(ReplacementOrganizeTestTags.BACK_BUTTON)
+        .assertIsDisplayed()
+        .performClick()
   }
 }

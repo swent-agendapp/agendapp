@@ -5,7 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.sample.data.global.providers.EventRepositoryProvider
 import com.android.sample.data.global.repositories.EventRepository
+import com.android.sample.model.authentication.AuthRepository
+import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.authentication.User
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UserRepositoryProvider
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.replacement.Replacement
 import com.android.sample.model.replacement.ReplacementRepository
@@ -21,8 +25,24 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-// Assisted by AI
+interface ReplacementEmployeeActions {
+  fun loadReplacementForProcessing(
+      replacementId: String,
+      onResult: (replacement: Replacement?, users: List<User>) -> Unit,
+  )
 
+  fun sendRequestsForPendingReplacement(
+      replacementId: String,
+      selectedSubstitutes: List<User>,
+      onFinished: () -> Unit,
+  )
+}
+
+// Assisted by AI
+enum class ReplacementEmployeeLastAction {
+  ACCEPTED,
+  REFUSED,
+}
 /**
  * Steps for the employee-side replacement flow.
  *
@@ -43,6 +63,8 @@ data class ReplacementEmployeeUiState(
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
     val incomingRequests: List<Replacement> = emptyList(),
+    val allUser: List<User> = emptyList(),
+    val isAdmin: Boolean = false,
 
     // Creation via "select event"
     val selectedEventId: String? = null,
@@ -52,7 +74,11 @@ data class ReplacementEmployeeUiState(
     val endDate: LocalDate? = null,
 
     // For debugging / future UI feedback
-    val lastCreatedReplacements: List<Replacement> = emptyList()
+    val lastCreatedReplacements: List<Replacement> = emptyList(),
+    // Requests currently being processed (accept/refuse in progress)
+    val processingRequestIds: Set<String> = emptySet(),
+    // Last user action on a request (for UI feedback)
+    val lastAction: ReplacementEmployeeLastAction? = null,
 )
 
 /**
@@ -72,14 +98,15 @@ class ReplacementEmployeeViewModel(
     private val replacementRepository: ReplacementRepository =
         ReplacementRepositoryProvider.repository,
     private val eventRepository: EventRepository = EventRepositoryProvider.repository,
+    private val userRepository: UserRepository = UserRepositoryProvider.repository,
     private val selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel,
-    myUserId: String = "EMP001"
-) : ViewModel() {
+    private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
+) : ViewModel(), ReplacementEmployeeActions {
 
-  // Later: replace with real authenticated user id
-  private val currentUserId: String = myUserId
-
+  private val errorMessageNoAuthenticated = "No authenticated user found."
+  private val _userState = MutableStateFlow(authRepository.getCurrentUser())
+  val userState: StateFlow<User?> = _userState
   private val _uiState = MutableStateFlow(ReplacementEmployeeUiState())
   val uiState: StateFlow<ReplacementEmployeeUiState> = _uiState.asStateFlow()
 
@@ -88,6 +115,8 @@ class ReplacementEmployeeViewModel(
 
   init {
     refreshIncomingRequests()
+    refreshAllUsers()
+    initCurrentUser()
   }
 
   // ---------------------------------------------------------------------------
@@ -109,9 +138,10 @@ class ReplacementEmployeeViewModel(
   fun createReplacementForEvent(event: Event) {
 
     viewModelScope.launch {
+      val user = userState.value ?: throw IllegalStateException(errorMessageNoAuthenticated)
       val r =
           Replacement(
-              absentUserId = currentUserId,
+              absentUserId = user.id,
               substituteUserId = "",
               event = event,
               status = ReplacementStatus.ToProcess)
@@ -127,12 +157,14 @@ class ReplacementEmployeeViewModel(
     val orgId = requireOrgId()
 
     viewModelScope.launch {
+      val user = userState.value ?: throw IllegalStateException(errorMessageNoAuthenticated)
+
       val events =
           eventRepository.getEventsBetweenDates(orgId = orgId, startDate = start, endDate = end)
       events.forEach { e ->
         val r =
             Replacement(
-                absentUserId = currentUserId,
+                absentUserId = user.id,
                 substituteUserId = "",
                 event = e,
                 status = ReplacementStatus.ToProcess)
@@ -148,10 +180,11 @@ class ReplacementEmployeeViewModel(
     viewModelScope.launch {
       _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
       try {
+        val user = userState.value ?: throw IllegalStateException(errorMessageNoAuthenticated)
         val orgId = requireOrgId()
         val list =
             replacementRepository.getReplacementsBySubstituteUser(
-                orgId = orgId, userId = currentUserId) // Substitute side
+                orgId = orgId, userId = user.id) // Substitute side
         _uiState.value =
             _uiState.value.copy(incomingRequests = list, isLoading = false, errorMessage = null)
       } catch (e: Exception) {
@@ -163,18 +196,163 @@ class ReplacementEmployeeViewModel(
     }
   }
 
+  fun refreshAllUsers() {
+    viewModelScope.launch {
+      _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
+      try {
+        val orgId = requireOrgId()
+        val listId = userRepository.getMembersIds(organizationId = orgId)
+        val list = userRepository.getUsersByIds(userIds = listId)
+        _uiState.value = _uiState.value.copy(allUser = list, isLoading = false, errorMessage = null)
+      } catch (e: Exception) {
+        Log.e("ReplacementEmployeeVM", "Error loading incoming users", e)
+        _uiState.value =
+            _uiState.value.copy(
+                isLoading = false, errorMessage = "Failed to load users: ${e.message}")
+      }
+    }
+  }
+
+  fun initCurrentUser() {
+    viewModelScope.launch {
+      try {
+        val orgId = requireOrgId()
+        val user = userState.value ?: throw IllegalStateException(errorMessageNoAuthenticated)
+        val adminsId = userRepository.getAdminsIds(organizationId = orgId)
+        val isAdmin = adminsId.contains(user.id)
+        _uiState.value =
+            _uiState.value.copy(isAdmin = isAdmin, isLoading = false, errorMessage = null)
+      } catch (e: Exception) {
+        Log.e("ReplacementEmployeeVM", "Error loading user's right", e)
+        _uiState.value =
+            _uiState.value.copy(
+                isLoading = false, errorMessage = "Failed to load users: ${e.message}")
+      }
+    }
+  }
+
   // ---------------------------------------------------------------------------
   //  List actions: accept / refuse
   // ---------------------------------------------------------------------------
 
-  /** Mark a replacement as **Accepted**. */
+  /**
+   * Mark a replacement as Accepted, update the event with the new teacher, and close other
+   * requests.
+   */
   fun acceptRequest(id: String) {
-    updateRequestStatus(id, ReplacementStatus.Accepted)
+    viewModelScope.launch {
+      _uiState.value =
+          _uiState.value.copy(
+              processingRequestIds = _uiState.value.processingRequestIds + id,
+          )
+      try {
+        val orgId = requireOrgId()
+        val user = userState.value ?: throw IllegalStateException(errorMessageNoAuthenticated)
+
+        val replacement =
+            replacementRepository.getReplacementById(
+                orgId = orgId,
+                itemId = id,
+            ) ?: return@launch
+
+        val event = replacement.event
+
+        // Update event version to trigger sync, but don't modify participants
+        // The replacement record itself tracks who is substituting
+        // Actual attendance should be tracked via the presence system
+        val updatedEvent =
+            event.copy(
+                version = System.currentTimeMillis(),
+            )
+
+        eventRepository.updateEvent(
+            orgId = orgId,
+            itemId = event.id,
+            item = updatedEvent,
+        )
+
+        val accepted =
+            replacement.copy(
+                substituteUserId = user.id,
+                status = ReplacementStatus.Accepted,
+            )
+
+        replacementRepository.updateReplacement(
+            orgId = orgId,
+            itemId = accepted.id,
+            item = accepted,
+        )
+
+        val allReplacements = replacementRepository.getAllReplacements(orgId)
+        val othersForSameEvent =
+            allReplacements.filter {
+              it.event.id == event.id &&
+                  it.id != id &&
+                  it.status == ReplacementStatus.WaitingForAnswer
+            }
+
+        othersForSameEvent.forEach { other ->
+          val declined = other.copy(status = ReplacementStatus.Declined)
+          replacementRepository.updateReplacement(
+              orgId = orgId,
+              itemId = other.id,
+              item = declined,
+          )
+        }
+
+        refreshIncomingRequests()
+
+        _uiState.value =
+            _uiState.value.copy(
+                lastAction = ReplacementEmployeeLastAction.ACCEPTED,
+            )
+      } catch (e: Exception) {
+        Log.e("ReplacementEmployeeVM", "Error accepting replacement", e)
+        _uiState.value =
+            _uiState.value.copy(
+                errorMessage = "Could not accept replacement: ${e.message}",
+            )
+      } finally {
+        _uiState.value =
+            _uiState.value.copy(
+                processingRequestIds = _uiState.value.processingRequestIds - id,
+            )
+      }
+    }
   }
 
   /** Mark a replacement as **Declined**. */
   fun refuseRequest(id: String) {
-    updateRequestStatus(id, ReplacementStatus.Declined)
+    viewModelScope.launch {
+      _uiState.value =
+          _uiState.value.copy(
+              processingRequestIds = _uiState.value.processingRequestIds + id,
+          )
+      try {
+        updateRequestStatus(id, ReplacementStatus.Declined)
+        refreshIncomingRequests()
+
+        _uiState.value =
+            _uiState.value.copy(
+                lastAction = ReplacementEmployeeLastAction.REFUSED,
+            )
+      } catch (e: Exception) {
+        Log.e("ReplacementEmployeeVM", "Error refusing replacement", e)
+        _uiState.value =
+            _uiState.value.copy(
+                errorMessage = "Could not update replacement: ${e.message}",
+            )
+      } finally {
+        _uiState.value =
+            _uiState.value.copy(
+                processingRequestIds = _uiState.value.processingRequestIds - id,
+            )
+      }
+    }
+  }
+
+  fun clearLastAction() {
+    _uiState.value = _uiState.value.copy(lastAction = null)
   }
 
   private fun updateRequestStatus(id: String, newStatus: ReplacementStatus) {
@@ -261,6 +439,8 @@ class ReplacementEmployeeViewModel(
     val eventId = _uiState.value.selectedEventId ?: return
     viewModelScope.launch {
       try {
+        val user = userState.value ?: throw IllegalStateException(errorMessageNoAuthenticated)
+
         val event: Event =
             eventRepository.getEventById(orgId = orgId, itemId = eventId)
                 ?: run {
@@ -271,13 +451,11 @@ class ReplacementEmployeeViewModel(
         val replacement =
             Replacement(
                 // Employee is asking to be replaced → they are the absent user
-                absentUserId = currentUserId,
+                absentUserId = user.id,
                 // Substitute not decided yet → empty string by convention
                 substituteUserId = "",
                 event = event,
                 status = ReplacementStatus.ToProcess)
-
-        val orgId = requireOrgId()
 
         replacementRepository.insertReplacement(orgId = orgId, item = replacement)
 
@@ -323,6 +501,8 @@ class ReplacementEmployeeViewModel(
 
     viewModelScope.launch {
       try {
+        val user = userState.value ?: throw IllegalStateException(errorMessageNoAuthenticated)
+
         val startInstant = start.atStartOfDay(ZoneId.systemDefault()).toInstant()
         val endInstant = end.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant()
 
@@ -330,16 +510,16 @@ class ReplacementEmployeeViewModel(
             eventRepository.getEventsBetweenDates(
                 orgId = orgId, startDate = startInstant, endDate = endInstant)
 
+        val eligibleEvents = eventsInRange.filter { event -> event.participants.contains(user.id) }
+
         val created =
-            eventsInRange.map { event ->
+            eligibleEvents.map { event ->
               Replacement(
-                  absentUserId = currentUserId,
+                  absentUserId = user.id,
                   substituteUserId = "",
                   event = event,
                   status = ReplacementStatus.ToProcess)
             }
-
-        val orgId = requireOrgId()
 
         created.forEach { replacementRepository.insertReplacement(orgId = orgId, item = it) }
 
@@ -360,7 +540,32 @@ class ReplacementEmployeeViewModel(
     }
   }
 
-  fun sendRequestsForPendingReplacement(
+  override fun loadReplacementForProcessing(
+      replacementId: String,
+      onResult: (replacement: Replacement?, users: List<User>) -> Unit
+  ) {
+    viewModelScope.launch {
+      try {
+        val orgId = requireOrgId()
+        val replacement =
+            replacementRepository.getReplacementById(
+                orgId = orgId,
+                itemId = replacementId,
+            )
+        val users =
+            userRepository.getUsersByIds(
+                userRepository.getMembersIds(
+                    organizationId = orgId,
+                ))
+        onResult(replacement, users)
+      } catch (e: Exception) {
+        Log.e("ReplacementEmployeeVM", "Error loading replacement $replacementId", e)
+        onResult(null, _uiState.value.allUser)
+      }
+    }
+  }
+
+  override fun sendRequestsForPendingReplacement(
       replacementId: String,
       selectedSubstitutes: List<User>,
       onFinished: () -> Unit,
@@ -395,12 +600,17 @@ class ReplacementEmployeeViewModel(
           )
         }
 
-        onFinished()
+        replacementRepository.deleteReplacement(
+            orgId = orgId,
+            itemId = replacementId,
+        )
+        refreshIncomingRequests()
       } catch (e: Exception) {
         Log.e("ReplacementEmployeeVM", "Error sending requests", e)
         _uiState.value =
             _uiState.value.copy(errorMessage = "Could not send replacement requests: ${e.message}")
       }
     }
+    onFinished()
   }
 }

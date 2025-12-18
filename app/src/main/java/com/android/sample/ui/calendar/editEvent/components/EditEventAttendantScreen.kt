@@ -120,7 +120,7 @@ fun EditEventAttendantScreen(
                   },
                   options =
                       MemberSelectionListOptions(
-                          memberTagBuilder = { "${EditEventTestTags.PARTICIPANTS_LIST}_$it" }))
+                          memberTagBuilder = { "${EditEventTestTags.PARTICIPANTS_LIST}_${it.id}" }))
             }
       },
       bottomBar = {

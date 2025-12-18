@@ -35,8 +35,8 @@ class AddEventConfirmationScreenTest :
   @Test
   fun displayAllComponents() = runTest {
     // Main parts of the summary card are visible
-    composeTestRule.onNodeWithTag(EventSummaryCardTags.SIDE_BAR).assertIsDisplayed()
     composeTestRule.onNodeWithTag(EventSummaryCardTags.DATE_LINE1).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(EventSummaryCardTags.SIDE_BAR).assertIsDisplayed()
     composeTestRule.onNodeWithTag(EventSummaryCardTags.DATE_LINE2).assertIsDisplayed()
 
     // The first date line contains today's day of month (date is “today”)

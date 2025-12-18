@@ -2,18 +2,13 @@
     <string name="app_name">Agendapp</string>
     <string name="title_activity_main">Hauptaktivität</string>
     <string name="next">Weiter</string>
-    <string name="addEventTitle">Neues Ereignis</string>
-    <string name="enterTitleAndDescription">Bitte geben Sie den Titel und die Beschreibung Ihres Ereignisses ein</string>
-    <string name="enterTimeAndRecurrence">Bitte wählen Sie den Ereignistyp und die Zeit</string>
     <string name="eventTitle">Titel</string>
     <string name="eventTitlePlaceholder">Titel eingeben</string>
     <string name="title_empty_error">Titel darf nicht leer sein</string>
     <string name="name_empty_error">Der Name darf nicht leer sein</string>
-    <string name="description_empty_error">Beschreibung darf nicht leer sein</string>
     <string name="eventDescriptionPlaceholder">Ereignis beschreiben</string>
     <string name="eventDescription">Beschreibung</string>
     <string name="goBack">Zurück</string>
-    <string name="selectAttendants">Wählen Sie die Personen, die an diesem Ereignis teilnehmen.</string>
     <string name="startTime">Startzeit</string>
     <string name="endTime">Endzeit</string>
     <string name="startDatePickerLabel">Startdatum</string>
@@ -30,6 +25,17 @@
     <string name="confirmationMessage">Herzlichen Glückwunsch!\nIhr Ereignis wurde erfolgreich erstellt und zum Kalender hinzugefügt</string>
     <string name="cancel">Abbrechen</string>
     <string name="default_web_client_id">423898020035-fu7m7lmtsuu6cn7d3s4ev4mrf0ep68l3.apps.googleusercontent.com</string>
+    <string name="add_event_step_1_of_2">Schritt 1 von 3</string>
+    <string name="add_event_step_2_of_2">Schritt 2 von 3</string>
+    <string name="add_event_create_title">Ereignis erstellen</string>
+    <string name="add_event_time_title">Planung</string>
+    <string name="add_event_time_subtitle">Legen Sie Datum, Uhrzeit und Wiederholung des Ereignisses fest</string>
+    <string name="add_event_step_3_of_3">Schritt 3 von 3</string>
+    <string name="add_event_attendees_title">Teilnehmende</string>
+    <string name="add_event_attendees_subtitle">Wählen Sie Personen zum Einladen aus</string>
+    <string name="add_event_create_subtitle">
+    Legen Sie die grundlegenden Informationen Ihrer Veranstaltung fest
+</string>
 
     <!-- Common -->
     <string name="confirmed_replacements">Bestätigte Ersetzungen</string>
@@ -41,7 +47,7 @@
     <string name="warning_got_it">Verstanden</string>
 
     <!-- Edit Event Screen -->
-    <string name="edit_event_title">Ereignis bearbeiten</string>
+    <string name="edit_event_header_step">Bearbeitung</string>
 
     <!-- Fields -->
     <string name="edit_event_title_label">Titel</string>
@@ -50,7 +56,6 @@
 
     <string name="edit_event_description_label">Beschreibung</string>
     <string name="edit_event_description_placeholder">Ereignisbeschreibung eingeben</string>
-    <string name="edit_event_description_error">Beschreibung darf nicht leer sein</string>
 
     <string name="edit_event_start_date_label">Startdatum</string>
     <string name="edit_event_end_date_label">Enddatum</string>
@@ -59,7 +64,6 @@
 
     <!-- Participants -->
     <string name="edit_event_edit_participants_button">Teilnehmer bearbeiten</string>
-    <string name="edit_event_participants_screen_title">Ereignisteilnehmer bearbeiten</string>
 
     <!-- Notifications -->
 
@@ -231,7 +235,6 @@
 
     <!-- Filters -->
     <string name="filter">Filter</string>
-    <string name="close">Schließen</string>
     <string name="filter_event_type">Ereignistyp</string>
     <string name="filter_location">Ort</string>
     <string name="filter_participants">Teilnehmer</string>
@@ -307,5 +310,7 @@
 
     <!-- Network -->
     <string name="network_error_message">Ein Netzwerkfehler ist aufgetreten. Bitte prüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.</string>
-
+    <string name="unexpected_error_while_loading_data">
+    Unerwarteter Fehler beim Laden der Daten
+</string>
 </resources>

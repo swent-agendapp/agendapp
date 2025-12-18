@@ -5,6 +5,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.FilterAltOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -13,7 +15,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.ui.calendar.filters.components.FilterCheckbox
-import com.android.sample.ui.common.BottomNavigationButtons
 import com.android.sample.ui.theme.*
 
 // Assisted by AI
@@ -58,7 +59,6 @@ fun FilterListScreen(
     // ----- Header -----
     Row(
         modifier = Modifier.fillMaxWidth().testTag(headerTag),
-        horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically) {
           IconButton(onClick = onBack, modifier = Modifier.testTag(backTag)) {
             Icon(
@@ -69,12 +69,26 @@ fun FilterListScreen(
           Text(
               text = title,
               style = MaterialTheme.typography.titleLarge,
-              modifier = Modifier.testTag(titleTag))
+              modifier = Modifier.weight(WeightExtraHeavy).testTag(titleTag))
 
-          Spacer(modifier = Modifier.width(widthSmall))
+          // Clear
+          IconButton(
+              onClick = { selections = emptyList() }, modifier = Modifier.testTag(clearTag)) {
+                Icon(
+                    imageVector = Icons.Default.FilterAltOff,
+                    contentDescription = stringResource(com.android.sample.R.string.clear_all),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant)
+              }
+
+          // Apply
+          IconButton(onClick = { onApply(selections) }, modifier = Modifier.testTag(applyTag)) {
+            Icon(
+                imageVector = Icons.Default.Check,
+                contentDescription = stringResource(com.android.sample.R.string.apply),
+                tint = MaterialTheme.colorScheme.primary)
+          }
         }
-
-    Spacer(Modifier.height(SpacingMedium))
+    Spacer(Modifier.height(SpacingLarge))
 
     // ----- Scrollable list -----
     LazyColumn(modifier = Modifier.weight(Weight).testTag(listTag)) {
@@ -92,19 +106,6 @@ fun FilterListScreen(
         Spacer(Modifier.height(SpacingSmall))
       }
     }
-
-    Spacer(Modifier.height(SpacingExtraLarge))
-
-    // ----- Bottom Buttons -----
-    BottomNavigationButtons(
-        onBack = { selections = emptyList() },
-        onNext = { onApply(selections) },
-        canGoBack = true,
-        canGoNext = true,
-        backButtonText = stringResource(com.android.sample.R.string.clear_all),
-        nextButtonText = stringResource(com.android.sample.R.string.apply),
-        backButtonTestTag = clearTag,
-        nextButtonTestTag = applyTag)
   }
 }
 

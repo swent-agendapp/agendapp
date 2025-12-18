@@ -18,7 +18,7 @@ import androidx.compose.ui.semantics.testTag
 import androidx.core.net.toUri
 import com.android.sample.R
 import com.android.sample.ui.common.SecondaryPageTopBar
-import com.android.sample.ui.theme.AlphaExtraLow
+import com.android.sample.ui.theme.AlphaVeryLow
 import com.android.sample.ui.theme.CornerRadiusExtraLarge
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.SpacingLarge
@@ -106,7 +106,7 @@ private fun AdminInfoRow(
       modifier =
           Modifier.fillMaxWidth()
               .clip(RoundedCornerShape(CornerRadiusExtraLarge))
-              .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = AlphaExtraLow))
+              .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = AlphaVeryLow))
               .clickable(onClick = onClick)
               .padding(PaddingMedium)
               .testTag(testTag)) {

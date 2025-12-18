@@ -2,18 +2,13 @@
     <string name="app_name">Agendapp</string>
     <string name="title_activity_main">Activité principale</string>
     <string name="next">Suivant</string>
-    <string name="addEventTitle">Nouvel événement</string>
-    <string name="enterTitleAndDescription">Veuillez saisir le titre et la description de votre événement</string>
-    <string name="enterTimeAndRecurrence">Veuillez sélectionner le type et l’heure de l’événement</string>
     <string name="eventTitle">Titre</string>
     <string name="eventTitlePlaceholder">Entrez un titre</string>
     <string name="title_empty_error">Le titre ne peut pas être vide</string>
     <string name="name_empty_error">Le nom ne peut pas être vide</string>
-    <string name="description_empty_error">La description ne peut pas être vide</string>
     <string name="eventDescriptionPlaceholder">Décrivez l’événement</string>
     <string name="eventDescription">Description</string>
     <string name="goBack">Retour</string>
-    <string name="selectAttendants">Sélectionnez les personnes participant à cet événement.</string>
     <string name="startTime">Heure de début</string>
     <string name="endTime">Heure de fin</string>
     <string name="startDatePickerLabel">Date de début</string>
@@ -30,14 +25,24 @@
     <string name="confirmationMessage">Félicitations !\nVotre événement a été créé et ajouté à votre calendrier</string>
     <string name="cancel">Annuler</string>
     <string name="default_web_client_id">423898020035-fu7m7lmtsuu6cn7d3s4ev4mrf0ep68l3.apps.googleusercontent.com</string>
+    <string name="add_event_step_1_of_2">Étape 1 sur 3</string>
+    <string name="add_event_step_2_of_2">Étape 2 sur 3</string>
+    <string name="add_event_create_title">Créer un événement</string>
+    <string name="add_event_time_title">Planification</string>
+    <string name="add_event_time_subtitle">Définissez la date, l’heure et la récurrence de l’événement</string>
+    <string name="add_event_step_3_of_3">Étape 3 sur 3</string>
+    <string name="add_event_attendees_title">Participants</string>
+    <string name="add_event_attendees_subtitle">Choisissez les personnes à inviter</string>
+    <string name="add_event_create_subtitle">
+    Définissez les informations de base de votre événement
+</string>
 
     <!-- Common -->
     <string name="confirmed_replacements">Remplacements confirmés</string>
     <string name="common_back">Retour</string>
 
     <!-- Edit Event Screen -->
-    <string name="edit_event_title">Modifier l’événement</string>
-
+    <string name="edit_event_header_step">Modification</string>
     <!-- Fields -->
     <string name="edit_event_title_label">Titre</string>
     <string name="edit_event_title_placeholder">Entrez le titre de l’événement</string>
@@ -45,7 +50,6 @@
 
     <string name="edit_event_description_label">Description</string>
     <string name="edit_event_description_placeholder">Entrez la description de l’événement</string>
-    <string name="edit_event_description_error">La description ne peut pas être vide</string>
 
     <string name="edit_event_start_date_label">Date de début</string>
     <string name="edit_event_end_date_label">Date de fin</string>
@@ -54,7 +58,6 @@
 
     <!-- Participants -->
     <string name="edit_event_edit_participants_button">Modifier les participants</string>
-    <string name="edit_event_participants_screen_title">Modifier les participants à l’événement</string>
 
     <!-- Notifications -->
 
@@ -81,7 +84,7 @@
     <string name="profile_screen_title">Profil</string>
     <string name="profile_email_error">Veuillez entrer une adresse e-mail valide</string>
     <string name="profile_phone_error">Veuillez entrer un numéro de téléphone valide</string>
-    <string name="profile_display_name_label">Nom d’affichage</string>
+    <string name="profile_display_name_label">Nom</string>
     <string name="profile_email_label">E-mail</string>
     <string name="profile_phone_label">Numéro de téléphone</string>
     <string name="profile_title">Votre Profil</string>
@@ -214,7 +217,7 @@
 
     <!-- Organizations -->
     <string name="organization_list_title">Vos organisations</string>
-    <string name="organization_loading">Chergement des organisations</string>
+    <string name="organization_loading">Chargement des organisations</string>
     <string name="organization_name_label">Nom de l’organisation</string>
     <string name="error_no_authenticated_user">Aucun utilisateur authentifié.</string>
     <string name="error_no_organization_selected">Aucune organisation sélectionnée.</string>
@@ -231,7 +234,6 @@
 
     <!-- Filters -->
     <string name="filter">Filtrer</string>
-    <string name="close">Fermer</string>
     <string name="filter_event_type">Type d’événement</string>
     <string name="filter_location">Lieu</string>
     <string name="filter_participants">Participants</string>
@@ -307,5 +309,7 @@
 
     <!-- Network -->
     <string name="network_error_message">Une erreur réseau s\'est produite. Veuillez vérifier votre connexion internet et réessayer.</string>
-
+    <string name="unexpected_error_while_loading_data">
+    Erreur inattendue lors du chargement des données
+</string>
 </resources>

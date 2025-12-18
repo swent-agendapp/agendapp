@@ -2,18 +2,13 @@
     <string name="app_name">Agendapp</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="next">Next</string>
-    <string name="addEventTitle">New event</string>
-    <string name="enterTitleAndDescription">Please write the title and description of your event</string>
-    <string name="enterTimeAndRecurrence">Please select the event type and time</string>
     <string name="eventTitle">Title</string>
     <string name="eventTitlePlaceholder">Enter a title</string>
     <string name="title_empty_error">Title cannot be empty</string>
     <string name="name_empty_error">Name cannot be empty</string>
-    <string name="description_empty_error">Description cannot be empty</string>
-    <string name="eventDescriptionPlaceholder">Describe the event</string>
+    <string name="eventDescriptionPlaceholder">Describe the event (optional)</string>
     <string name="eventDescription">Description</string>
     <string name="goBack">Go Back</string>
-    <string name="selectAttendants">Select the person attending this event.</string>
     <string name="startTime">Start time</string>
     <string name="endTime">End time</string>
     <string name="startDatePickerLabel">Start date</string>
@@ -34,12 +29,23 @@
     <string name="organize_replacement">Organize a replacement</string>
     <string name="waiting_confirmation_replacement">Replacement request</string>
     <string name="confirmed_replacements">Upcoming replacements</string>
+    <string name="add_event_step_1_of_2">Step 1 of 3</string>
+    <string name="add_event_step_2_of_2">Step 2 of 3</string>
+    <string name="add_event_create_title">New event</string>
+    <string name="add_event_time_title">Scheduling</string>
+    <string name="add_event_time_subtitle">Set the date, time, and recurrence of the event</string>
+    <string name="add_event_step_3_of_3">Step 3 of 3</string>
+    <string name="add_event_attendees_title">Attendees</string>
+    <string name="add_event_attendees_subtitle">Select people to invite</string>
+    <string name="add_event_create_subtitle">
+    Set the basic details of your event
+</string>
 
     <!-- Common -->
     <string name="common_back">Back</string>
 
     <!-- Edit Event Screen -->
-    <string name="edit_event_title">Edit Event</string>
+    <string name="edit_event_header_step">Editing</string>
 
     <!-- Fields -->
     <string name="edit_event_title_label">Title</string>
@@ -48,7 +54,6 @@
 
     <string name="edit_event_description_label">Description</string>
     <string name="edit_event_description_placeholder">Enter event description</string>
-    <string name="edit_event_description_error">Description cannot be empty</string>
 
     <string name="edit_event_start_date_label">Start Date</string>
     <string name="edit_event_end_date_label">End Date</string>
@@ -57,7 +62,6 @@
 
     <!-- Participants -->
     <string name="edit_event_edit_participants_button">Edit Participants</string>
-    <string name="edit_event_participants_screen_title">Edit Event Participants</string>
 
     <!-- Buttons -->
     <string name="common_save">Save</string>
@@ -138,10 +142,10 @@
     <string name="profile_screen_title">Profile</string>
     <string name="profile_email_error">Please enter a valid email address</string>
     <string name="profile_phone_error">Please enter a valid phone number</string>
-    <string name="profile_display_name_label">Display Name</string>
+    <string name="profile_display_name_label">Name</string>
     <string name="profile_email_label">Email</string>
     <string name="profile_phone_label">Phone Number</string>
-    <string name="profile_title">User Profile</string>
+    <string name="profile_title">Profile</string>
     <string name="profile_cancel_content_description">Cancel</string>
     <string name="profile_save_content_description">Save</string>
     <string name="profile_edit_content_description">Edit</string>
@@ -227,7 +231,6 @@
 
     <!-- Filters -->
     <string name="filter">Filter</string>
-    <string name="close">Close</string>
     <string name="filter_event_type">Event type</string>
     <string name="filter_location">Location</string>
     <string name="filter_participants">Participants</string>
@@ -308,5 +311,5 @@
 
     <!-- Network -->
     <string name="network_error_message">A network error has occurred. Please check your internet connection and try again.</string>
-
+    <string name="unexpected_error_while_loading_data">Unexpected error while loading data</string>
 </resources>

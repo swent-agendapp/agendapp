@@ -39,6 +39,7 @@ import com.android.sample.R
 import com.android.sample.ui.authentication.SignInViewModel
 import com.android.sample.ui.common.SecondaryPageTopBar
 import com.android.sample.ui.theme.AlphaExtraLow
+import com.android.sample.ui.theme.AlphaVeryLow
 import com.android.sample.ui.theme.CornerRadiusExtraLarge
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.SizeHuge
@@ -329,7 +330,7 @@ private fun ProfileInfoRow(
       modifier =
           Modifier.fillMaxWidth()
               .clip(RoundedCornerShape(CornerRadiusExtraLarge))
-              .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = AlphaExtraLow))
+              .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = AlphaVeryLow))
               .padding(PaddingMedium)) {
         Text(
             text = label,
@@ -472,6 +473,6 @@ private fun initialsFromName(name: String): String {
 
 private fun validateInputs(email: String, phone: String): Pair<Boolean, Boolean> {
   val emailValid = isValidEmail(email)
-  val phoneValid = isValidPhone(phone)
+  val phoneValid = isValidPhone(phone) || phone.isBlank()
   return emailValid to phoneValid
 }

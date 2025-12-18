@@ -41,6 +41,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.android.sample.R
 import com.android.sample.model.authentication.User
+import com.android.sample.ui.theme.AlphaLowLow
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.DefaultCardElevation
 import com.android.sample.ui.theme.GeneralPalette
@@ -51,7 +52,7 @@ import com.android.sample.ui.theme.WeightVeryHeavy
 // the complexity was reduced with the help of IA
 data class MemberSelectionListOptions(
     val isSingleSelection: Boolean = false,
-    val highlightColor: Color = GeneralPalette.Secondary.copy(alpha = 0.9f),
+    val highlightColor: Color = GeneralPalette.Secondary.copy(alpha = AlphaLowLow),
     val searchTestTag: String? = null,
     val listTestTag: String? = null,
     val summaryTestTag: String? = null,
@@ -71,7 +72,11 @@ fun MemberSelectionList(
 
   val filteredMembers =
       remember(searchQuery, members) {
-        members.filter { member -> member.display().contains(searchQuery, ignoreCase = true) }
+        members
+            .asSequence()
+            .filter { it.display().contains(searchQuery, ignoreCase = true) }
+            .sortedBy { it.display().trim().lowercase() }
+            .toList()
       }
 
   Card(

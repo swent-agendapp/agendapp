@@ -7,26 +7,28 @@ import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
 import com.android.sample.ui.calendar.addEvent.components.AddEventTimeAndRecurrenceScreen
+import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class AddEventTimeScreenTest : RequiresSelectedOrganizationTestBase {
+class AddEventTimeScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganizationTestBase {
 
   override val organizationId: String = DEFAULT_TEST_ORG_ID
 
   @get:Rule val composeTestRule = createComposeRule()
-  private lateinit var fakeViewModel: AddEventViewModel
+  private lateinit var addEventViewModel: AddEventViewModel
 
   @Before
-  fun setUp() {
+  override fun setUp() {
+    super.setUp()
     setSelectedOrganization()
+    addEventViewModel = AddEventViewModel()
 
-    fakeViewModel = AddEventViewModel()
     composeTestRule.setContent {
-      AddEventTimeAndRecurrenceScreen(addEventViewModel = fakeViewModel)
+      AddEventTimeAndRecurrenceScreen(addEventViewModel = addEventViewModel)
     }
   }
 
@@ -51,13 +53,15 @@ class AddEventTimeScreenTest : RequiresSelectedOrganizationTestBase {
   }
 
   @Test
-  fun displayRecurrenceStatusDropdown() {
-    composeTestRule.onNodeWithTag(AddEventTestTags.RECURRENCE_STATUS_DROPDOWN).assertIsDisplayed()
+  fun displayRecurrenceOptions() {
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.recurrenceTag(RecurrenceStatus.Weekly))
+        .assertExists()
   }
 
   @Test
   fun displayEndRecurrenceFieldIfNotOneTimeRecurrence() {
-    composeTestRule.runOnUiThread { fakeViewModel.setRecurrenceMode(RecurrenceStatus.Weekly) }
+    composeTestRule.runOnUiThread { addEventViewModel.setRecurrenceMode(RecurrenceStatus.Weekly) }
     composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).assertIsDisplayed()
   }
 }

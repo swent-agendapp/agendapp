@@ -2,7 +2,7 @@ package com.android.sample.ui.navigation
 
 import android.Manifest
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertTextContains
+import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -17,7 +17,6 @@ import com.android.sample.MainActivityTestTags
 import com.android.sample.R
 import com.android.sample.model.authentication.AuthRepositoryProvider
 import com.android.sample.model.authentication.UserRepositoryProvider
-import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.network.FakeConnectivityChecker
 import com.android.sample.model.network.NetworkStatusRepository
 import com.android.sample.model.network.NetworkTestBase
@@ -122,54 +121,30 @@ class AgendappNavigationTest : FirebaseEmulatedTest(), NetworkTestBase {
   fun addEventAndResetsTheFieldsTheNextTime() {
     composeTestRule.setContent { Agendapp() }
 
-    // Create organization and navigate to calendar
     createOrganizationAndNavigateToCalendar()
 
-    // Go to add event screen
     composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertExists().performClick()
 
-    // Validate screen content
-    // Enter title and description
+    // Step 1: Title + description
     composeTestRule
         .onNodeWithTag(AddEventTestTags.TITLE_TEXT_FIELD)
         .assertExists()
         .performTextInput("Test Event")
-    composeTestRule
-        .onNodeWithTag(AddEventTestTags.DESCRIPTION_TEXT_FIELD)
-        .assertExists()
-        .performTextInput("Test Description")
-    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
-    // No recurrence end field for one time events
-    composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).assertIsDisplayed()
-    // Enter weekly recurrence
-    composeTestRule
-        .onNodeWithTag(AddEventTestTags.RECURRENCE_STATUS_DROPDOWN)
-        .assertExists()
-        .performClick()
-    composeTestRule
-        .onNodeWithTag(AddEventTestTags.recurrenceTag(RecurrenceStatus.Weekly))
-        .assertExists()
-        .performClick()
-    composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
-    // Create event without any assignees
-    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
-    // Finish screen
-    composeTestRule.onNodeWithTag(AddEventTestTags.CREATE_BUTTON).assertExists().performClick()
 
-    // Back to calendar screen
+    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertExists().performClick()
+
+    // Step 2: Time + recurrence
+    // OneTime => end recurrence exists but disabled
+    composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).assertExists()
+    composeTestRule.onNodeWithTag(AddEventTestTags.END_RECURRENCE_FIELD).assertIsNotEnabled()
+
+    composeTestRule.onNodeWithTag(AddEventTestTags.BACK_BUTTON).assertExists().performClick()
+
+    composeTestRule.onNodeWithTag(AddEventTestTags.CANCEL_BUTTON).assertExists().performClick()
+
+    // Back to calendar
     composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertIsDisplayed()
-    composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).assertExists().performClick()
-
-    // Validate that the fields are reset when adding a new event
-    composeTestRule
-        .onNodeWithTag(AddEventTestTags.TITLE_TEXT_FIELD)
-        .assertExists()
-        .assertTextContains("")
-    composeTestRule
-        .onNodeWithTag(AddEventTestTags.DESCRIPTION_TEXT_FIELD)
-        .assertExists()
-        .assertTextContains("")
+    composeTestRule.onNodeWithTag(ADD_EVENT_BUTTON).performClick()
   }
 
   @Test

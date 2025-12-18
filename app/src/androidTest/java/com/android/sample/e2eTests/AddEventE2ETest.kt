@@ -1,17 +1,18 @@
 package com.android.sample.e2eTests
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeDown
 import androidx.compose.ui.test.swipeUp
 import com.android.sample.Agendapp
-import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.ui.authentication.SignInScreenTestTags
 import com.android.sample.ui.calendar.CalendarScreenTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
@@ -140,7 +141,6 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
 
     // Wait for text input to be processed
     composeTestRule.waitForIdle()
-
     composeTestRule
         .onNodeWithTag(AddEventTestTags.DESCRIPTION_TEXT_FIELD)
         .performTextInput(eventDescription)
@@ -148,21 +148,13 @@ class AddEventE2ETest : FirebaseEmulatedTest() {
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).performClick()
     composeTestRule.waitForIdle()
 
-    composeTestRule.onNodeWithTag(AddEventTestTags.RECURRENCE_STATUS_DROPDOWN).performClick()
-    composeTestRule.waitForIdle()
-
-    composeTestRule
-        .onNodeWithTag(AddEventTestTags.recurrenceTag(RecurrenceStatus.Weekly))
-        .performClick()
-
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).performClick()
     composeTestRule.waitForIdle()
 
-    composeTestRule.onAllNodesWithTag(AddEventTestTags.CHECK_BOX_EMPLOYEE)[0].performClick()
+    composeTestRule.onNodeWithText(expectedName).performClick()
     composeTestRule.waitForIdle()
 
-    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).performClick()
-    composeTestRule.waitForIdle()
+    composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertIsEnabled().performClick()
 
     composeTestRule.onNodeWithTag(AddEventTestTags.CREATE_BUTTON).performClick()
     composeTestRule.waitForIdle()

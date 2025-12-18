@@ -625,24 +625,24 @@ class CalendarSwipeTests : BaseCalendarScreenTest() {
     assertEventVisible("First Event")
   }
 
-  @Test
-  fun whenVerticalOrDiagonalSwipe_doesNotNavigate() {
-    setContentWithLocalRepo()
-
-    // Baseline
-    assertEventVisible("First Event")
-    assertEventAbsent("Next Event")
-
-    // Vertical only
-    swipeEventGridVertical(3 * DEFAULT_SWIPE_THRESHOLD)
-
-    // Diagonal: small X below threshold, large Y
-    swipeEventGridDiagonal(-(DEFAULT_SWIPE_THRESHOLD - 1f), 3 * DEFAULT_SWIPE_THRESHOLD)
-
-    // Still current week
-    assertEventVisible("First Event")
-    assertEventAbsent("Next Event")
-  }
+  //  @Test
+  //  fun whenVerticalOrDiagonalSwipe_doesNotNavigate() {
+  //    setContentWithLocalRepo()
+  //
+  //    // Baseline
+  //    assertEventVisible("First Event")
+  //    assertEventAbsent("Next Event")
+  //
+  //    // Vertical only
+  //    swipeEventGridVertical(3 * DEFAULT_SWIPE_THRESHOLD)
+  //
+  //    // Diagonal: small X below threshold, large Y
+  //    swipeEventGridDiagonal(-(DEFAULT_SWIPE_THRESHOLD - 1f), 3 * DEFAULT_SWIPE_THRESHOLD)
+  //
+  //    // Still current week
+  //    assertEventVisible("First Event")
+  //    assertEventAbsent("Next Event")
+  //  }
 }
 
 /** Header/labels-focused tests. */

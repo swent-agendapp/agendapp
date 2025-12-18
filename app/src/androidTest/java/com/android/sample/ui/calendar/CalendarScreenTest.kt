@@ -40,6 +40,7 @@ import com.android.sample.ui.calendar.style.CalendarDefaults
 import com.android.sample.ui.calendar.style.CalendarDefaults.DEFAULT_SWIPE_THRESHOLD
 import com.android.sample.ui.calendar.utils.DateTimeUtils
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
+import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import java.time.DayOfWeek
@@ -61,7 +62,8 @@ import org.junit.Test
  * Rationale: Smaller focused subclasses improve maintainability (grouped by concern) while reusing
  * a single set of utilities.
  */
-abstract class BaseCalendarScreenTest : RequiresSelectedOrganizationTestBase, NetworkTestBase {
+abstract class BaseCalendarScreenTest :
+    FirebaseEmulatedTest(), RequiresSelectedOrganizationTestBase, NetworkTestBase {
 
   override val fakeChecker = FakeConnectivityChecker(state = true)
   override val networkRepo = NetworkStatusRepository(fakeChecker)
@@ -73,7 +75,8 @@ abstract class BaseCalendarScreenTest : RequiresSelectedOrganizationTestBase, Ne
   protected lateinit var viewModel: CalendarViewModel
 
   @Before
-  fun setUp() {
+  override fun setUp() {
+    super.setUp()
     setupNetworkTestBase()
     setSelectedOrganization()
 

@@ -191,7 +191,10 @@ class CategoryListSectionTest {
     return context.getString(R.string.edit_category_empty_state_message)
   }
 
-  private fun setContentWithCategories(categories: List<EventCategory>) {
+  private fun setContentWithCategories(
+      categories: List<EventCategory>,
+      isLoading: Boolean = false,
+  ) {
     composeTestRule.setContent {
       val reorderState =
           rememberReorderableLazyListState(
@@ -204,6 +207,7 @@ class CategoryListSectionTest {
           reorderState = reorderState,
           onEditCategory = {},
           onDeleteCategory = {},
+          isLoading = isLoading,
       )
     }
   }
@@ -241,5 +245,32 @@ class CategoryListSectionTest {
         .onNodeWithTag(EditCategoryScreenTestTags.EMPTY_STATE_MESSAGE)
         .assertIsDisplayed()
         .assert(hasText(expectedMessage))
+  }
+
+  @Test
+  fun loading_isDisplayed_whenIsLoadingTrue() {
+    // Categories can be anything; we just want to verify the loading indicator is shown.
+    setContentWithCategories(categories(count = 2), isLoading = true)
+
+    composeTestRule.onNodeWithTag(EditCategoryScreenTestTags.LOADING).assertIsDisplayed()
+  }
+
+  @Test
+  fun loading_doesNotExist_whenIsLoadingFalse() {
+    setContentWithCategories(categories(count = 2), isLoading = false)
+
+    composeTestRule.onNodeWithTag(EditCategoryScreenTestTags.LOADING).assertDoesNotExist()
+  }
+
+  @Test
+  fun loading_hidesEmptyState_whenCategoriesEmpty() {
+    // When loading, the empty state must not be displayed.
+    setContentWithCategories(emptyList(), isLoading = true)
+
+    composeTestRule.onNodeWithTag(EditCategoryScreenTestTags.LOADING).assertIsDisplayed()
+    composeTestRule.onNodeWithTag(EditCategoryScreenTestTags.EMPTY_STATE_TITLE).assertDoesNotExist()
+    composeTestRule
+        .onNodeWithTag(EditCategoryScreenTestTags.EMPTY_STATE_MESSAGE)
+        .assertDoesNotExist()
   }
 }

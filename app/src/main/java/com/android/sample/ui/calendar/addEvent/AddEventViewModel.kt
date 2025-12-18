@@ -13,6 +13,8 @@ import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.calendar.createEvent
 import com.android.sample.model.category.EventCategory
+import com.android.sample.model.category.EventCategoryRepository
+import com.android.sample.model.category.EventCategoryRepositoryProvider
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
 import java.time.Duration
@@ -48,8 +50,10 @@ data class AddCalendarEventUIState(
     val recurrenceEndInstant: Instant = Instant.now().plus(Duration.ofHours(1)),
     val recurrenceMode: RecurrenceStatus = RecurrenceStatus.OneTime,
     val participants: Set<User> = emptySet(),
+    val categoriesList: List<EventCategory> = emptyList(),
     val category: EventCategory = EventCategory.defaultCategory(),
     val errorMsg: String? = null,
+    val isLoadingCategories: Boolean = false,
     val draftEvent: Event = createEvent(organizationId = "").first(),
     val step: AddEventStep = AddEventStep.TITLE_AND_DESC,
     val users: List<User> = emptyList(),
@@ -80,6 +84,8 @@ class AddEventViewModel(
     private val userRepository: UserRepository = UserRepositoryProvider.repository,
     private val authRepository: AuthRepository = AuthRepositoryProvider.repository,
     private val eventRepository: EventRepository = EventRepositoryProvider.repository,
+    private val categoryRepository: EventCategoryRepository =
+        EventCategoryRepositoryProvider.repository,
     private val selectedOrganizationViewModel: SelectedOrganizationViewModel =
         SelectedOrganizationVMProvider.viewModel
 ) : ViewModel() {
@@ -93,10 +99,32 @@ class AddEventViewModel(
 
   init {
     viewModelScope.launch {
+      _uiState.update { it.copy(isLoadingCategories = true) }
       val selectedOrga = requireOrgId()
+      val categoriesList =
+          categoryRepository.getAllCategories(orgId = selectedOrga).sortedBy { it.index }
       val userIds = userRepository.getMembersIds(selectedOrga)
       val users = userRepository.getUsersByIds(userIds)
-      _uiState.update { it.copy(users = users) }
+      _uiState.update {
+        it.copy(categoriesList = categoriesList, users = users, isLoadingCategories = false)
+      }
+    }
+  }
+
+  fun loadCategories() {
+    viewModelScope.launch {
+      _uiState.update { it.copy(isLoadingCategories = true) }
+      try {
+        val orgId = requireOrgId()
+        val freshCategoriesList =
+            categoryRepository.getAllCategories(orgId = orgId).sortedBy { it.index }
+        _uiState.value =
+            _uiState.value.copy(categoriesList = freshCategoriesList, isLoadingCategories = false)
+      } catch (e: Exception) {
+        _uiState.value =
+            _uiState.value.copy(
+                errorMsg = "Failed to load categories: ${e.message}", isLoadingCategories = false)
+      }
     }
   }
 

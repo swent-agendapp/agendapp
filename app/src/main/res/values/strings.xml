@@ -291,6 +291,8 @@
     <string name="edit_category_save_button">Save category</string>
     <string name="delete_category_message">Are you sure you want to delete this category ?</string>
     <string name="default_category_label">Uncategorized</string>
+    <string name="category_selector_create_category">Create a category</string>
+    <string name="category_selector_edit_my_categories">Edit my categories</string>
 
     <!-- Organization Overview -->
     <plurals name="members_count">

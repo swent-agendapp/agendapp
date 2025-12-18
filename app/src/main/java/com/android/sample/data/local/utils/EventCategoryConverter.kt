@@ -1,7 +1,6 @@
 package com.android.sample.data.local.utils
 
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import com.android.sample.model.category.EventCategory
 import com.android.sample.ui.theme.EventPalette
 import io.objectbox.converter.PropertyConverter
@@ -13,6 +12,7 @@ class EventCategoryConverter : PropertyConverter<EventCategory, String> {
   private companion object {
     const val KEY_ID = "id"
     const val KEY_ORG_ID = "organizationId"
+    const val KEY_INDEX = "index"
     const val KEY_LABEL = "label"
     const val KEY_COLOR = "color"
     const val KEY_DEFAULT = "isDefault"
@@ -24,8 +24,9 @@ class EventCategoryConverter : PropertyConverter<EventCategory, String> {
         JSONObject().apply {
           put(KEY_ID, entityProperty.id)
           put(KEY_ORG_ID, entityProperty.organizationId)
+          put(KEY_INDEX, entityProperty.index)
           put(KEY_LABEL, entityProperty.label)
-          put(KEY_COLOR, entityProperty.color.toArgb())
+          put(KEY_COLOR, entityProperty.color.value.toLong())
           put(KEY_DEFAULT, entityProperty.isDefault)
         }
     return json.toString()
@@ -36,6 +37,7 @@ class EventCategoryConverter : PropertyConverter<EventCategory, String> {
     val json = JSONObject(databaseValue)
     val id = json.optString(KEY_ID, UUID.randomUUID().toString())
     val organizationId = json.optString(KEY_ORG_ID, UUID.randomUUID().toString())
+    val index = json.optInt(KEY_INDEX, -1)
     val label = json.optString(KEY_LABEL, "")
     val colorLong = json.optLong(KEY_COLOR, EventPalette.NoCategory.value.toLong())
     val color = Color(colorLong.toULong())
@@ -44,6 +46,7 @@ class EventCategoryConverter : PropertyConverter<EventCategory, String> {
     return EventCategory(
         id = id,
         organizationId = organizationId,
+        index = index,
         label = label,
         color = color,
         isDefault = isDefault,

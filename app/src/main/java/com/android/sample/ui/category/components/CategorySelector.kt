@@ -1,5 +1,6 @@
 package com.android.sample.ui.category.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -13,9 +14,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -33,8 +37,11 @@ import androidx.compose.ui.text.font.FontWeight
 import com.android.sample.R
 import com.android.sample.model.category.EventCategory
 import com.android.sample.model.category.mockData.getMockEventCategory
+import com.android.sample.ui.common.Loading
 import com.android.sample.ui.theme.BorderWidthThin
 import com.android.sample.ui.theme.CornerRadiusLarge
+import com.android.sample.ui.theme.CornerRadiusMedium
+import com.android.sample.ui.theme.GeneralPalette
 import com.android.sample.ui.theme.PaddingMedium
 import com.android.sample.ui.theme.PaddingSmall
 import com.android.sample.ui.theme.SpacingMedium
@@ -63,8 +70,10 @@ fun CategorySelector(
     modifier: Modifier = Modifier,
     selectedCategory: EventCategory = EventCategory.defaultCategory(),
     onCategorySelected: (EventCategory) -> Unit = {},
+    onNavigateToEditCategories: () -> Unit = {},
     testTag: String = "",
-    categories: List<EventCategory> = getMockEventCategory()
+    categories: List<EventCategory> = getMockEventCategory(),
+    isLoading: Boolean = false,
 ) {
   // Local state only controls whether the dropdown menu is open or closed.
   var expanded by remember { mutableStateOf(false) }
@@ -86,6 +95,7 @@ fun CategorySelector(
     // Dropdown menu that shows all available categories.
     CategoryDropdownMenu(
         expanded = expanded,
+        isLoading = isLoading,
         onDismissRequest = { expanded = false },
         categories = categories,
         selectedCategory = selectedCategory,
@@ -94,6 +104,7 @@ fun CategorySelector(
           onCategorySelected(category)
           expanded = false
         },
+        onNavigateToEditCategories = onNavigateToEditCategories,
         testTag = testTag,
     )
   }
@@ -159,27 +170,67 @@ private fun CategorySelectorValue(
 @Composable
 private fun CategoryDropdownMenu(
     expanded: Boolean,
+    isLoading: Boolean,
     onDismissRequest: () -> Unit,
     categories: List<EventCategory>,
     selectedCategory: EventCategory,
     onCategorySelected: (EventCategory) -> Unit,
+    onNavigateToEditCategories: () -> Unit = {},
     testTag: String,
 ) {
   DropdownMenu(
       expanded = expanded,
       onDismissRequest = onDismissRequest,
-  ) {
-    categories.forEachIndexed { index, category ->
-      val isSelectedCategory = category == selectedCategory
-      CategoryDropdownMenuItem(
-          category = category,
-          isSelected = isSelectedCategory,
-          index = index,
-          testTag = testTag,
-          onClick = { onCategorySelected(category) },
-      )
-    }
-  }
+      shape = RoundedCornerShape(CornerRadiusMedium),
+      border = BorderStroke(BorderWidthThin, GeneralPalette.Outline)) {
+        if (isLoading) {
+          Loading(modifier = Modifier.fillMaxWidth().padding(vertical = PaddingMedium))
+        }
+        categories
+            .sortedBy { it.index }
+            .forEachIndexed { index, category ->
+              val isSelectedCategory = category == selectedCategory
+              CategoryDropdownMenuItem(
+                  category = category,
+                  isSelected = isSelectedCategory,
+                  index = index,
+                  testTag = testTag,
+                  onClick = { onCategorySelected(category) },
+              )
+            }
+
+        // ---- Always-visible last option: navigate to the category editor ----
+        val noCategory = categories.isEmpty() && !isLoading
+
+        val labelResId =
+            if (noCategory) R.string.category_selector_create_category
+            else R.string.category_selector_edit_my_categories
+
+        // Icon of the last option
+        val imageVector = if (noCategory) Icons.Filled.Add else Icons.Filled.Edit
+
+        val testTag = if (noCategory) "${testTag}_create_category" else "${testTag}_edit_categories"
+
+        // If existing categories, separate the last option visually
+        if (!noCategory) {
+          Spacer(modifier = Modifier.height(SpacingSmall))
+          HorizontalDivider()
+        }
+
+        DropdownMenuItem(
+            leadingIcon = {
+              Icon(
+                  imageVector = imageVector,
+                  contentDescription = null,
+              )
+            },
+            text = { Text(text = stringResource(labelResId)) },
+            onClick = {
+              onDismissRequest()
+              onNavigateToEditCategories()
+            },
+            modifier = Modifier.padding(horizontal = PaddingSmall).testTag(testTag))
+      }
 }
 
 @Composable
@@ -235,7 +286,7 @@ private fun CategoryDropdownItemContent(
       } else category.label
 
   Row(
-      modifier = Modifier.fillMaxWidth(),
+      modifier = Modifier.fillMaxWidth().padding(horizontal = PaddingSmall),
       horizontalArrangement = Arrangement.Start,
       verticalAlignment = Alignment.CenterVertically) {
         // For the selected category, we draw a thicker border to highlight it.

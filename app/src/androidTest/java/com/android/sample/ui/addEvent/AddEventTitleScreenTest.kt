@@ -11,29 +11,59 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import com.android.sample.data.global.repositories.EventRepository
+import com.android.sample.data.local.repositories.EventRepositoryInMemory
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UsersRepositoryLocal
+import com.android.sample.model.category.EventCategoryRepository
+import com.android.sample.model.category.EventCategoryRepositoryLocal
+import com.android.sample.model.organization.repository.OrganizationRepository
+import com.android.sample.model.organization.repository.OrganizationRepositoryLocal
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
+import com.android.sample.ui.calendar.addEvent.AddEventViewModel
 import com.android.sample.ui.calendar.addEvent.components.AddEventTitleAndDescriptionBottomBar
 import com.android.sample.ui.calendar.addEvent.components.AddEventTitleAndDescriptionScreen
+import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class AddEventTitleScreenTest : RequiresSelectedOrganizationTestBase {
+class AddEventTitleScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganizationTestBase {
 
   override val organizationId: String = DEFAULT_TEST_ORG_ID
+
+  private lateinit var eventRepository: EventRepository
+  private lateinit var userRepository: UserRepository
+  private lateinit var organizationRepository: OrganizationRepository
+  private lateinit var categoryRepository: EventCategoryRepository
 
   @get:Rule val composeTestRule = createComposeRule()
 
   @Before
-  fun setUp() {
+  override fun setUp() {
+    super.setUp()
+
     setSelectedOrganization()
+
+    eventRepository = EventRepositoryInMemory()
+    userRepository = UsersRepositoryLocal()
+    organizationRepository = OrganizationRepositoryLocal(userRepository)
+    categoryRepository = EventCategoryRepositoryLocal()
 
     composeTestRule.setContent {
       Scaffold(
           content = { padding ->
-            AddEventTitleAndDescriptionScreen(modifier = Modifier.padding(padding))
+            AddEventTitleAndDescriptionScreen(
+                modifier = Modifier.padding(padding),
+                addEventViewModel =
+                    AddEventViewModel(
+                        userRepository = userRepository,
+                        eventRepository = eventRepository,
+                        categoryRepository = categoryRepository,
+                    ),
+                onNavigateToEditCategories = { /* no navigation */})
           },
           bottomBar = { AddEventTitleAndDescriptionBottomBar() })
     }
@@ -105,20 +135,22 @@ class AddEventTitleScreenTest : RequiresSelectedOrganizationTestBase {
   }
 
   @Test
-  fun selectingColorDoesNotEnableNextButtonWhenFieldsEmpty() {
+  fun selectingCategoryDoesNotEnableNextButtonWhenFieldsEmpty() {
     // Next button is disabled at start when title and description are empty
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertIsNotEnabled()
 
-    // Open the color selector and pick the first color option
+    // Open the category selector and choose an option ("create", without navigation)
     composeTestRule.onNodeWithTag(AddEventTestTags.CATEGORY_SELECTOR).performClick()
-    composeTestRule.onNodeWithTag(AddEventTestTags.CATEGORY_SELECTOR + "_option_0").performClick()
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.CATEGORY_SELECTOR + "_create_category")
+        .performClick()
 
-    // Changing only the color should not enable the Next button
+    // Changing only the category should not enable the Next button
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertIsNotEnabled()
   }
 
   @Test
-  fun selectingColorKeepsNextButtonEnabledWhenTitleAndDescriptionValid() {
+  fun selectingCategoryKeepsNextButtonEnabledWhenTitleAndDescriptionValid() {
     // Fill both fields with valid content
     composeTestRule.onNodeWithTag(AddEventTestTags.TITLE_TEXT_FIELD).performTextInput("Concert")
     composeTestRule
@@ -129,11 +161,13 @@ class AddEventTitleScreenTest : RequiresSelectedOrganizationTestBase {
     // Next button should be enabled once both fields are valid
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertIsEnabled()
 
-    // Change the color using the ColorSelector
+    // Open the category selector and choose an option ("create", without navigation)
     composeTestRule.onNodeWithTag(AddEventTestTags.CATEGORY_SELECTOR).performClick()
-    composeTestRule.onNodeWithTag(AddEventTestTags.CATEGORY_SELECTOR + "_option_0").performClick()
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.CATEGORY_SELECTOR + "_create_category")
+        .performClick()
 
-    // Next button should remain enabled after changing the color
+    // Next button should remain enabled after changing the category
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertIsEnabled()
   }
 }

@@ -21,7 +21,7 @@ class CategorySelectorTest {
   private val categories =
       listOf(
           EventCategory(
-              organizationId = "orgTest", label = "Category 1", color = EventPalette.Green),
+              organizationId = "orgTest", label = "Category 1", color = EventPalette.LightGreen),
           EventCategory(
               organizationId = "orgTest", label = "Category 2", color = EventPalette.Blue),
           EventCategory(

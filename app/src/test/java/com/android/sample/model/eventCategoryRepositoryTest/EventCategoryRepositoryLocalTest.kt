@@ -31,7 +31,7 @@ class EventCategoryRepositoryLocalTest {
         EventCategory(
             organizationId = selectedOrganizationId,
             label = "Category 2",
-            color = EventPalette.Green)
+            color = EventPalette.LightGreen)
   }
 
   @Test

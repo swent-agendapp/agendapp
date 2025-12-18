@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
-import com.android.sample.ui.theme.BorderWidthExtraThick
+import com.android.sample.ui.theme.BorderWidthThick
 import com.android.sample.ui.theme.BorderWidthThin
 import com.android.sample.ui.theme.EventPalette
 import com.android.sample.ui.theme.SizeMediumLarge
@@ -34,7 +34,7 @@ fun ColorCircle(
               .clip(CircleShape)
               .background(color)
               .border(
-                  width = if (isSelected) BorderWidthExtraThick else BorderWidthThin,
+                  width = if (isSelected) BorderWidthThick else BorderWidthThin,
                   color = MaterialTheme.colorScheme.onSurface,
                   shape = CircleShape)
               .testTag(testTag),

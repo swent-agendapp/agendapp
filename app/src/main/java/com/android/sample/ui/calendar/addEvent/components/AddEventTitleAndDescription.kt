@@ -12,6 +12,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -24,6 +25,9 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.R
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
@@ -49,8 +53,18 @@ private const val DESCRIPTION_FIELD_MIN_LINES = 12
 fun AddEventTitleAndDescriptionScreen(
     modifier: Modifier = Modifier,
     addEventViewModel: AddEventViewModel = viewModel(),
+    onNavigateToEditCategories: () -> Unit = {},
 ) {
   val newEventUIState by addEventViewModel.uiState.collectAsState()
+
+  // refresh categories when the screen is re-displayed (after editing categories)
+  val lifecycleOwner = LocalLifecycleOwner.current
+
+  LaunchedEffect(lifecycleOwner) {
+    lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+      addEventViewModel.loadCategories()
+    }
+  }
 
   var titleTouched by remember { mutableStateOf(false) }
   var descriptionTouched by remember { mutableStateOf(false) }
@@ -82,8 +96,10 @@ fun AddEventTitleAndDescriptionScreen(
           CategorySelector(
               selectedCategory = newEventUIState.category,
               onCategorySelected = { addEventViewModel.setCategory(it) },
+              onNavigateToEditCategories = onNavigateToEditCategories,
               testTag = AddEventTestTags.CATEGORY_SELECTOR,
-          )
+              categories = newEventUIState.categoriesList,
+              isLoading = newEventUIState.isLoadingCategories)
 
           Spacer(modifier = Modifier.height(SpacingExtraLarge))
 

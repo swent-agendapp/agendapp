@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.android.sample.model.category.EventCategory
 import com.android.sample.ui.category.components.ColorCircle
 import com.android.sample.ui.theme.BorderWidthThin
+import com.android.sample.ui.theme.CornerRadiusExtraLarge
 import com.android.sample.ui.theme.CornerRadiusLarge
 import com.android.sample.ui.theme.EventPalette
 import com.android.sample.ui.theme.PaddingMedium
@@ -141,8 +142,10 @@ private fun ColorDropdownMenu(
     testTag: String,
 ) {
   DropdownMenu(
+      modifier = Modifier.padding(horizontal = PaddingSmall),
       expanded = expanded,
       onDismissRequest = onDismissRequest,
+      shape = RoundedCornerShape(CornerRadiusExtraLarge),
   ) {
     ColorGrid(
         colors = colors,
@@ -162,8 +165,7 @@ private fun ColorGrid(
 ) {
   Box(
       modifier =
-          Modifier.testTag("${testTag}_${ColorSelectorTestTags.GRID_SUFFIX}")
-              .padding(PaddingMedium),
+          Modifier.testTag("${testTag}_${ColorSelectorTestTags.GRID_SUFFIX}").padding(PaddingSmall),
       contentAlignment = Alignment.Center,
   ) {
     // Split into rows of up to GRID_MAX_COLUMNS items

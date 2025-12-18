@@ -35,7 +35,7 @@ class EventCategoryFirebaseRepositoryTest :
             organizationId = organizationId, label = "Category 1", color = EventPalette.Blue)
     category2 =
         EventCategory(
-            organizationId = organizationId, label = "Category 2", color = EventPalette.Green)
+            organizationId = organizationId, label = "Category 2", color = EventPalette.LightGreen)
 
     // Use local user repository for tests
     UserRepositoryProvider.repository = UsersRepositoryLocal()

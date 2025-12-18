@@ -16,6 +16,7 @@ class EventCategoryMapperTest {
       EventCategory(
           id = "category123",
           organizationId = "testOrg",
+          index = 2,
           label = "Test Category",
           color = EventPalette.Blue,
           isDefault = false,
@@ -25,6 +26,7 @@ class EventCategoryMapperTest {
       mapOf(
           EventCategoryMapper.ID_FIELD to sampleCategory.id,
           EventCategoryMapper.ORGANIZATION_ID_FIELD to sampleCategory.organizationId,
+          EventCategoryMapper.INDEX_FIELD to sampleCategory.index.toLong(),
           EventCategoryMapper.LABEL_FIELD to sampleCategory.label,
           EventCategoryMapper.COLOR_FIELD to sampleCategory.color.value.toLong(),
           EventCategoryMapper.IS_DEFAULT_FIELD to sampleCategory.isDefault,
@@ -36,6 +38,7 @@ class EventCategoryMapperTest {
     val doc = mock(DocumentSnapshot::class.java)
     `when`(doc.id).thenReturn("category123")
     `when`(doc.getString(EventCategoryMapper.ORGANIZATION_ID_FIELD)).thenReturn("testOrg")
+    `when`(doc.getLong(EventCategoryMapper.INDEX_FIELD)).thenReturn(2)
     `when`(doc.getString(EventCategoryMapper.LABEL_FIELD)).thenReturn("Test Category")
     `when`(doc.getLong(EventCategoryMapper.COLOR_FIELD))
         .thenReturn(sampleCategory.color.value.toLong())

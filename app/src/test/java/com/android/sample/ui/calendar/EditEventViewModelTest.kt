@@ -8,6 +8,8 @@ import com.android.sample.model.authentication.UsersRepositoryLocal
 import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.category.EventCategory
+import com.android.sample.model.category.EventCategoryRepository
+import com.android.sample.model.category.EventCategoryRepositoryLocal
 import com.android.sample.model.category.mockData.getMockEventCategory
 import com.android.sample.model.organization.data.Organization
 import com.android.sample.model.organization.repository.OrganizationRepository
@@ -15,6 +17,7 @@ import com.android.sample.model.organization.repository.OrganizationRepositoryLo
 import com.android.sample.model.organization.repository.SelectedOrganizationRepository
 import com.android.sample.ui.calendar.editEvent.EditEventStep
 import com.android.sample.ui.calendar.editEvent.EditEventViewModel
+import com.android.sample.ui.theme.EventPalette
 import java.time.Duration
 import java.time.Instant
 import kotlinx.coroutines.Dispatchers
@@ -36,6 +39,7 @@ class EditEventViewModelTest {
   private lateinit var eventRepository: EventRepository
   private lateinit var userRepository: UserRepository
   private lateinit var organizationRepository: OrganizationRepository
+  private lateinit var categoryRepository: EventCategoryRepository
 
   private lateinit var user: User
   private lateinit var organization: Organization
@@ -48,6 +52,7 @@ class EditEventViewModelTest {
     eventRepository = EventRepositoryInMemory()
     userRepository = UsersRepositoryLocal()
     organizationRepository = OrganizationRepositoryLocal(userRepository)
+    categoryRepository = EventCategoryRepositoryLocal()
 
     user =
         User(
@@ -61,7 +66,6 @@ class EditEventViewModelTest {
 
     // --- Create organization ---
     organization = Organization(id = selectedOrganizationID, name = "Org A")
-
     organizationRepository.insertOrganization(organization)
 
     // Set up user-organization relationships
@@ -333,9 +337,58 @@ class EditEventViewModelTest {
     assertEquals(newCategory, updated.category)
   }
 
+  @Test
+  fun `loadCategories updates categoriesList sorted by index and clears loading flag`() = runTest {
+    // Given
+    val categories =
+        listOf(
+            EventCategory(
+                id = "c2",
+                label = "Cat 2",
+                color = EventPalette.Blue,
+                isDefault = false,
+                index = 2,
+                organizationId = selectedOrganizationID),
+            EventCategory(
+                id = "c0",
+                label = "Cat 0",
+                color = EventPalette.Purple,
+                isDefault = false,
+                index = 0,
+                organizationId = selectedOrganizationID),
+            EventCategory(
+                id = "c1",
+                label = "Cat 1",
+                color = EventPalette.LightGreen,
+                isDefault = false,
+                index = 1,
+                organizationId = selectedOrganizationID),
+        )
+    val repo = categoryRepository as EventCategoryRepositoryLocal
+    categories.forEach { repo.insertCategory(orgId = selectedOrganizationID, it) }
+
+    val vm = makeVm()
+    testDispatcher.scheduler
+        .advanceUntilIdle() // let init finish first (includes initial loadCategories)
+
+    // When
+    vm.loadCategories()
+    testDispatcher.scheduler.advanceUntilIdle()
+
+    // Then
+    val state = vm.uiState.value
+    assertFalse(state.isLoadingCategories)
+    assertNull(state.errorMessage)
+    assertEquals(listOf("c0", "c1", "c2"), state.categoriesList.map { it.id })
+  }
+
   /* Helper functions */
 
   private fun makeVm(): EditEventViewModel {
-    return EditEventViewModel(userRepository = userRepository, eventRepository = eventRepository)
+    return EditEventViewModel(
+        userRepository = userRepository,
+        eventRepository = eventRepository,
+        categoryRepository = categoryRepository,
+    )
   }
 }

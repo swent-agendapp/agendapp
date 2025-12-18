@@ -63,6 +63,7 @@ object Palette {
   val MistyMoss = Color(color = 0xFFB2C778)
   val DarkSeaGreen = Color(color = 0xFF81C784)
   val Mantis = Color(color = 0xFF74C365)
+  val ForestGreen = Color(color = 0xFF2E7D32)
 
   // ----------------------------------------
   // Blues
@@ -179,27 +180,32 @@ object EventPalette {
   val Indigo = Palette.SteelBlue
   val Blue = Palette.BlueJeans
   val LightBlue = Palette.SkyBlue
-  val Green = Palette.DarkSeaGreen
+  val Teal = Palette.MediumAquamarine
+  val LightGreen = Palette.Mantis
+  val DarkGreen = Palette.ForestGreen
   val BeigeSalmon = Palette.PeachPuff
   val BrownOrange = Palette.BurlyWood
   val Brown = Palette.LightBrown
-  val NoCategory = Palette.Gray
+  val NoCategory = Palette.SpanishGray
 
   val defaultColors: List<Color> =
-      listOf(
+      listOf( // the separation represents the 4 lines of the ColorSelector
           Indigo,
+          Teal,
           Blue,
           LightBlue,
-          Green,
-          Yellow,
-          Orange,
-          Red,
           Purple,
           PinkViolet,
           Pink,
           BeigeSalmon,
-          BrownOrange,
+          Red,
+          Orange,
+          Yellow,
+          LightGreen,
           Brown,
+          NoCategory,
+          BrownOrange,
+          DarkGreen,
       )
 }
 

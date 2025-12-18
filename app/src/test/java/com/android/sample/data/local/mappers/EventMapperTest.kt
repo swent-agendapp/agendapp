@@ -134,4 +134,24 @@ class EventMapperTest {
     val mappedBack = entity.toEvent()
     assertEquals(baseEvent.personalNotes, mappedBack.personalNotes)
   }
+
+  @Test
+  fun `Event category index is preserved through mapping`() {
+    val indexedCategory = testCategory.copy(index = 7)
+    val eventWithIndexedCategory = baseEvent.copy(category = indexedCategory)
+
+    val entity = eventWithIndexedCategory.toEntity()
+    val mappedBack = entity.toEvent()
+
+    assertEquals(7, mappedBack.category.index)
+    assertEquals(eventWithIndexedCategory.category, mappedBack.category)
+  }
+
+  @Test
+  fun `Event category index defaults to 0 when not set`() {
+    val entity = baseEvent.toEntity()
+    val mappedBack = entity.toEvent()
+
+    assertEquals(0, mappedBack.category.index)
+  }
 }

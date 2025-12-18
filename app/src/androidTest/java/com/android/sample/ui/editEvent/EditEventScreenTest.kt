@@ -204,7 +204,7 @@ class EditEventScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
   }
 
   @Test
-  fun editEventScreen_openColorSelector_showsColorOptions() {
+  fun editEventScreen_openCategorySelector_showsOptions() {
     composeTestRule.setContent {
       SampleAppTheme {
         EditEventScreen(
@@ -214,25 +214,27 @@ class EditEventScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
       }
     }
 
-    // Scroll to the ColorSelector and open the menu
+    // Scroll to the CategorySelector and open the menu
     composeTestRule
         .onNodeWithTag(EditEventTestTags.CATEGORY_SELECTOR, useUnmergedTree = true)
         .performScrollTo()
         .performClick()
 
-    // At least the first option should be visible when the menu is open
+    // The "create a category" option should be visible when the menu is open
     composeTestRule
-        .onNodeWithTag(EditEventTestTags.CATEGORY_SELECTOR + "_option_0", useUnmergedTree = true)
+        .onNodeWithTag(
+            EditEventTestTags.CATEGORY_SELECTOR + "_create_category", useUnmergedTree = true)
         .assertExists()
         .assertIsDisplayed()
   }
 
   @Test
-  fun editEventScreen_selectingColor_doesNotEnableSaveWhenFieldsInvalid() {
+  fun editEventScreen_openCategorySelector_doesNotEnableSaveWhenFieldsInvalid() {
     composeTestRule.setContent {
       SampleAppTheme {
         EditEventScreen(
             eventId = "E123",
+            onNavigateToEditCategories = {},
             skipLoad = true, // we skip loading from repository to simplify the test
         )
       }
@@ -241,17 +243,18 @@ class EditEventScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganization
     // At start, required fields are invalid, so the Save button must be disabled
     composeTestRule.onNodeWithTag(EditEventTestTags.SAVE_BUTTON).assertExists().assertIsNotEnabled()
 
-    // Open the ColorSelector and select the first color
+    // Open the ColorSelector and select the "create a category" option (but no navigation)
     composeTestRule
         .onNodeWithTag(EditEventTestTags.CATEGORY_SELECTOR, useUnmergedTree = true)
         .performScrollTo()
         .performClick()
 
     composeTestRule
-        .onNodeWithTag(EditEventTestTags.CATEGORY_SELECTOR + "_option_0", useUnmergedTree = true)
+        .onNodeWithTag(
+            EditEventTestTags.CATEGORY_SELECTOR + "_create_category", useUnmergedTree = true)
         .performClick()
 
-    // Changing only the color should not make the form valid,
+    // Opening the Category selector should not make the form valid,
     // so the Save button must remain disabled
     composeTestRule.onNodeWithTag(EditEventTestTags.SAVE_BUTTON).assertIsNotEnabled()
   }

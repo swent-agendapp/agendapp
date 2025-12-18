@@ -7,6 +7,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
@@ -281,7 +282,7 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
     composeTestRule.onNodeWithTag(AddEventTestTags.CREATE_BUTTON).assertExists().performClick()
 
     // Open the created event
-    composeTestRule.onNodeWithText("Test Event").assertExists().performClick()
+    composeTestRule.onNodeWithText("Test Event").assertExists().performScrollTo().performClick()
 
     // Open Edit screen
     composeTestRule
@@ -294,7 +295,10 @@ class AgendappNavigationTest : FirebaseEmulatedTest() {
     composeTestRule.onNodeWithTag(EditEventTestTags.CATEGORY_SELECTOR).assertExists().performClick()
 
     // Click the dedicated option at the bottom of the dropdown
-    composeTestRule.onNodeWithTag("category_selector_create_category").assertExists().performClick()
+    composeTestRule
+        .onNodeWithTag(EditEventTestTags.CATEGORY_SELECTOR + "_create_category")
+        .assertExists()
+        .performClick()
 
     // Verify Edit Category screen is displayed
     composeTestRule.onNodeWithTag(EditCategoryScreenTestTags.SCREEN_ROOT).assertIsDisplayed()

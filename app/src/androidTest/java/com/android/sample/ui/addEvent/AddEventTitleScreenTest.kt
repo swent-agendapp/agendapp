@@ -23,13 +23,14 @@ import com.android.sample.ui.calendar.addEvent.AddEventTestTags
 import com.android.sample.ui.calendar.addEvent.AddEventViewModel
 import com.android.sample.ui.calendar.addEvent.components.AddEventTitleAndDescriptionBottomBar
 import com.android.sample.ui.calendar.addEvent.components.AddEventTitleAndDescriptionScreen
+import com.android.sample.utils.FirebaseEmulatedTest
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase.Companion.DEFAULT_TEST_ORG_ID
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class AddEventTitleScreenTest : RequiresSelectedOrganizationTestBase {
+class AddEventTitleScreenTest : FirebaseEmulatedTest(), RequiresSelectedOrganizationTestBase {
 
   override val organizationId: String = DEFAULT_TEST_ORG_ID
 
@@ -41,7 +42,9 @@ class AddEventTitleScreenTest : RequiresSelectedOrganizationTestBase {
   @get:Rule val composeTestRule = createComposeRule()
 
   @Before
-  fun setUp() {
+  override fun setUp() {
+    super.setUp()
+
     setSelectedOrganization()
 
     eventRepository = EventRepositoryInMemory()
@@ -59,7 +62,8 @@ class AddEventTitleScreenTest : RequiresSelectedOrganizationTestBase {
                         userRepository = userRepository,
                         eventRepository = eventRepository,
                         categoryRepository = categoryRepository,
-                    ))
+                    ),
+                onNavigateToEditCategories = { /* no navigation */})
           },
           bottomBar = { AddEventTitleAndDescriptionBottomBar() })
     }
@@ -131,15 +135,17 @@ class AddEventTitleScreenTest : RequiresSelectedOrganizationTestBase {
   }
 
   @Test
-  fun selectingColorDoesNotEnableNextButtonWhenFieldsEmpty() {
+  fun selectingCategoryDoesNotEnableNextButtonWhenFieldsEmpty() {
     // Next button is disabled at start when title and description are empty
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertIsNotEnabled()
 
-    // Open the color selector and pick the first color option
+    // Open the category selector and choose an option ("create", without navigation)
     composeTestRule.onNodeWithTag(AddEventTestTags.CATEGORY_SELECTOR).performClick()
-    composeTestRule.onNodeWithTag(AddEventTestTags.CATEGORY_SELECTOR + "_option_0").performClick()
+    composeTestRule
+        .onNodeWithTag(AddEventTestTags.CATEGORY_SELECTOR + "_create_category")
+        .performClick()
 
-    // Changing only the color should not enable the Next button
+    // Changing only the category should not enable the Next button
     composeTestRule.onNodeWithTag(AddEventTestTags.NEXT_BUTTON).assertIsNotEnabled()
   }
 

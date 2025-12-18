@@ -11,7 +11,16 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import com.android.sample.data.global.repositories.EventRepository
+import com.android.sample.data.local.repositories.EventRepositoryInMemory
+import com.android.sample.model.authentication.UserRepository
+import com.android.sample.model.authentication.UsersRepositoryLocal
+import com.android.sample.model.category.EventCategoryRepository
+import com.android.sample.model.category.EventCategoryRepositoryLocal
+import com.android.sample.model.organization.repository.OrganizationRepository
+import com.android.sample.model.organization.repository.OrganizationRepositoryLocal
 import com.android.sample.ui.calendar.addEvent.AddEventTestTags
+import com.android.sample.ui.calendar.addEvent.AddEventViewModel
 import com.android.sample.ui.calendar.addEvent.components.AddEventTitleAndDescriptionBottomBar
 import com.android.sample.ui.calendar.addEvent.components.AddEventTitleAndDescriptionScreen
 import com.android.sample.utils.RequiresSelectedOrganizationTestBase
@@ -24,16 +33,33 @@ class AddEventTitleScreenTest : RequiresSelectedOrganizationTestBase {
 
   override val organizationId: String = DEFAULT_TEST_ORG_ID
 
+  private lateinit var eventRepository: EventRepository
+  private lateinit var userRepository: UserRepository
+  private lateinit var organizationRepository: OrganizationRepository
+  private lateinit var categoryRepository: EventCategoryRepository
+
   @get:Rule val composeTestRule = createComposeRule()
 
   @Before
   fun setUp() {
     setSelectedOrganization()
 
+    eventRepository = EventRepositoryInMemory()
+    userRepository = UsersRepositoryLocal()
+    organizationRepository = OrganizationRepositoryLocal(userRepository)
+    categoryRepository = EventCategoryRepositoryLocal()
+
     composeTestRule.setContent {
       Scaffold(
           content = { padding ->
-            AddEventTitleAndDescriptionScreen(modifier = Modifier.padding(padding))
+            AddEventTitleAndDescriptionScreen(
+                modifier = Modifier.padding(padding),
+                addEventViewModel =
+                    AddEventViewModel(
+                        userRepository = userRepository,
+                        eventRepository = eventRepository,
+                        categoryRepository = categoryRepository,
+                    ))
           },
           bottomBar = { AddEventTitleAndDescriptionBottomBar() })
     }

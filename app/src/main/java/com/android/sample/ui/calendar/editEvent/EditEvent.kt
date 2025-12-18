@@ -5,6 +5,7 @@ import androidx.compose.runtime.*
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.sample.ui.calendar.editEvent.components.EditEventAttendantScreen
 import com.android.sample.ui.calendar.editEvent.components.EditEventScreen
+import com.android.sample.ui.common.LoadingOverlay
 
 // Assisted by AI
 object EditEventTestTags {
@@ -62,6 +63,9 @@ fun EditEventFlow(
           onSave = { editEventViewModel.goBackToMainStep() },
           onBack = { editEventViewModel.goBackToMainStep() })
     }
+  }
+  if (uiState.isLoading) {
+    LoadingOverlay()
   }
 
   // Handle the Android system back button

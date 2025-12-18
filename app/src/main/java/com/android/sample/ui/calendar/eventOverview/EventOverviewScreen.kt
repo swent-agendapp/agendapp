@@ -35,6 +35,7 @@ import com.android.sample.model.calendar.Event
 import com.android.sample.model.calendar.RecurrenceStatus
 import com.android.sample.model.category.EventCategory
 import com.android.sample.ui.calendar.components.EventSummaryCard
+import com.android.sample.ui.common.LoadingOverlay
 import com.android.sample.ui.common.PrimaryButton
 import com.android.sample.ui.common.SecondaryButton
 import com.android.sample.ui.common.SecondaryPageTopBar
@@ -160,6 +161,9 @@ fun EventOverviewScreen(
               }
             }
       }
+  if (overviewUIState.isLoading) {
+    LoadingOverlay()
+  }
 }
 
 /** DeleteEventConfirmationDialog */

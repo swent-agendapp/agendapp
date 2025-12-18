@@ -39,6 +39,7 @@ import com.android.sample.model.category.EventCategoryRepositoryProvider
 import com.android.sample.ui.calendar.filters.FilterBottomSheet
 import com.android.sample.ui.calendar.style.CalendarDefaults.DefaultDateRange
 import com.android.sample.ui.common.FloatingButton
+import com.android.sample.ui.common.LoadingOverlay
 import com.android.sample.ui.common.MainPageTopBar
 import com.android.sample.ui.organization.SelectedOrganizationVMProvider
 import com.android.sample.ui.organization.SelectedOrganizationViewModel
@@ -236,6 +237,9 @@ fun CalendarScreen(
               })
         }
       }
+  if (uiState.isLoading) {
+    LoadingOverlay()
+  }
 }
 
 /**

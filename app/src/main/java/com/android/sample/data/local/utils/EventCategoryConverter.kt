@@ -1,7 +1,6 @@
 package com.android.sample.data.local.utils
 
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import com.android.sample.model.category.EventCategory
 import com.android.sample.ui.theme.EventPalette
 import io.objectbox.converter.PropertyConverter
@@ -27,7 +26,7 @@ class EventCategoryConverter : PropertyConverter<EventCategory, String> {
           put(KEY_ORG_ID, entityProperty.organizationId)
           put(KEY_INDEX, entityProperty.index)
           put(KEY_LABEL, entityProperty.label)
-          put(KEY_COLOR, entityProperty.color.toArgb())
+          put(KEY_COLOR, entityProperty.color.value.toLong())
           put(KEY_DEFAULT, entityProperty.isDefault)
         }
     return json.toString()
